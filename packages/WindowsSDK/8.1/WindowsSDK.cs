@@ -114,6 +114,12 @@ namespace WindowsSDK
         }
 
         public static string
+        InstallPath()
+        {
+            return installPath;
+        }
+
+        public static string
         BinPath(
             Bam.Core.BaseTarget baseTarget)
         {
@@ -137,12 +143,12 @@ namespace WindowsSDK
         public
         Direct3D9()
         {
-            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Direct3D9_Libraries);
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Direct3D9_Library);
         }
 
         [C.ExportLinkerOptionsDelegate]
         void
-        Direct3D9_Libraries(
+        Direct3D9_Library(
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
@@ -152,10 +158,45 @@ namespace WindowsSDK
                 return;
             }
 
-            var libraries = new Bam.Core.StringArray();
-            libraries.Add("d3d9.lib");
-            libraries.Add("d3dcompiler.lib");
-            linkerOptions.Libraries.AddRange(libraries);
+            linkerOptions.Libraries.Add("d3d9.lib");
         }
+    }
+
+    public sealed class Direct3DShaderCompiler :
+        C.ThirdPartyModule
+    {
+        public
+        Direct3DShaderCompiler(
+            Bam.Core.Target target)
+        {
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Direct3DCompiler_Library);
+
+            var installLocation = Bam.Core.DirectoryLocation.Get(WindowsSDK.InstallPath());
+            var redistFolder = installLocation.SubDirectory("Redist");
+            var d3dFolder = redistFolder.SubDirectory("D3D");
+            var archFolder = Bam.Core.OSUtilities.Is64Bit(target) ? d3dFolder.SubDirectory("x64") : d3dFolder.SubDirectory("x86");
+            this.Locations[C.DynamicLibrary.OutputFile] = Bam.Core.FileLocation.Get(archFolder, "d3dcompiler_47.dll", Bam.Core.Location.EExists.Exists);
+        }
+
+        [C.ExportLinkerOptionsDelegate]
+        void
+        Direct3DCompiler_Library(
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
+        {
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
+            linkerOptions.Libraries.Add("d3dcompiler.lib");
+        }
+
+#if D_PACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations(Platform=Bam.Core.EPlatform.Windows)]
+        private Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.DynamicLibrary.OutputFile));
+#endif
     }
 }
