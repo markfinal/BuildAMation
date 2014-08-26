@@ -130,4 +130,32 @@ namespace WindowsSDK
             return binPath;
         }
     }
+
+    public sealed class Direct3D9 :
+        C.ThirdPartyModule
+    {
+        public
+        Direct3D9()
+        {
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Direct3D9_Libraries);
+        }
+
+        [C.ExportLinkerOptionsDelegate]
+        void
+        Direct3D9_Libraries(
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
+        {
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
+            var libraries = new Bam.Core.StringArray();
+            libraries.Add("d3d9.lib");
+            libraries.Add("d3dcompiler.lib");
+            linkerOptions.Libraries.AddRange(libraries);
+        }
+    }
 }
