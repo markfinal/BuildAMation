@@ -35,7 +35,7 @@
 namespace
 {
 
-std::string getErrorMessage(
+const char *getErrorMessage(
     ::HRESULT result)
 {
 #ifdef USING_WINDOWS8_SDK
@@ -51,16 +51,15 @@ std::string getErrorMessage(
         NULL);
     if (buffer != NULL)
     {
-        std::string message(buffer);
-        // TODO: free the buffer
-        return message;
+        // TODO: buffer is not freed
+        return buffer;
     }
     else
     {
         return "Unknown error";
     }
 #else // USING_WINDOWS8_SDK
-    char *message = ::DXGetErrorString(result);
+    const char *message = ::DXGetErrorString(result);
     return message;
 #endif // USING_WINDOWS8_SDK
 }
@@ -565,7 +564,7 @@ bool Renderer::CreateShaders()
     std::string vertexSource;
     vertexSource += "struct VSInput\n";
     vertexSource += "{\n";
-    vertexSource += "\tfloat5 position : POSITION;\n";
+    vertexSource += "\tfloat4 position : POSITION;\n";
     vertexSource += "\tfloat4 color : COLOR0;\n";
     vertexSource += "};\n";
     vertexSource += "struct VSOutput\n";
