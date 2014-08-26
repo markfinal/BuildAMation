@@ -88,7 +88,9 @@ namespace Direct3DTriangle
         [Bam.Core.DependentModules]
         Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(WindowsSDK.WindowsSDK),
-            typeof(WindowsSDK.Direct3D9) // requires Windows 8.1 SDK
+            // the following require the Windows 8.1 SDK
+            typeof(WindowsSDK.Direct3D9),
+            typeof(WindowsSDK.Direct3DShaderCompiler)
         );
 
         [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
@@ -96,6 +98,23 @@ namespace Direct3DTriangle
             "KERNEL32.lib",
             "USER32.lib"
         );
+
+#if D_PACKAGE_PUBLISHER_DEV
+        [Publisher.CopyFileLocations]
+        private Bam.Core.Array<Publisher.PublishDependency> publishKeys = new Bam.Core.Array<Publisher.PublishDependency>(
+            new Publisher.PublishDependency(C.Application.OutputFile));
+#endif
 #endif // USE_SEPARATE_DXSDK
     }
+
+#if !USE_SEPARATE_DXSDK
+#if D_PACKAGE_PUBLISHER_DEV
+    class Publish :
+        Publisher.ProductModule
+    {
+        [Publisher.PrimaryTarget]
+        System.Type primary = typeof(D3D9TriangleTest);
+    }
+#endif
+#endif
 }

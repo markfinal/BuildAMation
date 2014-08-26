@@ -16,6 +16,9 @@
     <Package Name="NativeBuilder">
       <Version Id="dev" />
     </Package>
+    <Package Name="Publisher">
+      <Version Id="dev" />
+    </Package>
     <Package Name="VisualC">
       <Version Id="10.0" />
       <Version Id="11.0" />
