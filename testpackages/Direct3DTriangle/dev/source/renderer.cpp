@@ -20,9 +20,52 @@
 #include <process.h>
 #include <string>
 #include <d3d9.h>
+#include <d3dcompiler.h> // this header exists in all versions of the SDK
+
+#if defined(D3D_COMPILER_VERSION) && (D3D_COMPILER_VERSION >= 47)
+#define USING_WINDOWS8_SDK
+#endif
+
+#ifndef USING_WINDOWS8_SDK
 #include <DxErr.h>
 #include <D3DX9Core.h>
 #include <D3DX9Shader.h>
+#endif // USING_WINDOWS8_SDK
+
+namespace
+{
+
+std::string getErrorMessage(
+    ::HRESULT result)
+{
+#ifdef USING_WINDOWS8_SDK
+    char *buffer;
+    ::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        result,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR)&buffer,
+        0,
+        NULL);
+    if (buffer != NULL)
+    {
+        std::string message(buffer);
+        // TODO: free the buffer
+        return message;
+    }
+    else
+    {
+        return "Unknown error";
+    }
+#else // USING_WINDOWS8_SDK
+    char *message = ::DXGetErrorString(result);
+    return message;
+#endif // USING_WINDOWS8_SDK
+}
+
+} // anonymous namespace
 
 Renderer::Renderer(void *windowHandle)
 : mhWindowHandle(windowHandle),
@@ -84,7 +127,7 @@ bool Renderer::CreateDevice()
     lResult = lpD3D->GetDeviceCaps(D3DADAPTER_DEFAULT, ::D3DDEVTYPE_HAL, &lCaps);
     if (FAILED(lResult))
     {
-        REPORTERROR2("GetDeviceCaps failed: 0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("GetDeviceCaps failed: 0x%x '%s'", lResult, getErrorMessage(lResult));
         return false;
     }
 
@@ -121,7 +164,7 @@ bool Renderer::CreateDevice()
         &lpDevice);
     if (FAILED(lResult))
     {
-        REPORTERROR2("Direct3D9 creation failed: 0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("Direct3D9 creation failed: 0x%x '%s'", lResult, getErrorMessage(lResult));
         return false;
     }
 
@@ -230,7 +273,7 @@ void Renderer::runThread()
     lResult = lpD3DDevice->GetRenderTarget(0, &lpDefaultRenderTarget);
     if (FAILED(lResult))
     {
-        REPORTERROR2("GetRenderTarget 0 failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("GetRenderTarget 0 failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return;
     }
     lpDefaultRenderTarget->Release();
@@ -253,7 +296,7 @@ void Renderer::runThread()
     lResult = lpD3DDevice->CreateVertexDeclaration(laVertexElements, &lpVertexDeclaration);
     if (FAILED(lResult))
     {
-        REPORTERROR2("CreateVertexDeclaration failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("CreateVertexDeclaration failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return;
     }
 
@@ -275,7 +318,7 @@ void Renderer::runThread()
         lResult = lpD3DDevice->BeginScene();
         if (FAILED(lResult))
         {
-            REPORTERROR2("BeginScene failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("BeginScene failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
@@ -289,14 +332,14 @@ void Renderer::runThread()
         lResult = lpD3DDevice->SetViewport(&lViewport);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetViewport failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetViewport failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
         lResult = lpD3DDevice->Clear(0, 0, D3DCLEAR_TARGET, D3DCOLOR_XRGB(255,255,255), 0, 0);
         if (FAILED(lResult))
         {
-            REPORTERROR2("Clear 0 failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("Clear 0 failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
@@ -330,7 +373,7 @@ void Renderer::runThread()
         lResult = lpD3DDevice->SetVertexDeclaration(lpVertexDeclaration);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetVertexDeclaration failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetVertexDeclaration failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
@@ -338,42 +381,42 @@ void Renderer::runThread()
         lResult = lpD3DDevice->SetStreamSource(0, lpVertexBuffer, lu32Offset, sizeof(Vertex));
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetStreamSource failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetStreamSource failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
         lResult = lpD3DDevice->SetRenderState(::D3DRS_CULLMODE, ::D3DCULL_NONE);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetRenderState D3DRS_CULLMODE failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetRenderState D3DRS_CULLMODE failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
         lResult = lpD3DDevice->SetRenderState(::D3DRS_ZFUNC, ::D3DCMP_ALWAYS);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetRenderState D3DRS_ZFUNC failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetRenderState D3DRS_ZFUNC failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
         lResult = lpD3DDevice->SetRenderState(::D3DRS_ZWRITEENABLE, FALSE);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetRenderState D3DRS_ZWRITEENABLE failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetRenderState D3DRS_ZWRITEENABLE failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
         lResult = lpD3DDevice->SetRenderState(::D3DRS_LIGHTING, FALSE);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetRenderState D3DRS_LIGHTING failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetRenderState D3DRS_LIGHTING failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
         lResult = lpD3DDevice->SetRenderState(::D3DRS_ALPHABLENDENABLE, FALSE);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetRenderState D3DRS_ALPHABLENDENABLE failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetRenderState D3DRS_ALPHABLENDENABLE failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
@@ -381,7 +424,7 @@ void Renderer::runThread()
         lpD3DDevice->SetVertexShader(lpVertexShader);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetVertexShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetVertexShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
@@ -389,7 +432,7 @@ void Renderer::runThread()
         lpD3DDevice->SetPixelShader(lpPixelShader);
         if (FAILED(lResult))
         {
-            REPORTERROR2("SetPixelShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("SetPixelShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
@@ -397,14 +440,14 @@ void Renderer::runThread()
         lResult = lpD3DDevice->DrawPrimitive(::D3DPT_TRIANGLELIST, 0, luNumTriangles);
         if (FAILED(lResult))
         {
-            REPORTERROR2("DrawPrimitive failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("DrawPrimitive failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
         lResult = lpD3DDevice->EndScene();
         if (FAILED(lResult))
         {
-            REPORTERROR2("EndScene failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("EndScene failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
 
@@ -416,7 +459,7 @@ void Renderer::runThread()
         lResult = lpD3DDevice->Present(0, 0, 0, 0);
         if (FAILED(lResult))
         {
-            REPORTERROR2("Present failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+            REPORTERROR2("Present failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
             return;
         }
     }
@@ -451,7 +494,7 @@ bool Renderer::CreateImmediateModeVertexBuffer()
         0);
     if (FAILED(lResult))
     {
-        REPORTERROR2("CreateVertexBuffer failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("CreateVertexBuffer failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return false;
     }
 
@@ -494,7 +537,7 @@ Renderer::BeginImmediateMode(const unsigned int lu32Size, unsigned int &lu32Offs
     ::HRESULT lResult = lpVertexBuffer->Lock(lu32CurrentOffset, lu32Size, &lpData, lu32Flags);
     if (FAILED(lResult))
     {
-        REPORTERROR2("VertexBuffer Lock failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("VertexBuffer Lock failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return 0;
     }
 
@@ -510,7 +553,7 @@ void Renderer::EndImmediateMode()
     ::HRESULT lResult = lpVertexBuffer->Unlock();
     if (FAILED(lResult))
     {
-        REPORTERROR2("VertexBuffer Unlock failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("VertexBuffer Unlock failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return;
     }
 }
@@ -522,7 +565,7 @@ bool Renderer::CreateShaders()
     std::string vertexSource;
     vertexSource += "struct VSInput\n";
     vertexSource += "{\n";
-    vertexSource += "\tfloat4 position : POSITION;\n";
+    vertexSource += "\tfloat5 position : POSITION;\n";
     vertexSource += "\tfloat4 color : COLOR0;\n";
     vertexSource += "};\n";
     vertexSource += "struct VSOutput\n";
@@ -539,6 +582,35 @@ bool Renderer::CreateShaders()
     vertexSource += "}\n";
 
     ::HRESULT lResult;
+#ifdef USING_WINDOWS8_SDK
+    ::LPD3DBLOB lpShaderBuffer = 0;
+    ::LPD3DBLOB lpErrorMessages = 0;
+    ::DWORD lu32Flags = D3DCOMPILE_OPTIMIZATION_LEVEL3;
+    lResult = ::D3DCompile(
+        vertexSource.c_str(),
+        static_cast<UINT>(vertexSource.length()),
+        0,
+        0,
+        0,
+        "main",
+        "vs_2_0",
+        lu32Flags,
+        0,
+        &lpShaderBuffer,
+        &lpErrorMessages);
+    if (FAILED(lResult))
+    {
+        REPORTERROR2("D3DCompile failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
+        REPORTERROR1("Messages: '%s'", lpErrorMessages->GetBufferPointer());
+        REPORTERROR1("'%s'", vertexSource.c_str());
+        return false;
+    }
+
+    if (0 != lpErrorMessages)
+    {
+        lpErrorMessages->Release();
+    }
+#else
     ::LPD3DXBUFFER lpShaderBuffer = 0;
     ::LPD3DXBUFFER lpErrorMessages = 0;
     ::LPD3DXCONSTANTTABLE lpConstantTable = 0;
@@ -556,7 +628,7 @@ bool Renderer::CreateShaders()
         &lpConstantTable);
     if (FAILED(lResult))
     {
-        REPORTERROR2("D3DXCompileShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("D3DXCompileShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         REPORTERROR1("Messages: '%s'", lpErrorMessages->GetBufferPointer());
         REPORTERROR1("'%s'", vertexSource.c_str());
         return false;
@@ -570,13 +642,14 @@ bool Renderer::CreateShaders()
     {
         lpConstantTable->Release();
     }
+#endif // USING_WINDOWS8_SDK
 
     ::IDirect3DVertexShader9 *lpVertexShader = 0;
     ::DWORD *lpByteCode = static_cast<::DWORD *>(lpShaderBuffer->GetBufferPointer());
     lResult = lpD3DDevice->CreateVertexShader(lpByteCode, &lpVertexShader);
     if (FAILED(lResult))
     {
-        REPORTERROR2("CreateVertexShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("CreateVertexShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return false;
     }
 
@@ -594,6 +667,32 @@ bool Renderer::CreateShaders()
     pixelSource += "\treturn color;\n";
     pixelSource += "}\n";
 
+#ifdef USING_WINDOWS8_SDK
+    lResult = ::D3DCompile(
+        pixelSource.c_str(),
+        static_cast<UINT>(pixelSource.length()),
+        0,
+        0,
+        0,
+        "main",
+        "ps_2_0",
+        lu32Flags,
+        0,
+        &lpShaderBuffer,
+        &lpErrorMessages);
+    if (FAILED(lResult))
+    {
+        REPORTERROR2("D3DCompile failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
+        REPORTERROR1("Messages: '%s'", lpErrorMessages->GetBufferPointer());
+        REPORTERROR1("'%s'", vertexSource.c_str());
+        return false;
+    }
+
+    if (0 != lpErrorMessages)
+    {
+        lpErrorMessages->Release();
+    }
+#else
     lResult = ::D3DXCompileShader(
         pixelSource.c_str(),
         static_cast<UINT>(pixelSource.length()),
@@ -607,7 +706,7 @@ bool Renderer::CreateShaders()
         &lpConstantTable);
     if (FAILED(lResult))
     {
-        REPORTERROR2("D3DXCompileShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("D3DXCompileShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         REPORTERROR1("Messages: '%s'", lpErrorMessages->GetBufferPointer());
         REPORTERROR1("'%s'", pixelSource.c_str());
         return false;
@@ -621,13 +720,14 @@ bool Renderer::CreateShaders()
     {
         lpConstantTable->Release();
     }
+#endif
 
     ::IDirect3DPixelShader9 *lpPixelShader = 0;
     lpByteCode = static_cast<::DWORD *>(lpShaderBuffer->GetBufferPointer());
     lResult = lpD3DDevice->CreatePixelShader(lpByteCode, &lpPixelShader);
     if (FAILED(lResult))
     {
-        REPORTERROR2("CreatePixelShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("CreatePixelShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return false;
     }
 
@@ -665,7 +765,7 @@ bool Renderer::CreateTimerQuery()
     lResult = lpD3DDevice->CreateQuery(::D3DQUERYTYPE_TIMESTAMPFREQ, &lpQuery);
     if (FAILED(lResult))
     {
-        REPORTERROR2("CreatePixelShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("CreatePixelShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return false;
     }
 
@@ -679,7 +779,7 @@ bool Renderer::CreateTimerQuery()
     lResult = lpD3DDevice->CreateQuery(::D3DQUERYTYPE_TIMESTAMP, &lpQuery);
     if (FAILED(lResult))
     {
-        REPORTERROR2("CreatePixelShader failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("CreatePixelShader failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return false;
     }
 
@@ -710,7 +810,7 @@ void Renderer::StartTimerQuery()
     ::HRESULT lResult = lpQuery->Issue(D3DISSUE_END);
     if (FAILED(lResult))
     {
-        REPORTERROR2("Query Issue failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("Query Issue failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return;
     }
 
@@ -733,7 +833,7 @@ void Renderer::EndTimerQuery()
     ::HRESULT lResult = lpQuery->Issue(D3DISSUE_END);
     if (FAILED(lResult))
     {
-        REPORTERROR2("Query Issue failed, HR=0x%x '%s'", lResult, ::DXGetErrorString(lResult));
+        REPORTERROR2("Query Issue failed, HR=0x%x '%s'", lResult, getErrorMessage(lResult));
         return;
     }
 

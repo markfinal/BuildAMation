@@ -71,6 +71,7 @@ namespace Direct3DTriangle
         [C.HeaderFiles]
         Bam.Core.FileCollection headerFiles = new Bam.Core.FileCollection();
 
+#if USE_SEPARATE_DXSDK
         [Bam.Core.DependentModules]
         Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(DirectXSDK.Direct3D9),
@@ -83,5 +84,18 @@ namespace Direct3DTriangle
             "USER32.lib",
             "DxErr.lib"
         );
+#else // USE_SEPARATE_DXSDK
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
+            typeof(WindowsSDK.WindowsSDK),
+            typeof(WindowsSDK.Direct3D9) // requires Windows 8.1 SDK
+        );
+
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
+        Bam.Core.StringArray winVCLibraries = new Bam.Core.StringArray(
+            "KERNEL32.lib",
+            "USER32.lib"
+        );
+#endif // USE_SEPARATE_DXSDK
     }
 }

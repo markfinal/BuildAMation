@@ -44,4 +44,7 @@
   <SupportedPlatforms>
     <Platform Name="Windows" />
   </SupportedPlatforms>
+  <Definitions>
+    <Definition Name="USE_SEPARATE_DXSDK" />
+  </Definitions>
 </PackageDefinition>
