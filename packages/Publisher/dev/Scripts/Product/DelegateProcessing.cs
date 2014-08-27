@@ -50,6 +50,33 @@ namespace Publisher
             string publishDirectoryPath,
             object context);
 
+        private static Bam.Core.DependencyNodeCollection
+        RecursivelySearchDependencies(
+            Bam.Core.DependencyNode node)
+        {
+            var newNodes = new Bam.Core.DependencyNodeCollection();
+            if (null != node.ExternalDependents)
+            {
+                newNodes.AddRange(node.ExternalDependents);
+            }
+            if (null != node.RequiredDependents)
+            {
+                newNodes.AddRange(node.RequiredDependents);
+            }
+
+            // TODO: this is a bit OTT, as it brings it too many dependencies
+            // there needs to be a distinguishing feature between a required dependency for runtime support
+            // and a requirement that a module appears in the build, but has no direct link to what is building
+            var moreNewNodes = new Bam.Core.DependencyNodeCollection();
+            foreach (var newNode in newNodes)
+            {
+                moreNewNodes.AddRange(RecursivelySearchDependencies(newNode));
+            }
+            newNodes.AddRange(moreNewNodes);
+
+            return newNodes;
+        }
+
         public static Bam.Core.DependencyNode
         Process(
             ProductModule moduleToBuild,
@@ -77,14 +104,7 @@ namespace Publisher
             var nodesToPublish = new Bam.Core.DependencyNodeCollection();
             nodesToPublish.Add(primaryNode);
             nodesToPublish.Add(moduleToBuild.OwningNode);
-            if (null != primaryNode.ExternalDependents)
-            {
-                nodesToPublish.AddRange(primaryNode.ExternalDependents);
-            }
-            if (null != primaryNode.RequiredDependents)
-            {
-                nodesToPublish.AddRange(primaryNode.RequiredDependents);
-            }
+            nodesToPublish.AddRange(RecursivelySearchDependencies(primaryNode));
 
             // gather up the publishing metadata for those nodes
             var metaData = Publisher.ProductModuleUtilities.GetPublishingMetaData(moduleToBuild.OwningNode.Target, nodesToPublish);
