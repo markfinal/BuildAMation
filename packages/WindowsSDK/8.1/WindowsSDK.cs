@@ -162,6 +162,56 @@ namespace WindowsSDK
         }
     }
 
+    public sealed class DXGuid :
+        C.ThirdPartyModule
+    {
+        public
+        DXGuid()
+        {
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(DXGuid_Library);
+        }
+
+        [C.ExportLinkerOptionsDelegate]
+        void
+        DXGuid_Library(
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
+        {
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
+            linkerOptions.Libraries.Add("dxguid.lib");
+        }
+    }
+
+    public sealed class Direct3D11 :
+        C.ThirdPartyModule
+    {
+        public
+        Direct3D11()
+        {
+            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Direct3D11_Library);
+        }
+
+        [C.ExportLinkerOptionsDelegate]
+        void
+        Direct3D11_Library(
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
+        {
+            var linkerOptions = module.Options as C.ILinkerOptions;
+            if (null == linkerOptions)
+            {
+                return;
+            }
+
+            linkerOptions.Libraries.Add("d3d11.lib");
+        }
+    }
+
     public sealed class Direct3DShaderCompiler :
         C.ThirdPartyModule
     {
