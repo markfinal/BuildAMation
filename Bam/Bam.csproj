@@ -95,6 +95,7 @@
     <Compile Include="Actions\SetDefaultPackageVersionAction.cs" />
     <Compile Include="Actions\SetDefineAction.cs" />
     <Compile Include="Actions\SetDependentAction.cs" />
+    <Compile Include="Actions\SetDescriptionAction.cs" />
     <Compile Include="Actions\SetJobCountAction.cs" />
     <Compile Include="Actions\SetModulesAction.cs" />
     <Compile Include="Actions\SetPlatformsAction.cs" />

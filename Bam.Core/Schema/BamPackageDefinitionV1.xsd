@@ -70,7 +70,7 @@
     </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="package-roots">
+<xs:complexType name="package-roots-type">
     <xs:sequence>
         <xs:element name="RootDirectory" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
@@ -84,12 +84,13 @@
 <xs:element name="PackageDefinition">
     <xs:complexType>
         <xs:all>
-            <xs:element name="PackageRoots" type="package-roots" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PackageRoots" type="package-roots-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredPackages" type="required-package-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredBamAssemblies" type="required-bam-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="RequiredDotNetAssemblies" type="required-dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Definitions" type="definitions-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="SupportedPlatforms" type="supported-platforms-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:complexType>
 </xs:element>
