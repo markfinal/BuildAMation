@@ -283,7 +283,7 @@ namespace Bam
                     {
                         var dependentPackage = Core.State.PackageInfo[packageIndex];
 
-                        Core.Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, dependentPackage.Identifier.ToString("-"), dependentPackage.Identifier.Root);
+                        Core.Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, dependentPackage.Identifier.ToString("-"), dependentPackage.Identifier.Root.GetSingleRawPath());
 
                         xmlWriter.WriteStartElement("ItemGroup");
                         {
