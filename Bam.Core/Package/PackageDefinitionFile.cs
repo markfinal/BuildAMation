@@ -1435,6 +1435,23 @@ namespace Bam.Core
             }
         }
 
+        public Array<PackageIdentifier>
+        RecursiveDependentIdentifiers()
+        {
+            var ids = new Array<PackageIdentifier>();
+            foreach (var id in this.PackageIdentifiers)
+            {
+                ids.AddUnique(id);
+                var definition = id.Definition;
+                if (null == definition)
+                {
+                    continue;
+                }
+                ids.AddRangeUnique(definition.RecursiveDependentIdentifiers());
+            }
+            return ids;
+        }
+
         public PackageIdentifierCollection PackageIdentifiers
         {
             get;

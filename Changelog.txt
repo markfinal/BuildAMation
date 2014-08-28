@@ -1,3 +1,5 @@
+28-Aug-2014 $ While resolving packages with multiple versions down to one, if others have been cast aside before, ignore any of their dependencies when considering new packages. This allows two package versions to have different dependent package versions, and the one that wins, discards their version of the dependent from later consideration.
+
 28-Aug-2014 Added a new field attribute, Bam.Core.SiblingModulesAttribute. This can be used, in place of Bam.Core.RequiredModulesAttribute, to indicate that other modules should be considered as siblings, so if the primary module is a top level (i.e. in the package bam is started in), then so are it's siblings. Allows other modules to built alongside, but not be forced to have an explicit requirement.
 
 16-Aug-2014 Renamed project: This is now BuildAMation (bam), using the LGPL3 license.

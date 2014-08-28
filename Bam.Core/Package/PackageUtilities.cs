@@ -246,18 +246,45 @@ namespace Bam.Core
                 }
             }
 
+            // can we resolve down to a single package?
             if (resolveToSinglePackageVersion)
             {
-                // can we resolve down to a single package?
+                // any package identifiers that are dependents from package versions discarded
+                // any of these can be removed from consideration to resolve down to a single package version
+                var ignoreList = new UniqueList<PackageIdentifier>();
+
                 foreach (var build in buildList)
                 {
+                    var filteredVersionList = new UniqueList<PackageIdentifier>();
                     if (build.Versions.Count > 1)
+                    {
+                        foreach (var id in build.Versions)
+                        {
+                            if (ignoreList.Contains(id))
+                            {
+                                continue;
+                            }
+                            filteredVersionList.Add(id);
+                        }
+
+                        if (filteredVersionList.Count == 1)
+                        {
+                            build.SelectedVersion = filteredVersionList[0];
+                        }
+                    }
+                    else
+                    {
+                        filteredVersionList.AddRange(build.Versions);
+                    }
+
+                    var ignoreVersions = new UniqueList<PackageIdentifier>();
+                    if (filteredVersionList.Count > 1)
                     {
                         string defaultVersion;
                         if (!State.Has("PackageDefaultVersions", build.Name.ToLower()))
                         {
                             var defaultVersions = new StringArray();
-                            foreach (var id in build.Versions)
+                            foreach (var id in filteredVersionList)
                             {
                                 if (id.IsDefaultVersion)
                                 {
@@ -281,13 +308,16 @@ namespace Bam.Core
                             defaultVersion = State.Get("PackageDefaultVersions", build.Name.ToLower()) as string;
                         }
                         bool found = false;
-                        foreach (var version in build.Versions)
+                        foreach (var version in filteredVersionList)
                         {
                             if (version.Version == defaultVersion)
                             {
                                 build.SelectedVersion = version;
                                 found = true;
-                                break;
+                            }
+                            else
+                            {
+                                ignoreVersions.Add(version);
                             }
                         }
                         if (!found)
@@ -306,6 +336,16 @@ namespace Bam.Core
 
                     var info = new PackageInformation(build.SelectedVersion);
                     State.PackageInfo.Add(info);
+
+                    foreach (var ignoreV in ignoreVersions)
+                    {
+                        var allDependentIdentifiers = ignoreV.Definition.RecursiveDependentIdentifiers();
+                        foreach (var ignoredId in allDependentIdentifiers)
+                        {
+                            // TODO: can't use AddRange here, as it's not a unique check
+                            ignoreList.Add(ignoredId);
+                        }
+                    }
                 }
             }
             else
@@ -374,7 +414,7 @@ namespace Bam.Core
 
             var mainPackage = State.PackageInfo.MainPackage;
 
-            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root);
+            Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root.GetSingleRawPath());
 
             BuilderUtilities.SetBuilderPackage();
 
@@ -389,7 +429,7 @@ namespace Bam.Core
             foreach (var package in State.PackageInfo)
             {
                 var id = package.Identifier;
-                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root);
+                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, id.ToString("-"), id.Root.GetSingleRawPath());
 
                 // to compile with debug information, you must compile the files
                 // to compile without, we need to file contents to hash the source
