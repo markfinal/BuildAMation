@@ -73,6 +73,10 @@ namespace Bam
             int dashLength = formatString.Length - 3 + packageName.Length;
             Core.Log.MessageAll("Definition of package '{0}'", mainPackageId.ToString());
             Core.Log.MessageAll(new string('-', dashLength));
+            if (!string.IsNullOrEmpty(definitionFile.Description))
+            {
+                Core.Log.MessageAll("Description: {0}", definitionFile.Description);
+            }
             Core.Log.MessageAll("\nSupported on: {0}", Core.Platform.ToString(definitionFile.SupportedPlatforms, ' '));
             Core.Log.MessageAll("\nBuildAMation assemblies:");
             foreach (var assembly in definitionFile.BamAssemblies)

@@ -91,6 +91,7 @@ namespace Bam.Core
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
             this.PackageRoots = new StringArray();
+            this.Description = string.Empty;
         }
 
         /// <summary>
@@ -124,6 +125,14 @@ namespace Bam.Core
                 packageDefinition.Attributes.Append(schemaAttribute);
             }
             document.AppendChild(packageDefinition);
+
+            // package description
+            if (!string.IsNullOrEmpty(this.Description))
+            {
+                var descriptionElement = document.CreateElement("Description", namespaceURI);
+                descriptionElement.InnerText = this.Description;
+                packageDefinition.AppendChild(descriptionElement);
+            }
 
             // package roots
             if (this.PackageRoots.Count > 0)
@@ -456,6 +465,22 @@ namespace Bam.Core
         }
 
         private bool
+        ReadDescriptionV3(
+            System.Xml.XmlReader xmlReader)
+        {
+            var descriptionElementName = "Description";
+            if (descriptionElementName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            var message = xmlReader.ReadString();
+            this.Description = message;
+
+            return true;
+        }
+
+        private bool
         ReadPackageRootsV3(
             System.Xml.XmlReader xmlReader)
         {
@@ -481,7 +506,7 @@ namespace Bam.Core
                         var pathAttribute = "Path";
                         if (!xmlReader.MoveToAttribute(pathAttribute))
                         {
-                            throw new Exception("Required '{0}' attribute of '{1}' node missing", pathAttribute, pathAttribute, rootDirElementName);
+                            throw new Exception("Required '{0}' attribute of '{1}' node missing", pathAttribute, rootDirElementName);
                         }
 
                         var path = xmlReader.Value;
@@ -811,7 +836,11 @@ namespace Bam.Core
 
                     while (xmlReader.Read())
                     {
-                        if (ReadPackageRootsV3(xmlReader))
+                        if (ReadDescriptionV3(xmlReader))
+                        {
+                            // all done
+                        }
+                        else if (ReadPackageRootsV3(xmlReader))
                         {
                             // all done
                         }
@@ -1483,6 +1512,12 @@ namespace Bam.Core
         }
 
         public StringArray PackageRoots
+        {
+            get;
+            set;
+        }
+
+        public string Description
         {
             get;
             set;
