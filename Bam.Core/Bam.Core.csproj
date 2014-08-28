@@ -64,6 +64,7 @@
     <Compile Include="Attributes\RegisterActionAttribute.cs" />
     <Compile Include="Attributes\RegisterToolsetAttribute.cs" />
     <Compile Include="Attributes\RequiredModulesAttribute.cs" />
+    <Compile Include="Attributes\SiblingModulesAttribute.cs" />
     <Compile Include="Attributes\TriggerActionAttribute.cs" />
     <Compile Include="BaseModule.cs" />
     <Compile Include="BaseTarget.cs" />

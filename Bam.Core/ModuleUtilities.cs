@@ -148,6 +148,14 @@ namespace Bam.Core
             return GetFieldsWithAttributeType<Core.RequiredModulesAttribute>(module, target);
         }
 
+        public static TypeArray
+        GetSiblingModuleTypes(
+            IModule module,
+            Target target)
+        {
+            return GetFieldsWithAttributeType<SiblingModulesAttribute>(module, target);
+        }
+
         private static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>> typeBaseTargetToNodeDictionary = new System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>>();
 
         public static DependencyNode

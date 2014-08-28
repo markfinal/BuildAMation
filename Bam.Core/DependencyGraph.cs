@@ -105,7 +105,23 @@ namespace Bam.Core
             System.Type moduleType,
             BaseTarget baseTarget)
         {
-            AddModule(moduleType, 0, null, baseTarget, null, -1);
+            var node = AddModule(moduleType, 0, null, baseTarget, null, -1);
+            if (null == node)
+            {
+                return;
+            }
+
+            // if the module has specified sibling modules, these must be added as top
+            // level modules as well
+            var module = node.Module;
+            var siblingTypes = ModuleUtilities.GetSiblingModuleTypes(module, node.Target);
+            if (null != siblingTypes)
+            {
+                foreach (var sibling in siblingTypes)
+                {
+                    this.AddTopLevelModule(sibling, baseTarget);
+                }
+            }
         }
 
         public int TotalNodeCount

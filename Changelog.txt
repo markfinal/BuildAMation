@@ -1,3 +1,7 @@
+28-Aug-2014 Added a new field attribute, Bam.Core.SiblingModulesAttribute. This can be used, in place of Bam.Core.RequiredModulesAttribute, to indicate that other modules should be considered as siblings, so if the primary module is a top level (i.e. in the package bam is started in), then so are it's siblings. Allows other modules to built alongside, but not be forced to have an explicit requirement.
+
+16-Aug-2014 Renamed project: This is now BuildAMation (bam), using the LGPL3 license.
+
 11-Aug-2014 Some Mono versions do not fetch the productversion string from the assembly. Instead they fetch the major, minor, build parts. Implementing a fallback to always capture a version string for Opus.
 
 05-Aug-2014 Removed MocOutputPath from the IMocOptions in QtCommon. The locations on the module now handle this (QtCommon.MocFile.OutputFile).
