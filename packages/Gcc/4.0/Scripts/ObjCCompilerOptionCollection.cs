@@ -15,7 +15,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
-#endregion
+#endregion // License
 namespace Gcc
 {
     // Not sealed since the ObjC++ compiler inherits from it

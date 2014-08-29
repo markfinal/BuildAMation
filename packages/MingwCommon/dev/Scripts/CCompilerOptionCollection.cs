@@ -15,7 +15,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
-#endregion
+#endregion // License
 namespace MingwCommon
 {
     // Not sealed since the C++ compiler inherits from it

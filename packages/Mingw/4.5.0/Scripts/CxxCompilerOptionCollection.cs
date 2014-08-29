@@ -15,7 +15,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
-#endregion
+#endregion // License
 namespace Mingw
 {
     // this implementation is here because the specific version of the Mingw compiler exposes a new interface

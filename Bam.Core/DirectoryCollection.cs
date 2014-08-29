@@ -15,7 +15,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
-#endregion
+#endregion // License
 namespace Bam.Core
 {
     // TODO: can this be a specific case of a LocationArray? i.e. store locations, but have

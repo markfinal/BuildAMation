@@ -15,7 +15,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
-#endregion
+#endregion // License
 namespace DirectXSDK
 {
     // TODO: need to add modules for Direct3D10, Direct3D11, and the other DX components

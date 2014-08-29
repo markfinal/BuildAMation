@@ -15,7 +15,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
-#endregion
+#endregion // License
 namespace CocoaTest1
 {
     [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.OSX)]
