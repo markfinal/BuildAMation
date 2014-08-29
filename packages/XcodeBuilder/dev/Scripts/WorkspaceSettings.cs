@@ -70,9 +70,9 @@ namespace XcodeBuilder
 
             // build and intermediate file locations
             CreateKeyValuePair(doc, dictEl, "BuildLocationStyle", "CustomLocation");
-            CreateKeyValuePair(doc, dictEl, "CustomBuildIntermediatesPath", ".");
+            CreateKeyValuePair(doc, dictEl, "CustomBuildIntermediatesPath", "XcodeIntermediates"); // where xxx.build folders are stored
             CreateKeyValuePair(doc, dictEl, "CustomBuildLocationType", "RelativeToWorkspace");
-            CreateKeyValuePair(doc, dictEl, "CustomBuildProductsPath", ".");
+            CreateKeyValuePair(doc, dictEl, "CustomBuildProductsPath", "."); // has to be the workspace folder, in order to write files to expected locations
 
             // derived data
             CreateKeyValuePair(doc, dictEl, "DerivedDataCustomLocation", "XcodeDerivedData");
