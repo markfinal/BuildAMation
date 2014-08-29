@@ -32,7 +32,7 @@ def write_license_text(outfile, file):
                 outfile.write('//\n')
             else:
                 outfile.write('// %s\n' % line)
-        outfile.write('#endregion\n')
+        outfile.write('#endregion // License\n')
     elif ext == '.cpp' or ext == '.mm':
         for line in licenseText:
             if not line:
