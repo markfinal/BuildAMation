@@ -24,7 +24,7 @@ namespace Publisher
         /// On OSX, should the publish step create an application bundle
         /// </summary>
         /// <value><c>true</c> if OSX application bundle; otherwise, <c>false</c>.</value>
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         bool OSXApplicationBundle
         {
             get;

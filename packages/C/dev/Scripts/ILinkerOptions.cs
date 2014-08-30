@@ -116,7 +116,7 @@ namespace C
         /// <value>
         /// The major version.
         /// </value>
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         int MajorVersion
         {
             get;
@@ -129,7 +129,7 @@ namespace C
         /// <value>
         /// The minor version.
         /// </value>
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         int MinorVersion
         {
             get;
@@ -142,7 +142,7 @@ namespace C
         /// <value>
         /// The patch version.
         /// </value>
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         int PatchVersion
         {
             get;

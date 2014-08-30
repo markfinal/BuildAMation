@@ -16,44 +16,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-namespace BamOptionGenerator
+namespace Bam.Core
 {
-    class PropertySignature
-    {
-        public string Type
-        {
-            get;
-            set;
-        }
-
-        public bool IsValueType
-        {
-            get;
-            set;
-        }
-
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public bool HasGet
-        {
-            get;
-            set;
-        }
-
-        public bool HasSet
-        {
-            get;
-            set;
-        }
-
-        public bool ValueOnly
-        {
-            get;
-            set;
-        }
-    }
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public class ValueOnlyOptionAttribute :
+        System.Attribute
+    {}
 }

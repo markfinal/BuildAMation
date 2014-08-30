@@ -20,77 +20,77 @@ namespace XmlUtilities
 {
     public interface IOSXPlistOptions
     {
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string CFBundleName
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string CFBundleDisplayName
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string CFBundleIdentifier
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string CFBundleVersion
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string CFBundleSignature
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string CFBundleExecutable
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string CFBundleShortVersionString
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string LSMinimumSystemVersion
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string NSHumanReadableCopyright
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string NSMainNibFile
         {
             get;
             set;
         }
 
-        // StateOnly
+        [Bam.Core.ValueOnlyOption]
         string NSPrincipalClass
         {
             get;

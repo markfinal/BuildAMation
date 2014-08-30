@@ -196,10 +196,10 @@ namespace BamOptionGenerator
             System.IO.TextReader reader,
             bool skipComments,
             out int prefixSpaces,
-            out bool stateOnly)
+            out bool valueOnly)
         {
-            int numPrefixSpaces = 0;
-            bool stateOnlyProxy = false;
+            var numPrefixSpaces = 0;
+            var valueOnlyProxy = false;
             string line = null;
             do
             {
@@ -218,27 +218,22 @@ namespace BamOptionGenerator
 
                 if (skipComments)
                 {
-                    // doxygen style comment
-                    if (line.StartsWith("///"))
+                    if (line.StartsWith("//"))
                     {
                         line = ""; // just to get through the while test
                         continue;
                     }
-                    else if (line.StartsWith("//"))
+                    else if (line.StartsWith("[Bam.Core.ValueOnlyOption]"))
                     {
-                        // search for specialize comments which add metadata to the properties
-                        if (line.EndsWith("StateOnly"))
-                        {
-                            stateOnlyProxy = true;
-                        }
-                        line = ""; // just to get through the while test
+                        line = "";
+                        valueOnlyProxy = true;
                         continue;
                     }
                 }
             }
             while (0 == line.Length);
             prefixSpaces = numPrefixSpaces;
-            stateOnly = stateOnlyProxy;
+            valueOnly = valueOnlyProxy;
             return line;
         }
 
@@ -247,8 +242,8 @@ namespace BamOptionGenerator
             System.IO.TextReader reader)
         {
             int prefixSpaces = 0;
-            bool stateOnly = false;
-            return ReadLine(reader, false, out prefixSpaces, out stateOnly);
+            bool valueOnly = false;
+            return ReadLine(reader, false, out prefixSpaces, out valueOnly);
         }
 
         private static string
@@ -257,8 +252,8 @@ namespace BamOptionGenerator
             bool skipComments)
         {
             int prefixSpaces = 0;
-            bool stateOnly = false;
-            return ReadLine(reader, skipComments, out prefixSpaces, out stateOnly);
+            bool valueOnly = false;
+            return ReadLine(reader, skipComments, out prefixSpaces, out valueOnly);
         }
 
         private static string
@@ -266,18 +261,18 @@ namespace BamOptionGenerator
             System.IO.TextReader reader,
             out int prefixSpaces)
         {
-            bool stateOnly = false;
-            return ReadLine(reader, false, out prefixSpaces, out stateOnly);
+            bool valueOnly = false;
+            return ReadLine(reader, false, out prefixSpaces, out valueOnly);
         }
 
         private static string
         ReadLine(
             System.IO.TextReader reader,
             bool skipComments,
-            out bool stateOnly)
+            out bool valueOnly)
         {
             int prefixSpaces = 0;
-            return ReadLine(reader, skipComments, out prefixSpaces, out stateOnly);
+            return ReadLine(reader, skipComments, out prefixSpaces, out valueOnly);
         }
 
         private static System.Collections.Generic.List<string>
@@ -570,14 +565,18 @@ namespace BamOptionGenerator
                     Log(MinorHorizontalRule);
                     do
                     {
-                        bool stateOnly = false;
-                        line = ReadLine(reader, true, out stateOnly);
+                        bool valueOnly = false;
+                        line = ReadLine(reader, true, out valueOnly);
                         if (line.StartsWith("}"))
                         {
                             break;
                         }
 
                         var propertyStrings = line.Split(new char[] { ' ' });
+                        if (propertyStrings.Length != 2)
+                        {
+                            throw new Exception("Property invalid at line '{0}'", line);
+                        }
                         Log("Property '{0}' with return type '{1}':", propertyStrings[1], propertyStrings[0]);
 
                         var property = new PropertySignature();
@@ -601,15 +600,15 @@ namespace BamOptionGenerator
                             Log("\tIs ReferenceType");
                         }
 
-                        if (stateOnly)
+                        if (valueOnly)
                         {
-                            Log("\tMaps to State only");
-                            property.StateOnly = true;
+                            Log("\tOnly has value. No delegate functions attached.");
+                            property.ValueOnly = true;
                         }
                         else
                         {
                             Log("\tMaps to delegate functions in the OptionCollection");
-                            property.StateOnly = false;
+                            property.ValueOnly = false;
                         }
 
                         // opening property scope
@@ -951,72 +950,104 @@ namespace BamOptionGenerator
                     WriteLine(writer, 0, "Need to generate license");
                 }
 
-                var headerBuilder = new System.Text.StringBuilder();
-                headerBuilder.Length = 0;
+                var headerBuilder = new System.Collections.Generic.List<string>();
                 bool writeToDisk = (null == layout);
 
                 // write header
-                WriteLine(writer, 0, "#region BamOptionGenerator");
-                WriteLine(headerBuilder, 0, "// Automatically generated file from BamOptionGenerator.");
-                WriteLine(headerBuilder, 0, "// Command line arguments:");
+                headerBuilder.Add("// Automatically generated file from BamOptionGenerator.");
+                headerBuilder.Add("// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {
                     if (Parameters.excludedFlagsFromHeaders.Contains(arg))
                     {
                         continue;
                     }
-                    WriteLine(headerBuilder, 0, "//     {0}", arg.Replace(CommandSeparator, HeaderReplacementCommandSeparator));
+                    headerBuilder.Add(System.String.Format("//     {0}", arg.Replace(CommandSeparator, HeaderReplacementCommandSeparator)));
                 }
                 if (null != layout &&
                     null != layout.header &&
-                    layout.header.Count != 0 &&
-                    !headerBuilder.ToString().Equals(layout.header.ToString()))
+                    layout.header.Count != 0)
                 {
-                    var message = new System.Text.StringBuilder();
-
-                    var layoutHeaderBytes = System.Text.Encoding.ASCII.GetBytes(layout.header.ToString());
-                    var builderHeaderBytes = System.Text.Encoding.ASCII.GetBytes(headerBuilder.ToString());
+                    var big = System.Math.Min(headerBuilder.Count, layout.header.Count);
                     var differenceIndices = new System.Collections.Generic.List<int>();
-                    for (int i = 0; i < System.Math.Min(layoutHeaderBytes.Length, builderHeaderBytes.Length); ++i)
+                    int index = 0;
+                    for (; index < big; ++index)
                     {
-                        if (layoutHeaderBytes[i] != builderHeaderBytes[i])
+                        if (headerBuilder[index] != layout.header[index])
                         {
-                            differenceIndices.Add(i);
+                            differenceIndices.Add(index);
+                        }
+                    }
+                    if (headerBuilder.Count > big)
+                    {
+                        for (; index < headerBuilder.Count; ++index)
+                        {
+                            if (!string.IsNullOrEmpty(headerBuilder[index]))
+                            {
+                                differenceIndices.Add(index);
+                            }
+                        }
+                    }
+                    if (layout.header.Count > big)
+                    {
+                        for (; index < layout.header.Count; ++index)
+                        {
+                            if (!string.IsNullOrEmpty(layout.header[index]))
+                            {
+                                differenceIndices.Add(index);
+                            }
                         }
                     }
 
-                    message.AppendFormat("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'\nDifferences at:\n", layout.header.ToString(), headerBuilder.ToString());
-                    foreach (int diff in differenceIndices)
+                    var useOriginalHeader = false;
+                    if (differenceIndices.Count > 0)
                     {
-                        message.AppendFormat("\t{0}: {1} vs {2}\n", diff, layoutHeaderBytes[diff], builderHeaderBytes[diff]);
-                    }
-
-                    if (parameters.ignoreHeaderUpdates)
-                    {
-                        foreach (var line in layout.header)
+                        if (parameters.ignoreHeaderUpdates)
                         {
-                            headerBuilder.AppendLine(line);
+                            useOriginalHeader = true;
+                        }
+                        else
+                        {
+                            var message = new System.Text.StringBuilder();
+                            message.AppendFormat("Headers are different:\n");
+                            foreach (int diff in differenceIndices)
+                            {
+                                var lhs = diff >= headerBuilder.Count ? "Undefined" : headerBuilder[diff];
+                                var rhs = diff >= layout.header.Count ? "Undefined" : layout.header[diff];
+                                message.AppendFormat("{0}: {1} {2}", diff, lhs, rhs);
+                            }
+
+                            if (parameters.forceWrite || parameters.updateHeader)
+                            {
+                                Log(message.ToString());
+                                Log("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
+                                writeToDisk = true;
+                            }
+                            else
+                            {
+                                throw new Exception(message.ToString());
+                            }
                         }
                     }
                     else
                     {
-                        if (parameters.forceWrite || parameters.updateHeader)
-                        {
-                            Log(message.ToString());
-                            Log("**** FORCE WRITE ALLOWING THIS TO CONTINUE\n");
-                            writeToDisk = true;
-                        }
-                        else
-                        {
-                            throw new Exception(message.ToString());
-                        }
+                        useOriginalHeader = true;
+                    }
+
+                    if (useOriginalHeader)
+                    {
+                        headerBuilder = layout.header;
                     }
                 }
                 else
                 {
                     writeToDisk = true;
                 }
-                Write(writer, 0, headerBuilder.ToString());
+                WriteLine(writer, 0, "#region BamOptionGenerator");
+                foreach (var line in headerBuilder)
+                {
+                    WriteLine(writer, 0, line);
+                }
                 WriteLine(writer, 0, "#endregion // BamOptionGenerator");
 
                 // open namespace
@@ -1038,12 +1069,13 @@ namespace BamOptionGenerator
                 var delegatesToRegister = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>();
 
                 // write delegates for each property of the interface
+                var functionCount = 1; // start with one for the SetDelegates function
                 foreach (var interfacePath in propertyMap.Keys)
                 {
                     WriteLine(writer, 2, "#region {0} Option delegates", propertyMap[interfacePath].InterfaceName);
                     foreach (var property in propertyMap[interfacePath])
                     {
-                        if (property.StateOnly)
+                        if (property.ValueOnly)
                         {
                             delegatesToRegister[property.Name] = null;
                             continue;
@@ -1099,12 +1131,14 @@ namespace BamOptionGenerator
                                 WriteLine(writer, 2, "}");
                                 writeToDisk = true;
                             }
+
+                            ++functionCount;
                         }
                     }
                     WriteLine(writer, 2, "#endregion");
                 }
 
-                if (null != layout && (propertyMap.Count * delegateSignatures.Count + 1) != layout.functions.Count)
+                if (null != layout && (functionCount != layout.functions.Count))
                 {
                     writeToDisk = true;
                 }
@@ -1156,7 +1190,7 @@ namespace BamOptionGenerator
                         }
                         else
                         {
-                            registration.AppendFormat("// Property '{0}' is state only", propertyName);
+                            registration.AppendFormat("// Property '{0}' is value only - no delegates", propertyName);
                         }
                         WriteLine(writer, 3, registration.ToString());
                     }
