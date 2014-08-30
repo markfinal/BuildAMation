@@ -16,7 +16,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator.
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/ILinkerOptions.cs&ILinkerOptions.cs
+//     -n=VisualCCommon
+//     -c=LinkerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../VisualStudioProcessor/dev/Scripts/VisualStudioDelegate.cs
+//     -pv=PrivateData
+#endregion // BamOptionGenerator
 namespace VisualCCommon
 {
     public partial class LinkerOptionCollection

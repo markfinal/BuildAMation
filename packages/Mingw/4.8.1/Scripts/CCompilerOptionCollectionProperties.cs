@@ -16,7 +16,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator. DO NOT EDIT.
+// Command line arguments:
+//     -i=../../4.5.0/Scripts/ICCompilerOptions.cs
+//     -n=Mingw
+//     -c=CCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=MingwCommon.PrivateData
+//     -e
+#endregion // BamOptionGenerator
 namespace Mingw
 {
     public partial class CCompilerOptionCollection

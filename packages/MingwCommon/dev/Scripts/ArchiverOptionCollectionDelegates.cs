@@ -16,7 +16,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator.
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/IArchiverOptions.cs&IArchiverOptions.cs
+//     -n=MingwCommon
+//     -c=ArchiverOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=PrivateData
+#endregion // BamOptionGenerator
 namespace MingwCommon
 {
     public partial class ArchiverOptionCollection

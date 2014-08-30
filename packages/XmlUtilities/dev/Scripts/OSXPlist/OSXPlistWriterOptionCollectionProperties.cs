@@ -16,7 +16,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator. DO NOT EDIT.
+// Command line arguments:
+//     -i=IOSXPlistOptions.cs
+//     -n=XmlUtilities
+//     -c=OSXPlistWriterOptionCollection
+//     -p
+//     -d
+//     -pv=PrivateData
+#endregion // BamOptionGenerator
 namespace XmlUtilities
 {
     public partial class OSXPlistWriterOptionCollection

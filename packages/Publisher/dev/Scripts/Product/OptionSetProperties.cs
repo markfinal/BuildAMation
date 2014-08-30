@@ -16,7 +16,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator. DO NOT EDIT.
+// Command line arguments:
+//     -i=Interfaces/IPublishOptions.cs
+//     -n=Publisher
+//     -c=OptionSet
+//     -p
+//     -d
+//     -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=PrivateData
+#endregion // BamOptionGenerator
 namespace Publisher
 {
     public partial class OptionSet

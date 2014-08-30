@@ -16,7 +16,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator.
+// Command line arguments:
+//     -i=ICCompilerOptions.cs
+//     -n=Gcc
+//     -c=ObjCCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -pv=GccCommon.PrivateData
+//     -e
+#endregion // BamOptionGenerator
 namespace Gcc
 {
     public partial class ObjCCompilerOptionCollection

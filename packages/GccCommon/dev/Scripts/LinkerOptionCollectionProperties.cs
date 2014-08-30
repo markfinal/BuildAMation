@@ -16,7 +16,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator. DO NOT EDIT.
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/ILinkerOptions.cs&../../../C/dev/Scripts/ILinkerOptionsOSX.cs&ILinkerOptions.cs
+//     -n=GccCommon
+//     -c=LinkerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs
+//     -pv=PrivateData
+#endregion // BamOptionGenerator
 namespace GccCommon
 {
     public partial class LinkerOptionCollection

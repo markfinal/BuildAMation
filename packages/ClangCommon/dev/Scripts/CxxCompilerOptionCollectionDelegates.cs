@@ -16,7 +16,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+#region BamOptionGenerator
+// Automatically generated file from BamOptionGenerator.
+// Command line arguments:
+//     -i=../../../C/dev/Scripts/ICxxCompilerOptions.cs
+//     -n=ClangCommon
+//     -c=CxxCompilerOptionCollection
+//     -p
+//     -d
+//     -dd=../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs&../../../XcodeProjectProcessor/dev/Scripts/Delegate.cs
+//     -pv=PrivateData
+//     -e
+#endregion // BamOptionGenerator
 namespace ClangCommon
 {
     public partial class CxxCompilerOptionCollection
