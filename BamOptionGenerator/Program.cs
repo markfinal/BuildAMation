@@ -53,6 +53,7 @@ namespace BamOptionGenerator
             else
             {
                 System.Console.WriteLine(message.ToString());
+                System.Console.Out.Flush();
             }
         }
 
@@ -203,6 +204,8 @@ namespace BamOptionGenerator
             do
             {
                 line = reader.ReadLine();
+                // TODO: make this optional
+                //Log("[{0}]", line);
                 if (null == line)
                 {
                     numPrefixSpaces = 0;
@@ -221,14 +224,14 @@ namespace BamOptionGenerator
                         line = ""; // just to get through the while test
                         continue;
                     }
-                    else if (line.StartsWith("// "))
+                    else if (line.StartsWith("//"))
                     {
                         // search for specialize comments which add metadata to the properties
                         if (line.EndsWith("StateOnly"))
                         {
                             stateOnlyProxy = true;
                         }
-                        line = "";
+                        line = ""; // just to get through the while test
                         continue;
                     }
                 }
@@ -275,6 +278,86 @@ namespace BamOptionGenerator
         {
             int prefixSpaces = 0;
             return ReadLine(reader, skipComments, out prefixSpaces, out stateOnly);
+        }
+
+        private static System.Collections.Generic.List<string>
+        ReadLicense(
+            System.IO.TextReader reader,
+            bool returnToCaller)
+        {
+            var line = reader.ReadLine();
+            if (!line.StartsWith("#region License"))
+            {
+                throw new Exception("There is no '#region License' at the start of the block of text, only '{0}'", line);
+            }
+            System.Collections.Generic.List<string> licenseText = returnToCaller ? new System.Collections.Generic.List<string>() : null;
+            if (returnToCaller)
+            {
+                licenseText.Add(line);
+            }
+            for (;;)
+            {
+                line = reader.ReadLine();
+                if (returnToCaller)
+                {
+                    licenseText.Add(line);
+                }
+                if (line.StartsWith("#endregion // License"))
+                {
+                    break;
+                }
+            }
+            return licenseText;
+        }
+
+        private static System.Collections.Generic.List<string>
+        ReadBamOptionGeneratorHeader(
+            System.IO.TextReader reader,
+            bool returnToCaller)
+        {
+            var line = reader.ReadLine();
+            if (!line.StartsWith("#region BamOptionGenerator"))
+            {
+                return null;
+            }
+            System.Collections.Generic.List<string> bamText = returnToCaller ? new System.Collections.Generic.List<string>() : null;
+            for (;;)
+            {
+                line = reader.ReadLine();
+                if (line.StartsWith("#endregion // BamOptionGenerator"))
+                {
+                    break;
+                }
+                if (returnToCaller)
+                {
+                    bamText.Add(line);
+                }
+            }
+            return bamText;
+        }
+
+        private static void
+        WriteNewLicense(
+            System.IO.TextWriter writer)
+        {
+            writer.WriteLine("#region License");
+            writer.WriteLine("// Copyright 2010-2014 Mark Final");
+            writer.WriteLine("//");
+            writer.WriteLine("// This file is part of BuildAMation.");
+            writer.WriteLine("//");
+            writer.WriteLine("// BuildAMation is free software: you can redistribute it and/or modify");
+            writer.WriteLine("// it under the terms of the GNU Lesser General Public License as published by");
+            writer.WriteLine("// the Free Software Foundation, either version 3 of the License, or");
+            writer.WriteLine("// (at your option) any later version.");
+            writer.WriteLine("//");
+            writer.WriteLine("// BuildAMation is distributed in the hope that it will be useful,");
+            writer.WriteLine("// but WITHOUT ANY WARRANTY; without even the implied warranty of");
+            writer.WriteLine("// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the");
+            writer.WriteLine("// GNU Lesser General Public License for more details.");
+            writer.WriteLine("//");
+            writer.WriteLine("// You should have received a copy of the GNU Lesser General Public License");
+            writer.WriteLine("// along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.");
+            writer.WriteLine("#endregion // License");
         }
 
         private static void
@@ -346,9 +429,11 @@ namespace BamOptionGenerator
 
             using (var reader = new System.IO.StreamReader(filename))
             {
+                ReadLicense(reader, false);
+
                 string line;
 
-                line = ReadLine(reader, true);
+                line = ReadLine(reader);
                 if (null == line)
                 {
                     throw new Exception("Interface file is empty");
@@ -357,7 +442,7 @@ namespace BamOptionGenerator
                 var namespaceStrings = line.Split(new char[] { ' ' });
                 if (!namespaceStrings[0].Equals("namespace"))
                 {
-                    throw new Exception("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]);
+                    throw new Exception("Interface file '{0}' does not start with namespace or comments; instead starts with '{1}'", filename, namespaceStrings[0]);
                 }
                 var namespaceName = namespaceStrings[1];
                 Log("\tNamespace: '{0}'", namespaceName);
@@ -429,9 +514,11 @@ namespace BamOptionGenerator
 
                 using (var reader = new System.IO.StreamReader(inputPath))
                 {
+                    ReadLicense(reader, false);
+
                     string line;
 
-                    line = ReadLine(reader, true);
+                    line = ReadLine(reader);
                     if (null == line)
                     {
                         throw new Exception("Interface file is empty");
@@ -441,7 +528,7 @@ namespace BamOptionGenerator
                     var namespaceStrings = line.Split(new char[] { ' ' });
                     if (!namespaceStrings[0].Equals("namespace"))
                     {
-                        throw new Exception("Interface file does not start with namespace or comments; instead starts with '{0}'", namespaceStrings[0]);
+                        throw new Exception("Interface file '{0}' does not start with namespace or comments; instead starts with '{1}'", inputPath, namespaceStrings[0]);
                     }
                     var namespaceName = namespaceStrings[1];
                     Log("\tNamespace: '{0}'", namespaceName);
@@ -614,6 +701,8 @@ namespace BamOptionGenerator
             {
                 writer.NewLine = "\n";
 
+                WriteNewLicense(writer);
+                WriteLine(writer, 0, "#region BamOptionGenerator");
                 WriteLine(writer, 0, "// Automatically generated file from BamOptionGenerator. DO NOT EDIT.");
                 WriteLine(writer, 0, "// Command line arguments:");
                 foreach (var arg in parameters.args)
@@ -624,8 +713,7 @@ namespace BamOptionGenerator
                     }
                     WriteLine(writer, 0, "//     {0}", arg.Replace(CommandSeparator, HeaderReplacementCommandSeparator));
                 }
-                // empty line to match the delegates file
-                WriteLine(writer, 0, string.Empty);
+                WriteLine(writer, 0, "#endregion // BamOptionGenerator");
                 WriteLine(writer, 0, "namespace {0}", parameters.outputNamespace);
                 WriteLine(writer, 0, "{");
                 WriteLine(writer, 1, "public partial class {0}", parameters.outputClassName);
@@ -699,7 +787,8 @@ namespace BamOptionGenerator
 
         class DelegateFileLayout
         {
-            public System.Text.StringBuilder header = new System.Text.StringBuilder();
+            public System.Collections.Generic.List<string> license = null;
+            public System.Collections.Generic.List<string> header = null;
             public string namespaceName = null;
             public string className = null;
             public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>> functions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<IndentedString>>();
@@ -720,32 +809,10 @@ namespace BamOptionGenerator
             var layout = new DelegateFileLayout();
             using (var reader = new System.IO.StreamReader(parameters.outputDelegatesPathName))
             {
-                string line = null;
+                layout.license = ReadLicense(reader, true);
+                layout.header = ReadBamOptionGeneratorHeader(reader, true);
 
-                // read the header
-                for (;;)
-                {
-                    line = ReadLine(reader);
-                    if (null == line)
-                    {
-                        return layout;
-                    }
-                    if (line.StartsWith("//"))
-                    {
-                        line.Trim('\n', '\r');
-                        line = line + "\n";
-                        layout.header.Append(line);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                while (string.IsNullOrEmpty(line))
-                {
-                    line = ReadLine(reader);
-                }
-
+                string line = ReadLine(reader);
                 // read the namespace
                 if (!line.StartsWith("namespace"))
                 {
@@ -870,27 +937,45 @@ namespace BamOptionGenerator
             {
                 writer.NewLine = "\n";
 
-                var builder = new System.Text.StringBuilder();
-                builder.Length = 0;
+                // write license
+                if (null != layout)
+                {
+                    foreach (var line in layout.license)
+                    {
+                        WriteLine(writer, 0, line);
+                    }
+                }
+                else
+                {
+                    // TODO: this needs testing
+                    WriteLine(writer, 0, "Need to generate license");
+                }
+
+                var headerBuilder = new System.Text.StringBuilder();
+                headerBuilder.Length = 0;
                 bool writeToDisk = (null == layout);
 
                 // write header
-                WriteLine(builder, 0, "// Automatically generated file from BamOptionGenerator.");
-                WriteLine(builder, 0, "// Command line arguments:");
+                WriteLine(writer, 0, "#region BamOptionGenerator");
+                WriteLine(headerBuilder, 0, "// Automatically generated file from BamOptionGenerator.");
+                WriteLine(headerBuilder, 0, "// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {
                     if (Parameters.excludedFlagsFromHeaders.Contains(arg))
                     {
                         continue;
                     }
-                    WriteLine(builder, 0, "//     {0}", arg.Replace(CommandSeparator, HeaderReplacementCommandSeparator));
+                    WriteLine(headerBuilder, 0, "//     {0}", arg.Replace(CommandSeparator, HeaderReplacementCommandSeparator));
                 }
-                if (null != layout && layout.header.Length != 0 && !builder.ToString().Equals(layout.header.ToString()))
+                if (null != layout &&
+                    null != layout.header &&
+                    layout.header.Count != 0 &&
+                    !headerBuilder.ToString().Equals(layout.header.ToString()))
                 {
                     var message = new System.Text.StringBuilder();
 
                     var layoutHeaderBytes = System.Text.Encoding.ASCII.GetBytes(layout.header.ToString());
-                    var builderHeaderBytes = System.Text.Encoding.ASCII.GetBytes(builder.ToString());
+                    var builderHeaderBytes = System.Text.Encoding.ASCII.GetBytes(headerBuilder.ToString());
                     var differenceIndices = new System.Collections.Generic.List<int>();
                     for (int i = 0; i < System.Math.Min(layoutHeaderBytes.Length, builderHeaderBytes.Length); ++i)
                     {
@@ -900,7 +985,7 @@ namespace BamOptionGenerator
                         }
                     }
 
-                    message.AppendFormat("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'\nDifferences at:\n", layout.header.ToString(), builder.ToString());
+                    message.AppendFormat("Headers are different:\nFile:\n'{0}'\nNew:\n'{1}'\nDifferences at:\n", layout.header.ToString(), headerBuilder.ToString());
                     foreach (int diff in differenceIndices)
                     {
                         message.AppendFormat("\t{0}: {1} vs {2}\n", diff, layoutHeaderBytes[diff], builderHeaderBytes[diff]);
@@ -908,7 +993,10 @@ namespace BamOptionGenerator
 
                     if (parameters.ignoreHeaderUpdates)
                     {
-                        builder = layout.header;
+                        foreach (var line in layout.header)
+                        {
+                            headerBuilder.AppendLine(line);
+                        }
                     }
                     else
                     {
@@ -924,8 +1012,12 @@ namespace BamOptionGenerator
                         }
                     }
                 }
-                // this causes an extra newline after the header
-                WriteLine(writer, 0, builder.ToString());
+                else
+                {
+                    writeToDisk = true;
+                }
+                Write(writer, 0, headerBuilder.ToString());
+                WriteLine(writer, 0, "#endregion // BamOptionGenerator");
 
                 // open namespace
                 if (null != layout && layout.namespaceName != parameters.outputNamespace)
