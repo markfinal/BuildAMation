@@ -36,17 +36,17 @@ namespace XmlUtilities
         SetDelegates(
             Bam.Core.DependencyNode node)
         {
-            // Property 'CFBundleName' is state only
-            // Property 'CFBundleDisplayName' is state only
-            // Property 'CFBundleIdentifier' is state only
-            // Property 'CFBundleVersion' is state only
-            // Property 'CFBundleSignature' is state only
-            // Property 'CFBundleExecutable' is state only
-            // Property 'CFBundleShortVersionString' is state only
-            // Property 'LSMinimumSystemVersion' is state only
-            // Property 'NSHumanReadableCopyright' is state only
-            // Property 'NSMainNibFile' is state only
-            // Property 'NSPrincipalClass' is state only
+            // Property 'CFBundleName' is value only - no delegates
+            // Property 'CFBundleDisplayName' is value only - no delegates
+            // Property 'CFBundleIdentifier' is value only - no delegates
+            // Property 'CFBundleVersion' is value only - no delegates
+            // Property 'CFBundleSignature' is value only - no delegates
+            // Property 'CFBundleExecutable' is value only - no delegates
+            // Property 'CFBundleShortVersionString' is value only - no delegates
+            // Property 'LSMinimumSystemVersion' is value only - no delegates
+            // Property 'NSHumanReadableCopyright' is value only - no delegates
+            // Property 'NSMainNibFile' is value only - no delegates
+            // Property 'NSPrincipalClass' is value only - no delegates
         }
     }
 }

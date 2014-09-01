@@ -668,9 +668,9 @@ namespace GccCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesXcodeProjectProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor,GenerateMapFileXcodeProjectProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor,AdditionalOptionsXcodeProjectProcessor);
-            // Property 'MajorVersion' is state only
-            // Property 'MinorVersion' is state only
-            // Property 'PatchVersion' is state only
+            // Property 'MajorVersion' is value only - no delegates
+            // Property 'MinorVersion' is value only - no delegates
+            // Property 'PatchVersion' is value only - no delegates
             this["Frameworks"].PrivateData = new PrivateData(FrameworksCommandLineProcessor,FrameworksXcodeProjectProcessor);
             this["FrameworkSearchDirectories"].PrivateData = new PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);
             this["SuppressReadOnlyRelocations"].PrivateData = new PrivateData(SuppressReadOnlyRelocationsCommandLineProcessor,SuppressReadOnlyRelocationsXcodeProjectProcessor);

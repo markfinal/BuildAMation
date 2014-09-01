@@ -37,7 +37,7 @@ namespace Publisher
         SetDelegates(
             Bam.Core.DependencyNode node)
         {
-            // Property 'OSXApplicationBundle' is state only
+            // Property 'OSXApplicationBundle' is value only - no delegates
         }
     }
 }

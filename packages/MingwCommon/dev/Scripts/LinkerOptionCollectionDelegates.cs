@@ -228,9 +228,9 @@ namespace MingwCommon
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor);
             this["GenerateMapFile"].PrivateData = new PrivateData(GenerateMapFileCommandLineProcessor);
             this["AdditionalOptions"].PrivateData = new PrivateData(AdditionalOptionsCommandLineProcessor);
-            // Property 'MajorVersion' is state only
-            // Property 'MinorVersion' is state only
-            // Property 'PatchVersion' is state only
+            // Property 'MajorVersion' is value only - no delegates
+            // Property 'MinorVersion' is value only - no delegates
+            // Property 'PatchVersion' is value only - no delegates
             this["EnableAutoImport"].PrivateData = new PrivateData(EnableAutoImportCommandLineProcessor);
         }
     }
