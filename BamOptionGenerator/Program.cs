@@ -345,53 +345,35 @@ namespace BamOptionGenerator
             System.IO.TextWriter writer,
             Parameters parameters)
         {
-            writer.WriteLine("#region License");
             if (parameters.licenseFile == null)
             {
-                writer.WriteLine("// Copyright 2010-2014 Mark Final");
-                writer.WriteLine("//");
-                writer.WriteLine("// This file is part of BuildAMation.");
-                writer.WriteLine("//");
-                writer.WriteLine("// BuildAMation is free software: you can redistribute it and/or modify");
-                writer.WriteLine("// it under the terms of the GNU Lesser General Public License as published by");
-                writer.WriteLine("// the Free Software Foundation, either version 3 of the License, or");
-                writer.WriteLine("// (at your option) any later version.");
-                writer.WriteLine("//");
-                writer.WriteLine("// BuildAMation is distributed in the hope that it will be useful,");
-                writer.WriteLine("// but WITHOUT ANY WARRANTY; without even the implied warranty of");
-                writer.WriteLine("// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the");
-                writer.WriteLine("// GNU Lesser General Public License for more details.");
-                writer.WriteLine("//");
-                writer.WriteLine("// You should have received a copy of the GNU Lesser General Public License");
-                writer.WriteLine("// along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.");
+                throw new Exception("No license file specified");
             }
-            else
+            writer.WriteLine("#region License");
+            using (System.IO.TextReader licenseReader = new System.IO.StreamReader(parameters.licenseFile))
             {
-                using (System.IO.TextReader licenseReader = new System.IO.StreamReader(parameters.licenseFile))
+                for (;;)
                 {
-                    for (;;)
+                    var line = licenseReader.ReadLine();
+                    if (null == line)
                     {
-                        var line = licenseReader.ReadLine();
-                        if (null == line)
-                        {
-                            break;
-                        }
+                        break;
+                    }
 
-                        if (!line.StartsWith("//"))
+                    if (!line.StartsWith("//"))
+                    {
+                        if (System.String.IsNullOrEmpty(line))
                         {
-                            if (System.String.IsNullOrEmpty(line))
-                            {
-                                writer.WriteLine("//");
-                            }
-                            else
-                            {
-                                writer.WriteLine(System.String.Format("// {0}", line));
-                            }
+                            writer.WriteLine("//");
                         }
                         else
                         {
-                            writer.WriteLine(line);
+                            writer.WriteLine(System.String.Format("// {0}", line));
                         }
+                    }
+                    else
+                    {
+                        writer.WriteLine(line);
                     }
                 }
             }
