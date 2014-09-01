@@ -749,7 +749,7 @@ namespace BamOptionGenerator
                 WriteLine(writer, 0, "// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {
-                    if (Parameters.excludedFlagsFromHeaders.Contains(arg))
+                    if (ArgumentIsExcluded(arg, Parameters.excludedFlagsFromHeaders))
                     {
                         continue;
                     }
@@ -960,6 +960,25 @@ namespace BamOptionGenerator
             return layout;
         }
 
+        private static bool
+        ArgumentIsExcluded(
+            string arg,
+            System.Collections.Specialized.StringCollection excludedList)
+        {
+            if (Parameters.excludedFlagsFromHeaders.Contains(arg))
+            {
+                return true;
+            }
+            foreach (var excluded in Parameters.excludedFlagsFromHeaders)
+            {
+                if (arg.StartsWith(excluded))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private static void
         WriteDelegatesFile(
             Parameters parameters,
@@ -1000,7 +1019,7 @@ namespace BamOptionGenerator
                 headerBuilder.Add("// Command line arguments:");
                 foreach (var arg in parameters.args)
                 {
-                    if (Parameters.excludedFlagsFromHeaders.Contains(arg))
+                    if (ArgumentIsExcluded(arg, Parameters.excludedFlagsFromHeaders))
                     {
                         continue;
                     }

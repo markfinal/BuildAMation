@@ -35,6 +35,7 @@ namespace BamOptionGenerator
             excludedFlagsFromHeaders.Add("-f");
             excludedFlagsFromHeaders.Add("-uh");
             excludedFlagsFromHeaders.Add("-ih");
+            excludedFlagsFromHeaders.Add("-l");
         }
 
         public string[] args;
