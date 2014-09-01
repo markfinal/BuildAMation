@@ -21,6 +21,8 @@ parser = OptionParser()
 
 stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
+licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGeneratorExe), "licenseheader.txt"))
+
 # OSXPlist options
 plist_options = [
     optionGeneratorExe,
@@ -29,7 +31,8 @@ plist_options = [
     "-c=OSXPlistWriterOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 plist_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(plist_options, True, True)

@@ -21,6 +21,8 @@ parser = OptionParser()
 
 stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
+licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGeneratorExe), "licenseheader.txt"))
+
 # C compiler options
 cCompiler_options = [
     optionGeneratorExe,
@@ -30,7 +32,8 @@ cCompiler_options = [
     "-p", # generate properties
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 cCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cCompiler_options, True, True)
@@ -47,7 +50,8 @@ cxxCompiler_options = [
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=PrivateData",
     "-e", # this option set derives from the C option set
-    "-b" # used as a base class for shared code
+    "-b", # used as a base class for shared code
+    "-l=" + licenseHeaderFile
 ]
 cxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
@@ -62,7 +66,8 @@ linker_options = [
     "-p", # generate properties
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 linker_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(linker_options, True, True)
@@ -77,7 +82,8 @@ archiver_options = [
     "-p", # generate properties
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 archiver_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(archiver_options, True, True)

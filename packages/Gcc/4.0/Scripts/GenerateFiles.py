@@ -21,6 +21,8 @@ parser = OptionParser()
 
 stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
+licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGeneratorExe), "licenseheader.txt"))
+
 # C compiler options
 cCompiler_options = [
     optionGeneratorExe,
@@ -31,7 +33,8 @@ cCompiler_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=GccCommon.PrivateData",
-    "-e" # this option set derives from the GccCommon option set
+    "-e", # this option set derives from the GccCommon option set
+    "-l=" + licenseHeaderFile
 ]
 cCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cCompiler_options, True, True)
@@ -47,7 +50,8 @@ cxxCompiler_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=GccCommon.PrivateData",
-    "-e" # this option set derives from the C option set
+    "-e", # this option set derives from the C option set
+    "-l=" + licenseHeaderFile
 ]
 cxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
@@ -63,7 +67,8 @@ objcCompiler_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=GccCommon.PrivateData",
-    "-e" # this option set derives from the GccCommon option set
+    "-e", # this option set derives from the GccCommon option set
+    "-l=" + licenseHeaderFile
 ]
 objcCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(objcCompiler_options, True, True)
@@ -79,7 +84,8 @@ objcxxCompiler_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=GccCommon.PrivateData",
-    "-e" # this option set derives from the C option set
+    "-e", # this option set derives from the C option set
+    "-l=" + licenseHeaderFile
 ]
 objcxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(objcxxCompiler_options, True, True)

@@ -21,6 +21,8 @@ parser = OptionParser()
 
 stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
+licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGeneratorExe), "licenseheader.txt"))
+
 # C# compiler options
 csCompiler_options = [
     optionGeneratorExe,
@@ -30,7 +32,8 @@ csCompiler_options = [
     "-p", # generate properties
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + os.path.relpath(os.path.join(stdPackageDir, "VisualStudioProcessor", "dev", "Scripts", "VisualStudioDelegate.cs")),
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 csCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(csCompiler_options, True, True)

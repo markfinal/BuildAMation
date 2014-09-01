@@ -21,6 +21,8 @@ parser = OptionParser()
 
 stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
+licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGeneratorExe), "licenseheader.txt"))
+
 # C compiler options
 cCompiler_options = [
     optionGeneratorExe,
@@ -32,7 +34,8 @@ cCompiler_options = [
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) \
            + os.path.pathsep + os.path.relpath(os.path.join(stdPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=ClangCommon.PrivateData",
-    "-e" # this option set derives from the ClangCommon C option set
+    "-e", # this option set derives from the ClangCommon C option set
+    "-l=" + licenseHeaderFile
 ]
 cCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cCompiler_options, True, True)
@@ -49,7 +52,8 @@ cxxCompiler_options = [
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) \
            + os.path.pathsep + os.path.relpath(os.path.join(stdPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=ClangCommon.PrivateData",
-    "-e" # this option set derives from the C option set
+    "-e", # this option set derives from the C option set
+    "-l=" + licenseHeaderFile
 ]
 cxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)

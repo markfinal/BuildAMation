@@ -21,6 +21,8 @@ parser = OptionParser()
 
 stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
+licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGeneratorExe), "licenseheader.txt"))
+
 # C compiler options
 cCompiler_options = [
     optionGeneratorExe,
@@ -32,7 +34,8 @@ cCompiler_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
              os.path.relpath(os.path.join(stdPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 cCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cCompiler_options, True, True)
@@ -50,7 +53,8 @@ cxxCompiler_options = [
              os.path.relpath(os.path.join(stdPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData",
     "-e", # this option set derives from the C option set
-    "-b" # used as a base class
+    "-b", # used as a base class
+    "-l=" + licenseHeaderFile
 ]
 cxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(cxxCompiler_options, True, True)
@@ -71,7 +75,8 @@ objCxxCompiler_options = [
              os.path.relpath(os.path.join(stdPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
     "-pv=PrivateData",
     "-e", # this option set derives from the C option set
-    "-b" # used as a base class
+    "-b", # used as a base class
+    "-l=" + licenseHeaderFile
 ]
 objCxxCompiler_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(objCxxCompiler_options, True, True)
@@ -89,7 +94,8 @@ linker_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
              os.path.relpath(os.path.join(stdPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 linker_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(linker_options, True, True)
@@ -106,7 +112,8 @@ archiver_options = [
     "-d", # generate delegates
     "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")) + os.pathsep + \
              os.path.relpath(os.path.join(stdPackageDir, "XcodeProjectProcessor", "dev", "Scripts", "Delegate.cs")),
-    "-pv=PrivateData"
+    "-pv=PrivateData",
+    "-l=" + licenseHeaderFile
 ]
 archiver_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(archiver_options, True, True)
