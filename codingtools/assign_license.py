@@ -1,27 +1,23 @@
 #!/usr/bin/python
 
+from distutils.spawn import find_executable
 from convert_line_endings import convert_line_endings
 import os
 import sys
 
-licenseText = [\
-'Copyright 2010-2014 Mark Final',
-'',
-'This file is part of BuildAMation.',
-'',
-'BuildAMation is free software: you can redistribute it and/or modify',
-'it under the terms of the GNU Lesser General Public License as published by',
-'the Free Software Foundation, either version 3 of the License, or',
-'(at your option) any later version.',
-'',
-'BuildAMation is distributed in the hope that it will be useful,',
-'but WITHOUT ANY WARRANTY; without even the implied warranty of',
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the',
-'GNU Lesser General Public License for more details.',
-'',
-'You should have received a copy of the GNU Lesser General Public License',
-'along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.',
-]
+licenseText = []
+
+def readLicenseText():
+  bam_path = find_executable('bam')
+  if not bam_path:
+      raise RuntimeError('Unable to locate bam')
+  bam_dir = os.path.dirname(bam_path)
+  licenseHeaderFile = os.path.join(bam_dir, 'licenseheader.txt')
+  with open(licenseHeaderFile, 'rt') as licenseFile:
+      original_license_text = licenseFile.readlines()
+  global licenseText
+  for line in original_license_text:
+    licenseText.append(line.replace('\n', ''))
 
 def write_license_text(outfile, file):
     ext = os.path.splitext(file)[1]
@@ -96,6 +92,7 @@ def processPath(dirPath, extensionList):
                 assign_license(csPath)
 
 if __name__ == "__main__":
+    readLicenseText()
     if len(sys.argv) > 1:
         assign_license(sys.argv[1])
     else:
