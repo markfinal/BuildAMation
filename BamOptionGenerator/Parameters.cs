@@ -45,6 +45,7 @@ namespace BamOptionGenerator
         public string outputNamespace;
         public string outputClassName;
         public string privateDataClassName;
+        public string licenseFile;
         public Mode mode;
         public bool toStdOut;
         public bool forceWrite;
