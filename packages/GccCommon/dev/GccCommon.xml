@@ -4,6 +4,9 @@
     <Package Name="C">
       <Version Id="dev" />
     </Package>
+    <Package Name="XcodeProjectProcessor">
+      <Version Id="dev" />
+    </Package>
   </RequiredPackages>
   <RequiredBamAssemblies>
     <BamAssembly Name="Bam.Core" />
