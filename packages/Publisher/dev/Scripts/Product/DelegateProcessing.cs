@@ -64,9 +64,6 @@ namespace Publisher
                 newNodes.AddRange(node.RequiredDependents);
             }
 
-            // TODO: this is a bit OTT, as it brings it too many dependencies
-            // there needs to be a distinguishing feature between a required dependency for runtime support
-            // and a requirement that a module appears in the build, but has no direct link to what is building
             var moreNewNodes = new Bam.Core.DependencyNodeCollection();
             foreach (var newNode in newNodes)
             {
