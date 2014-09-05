@@ -55,6 +55,8 @@ namespace Bam.Core
 
         private System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, DependencyNode>> uniqueNameToNodeDictionary = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, DependencyNode>>();
 
+        private ConstructionData constructionData = new ConstructionData();
+
         public
         DependencyGraph()
         {
@@ -270,16 +272,16 @@ namespace Bam.Core
                 this.SortTopLevelModules();
 
                 // populate the graph
-                var constructionData = new ConstructionData();
-                this.AddDependents(constructionData);
-                this.PopulateChildNodes(constructionData);
+                this.AddDependents();
+                this.PopulateChildNodes();
                 // now perform fixup across the whole graph
-                this.ForwardOnDependencies(constructionData);
+                this.ForwardOnDependencies();
                 this.ValidateAllDependents();
-                this.AddRequiredPostActionDependencies(constructionData);
+                this.AddRequiredPostActionDependencies();
                 this.ValidateAllDependents();
                 // tidy up
                 this.SquashEmptyNodeCollections();
+                this.constructionData = null; // no longer need this
 
                 profile.StopProfile();
                 State.TimingProfiles[(int)ETimingProfiles.PopulateGraph] = profile;
@@ -423,16 +425,15 @@ namespace Bam.Core
         private void
         ProcessNode(
             DependencyNode node,
-            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
-            ConstructionData data)
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets)
         {
             if (node.AreDependenciesProcessed)
             {
                 return;
             }
 
-            this.ConnectExternalDependencies(node, nodeRankOffsets, data);
-            this.ConnectRequiredDependencies(node, nodeRankOffsets, data);
+            this.ConnectExternalDependencies(node, nodeRankOffsets);
+            this.ConnectRequiredDependencies(node, nodeRankOffsets);
 
             var postActionInterface = node.Module as IPostActionModules;
             if (null != postActionInterface)
@@ -455,10 +456,10 @@ namespace Bam.Core
 
                         // adding a requirement on the post-action node for all of its owner's dependencies
                         // is deferred until the end, when all dependencies have been registered
-                        data.AddPostActionNode(node, postNode);
+                        this.constructionData.AddPostActionNode(node, postNode);
 
                         node.AddPostActionNode(postNode);
-                        this.ProcessNode(postNode, nodeRankOffsets, data);
+                        this.ProcessNode(postNode, nodeRankOffsets);
                         ++postCount;
                     }
                 }
@@ -470,8 +471,7 @@ namespace Bam.Core
         private void
         ConnectExternalDependencies(
             DependencyNode node,
-            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
-            ConstructionData data)
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets)
         {
             // find all dependencies that are in the attribute metadata
             var depTypes = ModuleUtilities.GetExternalDependents(node.Module, node.Target);
@@ -510,7 +510,7 @@ namespace Bam.Core
                         node.AddRequiredDependent(postAction);
                     }
                 }
-                this.ProcessNode(dep, nodeRankOffsets, data);
+                this.ProcessNode(dep, nodeRankOffsets);
 
                 if (dep.Module is IInjectModules)
                 {
@@ -530,22 +530,21 @@ namespace Bam.Core
                     ++nodeRankOffsets[dep];
 
                     var injectedNode = this.InjectNodeAbove(dep, dep, baseTarget, childIndex, currentRank);
-                    this.ProcessNode(injectedNode, nodeRankOffsets, data);
+                    this.ProcessNode(injectedNode, nodeRankOffsets);
                 }
             }
 
             var hasForwardedDependencies = (node.Module is IForwardDependenciesOn);
             if (hasForwardedDependencies)
             {
-                data.forwardedNodes.Add(node);
+                this.constructionData.forwardedNodes.Add(node);
             }
         }
 
         private void
         ConnectRequiredDependencies(
             DependencyNode node,
-            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
-            ConstructionData data)
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets)
         {
             // find all dependencies that are in the attribute metadata
             var depTypes = ModuleUtilities.GetRequiredDependents(node.Module, node.Target);
@@ -560,7 +559,7 @@ namespace Bam.Core
                 node.AddRequiredDependent(required);
                 if (!required.AreDependenciesProcessed)
                 {
-                    this.ProcessNode(required, nodeRankOffsets, data);
+                    this.ProcessNode(required, nodeRankOffsets);
                 }
             }
         }
@@ -627,10 +626,9 @@ namespace Bam.Core
         }
 
         private void
-        ForwardOnDependencies(
-            ConstructionData data)
+        ForwardOnDependencies()
         {
-            foreach (var node in data.forwardedNodes)
+            foreach (var node in this.constructionData.forwardedNodes)
             {
                 if (null == node.ExternalDependentFor)
                 {
@@ -649,12 +647,11 @@ namespace Bam.Core
         }
 
         private void
-        AddRequiredPostActionDependencies(
-            ConstructionData data)
+        AddRequiredPostActionDependencies()
         {
-            foreach (var nodeWithPostAction in data.postActionNodes.Keys)
+            foreach (var nodeWithPostAction in this.constructionData.postActionNodes.Keys)
             {
-                var postActionNodes = data.postActionNodes[nodeWithPostAction];
+                var postActionNodes = this.constructionData.postActionNodes[nodeWithPostAction];
                 foreach (var postActionNode in postActionNodes)
                 {
                     if (null != nodeWithPostAction.ExternalDependentFor)
@@ -686,8 +683,7 @@ namespace Bam.Core
         }
 
         private void
-        AddDependents(
-            ConstructionData data)
+        AddDependents()
         {
             // DependencyNodes have a loose connection with Rank and their DependencyNodeCollection at this stage
             // There is some need for it, in order to determine whether a node satisfies all dependencies
@@ -698,7 +694,7 @@ namespace Bam.Core
                 var rankNodeCollection = this.rankList[currentRank];
                 foreach (var node in rankNodeCollection)
                 {
-                    this.ProcessNode(node, nodeRankOffsets, data);
+                    this.ProcessNode(node, nodeRankOffsets);
                 }
 
                 foreach (var node in nodeRankOffsets.Keys)
@@ -887,8 +883,7 @@ namespace Bam.Core
         }
 
         private void
-        PopulateChildNodes(
-            ConstructionData data)
+        PopulateChildNodes()
         {
             int currentRank = 0;
             while (currentRank < this.RankCount)
@@ -936,7 +931,7 @@ namespace Bam.Core
 
                         var childNode = new DependencyNode(nestedModule as BaseModule, node, nestedTargetUsed, childIndex, true, null);
                         this.AddDependencyNodeToCollection(childNode, nestedNodeRank);
-                        this.ProcessNode(childNode, nodeRankOffsets, data);
+                        this.ProcessNode(childNode, nodeRankOffsets);
 
                         // all children inherit their collection's dependents
                         if (node.Module is IModuleCollection)
@@ -954,7 +949,7 @@ namespace Bam.Core
                         {
                             // add the injected node, in a rank above the nested node
                             var injectedNode = this.InjectNodeAbove(node, childNode, baseTarget, childIndex, nestedNodeRank - 1);
-                            this.ProcessNode(injectedNode, nodeRankOffsets, data);
+                            this.ProcessNode(injectedNode, nodeRankOffsets);
                         }
 
                         ++childIndex;
