@@ -1,4 +1,4 @@
-07-Sep-2014 Use the version of the CLR runtime to choose the CSharp compiler used to build the assembly of packages.
+07-Sep-2014 Use the target version of the CLR runtime to choose the CSharp compiler used to build the assembly of packages.
 
 30-Aug-2014 Changed the use of a // StateOnly comment to a proper attribute [Bam.Core.ValueOnlyOption] to indicate an option property has no delegates - it is a just a value.
 

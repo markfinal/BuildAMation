@@ -59,11 +59,17 @@ namespace Bam.Core
             GetAssemblyVersionData(out assemblyVersion, out productVersion);
 
             AddCategory("BuildAMation");
-            var assemblyDirectory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var bamAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var assemblyDirectory = System.IO.Path.GetDirectoryName(bamAssembly.Location);
             Add<string>("BuildAMation", "Directory", assemblyDirectory);
             Add<System.Version>("BuildAMation", "Version", assemblyVersion);
             Add<string>("BuildAMation", "VersionString", productVersion);
             Add<bool>("BuildAMation", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
+            var targetFramework = bamAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
+            var targetFrameworkName = (targetFramework[0] as System.Runtime.Versioning.TargetFrameworkAttribute).FrameworkName;
+            Add<string>("BuildAMation", "TargetFramework", targetFrameworkName);
+            var targetFrameworkNameSplit = targetFrameworkName.Split('=');
+            Add<string>("BuildAMation", "CSharpCompilerVersion", targetFrameworkNameSplit[1]);
 
             var schemaDirectory = System.IO.Path.Combine(State.ExecutableDirectory, "Schema");
             {
@@ -297,6 +303,22 @@ namespace Bam.Core
             get
             {
                 return (bool)Get("BuildAMation", "RunningMono");
+            }
+        }
+
+        public static string TargetFramework
+        {
+            get
+            {
+                return Get("BuildAMation", "TargetFramework") as string;
+            }
+        }
+
+        public static string CSharpCompilerVersion
+        {
+            get
+            {
+                return Get("BuildAMation", "CSharpCompilerVersion") as string;
             }
         }
 
