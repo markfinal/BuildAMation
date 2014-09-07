@@ -554,13 +554,13 @@ namespace Bam.Core
                 }
             }
 
-            Log.Detail("Compiling package assembly");
-
-            var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
-
             // use the compiler in the current runtime version to build the assembly of packages
             var clrVersion = System.Environment.Version;
             var compilerVersion = System.String.Format("v{0}.{1}", clrVersion.Major, clrVersion.Minor);
+
+            Log.Detail("Compiling package assembly, using CSharp compiler {0}", compilerVersion);
+
+            var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", compilerVersion);
 
             if (State.RunningMono)
