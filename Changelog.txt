@@ -1,7 +1,5 @@
 07-Sep-2014 Bumped supported version of bam and Bam.Core assemblies to v4.0.
 
-07-Sep-2014 Changed the default runtime used by Mono to v4.0.30319. Requires at least Mono 2.8.
-
 07-Sep-2014 Use the version of the CLR runtime to choose the CSharp compiler used to build the assembly of packages.
 
 30-Aug-2014 Changed the use of a // StateOnly comment to a proper attribute [Bam.Core.ValueOnlyOption] to indicate an option property has no delegates - it is a just a value.
