@@ -65,11 +65,15 @@ namespace Bam.Core
             Add<System.Version>("BuildAMation", "Version", assemblyVersion);
             Add<string>("BuildAMation", "VersionString", productVersion);
             Add<bool>("BuildAMation", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
+
+            // TODO: commented out as the TargetFrameworkAttribute was only introduced in CLR 4
+#if false
             var targetFramework = bamAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
             var targetFrameworkName = (targetFramework[0] as System.Runtime.Versioning.TargetFrameworkAttribute).FrameworkName;
             Add<string>("BuildAMation", "TargetFramework", targetFrameworkName);
             var targetFrameworkNameSplit = targetFrameworkName.Split('=');
             Add<string>("BuildAMation", "CSharpCompilerVersion", targetFrameworkNameSplit[1]);
+#endif
 
             var schemaDirectory = System.IO.Path.Combine(State.ExecutableDirectory, "Schema");
             {
@@ -306,6 +310,7 @@ namespace Bam.Core
             }
         }
 
+#if false
         public static string TargetFramework
         {
             get
@@ -321,6 +326,7 @@ namespace Bam.Core
                 return Get("BuildAMation", "CSharpCompilerVersion") as string;
             }
         }
+#endif
 
         public static string PackageDefinitionSchemaPath
         {
