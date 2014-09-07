@@ -47,7 +47,8 @@ namespace Bam
                     arguments.AppendFormat("{0} ", command);
                 }
             }
-            Core.Log.Message(level, "Host Platform: {0} {1}", Core.State.Platform, Core.State.IsLittleEndian ? "(little endian)" : "(big endian)");
+            Core.Log.Message(level, "Host platform: {0} {1}", Core.State.Platform, Core.State.IsLittleEndian ? "(little endian)" : "(big endian)");
+            Core.Log.Message(level, "CLR version  : {0}", System.Environment.Version.ToString());
             Core.Log.Message(level, "Arguments    : {0}", arguments.ToString().TrimEnd());
             Core.Log.Message(level, "");
         }
