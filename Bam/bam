@@ -13,6 +13,6 @@ case $* in
 *-debugsymbols*) monoargs=--debug;;
 esac
 
-exec mono $monoargs $curPath/bam.exe $@
+exec mono $monoargs --runtime=v4.0.30319 $curPath/bam.exe $@
 
 fi
