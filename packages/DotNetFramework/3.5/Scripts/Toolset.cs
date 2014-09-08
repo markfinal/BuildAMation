@@ -62,6 +62,10 @@ namespace DotNetFramework
                 string toolsPath = null;
                 using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\MSBuild\ToolsVersions\3.5"))
                 {
+                    if (null == key)
+                    {
+                        throw new Bam.Core.Exception(".NET framework {0} not installed", (this as Bam.Core.IToolset).Version(baseTarget));
+                    }
                     toolsPath = key.GetValue("MSBuildToolsPath") as string;
                 }
 
