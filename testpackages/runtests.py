@@ -101,7 +101,7 @@ def _postExecute(builder, options, package, outputMessages, errorMessages):
         return exitCode
     return 0
 
-def ExecuteTests(package, configuration, options, outputBuffer):
+def ExecuteTests(package, configuration, options, args, outputBuffer):
     print "Package           : ", package.GetId()
     if options.verbose:
         print "Description       : ", package.GetDescription()
@@ -119,6 +119,12 @@ def ExecuteTests(package, configuration, options, outputBuffer):
         print "Response filenames: ", responseNames
         if options.excludeResponseFiles:
           print " (excluding", options.excludeResponseFiles, ")"
+    nonKWArgs = []
+    for arg in args:
+        if '=' in arg:
+            argSplit = arg.split('=')
+            if argSplit[0].endswith('.version'):
+                nonKWArgs.append("-%s" % arg)
     theBuilder = GetBuilderDetails(options.builder)
     exitCode = 0
     for responseName in responseNames:
@@ -137,7 +143,7 @@ def ExecuteTests(package, configuration, options, outputBuffer):
             versionArgs = None
 
         for it in range(0,iterations):
-            extraArgs = None
+            extraArgs = nonKWArgs[:]
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
             try:
@@ -246,7 +252,7 @@ if __name__ == "__main__":
         config = GetTestConfig(package.GetId(), options)
         if not config:
             continue
-        exitCode += ExecuteTests(package, config, options, outputBuffer)
+        exitCode += ExecuteTests(package, config, options, args, outputBuffer)
 
     if not options.keepFiles:
         # TODO: consider keeping track of all directories created instead

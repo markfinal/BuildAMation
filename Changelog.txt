@@ -1,3 +1,5 @@
+08-Sep-2014 Non-keyword arguments to the Python test runner, of the form x.version=MMM will be added as arguments to each BuildAMation command line run as -x.version=MMM. Useful for things like the WindowsSDK.
+
 07-Sep-2014 Bumped supported version of bam and Bam.Core assemblies to v4.0.
 
 07-Sep-2014 Use the version of the CLR runtime to choose the CSharp compiler used to build the assembly of packages.
