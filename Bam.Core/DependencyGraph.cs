@@ -484,7 +484,8 @@ namespace Bam.Core
                         this.constructionData.AddPostActionNode(node, postNode);
 
                         node.AddPostActionNode(postNode);
-                        //this.ProcessNode(postNode, nodeRankOffsets);
+                        // this appears to be required
+                        this.ProcessNode(postNode, nodeRankOffsets);
                         ++postCount;
                     }
                 }
@@ -727,6 +728,7 @@ namespace Bam.Core
                         // defer processing any nodes that are due to be moved out of this rank
                         continue;
                     }
+                    // this appears to be required
                     this.ProcessNode(node, nodeRankOffsets);
                 }
 
