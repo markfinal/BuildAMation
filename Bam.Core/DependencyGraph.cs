@@ -277,8 +277,10 @@ namespace Bam.Core
                 // now perform fixup across the whole graph
                 this.ForwardOnDependencies();
                 this.ValidateAllDependents();
+
                 this.AddRequiredPostActionDependencies();
                 this.ValidateAllDependents();
+
                 // tidy up
                 this.SquashEmptyNodeCollections();
                 this.constructionData = null; // no longer need this
@@ -333,6 +335,38 @@ namespace Bam.Core
             return node;
         }
 
+        private void
+        MoveDependentIfRequired(
+            DependencyNode node,
+            DependencyNode dependent,
+            System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets)
+        {
+            // the node already exists, but does not satisfy all dependencies at it's current position
+            // so record where it should be placed (but don't move it yet)
+            // since each rank is considered in turn, the movement of existing nodes generally doesn't
+            // extend further than the next rank
+            var isInjectionModule = dependent.Module is IInjectModules;
+            var rankOffset = isInjectionModule ? 2 : 1;
+            var depNodeRank = dependent.NodeCollection.Rank;
+            // if the dependency is currently ranked less than the parent node, the parent
+            // node needs to move to a higher rank
+            if (nodeRankOffsets.ContainsKey(node))
+            {
+                if (depNodeRank <= node.NodeCollection.Rank + nodeRankOffsets[node])
+                {
+                    nodeRankOffsets[dependent] = nodeRankOffsets[node] + rankOffset;
+                }
+            }
+            else
+            {
+                var nodeRank = node.NodeCollection.Rank;
+                if (depNodeRank <= nodeRank)
+                {
+                    nodeRankOffsets[dependent] = rankOffset;
+                }
+            }
+        }
+
         private DependencyNodeCollection
         FindExistingOrCreateNewNodes(
             DependencyNode node,
@@ -356,30 +390,7 @@ namespace Bam.Core
                 }
                 else
                 {
-                    // the node already exists, but does not satisfy all dependencies at it's current position
-                    // so record where it should be placed (but don't move it yet)
-                    // since each rank is considered in turn, the movement of existing nodes generally doesn't
-                    // extend further than the next rank
-                    var isInjectionModule = depNode.Module is IInjectModules;
-                    var rankOffset = isInjectionModule ? 2 : 1;
-                    var depNodeRank = depNode.NodeCollection.Rank;
-                    // if the dependency is currently ranked less than the parent node, the parent
-                    // node needs to move to a higher rank
-                    if (nodeRankOffsets.ContainsKey(node))
-                    {
-                        if (depNodeRank <= node.NodeCollection.Rank + nodeRankOffsets[node])
-                        {
-                            nodeRankOffsets[depNode] = nodeRankOffsets[node] + rankOffset;
-                        }
-                    }
-                    else
-                    {
-                        var nodeRank = node.NodeCollection.Rank;
-                        if (depNodeRank <= nodeRank)
-                        {
-                            nodeRankOffsets[depNode] = rankOffset;
-                        }
-                    }
+                    this.MoveDependentIfRequired(node, depNode, nodeRankOffsets);
                 }
                 dependentNodes.Add(depNode);
             }
@@ -429,6 +440,20 @@ namespace Bam.Core
         {
             if (node.AreDependenciesProcessed)
             {
+                if (node.ExternalDependents != null)
+                {
+                    foreach (var dep in node.ExternalDependents)
+                    {
+                        this.MoveDependentIfRequired(node, dep, nodeRankOffsets);
+                    }
+                }
+                if (node.RequiredDependents != null)
+                {
+                    foreach (var dep in node.RequiredDependents)
+                    {
+                        this.MoveDependentIfRequired(node, dep, nodeRankOffsets);
+                    }
+                }
                 return;
             }
 
@@ -459,7 +484,7 @@ namespace Bam.Core
                         this.constructionData.AddPostActionNode(node, postNode);
 
                         node.AddPostActionNode(postNode);
-                        this.ProcessNode(postNode, nodeRankOffsets);
+                        //this.ProcessNode(postNode, nodeRankOffsets);
                         ++postCount;
                     }
                 }
@@ -510,7 +535,7 @@ namespace Bam.Core
                         node.AddRequiredDependent(postAction);
                     }
                 }
-                this.ProcessNode(dep, nodeRankOffsets);
+                //this.ProcessNode(dep, nodeRankOffsets);
 
                 if (dep.Module is IInjectModules)
                 {
@@ -530,6 +555,7 @@ namespace Bam.Core
                     ++nodeRankOffsets[dep];
 
                     var injectedNode = this.InjectNodeAbove(dep, dep, baseTarget, childIndex, currentRank);
+                    // this ProcessNode appears to be required
                     this.ProcessNode(injectedNode, nodeRankOffsets);
                 }
             }
@@ -557,10 +583,12 @@ namespace Bam.Core
             foreach (var required in requiredNodes)
             {
                 node.AddRequiredDependent(required);
+#if false
                 if (!required.AreDependenciesProcessed)
                 {
                     this.ProcessNode(required, nodeRankOffsets);
                 }
+#endif
             }
         }
 
@@ -694,6 +722,11 @@ namespace Bam.Core
                 var rankNodeCollection = this.rankList[currentRank];
                 foreach (var node in rankNodeCollection)
                 {
+                    if (nodeRankOffsets.ContainsKey(node))
+                    {
+                        // defer processing any nodes that are due to be moved out of this rank
+                        continue;
+                    }
                     this.ProcessNode(node, nodeRankOffsets);
                 }
 
