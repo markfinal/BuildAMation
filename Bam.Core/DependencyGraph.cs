@@ -34,6 +34,7 @@ namespace Bam.Core
                 DependencyNode owner,
                 DependencyNode postAction)
             {
+                owner.AddPostActionNode(postAction);
                 if (!this.postActionNodes.ContainsKey(owner))
                 {
                     this.postActionNodes.Add(owner, new DependencyNodeCollection());
@@ -107,7 +108,7 @@ namespace Bam.Core
             System.Type moduleType,
             BaseTarget baseTarget)
         {
-            var node = AddModule(moduleType, 0, null, baseTarget, null, -1);
+            var node = this.AddModule(moduleType, 0, null, baseTarget, null, -1);
             if (null == node)
             {
                 return;
@@ -164,10 +165,42 @@ namespace Bam.Core
             // this is the only place a manual construction of a module is made
             var module = ModuleFactory.CreateModule(moduleType, targetUsed);
 
+            // this module may be a special case, which has additional modules attached to it
+            // in which case the intended rank will be different
+            var postActionInterface = module as IPostActionModules;
+            var postActionTypes = (null != postActionInterface) ? postActionInterface.GetPostActionModuleTypes(baseTarget) : null;
+            var injectedModuleInterface = module as IInjectModules;
+            var originalRank = rank;
+            if ((null != postActionTypes) || (null != injectedModuleInterface))
+            {
+                ++originalRank;
+            }
+
             // TODO: need a better way to figure out whether a node is nested or not than by the unique index etc.
             var isNested = (-1 != uniqueIndex);
             var moduleNode = new DependencyNode(module, parent, targetUsed, uniqueIndex, isNested, uniqueNameSuffix);
-            AddDependencyNodeToCollection(moduleNode, rank);
+            AddDependencyNodeToCollection(moduleNode, originalRank);
+
+            // handle special extra associated modules
+            if (null != postActionTypes)
+            {
+                var postCount = 0;
+                var suffix = moduleType.ToString() + ".PostAction";
+                foreach (var postActionType in postActionTypes)
+                {
+                    var postActionNode = this.AddModule(postActionType, rank, null, baseTarget, suffix, postCount++);
+                    // adding a requirement on the post-action node for all of its owner's dependencies
+                    // is deferred until the end, when all dependencies have been registered
+                    this.constructionData.AddPostActionNode(moduleNode, postActionNode);
+                }
+            }
+            if (null != injectedModuleInterface)
+            {
+                // TODO: the arguments are not right, as it does not know about where the connection needs to be made
+                // for injected source
+                var injectedNode = this.InjectNodeAbove(moduleNode, moduleNode, baseTarget, 0, rank);
+                this.constructionData.AddPostActionNode(moduleNode, injectedNode);
+            }
 
             return moduleNode;
         }
@@ -460,37 +493,7 @@ namespace Bam.Core
             this.ConnectExternalDependencies(node, nodeRankOffsets);
             this.ConnectRequiredDependencies(node, nodeRankOffsets);
 
-            var postActionInterface = node.Module as IPostActionModules;
-            if (null != postActionInterface)
-            {
-                var postActionModuleTypes = postActionInterface.GetPostActionModuleTypes((BaseTarget)node.Target);
-                if (null != postActionModuleTypes)
-                {
-                    var nodeRank = node.NodeCollection.Rank;
-                    if (nodeRankOffsets.ContainsKey(node))
-                    {
-                        nodeRank += nodeRankOffsets[node];
-                    }
-
-                    this.ShiftUpRanksFrom(nodeRank);
-
-                    int postCount = 0;
-                    foreach (var postModuleType in postActionModuleTypes)
-                    {
-                        var postNode = this.AddModule(postModuleType, nodeRank, null, (BaseTarget)node.Target, node.ModuleName + ".PostAction", postCount);
-
-                        // adding a requirement on the post-action node for all of its owner's dependencies
-                        // is deferred until the end, when all dependencies have been registered
-                        this.constructionData.AddPostActionNode(node, postNode);
-
-                        node.AddPostActionNode(postNode);
-                        // this appears to be required
-                        this.ProcessNode(postNode, nodeRankOffsets);
-                        ++postCount;
-                    }
-                }
-            }
-
+            // TODO: should this only be set if node is not in the moved list?
             node.AreDependenciesProcessed = true;
         }
 
@@ -528,6 +531,7 @@ namespace Bam.Core
             foreach (var dep in externalDeps)
             {
                 node.AddExternalDependent(dep);
+#if false
                 if (null != dep.PostActionNodes)
                 {
                     // post action nodes on the dependent are also a dependency
@@ -549,6 +553,7 @@ namespace Bam.Core
                     }
                     else
                     {
+                        // TODO: this looks wrong - it should be an offset
                         nodeRankOffsets[dep] = dep.NodeCollection.Rank;
                     }
 
@@ -559,6 +564,7 @@ namespace Bam.Core
                     // this ProcessNode appears to be required
                     this.ProcessNode(injectedNode, nodeRankOffsets);
                 }
+#endif
             }
 
             var hasForwardedDependencies = (node.Module is IForwardDependenciesOn);
@@ -676,6 +682,15 @@ namespace Bam.Core
         }
 
         private void
+        MoveNode(
+            DependencyNode node,
+            int rankToMoveTo)
+        {
+            node.NodeCollection.Remove(node);
+            this.AddDependencyNodeToCollection(node, rankToMoveTo);
+        }
+
+        private void
         AddRequiredPostActionDependencies()
         {
             foreach (var nodeWithPostAction in this.constructionData.postActionNodes.Keys)
@@ -693,6 +708,14 @@ namespace Bam.Core
                                 continue;
                             }
                             dependee.AddRequiredDependent(postActionNode);
+
+                            // ensure that all rank orders are satisfied
+                            if (dependee.NodeCollection.Rank >= postActionNode.NodeCollection.Rank)
+                            {
+                                var intendedRank = dependee.NodeCollection.Rank + 1;
+                                this.ShiftUpRanksFrom(intendedRank);
+                                this.MoveNode(postActionNode, intendedRank);
+                            }
                         }
                     }
                     if (null != nodeWithPostAction.RequiredDependentFor)
@@ -705,6 +728,14 @@ namespace Bam.Core
                                 continue;
                             }
                             dependee.AddRequiredDependent(postActionNode);
+
+                            // ensure that all rank orders are satisfied
+                            if (dependee.NodeCollection.Rank >= postActionNode.NodeCollection.Rank)
+                            {
+                                var intendedRank = dependee.NodeCollection.Rank + 1;
+                                this.ShiftUpRanksFrom(intendedRank);
+                                this.MoveNode(postActionNode, intendedRank);
+                            }
                         }
                     }
                 }
@@ -734,9 +765,19 @@ namespace Bam.Core
 
                 foreach (var node in nodeRankOffsets.Keys)
                 {
-                    var newRank = node.NodeCollection.Rank + nodeRankOffsets[node];
-                    node.NodeCollection.Remove(node);
-                    this.AddDependencyNodeToCollection(node, newRank);
+                    var offset = nodeRankOffsets[node];
+                    var newRank = node.NodeCollection.Rank + offset;
+                    this.MoveNode(node, newRank);
+
+                    // if you move a node, also move it's post action nodes at the same rate
+                    if (null != node.PostActionNodes)
+                    {
+                        foreach (var postAction in node.PostActionNodes)
+                        {
+                            newRank = postAction.NodeCollection.Rank + offset;
+                            this.MoveNode(postAction, newRank);
+                        }
+                    }
                 }
 
                 ++currentRank;
@@ -868,6 +909,7 @@ namespace Bam.Core
                         var childRank = child.NodeCollection.Rank;
                         if (childRank <= nodeRank)
                         {
+                            this.Dump();
                             var message = new System.Text.StringBuilder();
                             message.AppendFormat("Child '{0}' of '{1}' is at an insufficient rank\n", child.UniqueModuleName, node.UniqueModuleName);
                             message.AppendFormat("Current rank:    {0}\n", nodeRank);
@@ -882,6 +924,7 @@ namespace Bam.Core
                         var depRank = dep.NodeCollection.Rank;
                         if (depRank <= nodeRank)
                         {
+                            this.Dump();
                             var message = new System.Text.StringBuilder();
                             message.AppendFormat("Dependency '{0}' of '{1}' is at an insufficient rank\n", dep.UniqueModuleName, node.UniqueModuleName);
                             message.AppendFormat("Current rank:    {0}\n", nodeRank);
@@ -897,6 +940,7 @@ namespace Bam.Core
                         var depRank = dep.NodeCollection.Rank;
                         if (depRank <= nodeRank)
                         {
+                            this.Dump();
                             var message = new System.Text.StringBuilder();
                             message.AppendFormat("Required dependency '{0}' of '{1}' is at an insufficient rank\n", dep.UniqueModuleName, node.UniqueModuleName);
                             message.AppendFormat("Current rank:    {0}\n", nodeRank);
@@ -1040,8 +1084,7 @@ namespace Bam.Core
                         continue;
                     }
                     var newRank = node.NodeCollection.Rank + delta;
-                    node.NodeCollection.Remove(node);
-                    this.AddDependencyNodeToCollection(node, newRank);
+                    this.MoveNode(node, newRank);
                 }
 
                 // validate that ranks obey dependency rules
