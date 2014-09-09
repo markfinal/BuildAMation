@@ -47,7 +47,7 @@ namespace Bam.Core
             output.AppendFormat(" in '{0}'", this.Target.Key);
             if (null != this.Children)
             {
-                output.Append("\nChildren:\n");
+                output.Append("\n Children:\n");
                 output.Append("\tRank\tName\n");
                 foreach (var node in this.Children)
                 {
@@ -56,7 +56,7 @@ namespace Bam.Core
             }
             if (null != this.ExternalDependents)
             {
-                output.Append("\nDependents:\n");
+                output.Append("\n Dependents:\n");
                 output.Append("\tRank\tName\n");
                 foreach (var node in this.ExternalDependents)
                 {
@@ -65,7 +65,7 @@ namespace Bam.Core
             }
             if (null != this.RequiredDependents)
             {
-                output.Append("\nRequired dependents:\n");
+                output.Append("\n Required dependents:\n");
                 output.Append("\tRank\tName\n");
                 foreach (var node in this.RequiredDependents)
                 {
