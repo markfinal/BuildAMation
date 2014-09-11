@@ -960,8 +960,8 @@ namespace Bam.Core
                             this.Dump();
                             var message = new System.Text.StringBuilder();
                             message.AppendFormat("{0}, child '{1}' of '{2}' is at an insufficient rank\n", callingMessage, child.UniqueModuleName, node.UniqueModuleName);
-                            message.AppendFormat("Current rank:    {0}\n", nodeRank);
-                            message.AppendFormat("Dependency rank: {0}\n", childRank);
+                            message.AppendFormat("\t{0}:\trank {1}\n", node.UniqueModuleName, nodeRank);
+                            message.AppendFormat("\t{0}:\trank {1}\n", child.UniqueModuleName, childRank);
                         }
                     }
                 }
@@ -975,8 +975,8 @@ namespace Bam.Core
                             this.Dump();
                             var message = new System.Text.StringBuilder();
                             message.AppendFormat("{0}, dependency '{1}' of '{2}' is at an insufficient rank\n", callingMessage, dep.UniqueModuleName, node.UniqueModuleName);
-                            message.AppendFormat("Current rank:    {0}\n", nodeRank);
-                            message.AppendFormat("Dependency rank: {0}\n", depRank);
+                            message.AppendFormat("\t{0}:\trank {1}\n", node.UniqueModuleName, nodeRank);
+                            message.AppendFormat("\t{0}:\trank {1}\n", dep.UniqueModuleName, depRank);
                             throw new Exception(message.ToString());
                         }
                     }
@@ -991,8 +991,8 @@ namespace Bam.Core
                             this.Dump();
                             var message = new System.Text.StringBuilder();
                             message.AppendFormat("{0}, required dependency '{1}' of '{2}' is at an insufficient rank\n", callingMessage, dep.UniqueModuleName, node.UniqueModuleName);
-                            message.AppendFormat("Current rank:    {0}\n", nodeRank);
-                            message.AppendFormat("Dependency rank: {0}\n", depRank);
+                            message.AppendFormat("\t{0}:\trank {1}\n", node.UniqueModuleName, nodeRank);
+                            message.AppendFormat("\t{0}:\trank {1}\n", dep.UniqueModuleName, depRank);
                             throw new Exception(message.ToString());
                         }
                     }
