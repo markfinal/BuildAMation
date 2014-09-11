@@ -77,6 +77,7 @@
     <Compile Include="Actions\CreateDebugProjectAction.cs" />
     <Compile Include="Actions\CreatePackageAtAction.cs" />
     <Compile Include="Actions\EnableDebugSymbolsInBuildsAction.cs" />
+    <Compile Include="Actions\EnablePedantryAction.cs" />
     <Compile Include="Actions\ForceDefinitionFileUpdateAction.cs" />
     <Compile Include="Actions\HelpAction.cs" />
     <Compile Include="Actions\NoCacheAction.cs" />

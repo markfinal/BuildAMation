@@ -314,10 +314,10 @@ namespace Bam.Core
                 this.PopulateChildNodes();
                 // now perform fixup across the whole graph
                 this.ForwardOnDependencies();
-                this.ValidateAllDependents();
-
                 this.AddRequiredPostActionDependencies();
-                this.ValidateAllDependents();
+
+                // perform validation
+                this.ValidateAllDependents("After graph construction");
 
                 // tidy up
                 this.SquashEmptyNodeCollections();
@@ -688,6 +688,11 @@ namespace Bam.Core
                     }
                 }
             }
+
+            if (State.Pedantic)
+            {
+                this.ValidateAllDependents("After forwarding on dependencies");
+            }
         }
 
         private void
@@ -790,6 +795,11 @@ namespace Bam.Core
                 }
 
                 ++currentRank;
+            }
+
+            if (State.Pedantic)
+            {
+                this.ValidateAllDependents("After adding dependents");
             }
         }
 
@@ -933,7 +943,8 @@ namespace Bam.Core
 
         private void
         ValidateDependentsInRank(
-            DependencyNodeCollection nodeCollection)
+            DependencyNodeCollection nodeCollection,
+            string callingMessage)
         {
             // This is quite expensive, but always better to find out these problems sooner rather than later
             foreach (var node in nodeCollection)
@@ -948,7 +959,7 @@ namespace Bam.Core
                         {
                             this.Dump();
                             var message = new System.Text.StringBuilder();
-                            message.AppendFormat("Child '{0}' of '{1}' is at an insufficient rank\n", child.UniqueModuleName, node.UniqueModuleName);
+                            message.AppendFormat("{0}, child '{1}' of '{2}' is at an insufficient rank\n", callingMessage, child.UniqueModuleName, node.UniqueModuleName);
                             message.AppendFormat("Current rank:    {0}\n", nodeRank);
                             message.AppendFormat("Dependency rank: {0}\n", childRank);
                         }
@@ -963,7 +974,7 @@ namespace Bam.Core
                         {
                             this.Dump();
                             var message = new System.Text.StringBuilder();
-                            message.AppendFormat("Dependency '{0}' of '{1}' is at an insufficient rank\n", dep.UniqueModuleName, node.UniqueModuleName);
+                            message.AppendFormat("{0}, dependency '{1}' of '{2}' is at an insufficient rank\n", callingMessage, dep.UniqueModuleName, node.UniqueModuleName);
                             message.AppendFormat("Current rank:    {0}\n", nodeRank);
                             message.AppendFormat("Dependency rank: {0}\n", depRank);
                             throw new Exception(message.ToString());
@@ -979,7 +990,7 @@ namespace Bam.Core
                         {
                             this.Dump();
                             var message = new System.Text.StringBuilder();
-                            message.AppendFormat("Required dependency '{0}' of '{1}' is at an insufficient rank\n", dep.UniqueModuleName, node.UniqueModuleName);
+                            message.AppendFormat("{0}, required dependency '{1}' of '{2}' is at an insufficient rank\n", callingMessage, dep.UniqueModuleName, node.UniqueModuleName);
                             message.AppendFormat("Current rank:    {0}\n", nodeRank);
                             message.AppendFormat("Dependency rank: {0}\n", depRank);
                             throw new Exception(message.ToString());
@@ -990,11 +1001,12 @@ namespace Bam.Core
         }
 
         private void
-        ValidateAllDependents()
+        ValidateAllDependents(
+            string callingMessage)
         {
             foreach (var rank in this.rankList)
             {
-                this.ValidateDependentsInRank(rank);
+                this.ValidateDependentsInRank(rank, callingMessage);
             }
         }
 
@@ -1124,10 +1136,17 @@ namespace Bam.Core
                     this.MoveNode(node, newRank);
                 }
 
-                // validate that ranks obey dependency rules
-                this.ValidateDependentsInRank(rankCollection);
+                if (State.Pedantic)
+                {
+                    this.ValidateDependentsInRank(rankCollection, System.String.Format("After adding children for rank {0}", currentRank));
+                }
 
                 ++currentRank;
+            }
+
+            if (State.Pedantic)
+            {
+                this.ValidateAllDependents("After adding children");
             }
         }
     }

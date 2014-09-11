@@ -111,6 +111,7 @@ namespace Bam.Core
             Add<TimeProfile[]>("System", "Profiling", new TimeProfile[System.Enum.GetValues(typeof(ETimingProfiles)).Length]);
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
             Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
+            Add<bool>("System", "Pedantic", false);
 
             var primaryPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(assemblyDirectory).FullName).FullName, "packages");
             var packageRoots = new Array<DirectoryLocation>();
@@ -381,6 +382,18 @@ namespace Bam.Core
             get
             {
                 return Get("System", "WorkingDirectory") as string;
+            }
+        }
+
+        public static bool Pedantic
+        {
+            set
+            {
+                Set("System", "Pedantic", value);
+            }
+            get
+            {
+                return (bool)Get("System", "Pedantic");
             }
         }
 
