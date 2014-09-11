@@ -896,6 +896,14 @@ namespace Bam.Core
                         {
                             continue;
                         }
+                        if (child.PostActionNodes != null)
+                        {
+                            // to avoid infinite loops, don't re-add a post-action's dependents, which will have added it earlier
+                            if (child.PostActionNodes.Contains(node))
+                            {
+                                continue;
+                            }
+                        }
                         this.DetermineIfNodeNeedsToMove(child, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, 1);
                     }
                 }
@@ -908,6 +916,14 @@ namespace Bam.Core
                         {
                             continue;
                         }
+                        if (dependent.PostActionNodes != null)
+                        {
+                            // to avoid infinite loops, don't re-add a post-action's dependents, which will have added it earlier
+                            if (dependent.PostActionNodes.Contains(node))
+                            {
+                                continue;
+                            }
+                        }
                         this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, 1);
                     }
                 }
@@ -919,6 +935,14 @@ namespace Bam.Core
                         if (dependent.Module is IInjectModules)
                         {
                             continue;
+                        }
+                        if (dependent.PostActionNodes != null)
+                        {
+                            // to avoid infinite loops, don't re-add a post-action's dependents, which will have added it earlier
+                            if (dependent.PostActionNodes.Contains(node))
+                            {
+                                continue;
+                            }
                         }
                         this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, 1);
                     }
