@@ -390,17 +390,18 @@ namespace Bam.Core
             // node needs to move to a higher rank
             if (nodeRankOffsets.ContainsKey(node))
             {
-                if (depNodeRank <= node.NodeCollection.Rank + nodeRankOffsets[node])
+                var difference = depNodeRank - (node.NodeCollection.Rank + nodeRankOffsets[node]);
+                if (difference <= 0)
                 {
-                    nodeRankOffsets[dependent] = nodeRankOffsets[node] + rankOffset;
+                    nodeRankOffsets[dependent] = nodeRankOffsets[node] + rankOffset - difference;
                 }
             }
             else
             {
-                var nodeRank = node.NodeCollection.Rank;
-                if (depNodeRank <= nodeRank)
+                var difference = depNodeRank - node.NodeCollection.Rank;
+                if (difference <= 0)
                 {
-                    nodeRankOffsets[dependent] = rankOffset;
+                    nodeRankOffsets[dependent] = rankOffset - difference;
                 }
             }
         }
