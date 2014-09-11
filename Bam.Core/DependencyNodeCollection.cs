@@ -179,6 +179,11 @@ namespace Bam.Core
                     {
                         childNodes.FilterOutputLocations(filterKeys, filteredLocations);
                     }
+                    var dependentNodes = node.ExternalDependents;
+                    if (null != dependentNodes)
+                    {
+                        dependentNodes.FilterOutputLocations(filterKeys, filteredLocations);
+                    }
                 }
                 else
                 {

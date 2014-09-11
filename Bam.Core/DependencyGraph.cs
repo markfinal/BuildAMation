@@ -169,9 +169,11 @@ namespace Bam.Core
             // in which case the intended rank will be different
             var postActionInterface = module as IPostActionModules;
             var postActionTypes = (null != postActionInterface) ? postActionInterface.GetPostActionModuleTypes(baseTarget) : null;
+            var hasPostActionTypes = (null != postActionTypes) && (postActionTypes.Count > 0);
             var injectedModuleInterface = module as IInjectModules;
+            var hasInjectedModules = (null != injectedModuleInterface);
             var originalRank = rank;
-            if ((null != postActionTypes) || (null != injectedModuleInterface))
+            if (hasPostActionTypes || hasInjectedModules)
             {
                 ++originalRank;
             }
@@ -182,7 +184,7 @@ namespace Bam.Core
             AddDependencyNodeToCollection(moduleNode, originalRank);
 
             // handle special extra associated modules
-            if (null != postActionTypes)
+            if (hasPostActionTypes)
             {
                 var postCount = 0;
                 var suffix = moduleType.ToString() + ".PostAction";
@@ -194,12 +196,13 @@ namespace Bam.Core
                     this.constructionData.AddPostActionNode(moduleNode, postActionNode);
                 }
             }
-            if (null != injectedModuleInterface)
+            if (hasInjectedModules)
             {
                 // TODO: the arguments are not right, as it does not know about where the connection needs to be made
                 // for injected source
-                var injectedNode = this.InjectNodeAbove(moduleNode, moduleNode, baseTarget, 0, rank);
-                this.constructionData.AddPostActionNode(moduleNode, injectedNode);
+                int injectedUniqueIndex = 0;
+                var injectedNode = this.InjectNodeAbove(null, moduleNode, baseTarget, injectedUniqueIndex, rank);
+                moduleNode.AddInjectedNode(injectedNode);
             }
 
             return moduleNode;
@@ -241,12 +244,14 @@ namespace Bam.Core
             {
                 var rank = nodeCollection.Rank;
                 Log.DebugMessage(new string('=', 80));
-                Log.DebugMessage("= Rank {0}", rank);
+                Log.DebugMessage("=> Rank {0} <=", rank);
                 Log.DebugMessage(new string('=', 80));
                 int index = 0;
                 foreach (var node in nodeCollection)
                 {
-                    Log.DebugMessage("({0}:r{1}) {2}", index++, rank, node.ToString());
+                    Log.DebugMessage("r{0}({1})", rank, index++);
+                    Log.DebugMessage(new string('-', 80));
+                    Log.DebugMessage(node.ToString());
                 }
             }
             Log.DebugMessage("------------/GRAPH--------------");
@@ -442,12 +447,16 @@ namespace Bam.Core
             var injectType = injectInterface.GetInjectedModuleType(baseTarget);
             var injectSuffix = injectInterface.GetInjectedModuleNameSuffix(baseTarget);
             var uniqueSuffix = System.String.Format("{0}.{1}", injectSuffix, uniqueIndex);
-            var parentNode = injectInterface.GetInjectedParentNode(owningNode);
+            // if this module is going to be injected as a child of some node associated with the owner node,
+            // we need a hook to figure out that relationship
+            var parentNode = (owningNode != null) ? injectInterface.GetInjectedParentNode(owningNode) : null;
 
             var injectedNode = this.AddModule(injectType, insertionRank, parentNode, baseTarget, uniqueSuffix, uniqueIndex);
-            injectedNode.AddExternalDependent(nodePerformingInjection);
 
-            injectInterface.ModuleCreationFixup(injectedNode);
+            // a loose ordering is only needed - no hard dependency
+            injectedNode.AddRequiredDependent(nodePerformingInjection);
+
+            injectInterface.ModuleCreationFixup(injectedNode, nodePerformingInjection);
 
             return injectedNode;
         }
@@ -823,7 +832,8 @@ namespace Bam.Core
             DependencyNode node,
             int parentIntendedRank,
             System.Collections.Generic.Dictionary<DependencyNode, int> nodeRankOffsets,
-            System.Collections.Generic.Dictionary<DependencyNode, int> updatedNodeRankOffsets)
+            System.Collections.Generic.Dictionary<DependencyNode, int> updatedNodeRankOffsets,
+            int rankOffset)
         {
             var pastRank = node.NodeCollection.Rank;
             if (nodeRankOffsets.ContainsKey(node))
@@ -841,21 +851,19 @@ namespace Bam.Core
                     pastRank += updatedNodeRankOffsets[node];
                 }
             }
-            if (pastRank < (parentIntendedRank + 1))
+            var thisIntendedRank = parentIntendedRank + rankOffset;
+            if (pastRank < thisIntendedRank)
             {
                 // dependency of that moved no longer satisfies rank order
                 // always add it to the re-evaluation list, in case an earlier evaluation
                 // needs to be performed again
                 // this will only be a problem if there are circular dependencies
-                var delta = parentIntendedRank - pastRank + 1;
-                if (inUpdatedOffsets)
+                var delta = thisIntendedRank - pastRank;
+                if (!inUpdatedOffsets)
                 {
-                    updatedNodeRankOffsets[node] += delta;
+                    updatedNodeRankOffsets[node] = 0;
                 }
-                else
-                {
-                    updatedNodeRankOffsets[node] = delta;
-                }
+                updatedNodeRankOffsets[node] += delta;
             }
         }
 
@@ -872,21 +880,50 @@ namespace Bam.Core
                 {
                     foreach (var child in node.Children)
                     {
-                        this.DetermineIfNodeNeedsToMove(child, intendedRank, nodeRankOffsets, updatedNodeRankOffsets);
+                        // to avoid infinite loops, since injected nodes are circularly coupled with their owner
+                        if (child.Module is IInjectModules)
+                        {
+                            continue;
+                        }
+                        this.DetermineIfNodeNeedsToMove(child, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, 1);
                     }
                 }
                 if (node.ExternalDependents != null)
                 {
                     foreach (var dependent in node.ExternalDependents)
                     {
-                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets);
+                        // to avoid infinite loops, since injected nodes are circularly coupled with their owner
+                        if (dependent.Module is IInjectModules)
+                        {
+                            continue;
+                        }
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, 1);
                     }
                 }
                 if (node.RequiredDependents != null)
                 {
                     foreach (var dependent in node.RequiredDependents)
                     {
-                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets);
+                        // to avoid infinite loops, since injected nodes are circularly coupled with their owner
+                        if (dependent.Module is IInjectModules)
+                        {
+                            continue;
+                        }
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, 1);
+                    }
+                }
+                if (node.InjectedNodes != null)
+                {
+                    foreach (var dependent in node.InjectedNodes)
+                    {
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, -1);
+                    }
+                }
+                if (node.PostActionNodes != null)
+                {
+                    foreach (var dependent in node.PostActionNodes)
+                    {
+                        this.DetermineIfNodeNeedsToMove(dependent, intendedRank, nodeRankOffsets, updatedNodeRankOffsets, -1);
                     }
                 }
             }
@@ -971,11 +1008,10 @@ namespace Bam.Core
                 var rankCollection = this.rankList[currentRank];
                 foreach (var node in rankCollection)
                 {
-                    // always consider the current node for potential movement, so that it's dependencies are analysed
-                    if (!nodeRankOffsets.ContainsKey(node))
-                    {
-                        nodeRankOffsets[node] = 0;
-                    }
+                    // try processing again, in case new nodes have been added through connecting dependencies of children
+                    // this must happen before the early out on children processed, or it results in
+                    // nodes not being in the correct rank
+                    this.ProcessNode(node, nodeRankOffsets);
 
                     if (node.AreChildrenProcessed)
                     {
@@ -1013,6 +1049,7 @@ namespace Bam.Core
                         this.ProcessNode(childNode, nodeRankOffsets);
 
                         // all children inherit their collection's dependents
+                        // TODO: this should only be for those modules that are not injected
                         if (node.Module is IModuleCollection)
                         {
                             if (null != node.ExternalDependents)

@@ -45,6 +45,7 @@ namespace Bam.Core
             }
             output.AppendFormat(" Type '{0}' (from '{1}')", this.Module.GetType().ToString(), this.Module.GetType().BaseType.ToString());
             output.AppendFormat(" in '{0}'", this.Target.Key);
+            var newLineRequired = true;
             if (null != this.Children)
             {
                 output.Append("\n Children:\n");
@@ -53,6 +54,7 @@ namespace Bam.Core
                 {
                     output.AppendFormat("\t{0}\t{1}\n", node.NodeCollection.Rank, node.UniqueModuleName);
                 }
+                newLineRequired = false;
             }
             if (null != this.ExternalDependents)
             {
@@ -62,6 +64,7 @@ namespace Bam.Core
                 {
                     output.AppendFormat("\t{0}\t{1}\n", node.NodeCollection.Rank, node.UniqueModuleName);
                 }
+                newLineRequired = false;
             }
             if (null != this.RequiredDependents)
             {
@@ -71,6 +74,11 @@ namespace Bam.Core
                 {
                     output.AppendFormat("\t{0}\t{1}\n", node.NodeCollection.Rank, node.UniqueModuleName);
                 }
+                newLineRequired = false;
+            }
+            if (newLineRequired)
+            {
+                output.AppendLine(string.Empty);
             }
 
             return output.ToString();
@@ -394,6 +402,12 @@ namespace Bam.Core
             private set;
         }
 
+        public DependencyNodeCollection InjectedNodes
+        {
+            get;
+            private set;
+        }
+
         private DependencyNodeCollection
         Ancestors()
         {
@@ -431,6 +445,19 @@ namespace Bam.Core
             {
                 throw new Exception("Circular dependency detected in external dependents for node '{0}'", this);
             }
+
+            // if the dependent has injected nodes, depend on these instead
+            // there will be an implied dependency on the original dependent via those
+            // and the dependency graph makes more sense for it
+            if (dependent.InjectedNodes != null)
+            {
+                foreach (var injectedDependent in dependent.InjectedNodes)
+                {
+                    this.AddExternalDependent(injectedDependent);
+                }
+                return;
+            }
+
             var ancestors = this.Ancestors();
             if (null != ancestors)
             {
@@ -673,6 +700,18 @@ namespace Bam.Core
             this.PostActionNodes.Add(postActionNode);
 
             postActionNode.AddExternalDependent(this);
+        }
+
+        public void
+        AddInjectedNode(
+            DependencyNode injectedNode)
+        {
+            // cache a list of the injected events for this node
+            if (null == this.InjectedNodes)
+            {
+                this.InjectedNodes = new DependencyNodeCollection();
+            }
+            this.InjectedNodes.Add(injectedNode);
         }
     }
 }

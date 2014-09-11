@@ -30,7 +30,8 @@ namespace Bam.Core
 
         void
         ModuleCreationFixup(
-            DependencyNode node);
+            DependencyNode created,
+            DependencyNode owner);
 
         DependencyNode
         GetInjectedParentNode(

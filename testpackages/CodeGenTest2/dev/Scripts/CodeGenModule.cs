@@ -147,22 +147,22 @@ namespace CodeGenTest2
         Bam.Core.IInjectModules.GetInjectedParentNode(
             Bam.Core.DependencyNode node)
         {
-            var dependentFor = node.ExternalDependentFor;
-            var firstDependentFor = dependentFor[0];
-            return firstDependentFor;
+            // return null because the injected node is not required to be poked into a parent module
+            return null;
         }
 
         void
         Bam.Core.IInjectModules.ModuleCreationFixup(
-            Bam.Core.DependencyNode node)
+            Bam.Core.DependencyNode created,
+            Bam.Core.DependencyNode owner)
         {
-            var dependent = node.ExternalDependents;
-            var firstDependent = dependent[0];
-            var dependentModule = firstDependent.Module;
-            var module = node.Module as C.ObjectFile;
+            // associate the location of the generated file, with that of the output file
+            // that caused the injection event
             var sourceFile = new Bam.Core.ScaffoldLocation(Bam.Core.ScaffoldLocation.ETypeHint.File);
-            sourceFile.SetReference(dependentModule.Locations[CodeGenModule.OutputFile]);
-            module.SourceFileLocation = sourceFile;
+            sourceFile.SetReference(owner.Module.Locations[OutputFile]);
+
+            var createdModule = created.Module as C.ObjectFile;
+            createdModule.SourceFileLocation = sourceFile;
         }
 
         #endregion
