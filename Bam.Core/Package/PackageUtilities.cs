@@ -558,7 +558,7 @@ namespace Bam.Core
             var clrVersion = System.Environment.Version;
             var compilerVersion = System.String.Format("v{0}.{1}", clrVersion.Major, clrVersion.Minor);
 
-            Log.Detail("Compiling package assembly, using CSharp compiler {0}", compilerVersion);
+            Log.Detail("Compiling package assembly, using C# compiler {0}", compilerVersion);
 
             var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", compilerVersion);
