@@ -963,6 +963,9 @@ namespace GccCommon
             }
             else
             {
+                // there is no equivalent check for Xcode 4 here
+                // even though this will generate a warning on Xcode 5+ for 32-bit builds, I don't see
+                // another way of being able to actually compile for 32-bit
                 if (0 == archsOption.Count)
                 {
                     archsOption.AddUnique("$(ARCHS_STANDARD_32_BIT)");
