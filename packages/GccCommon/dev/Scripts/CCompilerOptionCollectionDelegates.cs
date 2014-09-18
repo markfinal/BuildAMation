@@ -949,18 +949,30 @@ namespace GccCommon
                 if (null != xcodeDetails && xcodeDetails.SupportedVersion == XcodeBuilder.EXcodeVersion.V4dot6)
                 {
                     // Note; this option only required in Xcode 4 - gives a warning in Xcode 5
-                    archsOption.AddUnique("$(ARCHS_STANDARD)"); // implies both 32-bit and 64-bit
+                    if (0 == archsOption.Count)
+                    {
+                        archsOption.AddUnique("$(ARCHS_STANDARD_64_BIT)");
+                    }
+                    else if (1 == archsOption.Count)
+                    {
+                        archsOption.Remove("$(ARCHS_STANDARD_32_BIT)");
+                        archsOption.AddUnique("$(ARCHS_STANDARD_32_64_BIT)");
+                    }
                 }
                 validArchsOption.AddUnique("x86_64");
             }
             else
             {
-                archsOption.AddUnique("$(ARCHS_STANDARD_32_BIT)");
+                if (0 == archsOption.Count)
+                {
+                    archsOption.AddUnique("$(ARCHS_STANDARD_32_BIT)");
+                }
+                else if (1 == archsOption.Count)
+                {
+                    archsOption.Remove("$(ARCHS_STANDARD_64_BIT)");
+                    archsOption.AddUnique("$(ARCHS_STANDARD_32_64_BIT)");
+                }
                 validArchsOption.AddUnique("i386");
-            }
-            if (archsOption.Count > 1)
-            {
-                throw new Bam.Core.Exception("More than one architecture option has been set");
             }
         }
         #endregion
