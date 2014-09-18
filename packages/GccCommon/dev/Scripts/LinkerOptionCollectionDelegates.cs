@@ -365,7 +365,13 @@ namespace GccCommon
                 generateMapfileOption.AddUnique(mapFileLoc.GetSinglePath());
                 if (generateMapfileOption.Count != 1)
                 {
-                    throw new Bam.Core.Exception("More than one map file location option has been set");
+                    var message = new System.Text.StringBuilder();
+                    message.AppendLine("More than one map file location option has been set");
+                    foreach (var mapFile in generateMapfileOption)
+                    {
+                        message.AppendFormat("\t{0}\n", mapFile);
+                    }
+                    throw new Bam.Core.Exception(message.ToString());
                 }
             }
         }
