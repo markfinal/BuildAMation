@@ -36,7 +36,7 @@ namespace Clang
             var options = this as C.ICCompilerOptionsOSX;
             options.FrameworkSearchDirectories = new Bam.Core.DirectoryCollection();
             options.SDKVersion = "10.9";
-            options.DeploymentTarget = "10.9";
+            options.DeploymentTarget = "10.8";
             options.SupportedPlatform = C.EOSXPlatform.MacOSX;
             options.CompilerName = System.String.Empty; // clang is the only compiler now
         }
