@@ -655,22 +655,23 @@ namespace GccCommon
              Bam.Core.Target target)
         {
             var languageStandard = option as Bam.Core.ValueTypeOption<C.ELanguageStandard>;
-            var languageStandardOption = configuration.Options["GCC_C_LANGUAGE_STANDARD"];
+            var cLanguageStandardOption = configuration.Options["GCC_C_LANGUAGE_STANDARD"];
+            var cxxLanguageStandardOption = configuration.Options["CLANG_CXX_LANGUAGE_STANDARD"];
             switch (languageStandard.Value)
             {
             case C.ELanguageStandard.NotSet:
                 break;
             case C.ELanguageStandard.C89:
-                languageStandardOption.AddUnique("c89");
+                cLanguageStandardOption.AddUnique("c89");
                 break;
             case C.ELanguageStandard.C99:
-                languageStandardOption.AddUnique("c99");
+                cLanguageStandardOption.AddUnique("c99");
                 break;
             case C.ELanguageStandard.Cxx98:
-                // nothing corresponding
+                cxxLanguageStandardOption.AddUnique("c++98");
                 break;
             case C.ELanguageStandard.Cxx11:
-                // nothing corresponding
+                cxxLanguageStandardOption.AddUnique("c++11");
                 break;
             default:
                 throw new Bam.Core.Exception("Unknown language standard");
