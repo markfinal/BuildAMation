@@ -184,13 +184,18 @@ namespace Bam.Core
                 {
                     if (baseTargetMatch)
                     {
-                        if (!typeBaseTargetToNodeDictionary.ContainsKey(type))
+                        // modules that create executables that are used as part of the build
+                        // can query into the database from multiple use threads, so make it safe
+                        lock (typeBaseTargetToNodeDictionary)
                         {
-                            typeBaseTargetToNodeDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>());
-                        }
-                        if (!typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
-                        {
-                            typeBaseTargetToNodeDictionary[type][baseTarget] = node;
+                            if (!typeBaseTargetToNodeDictionary.ContainsKey(type))
+                            {
+                                typeBaseTargetToNodeDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>());
+                            }
+                            if (!typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
+                            {
+                                typeBaseTargetToNodeDictionary[type][baseTarget] = node;
+                            }
                         }
                         return node;
                     }
@@ -202,13 +207,18 @@ namespace Bam.Core
                     {
                         if ((baseType == type) && baseTargetMatch)
                         {
-                            if (!typeBaseTargetToNodeDictionary.ContainsKey(type))
+                            // modules that create executables that are used as part of the build
+                            // can query into the database from multiple use threads, so make it safe
+                            lock (typeBaseTargetToNodeDictionary)
                             {
-                                typeBaseTargetToNodeDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>());
-                            }
-                            if (!typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
-                            {
-                                typeBaseTargetToNodeDictionary[type][baseTarget] = node;
+                                if (!typeBaseTargetToNodeDictionary.ContainsKey(type))
+                                {
+                                    typeBaseTargetToNodeDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.BaseTarget, DependencyNode>());
+                                }
+                                if (!typeBaseTargetToNodeDictionary[type].ContainsKey(baseTarget))
+                                {
+                                    typeBaseTargetToNodeDictionary[type][baseTarget] = node;
+                                }
                             }
                             return node;
                         }
@@ -264,13 +274,18 @@ namespace Bam.Core
                 {
                     if (targetMatch)
                     {
-                        if (!typeTargetToModuleDictionary.ContainsKey(type))
+                        // modules that create executables that are used as part of the build
+                        // can query into the database from multiple use threads, so make it safe
+                        lock (typeTargetToModuleDictionary)
                         {
-                            typeTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.Target, IModule>());
-                        }
-                        if (!typeTargetToModuleDictionary[type].ContainsKey(target))
-                        {
-                            typeTargetToModuleDictionary[type][target] = node.Module;
+                            if (!typeTargetToModuleDictionary.ContainsKey(type))
+                            {
+                                typeTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.Target, IModule>());
+                            }
+                            if (!typeTargetToModuleDictionary[type].ContainsKey(target))
+                            {
+                                typeTargetToModuleDictionary[type][target] = node.Module;
+                            }
                         }
                         return node.Module;
                     }
@@ -282,13 +297,18 @@ namespace Bam.Core
                     {
                         if ((baseType == type) && targetMatch)
                         {
-                            if (!typeTargetToModuleDictionary.ContainsKey(type))
+                            // modules that create executables that are used as part of the build
+                            // can query into the database from multiple use threads, so make it safe
+                            lock (typeTargetToModuleDictionary)
                             {
-                                typeTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.Target, IModule>());
-                            }
-                            if (!typeTargetToModuleDictionary[type].ContainsKey(target))
-                            {
-                                typeTargetToModuleDictionary[type][target] = node.Module;
+                                if (!typeTargetToModuleDictionary.ContainsKey(type))
+                                {
+                                    typeTargetToModuleDictionary.Add(type, new System.Collections.Generic.Dictionary<Core.Target, IModule>());
+                                }
+                                if (!typeTargetToModuleDictionary[type].ContainsKey(target))
+                                {
+                                    typeTargetToModuleDictionary[type][target] = node.Module;
+                                }
                             }
                             return node.Module;
                         }
