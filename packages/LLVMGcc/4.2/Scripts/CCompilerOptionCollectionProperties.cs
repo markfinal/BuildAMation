@@ -19,7 +19,7 @@
 #region BamOptionGenerator
 // Automatically generated file from BamOptionGenerator. DO NOT EDIT.
 // Command line arguments:
-//     -i=ICCompilerOptions.cs
+//     -i=ICCompilerOptions.cs&../../../C/dev/Scripts/ICCompilerOptionsOSX.cs
 //     -n=LLVMGcc
 //     -c=CCompilerOptionCollection
 //     -p
@@ -43,6 +43,32 @@ namespace LLVMGcc
             {
                 this.SetValueTypeOption<LLVMGcc.EVisibility>("Visibility", value);
                 this.ProcessNamedSetHandler("VisibilitySetHandler", this["Visibility"]);
+            }
+        }
+        #endregion
+        #region C.ICCompilerOptionsOSX Option properties
+        Bam.Core.DirectoryCollection C.ICCompilerOptionsOSX.FrameworkSearchDirectories
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<Bam.Core.DirectoryCollection>("FrameworkSearchDirectories", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<Bam.Core.DirectoryCollection>("FrameworkSearchDirectories", value);
+                this.ProcessNamedSetHandler("FrameworkSearchDirectoriesSetHandler", this["FrameworkSearchDirectories"]);
+            }
+        }
+        string C.ICCompilerOptionsOSX.SDKVersion
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("SDKVersion", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("SDKVersion", value);
+                this.ProcessNamedSetHandler("SDKVersionSetHandler", this["SDKVersion"]);
             }
         }
         #endregion

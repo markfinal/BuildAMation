@@ -21,7 +21,8 @@ namespace LLVMGcc
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection :
         GccCommon.CCompilerOptionCollection,
-        ICCompilerOptions
+        ICCompilerOptions,
+        C.ICCompilerOptionsOSX
     {
         public
         CCompilerOptionCollection(
@@ -42,6 +43,10 @@ namespace LLVMGcc
             {
                 (this as C.ICCompilerOptions).LanguageStandard = C.ELanguageStandard.C99;
             }
+
+            var options = this as C.ICCompilerOptionsOSX;
+            options.FrameworkSearchDirectories = new Bam.Core.DirectoryCollection();
+            options.SDKVersion = "10.8";
         }
     }
 }

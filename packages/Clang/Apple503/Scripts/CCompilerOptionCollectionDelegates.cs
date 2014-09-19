@@ -67,6 +67,29 @@ namespace Clang
             var frameworkPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
             configuration.Options["FRAMEWORK_SEARCH_PATHS"].AddRangeUnique(frameworkPathsOption.Value.ToStringArray());
         }
+        private static void
+        SDKVersionCommandLineProcessor(
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var sdkVersionOption = option as Bam.Core.ReferenceTypeOption<string>;
+            var sysroot = System.String.Format("-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX{0}.sdk", sdkVersionOption.Value);
+            commandLineBuilder.Add(sysroot);
+        }
+        private static void
+        SDKVersionXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var sdkVersionOption = option as Bam.Core.ReferenceTypeOption<string>;
+            configuration.Options["SDKROOT"].AddUnique(System.String.Format("macosx{0}", sdkVersionOption.Value));
+        }
         #endregion
         protected override void
         SetDelegates(
@@ -74,6 +97,7 @@ namespace Clang
         {
             base.SetDelegates(node);
             this["FrameworkSearchDirectories"].PrivateData = new ClangCommon.PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);
+            this["SDKVersion"].PrivateData = new ClangCommon.PrivateData(SDKVersionCommandLineProcessor,SDKVersionXcodeProjectProcessor);
         }
     }
 }

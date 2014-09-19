@@ -29,5 +29,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// OSX SDK version used to compile against
+        /// </summary>
+        /// <value>The OSX SDK version.</value>
+        string SDKVersion
+        {
+            get;
+            set;
+        }
     }
 }

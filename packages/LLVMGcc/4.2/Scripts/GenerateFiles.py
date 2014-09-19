@@ -26,7 +26,9 @@ licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGenerator
 # C compiler options
 cCompiler_options = [
     optionGeneratorExe,
-    "-i=" + os.path.relpath(os.path.join(stdPackageDir, "LLVMGcc", "4.2", "Scripts", "ICCompilerOptions.cs")),
+    "-i=" + os.path.relpath(os.path.join(stdPackageDir, "LLVMGcc", "4.2", "Scripts", "ICCompilerOptions.cs")) + \
+            os.path.pathsep + \
+            os.path.relpath(os.path.join(stdPackageDir, "C", "dev", "Scripts", "ICCompilerOptionsOSX.cs")),
     "-n=LLVMGcc",
     "-c=CCompilerOptionCollection",
     "-p", # generate properties

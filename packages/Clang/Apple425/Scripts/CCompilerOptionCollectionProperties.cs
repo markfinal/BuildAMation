@@ -45,6 +45,18 @@ namespace Clang
                 this.ProcessNamedSetHandler("FrameworkSearchDirectoriesSetHandler", this["FrameworkSearchDirectories"]);
             }
         }
+        string C.ICCompilerOptionsOSX.SDKVersion
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("SDKVersion", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("SDKVersion", value);
+                this.ProcessNamedSetHandler("SDKVersionSetHandler", this["SDKVersion"]);
+            }
+        }
         #endregion
     }
 }

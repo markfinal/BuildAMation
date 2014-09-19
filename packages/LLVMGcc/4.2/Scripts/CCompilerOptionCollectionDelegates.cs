@@ -19,7 +19,7 @@
 #region BamOptionGenerator
 // Automatically generated file from BamOptionGenerator.
 // Command line arguments:
-//     -i=ICCompilerOptions.cs
+//     -i=ICCompilerOptions.cs&../../../C/dev/Scripts/ICCompilerOptionsOSX.cs
 //     -n=LLVMGcc
 //     -c=CCompilerOptionCollection
 //     -p
@@ -84,12 +84,73 @@ namespace LLVMGcc
             }
         }
         #endregion
+        #region C.ICCompilerOptionsOSX Option delegates
+        private static void
+        FrameworkSearchDirectoriesCommandLineProcessor(
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var switchPrefix = "-F";
+            var frameworkIncludePathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
+            // TODO: convert to 'var'
+            foreach (string includePath in frameworkIncludePathsOption.Value)
+            {
+                if (includePath.Contains(" "))
+                {
+                    commandLineBuilder.Add(System.String.Format("{0}\"{1}\"", switchPrefix, includePath));
+                }
+                else
+                {
+                    commandLineBuilder.Add(System.String.Format("{0}{1}", switchPrefix, includePath));
+                }
+            }
+        }
+        private static void
+        FrameworkSearchDirectoriesXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var frameworkPathsOption = option as Bam.Core.ReferenceTypeOption<Bam.Core.DirectoryCollection>;
+            configuration.Options["FRAMEWORK_SEARCH_PATHS"].AddRangeUnique(frameworkPathsOption.Value.ToStringArray());
+        }
+        private static void
+        SDKVersionCommandLineProcessor(
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var sdkVersionOption = option as Bam.Core.ReferenceTypeOption<string>;
+            var sysroot = System.String.Format("-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX{0}.sdk", sdkVersionOption.Value);
+            commandLineBuilder.Add(sysroot);
+        }
+        private static void
+        SDKVersionXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var sdkVersionOption = option as Bam.Core.ReferenceTypeOption<string>;
+            configuration.Options["SDKROOT"].AddUnique(System.String.Format("macosx{0}", sdkVersionOption.Value));
+        }
+        #endregion
         protected override void
         SetDelegates(
             Bam.Core.DependencyNode node)
         {
             base.SetDelegates(node);
             this["Visibility"].PrivateData = new GccCommon.PrivateData(VisibilityCommandLineProcessor,VisibilityXcodeProjectProcessor);
+            this["FrameworkSearchDirectories"].PrivateData = new GccCommon.PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);
+            this["SDKVersion"].PrivateData = new GccCommon.PrivateData(SDKVersionCommandLineProcessor,SDKVersionXcodeProjectProcessor);
         }
     }
 }
