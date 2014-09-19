@@ -113,6 +113,34 @@ namespace Clang
             var deploymentTargetOption = option as Bam.Core.ReferenceTypeOption<string>;
             configuration.Options["MACOSX_DEPLOYMENT_TARGET"].AddUnique(deploymentTargetOption.Value);
         }
+        private static void
+        SupportedPlatformCommandLineProcessor(
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            // don't think there is a command line for this
+        }
+        private static void
+        SupportedPlatformXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var supportedPlatformOption = option as Bam.Core.ValueTypeOption<C.EOSXPlatform>;
+            switch (supportedPlatformOption.Value)
+            {
+            case C.EOSXPlatform.MacOSX:
+                configuration.Options["SUPPORTED_PLATFORMS"].AddUnique("macosx");
+                break;
+            default:
+                throw new Bam.Core.Exception("Unsupported OSX platform, '{0}'", supportedPlatformOption.Value.ToString());
+            }
+        }
         #endregion
         protected override void
         SetDelegates(
@@ -122,6 +150,7 @@ namespace Clang
             this["FrameworkSearchDirectories"].PrivateData = new ClangCommon.PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);
             this["SDKVersion"].PrivateData = new ClangCommon.PrivateData(SDKVersionCommandLineProcessor,SDKVersionXcodeProjectProcessor);
             this["DeploymentTarget"].PrivateData = new ClangCommon.PrivateData(DeploymentTargetCommandLineProcessor,DeploymentTargetXcodeProjectProcessor);
+            this["SupportedPlatform"].PrivateData = new ClangCommon.PrivateData(SupportedPlatformCommandLineProcessor,SupportedPlatformXcodeProjectProcessor);
         }
     }
 }

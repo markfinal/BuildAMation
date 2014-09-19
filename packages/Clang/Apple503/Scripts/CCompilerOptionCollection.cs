@@ -37,6 +37,7 @@ namespace Clang
             options.FrameworkSearchDirectories = new Bam.Core.DirectoryCollection();
             options.SDKVersion = "10.8";
             options.DeploymentTarget = "10.8";
+            options.SupportedPlatform = C.EOSXPlatform.MacOSX;
         }
     }
 }

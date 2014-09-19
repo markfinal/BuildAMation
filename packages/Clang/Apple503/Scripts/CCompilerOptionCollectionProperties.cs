@@ -69,6 +69,18 @@ namespace Clang
                 this.ProcessNamedSetHandler("DeploymentTargetSetHandler", this["DeploymentTarget"]);
             }
         }
+        C.EOSXPlatform C.ICCompilerOptionsOSX.SupportedPlatform
+        {
+            get
+            {
+                return this.GetValueTypeOption<C.EOSXPlatform>("SupportedPlatform", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetValueTypeOption<C.EOSXPlatform>("SupportedPlatform", value);
+                this.ProcessNamedSetHandler("SupportedPlatformSetHandler", this["SupportedPlatform"]);
+            }
+        }
         #endregion
     }
 }

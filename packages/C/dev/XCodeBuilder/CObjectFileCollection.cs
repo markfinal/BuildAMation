@@ -63,8 +63,6 @@ namespace XcodeBuilder
 
             // TODO: these should really be options in their own rights
 #if true
-            buildConfiguration.Options["SUPPORTED_PLATFORMS"].AddUnique("macosx");
-
             if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
             {
                 if (target.Toolset.Version(baseTarget).StartsWith("4.2"))

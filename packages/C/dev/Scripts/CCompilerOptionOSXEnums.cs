@@ -16,28 +16,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-namespace Clang
+namespace C
 {
-    public partial class CCompilerOptionCollection :
-        ClangCommon.CCompilerOptionCollection,
-        C.ICCompilerOptionsOSX
+    public enum EOSXPlatform
     {
-        public
-        CCompilerOptionCollection(
-            Bam.Core.DependencyNode owningNode) : base(owningNode)
-        {}
-
-        protected override void
-        SetDefaultOptionValues(
-            Bam.Core.DependencyNode node)
-        {
-            base.SetDefaultOptionValues(node);
-
-            var options = this as C.ICCompilerOptionsOSX;
-            options.FrameworkSearchDirectories = new Bam.Core.DirectoryCollection();
-            options.SDKVersion = "10.8";
-            options.DeploymentTarget = "10.8";
-            options.SupportedPlatform = C.EOSXPlatform.MacOSX;
-        }
+        MacOSX = 0,
+        iOS = 1
     }
 }

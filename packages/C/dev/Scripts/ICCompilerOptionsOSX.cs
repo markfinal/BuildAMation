@@ -49,5 +49,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// OSX builds can target either MacOSX or iOS
+        /// </summary>
+        /// <value>The supported platform.</value>
+        C.EOSXPlatform SupportedPlatform
+        {
+            get;
+            set;
+        }
     }
 }
