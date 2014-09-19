@@ -71,6 +71,18 @@ namespace LLVMGcc
                 this.ProcessNamedSetHandler("SDKVersionSetHandler", this["SDKVersion"]);
             }
         }
+        string C.ICCompilerOptionsOSX.DeploymentTarget
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("DeploymentTarget", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("DeploymentTarget", value);
+                this.ProcessNamedSetHandler("DeploymentTargetSetHandler", this["DeploymentTarget"]);
+            }
+        }
         #endregion
     }
 }

@@ -90,6 +90,29 @@ namespace Clang
             var sdkVersionOption = option as Bam.Core.ReferenceTypeOption<string>;
             configuration.Options["SDKROOT"].AddUnique(System.String.Format("macosx{0}", sdkVersionOption.Value));
         }
+        private static void
+        DeploymentTargetCommandLineProcessor(
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var deploymentTargetOption = option as Bam.Core.ReferenceTypeOption<string>;
+            var deploymentTarget = System.String.Format("-mmacosx-version-min={0}", deploymentTargetOption.Value);
+            commandLineBuilder.Add(deploymentTarget);
+        }
+        private static void
+        DeploymentTargetXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var deploymentTargetOption = option as Bam.Core.ReferenceTypeOption<string>;
+            configuration.Options["MACOSX_DEPLOYMENT_TARGET"].AddUnique(deploymentTargetOption.Value);
+        }
         #endregion
         protected override void
         SetDelegates(
@@ -98,6 +121,7 @@ namespace Clang
             base.SetDelegates(node);
             this["FrameworkSearchDirectories"].PrivateData = new ClangCommon.PrivateData(FrameworkSearchDirectoriesCommandLineProcessor,FrameworkSearchDirectoriesXcodeProjectProcessor);
             this["SDKVersion"].PrivateData = new ClangCommon.PrivateData(SDKVersionCommandLineProcessor,SDKVersionXcodeProjectProcessor);
+            this["DeploymentTarget"].PrivateData = new ClangCommon.PrivateData(DeploymentTargetCommandLineProcessor,DeploymentTargetXcodeProjectProcessor);
         }
     }
 }

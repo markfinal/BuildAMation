@@ -47,6 +47,7 @@ namespace LLVMGcc
             var options = this as C.ICCompilerOptionsOSX;
             options.FrameworkSearchDirectories = new Bam.Core.DirectoryCollection();
             options.SDKVersion = "10.8";
+            options.DeploymentTarget = "10.8";
         }
     }
 }

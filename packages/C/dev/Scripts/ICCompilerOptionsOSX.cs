@@ -39,5 +39,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// The minimum version of OSX required in order to run this code
+        /// </summary>
+        /// <value>The deployment target.</value>
+        string DeploymentTarget
+        {
+            get;
+            set;
+        }
     }
 }

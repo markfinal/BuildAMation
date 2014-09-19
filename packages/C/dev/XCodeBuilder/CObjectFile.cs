@@ -106,7 +106,6 @@ namespace XcodeBuilder
 
                 // TODO: these should really be options in their own rights
 #if true
-                buildConfiguration.Options["MACOSX_DEPLOYMENT_TARGET"].AddUnique("10.8");
                 buildConfiguration.Options["SUPPORTED_PLATFORMS"].AddUnique("macosx");
 
                 if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
