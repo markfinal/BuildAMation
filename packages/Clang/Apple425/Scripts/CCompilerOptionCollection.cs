@@ -38,6 +38,7 @@ namespace Clang
             options.SDKVersion = "10.8";
             options.DeploymentTarget = "10.8";
             options.SupportedPlatform = C.EOSXPlatform.MacOSX;
+            options.CompilerName = "com.apple.compilers.llvm.clang.1_0";
         }
     }
 }

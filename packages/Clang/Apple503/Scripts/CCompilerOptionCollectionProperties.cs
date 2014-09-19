@@ -81,6 +81,18 @@ namespace Clang
                 this.ProcessNamedSetHandler("SupportedPlatformSetHandler", this["SupportedPlatform"]);
             }
         }
+        string C.ICCompilerOptionsOSX.CompilerName
+        {
+            get
+            {
+                return this.GetReferenceTypeOption<string>("CompilerName", this.SuperSetOptionCollection);
+            }
+            set
+            {
+                this.SetReferenceTypeOption<string>("CompilerName", value);
+                this.ProcessNamedSetHandler("CompilerNameSetHandler", this["CompilerName"]);
+            }
+        }
         #endregion
     }
 }

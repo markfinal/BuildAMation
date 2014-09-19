@@ -141,6 +141,30 @@ namespace Clang
                 throw new Bam.Core.Exception("Unsupported OSX platform, '{0}'", supportedPlatformOption.Value.ToString());
             }
         }
+        private static void
+        CompilerNameCommandLineProcessor(
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            // no action required
+        }
+        private static void
+        CompilerNameXcodeProjectProcessor(
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
+        {
+            var compilerNameOption = option as Bam.Core.ReferenceTypeOption<string>;
+            if (!System.String.IsNullOrEmpty(compilerNameOption.Value))
+            {
+                configuration.Options["GCC_VERSION"].AddUnique(compilerNameOption.Value);
+            }
+        }
         #endregion
         protected override void
         SetDelegates(
@@ -151,6 +175,7 @@ namespace Clang
             this["SDKVersion"].PrivateData = new ClangCommon.PrivateData(SDKVersionCommandLineProcessor,SDKVersionXcodeProjectProcessor);
             this["DeploymentTarget"].PrivateData = new ClangCommon.PrivateData(DeploymentTargetCommandLineProcessor,DeploymentTargetXcodeProjectProcessor);
             this["SupportedPlatform"].PrivateData = new ClangCommon.PrivateData(SupportedPlatformCommandLineProcessor,SupportedPlatformXcodeProjectProcessor);
+            this["CompilerName"].PrivateData = new ClangCommon.PrivateData(CompilerNameCommandLineProcessor,CompilerNameXcodeProjectProcessor);
         }
     }
 }

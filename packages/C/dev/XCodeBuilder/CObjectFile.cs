@@ -103,29 +103,6 @@ namespace XcodeBuilder
                 var relPath = Bam.Core.RelativePathUtilities.GetPath(outputDirLoc, basePath);
                 buildConfiguration.Options["CONFIGURATION_TEMP_DIR"].AddUnique("$SYMROOT/" + relPath);
                 buildConfiguration.Options["TARGET_TEMP_DIR"].AddUnique("$CONFIGURATION_TEMP_DIR");
-
-                // TODO: these should really be options in their own rights
-#if true
-                if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
-                {
-                    if (target.Toolset.Version(baseTarget).StartsWith("4.2"))
-                    {
-                        buildConfiguration.Options["GCC_VERSION"].AddUnique("com.apple.compilers.llvmgcc42");
-                    }
-                    else
-                    {
-                        throw new Bam.Core.Exception("Not supporting LLVM Gcc version {0}", target.Toolset.Version(baseTarget));
-                    }
-                }
-                else if (target.HasToolsetType(typeof(Clang.Toolset)))
-                {
-                    buildConfiguration.Options["GCC_VERSION"].AddUnique("com.apple.compilers.llvm.clang.1_0");
-                }
-                else
-                {
-                    throw new Bam.Core.Exception("Cannot identify toolchain {0}", target.ToolsetName('='));
-                }
-#endif
             }
 
             // add the source file to the configuration

@@ -59,5 +59,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Name of the compiler, in reverse DNS form. Usually not required to be set.
+        /// </summary>
+        /// <value>The name of the compiler.</value>
+        string CompilerName
+        {
+            get;
+            set;
+        }
     }
 }

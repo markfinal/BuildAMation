@@ -167,21 +167,21 @@ namespace LLVMGcc
         }
         private static void
         SupportedPlatformCommandLineProcessor(
-            object sender,
-            Bam.Core.StringArray commandLineBuilder,
-            Bam.Core.Option option,
-            Bam.Core.Target target)
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
             // don't think there is a command line for this
         }
         private static void
         SupportedPlatformXcodeProjectProcessor(
-            object sender,
-            XcodeBuilder.PBXProject project,
-            XcodeBuilder.XcodeNodeData currentObject,
-            XcodeBuilder.XCBuildConfiguration configuration,
-            Bam.Core.Option option,
-            Bam.Core.Target target)
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
             var supportedPlatformOption = option as Bam.Core.ValueTypeOption<C.EOSXPlatform>;
             switch (supportedPlatformOption.Value)
@@ -191,6 +191,30 @@ namespace LLVMGcc
                 break;
             default:
                 throw new Bam.Core.Exception("Unsupported OSX platform, '{0}'", supportedPlatformOption.Value.ToString());
+            }
+        }
+        private static void
+        CompilerNameCommandLineProcessor(
+            object sender,
+            Bam.Core.StringArray commandLineBuilder,
+            Bam.Core.Option option,
+            Bam.Core.Target target)
+        {
+            // no action required
+        }
+        private static void
+        CompilerNameXcodeProjectProcessor(
+            object sender,
+            XcodeBuilder.PBXProject project,
+            XcodeBuilder.XcodeNodeData currentObject,
+            XcodeBuilder.XCBuildConfiguration configuration,
+            Bam.Core.Option option,
+            Bam.Core.Target target)
+        {
+            var compilerNameOption = option as Bam.Core.ReferenceTypeOption<string>;
+            if (!System.String.IsNullOrEmpty(compilerNameOption.Value))
+            {
+                configuration.Options["GCC_VERSION"].AddUnique(compilerNameOption.Value);
             }
         }
         #endregion
@@ -204,6 +228,7 @@ namespace LLVMGcc
             this["SDKVersion"].PrivateData = new GccCommon.PrivateData(SDKVersionCommandLineProcessor,SDKVersionXcodeProjectProcessor);
             this["DeploymentTarget"].PrivateData = new GccCommon.PrivateData(DeploymentTargetCommandLineProcessor,DeploymentTargetXcodeProjectProcessor);
             this["SupportedPlatform"].PrivateData = new GccCommon.PrivateData(SupportedPlatformCommandLineProcessor,SupportedPlatformXcodeProjectProcessor);
+            this["CompilerName"].PrivateData = new GccCommon.PrivateData(CompilerNameCommandLineProcessor,CompilerNameXcodeProjectProcessor);
         }
     }
 }

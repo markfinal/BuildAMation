@@ -49,6 +49,7 @@ namespace LLVMGcc
             options.SDKVersion = "10.8";
             options.DeploymentTarget = "10.8";
             options.SupportedPlatform = C.EOSXPlatform.MacOSX;
+            options.CompilerName = "com.apple.compilers.llvmgcc42";
         }
     }
 }
