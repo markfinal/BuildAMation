@@ -699,7 +699,12 @@ namespace GccCommon
              Bam.Core.Option option,
              Bam.Core.Target target)
         {
-            // TODO
+            var undefinesOption = option as Bam.Core.ReferenceTypeOption<C.DefineCollection>;
+            var otherCFlagsOption = configuration.Options["OTHER_CFLAGS"];
+            foreach (var undefine in undefinesOption.Value)
+            {
+                otherCFlagsOption.AddUnique(System.String.Format("-U{0}", undefine));
+            }
         }
         #endregion
         #region ICCompilerOptions Option delegates
