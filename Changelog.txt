@@ -1,3 +1,5 @@
+26-Oct-2014 Added QtCommon-5.x, and Qt-5.1.1, Qt-5.2.0, Qt-5.3.1 packages.
+
 26-Oct-2014 Reversioned package QtCommon-dev to QtCommon-4.x.
 
 11-Sep-2014 Added -pedantic command line option, to enable pedantic validation during dependency graph generation. Default is disabled.
