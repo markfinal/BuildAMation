@@ -208,8 +208,15 @@ namespace Bam.Core
                 }
 
                 var definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
-                definitionFile.Read(true);
-                id.Definition = definitionFile;
+                try
+                {
+                    definitionFile.Read(true);
+                    id.Definition = definitionFile;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex, "Failed loading definition file {0}", definitionPathName);
+                }
 
                 if (!OSUtilities.IsCurrentPlatformSupported(definitionFile.SupportedPlatforms))
                 {
