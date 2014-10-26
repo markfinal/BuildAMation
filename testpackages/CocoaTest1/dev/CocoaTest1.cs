@@ -19,6 +19,25 @@
 namespace CocoaTest1
 {
     [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.OSX)]
+    class CLibrary :
+        C.StaticLibrary
+    {
+        class Source :
+            C.ObjectFileCollection
+        {
+            public
+            Source()
+            {
+                var sourceDir = this.PackageLocation.SubDirectory("source");
+                this.Include(sourceDir, "*.c");
+            }
+        }
+
+        [Bam.Core.SourceFiles]
+        Source source = new Source();
+    }
+
+    [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.OSX)]
     class CocoaTest :
         C.WindowsApplication
     {
@@ -44,6 +63,11 @@ namespace CocoaTest1
 
         [Bam.Core.SourceFiles]
         Source source = new Source();
+
+        [Bam.Core.DependentModules]
+        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
+            typeof(CLibrary)
+        );
 
 #if D_PACKAGE_PUBLISHER_DEV
         [Publisher.CopyFileLocations]

@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <Cocoa/Cocoa.h>
+#include "library.h"
 
 @interface MyApplicationDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 {
@@ -42,7 +43,7 @@ along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
                                      backing:NSBackingStoreBuffered /* supports GPU acceleration */
                                      defer:NO] autorelease];
         [window setBackgroundColor:[NSColor blueColor]];
-        [window setTitle:@"Hello world"];
+        [window setTitle:[NSString stringWithUTF8String:getWindowTitle()]];
         [window center];
 
         [menubar addItem:appMenuItem];
