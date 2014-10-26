@@ -1,3 +1,5 @@
+26-Oct-2014 Reversioned package QtCommon-dev to QtCommon-4.x.
+
 11-Sep-2014 Added -pedantic command line option, to enable pedantic validation during dependency graph generation. Default is disabled.
 
 08-Sep-2014 Non-keyword arguments to the Python test runner, of the form x.version=MMM will be added as arguments to each BuildAMation command line run as -x.version=MMM. Useful for things like the WindowsSDK.
