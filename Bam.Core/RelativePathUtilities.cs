@@ -138,10 +138,18 @@ namespace Bam.Core
         MakeRelativePathAbsoluteToWorkingDir(
             string relativePath)
         {
+            return MakeRelativePathAbsoluteTo(relativePath, Core.State.WorkingDirectory);
+        }
+
+        public static string
+        MakeRelativePathAbsoluteTo(
+            string relativePath,
+            string basePath)
+        {
             var relativePathUri = new System.Uri(relativePath, System.UriKind.RelativeOrAbsolute);
             if (!relativePathUri.IsAbsoluteUri)
             {
-                relativePathUri = new System.Uri(System.IO.Path.Combine(Core.State.WorkingDirectory, relativePath));
+                relativePathUri = new System.Uri(System.IO.Path.Combine(basePath, relativePath));
             }
 
             var absolutePath = relativePathUri.AbsolutePath;

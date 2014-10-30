@@ -512,7 +512,8 @@ namespace Bam.Core
                         var path = xmlReader.Value;
                         this.PackageRoots.Add(path);
 
-                        var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(path);
+                        var packageDirectory = System.IO.Path.GetDirectoryName(this.xmlFilename);
+                        var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteTo(path, packageDirectory);
                         Core.State.PackageRoots.Add(Core.DirectoryLocation.Get(absolutePackageRoot));
                     }
                 }
