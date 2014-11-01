@@ -1,3 +1,5 @@
+01-Nov-2014 Adding Qt-5.3.2 package.
+
 30-Oct-2014 Relative package roots from definition files are now resolved to the package directory, not the working directory.
 
 26-Oct-2014 Added QtCommon-5.x, and Qt-5.1.1, Qt-5.2.0, Qt-5.3.1 packages.
