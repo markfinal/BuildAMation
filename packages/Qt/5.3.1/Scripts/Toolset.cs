@@ -44,7 +44,14 @@ namespace Qt
                     }
 
                     // precompiled binaries now have a subdirectory indicating their flavour
-                    installPath += @"\5.3\msvc2013_opengl";
+                    if (Bam.Core.OSUtilities.Is64Bit(baseTarget))
+                    {
+                        installPath += @"\5.3\msvc2013_64_opengl";
+                    }
+                    else
+                    {
+                        installPath += @"\5.3\msvc2013_opengl";
+                    }
 
                     Bam.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
                 }
