@@ -1,3 +1,5 @@
+10-Nov-2014 Adding Gcc-4.8 package.
+
 02-Nov-2014 Adding ICU package, for internationalization used by Qt5.
 
 01-Nov-2014 Adding Qt-5.3.2 package.
