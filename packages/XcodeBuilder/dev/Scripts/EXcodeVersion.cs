@@ -22,6 +22,7 @@ namespace XcodeBuilder
     public enum EXcodeVersion
     {
         V4dot6 = 46,
-        V5dot1 = 51
+        V5dot1 = 51,
+        V6dot0 = 60
     }
 }

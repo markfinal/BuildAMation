@@ -210,6 +210,9 @@ namespace XcodeBuilder
 
             case EXcodeVersion.V5dot1:
                 return "0510";
+
+            case EXcodeVersion.V6dot0:
+                return "0600";
             }
 
             throw new Bam.Core.Exception("Unrecognized Xcode version, {0}", this.LatestXcodeVersion.ToString());

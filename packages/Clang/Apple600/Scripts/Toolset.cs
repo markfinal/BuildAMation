@@ -55,7 +55,7 @@ namespace Clang
         {
             get
             {
-                return XcodeBuilder.EXcodeVersion.V5dot1;
+                return XcodeBuilder.EXcodeVersion.V6dot0;
             }
         }
 
