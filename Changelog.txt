@@ -1,3 +1,5 @@
+8-Dec-2014 Adding a C++11 test packages, Cxx11Test1-dev.
+
 10-Nov-2014 Adding Gcc-4.8 package.
 
 02-Nov-2014 Adding ICU package, for internationalization used by Qt5.
