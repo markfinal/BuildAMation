@@ -7,7 +7,7 @@ ExecutablePath=$PWD/bin/$flavour
 
 if [ ! -d "$ExecutablePath" ]
 then
-  echo "*** ERROR: Opus directory '$ExecutablePath' does not exist ***"
+  echo "*** ERROR: BuildAMation directory '$ExecutablePath' does not exist ***"
 else
   echo "Added '$ExecutablePath' to the start of PATH"
   export PATH=$ExecutablePath:$PATH
