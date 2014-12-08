@@ -1,3 +1,5 @@
+08-Dec-2014 Upgraded BuildAMation .sln and .csprojs for Bam, Bam.Core, BamOptionGenerator to use VisualStudio 2013 Express. These should be compatible as far back as VS 2010 Express. .NET framework 4 is now used to build the code. This is compatible with Mono 3 and MonoDevelop 5.
+
 08-Dec-2014 Adding Clang-Apple600 package for Xcode 6 support.
 
 80-Dec-2014 Adding a C++11 test packages, Cxx11Test1-dev.
