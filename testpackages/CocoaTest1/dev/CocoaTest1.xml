@@ -8,9 +8,6 @@
       <Version Id="Apple425" Default="true" />
       <Version Id="Apple503" />
     </Package>
-    <Package Name="Gcc">
-      <Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
-    </Package>
     <Package Name="LLVMGcc">
       <Version Id="4.2" Default="true" />
     </Package>

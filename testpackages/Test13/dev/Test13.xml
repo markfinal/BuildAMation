@@ -13,7 +13,6 @@
       <Version Id="12" />
     </Package>
     <Package Name="Gcc">
-      <Version Id="4.0" Condition="'$(Platform)' == 'OSX'" />
       <Version Id="4.1" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
       <Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
       <Version Id="4.5" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />

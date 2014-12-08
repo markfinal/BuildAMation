@@ -9,7 +9,6 @@
       <Version Id="Apple503" />
     </Package>
     <Package Name="Gcc">
-      <Version Id="4.0" Condition="'$(Platform)' == 'OSX'" Default="true" />
       <Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
       <Version Id="4.5" />
       <Version Id="4.6" />
