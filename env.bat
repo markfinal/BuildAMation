@@ -18,8 +18,8 @@ REM Export the PATH
 IF NOT EXIST %ExecutablePath% (
   ECHO *** ERROR: BuildAMation directory '%ExecutablePath%' does not exist ***
 ) ELSE (
-  ECHO Added '%ExecutablePath%' to the start of PATH
   SET NewPath=%ExecutablePath%;!NewPath!
+  bam -version
 )
 
 REM Pass the local variable out to the global

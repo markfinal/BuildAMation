@@ -9,7 +9,6 @@ if [ ! -d "$ExecutablePath" ]
 then
   echo "*** ERROR: BuildAMation directory '$ExecutablePath' does not exist ***"
 else
-  echo "Added '$ExecutablePath' to the start of PATH"
   export PATH=$ExecutablePath:$PATH
+  bam -version
 fi
-
