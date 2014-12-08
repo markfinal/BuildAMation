@@ -10,6 +10,12 @@
     <Package Name="NativeBuilder">
       <Version Id="dev" />
     </Package>
+    <Package Name="VisualC">
+      <Version Id="12.0" />
+    </Package>
+    <Package Name="WindowsSDK">
+      <Version Id="8.1" Default="true" />
+    </Package>
   </RequiredPackages>
   <RequiredBamAssemblies>
     <BamAssembly Name="Bam.Core" />

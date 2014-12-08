@@ -15,6 +15,12 @@ namespace Cxx11Test1
             if (null != cOptions)
             {
                 cOptions.LanguageStandard = C.ELanguageStandard.Cxx11;
+
+                var cxxOptions = optionCollection as C.ICxxCompilerOptions;
+                if (null != cxxOptions)
+                {
+                    cxxOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
+                }
             }
         }
         #endregion
@@ -33,5 +39,10 @@ namespace Cxx11Test1
 
         [Bam.Core.SourceFiles]
         Source source = new Source();
+
+        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows)]
+        Bam.Core.TypeArray windowsDeps = new Bam.Core.TypeArray() {
+            typeof(WindowsSDK.WindowsSDK)
+        };
     }
 }
