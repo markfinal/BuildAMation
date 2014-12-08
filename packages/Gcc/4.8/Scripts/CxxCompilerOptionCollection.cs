@@ -41,7 +41,8 @@ namespace Gcc
             {
                 throw new Bam.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath);
             }
-            var cxxIncludePath2 = System.String.Format("{0}/{1}", cxxIncludePath, machineType);
+            // TODO: need to bring in the prefix for the root installation directory
+            var cxxIncludePath2 = System.String.Format("/usr/include/{0}/c++/4.8", machineType);
             if (!System.IO.Directory.Exists(cxxIncludePath2))
             {
                 throw new Bam.Core.Exception("Gcc C++ include path '{0}' does not exist. Is g++ installed?", cxxIncludePath2);
