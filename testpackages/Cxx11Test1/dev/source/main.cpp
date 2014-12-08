@@ -12,5 +12,15 @@ int main()
     auto func = [] () { std::cout << "Hello world, from a lambda function" << std::endl; };
     func();
 
+    char *pointer = nullptr;
+    if (nullptr == pointer)
+    {
+        std::cout << "Is a null pointer" << std::endl;
+    }
+    else
+    {
+        std::cout << pointer << " is not a null pointer" << std::endl;
+    }
+
     return 0;
 }
