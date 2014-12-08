@@ -4,6 +4,7 @@
     <Package Name="Clang">
       <Version Id="Apple425" Default="true" />
       <Version Id="Apple503" />
+      <Version Id="Apple600" />
     </Package>
     <Package Name="Gcc">
       <Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />

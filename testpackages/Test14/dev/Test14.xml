@@ -5,6 +5,7 @@
       <Version Id="3.1" />
       <Version Id="Apple425" Default="true" />
       <Version Id="Apple503" />
+      <Version Id="Apple600" />
     </Package>
     <Package Name="ComposerXE">
       <Version Id="12" />
