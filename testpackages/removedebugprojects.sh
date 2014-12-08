@@ -13,9 +13,9 @@ do
             echo "Deleting '$root/$package/$version/build' directory and all children"
             rm -fr $root/$package/$version/build
         fi
-        if [ -d "$root/$package/$version/Opus" ]; then
-            echo "Deleting '$root/$package/$version/Opus' directory and all children"
-            rm -fr $root/$package/$version/Opus
+        if [ -d "$root/$package/$version/BamProject" ]; then
+            echo "Deleting '$root/$package/$version/BamProject' directory and all children"
+            rm -fr $root/$package/$version/BamProject
         fi
       fi
     done

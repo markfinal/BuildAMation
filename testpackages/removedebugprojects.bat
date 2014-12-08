@@ -15,14 +15,14 @@ IF %NOPAUSE%==0 (
 GOTO :EOF
 
 :FIND_PACKAGE_VERSIONS
-FOR /D %%B IN (%1\*) DO CALL :DELETE_OPUS_DIRECTORY %%B
+FOR /D %%B IN (%1\*) DO CALL :DELETE_BAM_DIRECTORY %%B
 FOR /D %%B IN (%1\*) DO CALL :DELETE_BUILD_DIRECTORY %%B
 GOTO :EOF
 
-:DELETE_OPUS_DIRECTORY
-IF EXIST %1\Opus (
-    ECHO Deleting '%1\Opus' directory and all children
-    RMDIR /S /Q %1\Opus
+:DELETE_BAM_DIRECTORY
+IF EXIST %1\BamProject (
+    ECHO Deleting '%1\BamProject' directory and all children
+    RMDIR /S /Q %1\BamProject
 )
 
 :DELETE_BUILD_DIRECTORY
