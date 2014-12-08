@@ -5,7 +5,8 @@
       <Version Id="dev" />
     </Package>
     <Package Name="Gcc">
-      <Version Id="4.6" />
+      <Version Id="4.6" Default="true" />
+      <Version Id="4.8" />
     </Package>
     <Package Name="NativeBuilder">
       <Version Id="dev" />

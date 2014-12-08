@@ -12,6 +12,9 @@
     <Package Name="ComposerXE">
       <Version Id="12" />
     </Package>
+    <Package Name="Gcc">
+      <Version Id="4.8" />
+    </Package>
     <Package Name="LLVMGcc">
       <Version Id="4.2" Default="true" />
     </Package>

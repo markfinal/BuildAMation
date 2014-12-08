@@ -18,6 +18,7 @@
       <Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
       <Version Id="4.5" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
       <Version Id="4.6" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
+      <Version Id="4.8" />
     </Package>
     <Package Name="LLVMGcc">
       <Version Id="4.2" Default="true" />
