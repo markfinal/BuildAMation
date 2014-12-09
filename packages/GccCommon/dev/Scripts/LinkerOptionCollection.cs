@@ -77,7 +77,7 @@ Linker Error: ' C:/MinGW/bin/../libexec/gcc/mingw32/3.4.5/collect2.exe -Bdynamic
                     {
                         var cOptions = child.Module.Options as C.ICCompilerOptions;
                         if ((cOptions.LanguageStandard == C.ELanguageStandard.Cxx11) &&
-                            (node.Target.ToolsetName('=') == "clang"))
+                            string.Equals(node.Target.ToolsetName('='), "clang", System.StringComparison.OrdinalIgnoreCase))
                         {
                             cLinkerOptions.Libraries.Add("-lc++");
                         }
