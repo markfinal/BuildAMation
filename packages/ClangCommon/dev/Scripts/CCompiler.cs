@@ -19,7 +19,8 @@
 namespace ClangCommon
 {
     public sealed class CCompiler :
-        C.ICompilerTool
+        C.ICompilerTool,
+        Bam.Core.IToolSupportsResponseFile
     {
         private Bam.Core.IToolset toolset;
 
@@ -97,6 +98,18 @@ namespace ClangCommon
                 C.ObjectFile.OutputDir
                 );
             return array;
+        }
+
+        #endregion
+
+        #region IToolSupportsResponseFile implementation
+
+        string Bam.Core.IToolSupportsResponseFile.Option
+        {
+            get
+            {
+                return "@";
+            }
         }
 
         #endregion

@@ -19,7 +19,8 @@
 namespace Clang
 {
     public sealed class Linker :
-        GccCommon.Linker
+        GccCommon.Linker,
+        Bam.Core.IToolSupportsResponseFile
     {
         public
         Linker(
@@ -34,6 +35,18 @@ namespace Clang
                 return "clang";
             }
         }
+        #endregion
+
+        #region IToolSupportsResponseFile implementation
+
+        string Bam.Core.IToolSupportsResponseFile.Option
+        {
+            get
+            {
+                return "@";
+            }
+        }
+
         #endregion
     }
 }
