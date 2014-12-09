@@ -50,7 +50,9 @@ namespace GccCommon
                     if (child.Module is C.Cxx.ObjectFile || child.Module is C.Cxx.ObjectFileCollection |
                         child.Module is C.ObjCxx.ObjectFile || child.Module is C.ObjCxx.ObjectFileCollection)
                     {
+                        // TODO: switch this to -lc++ for Clang and C++11
                         cLinkerOptions.Libraries.Add("-lstdc++");
+                        //cLinkerOptions.Libraries.Add("-lc++");
                         break;
                     }
                 }

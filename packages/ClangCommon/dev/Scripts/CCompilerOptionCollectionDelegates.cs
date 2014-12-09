@@ -604,6 +604,7 @@ namespace ClangCommon
                 break;
             case C.ELanguageStandard.Cxx11:
                 commandLineBuilder.Add("-std=c++11");
+                commandLineBuilder.Add("-stdlib=libc++");
                 break;
             default:
                 throw new Bam.Core.Exception("Unknown language standard");
@@ -621,6 +622,7 @@ namespace ClangCommon
             var languageStandard = option as Bam.Core.ValueTypeOption<C.ELanguageStandard>;
             var cLanguageStandardOption = configuration.Options["GCC_C_LANGUAGE_STANDARD"];
             var cxxLanguageStandardOption = configuration.Options["CLANG_CXX_LANGUAGE_STANDARD"];
+            var cxxLibraryOption = configuration.Options["CLANG_CXX_LIBRARY"];
             switch (languageStandard.Value)
             {
             case C.ELanguageStandard.NotSet:
@@ -636,6 +638,7 @@ namespace ClangCommon
                 break;
             case C.ELanguageStandard.Cxx11:
                 cxxLanguageStandardOption.AddUnique("c++11");
+                cxxLibraryOption.AddUnique("libc++");
                 break;
             default:
                 throw new Bam.Core.Exception("Unknown language standard");
