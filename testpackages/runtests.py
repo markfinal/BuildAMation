@@ -55,14 +55,14 @@ def FindAllPackagesToTest(root, options):
                     package = Package(root, packageName, packageVersion)
                     if options.verbose:
                         print "\t%s" % package.GetId()
-                    tests.append(package)
+                    tests.append(package):
     return tests
 
 def _preExecute(builder, options):
     if builder.preAction:
         builder.preAction()
 
-def _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMessages):
+def _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, errorMessages):
     argList = []
     argList.append("bam")
     if responseFile:
@@ -150,7 +150,7 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
               outputMessages = StringIO.StringIO()
               errorMessages = StringIO.StringIO()
               _preExecute(theBuilder, options)
-              returncode, argList = _runOpus(options, package, responseFile, extraArgs, outputMessages, errorMessages)
+              returncode, argList = _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, errorMessages)
               if returncode == 0:
                 returncode = _postExecute(theBuilder, options, package, outputMessages, errorMessages)
             except Exception, e:
@@ -198,16 +198,16 @@ def CleanUp(options):
 # ----------
 
 if __name__ == "__main__":
-    optParser = OptionParser(description="Opus unittests")
+    optParser = OptionParser(description="BuildAMation unittests")
     optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
     optParser.add_option("--configuration", "-c", dest="configurations", action="append", default=None, help="Configurations to test")
     optParser.add_option("--test", "-t", dest="tests", action="append", default=None, help="Tests to run")
-    optParser.add_option("--buildroot", "-o", dest="buildRoot", action="store", default="build", help="Opus build root")
-    optParser.add_option("--builder", "-b", dest="builder", action="store", default="Native", help="Opus builder to test")
-    optParser.add_option("--keepfiles", "-k", dest="keepFiles", action="store_true", default=False, help="Keep the Opus build files around")
-    optParser.add_option("--jobs", "-j", dest="numJobs", action="store", type="int", default=1, help="Number of jobs to use with Opus builds")
+    optParser.add_option("--buildroot", "-o", dest="buildRoot", action="store", default="build", help="BuildAMation build root")
+    optParser.add_option("--builder", "-b", dest="builder", action="store", default="Native", help="BuildAMation builder to test")
+    optParser.add_option("--keepfiles", "-k", dest="keepFiles", action="store_true", default=False, help="Keep the BuildAMation build files around")
+    optParser.add_option("--jobs", "-j", dest="numJobs", action="store", type="int", default=1, help="Number of jobs to use with BuildAMation builds")
     optParser.add_option("--verbose", "-v", dest="verbose", action="store_true", default=False, help="Verbose output")
-    optParser.add_option("--debug", "-d", dest="debugSymbols", action="store_true", default=False, help="Build Opus packages with debug information")
+    optParser.add_option("--debug", "-d", dest="debugSymbols", action="store_true", default=False, help="Build BuildAMation packages with debug information")
     optParser.add_option("--noinitialclean", "-i", dest="noInitialClean", action="store_true", default=False, help="Disable cleaning packages before running tests")
     optParser.add_option("--forcedefinitionupdate", "-f", dest="forceDefinitionUpdate", action="store_true", default=False, help="Force definition file updates")
     optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude response files")
