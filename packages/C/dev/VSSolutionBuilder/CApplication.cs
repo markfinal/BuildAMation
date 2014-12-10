@@ -81,6 +81,27 @@ namespace VSSolutionBuilder
                 }
             }
 
+            // these do get added as project dependencies, so if these are dynamic libaries, ensure they are C.Plugin modules
+            // to avoid a link step
+            if (null != node.RequiredDependents)
+            {
+                foreach (var dependentNode in node.RequiredDependents)
+                {
+                    if (dependentNode.ModuleName != moduleName)
+                    {
+                        // TODO: want to remove this
+                        lock (this.solutionFile.ProjectDictionary)
+                        {
+                            if (this.solutionFile.ProjectDictionary.ContainsKey(dependentNode.ModuleName))
+                            {
+                                var dependentProject = this.solutionFile.ProjectDictionary[dependentNode.ModuleName];
+                                projectData.DependentProjects.Add(dependentProject);
+                            }
+                        }
+                    }
+                }
+            }
+
             var applicationOptions = applicationModule.Options;
 
             var configurationName = VSSolutionBuilder.GetConfigurationNameFromTarget(target);

@@ -1,3 +1,5 @@
+10-Dec-2014 Adding C.Plugin as a new module type, deriving from C.DynamicLibrary. Plugins are explicitly loaded at runtime, rather than implicitly linked against executables. For VisualStudio projects (MSBuild style), the import libraries for Plugins are ignored in the link step for modules that depend on them.
+
 09-Dec-2014 Apple Clang toolchains now supports response files.
 
 08-Dec-2014 Upgraded BuildAMation .sln and .csprojs for Bam, Bam.Core, BamOptionGenerator to use VisualStudio 2013 Express. These should be compatible as far back as VS 2010 Express. .NET framework 4 is now used to build the code. This is compatible with Mono 3 and MonoDevelop 5.

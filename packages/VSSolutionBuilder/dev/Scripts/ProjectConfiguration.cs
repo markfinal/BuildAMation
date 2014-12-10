@@ -33,6 +33,7 @@ namespace VSSolutionBuilder
             this.CharacterSet = EProjectCharacterSet.Undefined;
             this.Tools = new ProjectToolCollection();
             this.Project = project;
+            this.Properties = new System.Collections.Generic.Dictionary<string, string>();
         }
 
         public string Name
@@ -107,6 +108,12 @@ namespace VSSolutionBuilder
 
         // TODO: Ideally this should now return a read-only collection
         public ProjectToolCollection Tools
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.Dictionary<string, string> Properties
         {
             get;
             private set;

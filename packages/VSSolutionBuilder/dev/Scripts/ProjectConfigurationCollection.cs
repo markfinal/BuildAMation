@@ -127,6 +127,11 @@ namespace VSSolutionBuilder
 #if false
                 configurationGroup.CreateProperty("CharacterSet", configuration.CharacterSet.ToString());
 #endif
+
+                foreach (var property in configuration.Properties)
+                {
+                    configurationGroup.CreateProperty(property.Key, property.Value);
+                }
             }
 
             // import property sheets AFTER the configuration types
