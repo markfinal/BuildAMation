@@ -143,21 +143,21 @@ namespace Clang
         }
         private static void
         CompilerNameCommandLineProcessor(
-            object sender,
-            Bam.Core.StringArray commandLineBuilder,
-            Bam.Core.Option option,
-            Bam.Core.Target target)
+             object sender,
+             Bam.Core.StringArray commandLineBuilder,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
             // no action required
         }
         private static void
         CompilerNameXcodeProjectProcessor(
-            object sender,
-            XcodeBuilder.PBXProject project,
-            XcodeBuilder.XcodeNodeData currentObject,
-            XcodeBuilder.XCBuildConfiguration configuration,
-            Bam.Core.Option option,
-            Bam.Core.Target target)
+             object sender,
+             XcodeBuilder.PBXProject project,
+             XcodeBuilder.XcodeNodeData currentObject,
+             XcodeBuilder.XCBuildConfiguration configuration,
+             Bam.Core.Option option,
+             Bam.Core.Target target)
         {
             var compilerNameOption = option as Bam.Core.ReferenceTypeOption<string>;
             if (!System.String.IsNullOrEmpty(compilerNameOption.Value))
