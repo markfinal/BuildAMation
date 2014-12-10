@@ -24,7 +24,7 @@
 //     -c=MocOptionCollection
 //     -p
 //     -d
-//     -dd=c:/dev/BuildAMation/packages/CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
+//     -dd=../../../../CommandLineProcessor/dev/Scripts/CommandLineDelegate.cs
 //     -pv=MocPrivateData
 #endregion // BamOptionGenerator
 namespace QtCommon

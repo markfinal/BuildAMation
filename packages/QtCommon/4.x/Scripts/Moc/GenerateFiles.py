@@ -26,7 +26,7 @@ licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGenerator
 # Qt Moc options
 moc_options = [
     optionGeneratorExe,
-    "-i=" + os.path.relpath(os.path.join(stdPackageDir, "QtCommon", "dev", "Scripts", "Moc", "IMocOptions.cs")),
+    "-i=" + os.path.relpath(os.path.join(stdPackageDir, "QtCommon", "4.x", "Scripts", "Moc", "IMocOptions.cs")),
     "-n=QtCommon",
     "-c=MocOptionCollection",
     "-p", # generate properties

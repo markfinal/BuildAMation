@@ -21,21 +21,19 @@ parser = OptionParser()
 
 stdPackageDir, testPackageDir, optionGeneratorExe = GetBuildAMationPaths(bam_dir)
 
-# TODO: need to get the current package root
-currentPackageRoot = os.path.join(os.getcwd(), "..", "..", "..", "..")
-licenseTextFile = os.path.relpath(os.path.join(currentPackageRoot, "..", "LicenseText.txt"))
+licenseHeaderFile = os.path.relpath(os.path.join(os.path.dirname(optionGeneratorExe), "licenseheader.txt"))
 
 # Qt Moc options
 moc_options = [
     optionGeneratorExe,
-    "-i=" + os.path.relpath(os.path.join(currentPackageRoot, "QtCommon5", "dev", "Scripts", "Moc", "IMocOptions.cs")),
+    "-i=" + os.path.relpath(os.path.join(stdPackageDir, "QtCommon", "5.x", "Scripts", "Moc", "IMocOptions.cs")),
     "-n=QtCommon",
     "-c=MocOptionCollection",
     "-p", # generate properties
     "-d", # generate delegates
-    "-dd=" + os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs"),
+    "-dd=" + os.path.relpath(os.path.join(stdPackageDir, "CommandLineProcessor", "dev", "Scripts", "CommandLineDelegate.cs")),
     "-pv=MocPrivateData",
-    "-l=" + licenseTextFile
+    "-l=" + licenseHeaderFile
 ]
 moc_options.extend(extra_args)
 (stdout,stderr) = ExecuteProcess(moc_options, True, True)
