@@ -58,7 +58,7 @@ namespace CSharp
                 default:
                     throw new Bam.Core.Exception("Unrecognized CSharp.ETarget value");
             }
-            var outputPath = options.OwningNode.Module.Locations[CSharp.Assembly.OutputFile].GetSinglePath();
+            var outputPath = options.GetModuleLocation(CSharp.Assembly.OutputFile).GetSinglePath();
             commandLineBuilder.Add(System.String.Format("/out:{0}", outputPath));
         }
         private static VisualStudioProcessor.ToolAttributeDictionary
@@ -193,7 +193,7 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:pdbinfo");
-                            var pdbFileLoc = (sender as OptionCollection).OwningNode.Module.Locations[Assembly.PDBFile];
+                            var pdbFileLoc = (sender as OptionCollection).GetModuleLocation(Assembly.PDBFile);
                             commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbFileLoc.GetSinglePath()));
                         }
                         else
@@ -208,7 +208,7 @@ namespace CSharp
                         {
                             commandLineBuilder.Add("/debug+");
                             commandLineBuilder.Add("/debug:full");
-                            var pdbFileLoc = (sender as OptionCollection).OwningNode.Module.Locations[Assembly.PDBFile];
+                            var pdbFileLoc = (sender as OptionCollection).GetModuleLocation(Assembly.PDBFile);
                             commandLineBuilder.Add(System.String.Format("/pdb:{0}", pdbFileLoc.GetSinglePath()));
                         }
                         else
@@ -242,7 +242,7 @@ namespace CSharp
                             returnVal.Add("DebugSymbols", "true");
                             returnVal.Add("DebugType", "pdbinfo");
                             // TODO
-                            //var pdbFileLoc = (sender as OptionCollection).OwningNode.Module.Locations[Assembly.PDBFile];
+                            //var pdbFileLoc = (sender as OptionCollection).GetModuleLocation(Assembly.PDBFile);
                             //commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", pdbFileLoc.GetSinglePath()));
                         }
                         else
@@ -258,7 +258,7 @@ namespace CSharp
                             returnVal.Add("DebugSymbols", "true");
                             returnVal.Add("DebugType", "Full");
                             // TODO
-                            //var pdbFileLoc = (sender as OptionCollection).OwningNode.Module.Locations[Assembly.PDBFile];
+                            //var pdbFileLoc = (sender as OptionCollection).GetModuleLocation(Assembly.PDBFile);
                             //commandLineBuilder.Add(System.String.Format("/pdb:\"{0}\"", pdbFileLoc.GetSinglePath()));
                         }
                         else

@@ -181,7 +181,7 @@ namespace VisualCCommon
              Bam.Core.Option option,
              Bam.Core.Target target)
         {
-            var outputFileLoc = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputFile];
+            var outputFileLoc = (sender as Bam.Core.BaseOptionCollection).GetModuleLocation(C.ObjectFile.OutputFile);
             var enumOption = option as Bam.Core.ValueTypeOption<C.ECompilerOutput>;
             switch (enumOption.Value)
             {
@@ -862,14 +862,14 @@ namespace VisualCCommon
                     case EDebugType.ProgramDatabase:
                         {
                             commandLineBuilder.Add("-Zi");
-                            var pdbFileLoc = (sender as C.CompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            var pdbFileLoc = (sender as C.CompilerOptionCollection).GetModuleLocation(CCompiler.PDBFile);
                             commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbFileLoc.GetSinglePath()));
                         }
                         break;
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
                             commandLineBuilder.Add("-ZI");
-                            var pdbFileLoc = (sender as C.CompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            var pdbFileLoc = (sender as C.CompilerOptionCollection).GetModuleLocation(CCompiler.PDBFile);
                             commandLineBuilder.Add(System.String.Format("-Fd{0}", pdbFileLoc.GetSinglePath()));
                         }
                         break;
@@ -902,7 +902,7 @@ namespace VisualCCommon
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
                             returnVal.Add(attributeName, (sender as ICCompilerOptions).DebugType.ToString("D"));
-                            var pdbFileLoc = (sender as C.CompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            var pdbFileLoc = (sender as C.CompilerOptionCollection).GetModuleLocation(CCompiler.PDBFile);
                             returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
                         }
                         break;
@@ -920,14 +920,14 @@ namespace VisualCCommon
                     case EDebugType.ProgramDatabase:
                         {
                             returnVal.Add("DebugInformationFormat", "ProgramDatabase");
-                            var pdbFileLoc = (sender as CCompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            var pdbFileLoc = (sender as CCompilerOptionCollection).GetModuleLocation(CCompiler.PDBFile);
                             returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
                         }
                         break;
                     case EDebugType.ProgramDatabaseEditAndContinue:
                         {
                             returnVal.Add("DebugInformationFormat", "EditAndContinue");
-                            var pdbFileLoc = (sender as CCompilerOptionCollection).OwningNode.Module.Locations[CCompiler.PDBFile];
+                            var pdbFileLoc = (sender as CCompilerOptionCollection).GetModuleLocation(CCompiler.PDBFile);
                             returnVal.Add("ProgramDataBaseFileName", pdbFileLoc.GetSingleRawPath());
                         }
                         break;
@@ -945,7 +945,7 @@ namespace VisualCCommon
              Bam.Core.Target target)
         {
             var enumOption = option as Bam.Core.ValueTypeOption<EBrowseInformation>;
-            var browseDir = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module.Locations[C.ObjectFile.OutputDir].GetSinglePath();
+            var browseDir = (sender as Bam.Core.BaseOptionCollection).GetModuleLocation(C.ObjectFile.OutputDir).GetSinglePath();
             switch (enumOption.Value)
             {
                 case EBrowseInformation.None:

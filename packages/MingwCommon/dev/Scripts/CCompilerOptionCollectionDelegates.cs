@@ -113,14 +113,14 @@ namespace MingwCommon
                 case C.ECompilerOutput.CompileOnly:
                     {
                         commandLineBuilder.Add("-c");
-                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
+                        var outputPath = options.GetModuleLocation(C.ObjectFile.OutputFile).GetSinglePath();
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     }
                     break;
                 case C.ECompilerOutput.Preprocess:
                     {
                         commandLineBuilder.Add("-E");
-                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
+                        var outputPath = options.GetModuleLocation(C.ObjectFile.OutputFile).GetSinglePath();
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     }
                     break;

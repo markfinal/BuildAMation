@@ -47,14 +47,14 @@ namespace GccCommon
             {
                 case C.ELinkerOutput.Executable:
                     {
-                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                        var outputPath = options.GetModuleLocation(C.Application.OutputFile).GetSinglePath();
                         // TODO: isn't there an option for this on the tool?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     }
                     break;
                 case C.ELinkerOutput.DynamicLibrary:
                     {
-                        var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                        var outputPath = options.GetModuleLocation(C.Application.OutputFile).GetSinglePath();
                         // TODO: isn't there an option for this on the tool?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                         // TODO: this option needs to be pulled out of the common output type option
@@ -123,7 +123,7 @@ namespace GccCommon
             var options = sender as LinkerOptionCollection;
             {
                 var installNameOption = configuration.Options["LD_DYLIB_INSTALL_NAME"];
-                var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                var outputPath = options.GetModuleLocation(C.Application.OutputFile).GetSinglePath();
                 var filename = System.IO.Path.GetFileName(outputPath);
                 var installName = System.String.Format("@executable_path/{0}", filename);
                 installNameOption.AddUnique(installName);
@@ -321,7 +321,7 @@ namespace GccCommon
             if (boolOption.Value)
             {
                 //var options = sender as LinkerOptionCollection;
-                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
+                var mapFileLoc = (sender as LinkerOptionCollection).GetModuleLocation(C.Application.MapFile);
                 if (Bam.Core.OSUtilities.IsUnixHosting)
                 {
                     commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", mapFileLoc.GetSinglePath()));
@@ -344,7 +344,7 @@ namespace GccCommon
             var generateMapfile = option as Bam.Core.ValueTypeOption<bool>;
             if (generateMapfile.Value)
             {
-                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
+                var mapFileLoc = (sender as LinkerOptionCollection).GetModuleLocation(C.Application.MapFile);
                 var generateMapfileOption = configuration.Options["LD_MAP_FILE_PATH"];
                 generateMapfileOption.AddUnique(mapFileLoc.GetSinglePath());
                 if (generateMapfileOption.Count != 1)

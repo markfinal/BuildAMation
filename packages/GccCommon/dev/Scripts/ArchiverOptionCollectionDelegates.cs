@@ -45,7 +45,7 @@ namespace GccCommon
                 case C.EArchiverOutput.StaticLibrary:
                     {
                         var options = sender as ArchiverOptionCollection;
-                        var libraryLocation = options.OwningNode.Module.Locations[C.StaticLibrary.OutputFileLocKey];
+                        var libraryLocation = options.GetModuleLocation(C.StaticLibrary.OutputFileLocKey);
                         var libraryFilePath = libraryLocation.GetSinglePath();
                         commandLineBuilder.Add(libraryFilePath);
                     }

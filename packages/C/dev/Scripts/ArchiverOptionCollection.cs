@@ -36,10 +36,8 @@ namespace C
         SetNodeSpecificData(
             Bam.Core.DependencyNode node)
         {
-            var locationMap = this.OwningNode.Module.Locations;
-            var moduleBuildDir = locationMap[Bam.Core.State.ModuleBuildDirLocationKey];
-
-            var location = locationMap[C.StaticLibrary.OutputDirLocKey] as Bam.Core.ScaffoldLocation;
+            var moduleBuildDir = this.GetModuleLocation(Bam.Core.State.ModuleBuildDirLocationKey);
+            var location = this.GetModuleLocation(C.StaticLibrary.OutputDirLocKey) as Bam.Core.ScaffoldLocation;
             if (!location.IsValid)
             {
                 var target = node.Target;

@@ -45,13 +45,13 @@ namespace VisualCCommon
             {
                 case C.ELinkerOutput.Executable:
                 {
-                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
+                    var outputFileLocation = options.GetModuleLocation(C.Application.OutputFile);
                     commandLineBuilder.Add(System.String.Format("-OUT:{0}", outputFileLocation.GetSinglePath()));
                     break;
                 }
                 case C.ELinkerOutput.DynamicLibrary:
                 {
-                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
+                    var outputFileLocation = options.GetModuleLocation(C.Application.OutputFile);
                     commandLineBuilder.Add(System.String.Format("-OUT:{0}", outputFileLocation.GetSinglePath()));
                     commandLineBuilder.Add("-DLL");
                     var staticImportLibraryLoc = options.GetModuleLocation(C.DynamicLibrary.ImportLibraryFile);
@@ -76,13 +76,13 @@ namespace VisualCCommon
             {
                 case C.ELinkerOutput.Executable:
                 {
-                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
+                    var outputFileLocation = options.GetModuleLocation(C.Application.OutputFile);
                     returnVal.Add("OutputFile", outputFileLocation.GetSinglePath());
                     break;
                 }
                 case C.ELinkerOutput.DynamicLibrary:
                 {
-                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
+                    var outputFileLocation = options.GetModuleLocation(C.Application.OutputFile);
                     returnVal.Add("OutputFile", outputFileLocation.GetSinglePath());
                     var staticImportLibraryLoc = options.GetModuleLocation(C.DynamicLibrary.ImportLibraryFile);
                     returnVal.Add("ImportLibrary", staticImportLibraryLoc.GetSinglePath());
@@ -129,7 +129,7 @@ namespace VisualCCommon
             if (debugSymbolsOption.Value)
             {
                 commandLineBuilder.Add("-DEBUG");
-                var pdbFile = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
+                var pdbFile = (sender as Bam.Core.BaseOptionCollection).GetModuleLocation(Linker.PDBFile);
                 var pdbPath = pdbFile.GetSinglePath();
                 commandLineBuilder.Add(System.String.Format("-PDB:{0}", pdbPath));
             }
@@ -146,7 +146,7 @@ namespace VisualCCommon
             returnVal.Add("GenerateDebugInformation", debugSymbolsOption.Value.ToString().ToLower());
             if (debugSymbolsOption.Value)
             {
-                var pdbFile = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module.Locations[Linker.PDBFile];
+                var pdbFile = (sender as Bam.Core.BaseOptionCollection).GetModuleLocation(Linker.PDBFile);
                 var pdbPath = pdbFile.GetSinglePath();
                 returnVal.Add("ProgramDatabaseFile", pdbPath);
             }
@@ -374,7 +374,7 @@ namespace VisualCCommon
             var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
+                var mapFileLoc = (sender as LinkerOptionCollection).GetModuleLocation(C.Application.MapFile);
                 commandLineBuilder.Add(System.String.Format("-MAP:{0}", mapFileLoc.GetSinglePath()));
             }
         }
@@ -390,7 +390,7 @@ namespace VisualCCommon
             returnVal.Add("GenerateMapFile", boolOption.Value.ToString().ToLower());
             if (boolOption.Value)
             {
-                var mapFileLoc = (sender as LinkerOptionCollection).OwningNode.Module.Locations[C.Application.MapFile];
+                var mapFileLoc = (sender as LinkerOptionCollection).GetModuleLocation(C.Application.MapFile);
                 returnVal.Add("MapFileName", mapFileLoc.GetSingleRawPath());
             }
             return returnVal;

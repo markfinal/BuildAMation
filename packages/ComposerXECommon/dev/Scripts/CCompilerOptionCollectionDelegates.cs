@@ -110,7 +110,7 @@ namespace ComposerXECommon
                 case C.ECompilerOutput.CompileOnly:
                     {
                         commandLineBuilder.Add("-c");
-                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
+                        var outputPath = options.GetModuleLocation(C.ObjectFile.OutputFile).GetSinglePath();
                         // TODO: isn't there an option on the tool for the flag?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     }
@@ -118,7 +118,7 @@ namespace ComposerXECommon
                 case C.ECompilerOutput.Preprocess:
                     {
                         commandLineBuilder.Add("-E");
-                        var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
+                        var outputPath = options.GetModuleLocation(C.ObjectFile.OutputFile).GetSinglePath();
                         // TODO: isn't there an option on the tool for the flag?
                         commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     }

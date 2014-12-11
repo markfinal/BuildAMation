@@ -72,12 +72,10 @@ namespace C
         SetNodeSpecificData(
             Bam.Core.DependencyNode node)
         {
-            var locationMap = this.OwningNode.Module.Locations;
-            var moduleBuildDir = locationMap[Bam.Core.State.ModuleBuildDirLocationKey];
-
+            var moduleBuildDir = this.GetModuleLocation(Bam.Core.State.ModuleBuildDirLocationKey);
             var linkerTool = node.Target.Toolset.Tool(typeof(ILinkerTool)) as ILinkerTool;
 
-            var outputDir = locationMap[C.Application.OutputDir];
+            var outputDir = this.GetModuleLocation(C.Application.OutputDir);
             if (!outputDir.IsValid)
             {
                 var linkerOutputDir = moduleBuildDir.SubDirectory(linkerTool.BinaryOutputSubDirectory);
@@ -86,20 +84,17 @@ namespace C
 
             // special case here of the QMakeBuilder
             // QMake does not support writing import libraries to a separate location to the dll
-            if (node.Module.Locations.Contains(C.DynamicLibrary.ImportLibraryDir))
+            var importLibraryDir = this.GetModuleLocationSafe(C.DynamicLibrary.ImportLibraryDir);
+            if ((null != importLibraryDir) && !importLibraryDir.IsValid)
             {
-                var importLibDir = node.Module.Locations[C.DynamicLibrary.ImportLibraryDir];
-                if (!importLibDir.IsValid)
+                if (linkerTool is IWinImportLibrary && (Bam.Core.State.BuilderName != "QMake"))
                 {
-                    if (linkerTool is IWinImportLibrary && (Bam.Core.State.BuilderName != "QMake"))
-                    {
-                        var moduleDir = moduleBuildDir.SubDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
-                        (importLibDir as Bam.Core.ScaffoldLocation).SetReference(moduleDir);
-                    }
-                    else
-                    {
-                        (importLibDir as Bam.Core.ScaffoldLocation).SetReference(outputDir);
-                    }
+                    var moduleDir = moduleBuildDir.SubDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
+                    (importLibraryDir as Bam.Core.ScaffoldLocation).SetReference(moduleDir);
+                }
+                else
+                {
+                    (importLibraryDir as Bam.Core.ScaffoldLocation).SetReference(outputDir);
                 }
             }
 

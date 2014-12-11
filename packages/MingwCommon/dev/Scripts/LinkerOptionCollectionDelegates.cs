@@ -45,19 +45,19 @@ namespace MingwCommon
             {
                 case C.ELinkerOutput.Executable:
                 {
-                    var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                    var outputPath = options.GetModuleLocation(C.Application.OutputFile).GetSinglePath();
                     commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     break;
                 }
                 case C.ELinkerOutput.DynamicLibrary:
                 {
-                    var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                    var outputPath = options.GetModuleLocation(C.Application.OutputFile).GetSinglePath();
                     commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     commandLineBuilder.Add("-shared");
                     var importLibraryFileLoc = options.GetModuleLocationSafe(C.DynamicLibrary.ImportLibraryFile);
                     if (importLibraryFileLoc != null)
                     {
-                        var importLibPath = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile].GetSinglePath();
+                        var importLibPath = importLibraryFileLoc.GetSinglePath();
                         commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", importLibPath));
                     }
                     break;
@@ -174,8 +174,7 @@ namespace MingwCommon
             var boolOption = option as Bam.Core.ValueTypeOption<bool>;
             if (boolOption.Value)
             {
-                var locationMap = (sender as LinkerOptionCollection).OwningNode.Module.Locations;
-                var mapFileLoc = locationMap[C.Application.MapFile];
+                var mapFileLoc = (sender as LinkerOptionCollection).GetModuleLocation(C.Application.MapFile);
                 commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", mapFileLoc.GetSinglePath()));
             }
         }

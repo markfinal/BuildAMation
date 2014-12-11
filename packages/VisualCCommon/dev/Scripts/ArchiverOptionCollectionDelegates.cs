@@ -44,7 +44,7 @@ namespace VisualCCommon
             {
                 case C.EArchiverOutput.StaticLibrary:
                     var options = sender as ArchiverOptionCollection;
-                    var libraryLocation = options.OwningNode.Module.Locations[C.StaticLibrary.OutputFileLocKey];
+                    var libraryLocation = options.GetModuleLocation(C.StaticLibrary.OutputFileLocKey);
                     var libraryFilePath = libraryLocation.GetSinglePath();
                     commandLineBuilder.Add(System.String.Format("-OUT:{0}", libraryFilePath));
                     break;
@@ -66,7 +66,7 @@ namespace VisualCCommon
                     {
                         var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
                         var options = sender as ArchiverOptionCollection;
-                        returnVal.Add("OutputFile", options.OwningNode.Module.Locations[C.StaticLibrary.OutputFileLocKey].GetSinglePath());
+                        returnVal.Add("OutputFile", options.GetModuleLocation(C.StaticLibrary.OutputFileLocKey).GetSinglePath());
                         return returnVal;
                     }
                 default:

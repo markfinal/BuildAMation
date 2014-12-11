@@ -123,7 +123,7 @@ namespace ClangCommon
             var options = sender as CCompilerOptionCollection;
             commandLineBuilder.Add("-c");
             commandLineBuilder.Add("-o");
-            var outputPath = options.OwningNode.Module.Locations[C.ObjectFile.OutputFile].GetSinglePath();
+            var outputPath = options.GetModuleLocation(C.ObjectFile.OutputFile).GetSinglePath();
             commandLineBuilder.Add(outputPath);
         }
         private static void
