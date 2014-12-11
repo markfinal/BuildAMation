@@ -422,5 +422,16 @@ namespace Bam.Core
             get;
             private set;
         }
+
+        /// <summary>
+        /// Is the module owned by the option collection the specified type?
+        /// </summary>
+        /// <returns><c>true</c> if this instance is from module type; otherwise, <c>false</c>.</returns>
+        /// <typeparam name="ModuleType">The module type to compare against</typeparam>
+        public bool IsFromModuleType<ModuleType>()
+        {
+            var matchingType = this.OwningNode.Module is ModuleType;
+            return matchingType;
+        }
     }
 }

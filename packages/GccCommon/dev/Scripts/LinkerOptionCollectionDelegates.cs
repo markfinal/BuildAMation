@@ -74,7 +74,7 @@ namespace GccCommon
                         }
                         else if (Bam.Core.OSUtilities.IsOSXHosting)
                         {
-                            var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
+                            var isPlugin = (sender as Bam.Core.BaseOptionCollection).IsFromModuleType<C.Plugin>();
                             // TODO: revisit Plugins
                             if (isPlugin && EnableXcodeBundleGeneration)
                             {
@@ -110,7 +110,7 @@ namespace GccCommon
             {
                 return;
             }
-            var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
+            var isPlugin = (sender as Bam.Core.BaseOptionCollection).IsFromModuleType<C.Plugin>();
             if (isPlugin && EnableXcodeBundleGeneration)
             {
                 return;
@@ -237,7 +237,7 @@ namespace GccCommon
                 }
                 else if (Bam.Core.OSUtilities.IsOSXHosting)
                 {
-                    var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
+                    var isPlugin = (sender as Bam.Core.BaseOptionCollection).IsFromModuleType<C.Plugin>();
                     // TODO: revisit for Plugins
                     if (isPlugin && EnableXcodeBundleGeneration)
                     {
@@ -263,7 +263,7 @@ namespace GccCommon
             if (dynamicLibrary.Value)
             {
                 var machoTypeOption = configuration.Options["MACH_O_TYPE"];
-                var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
+                var isPlugin = (sender as Bam.Core.BaseOptionCollection).IsFromModuleType<C.Plugin>();
                 // TODO: revisit for Plugins
                 if (isPlugin && EnableXcodeBundleGeneration)
                 {
