@@ -44,10 +44,20 @@ namespace VisualCCommon
             switch (enumOption.Value)
             {
                 case C.ELinkerOutput.Executable:
-                case C.ELinkerOutput.DynamicLibrary:
+                {
                     var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
                     commandLineBuilder.Add(System.String.Format("-OUT:{0}", outputFileLocation.GetSinglePath()));
                     break;
+                }
+                case C.ELinkerOutput.DynamicLibrary:
+                {
+                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
+                    commandLineBuilder.Add(System.String.Format("-OUT:{0}", outputFileLocation.GetSinglePath()));
+                    commandLineBuilder.Add("-DLL");
+                    var staticImportLibraryLoc = options.GetModuleLocation(C.DynamicLibrary.ImportLibraryFile);
+                    commandLineBuilder.Add(System.String.Format("-IMPLIB:{0}", staticImportLibraryLoc.GetSinglePath()));
+                    break;
+                }
                 default:
                     throw new Bam.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
@@ -60,20 +70,28 @@ namespace VisualCCommon
              VisualStudioProcessor.EVisualStudioTarget vsTarget)
         {
             var enumOption = option as Bam.Core.ValueTypeOption<C.ELinkerOutput>;
+            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
             var options = sender as LinkerOptionCollection;
             switch (enumOption.Value)
             {
                 case C.ELinkerOutput.Executable:
+                {
+                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
+                    returnVal.Add("OutputFile", outputFileLocation.GetSinglePath());
+                    break;
+                }
                 case C.ELinkerOutput.DynamicLibrary:
-                    {
-                        var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-                        var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
-                        returnVal.Add("OutputFile", outputFileLocation.GetSinglePath());
-                        return returnVal;
-                    }
+                {
+                    var outputFileLocation = options.OwningNode.Module.Locations[C.Application.OutputFile];
+                    returnVal.Add("OutputFile", outputFileLocation.GetSinglePath());
+                    var staticImportLibraryLoc = options.GetModuleLocation(C.DynamicLibrary.ImportLibraryFile);
+                    returnVal.Add("ImportLibrary", staticImportLibraryLoc.GetSinglePath());
+                    break;
+                }
                 default:
                     throw new Bam.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
+            return returnVal;
         }
         private static void
         DoNotAutoIncludeStandardLibrariesCommandLineProcessor(
@@ -185,39 +203,6 @@ namespace VisualCCommon
                 default:
                     throw new Bam.Core.Exception("Unrecognized subsystem option");
             }
-        }
-        private static void
-        DynamicLibraryCommandLineProcessor(
-             object sender,
-             Bam.Core.StringArray commandLineBuilder,
-             Bam.Core.Option option,
-             Bam.Core.Target target)
-        {
-            var dynamicLibraryOption = option as Bam.Core.ValueTypeOption<bool>;
-            if (dynamicLibraryOption.Value)
-            {
-                commandLineBuilder.Add("-DLL");
-                var options = sender as LinkerOptionCollection;
-                var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile];
-                commandLineBuilder.Add(System.String.Format("-IMPLIB:{0}", staticImportLibraryLoc.GetSinglePath()));
-            }
-        }
-        private static VisualStudioProcessor.ToolAttributeDictionary
-        DynamicLibraryVisualStudioProcessor(
-             object sender,
-             Bam.Core.Option option,
-             Bam.Core.Target target,
-             VisualStudioProcessor.EVisualStudioTarget vsTarget)
-        {
-            var returnVal = new VisualStudioProcessor.ToolAttributeDictionary();
-            var dynamicLibraryOption = option as Bam.Core.ValueTypeOption<bool>;
-            if (dynamicLibraryOption.Value)
-            {
-                var options = sender as LinkerOptionCollection;
-                var staticImportLibraryLoc = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile];
-                returnVal.Add("ImportLibrary", staticImportLibraryLoc.GetSinglePath());
-            }
-            return returnVal;
         }
         private static void
         LibraryPathsCommandLineProcessor(
@@ -587,8 +572,6 @@ namespace VisualCCommon
             this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor,DoNotAutoIncludeStandardLibrariesVisualStudioProcessor);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor,DebugSymbolsVisualStudioProcessor);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor,SubSystemVisualStudioProcessor);
-            this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor,DynamicLibraryVisualStudioProcessor);
-            // Property 'DynamicLibraryRuntimeLoadable' is value only - no delegates
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor,LibraryPathsVisualStudioProcessor);
             this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor,StandardLibrariesVisualStudioProcessor);
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesVisualStudioProcessor);

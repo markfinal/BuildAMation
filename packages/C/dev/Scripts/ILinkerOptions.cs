@@ -57,15 +57,6 @@ namespace C
         }
 
         /// <summary>
-        /// Specify whether linked binary is a dynamic library
-        /// </summary>
-        bool DynamicLibrary
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Specify search paths for libraries
         /// </summary>
         Bam.Core.DirectoryCollection LibraryPaths

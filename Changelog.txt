@@ -1,3 +1,5 @@
+11-Dec-2014 Removed C.ILinkerOptions.DynamicLibrary as you can tell if the module is a dynamic library from C.ILinkerOptions.OutputType as well as the module type.
+
 10-Dec-2014 Adding C.Plugin as a new module type, deriving from C.DynamicLibrary. Plugins are explicitly loaded at runtime, rather than implicitly linked against executables. For VisualStudio projects (MSBuild style), the import libraries for Plugins are ignored in the link step for modules that depend on them.
 
 09-Dec-2014 Apple Clang toolchains now supports response files.

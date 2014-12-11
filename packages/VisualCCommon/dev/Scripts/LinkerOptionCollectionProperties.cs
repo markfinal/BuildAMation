@@ -80,18 +80,6 @@ namespace VisualCCommon
                 this.ProcessNamedSetHandler("SubSystemSetHandler", this["SubSystem"]);
             }
         }
-        bool C.ILinkerOptions.DynamicLibrary
-        {
-            get
-            {
-                return this.GetValueTypeOption<bool>("DynamicLibrary", this.SuperSetOptionCollection);
-            }
-            set
-            {
-                this.SetValueTypeOption<bool>("DynamicLibrary", value);
-                this.ProcessNamedSetHandler("DynamicLibrarySetHandler", this["DynamicLibrary"]);
-            }
-        }
         Bam.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
         {
             get

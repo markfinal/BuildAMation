@@ -424,14 +424,32 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Is the module owned by the option collection the specified type?
+        /// Is the module, owned by the option collection, of the specified type?
         /// </summary>
-        /// <returns><c>true</c> if this instance is from module type; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if this instance is of type ModuleType; otherwise, <c>false</c>.</returns>
         /// <typeparam name="ModuleType">The module type to compare against</typeparam>
         public bool IsFromModuleType<ModuleType>()
         {
             var matchingType = this.OwningNode.Module is ModuleType;
             return matchingType;
+        }
+
+        /// <summary>
+        /// Returns the location defined by the key, for the module owned by the option collection.
+        /// </summary>
+        /// <returns><c>Location</c>, if the module defines the location key, <c>null</c> otherwise.</returns>
+        /// <param name="location">Location.</param>
+        public Location GetModuleLocation(LocationKey locationKey)
+        {
+            var containsLocation = this.OwningNode.Module.Locations.Contains(locationKey);
+            if (containsLocation)
+            {
+                return this.OwningNode.Module.Locations[locationKey];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -44,10 +44,24 @@ namespace MingwCommon
             switch (enumOption.Value)
             {
                 case C.ELinkerOutput.Executable:
-                case C.ELinkerOutput.DynamicLibrary:
+                {
                     var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
                     commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     break;
+                }
+                case C.ELinkerOutput.DynamicLibrary:
+                {
+                    var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
+                    commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
+                    commandLineBuilder.Add("-shared");
+                    var importLibraryFileLoc = options.GetModuleLocation(C.DynamicLibrary.ImportLibraryFile);
+                    if (importLibraryFileLoc != null)
+                    {
+                        var importLibPath = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile].GetSinglePath();
+                        commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", importLibPath));
+                    }
+                    break;
+                }
                 default:
                     throw new Bam.Core.Exception("Unrecognized value for C.ELinkerOutput");
             }
@@ -99,25 +113,6 @@ namespace MingwCommon
                     break;
                 default:
                     throw new Bam.Core.Exception("Unrecognized subsystem option");
-            }
-        }
-        private static void
-        DynamicLibraryCommandLineProcessor(
-             object sender,
-             Bam.Core.StringArray commandLineBuilder,
-             Bam.Core.Option option,
-             Bam.Core.Target target)
-        {
-            var dynamicLibraryOption = option as Bam.Core.ValueTypeOption<bool>;
-            if (dynamicLibraryOption.Value)
-            {
-                commandLineBuilder.Add("-shared");
-                var options = sender as LinkerOptionCollection;
-                if (options.OwningNode.Module.Locations.Contains(C.DynamicLibrary.ImportLibraryFile))
-                {
-                    var outputPath = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile].GetSinglePath();
-                    commandLineBuilder.Add(System.String.Format("-Wl,--out-implib,{0}", outputPath));
-                }
             }
         }
         private static void
@@ -222,8 +217,6 @@ namespace MingwCommon
             this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor);
-            this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor);
-            // Property 'DynamicLibraryRuntimeLoadable' is value only - no delegates
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor);
             this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor);
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor);

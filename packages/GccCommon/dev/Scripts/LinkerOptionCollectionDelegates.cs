@@ -64,6 +64,7 @@ namespace GccCommon
                         // see http://lists.apple.com/archives/unix-porting/2003/Oct/msg00032.html
                         if (Bam.Core.OSUtilities.IsUnixHosting)
                         {
+                            commandLineBuilder.Add("-shared");
                             var leafname = System.IO.Path.GetFileName(outputPath);
                             var splitLeafName = leafname.Split('.');
                             // index 0: filename without extension
@@ -78,10 +79,11 @@ namespace GccCommon
                             // TODO: revisit Plugins
                             if (isPlugin && EnableXcodeBundleGeneration)
                             {
-                                // do nothing
+                                commandLineBuilder.Add("-bundle");
                             }
                             else
                             {
+                                commandLineBuilder.Add("-dynamiclib");
                                 var filename = System.IO.Path.GetFileName(outputPath);
                                 commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable_path/{0}", filename));
                                 var linkerOptions = sender as C.ILinkerOptions;
@@ -110,11 +112,14 @@ namespace GccCommon
             {
                 return;
             }
+            var machoTypeOption = configuration.Options["MACH_O_TYPE"];
             var isPlugin = (sender as Bam.Core.BaseOptionCollection).IsFromModuleType<C.Plugin>();
             if (isPlugin && EnableXcodeBundleGeneration)
             {
+                machoTypeOption.AddUnique("mh_bundle");
                 return;
             }
+            machoTypeOption.AddUnique("mh_dylib");
             var options = sender as LinkerOptionCollection;
             {
                 var installNameOption = configuration.Options["LD_DYLIB_INSTALL_NAME"];
@@ -220,60 +225,6 @@ namespace GccCommon
              Bam.Core.Target target)
         {
             // empty
-        }
-        private static void
-        DynamicLibraryCommandLineProcessor(
-             object sender,
-             Bam.Core.StringArray commandLineBuilder,
-             Bam.Core.Option option,
-             Bam.Core.Target target)
-        {
-            var dynamicLibraryOption = option as Bam.Core.ValueTypeOption<bool>;
-            if (dynamicLibraryOption.Value)
-            {
-                if (Bam.Core.OSUtilities.IsUnixHosting)
-                {
-                    commandLineBuilder.Add("-shared");
-                }
-                else if (Bam.Core.OSUtilities.IsOSXHosting)
-                {
-                    var isPlugin = (sender as Bam.Core.BaseOptionCollection).IsFromModuleType<C.Plugin>();
-                    // TODO: revisit for Plugins
-                    if (isPlugin && EnableXcodeBundleGeneration)
-                    {
-                        commandLineBuilder.Add("-bundle");
-                    }
-                    else
-                    {
-                        commandLineBuilder.Add("-dynamiclib");
-                    }
-                }
-            }
-        }
-        private static void
-        DynamicLibraryXcodeProjectProcessor(
-             object sender,
-             XcodeBuilder.PBXProject project,
-             XcodeBuilder.XcodeNodeData currentObject,
-             XcodeBuilder.XCBuildConfiguration configuration,
-             Bam.Core.Option option,
-             Bam.Core.Target target)
-        {
-            var dynamicLibrary = option as Bam.Core.ValueTypeOption<bool>;
-            if (dynamicLibrary.Value)
-            {
-                var machoTypeOption = configuration.Options["MACH_O_TYPE"];
-                var isPlugin = (sender as Bam.Core.BaseOptionCollection).IsFromModuleType<C.Plugin>();
-                // TODO: revisit for Plugins
-                if (isPlugin && EnableXcodeBundleGeneration)
-                {
-                    machoTypeOption.AddUnique("mh_bundle");
-                }
-                else
-                {
-                    machoTypeOption.AddUnique("mh_dylib");
-                }
-            }
         }
         private static void
         LibraryPathsCommandLineProcessor(
@@ -701,8 +652,6 @@ namespace GccCommon
             this["DoNotAutoIncludeStandardLibraries"].PrivateData = new PrivateData(DoNotAutoIncludeStandardLibrariesCommandLineProcessor,DoNotAutoIncludeStandardLibrariesXcodeProjectProcessor);
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor,DebugSymbolsXcodeProjectProcessor);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor,SubSystemXcodeProjectProcessor);
-            this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor,DynamicLibraryXcodeProjectProcessor);
-            // Property 'DynamicLibraryRuntimeLoadable' is value only - no delegates
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor,LibraryPathsXcodeProjectProcessor);
             this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor,StandardLibrariesXcodeProjectProcessor);
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesXcodeProjectProcessor);

@@ -49,7 +49,6 @@ namespace C
                     linkerOptions.DebugSymbols = true;
                 }
             }
-            linkerOptions.DynamicLibrary = false;
             linkerOptions.LibraryPaths = new Bam.Core.DirectoryCollection();
             linkerOptions.GenerateMapFile = true;
             linkerOptions.Libraries = new Bam.Core.FileCollection();
