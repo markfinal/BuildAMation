@@ -55,7 +55,7 @@ def FindAllPackagesToTest(root, options):
                     package = Package(root, packageName, packageVersion)
                     if options.verbose:
                         print "\t%s" % package.GetId()
-                    tests.append(package):
+                    tests.append(package)
     return tests
 
 def _preExecute(builder, options):
