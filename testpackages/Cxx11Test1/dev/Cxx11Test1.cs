@@ -14,12 +14,16 @@ namespace Cxx11Test1
             var cOptions = optionCollection as C.ICCompilerOptions;
             if (null != cOptions)
             {
-                cOptions.LanguageStandard = C.ELanguageStandard.Cxx11;
-
                 var cxxOptions = optionCollection as C.ICxxCompilerOptions;
                 if (null != cxxOptions)
                 {
+                    // enable exceptions (some flavours of STL need it)
                     cxxOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
+
+                    // default C++ mode to C++11
+                    // note this is on the C compiler options, but only enabled when C++
+                    // options are in use
+                    cOptions.LanguageStandard = C.ELanguageStandard.Cxx11;
                 }
             }
         }
