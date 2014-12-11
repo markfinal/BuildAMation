@@ -588,6 +588,7 @@ namespace VisualCCommon
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor,DebugSymbolsVisualStudioProcessor);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor,SubSystemVisualStudioProcessor);
             this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor,DynamicLibraryVisualStudioProcessor);
+            // Property 'DynamicLibraryRuntimeLoadable' is value only - no delegates
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor,LibraryPathsVisualStudioProcessor);
             this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor,StandardLibrariesVisualStudioProcessor);
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesVisualStudioProcessor);

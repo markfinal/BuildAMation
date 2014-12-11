@@ -27,6 +27,7 @@ namespace XcodeBuilder
             ApplicationBundle,
             Executable,
             DynamicLibrary,
+            Plugin,
             StaticLibrary
         }
 
@@ -153,6 +154,10 @@ namespace XcodeBuilder
 
             case EType.DynamicLibrary:
                 writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.library.dynamic\";");
+                break;
+
+            case EType.Plugin:
+                writer.WriteLine("\t\t\tproductType = \"com.apple.product-type.bundle\";");
                 break;
 
             case EType.StaticLibrary:

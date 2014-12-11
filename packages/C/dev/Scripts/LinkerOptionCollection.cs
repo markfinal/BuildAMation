@@ -50,6 +50,7 @@ namespace C
                 }
             }
             linkerOptions.DynamicLibrary = false;
+            linkerOptions.DynamicLibraryRuntimeLoadable = false;
             linkerOptions.LibraryPaths = new Bam.Core.DirectoryCollection();
             linkerOptions.GenerateMapFile = true;
             linkerOptions.Libraries = new Bam.Core.FileCollection();

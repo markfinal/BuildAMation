@@ -66,6 +66,16 @@ namespace C
         }
 
         /// <summary>
+        /// Specify whether linked binary is a runtime loadable dynamic library
+        /// </summary>
+        [Bam.Core.ValueOnlyOption]
+        bool DynamicLibraryRuntimeLoadable
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Specify search paths for libraries
         /// </summary>
         Bam.Core.DirectoryCollection LibraryPaths

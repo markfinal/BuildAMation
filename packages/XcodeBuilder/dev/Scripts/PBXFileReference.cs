@@ -29,6 +29,8 @@ namespace XcodeBuilder
             ReferencedExecutable,
             DynamicLibrary,
             ReferencedDynamicLibrary,
+            Plugin,
+            ReferencedPlugin,
             StaticLibrary,
             ReferencedStaticLibrary,
             CSourceFile,
@@ -149,6 +151,14 @@ namespace XcodeBuilder
 
             case EType.ReferencedDynamicLibrary:
                 writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = \"compiled.mach-o.dylib\"; name = {1}; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.ShortPath, this.RelativePath);
+                break;
+
+            case EType.Plugin:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; explicitFileType = \"compiled.mach-o.bundle\"; includeInIndex = 0; path = {1}; sourceTree = BUILT_PRODUCTS_DIR; }};", this.UUID, this.ShortPath);
+                break;
+
+            case EType.ReferencedPlugin:
+                writer.WriteLine("\t\t{0} /* {1} */ = {{isa = PBXFileReference; lastKnownFileType = \"compiled.mach-o.bundle\"; name = {1}; path = {2}; sourceTree = \"<group>\"; }};", this.UUID, this.ShortPath, this.RelativePath);
                 break;
 
             case EType.StaticLibrary:

@@ -19,10 +19,19 @@
 namespace C
 {
     /// <summary>
-    /// C/C++ plugin, a dynamic library that is not linked against
+    /// C/C++ plugin, a dynamic library that is not linked against, but loaded at runtime
     /// </summary>
     public partial class Plugin :
         DynamicLibrary
     {
+        [LocalLinkerOptionsDelegate]
+        protected static void
+        PluginEnableRuntimeLoadable(
+            Bam.Core.IModule module,
+            Bam.Core.Target target)
+        {
+            var linkerOptions = module.Options as ILinkerOptions;
+            linkerOptions.DynamicLibraryRuntimeLoadable = true;
+        }
     }
 }

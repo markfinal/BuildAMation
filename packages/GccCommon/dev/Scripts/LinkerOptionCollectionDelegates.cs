@@ -31,6 +31,8 @@ namespace GccCommon
 {
     public partial class LinkerOptionCollection
     {
+        static bool EnableXcodeBundleGeneration = false;
+
         #region C.ILinkerOptions Option delegates
         private static void
         OutputTypeCommandLineProcessor(
@@ -72,12 +74,21 @@ namespace GccCommon
                         }
                         else if (Bam.Core.OSUtilities.IsOSXHosting)
                         {
-                            var filename = System.IO.Path.GetFileName(outputPath);
-                            commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable_path/{0}", filename));
-                            var linkerOptions = sender as C.ILinkerOptions;
-                            commandLineBuilder.Add(System.String.Format("-Wl,-current_version,{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion));
-                            // TODO: this needs to have a proper option
-                            commandLineBuilder.Add(System.String.Format("-Wl,-compatibility_version,{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion));
+                            var optionCollection = sender as C.ILinkerOptions;
+                            // TODO: revisit Plugins
+                            if (optionCollection.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+                            {
+                                // do nothing
+                            }
+                            else
+                            {
+                                var filename = System.IO.Path.GetFileName(outputPath);
+                                commandLineBuilder.Add(System.String.Format("-Wl,-dylib_install_name,@executable_path/{0}", filename));
+                                var linkerOptions = sender as C.ILinkerOptions;
+                                commandLineBuilder.Add(System.String.Format("-Wl,-current_version,{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion));
+                                // TODO: this needs to have a proper option
+                                commandLineBuilder.Add(System.String.Format("-Wl,-compatibility_version,{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion));
+                            }
                         }
                     }
                     break;
@@ -99,6 +110,11 @@ namespace GccCommon
             {
                 return;
             }
+            var linkerOptions = sender as C.ILinkerOptions;
+            if (linkerOptions.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+            {
+                return;
+            }
             var options = sender as LinkerOptionCollection;
             {
                 var installNameOption = configuration.Options["LD_DYLIB_INSTALL_NAME"];
@@ -107,7 +123,6 @@ namespace GccCommon
                 var installName = System.String.Format("@executable_path/{0}", filename);
                 installNameOption.AddUnique(installName);
             }
-            var linkerOptions = sender as C.ILinkerOptions;
             {
                 var currentVersionOption = configuration.Options["DYLIB_CURRENT_VERSION"];
                 var version = System.String.Format("{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
@@ -221,7 +236,16 @@ namespace GccCommon
                 }
                 else if (Bam.Core.OSUtilities.IsOSXHosting)
                 {
-                    commandLineBuilder.Add("-dynamiclib");
+                    var optionCollection = sender as C.ILinkerOptions;
+                    // TODO: revisit for Plugins
+                    if (optionCollection.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+                    {
+                        commandLineBuilder.Add("-bundle");
+                    }
+                    else
+                    {
+                        commandLineBuilder.Add("-dynamiclib");
+                    }
                 }
             }
         }
@@ -234,12 +258,20 @@ namespace GccCommon
              Bam.Core.Option option,
              Bam.Core.Target target)
         {
-            // TODO: this looks like it might actually be MACH_O_TYPE=mh_dylib or mh_execute
             var dynamicLibrary = option as Bam.Core.ValueTypeOption<bool>;
-            var otherLDOptions = configuration.Options["OTHER_LDFLAGS"];
             if (dynamicLibrary.Value)
             {
-                otherLDOptions.AddUnique("-dynamiclib");
+                var machoTypeOption = configuration.Options["MACH_O_TYPE"];
+                var optionCollection = sender as C.ILinkerOptions;
+                // TODO: revisit for Plugins
+                if (optionCollection.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+                {
+                    machoTypeOption.AddUnique("mh_bundle");
+                }
+                else
+                {
+                    machoTypeOption.AddUnique("mh_dylib");
+                }
             }
         }
         private static void
@@ -669,6 +701,7 @@ namespace GccCommon
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor,DebugSymbolsXcodeProjectProcessor);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor,SubSystemXcodeProjectProcessor);
             this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor,DynamicLibraryXcodeProjectProcessor);
+            // Property 'DynamicLibraryRuntimeLoadable' is value only - no delegates
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor,LibraryPathsXcodeProjectProcessor);
             this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor,StandardLibrariesXcodeProjectProcessor);
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor,LibrariesXcodeProjectProcessor);

@@ -32,10 +32,16 @@ namespace XcodeBuilder
 
             var project = this.Workspace.GetProject(node);
 
-            var fileRef = project.FileReferences.Get(moduleName, PBXFileReference.EType.DynamicLibrary, executableLocation, project.RootUri);
+            // TODO: need to revisit Plugins once all builder generations are aligned for .bundle output
+
+            //var fileType = (moduleToBuild is C.Plugin) ? PBXFileReference.EType.Plugin : PBXFileReference.EType.DynamicLibrary;
+            var fileType = PBXFileReference.EType.DynamicLibrary;
+            var fileRef = project.FileReferences.Get(moduleName, fileType, executableLocation, project.RootUri);
             project.ProductsGroup.Children.AddUnique(fileRef);
 
-            var data = project.NativeTargets.Get(moduleName, PBXNativeTarget.EType.DynamicLibrary, project);
+            //var targetType = (moduleToBuild is C.Plugin) ? PBXNativeTarget.EType.Plugin : PBXNativeTarget.EType.DynamicLibrary;
+            var targetType = PBXNativeTarget.EType.DynamicLibrary;
+            var data = project.NativeTargets.Get(moduleName, targetType, project);
             data.ProductReference = fileRef;
 
             // gather up all the source files for this target
@@ -178,6 +184,10 @@ namespace XcodeBuilder
                         if (type == PBXFileReference.EType.DynamicLibrary)
                         {
                             type = PBXFileReference.EType.ReferencedDynamicLibrary;
+                        }
+                        if (type == PBXFileReference.EType.Plugin)
+                        {
+                            type = PBXFileReference.EType.ReferencedPlugin;
                         }
 
                         var relativePath = Bam.Core.RelativePathUtilities.GetPath(dependentData.ProductReference.FullPath, project.RootUri);

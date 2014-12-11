@@ -223,6 +223,7 @@ namespace MingwCommon
             this["DebugSymbols"].PrivateData = new PrivateData(DebugSymbolsCommandLineProcessor);
             this["SubSystem"].PrivateData = new PrivateData(SubSystemCommandLineProcessor);
             this["DynamicLibrary"].PrivateData = new PrivateData(DynamicLibraryCommandLineProcessor);
+            // Property 'DynamicLibraryRuntimeLoadable' is value only - no delegates
             this["LibraryPaths"].PrivateData = new PrivateData(LibraryPathsCommandLineProcessor);
             this["StandardLibraries"].PrivateData = new PrivateData(StandardLibrariesCommandLineProcessor);
             this["Libraries"].PrivateData = new PrivateData(LibrariesCommandLineProcessor);
