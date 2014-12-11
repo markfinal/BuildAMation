@@ -54,7 +54,7 @@ namespace MingwCommon
                     var outputPath = options.OwningNode.Module.Locations[C.Application.OutputFile].GetSinglePath();
                     commandLineBuilder.Add(System.String.Format("-o {0}", outputPath));
                     commandLineBuilder.Add("-shared");
-                    var importLibraryFileLoc = options.GetModuleLocation(C.DynamicLibrary.ImportLibraryFile);
+                    var importLibraryFileLoc = options.GetModuleLocationSafe(C.DynamicLibrary.ImportLibraryFile);
                     if (importLibraryFileLoc != null)
                     {
                         var importLibPath = options.OwningNode.Module.Locations[C.DynamicLibrary.ImportLibraryFile].GetSinglePath();

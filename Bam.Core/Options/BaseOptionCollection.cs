@@ -437,19 +437,26 @@ namespace Bam.Core
         /// <summary>
         /// Returns the location defined by the key, for the module owned by the option collection.
         /// </summary>
-        /// <returns><c>Location</c>, if the module defines the location key, <c>null</c> otherwise.</returns>
-        /// <param name="location">Location.</param>
+        /// <returns><c>Location</c>, of the module for the location key. Exception will be thrown if the key does not exist.</returns>
+        /// <param name="locationKey">Location key.</param>
         public Location GetModuleLocation(LocationKey locationKey)
+        {
+            return this.OwningNode.Module.Locations[locationKey];
+        }
+
+        /// <summary>
+        /// Returns the location defined by the key, for the module owned by the option collection, if it exists.
+        /// </summary>
+        /// <returns><c>Location</c>, if the module defines the location key, <c>null</c> otherwise.</returns>
+        /// <param name="locationKey">Location key.</param>
+        public Location GetModuleLocationSafe(LocationKey locationKey)
         {
             var containsLocation = this.OwningNode.Module.Locations.Contains(locationKey);
             if (containsLocation)
             {
-                return this.OwningNode.Module.Locations[locationKey];
+                return this.GetModuleLocation(locationKey);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
     }
 }
