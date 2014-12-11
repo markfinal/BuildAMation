@@ -92,18 +92,6 @@ namespace GccCommon
                 this.ProcessNamedSetHandler("DynamicLibrarySetHandler", this["DynamicLibrary"]);
             }
         }
-        bool C.ILinkerOptions.DynamicLibraryRuntimeLoadable
-        {
-            get
-            {
-                return this.GetValueTypeOption<bool>("DynamicLibraryRuntimeLoadable", this.SuperSetOptionCollection);
-            }
-            set
-            {
-                this.SetValueTypeOption<bool>("DynamicLibraryRuntimeLoadable", value);
-                this.ProcessNamedSetHandler("DynamicLibraryRuntimeLoadableSetHandler", this["DynamicLibraryRuntimeLoadable"]);
-            }
-        }
         Bam.Core.DirectoryCollection C.ILinkerOptions.LibraryPaths
         {
             get

@@ -24,14 +24,5 @@ namespace C
     public partial class Plugin :
         DynamicLibrary
     {
-        [LocalLinkerOptionsDelegate]
-        protected static void
-        PluginEnableRuntimeLoadable(
-            Bam.Core.IModule module,
-            Bam.Core.Target target)
-        {
-            var linkerOptions = module.Options as ILinkerOptions;
-            linkerOptions.DynamicLibraryRuntimeLoadable = true;
-        }
     }
 }

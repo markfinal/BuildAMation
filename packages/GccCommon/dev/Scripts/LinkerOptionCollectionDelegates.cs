@@ -74,9 +74,9 @@ namespace GccCommon
                         }
                         else if (Bam.Core.OSUtilities.IsOSXHosting)
                         {
-                            var optionCollection = sender as C.ILinkerOptions;
+                            var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
                             // TODO: revisit Plugins
-                            if (optionCollection.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+                            if (isPlugin && EnableXcodeBundleGeneration)
                             {
                                 // do nothing
                             }
@@ -110,8 +110,8 @@ namespace GccCommon
             {
                 return;
             }
-            var linkerOptions = sender as C.ILinkerOptions;
-            if (linkerOptions.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+            var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
+            if (isPlugin && EnableXcodeBundleGeneration)
             {
                 return;
             }
@@ -123,6 +123,7 @@ namespace GccCommon
                 var installName = System.String.Format("@executable_path/{0}", filename);
                 installNameOption.AddUnique(installName);
             }
+            var linkerOptions = sender as C.ILinkerOptions;
             {
                 var currentVersionOption = configuration.Options["DYLIB_CURRENT_VERSION"];
                 var version = System.String.Format("{0}.{1}.{2}", linkerOptions.MajorVersion, linkerOptions.MinorVersion, linkerOptions.PatchVersion);
@@ -236,9 +237,9 @@ namespace GccCommon
                 }
                 else if (Bam.Core.OSUtilities.IsOSXHosting)
                 {
-                    var optionCollection = sender as C.ILinkerOptions;
+                    var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
                     // TODO: revisit for Plugins
-                    if (optionCollection.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+                    if (isPlugin && EnableXcodeBundleGeneration)
                     {
                         commandLineBuilder.Add("-bundle");
                     }
@@ -262,9 +263,9 @@ namespace GccCommon
             if (dynamicLibrary.Value)
             {
                 var machoTypeOption = configuration.Options["MACH_O_TYPE"];
-                var optionCollection = sender as C.ILinkerOptions;
+                var isPlugin = (sender as Bam.Core.BaseOptionCollection).OwningNode.Module is C.Plugin;
                 // TODO: revisit for Plugins
-                if (optionCollection.DynamicLibraryRuntimeLoadable && EnableXcodeBundleGeneration)
+                if (isPlugin && EnableXcodeBundleGeneration)
                 {
                     machoTypeOption.AddUnique("mh_bundle");
                 }
