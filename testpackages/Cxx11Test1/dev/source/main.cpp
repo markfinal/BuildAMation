@@ -22,5 +22,7 @@ int main()
         std::cout << pointer << " is not a null pointer" << std::endl;
     }
 
+	std::cout << "C++ " << __cplusplus << std::endl;
+
     return 0;
 }
