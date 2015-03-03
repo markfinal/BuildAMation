@@ -68,6 +68,7 @@
     <Compile Include="Attributes\RegisterToolsetAttribute.cs" />
     <Compile Include="Attributes\RequiredModulesAttribute.cs" />
     <Compile Include="Attributes\SiblingModulesAttribute.cs" />
+    <Compile Include="Attributes\TargetOverrideAttribute.cs" />
     <Compile Include="Attributes\TriggerActionAttribute.cs" />
     <Compile Include="Attributes\ValueOnlyOptionAttribute.cs">
       <SubType>Code</SubType>
