@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Mark Final
+// Copyright 2010-2015 Mark Final
 //
 // This file is part of BuildAMation.
 //
