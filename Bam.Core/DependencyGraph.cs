@@ -149,9 +149,17 @@ namespace Bam.Core
             string uniqueNameSuffix,
             int uniqueIndex)
         {
+            // override the base target if the module attributes specify it
+            var targetOverrideFilters = moduleType.GetCustomAttributes(typeof(TargetOverrideAttribute), false) as TargetOverrideAttribute[];
+            if (targetOverrideFilters.Length > 0)
+            {
+                baseTarget = BaseTarget.GetInstance(baseTarget, platformOverride: targetOverrideFilters[0].Platform, configurationOverride: targetOverrideFilters[0].Configuration);
+            }
+
             var toolset = ModuleUtilities.GetToolsetForModule(moduleType);
             var targetUsed = Target.GetInstance(baseTarget, toolset);
 
+            // early out if module attributes specify a filter that is matched
             var moduleTargetFilters = moduleType.GetCustomAttributes(typeof(ModuleTargetsAttribute), false) as ModuleTargetsAttribute[];
             if (moduleTargetFilters.Length > 0)
             {

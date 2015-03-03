@@ -41,6 +41,17 @@ namespace Bam.Core
         }
 
         public static BaseTarget
+        GetInstance(
+            BaseTarget baseTarget,
+            EPlatform platformOverride = EPlatform.Invalid,
+            EConfiguration configurationOverride = EConfiguration.Invalid)
+        {
+            var platform = (EPlatform.Invalid == platformOverride) ? baseTarget.Platform : platformOverride;
+            var configuration = (EConfiguration.Invalid == configurationOverride) ? baseTarget.Configuration : configurationOverride;
+            return GetInstance(platform, configuration);
+        }
+
+        public static BaseTarget
         GetInstance32bits(
             BaseTarget source)
         {
