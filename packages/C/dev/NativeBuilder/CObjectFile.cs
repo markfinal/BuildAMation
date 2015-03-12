@@ -64,6 +64,11 @@ namespace NativeBuilder
                             var depLocArray = new Bam.Core.LocationArray();
                             foreach (var depPath in splitDeps)
                             {
+                                // handle dependencies that no longer exist, or have been renamed
+                                if (!System.IO.File.Exists(depPath))
+                                {
+                                    continue;
+                                }
                                 depLocArray.Add(Bam.Core.FileLocation.Get(depPath));
                             }
 #if BAM_ENABLE_FILE_HASHING
