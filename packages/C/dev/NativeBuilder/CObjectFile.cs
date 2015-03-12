@@ -67,6 +67,7 @@ namespace NativeBuilder
                                 // handle dependencies that no longer exist, or have been renamed
                                 if (!System.IO.File.Exists(depPath))
                                 {
+                                    Bam.Core.Log.DebugMessage("Implicit dependency '{0}' no longer exists for node {1}", depPath, node.UniqueModuleName);
                                     continue;
                                 }
                                 depLocArray.Add(Bam.Core.FileLocation.Get(depPath));
