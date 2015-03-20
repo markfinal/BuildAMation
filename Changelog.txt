@@ -1,3 +1,5 @@
+20-Mar-2015 Enable SolutionFolders through Bam.Core.ModuleGroup attributes.
+
 12-Mar-2015 Incremental native builds for C source files can now handle deleted or renamed implicit header dependencies.
 
 03-Mar-2015 Adding Bam.Core.TargetOverride attribute, which can be specified on a module declaration, allowing the platform and configuration to be overridden. This can be used, for example, for a module to indicate that it is 32-bit while in a 64-bit targeted mode.

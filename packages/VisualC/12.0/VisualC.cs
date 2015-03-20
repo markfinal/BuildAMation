@@ -70,16 +70,10 @@ namespace VisualC
                                 break;
                             }
                         }
-                        string defaultValue = subKey.GetValue("") as string;
-                        if (null != defaultValue)
-                        {
-                            if ("Solution Folder Project" == defaultValue)
-                            {
-                                SolutionFolderTypeGuid = new System.Guid(subKeyName);
-                            }
-                        }
                     }
                 }
+
+                SolutionFolderTypeGuid = new System.Guid("2150E333-8FDC-42A3-9474-1A3956D46DE8");
             }
 
             if (0 == ProjectTypeGuid.CompareTo(System.Guid.Empty))
