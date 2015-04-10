@@ -1,3 +1,5 @@
+10-Apr-2015 SuppressReadOnlyRelocations is only enabled for dynamic libraries on OSX for 32-bit builds. This avoids a linker warning.
+
 20-Mar-2015 Enable SolutionFolders through Bam.Core.ModuleGroup attributes.
 
 12-Mar-2015 Incremental native builds for C source files can now handle deleted or renamed implicit header dependencies.

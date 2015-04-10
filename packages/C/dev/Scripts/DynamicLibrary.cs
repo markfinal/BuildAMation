@@ -57,8 +57,9 @@ namespace C
             var linkerOptions = module.Options as ILinkerOptions;
             linkerOptions.OutputType = ELinkerOutput.DynamicLibrary;
 
-            if (module.Options is ILinkerOptionsOSX)
+            if (module.Options is ILinkerOptionsOSX && target.HasPlatform(Bam.Core.EPlatform.OSX32))
             {
+                // only required for 32-bit builds
                 (module.Options as ILinkerOptionsOSX).SuppressReadOnlyRelocations = true;
             }
         }
