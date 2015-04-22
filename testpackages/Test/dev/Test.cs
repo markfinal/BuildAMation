@@ -51,6 +51,15 @@ namespace Test
         }
     }
 
+    sealed class CompileSingleCFileV2 :
+        Bam.Core.V2.Module
+    {
+        public override void Execute()
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
     sealed class CompileSingleCFile :
         C.ObjectFile
     {

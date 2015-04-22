@@ -18,6 +18,57 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    using System.Linq;
+
+    /// <summary>
+    /// Unique keys representing a set of files, through a factory method
+    /// </summary>
+    public sealed class FileKey
+    {
+        private FileKey(string key)
+        {
+            this.Id = key;
+        }
+
+        private static System.Collections.Generic.List<FileKey> generatedKeys = new System.Collections.Generic.List<FileKey>();
+
+        public static FileKey Generate(string key)
+        {
+            var matches = generatedKeys.Where(item => (item.Id == key));
+            if (1 == matches.Count())
+            {
+                return matches.ElementAt(0);
+            }
+            var newKey = new FileKey(key);
+            generatedKeys.Add(newKey);
+            return newKey;
+        }
+
+        public string Id
+        {
+            get;
+            private set;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Id.Equals((obj as FileKey).Id);
+        }
+
+        public override string ToString()
+        {
+            return this.Id;
+        }
+    }
+}
+
     /// <summary>
     /// Abstraction of the key to the LocationMap
     /// </summary>

@@ -18,6 +18,27 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    // only here because not all modules require a path
+    interface ISetInputPath
+    {
+        TokenizedString InputPath
+        {
+            get;
+            set;
+        }
+    }
+
+    interface IChildModule
+    {
+        Module Parent
+        {
+            get;
+            set;
+        }
+    }
+}
     public delegate void
     UpdateOptionCollectionDelegate(
         IModule module,

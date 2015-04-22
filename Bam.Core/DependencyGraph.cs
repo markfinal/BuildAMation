@@ -18,6 +18,375 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    using System.Linq;
+
+    /// <summary>
+    /// Representation of a dependency graph of modules
+    /// </summary>
+    public sealed class DependencyGraph : System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, ModuleCollection>>//System.Collections.IEnumerable
+    {
+        private System.Collections.Generic.Dictionary<int, ModuleCollection> graph = new System.Collections.Generic.Dictionary<int, ModuleCollection>();
+
+        public ModuleCollection this[int rankIndex]
+        {
+            get
+            {
+                if (!this.graph.ContainsKey(rankIndex))
+                {
+                    this.graph.Add(rankIndex, new ModuleCollection());
+                }
+                return this.graph[rankIndex];
+            }
+        }
+
+        public int this[ModuleCollection collection]
+        {
+            get
+            {
+                var pair = this.graph.Where(item => item.Value == collection);
+                if (pair.Count() > 0)
+                {
+                    return pair.ElementAt(0).Key;
+                }
+                return -1;
+            }
+        }
+
+        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<int, ModuleCollection>> GetEnumerator()
+        {
+            int rankIndex = 0;
+            while (rankIndex < this.graph.Count)
+            {
+                yield return new System.Collections.Generic.KeyValuePair<int, ModuleCollection>(rankIndex, this.graph[rankIndex]);
+                ++rankIndex;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+    }
+
+    /// <summary>
+    /// Singleton representing the single point of reference for all build functionality
+    /// </summary>
+    public sealed class Graph : System.Collections.Generic.IEnumerable<ModuleCollection>
+    {
+        static Graph()
+        {
+            Instance = new Graph();
+        }
+
+        public static Graph Instance
+        {
+            get;
+            private set;
+        }
+
+        private Graph()
+        {
+            // TODO: does there need to be a module list per build environment?
+            //    - wondering in case you need to search for a module
+            this.modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
+            this.referencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
+            this.TopLevelModules = new System.Collections.Generic.List<Module>();
+            this.Macros = new MacroList();
+            this.Macros.Add("buildroot", new TokenizedString(@"c:\dev\build", null));
+            this.buildEnvironment = null;
+            this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
+            this.dependencyGraph = new DependencyGraph();
+        }
+
+        public void AddModule(Module m)
+        {
+            this.modules[this.buildEnvironment].Add(m);
+        }
+
+        public System.Collections.Generic.Stack<System.Type> CommonModuleType
+        {
+            get;
+            private set;
+        }
+
+        public T FindReferencedModule<T>() where T : Module, new()
+        {
+            var referencedModules = this.referencedModules[this.buildEnvironment];
+            var matches = referencedModules.Where(item => item.GetType() == typeof(T));
+            if (matches.Count() > 0)
+            {
+                var module = matches.ElementAt(0) as T;
+                return module;
+            }
+            this.CommonModuleType.Push(typeof(T));
+            var newModule = Module.Create<T>();
+            this.CommonModuleType.Pop();
+            referencedModules.Add(newModule);
+            return newModule;
+        }
+
+        public void CreateTopLevelModules(System.Reflection.Assembly assembly, Environment env, string ns)
+        {
+            this.BuildEnvironment = env;
+            var allTypes = assembly.GetTypes();
+            var allPackageTypes = allTypes.Where(type => type.Namespace == ns && type.IsSubclassOf(typeof(Module)));
+            foreach (var moduleType in allPackageTypes)
+            {
+                var m = typeof(Graph).GetMethod("FindReferencedModule");
+                var gm = m.MakeGenericMethod(moduleType);
+                var module = gm.Invoke(Graph.Instance, null) as Module;
+                this.TopLevelModules.Add(module);
+            }
+            this.BuildEnvironment = null;
+            // remove all top level modules that have a reference count > 1
+            foreach (var tlm in this.TopLevelModules.Reverse<Module>())
+            {
+                if (!tlm.TopLevel)
+                {
+                    this.TopLevelModules.Remove(tlm);
+                }
+            }
+        }
+
+        public void ExpandPaths()
+        {
+            foreach (var rank in this.dependencyGraph.Reverse())
+            {
+                foreach (var module in rank.Value)
+                {
+                    // input paths first, since generated paths may use macros based on these
+                    var setPath = module as ISetInputPath;
+                    if (null != setPath)
+                    {
+                        // TODO: not necessary - there should always be an input path if the interface is implemented
+                        if (null != setPath.InputPath)
+                        {
+                            setPath.InputPath.Parse(this.Macros, module.Macros);
+                        }
+                    }
+
+                    // parse the generated paths next
+                    foreach (var pair in module.GeneratedPaths)
+                    {
+                        var path = pair.Value;
+                        if (null == path || path.Empty)
+                        {
+                            continue;
+                        }
+                        module.GeneratedPaths[pair.Key].Parse(this.Macros, module.Macros);
+                    }
+                }
+            }
+        }
+
+        public System.Collections.Generic.List<Module> TopLevelModules
+        {
+            get;
+            private set;
+        }
+
+        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> modules
+        {
+            get;
+            set;
+        }
+
+        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> referencedModules
+        {
+            get;
+            set;
+        }
+
+        public MacroList Macros
+        {
+            get;
+            private set;
+        }
+
+        private Environment buildEnvironment = null;
+        public Environment BuildEnvironment
+        {
+            get
+            {
+                return this.buildEnvironment;
+            }
+
+            private set
+            {
+                this.buildEnvironment = value;
+                if (null != value)
+                {
+                    this.modules.Add(value, new System.Collections.Generic.List<Module>());
+                    this.referencedModules.Add(value, new System.Collections.Generic.List<Module>());
+                    // merge into the macros
+                    // TODO: does it need the concept of a clean and a working macros?
+                    this.Macros.Add("config", new TokenizedString(value.Configuration, null));
+                }
+            }
+        }
+
+        public DependencyGraph dependencyGraph
+        {
+            get;
+            private set;
+        }
+
+        private void ApplyGroupDependenciesToChildren(
+            System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
+            System.Collections.Generic.IEnumerable<Module> dependencies)
+        {
+            var nonChildDependents = new System.Collections.Generic.List<Module>();
+            foreach (var c in dependencies)
+            {
+                if (!(c is IChildModule))
+                {
+                    nonChildDependents.Add(c);
+                }
+            }
+            foreach (var d in nonChildDependents)
+            {
+                foreach (var c in children)
+                {
+                    c.DependsOn(d);
+                }
+            }
+        }
+
+        private void ApplyGroupRequirementsToChildren(
+            System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
+            System.Collections.Generic.IEnumerable<Module> dependencies)
+        {
+            var nonChildDependents = new System.Collections.Generic.List<Module>();
+            foreach (var c in dependencies)
+            {
+                if (!(c is IChildModule))
+                {
+                    nonChildDependents.Add(c);
+                }
+            }
+            foreach (var d in nonChildDependents)
+            {
+                foreach (var c in children)
+                {
+                    c.Requires(d);
+                }
+            }
+        }
+
+        private void InternalArrangeDependents(Module m, int rank)
+        {
+            if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
+            {
+                return;
+            }
+            if (m is IModuleGroup)
+            {
+                var children = m.Children;
+                this.ApplyGroupDependenciesToChildren(children, m.Dependents);
+                this.ApplyGroupRequirementsToChildren(children, m.Requirements);
+            }
+            var nextRank = rank + 1;
+            var currentRank = this.dependencyGraph[nextRank];
+            foreach (var c in m.Dependents)
+            {
+                currentRank.Add(c);
+                this.InternalArrangeDependents(c, nextRank);
+            }
+            foreach (var c in m.Requirements)
+            {
+                currentRank.Add(c);
+                this.InternalArrangeDependents(c, nextRank);
+            }
+        }
+
+        public void SortDependencies()
+        {
+            var currentRank = this.dependencyGraph[0];
+            foreach (var m in this.TopLevelModules)
+            {
+                currentRank.Add(m);
+                this.InternalArrangeDependents(m, 0);
+            }
+        }
+
+        public void Dump()
+        {
+            foreach (var rank in this.dependencyGraph)
+            {
+                var text = new System.Text.StringBuilder();
+                text.AppendFormat("{1}Rank {0} modules{1}", rank.Key, System.Environment.NewLine);
+                text.AppendLine(new string('-', 80));
+                foreach (var m in rank.Value)
+                {
+                    text.AppendLine(m.ToString());
+                    if (m is ISetInputPath)
+                    {
+                        text.AppendFormat("\tInput: {0}{1}", (m as ISetInputPath).InputPath, System.Environment.NewLine);
+                    }
+                    foreach (var s in m.GeneratedPaths)
+                    {
+                        text.AppendFormat("\t{0} : {1}{2}", s.Key, s.Value, System.Environment.NewLine);
+                    }
+                }
+                System.Diagnostics.Debug.Write(text.ToString());
+            }
+        }
+
+        private void InternalValidateGraph(int parentRank, System.Collections.ObjectModel.ReadOnlyCollection<Module> modules)
+        {
+            foreach (var c in modules)
+            {
+                var childCollection = c.OwningRank;
+                if (null == childCollection)
+                {
+                    throw new System.Exception("Dependency has no rank");
+                }
+                var found = this.dependencyGraph.Where(item => item.Value == childCollection);
+                if (0 == found.Count())
+                {
+                    throw new System.Exception("Module collection not found in graph");
+                }
+                if (found.Count() > 1)
+                {
+                    throw new System.Exception("Module collection found more than once in graph");
+                }
+                var childRank = found.ElementAt(0).Key;
+                if (childRank <= parentRank)
+                {
+                    throw new System.Exception(System.String.Format("Dependent module {0} found at a lower rank than the dependee", c));
+                }
+            }
+        }
+
+        public void Validate()
+        {
+            foreach (var rank in this.dependencyGraph)
+            {
+                foreach (var m in rank.Value)
+                {
+                    this.InternalValidateGraph(rank.Key, m.Dependents);
+                    this.InternalValidateGraph(rank.Key, m.Requirements);
+                }
+            }
+        }
+
+        public System.Collections.Generic.IEnumerator<ModuleCollection> GetEnumerator()
+        {
+            foreach (var rank in this.dependencyGraph)
+            {
+                yield return rank.Value;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+    }
+}
+
     public class DependencyGraph :
         System.Collections.IEnumerable
     {

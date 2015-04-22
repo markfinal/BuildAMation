@@ -18,6 +18,18 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    interface IModuleGroup
+    {
+        System.Collections.Generic.List<Module> Children
+        {
+            get;
+            set;
+        }
+    }
+}
+
     public interface IModuleCollection :
         INestedDependents
     {

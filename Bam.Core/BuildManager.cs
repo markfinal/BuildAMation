@@ -18,6 +18,42 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    using System.Linq;
+
+    /// <summary>
+    /// Management of the graph execution
+    /// </summary>
+    public sealed class Executor
+    {
+        public Executor(string mode)
+        {
+            this.Mode = mode;
+        }
+
+        public string Mode
+        {
+            get;
+            private set;
+        }
+
+        public void run()
+        {
+            // TODO: do this over a graph, not the linearized list
+            // always execute from leaf to root
+            var graph = Graph.Instance;
+            foreach (var rank in graph.Reverse())
+            {
+                foreach (var module in rank)
+                {
+                    module.Execute();
+                }
+            }
+        }
+    }
+}
+
     public class BuildManager
     {
         private DependencyGraph graph;

@@ -18,6 +18,162 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    using System.Linq;
+
+    /// <summary>
+    /// Abstract concept of a module, the base class for all buildables in BAM
+    /// </summary>
+    public abstract class Module
+    {
+        // private so that the factory method must be used
+        protected Module()
+        {
+            var graph = Graph.Instance;
+            if (null == graph.BuildEnvironment)
+            {
+                throw new System.Exception("No build environment");
+            }
+
+            graph.AddModule(this);
+            this.Macros = new MacroList();
+            // TODO: Can this be generalized to be a collection of files?
+            this.GeneratedPaths = new System.Collections.Generic.Dictionary<FileKey, TokenizedString>();
+
+            // add the package root
+            var packageNameSpace = graph.CommonModuleType.Peek().Namespace;
+            this.Macros.Add("pkgroot", new TokenizedString(System.String.Format(@"c:\dev\testing\{0}", packageNameSpace), null));
+            this.Macros.Add("modulename", new TokenizedString(this.GetType().Name, null));
+
+            this.OwningRank = null;
+        }
+
+        // TODO: is this virtual or abstract?
+        protected virtual void init()
+        { }
+
+        public static T Create<T>() where T : Module, new()
+        {
+            var module = new T();
+            module.init();
+            return module;
+        }
+
+        protected void RegisterGeneratedFile(FileKey key, TokenizedString path)
+        {
+            this.GeneratedPaths.Add(key, path);
+        }
+
+        private void RegisterGeneratedFile(FileKey key)
+        {
+            this.RegisterGeneratedFile(key, null);
+        }
+
+        private void InternalDependsOn(Module module)
+        {
+            this.dependents.Add(module);
+            module.dependees.Add(this);
+        }
+
+        public void DependsOn(Module module, params Module[] moreModules)
+        {
+            this.InternalDependsOn(module);
+            foreach (var m in moreModules)
+            {
+                this.InternalDependsOn(m);
+            }
+        }
+
+        private void InternalRequires(Module module)
+        {
+            this.requiredDependents.Add(module);
+            module.requiredDependees.Add(this);
+        }
+
+        public void Requires(Module module, params Module[] moreModules)
+        {
+            this.InternalRequires(module);
+            foreach (var m in moreModules)
+            {
+                this.InternalRequires(m);
+            }
+        }
+
+        public delegate void PatchDelegate(Settings settings);
+        public void PatchSettings(PatchDelegate dlg)
+        {
+            this.patches.Add(dlg);
+        }
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.dependents);
+            }
+        }
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirements
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.requiredDependents);
+            }
+        }
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Children
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.dependents.Where(item => (item as IChildModule).Parent == this).ToList());
+            }
+        }
+
+        private System.Collections.Generic.List<Module> dependents = new System.Collections.Generic.List<Module>();
+        private System.Collections.Generic.List<Module> dependees = new System.Collections.Generic.List<Module>();
+
+        private System.Collections.Generic.List<Module> requiredDependents = new System.Collections.Generic.List<Module>();
+        private System.Collections.Generic.List<Module> requiredDependees = new System.Collections.Generic.List<Module>();
+
+        private System.Collections.Generic.List<PatchDelegate> patches = new System.Collections.Generic.List<PatchDelegate>();
+
+        public System.Collections.Generic.Dictionary<FileKey, TokenizedString> GeneratedPaths
+        {
+            get;
+            private set;
+        }
+
+        public abstract void Execute();
+
+        public bool TopLevel
+        {
+            get
+            {
+                var isTopLevel = (0 == this.dependees.Count) && (0 == this.requiredDependees.Count);
+                return isTopLevel;
+            }
+        }
+
+        public MacroList Macros
+        {
+            get;
+            private set;
+        }
+
+        public int Id
+        {
+            get;
+            private set;
+        }
+
+        public ModuleCollection OwningRank
+        {
+            get;
+            set;
+        }
+    }
+}
     /// <summary>
     /// BaseModules are the base class for all real modules in package scripts.
     /// These are constructed by the Bam Core when they are required.

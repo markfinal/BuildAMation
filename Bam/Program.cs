@@ -21,60 +21,118 @@ namespace Bam
     /// <summary>
     /// Command line tool main entry point
     /// </summary>
-    internal class Program
+    class Program
     {
+        static bool UseV2 = true;
+
         /// <summary>
         /// Application entry point.
         /// </summary>
         /// <param name="args">Argument array.</param>
-        public static void
+        static void
         Main(
             string[] args)
         {
-            // take control of Ctrl+C
-            System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
-
-            try
+            if (UseV2)
             {
-                var profile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
-                profile.StartProfile();
-
-                var application = new Application(args);
-                application.Run();
-
-                profile.StopProfile();
-
-                if (Core.State.ShowTimingStatistics)
+                Core.State.BuildRoot = "build";
+                Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
+                Core.State.CompileWithDebugSymbols = true;
+                var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
+                if (!compiledSuccessfully)
                 {
-                    Core.TimingProfileUtilities.DumpProfiles();
+                    throw new Core.Exception("Package compilation failed");
                 }
-            }
-            catch (Core.Exception exception)
-            {
-                Core.Exception.DisplayException(exception);
-                System.Environment.ExitCode = -1;
-            }
-            catch (System.Reflection.TargetInvocationException exception)
-            {
-                Core.Exception.DisplayException(exception);
-                System.Environment.ExitCode = -2;
-            }
-            catch (System.Exception exception)
-            {
-                Core.Exception.DisplayException(exception);
-                System.Environment.ExitCode = -3;
-            }
-            finally
-            {
-                if (0 == System.Environment.ExitCode)
+
+                Core.PackageUtilities.LoadPackageAssembly();
+                var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(Core.State.ScriptAssemblyPathname);
+
+                var graph = Core.V2.Graph.Instance;
+
+                var debug = new Core.V2.Environment();
+                debug.Configuration = "Debug";
+
+                var optimized = new Core.V2.Environment();
+                optimized.Configuration = "Optimized";
+
+                // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
+                foreach (var env in new[] { debug/*, optimized*/})
                 {
-                    Core.Log.Info("\nSucceeded");
+                    graph.CreateTopLevelModules(Core.State.ScriptAssembly, env, topLevelNamespace);
                 }
-                else
+
+                // Phase 2: Graph now has a linear list of modules; create a dependency graph
+                // NB: all those modules with 0 dependees are the top-level modules
+                var topLevelModules = graph.TopLevelModules;
+                System.Diagnostics.Debug.WriteLine("Top-level modules");
+                foreach (var m in topLevelModules)
                 {
-                    Core.Log.Info("\nFailed");
+                    System.Diagnostics.Debug.WriteLine(m.ToString());
                 }
-                Core.Log.DebugMessage("Exit code is {0}", System.Environment.ExitCode);
+                System.Diagnostics.Debug.WriteLine("End");
+                graph.SortDependencies();
+                graph.Validate();
+
+                // Phase 3: Create default settings, and apply patches (build + shared) to each module
+                // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
+                // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
+
+                // Phase 4: Execute dependency graph
+                // N.B. all paths (including those with macros) have been delayed expansion until now
+                graph.ExpandPaths();
+
+                graph.Dump();
+
+                var executor = new Core.V2.Executor("Native");
+                executor.run();
+            }
+            else
+            {
+                // take control of Ctrl+C
+                System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
+
+                try
+                {
+                    var profile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
+                    profile.StartProfile();
+
+                    var application = new Application(args);
+                    application.Run();
+
+                    profile.StopProfile();
+
+                    if (Core.State.ShowTimingStatistics)
+                    {
+                        Core.TimingProfileUtilities.DumpProfiles();
+                    }
+                }
+                catch (Core.Exception exception)
+                {
+                    Core.Exception.DisplayException(exception);
+                    System.Environment.ExitCode = -1;
+                }
+                catch (System.Reflection.TargetInvocationException exception)
+                {
+                    Core.Exception.DisplayException(exception);
+                    System.Environment.ExitCode = -2;
+                }
+                catch (System.Exception exception)
+                {
+                    Core.Exception.DisplayException(exception);
+                    System.Environment.ExitCode = -3;
+                }
+                finally
+                {
+                    if (0 == System.Environment.ExitCode)
+                    {
+                        Core.Log.Info("\nSucceeded");
+                    }
+                    else
+                    {
+                        Core.Log.Info("\nFailed");
+                    }
+                    Core.Log.DebugMessage("Exit code is {0}", System.Environment.ExitCode);
+                }
             }
         }
 

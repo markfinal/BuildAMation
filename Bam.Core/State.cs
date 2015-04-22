@@ -18,6 +18,263 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    using System.Linq;
+
+    /// <summary>
+    /// Extension functions
+    /// </summary>
+    static class Extensions
+    {
+        // ref: http://stackoverflow.com/questions/521687/c-sharp-foreach-with-index
+        static public void Each<T>(this System.Collections.Generic.IEnumerable<T> ie, System.Action<T, int> action)
+        {
+            var i = 0;
+            foreach (var e in ie) action(e, i++);
+        }
+    }
+
+    /// <summary>
+    /// Strings can contain macros and functions, which are tokenized and evaluated in this class
+    /// </summary>
+    public sealed class TokenizedString
+    {
+        public static readonly string TokenPrefix = @"$(";
+        public static readonly string TokenSuffix = @")";
+        private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
+        private static readonly string FunctionRegExPattern = @"(\$([a-z]*)\((.+)\))";
+        private static readonly string FunctionPrefix = @"$";
+
+        private System.Collections.Generic.List<string> tokens = null;
+        private System.Collections.Generic.List<int> macroIndices = null;
+        private Module moduleWithMacros = null;
+        private string cachedJoin = null;
+
+        static private System.Collections.Generic.IEnumerable<string> SplitToParse(string original, string regExPattern)
+        {
+            var matches = System.Text.RegularExpressions.Regex.Split(original, regExPattern);
+            var filtered = matches.Where(item => !System.String.IsNullOrEmpty(item));
+            return filtered;
+        }
+
+        private TokenizedString(string original)
+        {
+            var tokenized = SplitToParse(original, TokenRegExPattern);
+            tokenized.Each<string>((item, index) =>
+            {
+                if (item.StartsWith(TokenPrefix) && item.EndsWith(TokenSuffix))
+                {
+                    if (null == this.macroIndices)
+                    {
+                        this.macroIndices = new System.Collections.Generic.List<int>();
+                    }
+                    this.macroIndices.Add(index);
+                }
+            });
+            this.tokens = tokenized.ToList<string>();
+        }
+
+        public TokenizedString(string original, Module moduleWithMacros)
+            : this(original)
+        {
+            this.moduleWithMacros = moduleWithMacros;
+        }
+
+        public string this[int index]
+        {
+            get
+            {
+                return this.tokens[index];
+            }
+
+            set
+            {
+                this.tokens[index] = value;
+                if (this.macroIndices.Contains(index))
+                {
+                    this.macroIndices.Remove(index);
+                }
+            }
+        }
+
+        public bool IsExpanded
+        {
+            get
+            {
+                return (null == this.macroIndices) || (0 == this.macroIndices.Count);
+            }
+        }
+
+        // safe:true = don't cache anything, and don't throw if it's not expanded
+        // safe:false = cache what you can, and throw if the tokens haven't been expanded
+        private string join(bool safe)
+        {
+            if (!safe && !this.IsExpanded)
+            {
+                throw new System.Exception("TokenizedString not expanded");
+            }
+            if (1 == this.tokens.Count)
+            {
+                return this.tokens[0];
+            }
+            if (null != this.cachedJoin)
+            {
+                return this.cachedJoin;
+            }
+            var join = System.String.Join(string.Empty, this.tokens);
+            if (!safe)
+            {
+                this.cachedJoin = join;
+            }
+            return join;
+        }
+
+        public override string ToString()
+        {
+            return this.join(safe: false);
+        }
+
+        public bool Empty
+        {
+            get
+            {
+                return (null == this.tokens) || (0 == this.tokens.Count());
+            }
+        }
+
+        public void Parse(MacroList globalMacros, MacroList fallback)
+        {
+            if (this.Empty || this.IsExpanded)
+            {
+                return;
+            }
+            var macros = (this.moduleWithMacros != null) ? this.moduleWithMacros.Macros : fallback;
+            var orig = this.join(safe: true);
+            foreach (int index in this.macroIndices.Reverse<int>())
+            {
+                var token = this.tokens[index];
+                if (globalMacros.Dict.ContainsKey(token))
+                {
+                    token = globalMacros.Dict[token].ToString();
+                }
+                else if (macros.Dict.ContainsKey(token))
+                {
+                    token = macros.Dict[token].ToString();
+                }
+                else
+                {
+                    throw new System.Exception(System.String.Format("Unrecognized token '{0}", token));
+                }
+                this.tokens[index] = token;
+                this.macroIndices.Remove(index);
+            }
+            if (!this.IsExpanded)
+            {
+                throw new System.Exception(System.String.Format("Input string could not be fully expanded"));
+            }
+            System.Diagnostics.Debug.WriteLine("Converted '{0}' to '{1}'", orig, this.ToString());
+            this.EvaluateFunctions();
+        }
+
+        private void EvaluateFunctions()
+        {
+            var tokenized = SplitToParse(this.join(safe: false), FunctionRegExPattern);
+            var matchCount = tokenized.Count();
+            if (1 == matchCount)
+            {
+                return;
+            }
+            // triplets of matches
+            int matchIndex = 0;
+            while (matchIndex < matchCount)
+            {
+                var index = matchIndex++;
+                var expr = tokenized.ElementAt(index);
+                if (!expr.StartsWith(FunctionPrefix))
+                {
+                    continue;
+                }
+
+                var functionName = tokenized.ElementAt(matchIndex++);
+                var argument = tokenized.ElementAt(matchIndex++);
+                var result = functionExpression(functionName, argument);
+                // since there is an unsafe join above, we can do this
+                this.cachedJoin = this.cachedJoin.Replace(expr, result);
+            }
+            System.Diagnostics.Debug.WriteLine(System.String.Format("Converted further to '{0}'", this.cachedJoin));
+        }
+
+        private string functionExpression(string functionName, string argument)
+        {
+            switch (functionName)
+            {
+                case "basename":
+                    return System.IO.Path.GetFileNameWithoutExtension(argument);
+
+                default:
+                    throw new System.Exception("Unknown function");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Container of key-values pairs representing macro replacement in strings (usually paths)
+    /// </summary>
+    public sealed class MacroList
+    {
+        public MacroList()
+        {
+            this.dict = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+        }
+
+        public void Add(string key, TokenizedString value)
+        {
+            if (key.StartsWith(TokenizedString.TokenPrefix) || key.EndsWith(TokenizedString.TokenSuffix))
+            {
+                throw new System.Exception(System.String.Format("Invalid macro key: {0}", key));
+            }
+            if (null == value)
+            {
+                throw new System.Exception("Macro value cannot be null");
+            }
+            var formattedKey = System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
+            this.dict[formattedKey] = value;
+        }
+
+        private System.Collections.Generic.Dictionary<string, TokenizedString> dict
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString> Dict
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString>(this.dict);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Encapsulation of all things needed to configure a build
+    /// </summary>
+    sealed public class Environment
+    {
+        public Environment()
+        {
+            this.Configuration = null;
+        }
+
+        public string Configuration
+        {
+            get;
+            set;
+        }
+    }
+}
+
     public static class State
     {
         public static readonly LocationKey BuildRootLocationKey = new LocationKey("BuildRoot", ScaffoldLocation.ETypeHint.Directory);

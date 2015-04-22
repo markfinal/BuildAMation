@@ -18,6 +18,61 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    /// <summary>
+    /// Container representing a 'ranked' collection of modules
+    /// </summary>
+    public sealed class ModuleCollection : System.Collections.Generic.IEnumerable<Module>
+    {
+        private System.Collections.Generic.List<Module> modules = new System.Collections.Generic.List<Module>();
+
+        public void Add(Module m)
+        {
+            if (null != m.OwningRank)
+            {
+                if (this == m.OwningRank)
+                {
+                    return;
+                }
+                var originalRank = Graph.Instance.dependencyGraph[m.OwningRank];
+                var newRank = Graph.Instance.dependencyGraph[this];
+                if (newRank > originalRank)
+                {
+                    this.Move(m);
+                }
+                return;
+            }
+            this.modules.Add(m);
+            var r = Graph.Instance.dependencyGraph[this];
+            m.OwningRank = this;
+        }
+
+        public void Move(Module m)
+        {
+            if (null == m.OwningRank)
+            {
+                throw new System.Exception("Cannot move a module that has not been assigned");
+            }
+            m.OwningRank.modules.Remove(m);
+            m.OwningRank = null;
+        }
+
+        public System.Collections.Generic.IEnumerator<Module> GetEnumerator()
+        {
+            for (int i = 0; i < this.modules.Count; ++i)
+            {
+                yield return this.modules[i];
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+    }
+}
+
     public class ModuleCollection :
         System.Collections.Generic.ICollection<IModule>
     {

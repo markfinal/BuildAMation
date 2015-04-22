@@ -18,6 +18,15 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    /// <summary>
+    /// Abstract base class for all settings
+    /// </summary>
+    public abstract class Settings
+    {
+    }
+}
     public abstract class BaseOptionCollection :
         System.Collections.IEnumerable,
         System.ICloneable
