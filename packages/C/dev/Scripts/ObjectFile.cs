@@ -18,6 +18,54 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public class ObjectFile :
+        Bam.Core.V2.Module,
+        Bam.Core.V2.IChildModule,
+        Bam.Core.V2.IInputPath
+    {
+        private Bam.Core.V2.TokenizedString path = null;
+        private Bam.Core.V2.Module parent = null;
+
+        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("CObjectFile");
+
+        protected override void init()
+        {
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(config)/$basename($(inputpath)).obj", null));
+        }
+
+        public Bam.Core.V2.TokenizedString InputPath
+        {
+            get
+            {
+                return this.path;
+            }
+            set
+            {
+                this.Macros.Add("inputpath", value);
+                this.path = value;
+            }
+        }
+
+        Bam.Core.V2.Module Bam.Core.V2.IChildModule.Parent
+        {
+            get
+            {
+                return this.parent;
+            }
+            set
+            {
+                this.parent = value;
+            }
+        }
+
+        public override void Execute()
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+}
     /// <summary>
     /// C object file
     /// </summary>

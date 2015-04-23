@@ -52,11 +52,11 @@ namespace Test
     }
 
     sealed class CompileSingleCFileV2 :
-        Bam.Core.V2.Module
+        C.V2.ObjectFile
     {
-        public override void Execute()
+        public CompileSingleCFileV2()
         {
-            throw new System.NotImplementedException();
+            this.InputPath = new Bam.Core.V2.TokenizedString("$(pkgroot)/source/main.c", null);
         }
     }
 

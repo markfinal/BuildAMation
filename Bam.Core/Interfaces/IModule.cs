@@ -21,7 +21,7 @@ namespace Bam.Core
 namespace V2
 {
     // only here because not all modules require a path
-    interface ISetInputPath
+    public interface IInputPath
     {
         TokenizedString InputPath
         {
@@ -30,7 +30,7 @@ namespace V2
         }
     }
 
-    interface IChildModule
+    public interface IChildModule
     {
         Module Parent
         {

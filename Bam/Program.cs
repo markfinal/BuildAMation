@@ -64,12 +64,12 @@ namespace Bam
                 // Phase 2: Graph now has a linear list of modules; create a dependency graph
                 // NB: all those modules with 0 dependees are the top-level modules
                 var topLevelModules = graph.TopLevelModules;
-                System.Diagnostics.Debug.WriteLine("Top-level modules");
+                Core.Log.DebugMessage("Start: Top level modules");
                 foreach (var m in topLevelModules)
                 {
-                    System.Diagnostics.Debug.WriteLine(m.ToString());
+                    Core.Log.DebugMessage(m.ToString());
                 }
-                System.Diagnostics.Debug.WriteLine("End");
+                Core.Log.DebugMessage("End: Top level modules");
                 graph.SortDependencies();
                 graph.Validate();
 

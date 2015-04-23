@@ -164,6 +164,9 @@ namespace V2
                 }
                 else
                 {
+                    // TODO: this could be due to the user not having set a property, e.g. inputpath
+                    // is there a better error message that could be returned, other than this in those
+                    // circumstances?
                     throw new System.Exception(System.String.Format("Unrecognized token '{0}", token));
                 }
                 this.tokens[index] = token;
@@ -173,7 +176,7 @@ namespace V2
             {
                 throw new System.Exception(System.String.Format("Input string could not be fully expanded"));
             }
-            System.Diagnostics.Debug.WriteLine("Converted '{0}' to '{1}'", orig, this.ToString());
+            Core.Log.DebugMessage("Converted '{0}' to '{1}'", orig, this.ToString());
             this.EvaluateFunctions();
         }
 
@@ -202,7 +205,7 @@ namespace V2
                 // since there is an unsafe join above, we can do this
                 this.cachedJoin = this.cachedJoin.Replace(expr, result);
             }
-            System.Diagnostics.Debug.WriteLine(System.String.Format("Converted further to '{0}'", this.cachedJoin));
+            Core.Log.DebugMessage("Converted further to '{0}'", this.cachedJoin);
         }
 
         private string functionExpression(string functionName, string argument)

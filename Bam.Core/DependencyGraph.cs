@@ -157,7 +157,7 @@ namespace V2
                 foreach (var module in rank.Value)
                 {
                     // input paths first, since generated paths may use macros based on these
-                    var setPath = module as ISetInputPath;
+                    var setPath = module as IInputPath;
                     if (null != setPath)
                     {
                         // TODO: not necessary - there should always be an input path if the interface is implemented
@@ -321,16 +321,16 @@ namespace V2
                 foreach (var m in rank.Value)
                 {
                     text.AppendLine(m.ToString());
-                    if (m is ISetInputPath)
+                    if (m is IInputPath)
                     {
-                        text.AppendFormat("\tInput: {0}{1}", (m as ISetInputPath).InputPath, System.Environment.NewLine);
+                        text.AppendFormat("\tInput: {0}{1}", (m as IInputPath).InputPath, System.Environment.NewLine);
                     }
                     foreach (var s in m.GeneratedPaths)
                     {
                         text.AppendFormat("\t{0} : {1}{2}", s.Key, s.Value, System.Environment.NewLine);
                     }
                 }
-                System.Diagnostics.Debug.Write(text.ToString());
+                Core.Log.DebugMessage(text.ToString());
             }
         }
 
