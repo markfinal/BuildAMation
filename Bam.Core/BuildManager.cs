@@ -38,7 +38,7 @@ namespace V2
             private set;
         }
 
-        public void run()
+        public void Run()
         {
             // TODO: do this over a graph, not the linearized list
             // always execute from leaf to root

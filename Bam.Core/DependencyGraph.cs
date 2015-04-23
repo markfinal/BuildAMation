@@ -25,7 +25,8 @@ namespace V2
     /// <summary>
     /// Representation of a dependency graph of modules
     /// </summary>
-    public sealed class DependencyGraph : System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, ModuleCollection>>//System.Collections.IEnumerable
+    public sealed class DependencyGraph :
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, ModuleCollection>>
     {
         private System.Collections.Generic.Dictionary<int, ModuleCollection> graph = new System.Collections.Generic.Dictionary<int, ModuleCollection>();
 
@@ -73,7 +74,8 @@ namespace V2
     /// <summary>
     /// Singleton representing the single point of reference for all build functionality
     /// </summary>
-    public sealed class Graph : System.Collections.Generic.IEnumerable<ModuleCollection>
+    public sealed class Graph :
+        System.Collections.Generic.IEnumerable<ModuleCollection>
     {
         static Graph()
         {
@@ -88,21 +90,19 @@ namespace V2
 
         private Graph()
         {
-            // TODO: does there need to be a module list per build environment?
-            //    - wondering in case you need to search for a module
-            this.modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
-            this.referencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
+            this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
+            this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
             this.Macros.Add("buildroot", new TokenizedString(@"c:\dev\build", null));
-            this.buildEnvironment = null;
+            this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
-            this.dependencyGraph = new DependencyGraph();
+            this.DependencyGraph = new DependencyGraph();
         }
 
         public void AddModule(Module m)
         {
-            this.modules[this.buildEnvironment].Add(m);
+            this.Modules[this.BuildEnvironmentInternal].Add(m);
         }
 
         public System.Collections.Generic.Stack<System.Type> CommonModuleType
@@ -113,7 +113,7 @@ namespace V2
 
         public T FindReferencedModule<T>() where T : Module, new()
         {
-            var referencedModules = this.referencedModules[this.buildEnvironment];
+            var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
             var matches = referencedModules.Where(item => item.GetType() == typeof(T));
             if (matches.Count() > 0)
             {
@@ -152,7 +152,7 @@ namespace V2
 
         public void ExpandPaths()
         {
-            foreach (var rank in this.dependencyGraph.Reverse())
+            foreach (var rank in this.DependencyGraph.Reverse())
             {
                 foreach (var module in rank.Value)
                 {
@@ -187,13 +187,13 @@ namespace V2
             private set;
         }
 
-        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> modules
+        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> Modules
         {
             get;
             set;
         }
 
-        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> referencedModules
+        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> ReferencedModules
         {
             get;
             set;
@@ -205,21 +205,21 @@ namespace V2
             private set;
         }
 
-        private Environment buildEnvironment = null;
+        private Environment BuildEnvironmentInternal = null;
         public Environment BuildEnvironment
         {
             get
             {
-                return this.buildEnvironment;
+                return this.BuildEnvironmentInternal;
             }
 
             private set
             {
-                this.buildEnvironment = value;
+                this.BuildEnvironmentInternal = value;
                 if (null != value)
                 {
-                    this.modules.Add(value, new System.Collections.Generic.List<Module>());
-                    this.referencedModules.Add(value, new System.Collections.Generic.List<Module>());
+                    this.Modules.Add(value, new System.Collections.Generic.List<Module>());
+                    this.ReferencedModules.Add(value, new System.Collections.Generic.List<Module>());
                     // merge into the macros
                     // TODO: does it need the concept of a clean and a working macros?
                     this.Macros.Add("config", new TokenizedString(value.Configuration, null));
@@ -227,7 +227,7 @@ namespace V2
             }
         }
 
-        public DependencyGraph dependencyGraph
+        public DependencyGraph DependencyGraph
         {
             get;
             private set;
@@ -288,7 +288,7 @@ namespace V2
                 this.ApplyGroupRequirementsToChildren(children, m.Requirements);
             }
             var nextRank = rank + 1;
-            var currentRank = this.dependencyGraph[nextRank];
+            var currentRank = this.DependencyGraph[nextRank];
             foreach (var c in m.Dependents)
             {
                 currentRank.Add(c);
@@ -303,7 +303,7 @@ namespace V2
 
         public void SortDependencies()
         {
-            var currentRank = this.dependencyGraph[0];
+            var currentRank = this.DependencyGraph[0];
             foreach (var m in this.TopLevelModules)
             {
                 currentRank.Add(m);
@@ -313,7 +313,7 @@ namespace V2
 
         public void Dump()
         {
-            foreach (var rank in this.dependencyGraph)
+            foreach (var rank in this.DependencyGraph)
             {
                 var text = new System.Text.StringBuilder();
                 text.AppendFormat("{1}Rank {0} modules{1}", rank.Key, System.Environment.NewLine);
@@ -343,7 +343,7 @@ namespace V2
                 {
                     throw new System.Exception("Dependency has no rank");
                 }
-                var found = this.dependencyGraph.Where(item => item.Value == childCollection);
+                var found = this.DependencyGraph.Where(item => item.Value == childCollection);
                 if (0 == found.Count())
                 {
                     throw new System.Exception("Module collection not found in graph");
@@ -362,7 +362,7 @@ namespace V2
 
         public void Validate()
         {
-            foreach (var rank in this.dependencyGraph)
+            foreach (var rank in this.DependencyGraph)
             {
                 foreach (var m in rank.Value)
                 {
@@ -374,7 +374,7 @@ namespace V2
 
         public System.Collections.Generic.IEnumerator<ModuleCollection> GetEnumerator()
         {
-            foreach (var rank in this.dependencyGraph)
+            foreach (var rank in this.DependencyGraph)
             {
                 yield return rank.Value;
             }

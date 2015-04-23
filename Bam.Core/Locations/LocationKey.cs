@@ -32,17 +32,17 @@ namespace V2
             this.Id = key;
         }
 
-        private static System.Collections.Generic.List<FileKey> generatedKeys = new System.Collections.Generic.List<FileKey>();
+        private static System.Collections.Generic.List<FileKey> GeneratedKeys = new System.Collections.Generic.List<FileKey>();
 
         public static FileKey Generate(string key)
         {
-            var matches = generatedKeys.Where(item => (item.Id == key));
+            var matches = GeneratedKeys.Where(item => (item.Id == key));
             if (1 == matches.Count())
             {
                 return matches.ElementAt(0);
             }
             var newKey = new FileKey(key);
-            generatedKeys.Add(newKey);
+            GeneratedKeys.Add(newKey);
             return newKey;
         }
 

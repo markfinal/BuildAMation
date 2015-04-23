@@ -84,7 +84,7 @@ namespace Bam
                 graph.Dump();
 
                 var executor = new Core.V2.Executor("Native");
-                executor.run();
+                executor.Run();
             }
             else
             {

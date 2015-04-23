@@ -25,12 +25,12 @@ namespace V2
         Bam.Core.V2.IChildModule,
         Bam.Core.V2.IInputPath
     {
-        private Bam.Core.V2.TokenizedString path = null;
-        private Bam.Core.V2.Module parent = null;
+        private Bam.Core.V2.TokenizedString Path = null;
+        private Bam.Core.V2.Module Parent = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("CObjectFile");
 
-        protected override void init()
+        protected override void Init()
         {
             this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(config)/$basename($(inputpath)).obj", null));
         }
@@ -39,12 +39,12 @@ namespace V2
         {
             get
             {
-                return this.path;
+                return this.Path;
             }
             set
             {
                 this.Macros.Add("inputpath", value);
-                this.path = value;
+                this.Path = value;
             }
         }
 
@@ -52,11 +52,11 @@ namespace V2
         {
             get
             {
-                return this.parent;
+                return this.Parent;
             }
             set
             {
-                this.parent = value;
+                this.Parent = value;
             }
         }
 

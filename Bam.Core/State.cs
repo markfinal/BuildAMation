@@ -46,10 +46,10 @@ namespace V2
         private static readonly string FunctionRegExPattern = @"(\$([a-z]*)\((.+)\))";
         private static readonly string FunctionPrefix = @"$";
 
-        private System.Collections.Generic.List<string> tokens = null;
-        private System.Collections.Generic.List<int> macroIndices = null;
-        private Module moduleWithMacros = null;
-        private string cachedJoin = null;
+        private System.Collections.Generic.List<string> Tokens = null;
+        private System.Collections.Generic.List<int> MacroIndices = null;
+        private Module ModuleWithMacros = null;
+        private string CachedJoin = null;
 
         static private System.Collections.Generic.IEnumerable<string> SplitToParse(string original, string regExPattern)
         {
@@ -65,35 +65,35 @@ namespace V2
             {
                 if (item.StartsWith(TokenPrefix) && item.EndsWith(TokenSuffix))
                 {
-                    if (null == this.macroIndices)
+                    if (null == this.MacroIndices)
                     {
-                        this.macroIndices = new System.Collections.Generic.List<int>();
+                        this.MacroIndices = new System.Collections.Generic.List<int>();
                     }
-                    this.macroIndices.Add(index);
+                    this.MacroIndices.Add(index);
                 }
             });
-            this.tokens = tokenized.ToList<string>();
+            this.Tokens = tokenized.ToList<string>();
         }
 
         public TokenizedString(string original, Module moduleWithMacros)
             : this(original)
         {
-            this.moduleWithMacros = moduleWithMacros;
+            this.ModuleWithMacros = moduleWithMacros;
         }
 
         public string this[int index]
         {
             get
             {
-                return this.tokens[index];
+                return this.Tokens[index];
             }
 
             set
             {
-                this.tokens[index] = value;
-                if (this.macroIndices.Contains(index))
+                this.Tokens[index] = value;
+                if (this.MacroIndices.Contains(index))
                 {
-                    this.macroIndices.Remove(index);
+                    this.MacroIndices.Remove(index);
                 }
             }
         }
@@ -102,44 +102,44 @@ namespace V2
         {
             get
             {
-                return (null == this.macroIndices) || (0 == this.macroIndices.Count);
+                return (null == this.MacroIndices) || (0 == this.MacroIndices.Count);
             }
         }
 
         // safe:true = don't cache anything, and don't throw if it's not expanded
         // safe:false = cache what you can, and throw if the tokens haven't been expanded
-        private string join(bool safe)
+        private string Join(bool safe)
         {
             if (!safe && !this.IsExpanded)
             {
                 throw new System.Exception("TokenizedString not expanded");
             }
-            if (1 == this.tokens.Count)
+            if (1 == this.Tokens.Count)
             {
-                return this.tokens[0];
+                return this.Tokens[0];
             }
-            if (null != this.cachedJoin)
+            if (null != this.CachedJoin)
             {
-                return this.cachedJoin;
+                return this.CachedJoin;
             }
-            var join = System.String.Join(string.Empty, this.tokens);
+            var join = System.String.Join(string.Empty, this.Tokens);
             if (!safe)
             {
-                this.cachedJoin = join;
+                this.CachedJoin = join;
             }
             return join;
         }
 
         public override string ToString()
         {
-            return this.join(safe: false);
+            return this.Join(safe: false);
         }
 
         public bool Empty
         {
             get
             {
-                return (null == this.tokens) || (0 == this.tokens.Count());
+                return (null == this.Tokens) || (0 == this.Tokens.Count());
             }
         }
 
@@ -149,11 +149,11 @@ namespace V2
             {
                 return;
             }
-            var macros = (this.moduleWithMacros != null) ? this.moduleWithMacros.Macros : fallback;
-            var orig = this.join(safe: true);
-            foreach (int index in this.macroIndices.Reverse<int>())
+            var macros = (this.ModuleWithMacros != null) ? this.ModuleWithMacros.Macros : fallback;
+            var orig = this.Join(safe: true);
+            foreach (int index in this.MacroIndices.Reverse<int>())
             {
-                var token = this.tokens[index];
+                var token = this.Tokens[index];
                 if (globalMacros.Dict.ContainsKey(token))
                 {
                     token = globalMacros.Dict[token].ToString();
@@ -169,8 +169,8 @@ namespace V2
                     // circumstances?
                     throw new System.Exception(System.String.Format("Unrecognized token '{0}", token));
                 }
-                this.tokens[index] = token;
-                this.macroIndices.Remove(index);
+                this.Tokens[index] = token;
+                this.MacroIndices.Remove(index);
             }
             if (!this.IsExpanded)
             {
@@ -182,7 +182,7 @@ namespace V2
 
         private void EvaluateFunctions()
         {
-            var tokenized = SplitToParse(this.join(safe: false), FunctionRegExPattern);
+            var tokenized = SplitToParse(this.Join(safe: false), FunctionRegExPattern);
             var matchCount = tokenized.Count();
             if (1 == matchCount)
             {
@@ -201,14 +201,14 @@ namespace V2
 
                 var functionName = tokenized.ElementAt(matchIndex++);
                 var argument = tokenized.ElementAt(matchIndex++);
-                var result = functionExpression(functionName, argument);
+                var result = this.FunctionExpression(functionName, argument);
                 // since there is an unsafe join above, we can do this
-                this.cachedJoin = this.cachedJoin.Replace(expr, result);
+                this.CachedJoin = this.CachedJoin.Replace(expr, result);
             }
-            Core.Log.DebugMessage("Converted further to '{0}'", this.cachedJoin);
+            Core.Log.DebugMessage("Converted further to '{0}'", this.CachedJoin);
         }
 
-        private string functionExpression(string functionName, string argument)
+        private string FunctionExpression(string functionName, string argument)
         {
             switch (functionName)
             {
@@ -228,7 +228,7 @@ namespace V2
     {
         public MacroList()
         {
-            this.dict = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+            this.DictInternal = new System.Collections.Generic.Dictionary<string, TokenizedString>();
         }
 
         public void Add(string key, TokenizedString value)
@@ -242,10 +242,10 @@ namespace V2
                 throw new System.Exception("Macro value cannot be null");
             }
             var formattedKey = System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
-            this.dict[formattedKey] = value;
+            this.DictInternal[formattedKey] = value;
         }
 
-        private System.Collections.Generic.Dictionary<string, TokenizedString> dict
+        private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal
         {
             get;
             set;
@@ -255,7 +255,7 @@ namespace V2
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString>(this.dict);
+                return new System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString>(this.DictInternal);
             }
         }
     }

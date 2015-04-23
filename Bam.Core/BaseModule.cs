@@ -56,13 +56,13 @@ namespace V2
         }
 
         // TODO: is this virtual or abstract?
-        protected virtual void init()
+        protected virtual void Init()
         { }
 
         public static T Create<T>() where T : Module, new()
         {
             var module = new T();
-            module.init();
+            module.Init();
             return module;
         }
 
@@ -78,8 +78,8 @@ namespace V2
 
         private void InternalDependsOn(Module module)
         {
-            this.dependents.Add(module);
-            module.dependees.Add(this);
+            this.DependentsList.Add(module);
+            module.DependeesList.Add(this);
         }
 
         public void DependsOn(Module module, params Module[] moreModules)
@@ -93,8 +93,8 @@ namespace V2
 
         private void InternalRequires(Module module)
         {
-            this.requiredDependents.Add(module);
-            module.requiredDependees.Add(this);
+            this.RequiredDependentsList.Add(module);
+            module.RequiredDependeesList.Add(this);
         }
 
         public void Requires(Module module, params Module[] moreModules)
@@ -109,14 +109,14 @@ namespace V2
         public delegate void PatchDelegate(Settings settings);
         public void PatchSettings(PatchDelegate dlg)
         {
-            this.patches.Add(dlg);
+            this.Patches.Add(dlg);
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.dependents);
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList);
             }
         }
 
@@ -124,7 +124,7 @@ namespace V2
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.requiredDependents);
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.RequiredDependentsList);
             }
         }
 
@@ -132,17 +132,17 @@ namespace V2
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.dependents.Where(item => (item as IChildModule).Parent == this).ToList());
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList.Where(item => (item as IChildModule).Parent == this).ToList());
             }
         }
 
-        private System.Collections.Generic.List<Module> dependents = new System.Collections.Generic.List<Module>();
-        private System.Collections.Generic.List<Module> dependees = new System.Collections.Generic.List<Module>();
+        private System.Collections.Generic.List<Module> DependentsList = new System.Collections.Generic.List<Module>();
+        private System.Collections.Generic.List<Module> DependeesList = new System.Collections.Generic.List<Module>();
 
-        private System.Collections.Generic.List<Module> requiredDependents = new System.Collections.Generic.List<Module>();
-        private System.Collections.Generic.List<Module> requiredDependees = new System.Collections.Generic.List<Module>();
+        private System.Collections.Generic.List<Module> RequiredDependentsList = new System.Collections.Generic.List<Module>();
+        private System.Collections.Generic.List<Module> RequiredDependeesList = new System.Collections.Generic.List<Module>();
 
-        private System.Collections.Generic.List<PatchDelegate> patches = new System.Collections.Generic.List<PatchDelegate>();
+        private System.Collections.Generic.List<PatchDelegate> Patches = new System.Collections.Generic.List<PatchDelegate>();
 
         public System.Collections.Generic.Dictionary<FileKey, TokenizedString> GeneratedPaths
         {
@@ -161,7 +161,7 @@ namespace V2
         {
             get
             {
-                var isTopLevel = (0 == this.dependees.Count) && (0 == this.requiredDependees.Count);
+                var isTopLevel = (0 == this.DependeesList.Count) && (0 == this.RequiredDependeesList.Count);
                 return isTopLevel;
             }
         }
