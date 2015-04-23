@@ -22,10 +22,16 @@ namespace V2
 {
     using System.Linq;
 
+    public interface IModuleExecution
+    {
+        void Execute(string mode);
+    }
+
     /// <summary>
     /// Abstract concept of a module, the base class for all buildables in BAM
     /// </summary>
-    public abstract class Module
+    public abstract class Module :
+        IModuleExecution
     {
         // private so that the factory method must be used
         protected Module()
@@ -144,7 +150,12 @@ namespace V2
             private set;
         }
 
-        public abstract void Execute();
+        protected abstract void ExecuteInternal(string mode);
+
+        void IModuleExecution.Execute(string mode)
+        {
+            this.ExecuteInternal(mode);
+        }
 
         public bool TopLevel
         {
@@ -156,12 +167,6 @@ namespace V2
         }
 
         public MacroList Macros
-        {
-            get;
-            private set;
-        }
-
-        public int Id
         {
             get;
             private set;

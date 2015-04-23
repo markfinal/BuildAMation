@@ -45,9 +45,9 @@ namespace V2
             var graph = Graph.Instance;
             foreach (var rank in graph.Reverse())
             {
-                foreach (var module in rank)
+                foreach (IModuleExecution module in rank)
                 {
-                    module.Execute();
+                    module.Execute(this.Mode);
                 }
             }
         }

@@ -60,7 +60,7 @@ namespace V2
             }
         }
 
-        public override void Execute()
+        protected override void ExecuteInternal(string mode)
         {
             throw new System.NotImplementedException();
         }
