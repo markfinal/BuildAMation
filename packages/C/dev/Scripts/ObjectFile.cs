@@ -56,7 +56,6 @@ namespace V2
     {
         private Bam.Core.V2.TokenizedString Path = null;
         private Bam.Core.V2.Module Parent = null;
-        private static ICompilationPolicy SharedPolicy = null;
         private ICompilationPolicy Policy = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
@@ -100,12 +99,8 @@ namespace V2
 
         protected override void GetExecutionPolicy(string mode)
         {
-            if (null == SharedPolicy)
-            {
-                var className = "C.V2." + mode + "Compilation";
-                SharedPolicy = Bam.Core.V2.ExecutionPolicyUtilities.Create<ICompilationPolicy>(className);
-            }
-            this.Policy = SharedPolicy;
+            var className = "C.V2." + mode + "Compilation";
+            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
     }
 }

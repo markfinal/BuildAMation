@@ -280,10 +280,11 @@ namespace V2
     /// <summary>
     /// Utility functions for dealing with execution policies
     /// </summary>
-    public static class ExecutionPolicyUtilities
+    public static class ExecutionPolicyUtilities<T> where T: class
     {
-        // there is no where T: interface clause
-        public static T Create<T>(string classname) where T : class
+        static System.Collections.Generic.Dictionary<string, T> Policies = new System.Collections.Generic.Dictionary<string, T>();
+
+        private static T InternalCreate(string classname)
         {
             var type = System.Type.GetType(classname,
                 (typename) =>
@@ -305,6 +306,16 @@ namespace V2
                 throw new Bam.Core.Exception("Unable to create instance of class '{0}'", classname);
             }
             return policy;
+        }
+
+        // there is no where T: interface clause
+        public static T Create(string classname)
+        {
+            if (!Policies.ContainsKey(classname))
+            {
+                Policies.Add(classname, InternalCreate(classname));
+            }
+            return Policies[classname];
         }
     }
 }
