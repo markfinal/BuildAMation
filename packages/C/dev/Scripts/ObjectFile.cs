@@ -102,22 +102,8 @@ namespace V2
         {
             if (null == SharedPolicy)
             {
-                System.Func<ICompilationPolicy> getPolicy = () =>
-                {
-                    var className = "C.V2." + mode + "Compilation";
-                    var type = System.Type.GetType(className);
-                    if (null == type)
-                    {
-                        throw new Bam.Core.Exception("Unable to locate class '{0}'", className);
-                    }
-                    var policy = System.Activator.CreateInstance(type) as ICompilationPolicy;
-                    if (null == policy)
-                    {
-                        throw new Bam.Core.Exception("Unable to create instance of class '{0}'", className);
-                    }
-                    return policy;
-                };
-                SharedPolicy = getPolicy();
+                var className = "C.V2." + mode + "Compilation";
+                SharedPolicy = Bam.Core.V2.ExecutionPolicyUtilities.Create<ICompilationPolicy>(className);
             }
             this.Policy = SharedPolicy;
         }

@@ -276,6 +276,37 @@ namespace V2
             set;
         }
     }
+
+    /// <summary>
+    /// Utility functions for dealing with execution policies
+    /// </summary>
+    public static class ExecutionPolicyUtilities
+    {
+        // there is no where T: interface clause
+        public static T Create<T>(string classname) where T : class
+        {
+            var type = System.Type.GetType(classname,
+                (typename) =>
+                {
+                    // TODO: this does not seem to be used
+                    return Core.State.ScriptAssembly;
+                },
+                (assembly, name, checkcase) =>
+                {
+                    return Core.State.ScriptAssembly.GetType(name);
+                });
+            if (null == type)
+            {
+                throw new Bam.Core.Exception("Unable to locate class '{0}'", classname);
+            }
+            var policy = System.Activator.CreateInstance(type) as T;
+            if (null == policy)
+            {
+                throw new Bam.Core.Exception("Unable to create instance of class '{0}'", classname);
+            }
+            return policy;
+        }
+    }
 }
 
     public static class State
