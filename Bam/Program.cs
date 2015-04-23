@@ -38,6 +38,7 @@ namespace Bam
                 Core.State.BuildRoot = "build";
                 Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
                 Core.State.CompileWithDebugSymbols = true;
+                Core.State.BuilderName = "Native";
                 var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
                 if (!compiledSuccessfully)
                 {
@@ -48,7 +49,7 @@ namespace Bam
                 var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(Core.State.ScriptAssemblyPathname);
 
                 var graph = Core.V2.Graph.Instance;
-                graph.Mode = "Native";
+                graph.Mode = Core.State.BuilderName;
 
                 var debug = new Core.V2.Environment();
                 debug.Configuration = "Debug";
