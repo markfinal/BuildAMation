@@ -46,24 +46,6 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks);
     }
 
-    public sealed class NativeCompilation : ICompilationPolicy
-    {
-        void ICompilationPolicy.Compile(string objectFilePath, string sourceFilePath)
-        {
-            // TODO: run tool
-            throw new System.NotImplementedException();
-        }
-    }
-
-    public sealed class MakeFileCompilation : ICompilationPolicy
-    {
-        void ICompilationPolicy.Compile(string objectFilePath, string sourceFilePath)
-        {
-            // TODO: generate makefile
-            throw new System.NotImplementedException();
-        }
-    }
-
     public class ObjectFile :
         Bam.Core.V2.Module,
         Bam.Core.V2.IChildModule,

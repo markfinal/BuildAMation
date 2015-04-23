@@ -16,6 +16,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class MakeFileCompilation : ICompilationPolicy
+    {
+        void ICompilationPolicy.Compile(string objectFilePath, string sourceFilePath)
+        {
+            // TODO: generate makefile
+            throw new System.NotImplementedException();
+        }
+    }
+}
+}
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder
