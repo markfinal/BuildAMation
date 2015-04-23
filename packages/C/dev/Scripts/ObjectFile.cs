@@ -49,6 +49,18 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks);
     }
 
+    // TODO: register a tooltype, e.g. compiler, linker, archiver
+
+    public abstract class CompilerTool :
+        Bam.Core.V2.Tool
+    {
+    }
+
+    public sealed class Compiler32 :
+        CompilerTool
+    {
+    }
+
     public class ObjectFile :
         Bam.Core.V2.Module,
         Bam.Core.V2.IChildModule,
@@ -63,6 +75,8 @@ namespace V2
         protected override void Init()
         {
             this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(config)/$basename($(inputpath)).obj", null));
+            // TODO: this should be a default
+            this.Compiler = new Compiler32();
         }
 
         public Bam.Core.V2.TokenizedString InputPath
@@ -88,6 +102,12 @@ namespace V2
             {
                 this.Parent = value;
             }
+        }
+
+        public CompilerTool Compiler
+        {
+            get;
+            set;
         }
 
         protected override void ExecuteInternal()

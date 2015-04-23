@@ -59,6 +59,7 @@ namespace Test
             // TODO: can override the generated paths
             //this.RegisterGeneratedFile(C.V2.ObjectFile.Key, new Bam.Core.V2.TokenizedString("$(buildroot)/hello.obj", null));
             this.InputPath = new Bam.Core.V2.TokenizedString("$(pkgroot)/source/main.c", null);
+            this.Compiler = null; // TODO: don't want to do this, but heck
         }
     }
 
