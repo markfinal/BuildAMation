@@ -98,6 +98,7 @@ namespace V2
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
+            this.Mode = null;
         }
 
         public void AddModule(Module m)
@@ -194,6 +195,12 @@ namespace V2
         }
 
         private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> ReferencedModules
+        {
+            get;
+            set;
+        }
+
+        public string Mode
         {
             get;
             set;

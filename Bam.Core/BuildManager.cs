@@ -27,16 +27,8 @@ namespace V2
     /// </summary>
     public sealed class Executor
     {
-        public Executor(string mode)
-        {
-            this.Mode = mode;
-        }
-
-        public string Mode
-        {
-            get;
-            private set;
-        }
+        public Executor()
+        {}
 
         public void Run()
         {
@@ -47,7 +39,7 @@ namespace V2
             {
                 foreach (IModuleExecution module in rank)
                 {
-                    module.Execute(this.Mode);
+                    module.Execute();
                 }
             }
         }

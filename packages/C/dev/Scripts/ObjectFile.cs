@@ -20,6 +20,50 @@ namespace C
 {
 namespace V2
 {
+    public interface ICompilationPolicy
+    {
+        void
+        Compile(
+            string objectFilePath,
+            string sourceFilePath);
+    }
+
+    public interface ILibrarianPolicy
+    {
+        void
+        Archive(
+            string libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs);
+    }
+
+    public interface ILinkerPolicy
+    {
+        void
+        Link(
+            string executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks);
+    }
+
+    public sealed class NativeCompilation : ICompilationPolicy
+    {
+        void ICompilationPolicy.Compile(string objectFilePath, string sourceFilePath)
+        {
+            // TODO: run tool
+            throw new System.NotImplementedException();
+        }
+    }
+
+    public sealed class MakeFileCompilation : ICompilationPolicy
+    {
+        void ICompilationPolicy.Compile(string objectFilePath, string sourceFilePath)
+        {
+            // TODO: generate makefile
+            throw new System.NotImplementedException();
+        }
+    }
+
     public class ObjectFile :
         Bam.Core.V2.Module,
         Bam.Core.V2.IChildModule,
@@ -27,6 +71,8 @@ namespace V2
     {
         private Bam.Core.V2.TokenizedString Path = null;
         private Bam.Core.V2.Module Parent = null;
+        private static ICompilationPolicy SharedPolicy = null;
+        private ICompilationPolicy Policy = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
 
@@ -60,13 +106,39 @@ namespace V2
             }
         }
 
-        protected override void ExecuteInternal(string mode)
+        protected override void ExecuteInternal()
         {
-            // TODO: don't really want a string comparison here
-            if (mode == "Native")
+            var sourceFile = this.InputPath.ToString();
+            var objectFile = this.GeneratedPaths[Key].ToString();
+            this.Policy.Compile(objectFile, sourceFile);
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            if (null == SharedPolicy)
             {
+                // TODO: the problem with this, although it's nice and typesafe, is that all 'modes'
+                // need to be statically compiled in, which is no good as I wouldn't want Xcode scripts
+                // in a Windows only project
+                // TODO: Also, currently debug projects include all builder code, so policy implementations
+                // cannot just be all called the same thing
+                // NOTE: can do System.Type.GetType(name), so some string manipulation would work
+                System.Func<ICompilationPolicy> getPolicy = () =>
+                {
+                    // TODO: don't really want a string comparison here
+                    if (mode == "Native")
+                    {
+                        return new NativeCompilation();
+                    }
+                    else if (mode == "MakeFile")
+                    {
+                        return new MakeFileCompilation();
+                    }
+                    throw new System.NotImplementedException();
+                };
+                SharedPolicy = getPolicy();
             }
-            throw new System.NotImplementedException();
+            this.Policy = SharedPolicy;
         }
     }
 }

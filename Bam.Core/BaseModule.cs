@@ -24,7 +24,7 @@ namespace V2
 
     public interface IModuleExecution
     {
-        void Execute(string mode);
+        void Execute();
     }
 
     /// <summary>
@@ -63,6 +63,7 @@ namespace V2
         {
             var module = new T();
             module.Init();
+            module.GetExecutionPolicy(Graph.Instance.Mode);
             return module;
         }
 
@@ -155,11 +156,11 @@ namespace V2
             private set;
         }
 
-        protected abstract void ExecuteInternal(string mode);
+        protected abstract void ExecuteInternal();
 
-        void IModuleExecution.Execute(string mode)
+        void IModuleExecution.Execute()
         {
-            this.ExecuteInternal(mode);
+            this.ExecuteInternal();
         }
 
         public bool TopLevel
@@ -182,6 +183,8 @@ namespace V2
             get;
             set;
         }
+
+        protected abstract void GetExecutionPolicy(string mode);
     }
 }
     /// <summary>

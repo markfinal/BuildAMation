@@ -73,6 +73,20 @@ namespace Test
         }
     }
 
+    sealed class CompileSingleCFileWithCustomOptionsV2 :
+        C.V2.ObjectFile
+    {
+        public
+        CompileSingleCFileWithCustomOptionsV2()
+        {
+            this.InputPath = new Bam.Core.V2.TokenizedString("$(pkgroot)/source/main.c", null);
+            this.PatchSettings(baseSettings =>
+                {
+                    // TODO: perform cast to appropriate type (would be nice to get this from the base class)
+                });
+        }
+    }
+
     sealed class CompileSingleCFileWithCustomOptions :
         C.ObjectFile
     {

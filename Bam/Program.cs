@@ -48,6 +48,7 @@ namespace Bam
                 var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(Core.State.ScriptAssemblyPathname);
 
                 var graph = Core.V2.Graph.Instance;
+                graph.Mode = "Native";
 
                 var debug = new Core.V2.Environment();
                 debug.Configuration = "Debug";
@@ -83,7 +84,7 @@ namespace Bam
 
                 graph.Dump();
 
-                var executor = new Core.V2.Executor("Native");
+                var executor = new Core.V2.Executor();
                 executor.Run();
             }
             else
