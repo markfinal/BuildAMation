@@ -117,24 +117,20 @@ namespace V2
         {
             if (null == SharedPolicy)
             {
-                // TODO: the problem with this, although it's nice and typesafe, is that all 'modes'
-                // need to be statically compiled in, which is no good as I wouldn't want Xcode scripts
-                // in a Windows only project
-                // TODO: Also, currently debug projects include all builder code, so policy implementations
-                // cannot just be all called the same thing
-                // NOTE: can do System.Type.GetType(name), so some string manipulation would work
                 System.Func<ICompilationPolicy> getPolicy = () =>
                 {
-                    // TODO: don't really want a string comparison here
-                    if (mode == "Native")
+                    var className = "C.V2." + mode + "Compilation";
+                    var type = System.Type.GetType(className);
+                    if (null == type)
                     {
-                        return new NativeCompilation();
+                        throw new Bam.Core.Exception("Unable to locate class '{0}'", className);
                     }
-                    else if (mode == "MakeFile")
+                    var policy = System.Activator.CreateInstance(type) as ICompilationPolicy;
+                    if (null == policy)
                     {
-                        return new MakeFileCompilation();
+                        throw new Bam.Core.Exception("Unable to create instance of class '{0}'", className);
                     }
-                    throw new System.NotImplementedException();
+                    return policy;
                 };
                 SharedPolicy = getPolicy();
             }
