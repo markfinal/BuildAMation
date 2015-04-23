@@ -20,9 +20,14 @@ namespace C
 {
 namespace V2
 {
-    public sealed class NativeCompilation : ICompilationPolicy
+    public sealed class NativeCompilation :
+        ICompilationPolicy
     {
-        void ICompilationPolicy.Compile(string objectFilePath, string sourceFilePath)
+        void
+        ICompilationPolicy.Compile(
+            ObjectFile sender,
+            string objectFilePath,
+            string sourceFilePath)
         {
             // TODO: run tool
             throw new System.NotImplementedException();

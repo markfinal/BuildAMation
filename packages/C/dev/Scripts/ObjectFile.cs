@@ -24,6 +24,7 @@ namespace V2
     {
         void
         Compile(
+            ObjectFile sender,
             string objectFilePath,
             string sourceFilePath);
     }
@@ -32,6 +33,7 @@ namespace V2
     {
         void
         Archive(
+            ObjectFile sender,
             string libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs);
     }
@@ -40,6 +42,7 @@ namespace V2
     {
         void
         Link(
+            ObjectFile sender,
             string executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
@@ -92,7 +95,7 @@ namespace V2
         {
             var sourceFile = this.InputPath.ToString();
             var objectFile = this.GeneratedPaths[Key].ToString();
-            this.Policy.Compile(objectFile, sourceFile);
+            this.Policy.Compile(this, objectFile, sourceFile);
         }
 
         protected override void GetExecutionPolicy(string mode)

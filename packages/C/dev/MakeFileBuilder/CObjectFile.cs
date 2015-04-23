@@ -20,9 +20,14 @@ namespace C
 {
 namespace V2
 {
-    public sealed class MakeFileCompilation : ICompilationPolicy
+    public sealed class MakeFileCompilation :
+        ICompilationPolicy
     {
-        void ICompilationPolicy.Compile(string objectFilePath, string sourceFilePath)
+        void
+        ICompilationPolicy.Compile(
+            ObjectFile sender,
+            string objectFilePath,
+            string sourceFilePath)
         {
             // TODO: generate makefile
             throw new System.NotImplementedException();
