@@ -28,7 +28,7 @@ namespace V2
         private Bam.Core.V2.TokenizedString Path = null;
         private Bam.Core.V2.Module Parent = null;
 
-        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("CObjectFile");
+        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
 
         protected override void Init()
         {
@@ -62,6 +62,10 @@ namespace V2
 
         protected override void ExecuteInternal(string mode)
         {
+            // TODO: don't really want a string comparison here
+            if (mode == "Native")
+            {
+            }
             throw new System.NotImplementedException();
         }
     }

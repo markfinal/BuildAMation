@@ -68,6 +68,11 @@ namespace V2
 
         protected void RegisterGeneratedFile(FileKey key, TokenizedString path)
         {
+            if (this.GeneratedPaths.ContainsKey(key))
+            {
+                Core.Log.DebugMessage("Key '{0}' already exists", key);
+                return;
+            }
             this.GeneratedPaths.Add(key, path);
         }
 
