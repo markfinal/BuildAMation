@@ -44,11 +44,24 @@ namespace Mingw
     public sealed class Compiler32 :
         C.V2.CompilerTool
     {
+        public Compiler32()
+        {
+            //this.EnvironmentVariables[PATH] =
+        }
+
         public override Bam.Core.V2.Settings CreateDefaultSettings()
         {
             var settings = new CompilerSettings();
             settings.Bits = CompilerSettings.EBit.ThirtyTwo;
             return settings;
+        }
+
+        public override string Executable
+        {
+            get
+            {
+                return @"C:\MinGW\bin\mingw32-gcc-4.8.1";
+            }
         }
     }
 
@@ -60,6 +73,14 @@ namespace Mingw
             var settings = new CompilerSettings();
             settings.Bits = CompilerSettings.EBit.SixtyFour;
             return settings;
+        }
+
+        public override string Executable
+        {
+            get
+            {
+                return @"C:\MinGW\bin\mingw32-gcc-4.8.1";
+            }
         }
     }
     // -V2

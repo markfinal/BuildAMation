@@ -44,11 +44,24 @@ namespace VisualC
     public sealed class Compiler32 :
         C.V2.CompilerTool
     {
+        public Compiler32()
+        {
+            //this.EnvironmentVariables[PATH] =
+        }
+
         public override Bam.Core.V2.Settings CreateDefaultSettings()
         {
             var settings = new CompilerSettings();
             settings.Bits = CompilerSettings.EBit.ThirtyTwo;
             return settings;
+        }
+
+        public override string Executable
+        {
+            get
+            {
+                return @"cl.exe";
+            }
         }
     }
 
@@ -60,6 +73,14 @@ namespace VisualC
             var settings = new CompilerSettings();
             settings.Bits = CompilerSettings.EBit.SixtyFour;
             return settings;
+        }
+
+        public override string Executable
+        {
+            get
+            {
+                return @"cl.exe";
+            }
         }
     }
     // -V2

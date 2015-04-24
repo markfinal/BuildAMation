@@ -354,9 +354,12 @@ namespace V2
         Module
     {
         protected Tool()
+            : base()
         {
+            this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
         }
 
+        // TODO: Might move the Name into the Module?
         public string Name
         {
             get;
@@ -373,6 +376,18 @@ namespace V2
         protected override void GetExecutionPolicy(string mode)
         {
             // by default, the execution policy of a tool is to do nothing as it's on disk
+        }
+
+        public System.Collections.Generic.Dictionary<string, string> EnvironmentVariables
+        {
+            get;
+            private set;
+        }
+
+        // TODO: is this on an interface? not all tools will be based on running an executable
+        public abstract string Executable
+        {
+            get;
         }
     }
 }
