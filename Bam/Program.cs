@@ -73,7 +73,9 @@ namespace Bam
                     Core.Log.DebugMessage(m.ToString());
                 }
                 Core.Log.DebugMessage("End: Top level modules");
+                // not only does this generate the dependency graph, but also creates the default settings for each module
                 graph.SortDependencies();
+                // TODO: make validation optional, if it starts showing on profiles
                 graph.Validate();
 
                 // TODO: is it valid for the path expansion to occur prior to patching the settings?
