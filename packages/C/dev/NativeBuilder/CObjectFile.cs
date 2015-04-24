@@ -29,7 +29,7 @@ namespace V2
             string objectFilePath,
             string sourceFilePath)
         {
-            var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, new Bam.Core.StringArray());
+            var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
         }
     }
 }

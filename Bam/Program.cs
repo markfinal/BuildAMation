@@ -87,6 +87,9 @@ namespace Bam
                 // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
                 // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
                 // TODO: a parallel thread can be spawned here, that can check whether command lines have changed
+                // the Settings object can be inspected, and a hash generated. This hash can be written to disk, and compared.
+                // If a 'verbose' mode is enabled, then more work can be done to figure out what has changed. This would also require
+                // serializing the binary Settings object
                 graph.ApplySettingsPatches();
 
                 graph.Dump();

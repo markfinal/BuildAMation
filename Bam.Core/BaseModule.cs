@@ -207,6 +207,12 @@ namespace V2
             protected set;
         }
 
+        public StringArray CommandLine
+        {
+            get;
+            private set;
+        }
+
         public void ApplySettingsPatches()
         {
             if (null == this.Settings)
@@ -217,6 +223,9 @@ namespace V2
             {
                 patch(this.Settings);
             }
+            // TODO: command line expansion depends on the mode
+            var commandLine = new StringArray();
+            this.CommandLine = commandLine;
         }
     }
 }
