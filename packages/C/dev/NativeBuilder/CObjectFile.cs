@@ -29,9 +29,7 @@ namespace V2
             string objectFilePath,
             string sourceFilePath)
         {
-            var tool = sender.Tool;
-            // TODO: run tool
-            throw new System.NotImplementedException();
+            var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, new Bam.Core.StringArray());
         }
     }
 }

@@ -357,6 +357,7 @@ namespace V2
             : base()
         {
             this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
+            this.InheritedEnvironmentVariables = new System.Collections.Generic.List<string>();
         }
 
         // TODO: Might move the Name into the Module?
@@ -379,6 +380,12 @@ namespace V2
         }
 
         public System.Collections.Generic.Dictionary<string, string> EnvironmentVariables
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.List<string> InheritedEnvironmentVariables
         {
             get;
             private set;

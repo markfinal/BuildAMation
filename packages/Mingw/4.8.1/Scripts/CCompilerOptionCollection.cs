@@ -45,7 +45,7 @@ namespace Mingw
     {
         public CompilerBase()
         {
-            //this.EnvironmentVariables[PATH] =
+            this.InheritedEnvironmentVariables.Add("TEMP");
         }
 
         public override string Executable

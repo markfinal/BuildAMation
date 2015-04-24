@@ -74,7 +74,8 @@ namespace V2
             // TODO: this should be a default, and done through a reflection mechanism
             if (null == this.Compiler)
             {
-                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
+                //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
+                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.Compiler64>();
             }
         }
 

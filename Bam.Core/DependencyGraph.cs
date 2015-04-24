@@ -99,6 +99,8 @@ namespace V2
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
             this.Mode = null;
+            this.OutputStringBuilder = new System.Text.StringBuilder();
+            this.ErrorStringBuilder = new System.Text.StringBuilder();
         }
 
         public void AddModule(Module m)
@@ -409,6 +411,44 @@ namespace V2
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        public System.Text.StringBuilder OutputStringBuilder
+        {
+            get;
+            private set;
+        }
+
+        public System.Text.StringBuilder ErrorStringBuilder
+        {
+            get;
+            private set;
+        }
+
+        public void
+        OutputDataReceived(
+            object sender,
+            System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if (System.String.IsNullOrEmpty(e.Data))
+            {
+                return;
+            }
+            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
+            this.OutputStringBuilder.Append(e.Data + '\n');
+        }
+
+        public void
+        ErrorDataReceived(
+            object sender,
+            System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if (System.String.IsNullOrEmpty(e.Data))
+            {
+                return;
+            }
+            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
+            this.ErrorStringBuilder.Append(e.Data + '\n');
         }
     }
 }

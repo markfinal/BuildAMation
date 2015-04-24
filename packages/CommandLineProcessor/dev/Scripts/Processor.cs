@@ -18,6 +18,106 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+namespace V2
+{
+    public static class Processor
+    {
+        public static int
+        Execute(
+            Bam.Core.V2.Tool tool,
+            Bam.Core.StringArray commandLine,
+            string hostApplication = null,
+            string workingDirectory = null)
+        {
+            var executablePath = tool.Executable;
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            if (null != hostApplication)
+            {
+                processStartInfo.Arguments = executablePath + " ";
+                executablePath = hostApplication;
+            }
+            else
+            {
+                processStartInfo.Arguments = string.Empty;
+            }
+            processStartInfo.FileName = executablePath;
+            processStartInfo.ErrorDialog = true;
+            if (null != workingDirectory)
+            {
+                processStartInfo.WorkingDirectory = workingDirectory;
+            }
+
+            var cachedEnvVars = new System.Collections.Generic.Dictionary<string, string>();
+            // first get the inherited environment variables from the system environment
+            foreach (var envVar in tool.InheritedEnvironmentVariables)
+            {
+                if (!processStartInfo.EnvironmentVariables.ContainsKey(envVar))
+                {
+                    Bam.Core.Log.Info("Environment variable '{0}' does not exist", envVar);
+                    continue;
+                }
+                cachedEnvVars.Add(envVar, processStartInfo.EnvironmentVariables[envVar]);
+            }
+
+            processStartInfo.EnvironmentVariables.Clear();
+
+            foreach (var envVar in cachedEnvVars)
+            {
+                processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
+            }
+            foreach (var envVar in tool.EnvironmentVariables)
+            {
+                processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
+            }
+
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+
+            processStartInfo.Arguments += commandLine.ToString(' ');
+
+            Bam.Core.Log.Detail("{0} {1}", executablePath, processStartInfo.Arguments);
+
+            // useful debugging of the command line processor
+            Bam.Core.Log.DebugMessage("Working directory: '{0}'", processStartInfo.WorkingDirectory);
+            if (processStartInfo.EnvironmentVariables.Count > 0)
+            {
+                Bam.Core.Log.DebugMessage("Environment variables:");
+                foreach (string envVar in processStartInfo.EnvironmentVariables.Keys)
+                {
+                    Bam.Core.Log.DebugMessage("\t{0} = {1}", envVar, processStartInfo.EnvironmentVariables[envVar]);
+                }
+            }
+
+            System.Diagnostics.Process process = null;
+            try
+            {
+                process = System.Diagnostics.Process.Start(processStartInfo);
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+            }
+            if (null != process)
+            {
+                process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(Bam.Core.V2.Graph.Instance.OutputDataReceived);
+                process.BeginOutputReadLine();
+
+                process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(Bam.Core.V2.Graph.Instance.ErrorDataReceived);
+                process.BeginErrorReadLine();
+
+                // TODO: need to poll for an external cancel op? this currently waits forever
+                process.WaitForExit();
+                var exitCode = process.ExitCode;
+                //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
+
+                return exitCode;
+            }
+
+            return -1;
+        }
+    }
+}
     public static class Processor
     {
         static bool disableResponseFiles = Bam.Core.State.Get<bool>("Build", "DisableResponseFiles", false);

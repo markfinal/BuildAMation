@@ -42,6 +42,11 @@ namespace V2
                     module.Execute();
                 }
             }
+
+            // TODO: shouldn't be full
+            // TODO: should be per module, and must be for parallelism
+            Log.Full(graph.OutputStringBuilder.ToString());
+            Log.ErrorMessage(graph.ErrorStringBuilder.ToString());
         }
     }
 }
