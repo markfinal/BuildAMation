@@ -85,6 +85,10 @@ namespace V2
 
         private void InternalDependsOn(Module module)
         {
+            if (this.DependentsList.Contains(module))
+            {
+                return;
+            }
             this.DependentsList.Add(module);
             module.DependeesList.Add(this);
         }
@@ -100,6 +104,10 @@ namespace V2
 
         private void InternalRequires(Module module)
         {
+            if (this.RequiredDependentsList.Contains(module))
+            {
+                return;
+            }
             this.RequiredDependentsList.Add(module);
             module.RequiredDependeesList.Add(this);
         }
@@ -111,6 +119,12 @@ namespace V2
             {
                 this.InternalRequires(m);
             }
+        }
+
+        public Settings Settings
+        {
+            get;
+            set;
         }
 
         public delegate void PatchDelegate(Settings settings);
@@ -191,6 +205,18 @@ namespace V2
         {
             get;
             protected set;
+        }
+
+        public void ApplySettingsPatches()
+        {
+            if (null == this.Settings)
+            {
+                return;
+            }
+            foreach (var patch in this.Patches)
+            {
+                patch(this.Settings);
+            }
         }
     }
 }

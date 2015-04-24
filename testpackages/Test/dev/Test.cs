@@ -82,9 +82,20 @@ namespace Test
         CompileSingleCFileWithCustomOptionsV2()
         {
             this.InputPath = new Bam.Core.V2.TokenizedString("$(pkgroot)/source/main.c", null);
-            this.PatchSettings(baseSettings =>
+            this.PatchSettings(settings =>
                 {
                     // TODO: perform cast to appropriate type (would be nice to get this from the base class)
+                    // TODO: should cast as an interface
+                    var vcSettings = settings as VisualC.CompilerSettings;
+                    if (vcSettings != null)
+                    {
+                        vcSettings.Bits = VisualC.CompilerSettings.EBit.ThirtyTwo;
+                    }
+                    var mingwSettings = settings as Mingw.CompilerSettings;
+                    if (mingwSettings != null)
+                    {
+                        mingwSettings.Bits = Mingw.CompilerSettings.EBit.ThirtyTwo;
+                    }
                 });
         }
     }

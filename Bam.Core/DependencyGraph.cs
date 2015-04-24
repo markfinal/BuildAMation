@@ -151,6 +151,17 @@ namespace V2
             }
         }
 
+        public void ApplySettingsPatches()
+        {
+            foreach (var rank in this.DependencyGraph.Reverse())
+            {
+                foreach (var module in rank.Value)
+                {
+                    module.ApplySettingsPatches();
+                }
+            }
+        }
+
         public void ExpandPaths()
         {
             foreach (var rank in this.DependencyGraph.Reverse())
@@ -289,6 +300,8 @@ namespace V2
             if (m.Tool != null)
             {
                 m.Requires(m.Tool);
+                m.Settings = m.Tool.CreateDefaultSettings();
+                // TODO: Tool can also inject macros into the module
             }
             if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
             {

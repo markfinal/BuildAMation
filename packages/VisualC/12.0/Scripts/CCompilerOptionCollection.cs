@@ -22,16 +22,45 @@ namespace VisualC
     public sealed class CompilerSettings
         : Bam.Core.V2.Settings
     {
+        public CompilerSettings()
+        {
+            this.Bits = EBit.SixtyFour;
+        }
+
+        // TODO: needs to be in an interface, and in a super class, but to demonstrate...
+        public enum EBit
+        {
+            ThirtyTwo = 32,
+            SixtyFour = 64
+        }
+
+        public EBit Bits
+        {
+            get;
+            set;
+        }
     }
 
     public sealed class Compiler32 :
         C.V2.CompilerTool
     {
+        public override Bam.Core.V2.Settings CreateDefaultSettings()
+        {
+            var settings = new CompilerSettings();
+            settings.Bits = CompilerSettings.EBit.ThirtyTwo;
+            return settings;
+        }
     }
 
     public sealed class Compiler64 :
         C.V2.CompilerTool
     {
+        public override Bam.Core.V2.Settings CreateDefaultSettings()
+        {
+            var settings = new CompilerSettings();
+            settings.Bits = CompilerSettings.EBit.SixtyFour;
+            return settings;
+        }
     }
     // -V2
     // Not sealed since the C++ compiler inherits from it

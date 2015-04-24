@@ -363,6 +363,8 @@ namespace V2
             protected set;
         }
 
+        public abstract Settings CreateDefaultSettings();
+
         protected override void ExecuteInternal()
         {
             // by default, a Tool's execution does nothing as it's on disk
