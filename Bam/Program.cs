@@ -76,17 +76,21 @@ namespace Bam
                 graph.SortDependencies();
                 graph.Validate();
 
+                // TODO: is it valid for the path expansion to occur prior to patching the settings?
+                // if so, a thread can be spawned, to check for whether files were in date or not, which will
+                // be ready in time for graph execution
+                graph.ExpandPaths();
+
                 // Phase 3: (Create default settings, and ) apply patches (build + shared) to each module
                 // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
                 // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
+                // TODO: a parallel thread can be spawned here, that can check whether command lines have changed
                 graph.ApplySettingsPatches();
-
-                // Phase 4: Execute dependency graph
-                // N.B. all paths (including those with macros) have been delayed expansion until now
-                graph.ExpandPaths();
 
                 graph.Dump();
 
+                // Phase 4: Execute dependency graph
+                // N.B. all paths (including those with macros) have been delayed expansion until now
                 var executor = new Core.V2.Executor();
                 executor.Run();
             }
