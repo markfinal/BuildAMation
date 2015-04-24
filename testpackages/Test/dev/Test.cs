@@ -88,12 +88,12 @@ namespace Test
                     var vcSettings = settings as VisualC.CompilerSettings;
                     if (vcSettings != null)
                     {
-                        vcSettings.Bits = VisualC.CompilerSettings.EBit.ThirtyTwo;
+                        vcSettings.Bits = C.V2.EBit.ThirtyTwo;
                     }
                     var mingwSettings = settings as Mingw.CompilerSettings;
                     if (mingwSettings != null)
                     {
-                        mingwSettings.Bits = Mingw.CompilerSettings.EBit.ThirtyTwo;
+                        mingwSettings.Bits = C.V2.EBit.ThirtyTwo;
                     }
                 });
         }

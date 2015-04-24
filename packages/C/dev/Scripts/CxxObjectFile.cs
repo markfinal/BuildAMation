@@ -18,6 +18,13 @@
 #endregion // License
 namespace C.Cxx
 {
+namespace V2
+{
+    public class ObjectFile :
+        C.V2.ObjectFile
+    {
+    }
+}
     /// <summary>
     /// C++ object file
     /// </summary>

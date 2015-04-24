@@ -18,6 +18,23 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public enum EBit
+    {
+        ThirtyTwo = 32,
+        SixtyFour = 64
+    }
+
+    public interface ICCompilerOptions
+    {
+        EBit Bits
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ICCompilerOptions
     {
         /// <summary>

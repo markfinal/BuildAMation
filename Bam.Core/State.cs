@@ -366,7 +366,7 @@ namespace V2
             protected set;
         }
 
-        public abstract Settings CreateDefaultSettings();
+        public abstract Settings CreateDefaultSettings<T>(T module);
 
         protected override void ExecuteInternal()
         {

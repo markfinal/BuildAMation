@@ -300,7 +300,7 @@ namespace V2
             if (m.Tool != null)
             {
                 m.Requires(m.Tool);
-                m.Settings = m.Tool.CreateDefaultSettings();
+                m.Settings = m.Tool.CreateDefaultSettings(m);
                 // TODO: Tool can also inject macros into the module
             }
             if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))

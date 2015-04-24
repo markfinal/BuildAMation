@@ -19,68 +19,83 @@
 namespace Mingw
 {
     // V2
-    public sealed class CompilerSettings
-        : Bam.Core.V2.Settings
+    public class CompilerSettings :
+        Bam.Core.V2.Settings,
+        C.V2.ICCompilerOptions
     {
         public CompilerSettings()
         {
-            this.Bits = EBit.SixtyFour;
+            this.Bits = C.V2.EBit.SixtyFour;
         }
 
-        // TODO: needs to be in an interface, and in a super class, but to demonstrate...
-        public enum EBit
-        {
-            ThirtyTwo = 32,
-            SixtyFour = 64
-        }
-
-        public EBit Bits
+        public C.V2.EBit Bits
         {
             get;
             set;
         }
     }
 
-    public sealed class Compiler32 :
+    public sealed class CxxCompilerSettings :
+        CompilerSettings
+    {
+    }
+
+    public abstract class CompilerBase :
         C.V2.CompilerTool
     {
-        public Compiler32()
+        public CompilerBase()
         {
             //this.EnvironmentVariables[PATH] =
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings()
-        {
-            var settings = new CompilerSettings();
-            settings.Bits = CompilerSettings.EBit.ThirtyTwo;
-            return settings;
-        }
-
         public override string Executable
         {
             get
             {
                 return @"C:\MinGW\bin\mingw32-gcc-4.8.1";
             }
+        }
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module))
+            {
+                var settings = new CxxCompilerSettings();
+                this.OverrideDefaultSettings(settings);
+                return settings;
+            }
+            else if (typeof(C.V2.ObjectFile).IsInstanceOfType(module))
+            {
+                var settings = new CompilerSettings();
+                this.OverrideDefaultSettings(settings);
+                return settings;
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
+            }
+        }
+
+        protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
+    }
+
+    public sealed class Compiler32 :
+        CompilerBase
+    {
+        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        {
+            var cSettings = settings as C.V2.ICCompilerOptions;
+            cSettings.Bits = C.V2.EBit.ThirtyTwo;
         }
     }
 
     public sealed class Compiler64 :
-        C.V2.CompilerTool
+        CompilerBase
     {
-        public override Bam.Core.V2.Settings CreateDefaultSettings()
+        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
         {
-            var settings = new CompilerSettings();
-            settings.Bits = CompilerSettings.EBit.SixtyFour;
-            return settings;
-        }
-
-        public override string Executable
-        {
-            get
-            {
-                return @"C:\MinGW\bin\mingw32-gcc-4.8.1";
-            }
+            var cSettings = settings as C.V2.ICCompilerOptions;
+            cSettings.Bits = C.V2.EBit.SixtyFour;
         }
     }
     // -V2
