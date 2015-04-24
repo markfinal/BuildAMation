@@ -56,11 +56,6 @@ namespace V2
     {
     }
 
-    public sealed class Compiler32 :
-        CompilerTool
-    {
-    }
-
     public class ObjectFile :
         Bam.Core.V2.Module,
         Bam.Core.V2.IChildModule,
@@ -75,8 +70,9 @@ namespace V2
         protected override void Init()
         {
             this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(config)/$basename($(inputpath)).obj", null));
-            // TODO: this should be a default
-            this.Compiler = new Compiler32();
+
+            // TODO: this should be a default, and done through a reflection mechanism
+            this.Compiler = new VisualC.Compiler64();
         }
 
         public Bam.Core.V2.TokenizedString InputPath

@@ -18,6 +18,22 @@
 #endregion // License
 namespace Mingw
 {
+    // V2
+    public sealed class CompilerSettings
+        : Bam.Core.V2.Settings
+    {
+    }
+
+    public sealed class Compiler32 :
+        C.V2.CompilerTool
+    {
+    }
+
+    public sealed class Compiler64 :
+        C.V2.CompilerTool
+    {
+    }
+    // -V2
     public partial class CCompilerOptionCollection :
         MingwCommon.CCompilerOptionCollection,
         ICCompilerOptions

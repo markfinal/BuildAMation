@@ -18,6 +18,22 @@
 #endregion // License
 namespace VisualC
 {
+    // V2
+    public sealed class CompilerSettings
+        : Bam.Core.V2.Settings
+    {
+    }
+
+    public sealed class Compiler32 :
+        C.V2.CompilerTool
+    {
+    }
+
+    public sealed class Compiler64 :
+        C.V2.CompilerTool
+    {
+    }
+    // -V2
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection :
         VisualCCommon.CCompilerOptionCollection
