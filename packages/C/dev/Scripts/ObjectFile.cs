@@ -72,7 +72,10 @@ namespace V2
             this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(config)/$basename($(inputpath)).obj", null));
 
             // TODO: this should be a default, and done through a reflection mechanism
-            this.Compiler = new VisualC.Compiler64();
+            if (null == this.Compiler)
+            {
+                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
+            }
         }
 
         public Bam.Core.V2.TokenizedString InputPath
@@ -102,8 +105,14 @@ namespace V2
 
         public CompilerTool Compiler
         {
-            get;
-            set;
+            get
+            {
+                return this.Tool as CompilerTool;
+            }
+            set
+            {
+                this.Tool = value;
+            }
         }
 
         protected override void ExecuteInternal()

@@ -284,6 +284,12 @@ namespace V2
 
         private void InternalArrangeDependents(Module m, int rank)
         {
+            // predicate required, because eventually there will be a module without a Tool, e.g. a Tool itself
+            // TODO: should a Tool on a module actually be an interface to formalize this?
+            if (m.Tool != null)
+            {
+                m.Requires(m.Tool);
+            }
             if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
             {
                 return;

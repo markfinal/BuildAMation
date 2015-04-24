@@ -53,6 +53,7 @@ namespace V2
             this.Macros.Add("modulename", new TokenizedString(this.GetType().Name, null));
 
             this.OwningRank = null;
+            this.Tool = null;
         }
 
         // TODO: is this virtual or abstract?
@@ -185,6 +186,12 @@ namespace V2
         }
 
         protected abstract void GetExecutionPolicy(string mode);
+
+        public Tool Tool
+        {
+            get;
+            protected set;
+        }
     }
 }
     /// <summary>

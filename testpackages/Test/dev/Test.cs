@@ -60,7 +60,7 @@ namespace Test
             //this.RegisterGeneratedFile(C.V2.ObjectFile.Key, new Bam.Core.V2.TokenizedString("$(buildroot)/hello.obj", null));
             this.InputPath = new Bam.Core.V2.TokenizedString("$(pkgroot)/source/main.c", null);
             // TODO: this should be done through a reflection mechanism
-            this.Compiler = new Mingw.Compiler32();
+            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.Compiler32>();
         }
     }
 

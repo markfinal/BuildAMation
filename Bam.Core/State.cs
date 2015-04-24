@@ -347,7 +347,11 @@ namespace V2
         }
     }
 
-    public abstract class Tool
+    /// <summary>
+    /// A tool is a module in the usual sense, so that it can be added into the dependency tree
+    /// </summary>
+    public abstract class Tool :
+        Module
     {
         protected Tool()
         {
@@ -357,6 +361,16 @@ namespace V2
         {
             get;
             protected set;
+        }
+
+        protected override void ExecuteInternal()
+        {
+            // by default, a Tool's execution does nothing as it's on disk
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // by default, the execution policy of a tool is to do nothing as it's on disk
         }
     }
 }

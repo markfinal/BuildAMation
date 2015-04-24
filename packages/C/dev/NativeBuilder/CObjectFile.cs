@@ -29,6 +29,7 @@ namespace V2
             string objectFilePath,
             string sourceFilePath)
         {
+            var tool = sender.Tool;
             // TODO: run tool
             throw new System.NotImplementedException();
         }
