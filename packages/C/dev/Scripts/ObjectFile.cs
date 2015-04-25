@@ -129,9 +129,12 @@ namespace V2
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
 
+        using VisualC;
         public override void ConvertSettingsToCommandLine()
         {
             base.ConvertSettingsToCommandLine();
+            // TODO: this is an extension method, which requires the 'using VisualC' statement above
+            (this.Settings as C.V2.ICommonCompilerOptions).Convert(this.CommandLine);
         }
     }
 }

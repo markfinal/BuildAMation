@@ -18,6 +18,21 @@
 #endregion // License
 namespace VisualC
 {
+    public static class NativeImplementation
+    {
+        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+            if (options.Bits == C.V2.EBit.ThirtyTwo)
+            {
+                commandLine.Add("-m32");
+            }
+        }
+
+        public static void Convert(this C.V2.ICCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+    }
+
     // V2
     public class CompilerSettings :
         Bam.Core.V2.Settings,
