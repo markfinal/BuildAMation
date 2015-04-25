@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using VisualC;
 namespace C
 {
 namespace V2
@@ -129,7 +130,6 @@ namespace V2
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
 
-        using VisualC;
         public override void ConvertSettingsToCommandLine()
         {
             base.ConvertSettingsToCommandLine();
