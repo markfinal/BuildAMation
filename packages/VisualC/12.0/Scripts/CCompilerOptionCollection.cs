@@ -21,6 +21,7 @@ namespace VisualC
     // V2
     public class CompilerSettings :
         Bam.Core.V2.Settings,
+        C.V2.ICommonCompilerOptions,
         C.V2.ICCompilerOptions
     {
         public CompilerSettings()
@@ -84,7 +85,7 @@ namespace VisualC
 
         protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
         {
-            var cSettings = settings as C.V2.ICCompilerOptions;
+            var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.ThirtyTwo;
         }
     }
@@ -102,7 +103,7 @@ namespace VisualC
 
         protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
         {
-            var cSettings = settings as C.V2.ICCompilerOptions;
+            var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.SixtyFour;
         }
     }

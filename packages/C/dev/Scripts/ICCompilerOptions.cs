@@ -26,13 +26,17 @@ namespace V2
         SixtyFour = 64
     }
 
-    public interface ICCompilerOptions
+    public interface ICommonCompilerOptions
     {
         EBit Bits
         {
             get;
             set;
         }
+    }
+
+    public interface ICCompilerOptions
+    {
     }
 }
     public interface ICCompilerOptions
