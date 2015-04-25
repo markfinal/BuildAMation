@@ -128,6 +128,11 @@ namespace V2
             var className = "C.V2." + mode + "Compilation";
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
+
+        public override void ConvertSettingsToCommandLine()
+        {
+            base.ConvertSettingsToCommandLine();
+        }
     }
 }
     /// <summary>

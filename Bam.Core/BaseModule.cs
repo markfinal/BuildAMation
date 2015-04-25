@@ -223,9 +223,11 @@ namespace V2
             {
                 patch(this.Settings);
             }
-            // TODO: command line expansion depends on the mode
-            var commandLine = new StringArray();
-            this.CommandLine = commandLine;
+        }
+
+        public virtual void ConvertSettingsToCommandLine()
+        {
+            this.CommandLine = new StringArray();
         }
     }
 }

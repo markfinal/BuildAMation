@@ -25,6 +25,7 @@ namespace V2
     /// </summary>
     public abstract class Settings
     {
+        protected System.Collections.Generic.Dictionary<string, bool> Dict;
     }
 }
     public abstract class BaseOptionCollection :

@@ -28,6 +28,7 @@ namespace Mingw
             this.Bits = C.V2.EBit.SixtyFour;
         }
 
+        // TODO: Set can be a little slow, but get should be fast
         public C.V2.EBit Bits
         {
             get;
