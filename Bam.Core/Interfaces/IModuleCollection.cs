@@ -20,7 +20,7 @@ namespace Bam.Core
 {
 namespace V2
 {
-    interface IModuleGroup
+    public interface IModuleGroup
     {
         System.Collections.Generic.List<Module> Children
         {

@@ -300,7 +300,10 @@ namespace V2
             }
         }
 
-        private void InternalArrangeDependents(Module m, int rank)
+        private void
+        InternalArrangeDependents(
+            Module m,
+            int rank)
         {
             // predicate required, because eventually there will be a module without a Tool, e.g. a Tool itself
             // TODO: should a Tool on a module actually be an interface to formalize this?
@@ -349,7 +352,7 @@ namespace V2
             foreach (var rank in this.DependencyGraph)
             {
                 var text = new System.Text.StringBuilder();
-                text.AppendFormat("{1}Rank {0} modules{1}", rank.Key, System.Environment.NewLine);
+                text.AppendFormat("{2}Rank {0}: {1} modules{2}", rank.Key, rank.Value.Count(), System.Environment.NewLine);
                 text.AppendLine(new string('-', 80));
                 foreach (var m in rank.Value)
                 {
@@ -367,7 +370,10 @@ namespace V2
             }
         }
 
-        private void InternalValidateGraph(int parentRank, System.Collections.ObjectModel.ReadOnlyCollection<Module> modules)
+        private void
+        InternalValidateGraph(
+            int parentRank,
+            System.Collections.ObjectModel.ReadOnlyCollection<Module> modules)
         {
             foreach (var c in modules)
             {
