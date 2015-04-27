@@ -18,6 +18,27 @@
 #endregion // License
 namespace Test2
 {
+    sealed class LibraryV2 :
+        C.V2.StaticLibrary
+    {
+        public LibraryV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/library.c");
+        }
+    }
+
+    sealed class ApplicationV2 :
+        C.V2.ConsoleApplication
+    {
+        public ApplicationV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/application.c");
+            this.LinkAgainst<LibraryV2>();
+        }
+    }
+
     static class BuildOutputDirHelper
     {
         public static void

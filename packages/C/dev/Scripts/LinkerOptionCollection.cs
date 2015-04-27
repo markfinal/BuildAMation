@@ -18,6 +18,12 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public interface ILinkerOptions
+    {
+    }
+}
     public abstract class LinkerOptionCollection :
         Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport

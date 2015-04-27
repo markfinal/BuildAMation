@@ -18,6 +18,57 @@
 #endregion // License
 namespace Mingw
 {
+namespace V2
+{
+    public interface IArchiverOptions
+    {
+        bool Ranlib
+        {
+            get;
+            set;
+        }
+    }
+
+    public class LibrarianSettings :
+        Bam.Core.V2.Settings,
+        C.V2.IArchiverOptions,
+        IArchiverOptions
+    {
+        public LibrarianSettings()
+        {
+            this.Ranlib = true;
+        }
+
+        public bool Ranlib
+        {
+            get;
+            set;
+        }
+    }
+
+    public sealed class Librarian :
+        C.V2.LibrarianTool
+    {
+        public Librarian()
+        {
+            this.InheritedEnvironmentVariables.Add("TEMP");
+        }
+
+        public override string Executable
+        {
+            get
+            {
+                return @"C:\MinGW\bin\ar";
+            }
+        }
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            var settings = new LibrarianSettings();
+            return settings;
+        }
+    }
+}
     public class ArchiverOptionCollection :
         MingwCommon.ArchiverOptionCollection
     {

@@ -18,6 +18,79 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public class ConsoleApplication :
+        Bam.Core.V2.Module
+    {
+        private System.Collections.Generic.List<Bam.Core.V2.Module> sourceModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        private System.Collections.Generic.List<Bam.Core.V2.Module> linkedModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        private ILinkerPolicy Policy = null;
+
+        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("ExecutableFile");
+
+        protected override void Init()
+        {
+            base.Init();
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/anexecutable", this));
+
+            // TODO: this should be a default, and done through a reflection mechanism
+            if (null == this.Linker)
+            {
+                this.Linker = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Linker>();
+            }
+        }
+
+        public CObjectFileCollection CreateCSourceContainer()
+        {
+            var source = new CObjectFileCollection();
+            this.sourceModules.Add(source);
+            this.DependsOn(source);
+            return source;
+        }
+
+        public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath)
+        {
+            var source = new Cxx.V2.ObjectFileCollection();
+            this.sourceModules.Add(source);
+            this.DependsOn(source);
+            return source;
+        }
+
+        public void LinkAgainst<DependentModule>() where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.DependsOn(dependent);
+            this.linkedModules.Add(dependent);
+        }
+
+        public LinkerTool Linker
+        {
+            get
+            {
+                return this.Tool as LinkerTool;
+            }
+            set
+            {
+                this.Tool = value;
+            }
+        }
+
+        protected override void ExecuteInternal()
+        {
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules);
+            var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules);
+            var executable = this.GeneratedPaths[Key].ToString();
+            this.Policy.Link(this, executable, source, linked, null);
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            var className = "C.V2." + mode + "Linker";
+            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ILinkerPolicy>.Create(className);
+        }
+    }
+}
     /// <summary>
     /// C/C++ console application
     /// </summary>

@@ -34,7 +34,7 @@ namespace V2
     {
         void
         Archive(
-            ObjectFile sender,
+            StaticLibrary sender,
             string libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs);
     }
@@ -43,7 +43,7 @@ namespace V2
     {
         void
         Link(
-            ObjectFile sender,
+            ConsoleApplication sender,
             string executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
@@ -54,8 +54,15 @@ namespace V2
 
     public abstract class CompilerTool :
         Bam.Core.V2.Tool
-    {
-    }
+    { }
+
+    public abstract class LibrarianTool :
+        Bam.Core.V2.Tool
+    { }
+
+    public abstract class LinkerTool :
+        Bam.Core.V2.Tool
+    { }
 
     public class ObjectFile :
         Bam.Core.V2.Module,
@@ -76,7 +83,7 @@ namespace V2
             if (null == this.Compiler)
             {
                 //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
-                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.Compiler64>();
+                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler64>();
             }
         }
 

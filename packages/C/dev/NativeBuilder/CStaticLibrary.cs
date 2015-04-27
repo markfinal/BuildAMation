@@ -16,6 +16,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+    namespace V2
+    {
+        public sealed class NativeLibrarian :
+            ILibrarianPolicy
+        {
+            void
+            ILibrarianPolicy.Archive(
+                StaticLibrary sender,
+                string libraryPath,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
+            {
+                var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
+            }
+        }
+    }
+}
 namespace NativeBuilder
 {
     public sealed partial class NativeBuilder

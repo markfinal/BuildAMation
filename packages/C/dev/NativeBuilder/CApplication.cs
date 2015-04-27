@@ -16,6 +16,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+    namespace V2
+    {
+        public sealed class NativeLinker :
+            ILinkerPolicy
+        {
+            void
+            ILinkerPolicy.Link(
+                ConsoleApplication sender,
+                string executablePath,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+            {
+                var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
+            }
+        }
+    }
+}
 namespace NativeBuilder
 {
     public sealed partial class NativeBuilder

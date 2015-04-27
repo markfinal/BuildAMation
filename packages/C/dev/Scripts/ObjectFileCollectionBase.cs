@@ -18,6 +18,65 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public abstract class BaseObjectFiles<ChildModuleType> :
+        Bam.Core.V2.Module, Bam.Core.V2.IModuleGroup
+        where ChildModuleType : Bam.Core.V2.Module, Bam.Core.V2.IInputPath, Bam.Core.V2.IChildModule, new()
+    {
+        private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
+
+        public ChildModuleType AddFile(string path)
+        {
+            // TODO: how can I distinguish between creating a child module that inherits it's parents settings
+            // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
+            var child = Bam.Core.V2.Module.Create<ChildModuleType>();
+            child.InputPath = new Bam.Core.V2.TokenizedString(path, null); // inherits macros from the caller
+            (child as Bam.Core.V2.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            return child;
+        }
+
+        public ChildModuleType AddFile(Bam.Core.V2.FileKey generatedFileKey, Bam.Core.V2.Module module)
+        {
+            if (!module.GeneratedPaths.ContainsKey(generatedFileKey))
+            {
+                throw new System.Exception(System.String.Format("No generated path found with key '{0}'", generatedFileKey.Id));
+            }
+            var child = Bam.Core.V2.Module.Create<ChildModuleType>();
+            child.InputPath = module.GeneratedPaths[generatedFileKey];
+            (child as Bam.Core.V2.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            child.DependsOn(module);
+            return child;
+        }
+
+        System.Collections.Generic.List<Bam.Core.V2.Module> Bam.Core.V2.IModuleGroup.Children
+        {
+            get
+            {
+                return this.children as System.Collections.Generic.List<Bam.Core.V2.Module>;
+            }
+            set
+            {
+                this.children = value as System.Collections.Generic.List<ChildModuleType>;
+            }
+        }
+
+        protected override void ExecuteInternal()
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+            // TODO: might have to get the policy, for the sharing settings
+        }
+    }
+}
     public abstract class ObjectFileCollectionBase :
         Bam.Core.BaseModule,
         Bam.Core.IModuleCollection

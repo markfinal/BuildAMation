@@ -18,6 +18,12 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public interface IArchiverOptions
+    {
+    }
+}
     public abstract class ArchiverOptionCollection :
         Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport

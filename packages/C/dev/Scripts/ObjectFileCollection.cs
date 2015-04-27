@@ -18,6 +18,12 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public class CObjectFileCollection :
+        BaseObjectFiles<ObjectFile>
+    { }
+}
     /// <summary>
     /// C object file collection
     /// </summary>

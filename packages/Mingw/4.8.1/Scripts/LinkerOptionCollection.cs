@@ -18,6 +18,45 @@
 #endregion // License
 namespace Mingw
 {
+namespace V2
+{
+    public interface ILinkerOptions
+    {
+    }
+
+    public class LinkerSettings :
+        Bam.Core.V2.Settings,
+        C.V2.ILinkerOptions,
+        ILinkerOptions
+    {
+        public LinkerSettings()
+        {
+        }
+    }
+
+    public sealed class Linker :
+        C.V2.LinkerTool
+    {
+        public Linker()
+        {
+            this.InheritedEnvironmentVariables.Add("TEMP");
+        }
+
+        public override string Executable
+        {
+            get
+            {
+                return @"C:\MinGW\bin\mingw32-gcc-4.8.1";
+            }
+        }
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            var settings = new LinkerSettings();
+            return settings;
+        }
+    }
+}
     public class LinkerOptionCollection :
         MingwCommon.LinkerOptionCollection
     {

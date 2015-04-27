@@ -18,7 +18,8 @@
 #endregion // License
 namespace Mingw
 {
-    // V2
+namespace V2
+{
     public class CompilerSettings :
         Bam.Core.V2.Settings,
         C.V2.ICommonCompilerOptions,
@@ -100,7 +101,7 @@ namespace Mingw
             cSettings.Bits = C.V2.EBit.SixtyFour;
         }
     }
-    // -V2
+}
     public partial class CCompilerOptionCollection :
         MingwCommon.CCompilerOptionCollection,
         ICCompilerOptions

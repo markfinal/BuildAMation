@@ -18,6 +18,70 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public class StaticLibrary :
+        Bam.Core.V2.Module
+    {
+        private System.Collections.Generic.List<Bam.Core.V2.Module> source = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        private ILibrarianPolicy Policy = null;
+
+        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Static Library File");
+
+        protected override void Init()
+        {
+            base.Init();
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).lib", null));
+
+            // TODO: this should be a default, and done through a reflection mechanism
+            if (null == this.Librarian)
+            {
+                this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Librarian>();
+            }
+        }
+
+        public CObjectFileCollection CreateCSourceContainer()
+        {
+            var source = new CObjectFileCollection();
+            this.source.Add(source);
+            this.DependsOn(source);
+            return source;
+        }
+
+        public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath)
+        {
+            var source = new Cxx.V2.ObjectFileCollection();
+            this.source.Add(source);
+            this.DependsOn(source);
+            return source;
+        }
+
+        public LibrarianTool Librarian
+        {
+            get
+            {
+                return this.Tool as LibrarianTool;
+            }
+            set
+            {
+                this.Tool = value;
+            }
+        }
+
+        protected override void ExecuteInternal()
+        {
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source);
+            var libraryFile = this.GeneratedPaths[Key].ToString();
+            this.Policy.Archive(this, libraryFile, source);
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            var className = "C.V2." + mode + "Librarian";
+            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ILibrarianPolicy>.Create(className);
+        }
+    }
+}
     /// <summary>
     /// C/C++ static library
     /// </summary>
