@@ -38,11 +38,11 @@ namespace V2
                 }
                 var originalRank = Graph.Instance.DependencyGraph[m.OwningRank];
                 var newRank = Graph.Instance.DependencyGraph[this];
-                if (newRank > originalRank)
+                if (newRank <= originalRank)
                 {
-                    this.Move(m);
+                    return;
                 }
-                return;
+                this.Move(m);
             }
             this.Modules.Add(m);
             var r = Graph.Instance.DependencyGraph[this];
