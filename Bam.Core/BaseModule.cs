@@ -176,6 +176,8 @@ namespace V2
             private set;
         }
 
+        protected object MetaData = null;
+
         protected abstract void ExecuteInternal();
 
         void IModuleExecution.Execute()

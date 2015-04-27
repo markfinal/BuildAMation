@@ -42,6 +42,8 @@ namespace V2
                 }
             }
 
+            // TODO: pre-execution
+
             foreach (var rank in graph.Reverse())
             {
                 foreach (IModuleExecution module in rank)
@@ -60,6 +62,8 @@ namespace V2
             // TODO: should be per module, and must be for parallelism
             Log.Full(graph.OutputStringBuilder.ToString());
             Log.ErrorMessage(graph.ErrorStringBuilder.ToString());
+
+            // TODO: post-execution
         }
     }
 }
