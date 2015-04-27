@@ -18,6 +18,25 @@
 #endregion // License
 namespace Mingw
 {
+    public static class NativeImplementation
+    {
+        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+            if (options.Bits == C.V2.EBit.ThirtyTwo)
+            {
+                commandLine.Add("-m32");
+            }
+            else
+            {
+                commandLine.Add("-m64");
+            }
+        }
+
+        public static void Convert(this C.V2.ICCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+    }
+
 namespace V2
 {
     public class CompilerSettings :
