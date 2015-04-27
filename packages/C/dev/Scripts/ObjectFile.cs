@@ -143,6 +143,22 @@ namespace V2
             // TODO: this is an extension method, which requires the 'using VisualC' statement above
             (this.Settings as C.V2.ICommonCompilerOptions).Convert(this.CommandLine);
         }
+
+        public override void Evaluate()
+        {
+            var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
+            if (!exists)
+            {
+                return;
+            }
+            var sourceWriteTime = System.IO.File.GetLastWriteTime(this.InputPath.ToString());
+            var outputWriteTime = System.IO.File.GetLastWriteTime(this.GeneratedPaths[Key].ToString());
+            if (sourceWriteTime <= outputWriteTime)
+            {
+                return;
+            }
+            this.IsUpToDate = true;
+        }
     }
 }
     /// <summary>

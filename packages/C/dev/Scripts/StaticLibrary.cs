@@ -80,6 +80,18 @@ namespace V2
             var className = "C.V2." + mode + "Librarian";
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ILibrarianPolicy>.Create(className);
         }
+
+        public override void Evaluate()
+        {
+            foreach (var source in this.source)
+            {
+                if (!source.IsUpToDate)
+                {
+                    return;
+                }
+            }
+            this.IsUpToDate = true;
+        }
     }
 }
     /// <summary>

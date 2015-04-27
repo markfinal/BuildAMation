@@ -25,6 +25,10 @@ namespace V2
     public interface IModuleExecution
     {
         void Execute();
+        bool IsUpToDate
+        {
+            get;
+        }
     }
 
     /// <summary>
@@ -54,6 +58,7 @@ namespace V2
 
             this.OwningRank = null;
             this.Tool = null;
+            this.IsUpToDate = false;
         }
 
         // TODO: is this virtual or abstract?
@@ -229,6 +234,14 @@ namespace V2
         {
             this.CommandLine = new StringArray();
         }
+
+        public bool IsUpToDate
+        {
+            get;
+            protected set;
+        }
+
+        public abstract void Evaluate();
     }
 }
     /// <summary>

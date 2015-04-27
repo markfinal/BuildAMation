@@ -396,6 +396,12 @@ namespace V2
         {
             get;
         }
+
+        public override void Evaluate()
+        {
+            var exists = System.IO.File.Exists(this.Executable);
+            this.IsUpToDate = exists;
+        }
     }
 }
 

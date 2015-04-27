@@ -58,7 +58,7 @@ namespace V2
         {
             get
             {
-                return @"C:\MinGW\bin\ar";
+                return @"C:\MinGW\bin\ar.exe";
             }
         }
 

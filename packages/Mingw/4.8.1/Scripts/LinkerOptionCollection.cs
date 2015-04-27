@@ -46,7 +46,7 @@ namespace V2
         {
             get
             {
-                return @"C:\MinGW\bin\mingw32-gcc-4.8.1";
+                return @"C:\MinGW\bin\mingw32-gcc-4.8.1.exe";
             }
         }
 

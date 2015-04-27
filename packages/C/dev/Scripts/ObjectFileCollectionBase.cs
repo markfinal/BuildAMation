@@ -21,7 +21,8 @@ namespace C
 namespace V2
 {
     public abstract class BaseObjectFiles<ChildModuleType> :
-        Bam.Core.V2.Module, Bam.Core.V2.IModuleGroup
+        Bam.Core.V2.Module,
+        Bam.Core.V2.IModuleGroup
         where ChildModuleType : Bam.Core.V2.Module, Bam.Core.V2.IInputPath, Bam.Core.V2.IChildModule, new()
     {
         private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
@@ -74,6 +75,18 @@ namespace V2
         {
             // do nothing
             // TODO: might have to get the policy, for the sharing settings
+        }
+
+        public override void Evaluate()
+        {
+            foreach (var child in this.children)
+            {
+                if (!child.IsUpToDate)
+                {
+                    return;
+                }
+            }
+            this.IsUpToDate = true;
         }
     }
 }

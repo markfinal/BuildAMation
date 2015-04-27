@@ -28,17 +28,30 @@ namespace V2
     public sealed class Executor
     {
         public Executor()
-        {}
+        {
+        }
 
         public void Run()
         {
-            // TODO: do this over a graph, not the linearized list
-            // always execute from leaf to root
             var graph = Graph.Instance;
+            foreach (var rank in graph.Reverse())
+            {
+                foreach (Module module in rank)
+                {
+                    module.Evaluate();
+                }
+            }
+
             foreach (var rank in graph.Reverse())
             {
                 foreach (IModuleExecution module in rank)
                 {
+                    if (module.IsUpToDate)
+                    {
+                        Log.DebugMessage("Module {0} is up-to-date", module.ToString());
+                        continue;
+                    }
+                    Log.DebugMessage("Module {0} requires building", module.ToString());
                     module.Execute();
                 }
             }

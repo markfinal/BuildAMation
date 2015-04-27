@@ -89,6 +89,25 @@ namespace V2
             var className = "C.V2." + mode + "Linker";
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ILinkerPolicy>.Create(className);
         }
+
+        public override void Evaluate()
+        {
+            foreach (var source in this.sourceModules)
+            {
+                if (!source.IsUpToDate)
+                {
+                    return;
+                }
+            }
+            foreach (var source in this.linkedModules)
+            {
+                if (!source.IsUpToDate)
+                {
+                    return;
+                }
+            }
+            this.IsUpToDate = true;
+        }
     }
 }
     /// <summary>
