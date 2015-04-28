@@ -31,7 +31,7 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
-            var meta = new MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             meta.Target = executablePath;
             foreach (var module in objectFiles)
             {

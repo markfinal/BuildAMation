@@ -29,7 +29,7 @@ namespace V2
             string libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
         {
-            var meta = new MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             meta.Target = libraryPath;
             foreach (var module in inputs)
             {

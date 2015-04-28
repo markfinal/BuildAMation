@@ -20,102 +20,6 @@ namespace C
 {
 namespace V2
 {
-    using System.Linq;
-    public sealed class MakeFileMeta
-    {
-        public MakeFileMeta(Bam.Core.V2.Module module)
-        {
-            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
-            this.Rules = new System.Collections.Generic.List<string>();
-
-            if (Bam.Core.V2.Graph.Instance.IsReferencedModule(module))
-            {
-                this.TargetVariable = module.GetType().Name;
-            }
-        }
-
-        public string Target
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Prequisities
-        {
-            get;
-            private set;
-        }
-
-        public System.Collections.Generic.List<string> Rules
-        {
-            get;
-            private set;
-        }
-
-        public string TargetVariable
-        {
-            get;
-            private set;
-        }
-
-        public static void PreExecution()
-        {
-        }
-
-        public static void PostExecution()
-        {
-            var graph = Bam.Core.V2.Graph.Instance;
-
-            var command = new System.Text.StringBuilder();
-
-            command.Append("all:");
-            foreach (var module in graph.TopLevelModules)
-            {
-                var metadata = module.MetaData as MakeFileMeta;
-                if (null == metadata)
-                {
-                    throw new Bam.Core.Exception("Top level module did not have any Make metadata");
-                }
-                command.AppendFormat("$({0}) ", metadata.TargetVariable);
-            }
-            command.AppendLine();
-
-            foreach (var rank in graph.Reverse())
-            {
-                foreach (var module in rank)
-                {
-                    var metadata = module.MetaData as MakeFileMeta;
-                    if (null == metadata)
-                    {
-                        continue;
-                    }
-
-                    if (metadata.TargetVariable != null)
-                    {
-                        command.AppendFormat("{0}:={1}", metadata.TargetVariable, metadata.Target);
-                        command.AppendLine();
-                        command.AppendFormat("$({0}):", metadata.TargetVariable);
-                    }
-                    else
-                    {
-                        command.AppendFormat("{0}:", metadata.Target);
-                    }
-                    foreach (var pre in metadata.Prequisities)
-                    {
-                        command.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
-                    }
-                    command.AppendLine();
-                    foreach (var rule in metadata.Rules)
-                    {
-                        command.AppendFormat("\t{0}", rule);
-                        command.AppendLine();
-                    }
-                }
-            }
-            Bam.Core.Log.DebugMessage(command.ToString());
-        }
-    }
-
     public sealed class MakeFileCompilation :
         ICompilationPolicy
     {
@@ -125,7 +29,7 @@ namespace V2
             string objectFilePath,
             Bam.Core.V2.Module source)
         {
-            var meta = new MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             meta.Target = objectFilePath;
             meta.Prequisities.Add(source, C.V2.SourceFile.Key);
             meta.Rules.Add(sender.CommandLine.ToString(' '));
