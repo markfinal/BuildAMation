@@ -25,7 +25,7 @@ namespace V2
     {
         public MakeFileMeta()
         {
-            this.Prequisities = new System.Collections.Generic.List<string>();
+            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
             this.Rules = new System.Collections.Generic.List<string>();
         }
 
@@ -35,7 +35,7 @@ namespace V2
             set;
         }
 
-        public System.Collections.Generic.List<string> Prequisities
+        public System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Prequisities
         {
             get;
             private set;
@@ -68,7 +68,7 @@ namespace V2
                     command.AppendFormat("{0} : ", metadata.Target);
                     foreach (var pre in metadata.Prequisities)
                     {
-                        command.AppendFormat("{0} ", pre);
+                        command.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
                     }
                     command.AppendLine();
                     foreach (var rule in metadata.Rules)
@@ -90,11 +90,11 @@ namespace V2
         ICompilationPolicy.Compile(
             ObjectFile sender,
             string objectFilePath,
-            string sourceFilePath)
+            Bam.Core.V2.Module source)
         {
             var meta = new MakeFileMeta();
             meta.Target = objectFilePath;
-            meta.Prequisities.Add(sourceFilePath);
+            meta.Prequisities.Add(source, C.V2.SourceFile.Key);
             meta.Rules.Add(sender.CommandLine.ToString(' '));
             sender.MetaData = meta;
         }

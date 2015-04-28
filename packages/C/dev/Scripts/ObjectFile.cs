@@ -27,7 +27,7 @@ namespace V2
         Compile(
             ObjectFile sender,
             string objectFilePath,
-            string sourceFilePath);
+            Bam.Core.V2.Module source);
     }
 
     public interface ILibrarianPolicy
@@ -68,6 +68,8 @@ namespace V2
         Bam.Core.V2.Module,
         Bam.Core.V2.IInputPath
     {
+        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Source File");
+
         public override void Evaluate()
         {
             // do nothing
@@ -86,8 +88,14 @@ namespace V2
 
         public Bam.Core.V2.TokenizedString InputPath
         {
-            get;
-            set;
+            get
+            {
+                return this.GeneratedPaths[Key];
+            }
+            set
+            {
+                this.GeneratedPaths[Key] = value;
+            }
         }
     }
 
@@ -161,7 +169,7 @@ namespace V2
 
         protected override void ExecuteInternal()
         {
-            var sourceFile = this.InputPath.ToString();
+            var sourceFile = this.Source;
             var objectFile = this.GeneratedPaths[Key].ToString();
             this.Policy.Compile(this, objectFile, sourceFile);
         }

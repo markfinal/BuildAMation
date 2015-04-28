@@ -27,7 +27,7 @@ namespace V2
         ICompilationPolicy.Compile(
             ObjectFile sender,
             string objectFilePath,
-            string sourceFilePath)
+            Bam.Core.V2.Module source)
         {
             var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
         }
