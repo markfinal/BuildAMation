@@ -70,7 +70,10 @@ namespace V2
             // TODO: shouldn't be full
             // TODO: should be per module, and must be for parallelism
             Log.Full(graph.OutputStringBuilder.ToString());
-            Log.ErrorMessage(graph.ErrorStringBuilder.ToString());
+            if (graph.ErrorStringBuilder.Length > 0)
+            {
+                Log.ErrorMessage(graph.ErrorStringBuilder.ToString());
+            }
 
             if (null != metaData)
             {
