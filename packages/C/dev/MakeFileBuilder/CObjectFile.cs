@@ -65,6 +65,21 @@ namespace V2
         public static void PostExecution()
         {
             var graph = Bam.Core.V2.Graph.Instance;
+
+            var command = new System.Text.StringBuilder();
+
+            command.Append("all:");
+            foreach (var module in graph.TopLevelModules)
+            {
+                var metadata = module.MetaData as MakeFileMeta;
+                if (null == metadata)
+                {
+                    throw new Bam.Core.Exception("Top level module did not have any Make metadata");
+                }
+                command.AppendFormat("$({0}) ", metadata.TargetVariable);
+            }
+            command.AppendLine();
+
             foreach (var rank in graph.Reverse())
             {
                 foreach (var module in rank)
@@ -75,7 +90,6 @@ namespace V2
                         continue;
                     }
 
-                    var command = new System.Text.StringBuilder();
                     if (metadata.TargetVariable != null)
                     {
                         command.AppendFormat("{0}:={1}", metadata.TargetVariable, metadata.Target);
@@ -96,10 +110,9 @@ namespace V2
                         command.AppendFormat("\t{0}", rule);
                         command.AppendLine();
                     }
-
-                    Bam.Core.Log.DebugMessage(command.ToString());
                 }
             }
+            Bam.Core.Log.DebugMessage(command.ToString());
         }
     }
 
