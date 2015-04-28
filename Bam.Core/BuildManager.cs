@@ -42,8 +42,8 @@ namespace V2
                 }
             }
 
-            // TODO: sort out the namespace
-            var metaData = Core.State.ScriptAssembly.GetType("C.V2." + Core.State.BuilderName + "Meta");
+            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", Core.State.BuilderName);
+            var metaData = Core.State.ScriptAssembly.GetType(metaName);
             if (null != metaData)
             {
                 var method = metaData.GetMethod("PreExecution");
