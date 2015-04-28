@@ -461,6 +461,13 @@ namespace V2
             //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
             this.ErrorStringBuilder.Append(e.Data + '\n');
         }
+
+        public bool
+        IsReferencedModule(
+            Module module)
+        {
+            return this.ReferencedModules[module.BuildEnvironment].Contains(module);
+        }
     }
 }
 
