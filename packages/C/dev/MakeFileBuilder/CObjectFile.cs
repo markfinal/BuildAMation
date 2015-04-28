@@ -20,6 +20,69 @@ namespace C
 {
 namespace V2
 {
+    using System.Linq;
+    public sealed class MakeFileMeta
+    {
+        public MakeFileMeta()
+        {
+            this.Prequisities = new System.Collections.Generic.List<string>();
+            this.Rules = new System.Collections.Generic.List<string>();
+        }
+
+        public string Target
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<string> Prequisities
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.List<string> Rules
+        {
+            get;
+            private set;
+        }
+
+        public static void PreExecution()
+        {
+        }
+
+        public static void PostExecution()
+        {
+            var graph = Bam.Core.V2.Graph.Instance;
+            foreach (var rank in graph.Reverse())
+            {
+                foreach (var module in rank)
+                {
+                    var metadata = module.MetaData as MakeFileMeta;
+                    if (null == metadata)
+                    {
+                        continue;
+                    }
+
+                    var command = new System.Text.StringBuilder();
+                    command.AppendFormat("{0} : ", metadata.Target);
+                    foreach (var pre in metadata.Prequisities)
+                    {
+                        command.AppendFormat("{0} ", pre);
+                    }
+                    command.AppendLine();
+                    foreach (var rule in metadata.Rules)
+                    {
+                        command.AppendFormat("\t{0}", rule);
+                        command.AppendLine();
+                    }
+
+                    Bam.Core.Log.DebugMessage(command.ToString());
+                }
+            }
+        }
+    }
+
     public sealed class MakeFileCompilation :
         ICompilationPolicy
     {
@@ -29,8 +92,11 @@ namespace V2
             string objectFilePath,
             string sourceFilePath)
         {
-            // TODO: generate makefile
-            throw new System.NotImplementedException();
+            var meta = new MakeFileMeta();
+            meta.Target = objectFilePath;
+            meta.Prequisities.Add(sourceFilePath);
+            meta.Rules.Add(sender.CommandLine.ToString(' '));
+            sender.MetaData = meta;
         }
     }
 }

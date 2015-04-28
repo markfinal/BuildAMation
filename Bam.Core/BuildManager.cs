@@ -42,7 +42,16 @@ namespace V2
                 }
             }
 
-            // TODO: pre-execution
+            // TODO: sort out the namespace
+            var metaData = Core.State.ScriptAssembly.GetType("C.V2." + Core.State.BuilderName + "Meta");
+            if (null != metaData)
+            {
+                var method = metaData.GetMethod("PreExecution");
+                if (null != method)
+                {
+                    method.Invoke(null, null);
+                }
+            }
 
             foreach (var rank in graph.Reverse())
             {
@@ -63,7 +72,14 @@ namespace V2
             Log.Full(graph.OutputStringBuilder.ToString());
             Log.ErrorMessage(graph.ErrorStringBuilder.ToString());
 
-            // TODO: post-execution
+            if (null != metaData)
+            {
+                var method = metaData.GetMethod("PostExecution");
+                if (null != method)
+                {
+                    method.Invoke(null, null);
+                }
+            }
         }
     }
 }

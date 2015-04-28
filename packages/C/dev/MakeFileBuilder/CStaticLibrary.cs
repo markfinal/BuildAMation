@@ -16,6 +16,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class MakeFileLibrarian :
+        ILibrarianPolicy
+    {
+        void
+        ILibrarianPolicy.Archive(
+            StaticLibrary sender,
+            string libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
+        {
+            var meta = new MakeFileMeta();
+            meta.Target = libraryPath;
+            //meta.Prequisities.Add(sourceFilePath);
+            meta.Rules.Add(sender.CommandLine.ToString(' '));
+            sender.MetaData = meta;
+        }
+    }
+}
+}
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder

@@ -1398,14 +1398,13 @@ namespace Bam.Core
             {
                 var systemDesc = new DotNetAssemblyDescription("System");
                 var systemXmlDesc = new DotNetAssemblyDescription("System.Xml");
+                var systemCoreDesc = new DotNetAssemblyDescription("System.Core");
 
-                systemDesc.RequiredTargetFramework = "2.0.50727";
-                systemXmlDesc.RequiredTargetFramework = "2.0.50727";
+                systemDesc.RequiredTargetFramework = "4.0.30319";
+                systemXmlDesc.RequiredTargetFramework = "4.0.30319";
+                systemCoreDesc.RequiredTargetFramework = "4.0.30319";
 
-                this.DotNetAssemblies.AddRange(new DotNetAssemblyDescription[]
-                    { systemDesc,
-                      systemXmlDesc
-                    });
+                this.DotNetAssemblies.AddRange(new [] { systemDesc, systemXmlDesc, systemCoreDesc });
             }
 
             // supported on all platforms

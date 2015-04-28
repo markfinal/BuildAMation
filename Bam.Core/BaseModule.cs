@@ -59,6 +59,7 @@ namespace V2
             this.OwningRank = null;
             this.Tool = null;
             this.IsUpToDate = false;
+            this.MetaData = null;
         }
 
         // TODO: is this virtual or abstract?
@@ -176,7 +177,11 @@ namespace V2
             private set;
         }
 
-        protected object MetaData = null;
+        public object MetaData
+        {
+            get;
+            set;
+        }
 
         protected abstract void ExecuteInternal();
 

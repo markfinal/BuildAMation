@@ -16,6 +16,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class MakeFileLinker :
+        ILinkerPolicy
+    {
+        void
+        ILinkerPolicy.Link(
+            ConsoleApplication sender,
+            string executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+        {
+            var meta = new MakeFileMeta();
+            meta.Target = executablePath;
+            //meta.Prequisities.Add(sourceFilePath);
+            meta.Rules.Add(sender.CommandLine.ToString(' '));
+            sender.MetaData = meta;
+        }
+    }
+}
+}
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder

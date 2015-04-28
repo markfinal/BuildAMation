@@ -103,12 +103,16 @@ namespace Bam
             packageDefinition.BamAssemblies.Add("Bam.Core");
             {
                 var system = new Core.DotNetAssemblyDescription("System");
-                system.RequiredTargetFramework = "2.0.50727";
+                system.RequiredTargetFramework = "4.0.30319";
                 packageDefinition.DotNetAssemblies.Add(system);
 
                 var systemXml = new Core.DotNetAssemblyDescription("System.Xml");
-                systemXml.RequiredTargetFramework = "2.0.50727";
+                systemXml.RequiredTargetFramework = "4.0.30319";
                 packageDefinition.DotNetAssemblies.Add(systemXml);
+
+                var systemCore = new Core.DotNetAssemblyDescription("System.Core");
+                systemCore.RequiredTargetFramework = "4.0.30319";
+                packageDefinition.DotNetAssemblies.Add(systemCore);
             }
             packageDefinition.Write();
             id.Definition = packageDefinition;

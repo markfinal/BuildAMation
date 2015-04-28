@@ -18,23 +18,23 @@
 #endregion // License
 namespace C
 {
-    namespace V2
+namespace V2
+{
+    public sealed class NativeLinker :
+        ILinkerPolicy
     {
-        public sealed class NativeLinker :
-            ILinkerPolicy
+        void
+        ILinkerPolicy.Link(
+            ConsoleApplication sender,
+            string executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
-            void
-            ILinkerPolicy.Link(
-                ConsoleApplication sender,
-                string executablePath,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
-            {
-                var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
-            }
+            var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
         }
     }
+}
 }
 namespace NativeBuilder
 {
