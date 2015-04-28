@@ -60,6 +60,7 @@ namespace V2
             this.Tool = null;
             this.IsUpToDate = false;
             this.MetaData = null;
+            this.BuildEnvironment = graph.BuildEnvironment;
         }
 
         // TODO: is this virtual or abstract?
@@ -249,6 +250,12 @@ namespace V2
         }
 
         public abstract void Evaluate();
+
+        public Environment BuildEnvironment
+        {
+            get;
+            private set;
+        }
     }
 }
     /// <summary>
