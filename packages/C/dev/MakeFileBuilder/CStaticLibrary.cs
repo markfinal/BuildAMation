@@ -29,9 +29,22 @@ namespace V2
             string libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
         {
-            var meta = new MakeFileMeta();
+            var meta = new MakeFileMeta(sender);
             meta.Target = libraryPath;
-            //meta.Prequisities.Add(sourceFilePath);
+            foreach (var module in inputs)
+            {
+                if (module is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in module.Children)
+                    {
+                        meta.Prequisities.Add(child, C.V2.ObjectFile.Key);
+                    }
+                }
+                else
+                {
+                    meta.Prequisities.Add(module, C.V2.ObjectFile.Key);
+                }
+            }
             meta.Rules.Add(sender.CommandLine.ToString(' '));
             sender.MetaData = meta;
         }

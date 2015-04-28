@@ -22,11 +22,6 @@ namespace V2
 {
     public interface IModuleGroup
     {
-        System.Collections.Generic.List<Module> Children
-        {
-            get;
-            set;
-        }
     }
 }
 

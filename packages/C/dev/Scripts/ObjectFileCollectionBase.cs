@@ -54,18 +54,6 @@ namespace V2
             return child;
         }
 
-        System.Collections.Generic.List<Bam.Core.V2.Module> Bam.Core.V2.IModuleGroup.Children
-        {
-            get
-            {
-                return this.children as System.Collections.Generic.List<Bam.Core.V2.Module>;
-            }
-            set
-            {
-                this.children = value as System.Collections.Generic.List<ChildModuleType>;
-            }
-        }
-
         protected override void ExecuteInternal()
         {
             // do nothing

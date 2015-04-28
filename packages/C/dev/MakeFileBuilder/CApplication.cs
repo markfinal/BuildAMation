@@ -31,9 +31,27 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
-            var meta = new MakeFileMeta();
+            var meta = new MakeFileMeta(sender);
             meta.Target = executablePath;
-            //meta.Prequisities.Add(sourceFilePath);
+            foreach (var module in objectFiles)
+            {
+                if (module is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in module.Children)
+                    {
+                        meta.Prequisities.Add(child, C.V2.ObjectFile.Key);
+                    }
+                }
+                else
+                {
+                    meta.Prequisities.Add(module, C.V2.ObjectFile.Key);
+                }
+            }
+            foreach (var module in libraries)
+            {
+                meta.Prequisities.Add(module, C.V2.StaticLibrary.Key);
+            }
+            // TODO: frameworks
             meta.Rules.Add(sender.CommandLine.ToString(' '));
             sender.MetaData = meta;
         }

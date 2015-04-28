@@ -23,10 +23,15 @@ namespace V2
     using System.Linq;
     public sealed class MakeFileMeta
     {
-        public MakeFileMeta()
+        public MakeFileMeta(Bam.Core.V2.Module module)
         {
             this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
             this.Rules = new System.Collections.Generic.List<string>();
+
+            if (Bam.Core.V2.Graph.Instance.IsReferencedModule(module))
+            {
+                this.TargetVariable = module.GetType().Name;
+            }
         }
 
         public string Target
@@ -42,6 +47,12 @@ namespace V2
         }
 
         public System.Collections.Generic.List<string> Rules
+        {
+            get;
+            private set;
+        }
+
+        public string TargetVariable
         {
             get;
             private set;
@@ -65,7 +76,16 @@ namespace V2
                     }
 
                     var command = new System.Text.StringBuilder();
-                    command.AppendFormat("{0} : ", metadata.Target);
+                    if (metadata.TargetVariable != null)
+                    {
+                        command.AppendFormat("{0}:={1}", metadata.TargetVariable, metadata.Target);
+                        command.AppendLine();
+                        command.AppendFormat("$({0}):", metadata.TargetVariable);
+                    }
+                    else
+                    {
+                        command.AppendFormat("{0}:", metadata.Target);
+                    }
                     foreach (var pre in metadata.Prequisities)
                     {
                         command.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
@@ -92,7 +112,7 @@ namespace V2
             string objectFilePath,
             Bam.Core.V2.Module source)
         {
-            var meta = new MakeFileMeta();
+            var meta = new MakeFileMeta(sender);
             meta.Target = objectFilePath;
             meta.Prequisities.Add(source, C.V2.SourceFile.Key);
             meta.Rules.Add(sender.CommandLine.ToString(' '));
