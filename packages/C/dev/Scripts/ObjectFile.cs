@@ -64,14 +64,41 @@ namespace V2
         Bam.Core.V2.Tool
     { }
 
+    public class SourceFile :
+        Bam.Core.V2.Module,
+        Bam.Core.V2.IInputPath
+    {
+        public override void Evaluate()
+        {
+            // do nothing
+            // TODO: could do a hash check of the contents
+        }
+
+        protected override void ExecuteInternal()
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // there is no execution policy
+        }
+
+        public Bam.Core.V2.TokenizedString InputPath
+        {
+            get;
+            set;
+        }
+    }
+
     public class ObjectFile :
         Bam.Core.V2.Module,
         Bam.Core.V2.IChildModule,
         Bam.Core.V2.IInputPath
     {
-        private Bam.Core.V2.TokenizedString Path = null;
         private Bam.Core.V2.Module Parent = null;
         private ICompilationPolicy Policy = null;
+        private SourceFile Source = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
 
@@ -91,12 +118,20 @@ namespace V2
         {
             get
             {
-                return this.Path;
+                return this.Source.InputPath;
             }
             set
             {
+                if (null == this.Source)
+                {
+                    // this cannot be a referenced module, since there will be more than one object
+                    // of this type (generally)
+                    // but this does mean there may be duplicates
+                    this.Source = Bam.Core.V2.Module.Create<SourceFile>();
+                    this.DependsOn(this.Source);
+                }
+                this.Source.InputPath = value;
                 this.Macros.Add("inputpath", value);
-                this.Path = value;
             }
         }
 
