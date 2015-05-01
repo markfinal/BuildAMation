@@ -60,8 +60,8 @@ namespace Bam.Core
         EscapeString(
             string incoming)
         {
-            var escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([^[0-9]]*)|{$", @"{{$1");
-            escapedText = System.Text.RegularExpressions.Regex.Replace(escapedText, @"^}|([^[0-9]]*)}", @"$1}}");
+            // care of http://stackoverflow.com/questions/3787875/regex-to-match-delimited-alphanumeric-words
+            var escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)}", @"{{$1}}");
             return escapedText;
         }
 
@@ -153,7 +153,8 @@ namespace Bam.Core
             if (State.VerbosityLevel > EVerboseLevel.Detail)
             {
                 var formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(EscapeString(format), args);
+                var escaped = EscapeString(format);
+                formattedMessage.AppendFormat(escaped, args);
                 Message(formattedMessage.ToString(), false);
             }
         }
