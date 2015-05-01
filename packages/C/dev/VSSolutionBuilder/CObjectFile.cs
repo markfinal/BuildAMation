@@ -16,6 +16,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class VSSolutionCompilation :
+        ICompilationPolicy
+    {
+        void
+        ICompilationPolicy.Compile(
+            ObjectFile sender,
+            string objectFilePath,
+            Bam.Core.V2.Module source)
+        {
+            var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender);
+            objectFile.ProjectModule = sender.GetEncapsulatingReferencedModule();
+            objectFile.Source = source.GeneratedPaths[C.V2.SourceFile.Key].ToString();
+            objectFile.Output = objectFilePath;
+        }
+    }
+}
+}
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder

@@ -94,7 +94,7 @@ namespace V2
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
-            this.Macros.Add("buildroot", new TokenizedString(@"c:\dev\build", null));
+            this.Macros.Add("buildroot", new TokenizedString(Core.State.BuildRoot, null));
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
@@ -467,6 +467,14 @@ namespace V2
             Module module)
         {
             return this.ReferencedModules[module.BuildEnvironment].Contains(module);
+        }
+
+        public System.Collections.Generic.List<Environment> BuildEnvironments
+        {
+            get
+            {
+                return this.Modules.Keys.ToList();
+            }
         }
     }
 }

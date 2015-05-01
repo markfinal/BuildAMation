@@ -20,6 +20,393 @@
 
 namespace VSSolutionBuilder
 {
+namespace V2
+{
+    public abstract class Group
+    {
+        protected Group(
+            System.Xml.XmlElement element)
+        {
+            this.Element = element;
+        }
+
+        public System.Xml.XmlElement Element
+        {
+            get;
+            private set;
+        }
+    }
+
+    public sealed class ItemGroup :
+        Group
+    {
+        public ItemGroup(
+            System.Xml.XmlElement element) :
+            base(element)
+        {
+        }
+    }
+
+    public sealed class PropertyGroup :
+        Group
+    {
+        public PropertyGroup(
+            System.Xml.XmlElement element)
+            : base(element)
+        {
+        }
+
+        public string Condition
+        {
+            set
+            {
+                var condition = this.Element.GetAttributeNode("Condition");
+                if (null == condition)
+                {
+                    condition = this.Element.Attributes.Append(this.Element.OwnerDocument.CreateAttribute("Condition"));
+                }
+                condition.Value = value;
+            }
+        }
+    }
+
+    public sealed class Import :
+        Group
+    {
+        public Import(
+            System.Xml.XmlElement element)
+            : base(element)
+        { }
+    }
+
+    public sealed class ItemDefinitionGroup :
+        Group
+    {
+        public ItemDefinitionGroup(
+            System.Xml.XmlElement element) :
+            base(element)
+        {
+        }
+    }
+
+    public sealed class VSProject :
+        System.Xml.XmlDocument
+    {
+        private static readonly string VCProjNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
+        private ItemGroup ProjectConfiguations;
+        private PropertyGroup Globals;
+        private Import DefaultImport;
+        private System.Collections.Generic.List<PropertyGroup> Configurations = new System.Collections.Generic.List<PropertyGroup>();
+        private Import LanguageImport;
+        private System.Collections.Generic.List<ItemDefinitionGroup> ConfigurationDefs = new System.Collections.Generic.List<ItemDefinitionGroup>();
+        private ItemGroup SourceGroup;
+        private Import LanguageTargets;
+        private System.Guid GUID = System.Guid.NewGuid();
+        private VSSolutionMeta.Type Type;
+
+        public VSProject(VSSolutionMeta.Type type)
+        {
+            this.Type = type;
+
+            // Project (root) element
+            this.AppendChild(this.CreateElement("Project", VCProjNamespace));
+            this.Project.Attributes.Append(this.CreateAttribute("DefaultTargets")).Value = "Build";
+            this.Project.Attributes.Append(this.CreateAttribute("ToolsVersion")).Value = "12.0"; // TODO: in tune with VisualC package version
+
+            // ProjectConfigurations element
+            this.ProjectConfiguations = this.CreateItemGroup("ProjectConfigurations");
+            this.Project.AppendChild(this.ProjectConfiguations.Element);
+
+            // Globals element
+            this.Globals = this.CreatePropertyGroup("Globals");
+            var guid = this.CreateElement("ProjectGuid", VCProjNamespace);
+            guid.InnerText = GUID.ToString("B").ToUpper();
+            this.Globals.Element.AppendChild(guid);
+            this.Project.AppendChild(this.Globals.Element);
+
+            // Default Import
+            this.DefaultImport = this.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.Default.props");
+            this.Project.AppendChild(this.DefaultImport.Element);
+
+            // empty slot for Configuration properties
+
+            // Cxx property import
+            this.LanguageImport = this.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.props");
+            this.Project.AppendChild(this.LanguageImport.Element);
+
+            // empty slot for Configuration definitions
+
+            // Sources
+            this.SourceGroup = this.CreateItemGroup(null);
+            this.Project.AppendChild(this.SourceGroup.Element);
+
+            // Language targets
+            this.LanguageTargets = this.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.targets");
+            this.Project.AppendChild(this.LanguageTargets.Element);
+        }
+
+        public void AddSourceFile(string path)
+        {
+            var element = this.CreateElement("ClCompile", VCProjNamespace);
+            element.Attributes.Append(this.CreateAttribute("Include")).Value = path;
+            this.SourceGroup.Element.AppendChild(element);
+        }
+
+        public void AddProjectConfiguration(string configuration, string platform)
+        {
+            var combined = System.String.Format("{0}|{1}", configuration, platform);
+            // overall project configurations
+            {
+                var projconfig = this.CreateElement("ProjectConfiguration", VCProjNamespace);
+                projconfig.Attributes.Append(this.CreateAttribute("Include")).Value = combined;
+                var config = this.CreateElement("Configuration", VCProjNamespace);
+                config.InnerText = configuration;
+                var plat = this.CreateElement("Platform", VCProjNamespace);
+                plat.InnerText = platform;
+                projconfig.AppendChild(config);
+                projconfig.AppendChild(plat);
+                this.ProjectConfiguations.Element.AppendChild(projconfig);
+            }
+
+            var configName = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", combined);
+
+            // project properties
+            {
+                var configProps = this.CreatePropertyGroup("Configuration");
+                configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configName;
+                var configType = this.CreateElement("ConfigurationType", VCProjNamespace);
+                switch (this.Type)
+                {
+                    case VSSolutionMeta.Type.NA:
+                        throw new Bam.Core.Exception("Invalid project type");
+
+                    case VSSolutionMeta.Type.StaticLibrary:
+                        configType.InnerText = "StaticLibrary";
+                        break;
+
+                    case VSSolutionMeta.Type.Application:
+                        configType.InnerText = "Application";
+                        break;
+                }
+                configProps.Element.AppendChild(configType);
+                var platformToolset = this.CreateElement("PlatformToolset", VCProjNamespace);
+                platformToolset.InnerText = "v120"; // TODO: dependent upon the version of VisualC
+                configProps.Element.AppendChild(platformToolset);
+                this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
+            }
+
+            // project definitions
+            {
+                var configGroup = this.CreateItemDefinitionGroup(configName);
+                var clCompile = this.CreateElement("ClCompile", VCProjNamespace);
+                configGroup.Element.AppendChild(clCompile);
+                var link = this.CreateElement("Link", VCProjNamespace);
+                configGroup.Element.AppendChild(link);
+                this.Project.InsertAfter(configGroup.Element, this.LanguageImport.Element);
+            }
+        }
+
+        private ItemGroup CreateItemGroup(string label)
+        {
+            var group = this.CreateElement("ItemGroup", VCProjNamespace);
+            if (null != label)
+            {
+                group.Attributes.Append(this.CreateAttribute("Label")).Value = label;
+            }
+            return new ItemGroup(group);
+        }
+
+        private PropertyGroup CreatePropertyGroup(string label)
+        {
+            var group = this.CreateElement("PropertyGroup", VCProjNamespace);
+            group.Attributes.Append(this.CreateAttribute("Label")).Value = label;
+            return new PropertyGroup(group);
+        }
+
+        private Import CreateImport(string projectPath)
+        {
+            var import = this.CreateElement("Import", VCProjNamespace);
+            import.Attributes.Append(this.CreateAttribute("Project")).Value = projectPath;
+            return new Import(import);
+        }
+
+        private ItemGroup CreateItemDefinitionGroup(string condition)
+        {
+            var group = this.CreateElement("ItemDefinitionGroup", VCProjNamespace);
+            group.Attributes.Append(this.CreateAttribute("Condition")).Value = condition;
+            return new ItemGroup(group);
+        }
+
+        private System.Xml.XmlElement Project
+        {
+            get
+            {
+                return this.DocumentElement;
+            }
+        }
+    }
+
+    public abstract class VSSolutionMeta
+    {
+        protected VSProject Project = null;
+
+        public enum Type
+        {
+            NA,
+            StaticLibrary,
+            Application
+        }
+
+        public VSSolutionMeta(Bam.Core.V2.Module module, Type type)
+        {
+            var isReferenced = Bam.Core.V2.Graph.Instance.IsReferencedModule(module);
+            this.IsProjectModule = isReferenced;
+            if (isReferenced)
+            {
+                this.Project = new VSProject(type);
+            }
+            module.MetaData = this;
+        }
+
+        public bool IsProjectModule
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.V2.Module ProjectModule
+        {
+            get;
+            set;
+        }
+
+        public static void PreExecution()
+        {
+        }
+
+        public static void PostExecution()
+        {
+            // get configurations from graph
+            var environments = Bam.Core.V2.Graph.Instance.BuildEnvironments;
+
+            var settings = new System.Xml.XmlWriterSettings();
+            settings.OmitXmlDeclaration = false;
+            settings.Encoding = new System.Text.UTF8Encoding(false); // no BOM
+            settings.NewLineChars = System.Environment.NewLine;
+            settings.Indent = true;
+            settings.ConformanceLevel = System.Xml.ConformanceLevel.Document; // TODO: probably want to change back to Document
+            var graph = Bam.Core.V2.Graph.Instance;
+            foreach (var rank in graph)
+            {
+                foreach (var module in rank)
+                {
+                    var meta = module.MetaData as VSSolutionMeta;
+                    if (null == meta)
+                    {
+                        continue;
+                    }
+                    if (!meta.IsProjectModule)
+                    {
+                        continue;
+                    }
+
+                    foreach (var env in environments)
+                    {
+                        // TODO: need to work out what the platform is from the sources
+                        meta.Project.AddProjectConfiguration(env.Configuration, "Win32");
+                    }
+
+                    var builder = new System.Text.StringBuilder();
+                    using (var xmlwriter = System.Xml.XmlWriter.Create(builder, settings))
+                    {
+                        meta.Project.WriteTo(xmlwriter);
+                    }
+                    Bam.Core.Log.DebugMessage(builder.ToString());
+
+                    // NOTE: must be extension .vcxproj for latest VisualStudio
+                    var projectPath = new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).vcxproj", module);
+                    projectPath.Parse(graph.Macros, module.Macros);
+                    using (var xmlwriter = System.Xml.XmlWriter.Create(projectPath.ToString(), settings))
+                    {
+                        meta.Project.WriteTo(xmlwriter);
+                    }
+                }
+            }
+        }
+    }
+
+    // TODO: add XML element
+    public sealed class VSProjectObjectFile :
+        VSSolutionMeta
+    {
+        public VSProjectObjectFile(Bam.Core.V2.Module module)
+            : base(module, Type.NA)
+        { }
+
+        public string Source
+        {
+            get;
+            set;
+        }
+
+        public string Output
+        {
+            get;
+            set;
+        }
+    }
+
+    // TODO: add XML document
+    public sealed class VSProjectStaticLibrary :
+        VSSolutionMeta
+    {
+        public VSProjectStaticLibrary(Bam.Core.V2.Module module) :
+            base(module, Type.StaticLibrary)
+        {
+            this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
+        }
+
+        public void AddObjectFile(VSProjectObjectFile objectFile)
+        {
+            this.Project.AddSourceFile(objectFile.Source);
+        }
+
+        private System.Collections.Generic.List<VSProjectObjectFile> ObjectFiles
+        {
+            get;
+            set;
+        }
+    }
+
+    // TODO: add XML document
+    public sealed class VSProjectProgram :
+        VSSolutionMeta
+    {
+        public VSProjectProgram(Bam.Core.V2.Module module) :
+            base(module, Type.Application)
+        {
+            this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
+            this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
+        }
+
+        public void AddObjectFile(VSProjectObjectFile objectFile)
+        {
+            this.Project.AddSourceFile(objectFile.Source);
+        }
+
+        private System.Collections.Generic.List<VSProjectObjectFile> ObjectFiles
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<VSProjectStaticLibrary> Libraries
+        {
+            get;
+            private set;
+        }
+    }
+}
     public sealed partial class VSSolutionBuilder :
         Bam.Core.IBuilder
     {

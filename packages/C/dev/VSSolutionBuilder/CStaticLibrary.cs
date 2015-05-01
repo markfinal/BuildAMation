@@ -16,6 +16,40 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class VSSolutionLibrarian :
+        ILibrarianPolicy
+    {
+        void
+        ILibrarianPolicy.Archive(
+            StaticLibrary sender,
+            string libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
+        {
+            var library = new VSSolutionBuilder.V2.VSProjectStaticLibrary(sender);
+            foreach (var input in inputs)
+            {
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    // TODO: add common settings
+                    foreach (var child in input.Children)
+                    {
+                        library.AddObjectFile(child.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                    }
+                }
+                else
+                {
+                    // TODO: just add these settings
+                    library.AddObjectFile(input.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                }
+            }
+        }
+    }
+}
+}
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder

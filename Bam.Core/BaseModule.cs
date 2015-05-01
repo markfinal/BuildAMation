@@ -256,6 +256,23 @@ namespace V2
             get;
             private set;
         }
+
+        public Module GetEncapsulatingReferencedModule()
+        {
+            if (Graph.Instance.IsReferencedModule(this))
+            {
+                return this;
+            }
+            if (this.DependeesList.Count > 1)
+            {
+                throw new Exception("Too many dependees!");
+            }
+            if (0 == this.DependeesList.Count)
+            {
+                throw new Exception("Too few dependees!");
+            }
+            return this.DependeesList[0].GetEncapsulatingReferencedModule();
+        }
     }
 }
     /// <summary>

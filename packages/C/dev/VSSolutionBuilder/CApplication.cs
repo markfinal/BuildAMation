@@ -16,6 +16,47 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class VSSolutionLinker :
+        ILinkerPolicy
+    {
+        void
+        ILinkerPolicy.Link(
+            ConsoleApplication sender,
+            string executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+        {
+            var application = new VSSolutionBuilder.V2.VSProjectProgram(sender);
+            foreach (var input in objectFiles)
+            {
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    // TODO: add common settings
+                    foreach (var child in input.Children)
+                    {
+                        application.AddObjectFile(child.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                    }
+                }
+                else
+                {
+                    // TODO: add just this settings
+                    application.AddObjectFile(input.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                }
+            }
+            foreach (var input in libraries)
+            {
+                // TODO: this is a dependency at the solution level?
+                application.Libraries.Add(input.MetaData as VSSolutionBuilder.V2.VSProjectStaticLibrary);
+            }
+        }
+    }
+}
+}
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder

@@ -53,6 +53,11 @@ namespace V2
                 }
             }
 
+            if (!System.IO.Directory.Exists(Core.State.BuildRoot))
+            {
+                System.IO.Directory.CreateDirectory(Core.State.BuildRoot);
+            }
+
             foreach (var rank in graph.Reverse())
             {
                 foreach (IModuleExecution module in rank)
