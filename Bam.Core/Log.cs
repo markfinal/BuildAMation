@@ -61,7 +61,7 @@ namespace Bam.Core
             string incoming)
         {
             // care of http://stackoverflow.com/questions/3787875/regex-to-match-delimited-alphanumeric-words
-            var escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)}", @"{{$1}}");
+            var escapedText = System.Text.RegularExpressions.Regex.Replace(incoming, @"{([A-Za-z0-9]+(?:-[A-Za-z0-9]+)+)}", @"{{$1}}");
             return escapedText;
         }
 
