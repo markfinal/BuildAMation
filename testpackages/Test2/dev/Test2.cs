@@ -35,6 +35,11 @@ namespace Test2
         {
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/application.c");
+            source.PatchSettings(settings =>
+                {
+                    var cOnly = settings as C.V2.ICOnlyCompilerOptions;
+                    cOnly.C99Specific = true;
+                });
             this.LinkAgainst<LibraryV2>();
         }
     }

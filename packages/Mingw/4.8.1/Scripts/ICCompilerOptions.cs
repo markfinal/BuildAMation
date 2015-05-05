@@ -18,6 +18,35 @@
 #endregion // License
 namespace Mingw
 {
+namespace V2
+{
+    public interface ICommonCompilerOptions
+    {
+        bool M48Common
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICOnlyCompilerOptions
+    {
+        bool M48COnly
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICxxOnlyCompilerOptions
+    {
+        int M48CxxOnly
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ICCompilerOptions
     {
         Mingw.EVisibility Visibility

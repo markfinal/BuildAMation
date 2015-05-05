@@ -18,6 +18,17 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public interface ICxxOnlyCompilerOptions
+    {
+        C.Cxx.EExceptionHandler ExceptionHandler
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ICxxCompilerOptions
     {
         /// <summary>

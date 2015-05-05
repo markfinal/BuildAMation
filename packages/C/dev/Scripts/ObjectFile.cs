@@ -183,7 +183,7 @@ namespace V2
         public override void ConvertSettingsToCommandLine()
         {
             base.ConvertSettingsToCommandLine();
-            // TODO: this is an extension method, which requires the 'using VisualC' statement above
+            // TODO: this is an extension method, which requires the 'using Mingw' statement above
             (this.Settings as C.V2.ICommonCompilerOptions).Convert(this.CommandLine);
         }
 

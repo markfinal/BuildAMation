@@ -35,8 +35,13 @@ namespace V2
         }
     }
 
-    public interface ICCompilerOptions
+    public interface ICOnlyCompilerOptions
     {
+        bool C99Specific
+        {
+            get;
+            set;
+        }
     }
 }
     public interface ICCompilerOptions

@@ -18,6 +18,35 @@
 #endregion // License
 namespace MingwCommon
 {
+namespace V2
+{
+    public interface ICommonCompilerOptions
+    {
+        bool MCommonCommon
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICOnlyCompilerOptions
+    {
+        bool MCommonCOnly
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICxxOnlyCompilerOptions
+    {
+        bool MCommonCxxOnly
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ICCompilerOptions
     {
         bool AllWarnings

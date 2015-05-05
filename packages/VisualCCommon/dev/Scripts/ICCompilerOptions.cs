@@ -18,6 +18,35 @@
 #endregion // License
 namespace VisualCCommon
 {
+namespace V2
+{
+    public interface ICommonCompilerOptions
+    {
+        bool VCCommonCommon
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICOnlyCompilerOptions
+    {
+        int VCCommonCOnly
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICxxOnlyCompilerOptions
+    {
+        string VCCommonCxxOnly
+        {
+            get;
+            set;
+        }
+    }
+}
     // TODO: extend with runtime library option
     public interface ICCompilerOptions
     {

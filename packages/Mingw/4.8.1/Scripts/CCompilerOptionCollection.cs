@@ -32,7 +32,7 @@ namespace Mingw
             }
         }
 
-        public static void Convert(this C.V2.ICCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
         {
         }
     }
@@ -42,15 +42,48 @@ namespace V2
     public class CompilerSettings :
         Bam.Core.V2.Settings,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICCompilerOptions
+        C.V2.ICOnlyCompilerOptions,
+        MingwCommon.V2.ICommonCompilerOptions,
+        MingwCommon.V2.ICOnlyCompilerOptions,
+        Mingw.V2.ICommonCompilerOptions,
+        Mingw.V2.ICOnlyCompilerOptions
     {
         public CompilerSettings()
         {
-            this.Bits = C.V2.EBit.SixtyFour;
+            (this as C.V2.ICommonCompilerOptions).Bits = C.V2.EBit.SixtyFour;
         }
 
-        // TODO: Set can be a little slow, but get should be fast
-        public C.V2.EBit Bits
+        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        {
+            get;
+            set;
+        }
+
+        bool C.V2.ICOnlyCompilerOptions.C99Specific
+        {
+            get;
+            set;
+        }
+
+        bool MingwCommon.V2.ICommonCompilerOptions.MCommonCommon
+        {
+            get;
+            set;
+        }
+
+        bool MingwCommon.V2.ICOnlyCompilerOptions.MCommonCOnly
+        {
+            get;
+            set;
+        }
+
+        bool ICommonCompilerOptions.M48Common
+        {
+            get;
+            set;
+        }
+
+        bool ICOnlyCompilerOptions.M48COnly
         {
             get;
             set;
@@ -58,8 +91,49 @@ namespace V2
     }
 
     public sealed class CxxCompilerSettings :
-        CompilerSettings
+        Bam.Core.V2.Settings,
+        C.V2.ICommonCompilerOptions,
+        C.V2.ICxxOnlyCompilerOptions,
+        MingwCommon.V2.ICommonCompilerOptions,
+        MingwCommon.V2.ICxxOnlyCompilerOptions,
+        Mingw.V2.ICommonCompilerOptions,
+        Mingw.V2.ICxxOnlyCompilerOptions
     {
+        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EExceptionHandler C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        bool MingwCommon.V2.ICommonCompilerOptions.MCommonCommon
+        {
+            get;
+            set;
+        }
+
+        bool MingwCommon.V2.ICxxOnlyCompilerOptions.MCommonCxxOnly
+        {
+            get;
+            set;
+        }
+
+        bool ICommonCompilerOptions.M48Common
+        {
+            get;
+            set;
+        }
+
+        int ICxxOnlyCompilerOptions.M48CxxOnly
+        {
+            get;
+            set;
+        }
     }
 
     public abstract class CompilerBase :

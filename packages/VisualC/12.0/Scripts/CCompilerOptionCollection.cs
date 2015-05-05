@@ -18,18 +18,82 @@
 #endregion // License
 namespace VisualC
 {
+namespace V2
+{
+    public interface ICommonCompilerOptions
+    {
+        bool VC12Common
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICOnlyCompilerOptions
+    {
+        int VC12COnly
+        {
+            get;
+            set;
+        }
+    }
+
+    public interface ICxxOnlyCompilerOptions
+    {
+        Bam.Core.EPlatform VC12CxxOnly
+        {
+            get;
+            set;
+        }
+    }
+}
     // V2
     public class CompilerSettings :
         Bam.Core.V2.Settings,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICCompilerOptions
+        C.V2.ICOnlyCompilerOptions,
+        VisualCCommon.V2.ICommonCompilerOptions,
+        VisualCCommon.V2.ICOnlyCompilerOptions,
+        VisualC.V2.ICommonCompilerOptions,
+        VisualC.V2.ICOnlyCompilerOptions
     {
         public CompilerSettings()
         {
-            this.Bits = C.V2.EBit.SixtyFour;
+            // TODO: extension wrappers to set defaults?
+            (this as C.V2.ICommonCompilerOptions).Bits = C.V2.EBit.SixtyFour;
         }
 
-        public C.V2.EBit Bits
+        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        {
+            get;
+            set;
+        }
+
+        bool C.V2.ICOnlyCompilerOptions.C99Specific
+        {
+            get;
+            set;
+        }
+
+        bool VisualCCommon.V2.ICommonCompilerOptions.VCCommonCommon
+        {
+            get;
+            set;
+        }
+
+        int VisualCCommon.V2.ICOnlyCompilerOptions.VCCommonCOnly
+        {
+            get;
+            set;
+        }
+
+        bool V2.ICommonCompilerOptions.VC12Common
+        {
+            get;
+            set;
+        }
+
+        int V2.ICOnlyCompilerOptions.VC12COnly
         {
             get;
             set;
@@ -37,8 +101,49 @@ namespace VisualC
     }
 
     public sealed class CxxCompilerSettings :
-        CompilerSettings
+        Bam.Core.V2.Settings,
+        C.V2.ICommonCompilerOptions,
+        C.V2.ICxxOnlyCompilerOptions,
+        VisualCCommon.V2.ICommonCompilerOptions,
+        VisualCCommon.V2.ICxxOnlyCompilerOptions,
+        VisualC.V2.ICommonCompilerOptions,
+        VisualC.V2.ICxxOnlyCompilerOptions
     {
+        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EExceptionHandler C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        bool VisualCCommon.V2.ICommonCompilerOptions.VCCommonCommon
+        {
+            get;
+            set;
+        }
+
+        string VisualCCommon.V2.ICxxOnlyCompilerOptions.VCCommonCxxOnly
+        {
+            get;
+            set;
+        }
+
+        bool V2.ICommonCompilerOptions.VC12Common
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.EPlatform V2.ICxxOnlyCompilerOptions.VC12CxxOnly
+        {
+            get;
+            set;
+        }
     }
 
     public abstract class CompilerBase :
