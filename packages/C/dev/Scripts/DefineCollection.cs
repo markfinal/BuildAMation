@@ -18,6 +18,37 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public sealed class PreprocessorDefinitions :
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
+    {
+        private System.Collections.Generic.Dictionary<string, string> Defines = new System.Collections.Generic.Dictionary<string, string>();
+
+        public void Add(string name, string value)
+        {
+            this.Defines.Add(name, value);
+        }
+
+        public void Add(string name)
+        {
+            this.Add(name, string.Empty);
+        }
+
+        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
+        {
+            foreach (var item in this.Defines)
+            {
+                yield return item;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+    }
+}
     public sealed class DefineCollection :
         System.ICloneable,
         Bam.Core.ISetOperations<DefineCollection>

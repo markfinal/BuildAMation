@@ -27,6 +27,18 @@ namespace DefaultSettings
         public static void Defaults(this C.V2.ICommonCompilerOptions settings)
         {
             settings.Bits = EBit.SixtyFour;
+            settings.DebugSymbols = true;
+            settings.DisableWarnings = new Bam.Core.StringArray();
+            settings.IncludePaths = new Bam.Core.StringArray();
+            settings.LanguageStandard = ELanguageStandard.C89;
+            settings.OmitFramePointer = false;
+            settings.Optimization = EOptimization.Off;
+            settings.OutputType = ECompilerOutput.CompileOnly;
+            settings.PreprocessorDefines = new C.V2.PreprocessorDefinitions();
+            settings.PreprocessorUndefines = new Bam.Core.StringArray();
+            settings.SystemIncludePaths = new Bam.Core.StringArray();
+            settings.TargetLanguage = ETargetLanguage.C;
+            settings.WarningsAsErrors = true;
         }
     }
 }
@@ -39,6 +51,78 @@ namespace DefaultSettings
     public interface ICommonCompilerOptions
     {
         EBit Bits
+        {
+            get;
+            set;
+        }
+
+        C.V2.PreprocessorDefinitions PreprocessorDefines
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray IncludePaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray SystemIncludePaths
+        {
+            get;
+            set;
+        }
+
+        C.ECompilerOutput OutputType
+        {
+            get;
+            set;
+        }
+
+        bool DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        bool WarningsAsErrors
+        {
+            get;
+            set;
+        }
+
+        C.EOptimization Optimization
+        {
+            get;
+            set;
+        }
+
+        C.ETargetLanguage TargetLanguage
+        {
+            get;
+            set;
+        }
+
+        C.ELanguageStandard LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        bool OmitFramePointer
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray DisableWarnings
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray PreprocessorUndefines
         {
             get;
             set;
