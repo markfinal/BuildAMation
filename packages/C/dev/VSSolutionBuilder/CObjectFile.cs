@@ -29,6 +29,8 @@ namespace V2
             string objectFilePath,
             Bam.Core.V2.Module source)
         {
+            // TODO: convert settings
+
             var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender);
             objectFile.ProjectModule = sender.GetEncapsulatingReferencedModule();
             objectFile.Source = source.GeneratedPaths[C.V2.SourceFile.Key].ToString();

@@ -179,22 +179,6 @@ namespace V2
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
 
-        public override void ConvertSettingsToCommandLine()
-        {
-            if (null == this.Settings)
-            {
-                return;
-            }
-            base.ConvertSettingsToCommandLine();
-            // TODO: get the name of the interface from a setting
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
-            if (interfaceType.IsAssignableFrom(this.Settings.GetType()))
-            {
-                var map = this.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(this.Settings, new[] { this.CommandLine });
-            }
-        }
-
         public override void Evaluate()
         {
             var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());

@@ -29,6 +29,13 @@ namespace V2
             string objectFilePath,
             Bam.Core.V2.Module source)
         {
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender.CommandLine });
+            }
+
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             meta.Target = objectFilePath;
             meta.Prequisities.Add(source, C.V2.SourceFile.Key);
