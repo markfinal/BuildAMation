@@ -20,8 +20,9 @@ namespace VisualC
 {
     public static class NativeImplementation
     {
-        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
+            var commandLine = module.CommandLine;
             if (options.Bits == C.V2.EBit.ThirtyTwo)
             {
                 // do nothing
@@ -32,23 +33,23 @@ namespace VisualC
             }
         }
 
-        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this VisualCCommon.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this VisualCCommon.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this VisualCCommon.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this VisualCCommon.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this VisualC.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this VisualC.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this VisualC.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this VisualC.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
     }
@@ -135,14 +136,14 @@ namespace V2
             set;
         }
 
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.StringArray commandLine)
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
         {
-            (this as C.V2.ICommonCompilerOptions).Convert(commandLine);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(commandLine);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(commandLine);
-            (this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(commandLine);
-            (this as VisualC.V2.ICommonCompilerOptions).Convert(commandLine);
-            (this as VisualC.V2.ICOnlyCompilerOptions).Convert(commandLine);
+            (this as C.V2.ICommonCompilerOptions).Convert(module);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module);
+            (this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module);
+            (this as VisualC.V2.ICommonCompilerOptions).Convert(module);
+            (this as VisualC.V2.ICOnlyCompilerOptions).Convert(module);
         }
     }
 

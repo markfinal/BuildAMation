@@ -20,8 +20,9 @@ namespace Mingw
 {
     public static class NativeImplementation
     {
-        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
+            var commandLine = module.CommandLine;
             if (options.Bits == C.V2.EBit.ThirtyTwo)
             {
                 commandLine.Add("-m32");
@@ -32,23 +33,23 @@ namespace Mingw
             }
         }
 
-        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this MingwCommon.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this MingwCommon.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this MingwCommon.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this MingwCommon.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this Mingw.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this Mingw.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
 
-        public static void Convert(this Mingw.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        public static void Convert(this Mingw.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
         {
         }
     }
@@ -106,14 +107,14 @@ namespace V2
             set;
         }
 
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.StringArray commandLine)
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
         {
-            (this as C.V2.ICommonCompilerOptions).Convert(commandLine);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(commandLine);
-            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(commandLine);
-            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(commandLine);
-            (this as Mingw.V2.ICommonCompilerOptions).Convert(commandLine);
-            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(commandLine);
+            (this as C.V2.ICommonCompilerOptions).Convert(module);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module);
+            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module);
+            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(module);
+            (this as Mingw.V2.ICommonCompilerOptions).Convert(module);
+            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(module);
         }
     }
 

@@ -33,7 +33,7 @@ namespace V2
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender.CommandLine });
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender });
             }
 
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);

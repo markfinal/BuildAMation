@@ -22,7 +22,7 @@ namespace V2
 {
     public interface IConvertToCommandLine
     {
-        void Convert(Bam.Core.StringArray commandLine);
+        void Convert(Bam.Core.V2.Module module);
     }
 }
     public interface ICommandLineSupport
