@@ -53,7 +53,14 @@ namespace V2
 
             // add the package root
             var packageNameSpace = graph.CommonModuleType.Peek().Namespace;
-            this.Macros.Add("pkgroot", new TokenizedString(System.String.Format(@"c:\dev\testing\{0}", packageNameSpace), null));
+            // TODO: temporarily check whether a V2 has been used in the namespace- trim if so
+            if (packageNameSpace.EndsWith(".V2"))
+            {
+                packageNameSpace = packageNameSpace.Replace(".V2", string.Empty);
+            }
+            var packageInfo = Core.State.PackageInfo[packageNameSpace];
+            var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
+            this.Macros.Add("pkgroot", new TokenizedString(packageRoot, null));
             this.Macros.Add("modulename", new TokenizedString(this.GetType().Name, null));
 
             this.OwningRank = null;
