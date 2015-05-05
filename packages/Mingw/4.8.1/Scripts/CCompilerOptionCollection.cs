@@ -35,6 +35,22 @@ namespace Mingw
         public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
         {
         }
+
+        public static void Convert(this MingwCommon.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void Convert(this MingwCommon.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void Convert(this Mingw.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void Convert(this Mingw.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
     }
 
 namespace V2
@@ -46,7 +62,8 @@ namespace V2
         MingwCommon.V2.ICommonCompilerOptions,
         MingwCommon.V2.ICOnlyCompilerOptions,
         Mingw.V2.ICommonCompilerOptions,
-        Mingw.V2.ICOnlyCompilerOptions
+        Mingw.V2.ICOnlyCompilerOptions,
+        CommandLineProcessor.V2.IConvertToCommandLine
     {
         public CompilerSettings()
         {
@@ -87,6 +104,16 @@ namespace V2
         {
             get;
             set;
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(commandLine);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(commandLine);
+            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(commandLine);
+            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(commandLine);
+            (this as Mingw.V2.ICommonCompilerOptions).Convert(commandLine);
+            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(commandLine);
         }
     }
 

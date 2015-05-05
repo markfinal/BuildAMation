@@ -16,7 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-using Mingw;
 namespace C
 {
 namespace V2
@@ -182,9 +181,18 @@ namespace V2
 
         public override void ConvertSettingsToCommandLine()
         {
+            if (null == this.Settings)
+            {
+                return;
+            }
             base.ConvertSettingsToCommandLine();
-            // TODO: this is an extension method, which requires the 'using Mingw' statement above
-            (this.Settings as C.V2.ICommonCompilerOptions).Convert(this.CommandLine);
+            // TODO: get the name of the interface from a setting
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(this.Settings.GetType()))
+            {
+                var map = this.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(this.Settings, new[] { this.CommandLine });
+            }
         }
 
         public override void Evaluate()

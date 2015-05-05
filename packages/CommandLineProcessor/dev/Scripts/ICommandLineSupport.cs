@@ -18,6 +18,13 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+namespace V2
+{
+    public interface IConvertToCommandLine
+    {
+        void Convert(Bam.Core.StringArray commandLine);
+    }
+}
     public interface ICommandLineSupport
     {
         void

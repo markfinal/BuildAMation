@@ -18,6 +18,41 @@
 #endregion // License
 namespace VisualC
 {
+    public static class NativeImplementation
+    {
+        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+            if (options.Bits == C.V2.EBit.ThirtyTwo)
+            {
+                // do nothing
+            }
+            else
+            {
+                // do nothing
+            }
+        }
+
+        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void Convert(this VisualCCommon.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void Convert(this VisualCCommon.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void Convert(this VisualC.V2.ICommonCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void Convert(this VisualC.V2.ICOnlyCompilerOptions options, Bam.Core.StringArray commandLine)
+        {
+        }
+    }
+
 namespace V2
 {
     public interface ICommonCompilerOptions
@@ -55,7 +90,8 @@ namespace V2
         VisualCCommon.V2.ICommonCompilerOptions,
         VisualCCommon.V2.ICOnlyCompilerOptions,
         VisualC.V2.ICommonCompilerOptions,
-        VisualC.V2.ICOnlyCompilerOptions
+        VisualC.V2.ICOnlyCompilerOptions,
+        CommandLineProcessor.V2.IConvertToCommandLine
     {
         public CompilerSettings()
         {
@@ -97,6 +133,16 @@ namespace V2
         {
             get;
             set;
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(commandLine);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(commandLine);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(commandLine);
+            (this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(commandLine);
+            (this as VisualC.V2.ICommonCompilerOptions).Convert(commandLine);
+            (this as VisualC.V2.ICOnlyCompilerOptions).Convert(commandLine);
         }
     }
 
