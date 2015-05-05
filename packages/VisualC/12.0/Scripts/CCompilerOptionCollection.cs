@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using C.V2.DefaultSettings;
 namespace VisualC
 {
     public static class NativeImplementation
@@ -96,8 +97,7 @@ namespace V2
     {
         public CompilerSettings()
         {
-            // TODO: extension wrappers to set defaults?
-            (this as C.V2.ICommonCompilerOptions).Bits = C.V2.EBit.SixtyFour;
+            (this as C.V2.ICommonCompilerOptions).Defaults();
         }
 
         C.V2.EBit C.V2.ICommonCompilerOptions.Bits

@@ -20,6 +20,16 @@ namespace C
 {
 namespace V2
 {
+namespace DefaultSettings
+{
+    public static class DefaultSettingsExtensions
+    {
+        public static void Defaults(this C.V2.ICommonCompilerOptions settings)
+        {
+            settings.Bits = EBit.SixtyFour;
+        }
+    }
+}
     public enum EBit
     {
         ThirtyTwo = 32,
