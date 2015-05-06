@@ -25,7 +25,7 @@ namespace Test2
         {
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library.c");
-            source.PatchSettings(settings =>
+            source.PublicPatch(settings =>
                 {
                     var common = settings as C.V2.ICommonCompilerOptions;
                     common.IncludePaths.Add(new Bam.Core.V2.TokenizedString("$(pkgroot)/include", source));
@@ -40,11 +40,12 @@ namespace Test2
         {
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/application.c");
-            source.PatchSettings(settings =>
+            source.PrivatePatch(settings =>
                 {
                     var cOnly = settings as C.V2.ICOnlyCompilerOptions;
                     cOnly.C99Specific = true;
                 });
+            //source.InheritPublicSettings<LibraryV2>();
             this.LinkAgainst<LibraryV2>();
         }
     }

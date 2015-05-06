@@ -142,22 +142,23 @@ namespace V2
         }
 
         public delegate void PatchDelegate(Settings settings);
-        public void PatchSettings(PatchDelegate dlg)
+        public void PrivatePatch(PatchDelegate dlg)
         {
-            this.Patches.Add(dlg);
+            this.PrivatePatches.Add(dlg);
         }
 
-        public bool HasPatches
+        public void PublicPatch(PatchDelegate dlg)
         {
-            get
+            this.PublicPatches.Add(dlg);
+        }
+
+        public void PatchChildren()
+        {
+            foreach (var child in this.Children)
             {
-                return this.Patches.Count > 0;
+                child.PrivatePatches.InsertRange(0, this.PrivatePatches);
+                child.PublicPatches.InsertRange(0, this.PublicPatches);
             }
-        }
-
-        public void PrefixPatchesFrom(Module module)
-        {
-            this.Patches.InsertRange(0, module.Patches);
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
@@ -190,7 +191,8 @@ namespace V2
         private System.Collections.Generic.List<Module> RequiredDependentsList = new System.Collections.Generic.List<Module>();
         private System.Collections.Generic.List<Module> RequiredDependeesList = new System.Collections.Generic.List<Module>();
 
-        private System.Collections.Generic.List<PatchDelegate> Patches = new System.Collections.Generic.List<PatchDelegate>();
+        private System.Collections.Generic.List<PatchDelegate> PrivatePatches = new System.Collections.Generic.List<PatchDelegate>();
+        private System.Collections.Generic.List<PatchDelegate> PublicPatches = new System.Collections.Generic.List<PatchDelegate>();
 
         public System.Collections.Generic.Dictionary<FileKey, TokenizedString> GeneratedPaths
         {
@@ -252,7 +254,13 @@ namespace V2
             {
                 return;
             }
-            foreach (var patch in this.Patches)
+            // Note: first private patches, followed by public patches
+            // TODO: they could override each other - anyway to check?
+            foreach (var patch in this.PrivatePatches)
+            {
+                patch(this.Settings);
+            }
+            foreach (var patch in this.PublicPatches)
             {
                 patch(this.Settings);
             }

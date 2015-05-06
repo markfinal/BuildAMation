@@ -165,15 +165,8 @@ namespace V2
                     {
                         continue;
                     }
-                    if (!module.HasPatches)
-                    {
-                        continue;
-                    }
 
-                    foreach (var child in module.Children)
-                    {
-                        child.PrefixPatchesFrom(module);
-                    }
+                    module.PatchChildren();
                 }
             }
 
