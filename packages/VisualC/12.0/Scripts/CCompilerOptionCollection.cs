@@ -94,17 +94,17 @@ namespace VisualC
             }
             if (options.WarningsAsErrors)
             {
-                commandLine.Add("-Wx");
+                commandLine.Add("-WX");
             }
             switch (options.OutputType)
             {
                 case C.ECompilerOutput.CompileOnly:
                     commandLine.Add(System.String.Format("-c {0}", objectFile.InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
                     break;
                 case C.ECompilerOutput.Preprocess:
                     commandLine.Add(System.String.Format("-E {0}", objectFile.InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
                     break;
             }
         }
@@ -417,6 +417,16 @@ namespace V2
     public abstract class CompilerBase :
         C.V2.CompilerTool
     {
+        protected CompilerBase()
+        {
+            this.InheritedEnvironmentVariables.Add("SystemRoot");
+            // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
+            this.InheritedEnvironmentVariables.Add("TEMP");
+            this.InheritedEnvironmentVariables.Add("TMP");
+
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE"));
+        }
+
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
             if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module))
@@ -443,16 +453,11 @@ namespace V2
     public sealed class Compiler32 :
         CompilerBase
     {
-        public Compiler32()
-        {
-            //this.EnvironmentVariables[PATH] =
-        }
-
         public override string Executable
         {
             get
             {
-                return @"cl.exe"; // 32-bit one
+                return @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe"; // 32-bit one
             }
         }
 
@@ -466,11 +471,18 @@ namespace V2
     public sealed class Compiler64 :
         CompilerBase
     {
+        public Compiler64()
+            : base()
+        {
+            // some DLLs exist only in the 32-bit bin folder
+            this.EnvironmentVariables["PATH"].Add(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin");
+        }
+
         public override string Executable
         {
             get
             {
-                return @"cl.exe"; // 64-bit one
+                return @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\cl.exe";
             }
         }
 

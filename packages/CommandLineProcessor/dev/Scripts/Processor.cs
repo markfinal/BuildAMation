@@ -67,7 +67,7 @@ namespace V2
             }
             foreach (var envVar in tool.EnvironmentVariables)
             {
-                processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
+                processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value.ToString(System.IO.Path.PathSeparator);
             }
 
             processStartInfo.UseShellExecute = false;
