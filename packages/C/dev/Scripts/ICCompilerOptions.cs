@@ -29,14 +29,14 @@ namespace DefaultSettings
             settings.Bits = EBit.SixtyFour;
             settings.DebugSymbols = true;
             settings.DisableWarnings = new Bam.Core.StringArray();
-            settings.IncludePaths = new Bam.Core.StringArray();
+            settings.IncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.LanguageStandard = ELanguageStandard.C89;
             settings.OmitFramePointer = false;
             settings.Optimization = EOptimization.Off;
             settings.OutputType = ECompilerOutput.CompileOnly;
             settings.PreprocessorDefines = new C.V2.PreprocessorDefinitions();
             settings.PreprocessorUndefines = new Bam.Core.StringArray();
-            settings.SystemIncludePaths = new Bam.Core.StringArray();
+            settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
         }
@@ -62,13 +62,13 @@ namespace DefaultSettings
             set;
         }
 
-        Bam.Core.StringArray IncludePaths
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray SystemIncludePaths
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> SystemIncludePaths
         {
             get;
             set;

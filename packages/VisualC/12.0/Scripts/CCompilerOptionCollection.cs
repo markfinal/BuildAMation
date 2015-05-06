@@ -35,6 +35,7 @@ namespace VisualC
             }
             foreach (var path in options.IncludePaths)
             {
+                path.Parse(Bam.Core.V2.Graph.Instance.Macros, module.Macros);
                 commandLine.Add(System.String.Format("-I{0}", path));
             }
             if (options.OmitFramePointer)
@@ -77,6 +78,7 @@ namespace VisualC
             }
             foreach (var path in options.SystemIncludePaths)
             {
+                path.Parse(Bam.Core.V2.Graph.Instance.Macros, module.Macros);
                 commandLine.Add(System.String.Format("-I{0}", path));
             }
             switch (options.TargetLanguage)
@@ -186,13 +188,13 @@ namespace V2
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
@@ -315,13 +317,13 @@ namespace V2
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
