@@ -147,6 +147,19 @@ namespace V2
             this.Patches.Add(dlg);
         }
 
+        public bool HasPatches
+        {
+            get
+            {
+                return this.Patches.Count > 0;
+            }
+        }
+
+        public void PrefixPatchesFrom(Module module)
+        {
+            this.Patches.InsertRange(0, module.Patches);
+        }
+
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
         {
             get

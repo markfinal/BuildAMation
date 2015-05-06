@@ -155,6 +155,28 @@ namespace V2
 
         public void ApplySettingsPatches()
         {
+            // go forward through the ranks, applying patches to module groups to their children first
+            // TODO: this will also be where public patches are applied
+            foreach (var rank in this.DependencyGraph)
+            {
+                foreach (var module in rank.Value)
+                {
+                    if (!(module is IModuleGroup))
+                    {
+                        continue;
+                    }
+                    if (!module.HasPatches)
+                    {
+                        continue;
+                    }
+
+                    foreach (var child in module.Children)
+                    {
+                        child.PrefixPatchesFrom(module);
+                    }
+                }
+            }
+
             var modeRequiresCommandLines = true;
             foreach (var rank in this.DependencyGraph.Reverse())
             {
