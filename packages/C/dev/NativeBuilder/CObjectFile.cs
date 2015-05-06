@@ -36,6 +36,12 @@ namespace V2
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender });
             }
 
+            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath);
+            if (!System.IO.Directory.Exists(objectFileDir))
+            {
+                System.IO.Directory.CreateDirectory(objectFileDir);
+            }
+
             var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
         }
     }
