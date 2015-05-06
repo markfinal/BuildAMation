@@ -18,6 +18,21 @@
 #endregion // License
 namespace Test3
 {
+    sealed class Library2V2 :
+        C.V2.StaticLibrary
+    {
+        public Library2V2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/library2.c");
+            source.PublicPatch(settings =>
+            {
+                var common = settings as C.V2.ICommonCompilerOptions;
+                common.IncludePaths.Add(new Bam.Core.V2.TokenizedString("$(pkgroot)/include", source));
+            });
+        }
+    }
+
     // Define module classes here
     sealed class Library2 :
         C.StaticLibrary

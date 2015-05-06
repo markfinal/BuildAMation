@@ -39,6 +39,7 @@ namespace Test2
         public ApplicationV2()
         {
             var library = this.LinkAgainst<LibraryV2>();
+            var library2 = this.LinkAgainst<Test3.Library2V2>();
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/application.c");
@@ -47,7 +48,9 @@ namespace Test2
                     var cOnly = settings as C.V2.ICOnlyCompilerOptions;
                     cOnly.C99Specific = true;
                 });
+            // TODO: what happens for a header only library?
             source.UsePublicPatches(library.Source[0]);
+            source.UsePublicPatches(library2.Source[0]);
         }
     }
 
