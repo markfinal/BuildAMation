@@ -22,7 +22,7 @@ namespace V2
 {
 namespace DefaultSettings
 {
-    public static class DefaultSettingsExtensions
+    public static partial class DefaultSettingsExtensions
     {
         public static void Defaults(this C.V2.ICommonCompilerOptions settings)
         {

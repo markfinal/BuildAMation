@@ -164,6 +164,7 @@ namespace V2
         public CompilerSettings()
         {
             (this as C.V2.ICommonCompilerOptions).Defaults();
+            // TODO: other defaults
         }
 
 

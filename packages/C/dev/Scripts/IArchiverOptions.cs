@@ -18,6 +18,28 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this C.V2.ICommonArchiverOptions settings)
+        {
+            settings.OutputType = EArchiverOutput.StaticLibrary;
+        }
+    }
+}
+
+    public interface ICommonArchiverOptions
+    {
+        C.EArchiverOutput OutputType
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface IArchiverOptions
     {
         /// <summary>
