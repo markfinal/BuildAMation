@@ -158,7 +158,13 @@ namespace V2
             {
                 child.PrivatePatches.InsertRange(0, this.PrivatePatches);
                 child.PublicPatches.InsertRange(0, this.PublicPatches);
+                child.ExternalPatches.AddRange(this.ExternalPatches);
             }
+        }
+
+        public void UsePublicPatches(Module module)
+        {
+            this.ExternalPatches.Add(module.PublicPatches);
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
@@ -193,6 +199,7 @@ namespace V2
 
         private System.Collections.Generic.List<PatchDelegate> PrivatePatches = new System.Collections.Generic.List<PatchDelegate>();
         private System.Collections.Generic.List<PatchDelegate> PublicPatches = new System.Collections.Generic.List<PatchDelegate>();
+        private System.Collections.Generic.List<System.Collections.Generic.List<PatchDelegate>> ExternalPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PatchDelegate>>();
 
         public System.Collections.Generic.Dictionary<FileKey, TokenizedString> GeneratedPaths
         {
@@ -263,6 +270,13 @@ namespace V2
             foreach (var patch in this.PublicPatches)
             {
                 patch(this.Settings);
+            }
+            foreach (var patchList in this.ExternalPatches)
+            {
+                foreach (var patch in patchList)
+                {
+                    patch(this.Settings);
+                }
             }
         }
 

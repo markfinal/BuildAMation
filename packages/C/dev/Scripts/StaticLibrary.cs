@@ -40,6 +40,14 @@ namespace V2
             }
         }
 
+        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source);
+            }
+        }
+
         public CObjectFileCollection CreateCSourceContainer()
         {
             var source = new CObjectFileCollection();

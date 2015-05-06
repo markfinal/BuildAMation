@@ -57,11 +57,12 @@ namespace V2
             return source;
         }
 
-        public void LinkAgainst<DependentModule>() where DependentModule : Bam.Core.V2.Module, new()
+        public DependentModule LinkAgainst<DependentModule>() where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.linkedModules.Add(dependent);
+            return dependent as DependentModule;
         }
 
         public LinkerTool Linker

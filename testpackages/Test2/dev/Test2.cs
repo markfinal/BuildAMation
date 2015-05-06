@@ -38,6 +38,8 @@ namespace Test2
     {
         public ApplicationV2()
         {
+            var library = this.LinkAgainst<LibraryV2>();
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/application.c");
             source.PrivatePatch(settings =>
@@ -45,8 +47,7 @@ namespace Test2
                     var cOnly = settings as C.V2.ICOnlyCompilerOptions;
                     cOnly.C99Specific = true;
                 });
-            //source.InheritPublicSettings<LibraryV2>();
-            this.LinkAgainst<LibraryV2>();
+            source.UsePublicPatches(library.Source[0]);
         }
     }
 
