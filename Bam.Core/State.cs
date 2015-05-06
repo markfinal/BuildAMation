@@ -356,7 +356,7 @@ namespace V2
         protected Tool()
             : base()
         {
-            this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, string>();
+            this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             this.InheritedEnvironmentVariables = new System.Collections.Generic.List<string>();
         }
 
@@ -379,7 +379,7 @@ namespace V2
             // by default, the execution policy of a tool is to do nothing as it's on disk
         }
 
-        public System.Collections.Generic.Dictionary<string, string> EnvironmentVariables
+        public System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> EnvironmentVariables
         {
             get;
             private set;
