@@ -44,7 +44,8 @@ namespace Mingw
             foreach (var path in options.IncludePaths)
             {
                 path.Parse(Bam.Core.V2.Graph.Instance.Macros, module.Macros);
-                commandLine.Add(System.String.Format("-I{0}", path));
+                var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
+                commandLine.Add(System.String.Format(formatString, path));
             }
             switch (options.LanguageStandard)
             {
@@ -98,7 +99,8 @@ namespace Mingw
             foreach (var path in options.SystemIncludePaths)
             {
                 path.Parse(Bam.Core.V2.Graph.Instance.Macros, module.Macros);
-                commandLine.Add(System.String.Format("-isystem{0}", path));
+                var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
+                commandLine.Add(System.String.Format(formatString, path));
             }
             switch (options.TargetLanguage)
             {
