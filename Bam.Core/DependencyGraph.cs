@@ -262,7 +262,7 @@ namespace V2
                     this.ReferencedModules.Add(value, new System.Collections.Generic.List<Module>());
                     // merge into the macros
                     // TODO: does it need the concept of a clean and a working macros?
-                    this.Macros.Add("config", new TokenizedString(value.Configuration, null));
+                    this.Macros.Add("config", new TokenizedString(value.Configuration.ToString(), null));
                 }
             }
         }

@@ -275,10 +275,17 @@ namespace V2
     {
         public Environment()
         {
-            this.Configuration = null;
+            this.Configuration = EConfiguration.Invalid;
+            this.Platform = State.Platform;
         }
 
-        public string Configuration
+        public EConfiguration Configuration
+        {
+            get;
+            set;
+        }
+
+        public EPlatform Platform
         {
             get;
             set;

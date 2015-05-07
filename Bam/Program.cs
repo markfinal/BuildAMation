@@ -39,6 +39,8 @@ namespace Bam
                 Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
                 Core.State.CompileWithDebugSymbols = true;
                 Core.State.BuilderName = "Native";
+                //Core.State.BuilderName = "MakeFile";
+                //Core.State.BuilderName = "VSSolution";
                 var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
                 if (!compiledSuccessfully)
                 {
@@ -52,10 +54,10 @@ namespace Bam
                 graph.Mode = Core.State.BuilderName;
 
                 var debug = new Core.V2.Environment();
-                debug.Configuration = "Debug";
+                debug.Configuration = Core.EConfiguration.Debug;
 
                 var optimized = new Core.V2.Environment();
-                optimized.Configuration = "Optimized";
+                optimized.Configuration = Core.EConfiguration.Optimized;
 
                 // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
                 foreach (var env in new[] { debug/*, optimized*/})

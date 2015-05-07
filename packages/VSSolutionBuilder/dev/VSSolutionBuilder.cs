@@ -313,7 +313,7 @@ namespace V2
                     foreach (var env in environments)
                     {
                         // TODO: need to work out what the platform is from the sources
-                        meta.Project.AddProjectConfiguration(env.Configuration, "Win32");
+                        meta.Project.AddProjectConfiguration(env.Configuration.ToString(), "Win32");
                     }
 
                     var builder = new System.Text.StringBuilder();
