@@ -227,6 +227,29 @@ namespace V2
                     throw new System.Exception("Unknown function");
             }
         }
+
+        public bool ContainsSpace
+        {
+            get
+            {
+                if (!this.IsExpanded)
+                {
+                    throw new Exception("String is not yet expanded");
+                }
+                if (null != this.CachedJoin)
+                {
+                    return this.CachedJoin.Contains(' ');
+                }
+                else
+                {
+                    if (this.Tokens.Count != 1)
+                    {
+                        throw new Exception("Tokenized string that is expanded, but has more than one token");
+                    }
+                    return this.Tokens[0].Contains(' ');
+                }
+            }
+        }
     }
 
     /// <summary>
