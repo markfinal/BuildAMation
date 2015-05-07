@@ -123,6 +123,14 @@ namespace V2
                 return this.CachedJoin;
             }
             var join = System.String.Join(string.Empty, this.Tokens);
+            if (OSUtilities.IsWindowsHosting)
+            {
+                join = join.Replace('/', '\\');
+            }
+            else
+            {
+                join = join.Replace('\\', '/');
+            }
             if (!safe)
             {
                 this.CachedJoin = join;
