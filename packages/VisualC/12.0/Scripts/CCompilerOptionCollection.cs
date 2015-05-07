@@ -84,10 +84,10 @@ namespace VisualC
             switch (options.TargetLanguage)
             {
                 case C.ETargetLanguage.C:
-                    commandLine.Add("-Tc");
+                    commandLine.Add(System.String.Format("-Tc {0}", objectFile.InputPath.ToString()));
                     break;
                 case C.ETargetLanguage.Cxx:
-                    commandLine.Add("-Tp");
+                    commandLine.Add(System.String.Format("-Tp {0}", objectFile.InputPath.ToString()));
                     break;
                 default:
                     throw new Bam.Core.Exception("Unsupported target language");
@@ -99,11 +99,11 @@ namespace VisualC
             switch (options.OutputType)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLine.Add(System.String.Format("-c {0}", objectFile.InputPath.ToString()));
+                    commandLine.Add("-c");
                     commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
                     break;
                 case C.ECompilerOutput.Preprocess:
-                    commandLine.Add(System.String.Format("-E {0}", objectFile.InputPath.ToString()));
+                    commandLine.Add("-E");
                     commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
                     break;
             }
