@@ -31,7 +31,7 @@ namespace V2
         protected override void Init()
         {
             base.Init();
-            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).lib", null));
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$(modulename).lib", null));
 
             // TODO: this should be a default, and done through a reflection mechanism
             if (null == this.Librarian)

@@ -111,7 +111,7 @@ namespace V2
 
         protected override void Init()
         {
-            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(config)/$basename($(inputpath)).obj", null));
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$basename($(inputpath)).obj", null));
 
             // TODO: this should be a default, and done through a reflection mechanism
             if (null == this.Compiler)
