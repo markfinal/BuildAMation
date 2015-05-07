@@ -68,6 +68,7 @@ namespace V2
             this.IsUpToDate = false;
             this.MetaData = null;
             this.BuildEnvironment = graph.BuildEnvironment;
+            this.Macros.Add("config", new TokenizedString(this.BuildEnvironment.Configuration.ToString(), null));
         }
 
         // TODO: is this virtual or abstract?
