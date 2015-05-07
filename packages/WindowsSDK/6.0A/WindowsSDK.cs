@@ -18,6 +18,37 @@
 #endregion // License
 namespace WindowsSDK
 {
+    public sealed class WindowsSDKV2 :
+        Bam.Core.V2.Module
+    {
+        public WindowsSDKV2()
+        {
+            this.PublicPatch(settings =>
+                {
+                    var compilation = settings as C.V2.ICommonCompilerOptions;
+                    if (null != compilation)
+                    {
+                        compilation.IncludePaths.Add(new Bam.Core.V2.TokenizedString(@"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include", null));
+                    }
+                });
+        }
+
+        public override void Evaluate()
+        {
+            // do nothing
+        }
+
+        protected override void ExecuteInternal()
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+
     public sealed class WindowsSDK :
         C.ThirdPartyModule
     {
