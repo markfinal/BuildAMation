@@ -31,6 +31,34 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender });
+            }
+
+            var executableDir = System.IO.Path.GetDirectoryName(executablePath);
+            if (!System.IO.Directory.Exists(executableDir))
+            {
+                System.IO.Directory.CreateDirectory(executableDir);
+            }
+
+            foreach (var input in objectFiles)
+            {
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in input.Children)
+                    {
+                        sender.CommandLine.Add(child.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                    }
+                }
+                else
+                {
+                    sender.CommandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                }
+            }
+
             var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
         }
     }

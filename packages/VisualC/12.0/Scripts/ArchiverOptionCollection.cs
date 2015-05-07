@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using C.V2.DefaultSettings;
 namespace VisualC
 {
     public static partial class NativeImplementation
@@ -49,6 +50,11 @@ namespace V2
         ICommonArchiverOptions,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
+        public ArchiverSettings()
+        {
+            (this as C.V2.ICommonArchiverOptions).Defaults();
+        }
+
         C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType
         {
             get;

@@ -18,6 +18,35 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this C.V2.ICommonLinkerOptions settings)
+        {
+            settings.OutputType = ELinkerOutput.Executable;
+            settings.LibraryPaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+        }
+    }
+}
+
+    public interface ICommonLinkerOptions
+    {
+        C.ELinkerOutput OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> LibraryPaths
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ILinkerOptions
     {
         /// <summary>
