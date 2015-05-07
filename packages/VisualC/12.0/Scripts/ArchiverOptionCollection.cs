@@ -18,6 +18,74 @@
 #endregion // License
 namespace VisualC
 {
+    public static partial class NativeImplementation
+    {
+        public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module)
+        {
+            var commandLine = module.CommandLine;
+            var libraryFile = module as C.V2.StaticLibrary;
+            switch (options.OutputType)
+            {
+                case C.EArchiverOutput.StaticLibrary:
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString()));
+                    break;
+            }
+        }
+
+        public static void Convert(this V2.ICommonArchiverOptions options, Bam.Core.V2.Module module)
+        {
+        }
+    }
+
+namespace V2
+{
+    public interface ICommonArchiverOptions
+    {
+    }
+
+    public class ArchiverSettings :
+        Bam.Core.V2.Settings,
+        C.V2.ICommonArchiverOptions,
+        ICommonArchiverOptions,
+        CommandLineProcessor.V2.IConvertToCommandLine
+    {
+        C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
+        {
+            (this as C.V2.ICommonArchiverOptions).Convert(module);
+            (this as ICommonArchiverOptions).Convert(module);
+        }
+    }
+
+    public sealed class Librarian :
+        C.V2.LibrarianTool
+    {
+        public Librarian()
+        {
+            this.Macros.Add("InstallPath", new Bam.Core.V2.TokenizedString(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
+        }
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            var settings = new ArchiverSettings();
+            return settings;
+        }
+
+        public override string Executable
+        {
+            get
+            {
+                return @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\lib.exe";
+            }
+        }
+    }
+}
+
     public sealed partial class ArchiverOptionCollection :
         VisualCCommon.ArchiverOptionCollection
     {
