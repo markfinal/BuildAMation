@@ -33,6 +33,7 @@ namespace V2
         {
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
             var usesLPrefix = false;
+            var libraryNames = new System.Collections.Generic.List<string>();
             foreach (var library in libraries)
             {
                 var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
@@ -42,12 +43,12 @@ namespace V2
                 if (usesLPrefix)
                 {
                     var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
-                    sender.CommandLine.Add(System.String.Format("-l{0}", libName));
+                    libraryNames.Add(System.String.Format("-l{0}", libName));
                 }
                 else
                 {
                     var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
-                    sender.CommandLine.Add(libFilename);
+                    libraryNames.Add(libFilename);
                 }
             }
 
@@ -77,6 +78,11 @@ namespace V2
                 {
                     sender.CommandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
                 }
+            }
+
+            foreach (var lib in libraryNames)
+            {
+                sender.CommandLine.Add(lib);
             }
 
             var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
