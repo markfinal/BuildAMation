@@ -32,7 +32,7 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
-            var usesLPrefix = false;
+            var usesLPrefix = true;
             var libraryNames = new System.Collections.Generic.List<string>();
             foreach (var library in libraries)
             {

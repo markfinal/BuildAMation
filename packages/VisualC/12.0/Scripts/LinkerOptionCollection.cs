@@ -85,6 +85,7 @@ namespace V2
         }
     }
 
+    [C.V2.RegisterLinker(Bam.Core.EPlatform.Windows)]
     public sealed class Linker :
         C.V2.LinkerTool
     {

@@ -112,14 +112,17 @@ namespace V2
         private static System.Collections.Generic.List<LibrarianTool> Archivers = new System.Collections.Generic.List<LibrarianTool>();
         private static System.Collections.Generic.List<LinkerTool> Linkers = new System.Collections.Generic.List<LinkerTool>();
 
-        private static System.Collections.Generic.IEnumerable<System.Type> GetTools<T>()
+        private static System.Collections.Generic.IEnumerable<System.Type> GetTools<T>() where T : ToolRegistration
         {
             foreach (var type in Bam.Core.State.ScriptAssembly.GetTypes())
             {
-                var compiler = type.GetCustomAttributes(typeof(RegisterCompilerAttribute), false) as RegisterCompilerAttribute[];
-                if (compiler.Length > 0)
+                var tool = type.GetCustomAttributes(typeof(T), false) as T[];
+                if (tool.Length > 0)
                 {
-                    yield return type;
+                    if (Bam.Core.OSUtilities.CurrentOS == tool[0].Platform)
+                    {
+                        yield return type;
+                    }
                 }
             }
         }
@@ -244,8 +247,8 @@ namespace V2
             if (null == this.Compiler)
             {
                 //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
-                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
-                //this.Compiler = DefaultToolchain.Compiler;
+                //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
+                this.Compiler = DefaultToolchain.Compiler;
 
                 // TODO: this has to be moved later, in case it's changed
                 this.UsePublicPatches(this.Compiler);

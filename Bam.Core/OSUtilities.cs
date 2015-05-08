@@ -301,5 +301,25 @@ namespace Bam.Core
             var isSupported = (currentPlatform == (supportedPlatforms & currentPlatform));
             return isSupported;
         }
+
+        public static EPlatform
+        CurrentOS
+        {
+            get
+            {
+                var os = Platform.GetOS();
+                switch (os)
+                {
+                    case Platform.OS.Windows:
+                        return EPlatform.Windows;
+                    case Platform.OS.Unix:
+                        return EPlatform.Unix;
+                    case Platform.OS.OSX:
+                        return EPlatform.OSX;
+                    default:
+                        throw new Exception("Unknown platform");
+                }
+            }
+        }
     }
 }

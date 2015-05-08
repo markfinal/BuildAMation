@@ -68,6 +68,7 @@ namespace V2
         }
     }
 
+    [C.V2.RegisterArchiver(Bam.Core.EPlatform.Windows)]
     public sealed class Librarian :
         C.V2.LibrarianTool
     {
