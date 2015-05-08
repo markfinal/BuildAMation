@@ -32,7 +32,7 @@ namespace V2
         protected override void Init()
         {
             base.Init();
-            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$(modulename)", this));
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$(modulename).exe", this));
 
             // TODO: this should be a default, and done through a reflection mechanism
             if (null == this.Linker)

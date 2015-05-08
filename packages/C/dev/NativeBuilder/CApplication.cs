@@ -31,6 +31,26 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+            var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+            var usesLPrefix = false;
+            foreach (var library in libraries)
+            {
+                var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
+                // TODO: watch for duplicates
+                linker.LibraryPaths.Add(new Bam.Core.V2.TokenizedString(dir, null));
+                if (usesLPrefix)
+                {
+                    var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
+                    sender.CommandLine.Add(System.String.Format("-l{0}", libName));
+                }
+                else
+                {
+                    var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
+                    sender.CommandLine.Add(libFilename);
+                }
+            }
+
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
