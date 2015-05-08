@@ -63,6 +63,133 @@ namespace V2
         Bam.Core.V2.Tool
     { }
 
+    [System.AttributeUsage(System.AttributeTargets.Class)]
+    public abstract class ToolRegistration :
+        System.Attribute
+    {
+        protected ToolRegistration(Bam.Core.EPlatform platform)
+        {
+            this.Platform = platform;
+        }
+
+        public Bam.Core.EPlatform Platform
+        {
+            get;
+            private set;
+        }
+    }
+
+    public sealed class RegisterCompilerAttribute :
+        ToolRegistration
+    {
+        public RegisterCompilerAttribute(Bam.Core.EPlatform platform)
+            : base(platform)
+        {
+        }
+    }
+
+    public sealed class RegisterArchiverAttribute :
+        ToolRegistration
+    {
+        public RegisterArchiverAttribute(Bam.Core.EPlatform platform)
+            : base(platform)
+        {
+        }
+    }
+
+    public sealed class RegisterLinkerAttribute :
+        ToolRegistration
+    {
+        public RegisterLinkerAttribute(Bam.Core.EPlatform platform)
+            : base(platform)
+        {
+        }
+    }
+
+    public static class DefaultToolchain
+    {
+        private static System.Collections.Generic.List<CompilerTool> Compilers = new System.Collections.Generic.List<CompilerTool>();
+        private static System.Collections.Generic.List<LibrarianTool> Archivers = new System.Collections.Generic.List<LibrarianTool>();
+        private static System.Collections.Generic.List<LinkerTool> Linkers = new System.Collections.Generic.List<LinkerTool>();
+
+        private static System.Collections.Generic.IEnumerable<System.Type> GetTools<T>()
+        {
+            foreach (var type in Bam.Core.State.ScriptAssembly.GetTypes())
+            {
+                var compiler = type.GetCustomAttributes(typeof(RegisterCompilerAttribute), false) as RegisterCompilerAttribute[];
+                if (compiler.Length > 0)
+                {
+                    yield return type;
+                }
+            }
+        }
+
+        static DefaultToolchain()
+        {
+            var graph = Bam.Core.V2.Graph.Instance;
+            foreach (var type in GetTools<RegisterCompilerAttribute>())
+            {
+                Compilers.Add(graph.MakeModuleOfType(type) as CompilerTool);
+            }
+            foreach (var type in GetTools<RegisterArchiverAttribute>())
+            {
+                Archivers.Add(graph.MakeModuleOfType(type) as LibrarianTool);
+            }
+            foreach (var type in GetTools<RegisterLinkerAttribute>())
+            {
+                Linkers.Add(graph.MakeModuleOfType(type) as LinkerTool);
+            }
+        }
+
+        public static CompilerTool Compiler
+        {
+            get
+            {
+                if (0 == Compilers.Count)
+                {
+                    throw new Bam.Core.Exception("No default compilers for this platform");
+                }
+                if (Compilers.Count > 1)
+                {
+                    throw new Bam.Core.Exception("There are {0} possible compilers for this platform", Compilers.Count);
+                }
+                return Compilers[0];
+            }
+        }
+
+        public static LibrarianTool Librarian
+        {
+            get
+            {
+                if (0 == Archivers.Count)
+                {
+                    throw new Bam.Core.Exception("No default librarians for this platform");
+                }
+                if (Archivers.Count > 1)
+                {
+                    throw new Bam.Core.Exception("There are {0} possible librarians for this platform", Archivers.Count);
+                }
+                return Archivers[0];
+            }
+        }
+
+        public static LinkerTool Linker
+        {
+            get
+            {
+                if (0 == Linkers.Count)
+                {
+                    throw new Bam.Core.Exception("No default linkers for this platform");
+                }
+                if (Linkers.Count > 1)
+                {
+                    throw new Bam.Core.Exception("There are {0} possible linkers for this platform", Linkers.Count);
+                }
+                return Linkers[0];
+            }
+        }
+    }
+
     public class SourceFile :
         Bam.Core.V2.Module,
         Bam.Core.V2.IInputPath
@@ -116,8 +243,9 @@ namespace V2
             // TODO: this should be a default, and done through a reflection mechanism
             if (null == this.Compiler)
             {
-                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
-                //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
+                //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
+                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
+                //this.Compiler = DefaultToolchain.Compiler;
 
                 // TODO: this has to be moved later, in case it's changed
                 this.UsePublicPatches(this.Compiler);

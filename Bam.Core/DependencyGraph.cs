@@ -130,6 +130,14 @@ namespace V2
             return newModule;
         }
 
+        public Module MakeModuleOfType(System.Type moduleType)
+        {
+            var m = typeof(Graph).GetMethod("FindReferencedModule");
+            var gm = m.MakeGenericMethod(moduleType);
+            var module = gm.Invoke(Graph.Instance, null) as Module;
+            return module;
+        }
+
         public void CreateTopLevelModules(System.Reflection.Assembly assembly, Environment env, string ns)
         {
             this.BuildEnvironment = env;
@@ -137,10 +145,7 @@ namespace V2
             var allPackageTypes = allTypes.Where(type => type.Namespace == ns && type.IsSubclassOf(typeof(Module)));
             foreach (var moduleType in allPackageTypes)
             {
-                var m = typeof(Graph).GetMethod("FindReferencedModule");
-                var gm = m.MakeGenericMethod(moduleType);
-                var module = gm.Invoke(Graph.Instance, null) as Module;
-                this.TopLevelModules.Add(module);
+                this.TopLevelModules.Add(MakeModuleOfType(moduleType));
             }
             this.BuildEnvironment = null;
             // remove all top level modules that have a reference count > 1

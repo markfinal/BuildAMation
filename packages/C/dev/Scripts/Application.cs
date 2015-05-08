@@ -37,8 +37,9 @@ namespace V2
             // TODO: this should be a default, and done through a reflection mechanism
             if (null == this.Linker)
             {
-                //this.Linker = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Linker>();
-                this.Linker = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.V2.Linker>();
+                this.Linker = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Linker>();
+                //this.Linker = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.V2.Linker>();
+                //this.Linker = DefaultToolchain.Linker;
 
                 // TODO: this has to be moved later, in case it's changed
                 this.UsePublicPatches(this.Linker);

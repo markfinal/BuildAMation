@@ -31,13 +31,14 @@ namespace V2
         protected override void Init()
         {
             base.Init();
-            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$(modulename).lib", null));
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/lib$(modulename).a", null));
 
             // TODO: this should be a default, and done through a reflection mechanism
             if (null == this.Librarian)
             {
-                //this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Librarian>();
-                this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.V2.Librarian>();
+                this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Librarian>();
+                //this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.V2.Librarian>();
+                //this.Librarian = DefaultToolchain.Archiver;
 
                 // TODO: this has to be moved later, in case it's changed
                 this.UsePublicPatches(this.Librarian);
