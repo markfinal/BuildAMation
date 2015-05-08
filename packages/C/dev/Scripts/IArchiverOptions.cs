@@ -24,7 +24,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonArchiverOptions settings)
+        public static void Defaults(this C.V2.ICommonArchiverOptions settings, Bam.Core.V2.Module module)
         {
             settings.OutputType = EArchiverOutput.StaticLibrary;
         }

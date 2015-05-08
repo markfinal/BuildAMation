@@ -66,11 +66,11 @@ namespace VisualC
             {
                 if (System.String.IsNullOrEmpty(define.Value))
                 {
-                    commandLine.Add(System.String.Format("-D{0}={1}"));
+                    commandLine.Add(System.String.Format("-D{0}", define.Key));
                 }
                 else
                 {
-                    commandLine.Add(System.String.Format("-D{0}={1}"));
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, define.Value));
                 }
             }
             foreach (var undefine in options.PreprocessorUndefines)
@@ -172,9 +172,9 @@ namespace V2
         VisualC.V2.ICOnlyCompilerOptions,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
-        public CompilerSettings()
+        public CompilerSettings(Bam.Core.V2.Module module)
         {
-            (this as C.V2.ICommonCompilerOptions).Defaults();
+            (this as C.V2.ICommonCompilerOptions).Defaults(module);
         }
 
 
@@ -447,7 +447,7 @@ namespace V2
             }
             else if (typeof(C.V2.ObjectFile).IsInstanceOfType(module))
             {
-                var settings = new CompilerSettings();
+                var settings = new CompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }

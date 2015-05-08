@@ -50,9 +50,9 @@ namespace V2
         ICommonArchiverOptions,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
-        public ArchiverSettings()
+        public ArchiverSettings(Bam.Core.V2.Module module)
         {
-            (this as C.V2.ICommonArchiverOptions).Defaults();
+            (this as C.V2.ICommonArchiverOptions).Defaults(module);
         }
 
         C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType
@@ -78,7 +78,7 @@ namespace V2
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
-            var settings = new ArchiverSettings();
+            var settings = new ArchiverSettings(module);
             return settings;
         }
 

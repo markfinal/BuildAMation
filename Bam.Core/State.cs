@@ -405,7 +405,7 @@ namespace V2
             protected set;
         }
 
-        public abstract Settings CreateDefaultSettings<T>(T module);
+        public abstract Settings CreateDefaultSettings<T>(T module) where T : Bam.Core.V2.Module;
 
         protected override void ExecuteInternal()
         {

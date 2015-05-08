@@ -24,7 +24,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonCompilerOptions settings)
+        public static void Defaults(this C.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
         {
             settings.Bits = EBit.SixtyFour;
             settings.DebugSymbols = true;
@@ -35,6 +35,7 @@ namespace DefaultSettings
             settings.Optimization = EOptimization.Off;
             settings.OutputType = ECompilerOutput.CompileOnly;
             settings.PreprocessorDefines = new C.V2.PreprocessorDefinitions();
+            settings.PreprocessorDefines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", module.BuildEnvironment.Configuration.ToString().ToUpper()));
             settings.PreprocessorUndefines = new Bam.Core.StringArray();
             settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.TargetLanguage = ETargetLanguage.C;

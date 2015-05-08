@@ -61,9 +61,9 @@ namespace V2
         ICommonLinkerOptions,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
-        public LinkerSettings()
+        public LinkerSettings(Bam.Core.V2.Module module)
         {
-            (this as C.V2.ICommonLinkerOptions).Defaults();
+            (this as C.V2.ICommonLinkerOptions).Defaults(module);
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -101,7 +101,7 @@ namespace V2
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
-            var settings = new LinkerSettings();
+            var settings = new LinkerSettings(module);
             return settings;
         }
 

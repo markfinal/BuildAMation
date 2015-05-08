@@ -24,7 +24,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonLinkerOptions settings)
+        public static void Defaults(this C.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
         {
             settings.OutputType = ELinkerOutput.Executable;
             settings.LibraryPaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();

@@ -26,7 +26,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this IArchiverOptions settings)
+        public static void Defaults(this IArchiverOptions settings, Bam.Core.V2.Module module)
         {
             settings.Ranlib = true;
             settings.DoNotWarnIfLibraryCreated = true;
@@ -102,10 +102,10 @@ namespace DefaultSettings
         IArchiverOptions,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
-        public LibrarianSettings()
+        public LibrarianSettings(Bam.Core.V2.Module module)
         {
-            (this as C.V2.ICommonArchiverOptions).Defaults();
-            (this as IArchiverOptions).Defaults();
+            (this as C.V2.ICommonArchiverOptions).Defaults(module);
+            (this as IArchiverOptions).Defaults(module);
         }
 
         C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType
@@ -158,7 +158,7 @@ namespace DefaultSettings
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
-            var settings = new LibrarianSettings();
+            var settings = new LibrarianSettings(module);
             return settings;
         }
     }
