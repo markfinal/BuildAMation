@@ -52,16 +52,15 @@ namespace Test2
             source.UsePublicPatches(library.Source[0]);
             source.UsePublicPatches(library2.Source[0]);
 
-#if False
-            // TODO: can this be done with extension wrappers?
+            // TODO: can the platform check be done with extension wrappers?
             if (Bam.Core.Platform.Contains(Bam.Core.EPlatform.Windows, this.BuildEnvironment.Platform))
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
                 // TODO need to distinguish patches for compilation and linking, or the patch needs to be conditional
-                source.UsePublicPatches(windowsSDK);
+                source.UsePublicPatches(windowsSDK); // compiling
+                this.UsePublicPatches(windowsSDK); // linking
             }
-#endif
         }
     }
 

@@ -23,12 +23,19 @@ namespace WindowsSDK
     {
         public WindowsSDKV2()
         {
+            this.Macros.Add("InstallPath", new Bam.Core.V2.TokenizedString(@"C:\Program Files\Microsoft SDKs\Windows\v6.0A", null));
             this.PublicPatch(settings =>
                 {
                     var compilation = settings as C.V2.ICommonCompilerOptions;
                     if (null != compilation)
                     {
-                        compilation.IncludePaths.Add(new Bam.Core.V2.TokenizedString(@"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Include", null));
+                        compilation.IncludePaths.Add(new Bam.Core.V2.TokenizedString(@"$(InstallPath)\Include", this));
+                    }
+
+                    var linking = settings as C.V2.ICommonLinkerOptions;
+                    if (null != linking)
+                    {
+                        linking.LibraryPaths.Add(new Bam.Core.V2.TokenizedString(@"$(InstallPath)\Lib\x64", this));
                     }
                 });
         }
