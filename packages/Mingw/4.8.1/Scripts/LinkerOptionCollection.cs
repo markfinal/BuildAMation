@@ -102,6 +102,7 @@ namespace DefaultSettings
         public Linker()
         {
             this.InheritedEnvironmentVariables.Add("TEMP");
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\MinGW\bin"));
         }
 
         public override string Executable

@@ -43,6 +43,7 @@ namespace V2
                 if (usesLPrefix)
                 {
                     var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
+                    libName = libName.Substring(3); // trim off lib prefix
                     libraryNames.Add(System.String.Format("-l{0}", libName));
                 }
                 else
