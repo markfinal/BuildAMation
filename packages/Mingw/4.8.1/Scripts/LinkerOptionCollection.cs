@@ -16,21 +16,83 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using C.V2.DefaultSettings;
+using Mingw.V2.DefaultSettings;
 namespace Mingw
 {
 namespace V2
 {
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this ILinkerOptions settings, Bam.Core.V2.Module module)
+        {
+        }
+    }
+}
     public interface ILinkerOptions
     {
     }
 
-    public class LinkerSettings :
-        Bam.Core.V2.Settings,
-        C.V2.ILinkerOptions,
-        ILinkerOptions
+    public static partial class NativeImplementation
     {
-        public LinkerSettings()
+        public static void Convert(this C.V2.ICommonLinkerOptions options, Bam.Core.V2.Module module)
         {
+            var commandLine = module.CommandLine;
+            var applicationFile = module as C.V2.ConsoleApplication;
+            switch (options.OutputType)
+            {
+                case C.ELinkerOutput.Executable:
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    break;
+
+                case C.ELinkerOutput.DynamicLibrary:
+                    commandLine.Add("-shared");
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    break;
+            }
+            foreach (var path in options.LibraryPaths)
+            {
+                path.Parse(Bam.Core.V2.Graph.Instance.Macros, module.Macros);
+                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
+                commandLine.Add(System.String.Format(format, path.ToString()));
+            }
+        }
+
+        public static void Convert(this ILinkerOptions options, Bam.Core.V2.Module module)
+        {
+        }
+    }
+
+    public sealed class LinkerSettings :
+        Bam.Core.V2.Settings,
+        C.V2.ICommonLinkerOptions,
+        ILinkerOptions,
+        CommandLineProcessor.V2.IConvertToCommandLine
+    {
+        public LinkerSettings(Bam.Core.V2.Module module)
+        {
+            (this as C.V2.ICommonLinkerOptions).Defaults(module);
+            (this as ILinkerOptions).Defaults(module);
+        }
+
+        C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module);
+            (this as ILinkerOptions).Convert(module);
         }
     }
 
@@ -52,7 +114,7 @@ namespace V2
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
-            var settings = new LinkerSettings();
+            var settings = new LinkerSettings(module);
             return settings;
         }
     }

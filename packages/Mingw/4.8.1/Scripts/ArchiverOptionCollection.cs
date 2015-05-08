@@ -55,7 +55,7 @@ namespace DefaultSettings
         }
     }
 
-    public static class NativeImplementation
+    public static partial class NativeImplementation
     {
         public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module)
         {

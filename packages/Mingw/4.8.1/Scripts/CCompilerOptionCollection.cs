@@ -19,7 +19,7 @@
 using C.V2.DefaultSettings;
 namespace Mingw
 {
-    public static class NativeImplementation
+    public static partial class NativeImplementation
     {
         public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
