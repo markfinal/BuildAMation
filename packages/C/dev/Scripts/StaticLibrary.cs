@@ -39,6 +39,7 @@ namespace V2
                 //this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Librarian>();
                 this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.V2.Librarian>();
 
+                // TODO: this has to be moved later, in case it's changed
                 this.UsePublicPatches(this.Librarian);
             }
         }
