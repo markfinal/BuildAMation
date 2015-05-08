@@ -53,7 +53,8 @@ namespace Test2
             source.UsePublicPatches(library2.Source[0]);
 
             // TODO: can the platform check be done with extension wrappers?
-            if (Bam.Core.Platform.Contains(Bam.Core.EPlatform.Windows, this.BuildEnvironment.Platform))
+            if (Bam.Core.Platform.Contains(Bam.Core.EPlatform.Windows, this.BuildEnvironment.Platform) &&
+                this.Linker is VisualC.V2.Linker)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
