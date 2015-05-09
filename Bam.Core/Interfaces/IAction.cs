@@ -40,6 +40,26 @@ namespace V2
     public interface IStringCommandLineArgument : ICommandLineArgument
     {
     }
+
+    public sealed class BuilderName :
+        IStringCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-b";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--builder";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

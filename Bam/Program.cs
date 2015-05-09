@@ -38,7 +38,12 @@ namespace Bam
                 Core.State.BuildRoot = "build";
                 Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
                 Core.State.CompileWithDebugSymbols = true;
-                Core.State.BuilderName = "Native";
+                Core.State.BuilderName = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuilderName());
+                if (null == Core.State.BuilderName)
+                {
+                    throw new Core.Exception("No builder specified");
+                }
+                //Core.State.BuilderName = "Native";
                 //Core.State.BuilderName = "MakeFile";
                 //Core.State.BuilderName = "VSSolution";
                 var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
