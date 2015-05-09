@@ -32,7 +32,6 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
-            var usesLPrefix = true;
             var libraryNames = new System.Collections.Generic.List<string>();
             foreach (var library in libraries)
             {
@@ -40,7 +39,7 @@ namespace V2
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                 // TODO: watch for duplicates
                 linker.LibraryPaths.Add(new Bam.Core.V2.TokenizedString(dir, null));
-                if (usesLPrefix)
+                if ((sender.Tool as C.V2.LinkerTool).UseLPrefixLibraryPaths)
                 {
                     var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
                     libName = libName.Substring(3); // trim off lib prefix

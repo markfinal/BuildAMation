@@ -61,7 +61,12 @@ namespace V2
 
     public abstract class LinkerTool :
         Bam.Core.V2.Tool
-    { }
+    {
+        public abstract bool UseLPrefixLibraryPaths
+        {
+            get;
+        }
+    }
 
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public abstract class ToolRegistration :

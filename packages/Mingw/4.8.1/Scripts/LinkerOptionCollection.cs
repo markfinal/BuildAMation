@@ -119,6 +119,14 @@ namespace DefaultSettings
             var settings = new LinkerSettings(module);
             return settings;
         }
+
+        public override bool UseLPrefixLibraryPaths
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }
     public class LinkerOptionCollection :
