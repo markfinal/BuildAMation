@@ -67,9 +67,16 @@ namespace V2
     public abstract class ToolRegistration :
         System.Attribute
     {
-        protected ToolRegistration(Bam.Core.EPlatform platform)
+        protected ToolRegistration(string toolsetName, Bam.Core.EPlatform platform)
         {
+            this.ToolsetName = toolsetName;
             this.Platform = platform;
+        }
+
+        public string ToolsetName
+        {
+            get;
+            private set;
         }
 
         public Bam.Core.EPlatform Platform
@@ -82,8 +89,11 @@ namespace V2
     public sealed class RegisterCompilerAttribute :
         ToolRegistration
     {
-        public RegisterCompilerAttribute(Bam.Core.EPlatform platform)
-            : base(platform)
+        public RegisterCompilerAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform)
+            :
+            base(toolsetName, platform)
         {
         }
     }
@@ -91,8 +101,11 @@ namespace V2
     public sealed class RegisterArchiverAttribute :
         ToolRegistration
     {
-        public RegisterArchiverAttribute(Bam.Core.EPlatform platform)
-            : base(platform)
+        public RegisterArchiverAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform)
+            :
+            base(toolsetName, platform)
         {
         }
     }
@@ -100,17 +113,41 @@ namespace V2
     public sealed class RegisterLinkerAttribute :
         ToolRegistration
     {
-        public RegisterLinkerAttribute(Bam.Core.EPlatform platform)
-            : base(platform)
+        public RegisterLinkerAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform)
+            :
+            base(toolsetName, platform)
         {
         }
     }
 
     public static class DefaultToolchain
     {
+        public class DefaultToolchainCommand :
+            Bam.Core.V2.IStringCommandLineArgument
+        {
+            string Bam.Core.V2.ICommandLineArgument.LongName
+            {
+                get
+                {
+                    return "C.toolchain";
+                }
+            }
+
+            string Bam.Core.V2.ICommandLineArgument.ShortName
+            {
+                get
+                {
+                    return null;
+                }
+            }
+        }
+
         private static System.Collections.Generic.List<CompilerTool> Compilers = new System.Collections.Generic.List<CompilerTool>();
         private static System.Collections.Generic.List<LibrarianTool> Archivers = new System.Collections.Generic.List<LibrarianTool>();
         private static System.Collections.Generic.List<LinkerTool> Linkers = new System.Collections.Generic.List<LinkerTool>();
+        private static string DefaultToolChain = null;
 
         private static System.Collections.Generic.IEnumerable<System.Type> GetTools<T>() where T : ToolRegistration
         {
@@ -129,6 +166,8 @@ namespace V2
 
         static DefaultToolchain()
         {
+            DefaultToolChain = Bam.Core.V2.CommandLineProcessor.Evaluate(new DefaultToolchainCommand());
+
             var graph = Bam.Core.V2.Graph.Instance;
             foreach (var type in GetTools<RegisterCompilerAttribute>())
             {
@@ -154,6 +193,17 @@ namespace V2
                 }
                 if (Compilers.Count > 1)
                 {
+                    if (null != DefaultToolChain)
+                    {
+                        foreach (var tool in Compilers)
+                        {
+                            var attr = tool.GetType().GetCustomAttributes(false);
+                            if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
+                            {
+                                return tool;
+                            }
+                        }
+                    }
                     throw new Bam.Core.Exception("There are {0} possible compilers for this platform", Compilers.Count);
                 }
                 return Compilers[0];
@@ -170,6 +220,17 @@ namespace V2
                 }
                 if (Archivers.Count > 1)
                 {
+                    if (null != DefaultToolChain)
+                    {
+                        foreach (var tool in Archivers)
+                        {
+                            var attr = tool.GetType().GetCustomAttributes(false);
+                            if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
+                            {
+                                return tool;
+                            }
+                        }
+                    }
                     throw new Bam.Core.Exception("There are {0} possible librarians for this platform", Archivers.Count);
                 }
                 return Archivers[0];
@@ -186,6 +247,17 @@ namespace V2
                 }
                 if (Linkers.Count > 1)
                 {
+                    if (null != DefaultToolChain)
+                    {
+                        foreach (var tool in Linkers)
+                        {
+                            var attr = tool.GetType().GetCustomAttributes(false);
+                            if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
+                            {
+                                return tool;
+                            }
+                        }
+                    }
                     throw new Bam.Core.Exception("There are {0} possible linkers for this platform", Linkers.Count);
                 }
                 return Linkers[0];

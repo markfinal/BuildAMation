@@ -478,7 +478,7 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCompiler(Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCompiler("VisualC", Bam.Core.EPlatform.Windows)]
     public sealed class Compiler64 :
         CompilerBase
     {

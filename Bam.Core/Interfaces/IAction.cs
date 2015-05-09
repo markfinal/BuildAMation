@@ -18,6 +18,29 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    public interface ICommandLineArgument
+    {
+        string ShortName
+        {
+            get;
+        }
+
+        string LongName
+        {
+            get;
+        }
+    }
+
+    public interface IBooleanCommandLineArgument : ICommandLineArgument
+    {
+    }
+
+    public interface IStringCommandLineArgument : ICommandLineArgument
+    {
+    }
+}
     public interface IAction :
         System.ICloneable
     {
