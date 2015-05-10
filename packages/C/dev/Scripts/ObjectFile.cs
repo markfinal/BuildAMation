@@ -326,9 +326,6 @@ namespace V2
                 //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
                 //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
                 this.Compiler = DefaultToolchain.Compiler;
-
-                // TODO: this has to be moved later, in case it's changed
-                this.UsePublicPatches(this.Compiler);
             }
         }
 

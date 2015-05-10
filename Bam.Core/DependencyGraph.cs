@@ -327,6 +327,7 @@ namespace V2
             if (m.Tool != null)
             {
                 m.Requires(m.Tool);
+                m.UsePublicPatches(m.Tool);
                 m.Settings = m.Tool.CreateDefaultSettings(m);
                 // TODO: Tool can also inject macros into the module
             }
