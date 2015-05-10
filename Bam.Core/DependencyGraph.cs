@@ -101,6 +101,7 @@ namespace V2
             this.Mode = null;
             this.OutputStringBuilder = new System.Text.StringBuilder();
             this.ErrorStringBuilder = new System.Text.StringBuilder();
+            this.MetaData = null;
         }
 
         public void AddModule(Module m)
@@ -248,6 +249,12 @@ namespace V2
         {
             get;
             private set;
+        }
+
+        public object MetaData
+        {
+            get;
+            set;
         }
 
         private Environment BuildEnvironmentInternal = null;

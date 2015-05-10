@@ -89,6 +89,21 @@ namespace V2
         }
     }
 
+    public sealed class VSSolution :
+        System.Xml.XmlDocument
+    {
+        public VSSolution()
+        {
+            this.Projects = new System.Collections.Generic.Dictionary<System.Type, VSProject>();
+        }
+
+        public System.Collections.Generic.Dictionary<System.Type, VSProject> Projects
+        {
+            get;
+            private set;
+        }
+    }
+
     public sealed class VSProject :
         System.Xml.XmlDocument
     {
@@ -244,6 +259,12 @@ namespace V2
                 return this.DocumentElement;
             }
         }
+
+        public string ProjectPath
+        {
+            get;
+            set;
+        }
     }
 
     public abstract class VSSolutionMeta
@@ -259,11 +280,25 @@ namespace V2
 
         public VSSolutionMeta(Bam.Core.V2.Module module, Type type)
         {
-            var isReferenced = Bam.Core.V2.Graph.Instance.IsReferencedModule(module);
+            var graph = Bam.Core.V2.Graph.Instance;
+            var isReferenced = graph.IsReferencedModule(module);
             this.IsProjectModule = isReferenced;
             if (isReferenced)
             {
-                this.Project = new VSProject(type);
+                var solution = graph.MetaData as VSSolution;
+                if (solution.Projects.ContainsKey(module.GetType()))
+                {
+                    this.Project = solution.Projects[module.GetType()];
+                }
+                else
+                {
+                    this.Project = new VSProject(type);
+                    solution.Projects[module.GetType()] = this.Project;
+                }
+
+                var projectPath = new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).vcxproj", module);
+                projectPath.Parse(graph.Macros, module.Macros);
+                this.Project.ProjectPath = projectPath.ToString();
             }
             module.MetaData = this;
         }
@@ -282,6 +317,8 @@ namespace V2
 
         public static void PreExecution()
         {
+            var graph = Bam.Core.V2.Graph.Instance;
+            graph.MetaData = new VSSolution();
         }
 
         public static void PostExecution()
@@ -294,8 +331,9 @@ namespace V2
             settings.Encoding = new System.Text.UTF8Encoding(false); // no BOM
             settings.NewLineChars = System.Environment.NewLine;
             settings.Indent = true;
-            settings.ConformanceLevel = System.Xml.ConformanceLevel.Document; // TODO: probably want to change back to Document
+            settings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
             var graph = Bam.Core.V2.Graph.Instance;
+#if true
             foreach (var rank in graph)
             {
                 foreach (var module in rank)
@@ -310,12 +348,14 @@ namespace V2
                         continue;
                     }
 
+                    // TODO: what does this do?
                     foreach (var env in environments)
                     {
                         // TODO: need to work out what the platform is from the sources
                         meta.Project.AddProjectConfiguration(env.Configuration.ToString(), "Win32");
                     }
 
+#if false
                     var builder = new System.Text.StringBuilder();
                     using (var xmlwriter = System.Xml.XmlWriter.Create(builder, settings))
                     {
@@ -330,6 +370,24 @@ namespace V2
                     {
                         meta.Project.WriteTo(xmlwriter);
                     }
+#endif
+                }
+            }
+#endif
+            Bam.Core.Log.DebugMessage("-------");
+            var solution = graph.MetaData as VSSolution;
+            foreach (var project in solution.Projects)
+            {
+                var builder = new System.Text.StringBuilder();
+                using (var xmlwriter = System.Xml.XmlWriter.Create(builder, settings))
+                {
+                    project.Value.WriteTo(xmlwriter);
+                }
+                Bam.Core.Log.DebugMessage(builder.ToString());
+
+                using (var xmlwriter = System.Xml.XmlWriter.Create(project.Value.ProjectPath, settings))
+                {
+                    project.Value.WriteTo(xmlwriter);
                 }
             }
         }
