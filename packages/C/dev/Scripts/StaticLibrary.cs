@@ -55,7 +55,7 @@ namespace V2
 
         public CObjectFileCollection CreateCSourceContainer()
         {
-            var source = new CObjectFileCollection();
+            var source = Bam.Core.V2.Module.Create<CObjectFileCollection>();
             this.source.Add(source);
             this.DependsOn(source);
             return source;
@@ -63,7 +63,7 @@ namespace V2
 
         public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath)
         {
-            var source = new Cxx.V2.ObjectFileCollection();
+            var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>();
             this.source.Add(source);
             this.DependsOn(source);
             return source;

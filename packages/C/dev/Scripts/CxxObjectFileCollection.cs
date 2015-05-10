@@ -22,7 +22,13 @@ namespace V2
 {
     public class ObjectFileCollection :
         C.V2.BaseObjectFiles<ObjectFile>
-    { }
+    {
+        protected override void Init()
+        {
+            base.Init();
+            this.Tool = C.V2.DefaultToolchain.Compiler;
+        }
+    }
 }
     /// <summary>
     /// C++ object file collection

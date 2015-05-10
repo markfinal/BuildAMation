@@ -22,7 +22,13 @@ namespace V2
 {
     public class CObjectFileCollection :
         BaseObjectFiles<ObjectFile>
-    { }
+    {
+        protected override void Init()
+        {
+            base.Init();
+            this.Tool = DefaultToolchain.Compiler;
+        }
+    }
 }
     /// <summary>
     /// C object file collection

@@ -426,13 +426,15 @@ namespace V2
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
-            if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module))
+            if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
+                typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new CxxCompilerSettings();
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
-            else if (typeof(C.V2.ObjectFile).IsInstanceOfType(module))
+            else if (typeof(C.V2.ObjectFile).IsInstanceOfType(module) ||
+                     typeof(C.V2.CObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new CompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
