@@ -28,18 +28,15 @@ namespace V2
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Static Library File");
 
+        public StaticLibrary()
+        {
+            this.Librarian = DefaultToolchain.Librarian;
+        }
+
         protected override void Init()
         {
             base.Init();
             this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/lib$(modulename).a", null));
-
-            // TODO: this should be a default, and done through a reflection mechanism
-            if (null == this.Librarian)
-            {
-                //this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Librarian>();
-                //this.Librarian = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.V2.Librarian>();
-                this.Librarian = DefaultToolchain.Librarian;
-            }
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source

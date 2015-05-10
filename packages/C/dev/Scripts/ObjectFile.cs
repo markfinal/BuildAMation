@@ -316,17 +316,14 @@ namespace V2
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
 
+        public ObjectFile()
+        {
+            this.Compiler = DefaultToolchain.Compiler;
+        }
+
         protected override void Init()
         {
             this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$basename($(inputpath)).obj", null));
-
-            // TODO: this should be a default, and done through a reflection mechanism
-            if (null == this.Compiler)
-            {
-                //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.Compiler64>();
-                //this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
-                this.Compiler = DefaultToolchain.Compiler;
-            }
         }
 
         public Bam.Core.V2.TokenizedString InputPath

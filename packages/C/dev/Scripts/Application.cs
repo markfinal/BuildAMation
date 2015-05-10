@@ -29,18 +29,15 @@ namespace V2
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("ExecutableFile");
 
+        public ConsoleApplication()
+        {
+            this.Linker = DefaultToolchain.Linker;
+        }
+
         protected override void Init()
         {
             base.Init();
             this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$(modulename).exe", this));
-
-            // TODO: this should be a default, and done through a reflection mechanism
-            if (null == this.Linker)
-            {
-                //this.Linker = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Linker>();
-                //this.Linker = Bam.Core.V2.Graph.Instance.FindReferencedModule<VisualC.V2.Linker>();
-                this.Linker = DefaultToolchain.Linker;
-            }
         }
 
         public CObjectFileCollection CreateCSourceContainer()
