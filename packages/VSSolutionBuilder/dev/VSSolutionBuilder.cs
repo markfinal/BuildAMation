@@ -296,6 +296,10 @@ namespace V2
                     solution.Projects[module.GetType()] = this.Project;
                 }
 
+                // TODO: platform isn't the Environment platform, but the tools in use
+                var platform = "Win32";
+                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform);
+
                 var projectPath = new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).vcxproj", module);
                 projectPath.Parse(graph.Macros, module.Macros);
                 this.Project.ProjectPath = projectPath.ToString();
@@ -323,58 +327,14 @@ namespace V2
 
         public static void PostExecution()
         {
-            // get configurations from graph
-            var environments = Bam.Core.V2.Graph.Instance.BuildEnvironments;
-
             var settings = new System.Xml.XmlWriterSettings();
             settings.OmitXmlDeclaration = false;
             settings.Encoding = new System.Text.UTF8Encoding(false); // no BOM
             settings.NewLineChars = System.Environment.NewLine;
             settings.Indent = true;
             settings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
+
             var graph = Bam.Core.V2.Graph.Instance;
-#if true
-            foreach (var rank in graph)
-            {
-                foreach (var module in rank)
-                {
-                    var meta = module.MetaData as VSSolutionMeta;
-                    if (null == meta)
-                    {
-                        continue;
-                    }
-                    if (!meta.IsProjectModule)
-                    {
-                        continue;
-                    }
-
-                    // TODO: what does this do?
-                    foreach (var env in environments)
-                    {
-                        // TODO: need to work out what the platform is from the sources
-                        meta.Project.AddProjectConfiguration(env.Configuration.ToString(), "Win32");
-                    }
-
-#if false
-                    var builder = new System.Text.StringBuilder();
-                    using (var xmlwriter = System.Xml.XmlWriter.Create(builder, settings))
-                    {
-                        meta.Project.WriteTo(xmlwriter);
-                    }
-                    Bam.Core.Log.DebugMessage(builder.ToString());
-
-                    // NOTE: must be extension .vcxproj for latest VisualStudio
-                    var projectPath = new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).vcxproj", module);
-                    projectPath.Parse(graph.Macros, module.Macros);
-                    using (var xmlwriter = System.Xml.XmlWriter.Create(projectPath.ToString(), settings))
-                    {
-                        meta.Project.WriteTo(xmlwriter);
-                    }
-#endif
-                }
-            }
-#endif
-            Bam.Core.Log.DebugMessage("-------");
             var solution = graph.MetaData as VSSolution;
             foreach (var project in solution.Projects)
             {
@@ -390,6 +350,7 @@ namespace V2
                     project.Value.WriteTo(xmlwriter);
                 }
             }
+            // TODO: write out solution
         }
     }
 
