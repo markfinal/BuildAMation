@@ -46,10 +46,13 @@ namespace V2
         private static readonly string FunctionRegExPattern = @"(\$([a-z]*)\((.+)\))";
         private static readonly string FunctionPrefix = @"$";
 
+        private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
+
         private System.Collections.Generic.List<string> Tokens = null;
         private System.Collections.Generic.List<int> MacroIndices = null;
         private Module ModuleWithMacros = null;
         private string CachedJoin = null;
+        private string OriginalString = null;
 
         static private System.Collections.Generic.IEnumerable<string> SplitToParse(string original, string regExPattern)
         {
@@ -60,6 +63,7 @@ namespace V2
 
         private TokenizedString(string original)
         {
+            this.OriginalString = original;
             var tokenized = SplitToParse(original, TokenRegExPattern);
             tokenized.Each<string>((item, index) =>
             {
@@ -75,7 +79,7 @@ namespace V2
             this.Tokens = tokenized.ToList<string>();
         }
 
-        public TokenizedString(string original, Module moduleWithMacros)
+        private TokenizedString(string original, Module moduleWithMacros)
             : this(original)
         {
             if (null == moduleWithMacros && null != this.MacroIndices)
@@ -89,6 +93,24 @@ namespace V2
                 }
             }
             this.ModuleWithMacros = moduleWithMacros;
+        }
+
+        public static TokenizedString Create(string tokenizedString, Module macroSource)
+        {
+            var search = Cache.Where((ts) =>
+                {
+                    return ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource;
+                });
+            if (search.Count() > 0)
+            {
+                return search.ElementAt(0);
+            }
+            else
+            {
+                var ts = new TokenizedString(tokenizedString, macroSource);
+                Cache.Add(ts);
+                return ts;
+            }
         }
 
         public string this[int index]
@@ -161,6 +183,14 @@ namespace V2
             }
         }
 
+        public static void ParseAll()
+        {
+            foreach (var t in Cache)
+            {
+                t.Parse();
+            }
+        }
+
         public void Parse()
         {
             if (this.Empty || this.IsExpanded)
@@ -173,11 +203,23 @@ namespace V2
                 var token = this.Tokens[index];
                 if (Graph.Instance.Macros.Dict.ContainsKey(token))
                 {
-                    token = Graph.Instance.Macros.Dict[token].ToString();
+                    var value = Graph.Instance.Macros.Dict[token];
+                    if (!value.IsExpanded)
+                    {
+                        // recursive
+                        value.Parse();
+                    }
+                    token = value.ToString();
                 }
                 else if (this.ModuleWithMacros != null && this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
                 {
-                    token = this.ModuleWithMacros.Macros.Dict[token].ToString();
+                    var value = this.ModuleWithMacros.Macros.Dict[token];
+                    if (!value.IsExpanded)
+                    {
+                        // recursive
+                        value.Parse();
+                    }
+                    token = value.ToString();
                 }
                 else
                 {

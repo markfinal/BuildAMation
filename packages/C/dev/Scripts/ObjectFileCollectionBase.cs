@@ -32,7 +32,7 @@ namespace V2
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.V2.Module.Create<ChildModuleType>();
-            child.InputPath = new Bam.Core.V2.TokenizedString(path, this);
+            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, this);
             (child as Bam.Core.V2.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);

@@ -60,15 +60,15 @@ namespace V2
             }
             var packageInfo = Core.State.PackageInfo[packageNameSpace];
             var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
-            this.Macros.Add("pkgroot", new TokenizedString(packageRoot, null));
-            this.Macros.Add("modulename", new TokenizedString(this.GetType().Name, null));
+            this.Macros.Add("pkgroot", TokenizedString.Create(packageRoot, null));
+            this.Macros.Add("modulename", TokenizedString.Create(this.GetType().Name, null));
 
             this.OwningRank = null;
             this.Tool = null;
             this.IsUpToDate = false;
             this.MetaData = null;
             this.BuildEnvironment = graph.BuildEnvironment;
-            this.Macros.Add("config", new TokenizedString(this.BuildEnvironment.Configuration.ToString(), null));
+            this.Macros.Add("config", TokenizedString.Create(this.BuildEnvironment.Configuration.ToString(), null));
         }
 
         // TODO: is this virtual or abstract?

@@ -38,7 +38,7 @@ namespace V2
                 var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                 // TODO: watch for duplicates
-                linker.LibraryPaths.Add(new Bam.Core.V2.TokenizedString(dir, null));
+                linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
                 if ((sender.Tool as C.V2.LinkerTool).UseLPrefixLibraryPaths)
                 {
                     var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);

@@ -300,7 +300,7 @@ namespace V2
                 var platform = "Win32";
                 this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform);
 
-                var projectPath = new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).vcxproj", module);
+                var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename).vcxproj", module);
                 projectPath.Parse();
                 this.Project.ProjectPath = projectPath.ToString();
             }

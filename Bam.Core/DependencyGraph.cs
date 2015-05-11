@@ -94,7 +94,7 @@ namespace V2
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
-            this.Macros.Add("buildroot", new TokenizedString(Core.State.BuildRoot, null));
+            this.Macros.Add("buildroot", TokenizedString.Create(Core.State.BuildRoot, null));
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
@@ -185,37 +185,6 @@ namespace V2
                     if (modeRequiresCommandLines)
                     {
                         module.ConvertSettingsToCommandLine();
-                    }
-                }
-            }
-        }
-
-        public void ExpandPaths()
-        {
-            foreach (var rank in this.DependencyGraph.Reverse())
-            {
-                foreach (var module in rank.Value)
-                {
-                    // input paths first, since generated paths may use macros based on these
-                    var setPath = module as IInputPath;
-                    if (null != setPath)
-                    {
-                        // TODO: not necessary - there should always be an input path if the interface is implemented
-                        if (null != setPath.InputPath)
-                        {
-                            setPath.InputPath.Parse();
-                        }
-                    }
-
-                    // parse the generated paths next
-                    foreach (var pair in module.GeneratedPaths)
-                    {
-                        var path = pair.Value;
-                        if (null == path || path.Empty)
-                        {
-                            continue;
-                        }
-                        module.GeneratedPaths[pair.Key].Parse();
                     }
                 }
             }

@@ -323,7 +323,7 @@ namespace V2
 
         protected override void Init()
         {
-            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/$basename($(inputpath)).obj", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)/$(config)/$basename($(inputpath)).obj", this));
         }
 
         public Bam.Core.V2.TokenizedString InputPath

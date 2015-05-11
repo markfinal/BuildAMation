@@ -38,7 +38,6 @@ namespace VisualC
             }
             foreach (var path in options.LibraryPaths)
             {
-                path.Parse();
                 var format = path.ContainsSpace ? "-LIBPATH:\"{0}\"" : "-LIBPATH:{0}";
                 commandLine.Add(System.String.Format(format, path.ToString()));
             }
@@ -91,12 +90,12 @@ namespace V2
     {
         public Linker()
         {
-            this.Macros.Add("InstallPath", new Bam.Core.V2.TokenizedString(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
+            this.Macros.Add("InstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
 
             this.PublicPatch(settings =>
             {
                 var linking = settings as C.V2.ICommonLinkerOptions;
-                linking.LibraryPaths.Add(new Bam.Core.V2.TokenizedString(@"$(InstallPath)\VC\lib\amd64", this));
+                linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\lib\amd64", this));
             });
         }
 

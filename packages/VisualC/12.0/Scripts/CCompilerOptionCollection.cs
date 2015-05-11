@@ -35,7 +35,6 @@ namespace VisualC
             }
             foreach (var path in options.IncludePaths)
             {
-                path.Parse();
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
@@ -79,7 +78,6 @@ namespace VisualC
             }
             foreach (var path in options.SystemIncludePaths)
             {
-                path.Parse();
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
@@ -426,14 +424,14 @@ namespace V2
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
 
-            this.Macros.Add("InstallPath", new Bam.Core.V2.TokenizedString(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
+            this.Macros.Add("InstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE"));
 
             this.PublicPatch(settings =>
                 {
                     var compilation = settings as C.V2.ICommonCompilerOptions;
-                    compilation.SystemIncludePaths.Add(new Bam.Core.V2.TokenizedString(@"$(InstallPath)\VC\include", this));
+                    compilation.SystemIncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
                 });
         }
 

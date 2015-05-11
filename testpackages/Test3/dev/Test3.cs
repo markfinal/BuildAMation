@@ -28,7 +28,7 @@ namespace Test3
             source.PublicPatch(settings =>
             {
                 var common = settings as C.V2.ICommonCompilerOptions;
-                common.IncludePaths.Add(new Bam.Core.V2.TokenizedString("$(pkgroot)/include", source));
+                common.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", source));
             });
         }
     }

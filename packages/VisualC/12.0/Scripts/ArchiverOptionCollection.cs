@@ -74,7 +74,7 @@ namespace V2
     {
         public Librarian()
         {
-            this.Macros.Add("InstallPath", new Bam.Core.V2.TokenizedString(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
+            this.Macros.Add("InstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
         }
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)

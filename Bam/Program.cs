@@ -85,11 +85,6 @@ namespace Bam
                 // TODO: make validation optional, if it starts showing on profiles
                 graph.Validate();
 
-                // TODO: is it valid for the path expansion to occur prior to patching the settings?
-                // if so, a thread can be spawned, to check for whether files were in date or not, which will
-                // be ready in time for graph execution
-                graph.ExpandPaths();
-
                 // Phase 3: (Create default settings, and ) apply patches (build + shared) to each module
                 // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
                 // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
@@ -98,6 +93,11 @@ namespace Bam
                 // If a 'verbose' mode is enabled, then more work can be done to figure out what has changed. This would also require
                 // serializing the binary Settings object
                 graph.ApplySettingsPatches();
+
+                // expand paths after patching settings, because some of the patches may contain tokenized strings
+                // TODO: a thread can be spawned, to check for whether files were in date or not, which will
+                // be ready in time for graph execution
+                Core.V2.TokenizedString.ParseAll();
 
                 graph.Dump();
 

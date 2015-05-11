@@ -43,7 +43,6 @@ namespace Mingw
             }
             foreach (var path in options.IncludePaths)
             {
-                path.Parse();
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
@@ -98,7 +97,6 @@ namespace Mingw
             }
             foreach (var path in options.SystemIncludePaths)
             {
-                path.Parse();
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
