@@ -161,7 +161,7 @@ namespace V2
             }
         }
 
-        public void Parse(MacroList globalMacros)
+        public void Parse()
         {
             if (this.Empty || this.IsExpanded)
             {
@@ -171,9 +171,9 @@ namespace V2
             foreach (int index in this.MacroIndices.Reverse<int>())
             {
                 var token = this.Tokens[index];
-                if (globalMacros.Dict.ContainsKey(token))
+                if (Graph.Instance.Macros.Dict.ContainsKey(token))
                 {
-                    token = globalMacros.Dict[token].ToString();
+                    token = Graph.Instance.Macros.Dict[token].ToString();
                 }
                 else if (this.ModuleWithMacros != null && this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
                 {

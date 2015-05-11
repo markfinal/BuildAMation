@@ -35,7 +35,7 @@ namespace VisualC
             }
             foreach (var path in options.IncludePaths)
             {
-                path.Parse(Bam.Core.V2.Graph.Instance.Macros);
+                path.Parse();
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
@@ -79,7 +79,7 @@ namespace VisualC
             }
             foreach (var path in options.SystemIncludePaths)
             {
-                path.Parse(Bam.Core.V2.Graph.Instance.Macros);
+                path.Parse();
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }

@@ -203,7 +203,7 @@ namespace V2
                         // TODO: not necessary - there should always be an input path if the interface is implemented
                         if (null != setPath.InputPath)
                         {
-                            setPath.InputPath.Parse(this.Macros);
+                            setPath.InputPath.Parse();
                         }
                     }
 
@@ -215,7 +215,7 @@ namespace V2
                         {
                             continue;
                         }
-                        module.GeneratedPaths[pair.Key].Parse(this.Macros);
+                        module.GeneratedPaths[pair.Key].Parse();
                     }
                 }
             }

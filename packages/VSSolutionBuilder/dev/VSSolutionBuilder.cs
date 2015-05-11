@@ -301,7 +301,7 @@ namespace V2
                 this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform);
 
                 var projectPath = new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename).vcxproj", module);
-                projectPath.Parse(graph.Macros);
+                projectPath.Parse();
                 this.Project.ProjectPath = projectPath.ToString();
             }
             module.MetaData = this;
