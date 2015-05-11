@@ -78,6 +78,16 @@ namespace V2
         public TokenizedString(string original, Module moduleWithMacros)
             : this(original)
         {
+            if (null == moduleWithMacros && null != this.MacroIndices)
+            {
+                foreach (var tokenIndex in this.MacroIndices)
+                {
+                    if (!Graph.Instance.Macros.Contains(this.Tokens[tokenIndex]))
+                    {
+                        throw new Exception("Cannot have a tokenized string without a module");
+                    }
+                }
+            }
             this.ModuleWithMacros = moduleWithMacros;
         }
 
@@ -151,13 +161,12 @@ namespace V2
             }
         }
 
-        public void Parse(MacroList globalMacros, MacroList fallback)
+        public void Parse(MacroList globalMacros)
         {
             if (this.Empty || this.IsExpanded)
             {
                 return;
             }
-            var macros = (this.ModuleWithMacros != null) ? this.ModuleWithMacros.Macros : fallback;
             var orig = this.Join(safe: true);
             foreach (int index in this.MacroIndices.Reverse<int>())
             {
@@ -166,9 +175,9 @@ namespace V2
                 {
                     token = globalMacros.Dict[token].ToString();
                 }
-                else if (macros.Dict.ContainsKey(token))
+                else if (this.ModuleWithMacros != null && this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
                 {
-                    token = macros.Dict[token].ToString();
+                    token = this.ModuleWithMacros.Macros.Dict[token].ToString();
                 }
                 else
                 {
@@ -288,6 +297,11 @@ namespace V2
             {
                 return new System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString>(this.DictInternal);
             }
+        }
+
+        public bool Contains(string token)
+        {
+            return this.Dict.ContainsKey(token);
         }
     }
 

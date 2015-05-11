@@ -54,7 +54,7 @@ namespace DefaultSettings
             }
             foreach (var path in options.LibraryPaths)
             {
-                path.Parse(Bam.Core.V2.Graph.Instance.Macros, module.Macros);
+                path.Parse(Bam.Core.V2.Graph.Instance.Macros);
                 var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
                 commandLine.Add(System.String.Format(format, path.ToString()));
             }

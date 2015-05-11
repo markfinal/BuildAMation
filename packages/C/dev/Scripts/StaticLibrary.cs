@@ -36,7 +36,7 @@ namespace V2
         protected override void Init()
         {
             base.Init();
-            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/lib$(modulename).a", null));
+            this.RegisterGeneratedFile(Key, new Bam.Core.V2.TokenizedString("$(buildroot)/$(modulename)/$(config)/lib$(modulename).a", this));
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source

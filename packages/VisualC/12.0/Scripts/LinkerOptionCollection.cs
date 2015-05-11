@@ -38,7 +38,7 @@ namespace VisualC
             }
             foreach (var path in options.LibraryPaths)
             {
-                path.Parse(Bam.Core.V2.Graph.Instance.Macros, module.Macros);
+                path.Parse(Bam.Core.V2.Graph.Instance.Macros);
                 var format = path.ContainsSpace ? "-LIBPATH:\"{0}\"" : "-LIBPATH:{0}";
                 commandLine.Add(System.String.Format(format, path.ToString()));
             }
