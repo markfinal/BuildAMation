@@ -25,22 +25,36 @@ namespace VisualC
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName) =>
+            groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName, builder) =>
                 {
-                    return debugSymbols ? "OldStyle" : "None";
+                    builder.Append(debugSymbols ? "OldStyle" : "None");
                 }, options.DebugSymbols));
 
-            groupElement.AppendChild(project.CreateProjectElement("DisableSpecificWarnings", (warnings, attributeName) =>
-                {
-                    var value = new System.Text.StringBuilder();
-                    foreach (var warning in warnings)
+            if (options.DisableWarnings.Count > 0)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("DisableSpecificWarnings", (warnings, attributeName, builder) =>
                     {
-                        value.AppendFormat("{0};", warning);
-                    }
-                    value.AppendFormat("%({0})", attributeName);
-                    return value.ToString();
-                },
-                options.DisableWarnings));
+                        foreach (var warning in warnings)
+                        {
+                            builder.AppendFormat("{0};", warning);
+                        }
+                        builder.AppendFormat("%({0})", attributeName);
+                    },
+                    options.DisableWarnings));
+            }
+
+            if (options.IncludePaths.Count > 0)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("AdditionalIncludeDirectories", (includePaths, attributeName, builder) =>
+                    {
+                        foreach (var path in includePaths)
+                        {
+                            builder.AppendFormat("{0};", path);
+                        }
+                        builder.AppendFormat("%({0})", attributeName);
+                    },
+                    options.IncludePaths));
+            }
         }
     }
 
