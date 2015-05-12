@@ -16,13 +16,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using System.Linq;
 [assembly: Bam.Core.DeclareBuilder("VSSolution", typeof(VSSolutionBuilder.VSSolutionBuilder))]
 
 namespace VSSolutionBuilder
 {
 namespace V2
 {
-    public abstract class Group
+    public abstract class Group :
+        System.Collections.Generic.IEnumerable<System.Xml.XmlElement>
     {
         protected Group(
             System.Xml.XmlElement element)
@@ -34,6 +36,19 @@ namespace V2
         {
             get;
             private set;
+        }
+
+        public System.Collections.Generic.IEnumerator<System.Xml.XmlElement> GetEnumerator()
+        {
+            foreach (var child in this.Element.ChildNodes)
+            {
+                yield return child as System.Xml.XmlElement;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 
@@ -161,6 +176,33 @@ namespace V2
 
         public void AddSourceFile(string path)
         {
+            // check whether this source file has been added before
+#if true
+            foreach (var el in this.SourceGroup)
+            {
+                if (!el.HasAttribute("Include"))
+                {
+                    continue;
+                }
+                var include = el.Attributes["Include"];
+                if (include.Value == path)
+                {
+                    Bam.Core.Log.DebugMessage("Source path '{0}' already added", path);
+                    return;
+                }
+            }
+#else
+            var found = this.SourceGroup.Where((el) =>
+                {
+                    if (!el.HasAttribute("Include"))
+                    {
+                        return false;
+                    }
+                    var include = el.Attributes["Include"];
+                    return include.Value == path;
+                });
+#endif
+
             var element = this.CreateProjectElement("ClCompile");
             element.Attributes.Append(this.CreateAttribute("Include")).Value = path;
             this.SourceGroup.Element.AppendChild(element);
