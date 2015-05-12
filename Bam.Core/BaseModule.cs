@@ -153,16 +153,6 @@ namespace V2
             this.PublicPatches.Add(dlg);
         }
 
-        public void PatchChildren()
-        {
-            foreach (var child in this.Children)
-            {
-                child.PrivatePatches.InsertRange(0, this.PrivatePatches);
-                child.PublicPatches.InsertRange(0, this.PublicPatches);
-                child.ExternalPatches.AddRange(this.ExternalPatches);
-            }
-        }
-
         public void UsePublicPatches(Module module)
         {
             this.ExternalPatches.Add(module.PublicPatches);
@@ -258,13 +248,38 @@ namespace V2
             }
             // Note: first private patches, followed by public patches
             // TODO: they could override each other - anyway to check?
+            var parentModule = (this is IChildModule) ? (this as IChildModule).Parent : null;
+            if (parentModule != null)
+            {
+                foreach (var patch in parentModule.PrivatePatches)
+                {
+                    patch(this.Settings);
+                }
+            }
             foreach (var patch in this.PrivatePatches)
             {
                 patch(this.Settings);
             }
+            if (parentModule != null)
+            {
+                foreach (var patch in parentModule.PublicPatches)
+                {
+                    patch(this.Settings);
+                }
+            }
             foreach (var patch in this.PublicPatches)
             {
                 patch(this.Settings);
+            }
+            if (parentModule != null)
+            {
+                foreach (var patchList in parentModule.ExternalPatches)
+                {
+                    foreach (var patch in patchList)
+                    {
+                        patch(this.Settings);
+                    }
+                }
             }
             foreach (var patchList in this.ExternalPatches)
             {
