@@ -124,7 +124,7 @@ namespace V2
             this.Type = type;
 
             // Project (root) element
-            this.AppendChild(this.CreateElement("Project", VCProjNamespace));
+            this.AppendChild(this.CreateProjectElement("Project"));
             this.Project.Attributes.Append(this.CreateAttribute("DefaultTargets")).Value = "Build";
             this.Project.Attributes.Append(this.CreateAttribute("ToolsVersion")).Value = "12.0"; // TODO: in tune with VisualC package version
 
@@ -134,8 +134,7 @@ namespace V2
 
             // Globals element
             this.Globals = this.CreatePropertyGroup("Globals");
-            var guid = this.CreateElement("ProjectGuid", VCProjNamespace);
-            guid.InnerText = GUID.ToString("B").ToUpper();
+            var guid = this.CreateProjectElement("ProjectGuid", GUID.ToString("B").ToUpper());
             this.Globals.Element.AppendChild(guid);
             this.Project.AppendChild(this.Globals.Element);
 
@@ -162,22 +161,21 @@ namespace V2
 
         public void AddSourceFile(string path)
         {
-            var element = this.CreateElement("ClCompile", VCProjNamespace);
+            var element = this.CreateProjectElement("ClCompile");
             element.Attributes.Append(this.CreateAttribute("Include")).Value = path;
             this.SourceGroup.Element.AppendChild(element);
         }
 
-        public void AddProjectConfiguration(string configuration, string platform)
+        public void AddProjectConfiguration(string configuration, string platform, Bam.Core.V2.Module module)
         {
             var combined = System.String.Format("{0}|{1}", configuration, platform);
+
             // overall project configurations
             {
-                var projconfig = this.CreateElement("ProjectConfiguration", VCProjNamespace);
+                var projconfig = this.CreateProjectElement("ProjectConfiguration");
                 projconfig.Attributes.Append(this.CreateAttribute("Include")).Value = combined;
-                var config = this.CreateElement("Configuration", VCProjNamespace);
-                config.InnerText = configuration;
-                var plat = this.CreateElement("Platform", VCProjNamespace);
-                plat.InnerText = platform;
+                var config = this.CreateProjectElement("Configuration", configuration);
+                var plat = this.CreateProjectElement("Platform", platform);
                 projconfig.AppendChild(config);
                 projconfig.AppendChild(plat);
                 this.ProjectConfiguations.Element.AppendChild(projconfig);
@@ -189,7 +187,8 @@ namespace V2
             {
                 var configProps = this.CreatePropertyGroup("Configuration");
                 configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configName;
-                var configType = this.CreateElement("ConfigurationType", VCProjNamespace);
+                // TODO: can this be better done with a lambda to get the inner text?
+                var configType = this.CreateProjectElement("ConfigurationType");
                 switch (this.Type)
                 {
                     case VSSolutionMeta.Type.NA:
@@ -204,8 +203,7 @@ namespace V2
                         break;
                 }
                 configProps.Element.AppendChild(configType);
-                var platformToolset = this.CreateElement("PlatformToolset", VCProjNamespace);
-                platformToolset.InnerText = "v120"; // TODO: dependent upon the version of VisualC
+                var platformToolset = this.CreateProjectElement("PlatformToolset", "v120"); // TODO: dependent upon the version of VisualC
                 configProps.Element.AppendChild(platformToolset);
                 this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
             }
@@ -213,17 +211,50 @@ namespace V2
             // project definitions
             {
                 var configGroup = this.CreateItemDefinitionGroup(configName);
-                var clCompile = this.CreateElement("ClCompile", VCProjNamespace);
+                var clCompile = this.CreateProjectElement("ClCompile");
                 configGroup.Element.AppendChild(clCompile);
-                var link = this.CreateElement("Link", VCProjNamespace);
-                configGroup.Element.AppendChild(link);
+                switch (this.Type)
+                {
+                    case VSSolutionMeta.Type.NA:
+                        throw new Bam.Core.Exception("Invalid project type");
+
+                    case VSSolutionMeta.Type.StaticLibrary:
+                        {
+                            var tool = this.CreateProjectElement("Lib");
+                            configGroup.Element.AppendChild(tool);
+
+                            // TODO: convert settings
+                        }
+                        break;
+
+                    case VSSolutionMeta.Type.Application:
+                        {
+                            var tool = this.CreateProjectElement("Link");
+                            configGroup.Element.AppendChild(tool);
+
+                            // TODO: convert settings
+                        }
+                        break;
+                }
                 this.Project.InsertAfter(configGroup.Element, this.LanguageImport.Element);
             }
         }
 
+        public System.Xml.XmlElement CreateProjectElement(string name)
+        {
+            return this.CreateElement(name, VCProjNamespace);
+        }
+
+        public System.Xml.XmlElement CreateProjectElement(string name, string value)
+        {
+            var el = this.CreateProjectElement(name);
+            el.InnerText = value;
+            return el;
+        }
+
         private ItemGroup CreateItemGroup(string label)
         {
-            var group = this.CreateElement("ItemGroup", VCProjNamespace);
+            var group = this.CreateProjectElement("ItemGroup");
             if (null != label)
             {
                 group.Attributes.Append(this.CreateAttribute("Label")).Value = label;
@@ -233,21 +264,21 @@ namespace V2
 
         private PropertyGroup CreatePropertyGroup(string label)
         {
-            var group = this.CreateElement("PropertyGroup", VCProjNamespace);
+            var group = this.CreateProjectElement("PropertyGroup");
             group.Attributes.Append(this.CreateAttribute("Label")).Value = label;
             return new PropertyGroup(group);
         }
 
         private Import CreateImport(string projectPath)
         {
-            var import = this.CreateElement("Import", VCProjNamespace);
+            var import = this.CreateProjectElement("Import");
             import.Attributes.Append(this.CreateAttribute("Project")).Value = projectPath;
             return new Import(import);
         }
 
         private ItemGroup CreateItemDefinitionGroup(string condition)
         {
-            var group = this.CreateElement("ItemDefinitionGroup", VCProjNamespace);
+            var group = this.CreateProjectElement("ItemDefinitionGroup");
             group.Attributes.Append(this.CreateAttribute("Condition")).Value = condition;
             return new ItemGroup(group);
         }
@@ -298,7 +329,7 @@ namespace V2
 
                 // TODO: platform isn't the Environment platform, but the tools in use
                 var platform = "Win32";
-                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform);
+                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform, module);
 
                 var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename).vcxproj", module);
                 projectPath.Parse();
