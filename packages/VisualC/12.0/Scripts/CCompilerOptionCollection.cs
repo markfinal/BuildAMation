@@ -25,10 +25,22 @@ namespace VisualC
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols) =>
-            {
-                return debugSymbols ? "OldStyle" : "None";
-            }, options.DebugSymbols));
+            groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName) =>
+                {
+                    return debugSymbols ? "OldStyle" : "None";
+                }, options.DebugSymbols));
+
+            groupElement.AppendChild(project.CreateProjectElement("DisableSpecificWarnings", (warnings, attributeName) =>
+                {
+                    var value = new System.Text.StringBuilder();
+                    foreach (var warning in warnings)
+                    {
+                        value.AppendFormat("{0};", warning);
+                    }
+                    value.AppendFormat("%({0})", attributeName);
+                    return value.ToString();
+                },
+                options.DisableWarnings));
         }
     }
 

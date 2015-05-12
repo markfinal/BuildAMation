@@ -301,10 +301,10 @@ namespace V2
             return el;
         }
 
-        public System.Xml.XmlElement CreateProjectElement<T>(string name, System.Func<T, string> function, T value)
+        public System.Xml.XmlElement CreateProjectElement<T>(string name, System.Func<T, string, string> function, T value)
         {
             var el = this.CreateProjectElement(name);
-            el.InnerText = function(value);
+            el.InnerText = function(value, name);
             return el;
         }
 
