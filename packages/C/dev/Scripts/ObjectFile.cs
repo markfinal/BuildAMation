@@ -338,7 +338,8 @@ namespace V2
                 {
                     // this cannot be a referenced module, since there will be more than one object
                     // of this type (generally)
-                    // but this does mean there may be duplicates
+                    // but this does mean there may be many instances of this 'type' of module
+                    // and for multi-configuration builds there may be many instances of the same path
                     this.Source = Bam.Core.V2.Module.Create<SourceFile>();
                     this.DependsOn(this.Source);
                 }
