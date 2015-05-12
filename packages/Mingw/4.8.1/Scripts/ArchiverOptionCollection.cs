@@ -59,7 +59,7 @@ namespace DefaultSettings
     {
         public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module)
         {
-            var commandLine = module.CommandLine;
+            var commandLine = module.MetaData as Bam.Core.StringArray;
             var staticLibrary = module as C.V2.StaticLibrary;
 
             switch (options.OutputType)
@@ -75,7 +75,7 @@ namespace DefaultSettings
 
         public static void Convert(this IArchiverOptions options, Bam.Core.V2.Module module)
         {
-            var commandLine = module.CommandLine;
+            var commandLine = module.MetaData as Bam.Core.StringArray;
             if (options.Ranlib)
             {
                 commandLine.Add("-s");
@@ -134,6 +134,7 @@ namespace DefaultSettings
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
         {
+            module.MetaData = new Bam.Core.StringArray();
             (this as IArchiverOptions).Convert(module);
             // output file comes last, before inputs
             (this as C.V2.ICommonArchiverOptions).Convert(module);

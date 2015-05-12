@@ -39,7 +39,7 @@ namespace DefaultSettings
     {
         public static void Convert(this C.V2.ICommonLinkerOptions options, Bam.Core.V2.Module module)
         {
-            var commandLine = module.CommandLine;
+            var commandLine = module.MetaData as Bam.Core.StringArray;
             var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
@@ -90,6 +90,7 @@ namespace DefaultSettings
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
         {
+            module.MetaData = new Bam.Core.StringArray();
             (this as C.V2.ICommonLinkerOptions).Convert(module);
             (this as ILinkerOptions).Convert(module);
         }

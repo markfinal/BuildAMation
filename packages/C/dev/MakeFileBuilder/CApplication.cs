@@ -59,7 +59,7 @@ namespace V2
                 meta.Prequisities.Add(module, C.V2.StaticLibrary.Key);
             }
             // TODO: frameworks
-            meta.Rules.Add(sender.CommandLine.ToString(' '));
+            meta.Rules.Add((sender.MetaData as Bam.Core.StringArray).ToString(' '));
             sender.MetaData = meta;
         }
     }

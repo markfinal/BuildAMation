@@ -42,22 +42,24 @@ namespace C
                     System.IO.Directory.CreateDirectory(libraryFileDir);
                 }
 
+                var commandLine = sender.MetaData as Bam.Core.StringArray;
+
                 foreach (var input in inputs)
                 {
                     if (input is Bam.Core.V2.IModuleGroup)
                     {
                         foreach (var child in input.Children)
                         {
-                            sender.CommandLine.Add(child.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                            commandLine.Add(child.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
                         }
                     }
                     else
                     {
-                        sender.CommandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                        commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
                     }
                 }
 
-                var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
+                var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.MetaData as Bam.Core.StringArray);
             }
         }
     }

@@ -250,12 +250,6 @@ namespace V2
             protected set;
         }
 
-        public StringArray CommandLine
-        {
-            get;
-            private set;
-        }
-
         public void ApplySettingsPatches()
         {
             if (null == this.Settings)

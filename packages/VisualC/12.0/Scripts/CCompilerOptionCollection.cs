@@ -154,7 +154,7 @@ namespace VisualC
     {
         public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
         {
-            var commandLine = module.CommandLine;
+            var commandLine = module.MetaData as Bam.Core.StringArray;
             var objectFile = module as C.V2.ObjectFile;
             if (options.DebugSymbols)
             {
@@ -418,6 +418,7 @@ namespace V2
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
         {
+            module.MetaData = new Bam.Core.StringArray();
             (this as C.V2.ICommonCompilerOptions).Convert(module);
             (this as C.V2.ICOnlyCompilerOptions).Convert(module);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module);

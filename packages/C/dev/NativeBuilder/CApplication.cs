@@ -65,27 +65,29 @@ namespace V2
                 System.IO.Directory.CreateDirectory(executableDir);
             }
 
+            var commandLine = sender.MetaData as Bam.Core.StringArray;
+
             foreach (var input in objectFiles)
             {
                 if (input is Bam.Core.V2.IModuleGroup)
                 {
                     foreach (var child in input.Children)
                     {
-                        sender.CommandLine.Add(child.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                        commandLine.Add(child.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
                     }
                 }
                 else
                 {
-                    sender.CommandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                    commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
                 }
             }
 
             foreach (var lib in libraryNames)
             {
-                sender.CommandLine.Add(lib);
+                commandLine.Add(lib);
             }
 
-            var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.CommandLine);
+            var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.MetaData as Bam.Core.StringArray);
         }
     }
 }

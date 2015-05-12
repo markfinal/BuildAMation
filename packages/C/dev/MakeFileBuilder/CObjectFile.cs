@@ -39,7 +39,7 @@ namespace V2
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             meta.Target = objectFilePath;
             meta.Prequisities.Add(source, C.V2.SourceFile.Key);
-            meta.Rules.Add(sender.CommandLine.ToString(' '));
+            meta.Rules.Add((sender.MetaData as Bam.Core.StringArray).ToString(' '));
             sender.MetaData = meta;
         }
     }

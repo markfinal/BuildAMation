@@ -32,17 +32,17 @@ namespace V2
             var library = new VSSolutionBuilder.V2.VSProjectStaticLibrary(sender);
             foreach (var input in inputs)
             {
+                library.SetCommonCompilationOptions(input, input.Settings);
                 if (input is Bam.Core.V2.IModuleGroup)
                 {
-                    library.SetCommonCompilationOptions(input, input.Settings);
                     foreach (var child in input.Children)
                     {
+                        // TODO: convert patch to settings
                         library.AddObjectFile(child.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
                     }
                 }
                 else
                 {
-                    // TODO: just add these settings
                     library.AddObjectFile(input.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
                 }
             }
