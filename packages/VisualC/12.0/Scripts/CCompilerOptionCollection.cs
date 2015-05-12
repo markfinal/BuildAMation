@@ -19,6 +19,19 @@
 using C.V2.DefaultSettings;
 namespace VisualC
 {
+    public static partial class VSSolutionImplementation
+    {
+        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        {
+            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+
+            groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols) =>
+            {
+                return debugSymbols ? "OldStyle" : "None";
+            }, options.DebugSymbols));
+        }
+    }
+
     public static partial class NativeImplementation
     {
         public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
@@ -168,7 +181,8 @@ namespace V2
         VisualCCommon.V2.ICOnlyCompilerOptions,
         VisualC.V2.ICommonCompilerOptions,
         VisualC.V2.ICOnlyCompilerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        VisualStudioProcessor.V2.IConvertToProject
     {
         public CompilerSettings(Bam.Core.V2.Module module)
         {
@@ -292,6 +306,11 @@ namespace V2
             (this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module);
             (this as VisualC.V2.ICommonCompilerOptions).Convert(module);
             (this as VisualC.V2.ICOnlyCompilerOptions).Convert(module);
+        }
+
+        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement);
         }
     }
 

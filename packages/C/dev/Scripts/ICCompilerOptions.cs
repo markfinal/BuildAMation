@@ -27,7 +27,7 @@ namespace DefaultSettings
         public static void Defaults(this C.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
         {
             settings.Bits = EBit.SixtyFour;
-            settings.DebugSymbols = true;
+            settings.DebugSymbols = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug;
             settings.DisableWarnings = new Bam.Core.StringArray();
             settings.IncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.LanguageStandard = ELanguageStandard.C89;

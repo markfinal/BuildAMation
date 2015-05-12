@@ -133,6 +133,7 @@ namespace V2
         private Import LanguageTargets;
         private System.Guid GUID = System.Guid.NewGuid();
         private VSSolutionMeta.Type Type;
+        private System.Xml.XmlElement CommonCompilationOptionsElement = null;
 
         public VSProject(VSSolutionMeta.Type type)
         {
@@ -255,6 +256,7 @@ namespace V2
                 var configGroup = this.CreateItemDefinitionGroup(configName);
                 var clCompile = this.CreateProjectElement("ClCompile");
                 configGroup.Element.AppendChild(clCompile);
+                this.CommonCompilationOptionsElement = clCompile;
                 switch (this.Type)
                 {
                     case VSSolutionMeta.Type.NA:
@@ -265,7 +267,6 @@ namespace V2
                             var tool = this.CreateProjectElement("Lib");
                             configGroup.Element.AppendChild(tool);
 
-                            // TODO: convert settings
                             (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, tool);
                         }
                         break;
@@ -283,6 +284,11 @@ namespace V2
             }
         }
 
+        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        {
+            (settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, this.CommonCompilationOptionsElement);
+        }
+
         public System.Xml.XmlElement CreateProjectElement(string name)
         {
             return this.CreateElement(name, VCProjNamespace);
@@ -292,6 +298,13 @@ namespace V2
         {
             var el = this.CreateProjectElement(name);
             el.InnerText = value;
+            return el;
+        }
+
+        public System.Xml.XmlElement CreateProjectElement<T>(string name, System.Func<T, string> function, T value)
+        {
+            var el = this.CreateProjectElement(name);
+            el.InnerText = function(value);
             return el;
         }
 
@@ -462,6 +475,11 @@ namespace V2
         public void AddObjectFile(VSProjectObjectFile objectFile)
         {
             this.Project.AddSourceFile(objectFile.Source);
+        }
+
+        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        {
+            this.Project.SetCommonCompilationOptions(module, settings);
         }
 
         private System.Collections.Generic.List<VSProjectObjectFile> ObjectFiles
