@@ -176,16 +176,11 @@ namespace V2
                 }
             }
 
-            var modeRequiresCommandLines = true;
             foreach (var rank in this.DependencyGraph.Reverse())
             {
                 foreach (var module in rank.Value)
                 {
                     module.ApplySettingsPatches();
-                    if (modeRequiresCommandLines)
-                    {
-                        module.ConvertSettingsToCommandLine();
-                    }
                 }
             }
         }

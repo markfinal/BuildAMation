@@ -281,11 +281,6 @@ namespace V2
             }
         }
 
-        public virtual void ConvertSettingsToCommandLine()
-        {
-            this.CommandLine = new StringArray();
-        }
-
         public bool IsUpToDate
         {
             get;
