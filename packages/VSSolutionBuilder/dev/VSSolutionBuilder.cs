@@ -224,6 +224,7 @@ namespace V2
                             configGroup.Element.AppendChild(tool);
 
                             // TODO: convert settings
+                            (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, tool);
                         }
                         break;
 

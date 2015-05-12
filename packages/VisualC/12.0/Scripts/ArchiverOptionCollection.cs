@@ -38,6 +38,23 @@ namespace VisualC
         }
     }
 
+    public static partial class VSSolutionImplementation
+    {
+        public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        {
+            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+            switch (options.OutputType)
+            {
+                case C.EArchiverOutput.StaticLibrary:
+                    {
+                        var el = project.CreateProjectElement("OutputFile", module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
+                        groupElement.AppendChild(el);
+                    }
+                    break;
+            }
+        }
+    }
+
 namespace V2
 {
     public interface ICommonArchiverOptions
@@ -48,7 +65,8 @@ namespace V2
         Bam.Core.V2.Settings,
         C.V2.ICommonArchiverOptions,
         ICommonArchiverOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        VisualStudioProcessor.V2.IConvertToProject
     {
         public ArchiverSettings(Bam.Core.V2.Module module)
         {
@@ -65,6 +83,11 @@ namespace V2
         {
             (this as C.V2.ICommonArchiverOptions).Convert(module);
             (this as ICommonArchiverOptions).Convert(module);
+        }
+
+        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        {
+            (this as C.V2.ICommonArchiverOptions).Convert(module, groupElement);
         }
     }
 
