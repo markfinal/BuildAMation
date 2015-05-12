@@ -31,8 +31,8 @@ namespace DefaultSettings
             settings.DisableWarnings = new Bam.Core.StringArray();
             settings.IncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.LanguageStandard = ELanguageStandard.C89;
-            settings.OmitFramePointer = false;
-            settings.Optimization = EOptimization.Off;
+            settings.OmitFramePointer = module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug;
+            settings.Optimization = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug ? EOptimization.Off : EOptimization.Speed;
             settings.OutputType = ECompilerOutput.CompileOnly;
             settings.PreprocessorDefines = new C.V2.PreprocessorDefinitions();
             settings.PreprocessorDefines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", module.BuildEnvironment.Configuration.ToString().ToUpper()));

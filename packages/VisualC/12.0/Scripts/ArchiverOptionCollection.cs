@@ -43,15 +43,16 @@ namespace VisualC
         public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
-            switch (options.OutputType)
+
+            groupElement.AppendChild(project.CreateProjectElement("OutputFile", (type, attributeName, builder) =>
             {
-                case C.EArchiverOutput.StaticLibrary:
-                    {
-                        var el = project.CreateProjectElement("OutputFile", module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
-                        groupElement.AppendChild(el);
-                    }
-                    break;
-            }
+                switch (type)
+                {
+                    case C.EArchiverOutput.StaticLibrary:
+                        builder.Append(module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
+                        break;
+                }
+            }, options.OutputType));
         }
     }
 

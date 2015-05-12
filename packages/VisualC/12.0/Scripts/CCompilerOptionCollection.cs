@@ -55,6 +55,98 @@ namespace VisualC
                     },
                     options.IncludePaths));
             }
+
+            groupElement.AppendChild(project.CreateProjectElement("OmitFramePointers", (ofp, attributeName, builder) =>
+            {
+                builder.Append(ofp ? "true" : "false");
+            }, options.OmitFramePointer));
+
+            groupElement.AppendChild(project.CreateProjectElement("Optimization", (optimization, attributeName, builder) =>
+            {
+                switch (optimization)
+                {
+                    case C.EOptimization.Off:
+                        builder.Append("Disabled");
+                        break;
+
+                    case C.EOptimization.Size:
+                        builder.Append("MinSpace");
+                        break;
+
+                    case C.EOptimization.Speed:
+                        builder.Append("MaxSpeed");
+                        break;
+
+                    case C.EOptimization.Full:
+                        builder.Append("Full");
+                        break;
+                }
+            }, options.Optimization));
+
+            if (options.PreprocessorDefines.Count > 0)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("PreprocessorDefinitions", (defines, attributeName, builder) =>
+                {
+                    foreach (var define in defines)
+                    {
+                        if (System.String.IsNullOrEmpty(define.Value))
+                        {
+                            builder.AppendFormat("{0};", define.Key);
+                        }
+                        else
+                        {
+                            builder.AppendFormat("{0}={1};", define.Key, define.Value);
+                        }
+                    }
+                    builder.AppendFormat("%({0})", attributeName);
+                },
+                options.PreprocessorDefines));
+            }
+
+            if (options.PreprocessorUndefines.Count > 0)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("UndefinePreprocessorDefinitions", (undefines, attributeName, builder) =>
+                {
+                    foreach (var define in undefines)
+                    {
+                        builder.AppendFormat("{0};", define);
+                    }
+                    builder.AppendFormat("%({0})", attributeName);
+                },
+                options.PreprocessorUndefines));
+            }
+
+            groupElement.AppendChild(project.CreateProjectElement("CompileAs", (compileas, attributeName, builder) =>
+            {
+                switch (compileas)
+                {
+                    case C.ETargetLanguage.C:
+                        builder.Append("CompileAsC");
+                        break;
+
+                    case C.ETargetLanguage.Cxx:
+                        builder.Append("CompileAsCpp");
+                        break;
+
+                    case C.ETargetLanguage.Default:
+                        builder.Append("Default");
+                        break;
+                }
+            }, options.TargetLanguage));
+
+            groupElement.AppendChild(project.CreateProjectElement("TreatWarningAsError", (wae, attributeName, builder) =>
+            {
+                builder.Append(wae ? "true" : "false");
+            }, options.WarningsAsErrors));
+
+            groupElement.AppendChild(project.CreateProjectElement("PreprocessToFile", (preprocess, attributeName, builder) =>
+            {
+                builder.Append(preprocess == C.ECompilerOutput.Preprocess ? "true" : "false");
+            }, options.OutputType));
+            if (!(module is Bam.Core.V2.IModuleGroup))
+            {
+                groupElement.AppendChild(project.CreateProjectElement("ObjectFileName", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+            }
         }
     }
 

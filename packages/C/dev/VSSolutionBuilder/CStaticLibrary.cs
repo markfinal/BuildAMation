@@ -34,7 +34,7 @@ namespace V2
             {
                 if (input is Bam.Core.V2.IModuleGroup)
                 {
-                    library.SetCommonCompilationOptions(sender, input.Settings);
+                    library.SetCommonCompilationOptions(input, input.Settings);
                     foreach (var child in input.Children)
                     {
                         library.AddObjectFile(child.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);

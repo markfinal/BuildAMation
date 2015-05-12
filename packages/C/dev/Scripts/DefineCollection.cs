@@ -35,6 +35,14 @@ namespace V2
             this.Add(name, string.Empty);
         }
 
+        public int Count
+        {
+            get
+            {
+                return this.Defines.Count;
+            }
+        }
+
         public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
         {
             foreach (var item in this.Defines)
