@@ -30,9 +30,6 @@ namespace VisualC
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            // TODO: add the Condition attribute everywhere, or replace groupelement with Group
-            // and refactor it all so it's in a function
-
             if (null != options.DebugSymbols)
             {
                 project.AddToolSetting(groupElement, "DebugInformationFormat", options.DebugSymbols, configuration,
@@ -44,61 +41,63 @@ namespace VisualC
 
             if (options.DisableWarnings.Count > 0)
             {
-                groupElement.AppendChild(project.CreateProjectElement("DisableSpecificWarnings", (warnings, attributeName, builder) =>
+                project.AddToolSetting(groupElement, "DisableSpecificWarnings", options.DisableWarnings, configuration,
+                    (setting, attributeName, builder) =>
                     {
-                        foreach (var warning in warnings)
+                        foreach (var warning in setting)
                         {
                             builder.AppendFormat("{0};", warning);
                         }
                         builder.AppendFormat("%({0})", attributeName);
-                    },
-                    options.DisableWarnings));
+                    });
             }
 
             if (options.IncludePaths.Count > 0)
             {
-                groupElement.AppendChild(project.CreateProjectElement("AdditionalIncludeDirectories", (includePaths, attributeName, builder) =>
+                project.AddToolSetting(groupElement, "AdditionalIncludeDirectories", options.IncludePaths, configuration,
+                    (setting, attributeName, builder) =>
                     {
-                        foreach (var path in includePaths)
+                        foreach (var path in setting)
                         {
                             builder.AppendFormat("{0};", path);
                         }
                         builder.AppendFormat("%({0})", attributeName);
-                    },
-                    options.IncludePaths));
+                    });
             }
 
             if (null != options.OmitFramePointer)
             {
-                groupElement.AppendChild(project.CreateProjectElement("OmitFramePointers", (ofp, attributeName, builder) =>
-                {
-                    builder.Append(true == ofp ? "true" : "false");
-                }, options.OmitFramePointer));
+                project.AddToolSetting(groupElement, "OmitFramePointers", options.OmitFramePointer, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        builder.Append(true == setting ? "true" : "false");
+                    });
             }
 
             if (null != options.Optimization)
             {
-                groupElement.AppendChild(project.CreateProjectElement("Optimization", (optimization, attributeName, builder) =>
-                {
-                    switch (optimization)
+                project.AddToolSetting(groupElement, "Optimization", options.Optimization, configuration,
+                    (setting, attributeName, builder) =>
                     {
-                        case C.EOptimization.Off:
-                            builder.Append("Disabled");
-                            break;
+                        switch (setting)
+                        {
+                            case C.EOptimization.Off:
+                                builder.Append("Disabled");
+                                break;
 
-                        case C.EOptimization.Size:
-                            builder.Append("MinSpace");
-                            break;
+                            case C.EOptimization.Size:
+                                builder.Append("MinSpace");
+                                break;
 
-                        case C.EOptimization.Speed:
-                            builder.Append("MaxSpeed");
-                            break;
+                            case C.EOptimization.Speed:
+                                builder.Append("MaxSpeed");
+                                break;
 
-                        case C.EOptimization.Full:
-                            builder.Append("Full");
-                            break;
-                    }
-                }, options.Optimization));
+                            case C.EOptimization.Full:
+                                builder.Append("Full");
+                                break;
+                        }
+                    });
             }
 
             if (options.PreprocessorDefines.Count > 0)
@@ -123,55 +122,62 @@ namespace VisualC
 
             if (options.PreprocessorUndefines.Count > 0)
             {
-                groupElement.AppendChild(project.CreateProjectElement("UndefinePreprocessorDefinitions", (undefines, attributeName, builder) =>
-                {
-                    foreach (var define in undefines)
+                project.AddToolSetting(groupElement, "UndefinePreprocessorDefinitions", options.PreprocessorUndefines, configuration,
+                    (setting, attributeName, builder) =>
                     {
-                        builder.AppendFormat("{0};", define);
-                    }
-                    builder.AppendFormat("%({0})", attributeName);
-                },
-                options.PreprocessorUndefines));
+                        foreach (var define in setting)
+                        {
+                            builder.AppendFormat("{0};", define);
+                        }
+                        builder.AppendFormat("%({0})", attributeName);
+                    });
             }
 
             if (null != options.TargetLanguage)
             {
-                groupElement.AppendChild(project.CreateProjectElement("CompileAs", (compileas, attributeName, builder) =>
-                {
-                    switch (compileas)
+                project.AddToolSetting(groupElement, "CompileAs", options.TargetLanguage, configuration,
+                    (setting, attributeName, builder) =>
                     {
-                        case C.ETargetLanguage.C:
-                            builder.Append("CompileAsC");
-                            break;
+                        switch (setting)
+                        {
+                            case C.ETargetLanguage.C:
+                                builder.Append("CompileAsC");
+                                break;
 
-                        case C.ETargetLanguage.Cxx:
-                            builder.Append("CompileAsCpp");
-                            break;
+                            case C.ETargetLanguage.Cxx:
+                                builder.Append("CompileAsCpp");
+                                break;
 
-                        case C.ETargetLanguage.Default:
-                            builder.Append("Default");
-                            break;
-                    }
-                }, options.TargetLanguage));
+                            case C.ETargetLanguage.Default:
+                                builder.Append("Default");
+                                break;
+                        }
+                    });
             }
 
             if (null != options.WarningsAsErrors)
             {
-                groupElement.AppendChild(project.CreateProjectElement("TreatWarningAsError", (wae, attributeName, builder) =>
-                {
-                    builder.Append(true == wae ? "true" : "false");
-                }, options.WarningsAsErrors));
+                project.AddToolSetting(groupElement, "TreatWarningAsError", options.WarningsAsErrors, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        builder.Append(true == setting ? "true" : "false");
+                    });
             }
 
             if (null != options.OutputType)
             {
-                groupElement.AppendChild(project.CreateProjectElement("PreprocessToFile", (preprocess, attributeName, builder) =>
-                {
-                    builder.Append(preprocess == C.ECompilerOutput.Preprocess ? "true" : "false");
-                }, options.OutputType));
+                project.AddToolSetting(groupElement, "PreprocessToFile", options.OutputType, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        builder.Append(setting == C.ECompilerOutput.Preprocess ? "true" : "false");
+                    });
                 if (!(module is Bam.Core.V2.IModuleGroup))
                 {
-                    groupElement.AppendChild(project.CreateProjectElement("ObjectFileName", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                    project.AddToolSetting(groupElement, "ObjectFileName", options.OutputType, configuration,
+                        (setting, attributeName, builder) =>
+                        {
+                            builder.Append(module.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                        });
                 }
             }
         }

@@ -44,15 +44,16 @@ namespace VisualC
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            groupElement.AppendChild(project.CreateProjectElement("OutputFile", (type, attributeName, builder) =>
-            {
-                switch (type)
+            project.AddToolSetting(groupElement, "OutputFile", options.OutputType, configuration,
+                (setting, attributeName, builder) =>
                 {
-                    case C.EArchiverOutput.StaticLibrary:
-                        builder.Append(module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
-                        break;
-                }
-            }, options.OutputType));
+                    switch (setting)
+                    {
+                        case C.EArchiverOutput.StaticLibrary:
+                            builder.Append(module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
+                            break;
+                    }
+                });
         }
     }
 
