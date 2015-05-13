@@ -23,7 +23,7 @@ namespace WindowsSDK
     {
         public WindowsSDKV2()
         {
-            this.Macros.Add("InstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Program Files\Microsoft SDKs\Windows\v6.0A", null));
+            this.Macros.Add("InstallPath", @"C:\Program Files\Microsoft SDKs\Windows\v6.0A");
             this.PublicPatch(settings =>
                 {
                     var compilation = settings as C.V2.ICommonCompilerOptions;

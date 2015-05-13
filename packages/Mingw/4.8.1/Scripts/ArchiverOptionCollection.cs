@@ -147,8 +147,8 @@ namespace DefaultSettings
     {
         public Librarian()
         {
-            this.Macros.Add("libprefix", Bam.Core.V2.TokenizedString.Create("lib", null));
-            this.Macros.Add("libext", Bam.Core.V2.TokenizedString.Create(".a", null));
+            this.Macros.Add("libprefix", "lib");
+            this.Macros.Add("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
         }

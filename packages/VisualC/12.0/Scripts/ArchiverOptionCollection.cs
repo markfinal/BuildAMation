@@ -100,9 +100,9 @@ namespace V2
     {
         public Librarian()
         {
-            this.Macros.Add("InstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
-            this.Macros.Add("libprefix", Bam.Core.V2.TokenizedString.Create(string.Empty, null));
-            this.Macros.Add("libext", Bam.Core.V2.TokenizedString.Create(".lib", null));
+            this.Macros.Add("InstallPath", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0");
+            this.Macros.Add("libprefix", string.Empty);
+            this.Macros.Add("libext", ".lib");
         }
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
