@@ -35,14 +35,11 @@ namespace VisualC
 
             if (null != options.DebugSymbols)
             {
-                var result = groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName, builder) =>
+                project.AddToolSetting(groupElement, "DebugInformationFormat", options.DebugSymbols, configuration,
+                    (setting, attributeName, builder) =>
                     {
-                        builder.Append(true == debugSymbols ? "OldStyle" : "None");
-                    }, options.DebugSymbols));
-                if (null != configuration)
-                {
-                    result.Attributes.Append(project.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", configuration);
-                }
+                        builder.Append(true == setting ? "OldStyle" : "None");
+                    });
             }
 
             if (options.DisableWarnings.Count > 0)
@@ -106,26 +103,22 @@ namespace VisualC
 
             if (options.PreprocessorDefines.Count > 0)
             {
-                var result = groupElement.AppendChild(project.CreateProjectElement("PreprocessorDefinitions", (defines, attributeName, builder) =>
-                {
-                    foreach (var define in defines)
+                project.AddToolSetting(groupElement, "PreprocessorDefinitions", options.PreprocessorDefines, configuration,
+                    (setting, attributeName, builder) =>
                     {
-                        if (System.String.IsNullOrEmpty(define.Value))
+                        foreach (var define in setting)
                         {
-                            builder.AppendFormat("{0};", define.Key);
+                            if (System.String.IsNullOrEmpty(define.Value))
+                            {
+                                builder.AppendFormat("{0};", define.Key);
+                            }
+                            else
+                            {
+                                builder.AppendFormat("{0}={1};", define.Key, define.Value);
+                            }
                         }
-                        else
-                        {
-                            builder.AppendFormat("{0}={1};", define.Key, define.Value);
-                        }
-                    }
-                    builder.AppendFormat("%({0})", attributeName);
-                },
-                options.PreprocessorDefines));
-                if (configuration != null)
-                {
-                    result.Attributes.Append(project.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", configuration);
-                }
+                        builder.AppendFormat("%({0})", attributeName);
+                    });
             }
 
             if (options.PreprocessorUndefines.Count > 0)

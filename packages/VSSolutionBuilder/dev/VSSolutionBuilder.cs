@@ -314,7 +314,11 @@ namespace V2
             return el;
         }
 
-        public System.Xml.XmlElement CreateProjectElement<T>(string name, System.Action<T, string, System.Text.StringBuilder> function, T value)
+        public System.Xml.XmlElement
+        CreateProjectElement<T>(
+            string name,
+            System.Action<T, string, System.Text.StringBuilder> function,
+            T value)
         {
             var el = this.CreateProjectElement(name);
             var text = new System.Text.StringBuilder();
@@ -366,6 +370,20 @@ namespace V2
         {
             get;
             set;
+        }
+
+        public void AddToolSetting<T>(
+            System.Xml.XmlElement container,
+            string settingName,
+            T settingValue,
+            string conditionalConfiguration,
+            System.Action<T, string, System.Text.StringBuilder> process)
+        {
+            var settingElement = container.AppendChild(this.CreateProjectElement(settingName, process, settingValue));
+            if (null != conditionalConfiguration)
+            {
+                settingElement.Attributes.Append(this.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", conditionalConfiguration);
+            }
         }
     }
 
