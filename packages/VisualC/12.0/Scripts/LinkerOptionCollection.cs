@@ -92,6 +92,7 @@ namespace V2
         public Linker()
         {
             this.Macros.Add("InstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
+            this.Macros.Add("exeext", Bam.Core.V2.TokenizedString.Create(".exe", null));
 
             this.PublicPatch(settings =>
             {

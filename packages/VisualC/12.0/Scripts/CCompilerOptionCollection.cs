@@ -604,6 +604,7 @@ namespace V2
             this.InheritedEnvironmentVariables.Add("TMP");
 
             this.Macros.Add("InstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null));
+            this.Macros.Add("objext", Bam.Core.V2.TokenizedString.Create(".obj", null));
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE"));
 

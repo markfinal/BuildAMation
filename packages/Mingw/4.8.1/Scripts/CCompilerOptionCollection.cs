@@ -421,6 +421,8 @@ namespace V2
         {
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\MinGW\bin"));
+
+            this.Macros.Add("objext", Bam.Core.V2.TokenizedString.Create(".o", null));
         }
 
         public override string Executable

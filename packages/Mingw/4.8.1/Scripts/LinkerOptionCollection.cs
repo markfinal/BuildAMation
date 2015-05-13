@@ -104,6 +104,8 @@ namespace DefaultSettings
         {
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\MinGW\bin"));
+
+            this.Macros.Add("exeext", Bam.Core.V2.TokenizedString.Create(string.Empty, null));
         }
 
         public override string Executable
