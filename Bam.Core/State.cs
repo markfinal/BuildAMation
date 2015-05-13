@@ -337,6 +337,11 @@ namespace V2
             this.DictInternal[formattedKey] = value;
         }
 
+        public void Add(string key, string value)
+        {
+            this.Add(key, TokenizedString.Create(value, null));
+        }
+
         private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal
         {
             get;
