@@ -221,6 +221,16 @@ namespace V2
                     }
                     token = value.ToString();
                 }
+                else if (this.ModuleWithMacros != null && null != this.ModuleWithMacros.Tool && this.ModuleWithMacros.Tool.Macros.Dict.ContainsKey(token))
+                {
+                    var value = this.ModuleWithMacros.Tool.Macros.Dict[token];
+                    if (!value.IsExpanded)
+                    {
+                        // recursive
+                        value.Parse();
+                    }
+                    token = value.ToString();
+                }
                 else
                 {
                     // TODO: this could be due to the user not having set a property, e.g. inputpath
