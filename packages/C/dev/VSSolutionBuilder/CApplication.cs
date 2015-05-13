@@ -45,12 +45,12 @@ namespace V2
                             patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
                             child.ApplySettingsPatches(patchSettings, honourParents: false);
                         }
-                        application.AddObjectFile(child, patchSettings);
+                        application.AddObjectFile(child, patchSettings, application.Configuration);
                     }
                 }
                 else
                 {
-                    application.AddObjectFile(input, null);
+                    application.AddObjectFile(input, null, null);
                 }
             }
             foreach (var input in libraries)

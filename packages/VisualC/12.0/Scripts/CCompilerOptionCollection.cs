@@ -21,16 +21,28 @@ namespace VisualC
 {
     public static partial class VSSolutionImplementation
     {
-        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        public static void
+        Convert(
+            this C.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
+            // TODO: add the Condition attribute everywhere, or replace groupelement with Group
+            // and refactor it all so it's in a function
+
             if (null != options.DebugSymbols)
             {
-                groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName, builder) =>
+                var result = groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName, builder) =>
                     {
                         builder.Append(true == debugSymbols ? "OldStyle" : "None");
                     }, options.DebugSymbols));
+                if (null != configuration)
+                {
+                    result.Attributes.Append(project.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", configuration);
+                }
             }
 
             if (options.DisableWarnings.Count > 0)
@@ -94,7 +106,7 @@ namespace VisualC
 
             if (options.PreprocessorDefines.Count > 0)
             {
-                groupElement.AppendChild(project.CreateProjectElement("PreprocessorDefinitions", (defines, attributeName, builder) =>
+                var result = groupElement.AppendChild(project.CreateProjectElement("PreprocessorDefinitions", (defines, attributeName, builder) =>
                 {
                     foreach (var define in defines)
                     {
@@ -110,6 +122,10 @@ namespace VisualC
                     builder.AppendFormat("%({0})", attributeName);
                 },
                 options.PreprocessorDefines));
+                if (configuration != null)
+                {
+                    result.Attributes.Append(project.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", configuration);
+                }
             }
 
             if (options.PreprocessorUndefines.Count > 0)
@@ -453,9 +469,9 @@ namespace V2
             (this as VisualC.V2.ICOnlyCompilerOptions).Convert(module);
         }
 
-        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
         {
-            (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement);
+            (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
         }
     }
 

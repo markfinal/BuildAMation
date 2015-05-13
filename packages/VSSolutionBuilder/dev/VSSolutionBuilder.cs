@@ -175,7 +175,7 @@ namespace V2
             this.Project.AppendChild(this.LanguageTargets.Element);
         }
 
-        public void AddSourceFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
+        public void AddSourceFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
         {
             var objectFile = module.MetaData as VSProjectObjectFile;
             var sourcePath = objectFile.Source;
@@ -213,13 +213,18 @@ namespace V2
 
             if (null != patchSettings)
             {
-                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element);
+                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element, configuration);
             }
+        }
+
+        public static string GetConfigurationName(string configuration, string platform)
+        {
+            return System.String.Format("{0}|{1}", configuration, platform);
         }
 
         public void AddProjectConfiguration(string configuration, string platform, Bam.Core.V2.Module module)
         {
-            var combined = System.String.Format("{0}|{1}", configuration, platform);
+            var combined = GetConfigurationName(configuration, platform);
 
             // overall project configurations
             {
@@ -275,7 +280,7 @@ namespace V2
                             var tool = this.CreateProjectElement("Lib");
                             configGroup.Element.AppendChild(tool);
 
-                            (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, tool);
+                            (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, tool, null);
                         }
                         break;
 
@@ -294,7 +299,7 @@ namespace V2
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
         {
-            (settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, this.CommonCompilationOptionsElement);
+            (settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, this.CommonCompilationOptionsElement, null);
         }
 
         public System.Xml.XmlElement CreateProjectElement(string name)
@@ -380,6 +385,11 @@ namespace V2
             var graph = Bam.Core.V2.Graph.Instance;
             var isReferenced = graph.IsReferencedModule(module);
             this.IsProjectModule = isReferenced;
+
+            // TODO: platform isn't the Environment platform, but the tools in use
+            var platform = "Win32";
+            this.Configuration = VSProject.GetConfigurationName(module.BuildEnvironment.Configuration.ToString(), platform);
+
             if (isReferenced)
             {
                 var solution = graph.MetaData as VSSolution;
@@ -393,13 +403,17 @@ namespace V2
                     solution.Projects[module.GetType()] = this.Project;
                 }
 
-                // TODO: platform isn't the Environment platform, but the tools in use
-                var platform = "Win32";
                 this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform, module);
 
                 var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename).vcxproj", module);
                 projectPath.Parse();
                 this.Project.ProjectPath = projectPath.ToString();
+
+                this.ProjectModule = module;
+            }
+            else
+            {
+                this.ProjectModule = module.GetEncapsulatingReferencedModule();
             }
             module.MetaData = this;
         }
@@ -413,7 +427,13 @@ namespace V2
         public Bam.Core.V2.Module ProjectModule
         {
             get;
-            set;
+            private set;
+        }
+
+        public string Configuration
+        {
+            get;
+            private set;
         }
 
         public static void PreExecution()
@@ -482,9 +502,9 @@ namespace V2
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
         }
 
-        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
+        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
         {
-            this.Project.AddSourceFile(module, patchSettings);
+            this.Project.AddSourceFile(module, patchSettings, configuration);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
@@ -510,9 +530,9 @@ namespace V2
             this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
         }
 
-        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
+        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
         {
-            this.Project.AddSourceFile(module, patchSettings);
+            this.Project.AddSourceFile(module, patchSettings, configuration);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)

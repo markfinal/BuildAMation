@@ -22,7 +22,7 @@ namespace V2
 {
     public interface IConvertToProject
     {
-        void Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement);
+        void Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration);
     }
 }
     public interface IVisualStudioSupport

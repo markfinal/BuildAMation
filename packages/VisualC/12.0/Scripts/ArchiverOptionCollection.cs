@@ -40,7 +40,7 @@ namespace VisualC
 
     public static partial class VSSolutionImplementation
     {
-        public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
@@ -87,9 +87,9 @@ namespace V2
             (this as ICommonArchiverOptions).Convert(module);
         }
 
-        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement)
+        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
         {
-            (this as C.V2.ICommonArchiverOptions).Convert(module, groupElement);
+            (this as C.V2.ICommonArchiverOptions).Convert(module, groupElement, configuration);
         }
     }
 
