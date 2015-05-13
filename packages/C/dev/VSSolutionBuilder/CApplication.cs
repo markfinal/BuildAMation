@@ -34,18 +34,23 @@ namespace V2
             var application = new VSSolutionBuilder.V2.VSProjectProgram(sender);
             foreach (var input in objectFiles)
             {
+                application.SetCommonCompilationOptions(input, input.Settings);
                 if (input is Bam.Core.V2.IModuleGroup)
                 {
-                    // TODO: add common settings
                     foreach (var child in input.Children)
                     {
-                        application.AddObjectFile(child.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                        Bam.Core.V2.Settings patchSettings = null;
+                        if (child.HasPatches)
+                        {
+                            patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
+                            child.ApplySettingsPatches(patchSettings, honourParents: false);
+                        }
+                        application.AddObjectFile(child, patchSettings);
                     }
                 }
                 else
                 {
-                    // TODO: add just this settings
-                    application.AddObjectFile(input.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                    application.AddObjectFile(input, null);
                 }
             }
             foreach (var input in libraries)

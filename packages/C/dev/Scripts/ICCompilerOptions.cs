@@ -28,18 +28,29 @@ namespace DefaultSettings
         {
             settings.Bits = EBit.SixtyFour;
             settings.DebugSymbols = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug;
-            settings.DisableWarnings = new Bam.Core.StringArray();
-            settings.IncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.LanguageStandard = ELanguageStandard.C89;
             settings.OmitFramePointer = module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug;
             settings.Optimization = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug ? EOptimization.Off : EOptimization.Speed;
             settings.OutputType = ECompilerOutput.CompileOnly;
-            settings.PreprocessorDefines = new C.V2.PreprocessorDefinitions();
             settings.PreprocessorDefines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", module.BuildEnvironment.Configuration.ToString().ToUpper()));
-            settings.PreprocessorUndefines = new Bam.Core.StringArray();
-            settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
+        }
+        public static void Empty(this C.V2.ICommonCompilerOptions settings)
+        {
+            settings.Bits = null;
+            settings.DebugSymbols = null;
+            settings.DisableWarnings = new Bam.Core.StringArray();
+            settings.IncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.LanguageStandard = null;
+            settings.OmitFramePointer = null;
+            settings.Optimization = null;
+            settings.OutputType = null;
+            settings.PreprocessorDefines = new PreprocessorDefinitions();
+            settings.PreprocessorUndefines = new Bam.Core.StringArray();
+            settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.TargetLanguage = null;
+            settings.WarningsAsErrors = null;
         }
     }
 }
@@ -51,7 +62,7 @@ namespace DefaultSettings
 
     public interface ICommonCompilerOptions
     {
-        EBit Bits
+        EBit? Bits
         {
             get;
             set;
@@ -75,43 +86,43 @@ namespace DefaultSettings
             set;
         }
 
-        C.ECompilerOutput OutputType
+        C.ECompilerOutput? OutputType
         {
             get;
             set;
         }
 
-        bool DebugSymbols
+        bool? DebugSymbols
         {
             get;
             set;
         }
 
-        bool WarningsAsErrors
+        bool? WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization Optimization
+        C.EOptimization? Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage TargetLanguage
+        C.ETargetLanguage? TargetLanguage
         {
             get;
             set;
         }
 
-        C.ELanguageStandard LanguageStandard
+        C.ELanguageStandard? LanguageStandard
         {
             get;
             set;
         }
 
-        bool OmitFramePointer
+        bool? OmitFramePointer
         {
             get;
             set;

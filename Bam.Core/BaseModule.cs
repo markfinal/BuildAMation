@@ -158,6 +158,16 @@ namespace V2
             this.ExternalPatches.Add(module.PublicPatches);
         }
 
+        public bool HasPatches
+        {
+            get
+            {
+                return (this.PrivatePatches.Count() > 0) ||
+                       (this.PublicPatches.Count() > 0) ||
+                       (this.ExternalPatches.Count() > 0);
+            }
+        }
+
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
         {
             get
@@ -242,34 +252,39 @@ namespace V2
 
         public void ApplySettingsPatches()
         {
-            if (null == this.Settings)
+            this.ApplySettingsPatches(this.Settings, true);
+        }
+
+        public void ApplySettingsPatches(Settings settings, bool honourParents)
+        {
+            if (null == settings)
             {
                 return;
             }
             // Note: first private patches, followed by public patches
             // TODO: they could override each other - anyway to check?
-            var parentModule = (this is IChildModule) ? (this as IChildModule).Parent : null;
+            var parentModule = (this is IChildModule) && honourParents ? (this as IChildModule).Parent : null;
             if (parentModule != null)
             {
                 foreach (var patch in parentModule.PrivatePatches)
                 {
-                    patch(this.Settings);
+                    patch(settings);
                 }
             }
             foreach (var patch in this.PrivatePatches)
             {
-                patch(this.Settings);
+                patch(settings);
             }
             if (parentModule != null)
             {
                 foreach (var patch in parentModule.PublicPatches)
                 {
-                    patch(this.Settings);
+                    patch(settings);
                 }
             }
             foreach (var patch in this.PublicPatches)
             {
-                patch(this.Settings);
+                patch(settings);
             }
             if (parentModule != null)
             {
@@ -277,7 +292,7 @@ namespace V2
                 {
                     foreach (var patch in patchList)
                     {
-                        patch(this.Settings);
+                        patch(settings);
                     }
                 }
             }
@@ -285,7 +300,7 @@ namespace V2
             {
                 foreach (var patch in patchList)
                 {
-                    patch(this.Settings);
+                    patch(settings);
                 }
             }
         }

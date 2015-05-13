@@ -175,8 +175,11 @@ namespace V2
             this.Project.AppendChild(this.LanguageTargets.Element);
         }
 
-        public void AddSourceFile(string path)
+        public void AddSourceFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
         {
+            var objectFile = module.MetaData as VSProjectObjectFile;
+            var sourcePath = objectFile.Source;
+
             // check whether this source file has been added before
 #if true
             foreach (var el in this.SourceGroup)
@@ -186,9 +189,9 @@ namespace V2
                     continue;
                 }
                 var include = el.Attributes["Include"];
-                if (include.Value == path)
+                if (include.Value == sourcePath)
                 {
-                    Bam.Core.Log.DebugMessage("Source path '{0}' already added", path);
+                    Bam.Core.Log.DebugMessage("Source path '{0}' already added", sourcePath);
                     return;
                 }
             }
@@ -205,8 +208,13 @@ namespace V2
 #endif
 
             var element = this.CreateProjectElement("ClCompile");
-            element.Attributes.Append(this.CreateAttribute("Include")).Value = path;
+            element.Attributes.Append(this.CreateAttribute("Include")).Value = sourcePath;
             this.SourceGroup.Element.AppendChild(element);
+
+            if (null != patchSettings)
+            {
+                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element);
+            }
         }
 
         public void AddProjectConfiguration(string configuration, string platform, Bam.Core.V2.Module module)
@@ -474,9 +482,9 @@ namespace V2
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
         }
 
-        public void AddObjectFile(VSProjectObjectFile objectFile)
+        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
         {
-            this.Project.AddSourceFile(objectFile.Source);
+            this.Project.AddSourceFile(module, patchSettings);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
@@ -502,9 +510,14 @@ namespace V2
             this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
         }
 
-        public void AddObjectFile(VSProjectObjectFile objectFile)
+        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
         {
-            this.Project.AddSourceFile(objectFile.Source);
+            this.Project.AddSourceFile(module, patchSettings);
+        }
+
+        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        {
+            this.Project.SetCommonCompilationOptions(module, settings);
         }
 
         private System.Collections.Generic.List<VSProjectObjectFile> ObjectFiles

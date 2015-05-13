@@ -33,7 +33,7 @@ namespace Mingw
             {
                 commandLine.Add("-m64");
             }
-            if (options.DebugSymbols)
+            if (true == options.DebugSymbols)
             {
                 commandLine.Add("-g");
             }
@@ -57,7 +57,7 @@ namespace Mingw
                     // TODO: Might want to split this across C specific and Cxx specific options
                     throw new Bam.Core.Exception("Invalid language standard");
             }
-            if (options.OmitFramePointer)
+            if (true == options.OmitFramePointer)
             {
                 commandLine.Add("-fomit-frame-pointer");
             }
@@ -111,7 +111,7 @@ namespace Mingw
                 default:
                     throw new Bam.Core.Exception("Unsupported target language");
             }
-            if (options.WarningsAsErrors)
+            if (true == options.WarningsAsErrors)
             {
                 commandLine.Add("-Werror");
             }
@@ -168,7 +168,7 @@ namespace V2
         }
 
 
-        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
             get;
             set;
@@ -192,43 +192,43 @@ namespace V2
             set;
         }
 
-        C.ECompilerOutput C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.V2.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        C.ELanguageStandard C.V2.ICommonCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;
@@ -297,7 +297,7 @@ namespace V2
         Mingw.V2.ICommonCompilerOptions,
         Mingw.V2.ICxxOnlyCompilerOptions
     {
-        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
             get;
             set;
@@ -321,43 +321,43 @@ namespace V2
             set;
         }
 
-        C.ECompilerOutput C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.V2.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        C.ELanguageStandard C.V2.ICommonCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;

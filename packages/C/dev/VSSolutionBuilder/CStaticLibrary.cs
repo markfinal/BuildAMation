@@ -37,13 +37,18 @@ namespace V2
                 {
                     foreach (var child in input.Children)
                     {
-                        // TODO: convert patch to settings
-                        library.AddObjectFile(child.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                        Bam.Core.V2.Settings patchSettings = null;
+                        if (child.HasPatches)
+                        {
+                            patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
+                            child.ApplySettingsPatches(patchSettings, honourParents: false);
+                        }
+                        library.AddObjectFile(child, patchSettings);
                     }
                 }
                 else
                 {
-                    library.AddObjectFile(input.MetaData as VSSolutionBuilder.V2.VSProjectObjectFile);
+                    library.AddObjectFile(input, null);
                 }
             }
         }

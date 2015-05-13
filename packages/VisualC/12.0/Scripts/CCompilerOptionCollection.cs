@@ -25,10 +25,13 @@ namespace VisualC
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName, builder) =>
-                {
-                    builder.Append(debugSymbols ? "OldStyle" : "None");
-                }, options.DebugSymbols));
+            if (null != options.DebugSymbols)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("DebugInformationFormat", (debugSymbols, attributeName, builder) =>
+                    {
+                        builder.Append(true == debugSymbols ? "OldStyle" : "None");
+                    }, options.DebugSymbols));
+            }
 
             if (options.DisableWarnings.Count > 0)
             {
@@ -56,32 +59,38 @@ namespace VisualC
                     options.IncludePaths));
             }
 
-            groupElement.AppendChild(project.CreateProjectElement("OmitFramePointers", (ofp, attributeName, builder) =>
+            if (null != options.OmitFramePointer)
             {
-                builder.Append(ofp ? "true" : "false");
-            }, options.OmitFramePointer));
-
-            groupElement.AppendChild(project.CreateProjectElement("Optimization", (optimization, attributeName, builder) =>
-            {
-                switch (optimization)
+                groupElement.AppendChild(project.CreateProjectElement("OmitFramePointers", (ofp, attributeName, builder) =>
                 {
-                    case C.EOptimization.Off:
-                        builder.Append("Disabled");
-                        break;
+                    builder.Append(true == ofp ? "true" : "false");
+                }, options.OmitFramePointer));
+            }
 
-                    case C.EOptimization.Size:
-                        builder.Append("MinSpace");
-                        break;
+            if (null != options.Optimization)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("Optimization", (optimization, attributeName, builder) =>
+                {
+                    switch (optimization)
+                    {
+                        case C.EOptimization.Off:
+                            builder.Append("Disabled");
+                            break;
 
-                    case C.EOptimization.Speed:
-                        builder.Append("MaxSpeed");
-                        break;
+                        case C.EOptimization.Size:
+                            builder.Append("MinSpace");
+                            break;
 
-                    case C.EOptimization.Full:
-                        builder.Append("Full");
-                        break;
-                }
-            }, options.Optimization));
+                        case C.EOptimization.Speed:
+                            builder.Append("MaxSpeed");
+                            break;
+
+                        case C.EOptimization.Full:
+                            builder.Append("Full");
+                            break;
+                    }
+                }, options.Optimization));
+            }
 
             if (options.PreprocessorDefines.Count > 0)
             {
@@ -116,36 +125,45 @@ namespace VisualC
                 options.PreprocessorUndefines));
             }
 
-            groupElement.AppendChild(project.CreateProjectElement("CompileAs", (compileas, attributeName, builder) =>
+            if (null != options.TargetLanguage)
             {
-                switch (compileas)
+                groupElement.AppendChild(project.CreateProjectElement("CompileAs", (compileas, attributeName, builder) =>
                 {
-                    case C.ETargetLanguage.C:
-                        builder.Append("CompileAsC");
-                        break;
+                    switch (compileas)
+                    {
+                        case C.ETargetLanguage.C:
+                            builder.Append("CompileAsC");
+                            break;
 
-                    case C.ETargetLanguage.Cxx:
-                        builder.Append("CompileAsCpp");
-                        break;
+                        case C.ETargetLanguage.Cxx:
+                            builder.Append("CompileAsCpp");
+                            break;
 
-                    case C.ETargetLanguage.Default:
-                        builder.Append("Default");
-                        break;
+                        case C.ETargetLanguage.Default:
+                            builder.Append("Default");
+                            break;
+                    }
+                }, options.TargetLanguage));
+            }
+
+            if (null != options.WarningsAsErrors)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("TreatWarningAsError", (wae, attributeName, builder) =>
+                {
+                    builder.Append(true == wae ? "true" : "false");
+                }, options.WarningsAsErrors));
+            }
+
+            if (null != options.OutputType)
+            {
+                groupElement.AppendChild(project.CreateProjectElement("PreprocessToFile", (preprocess, attributeName, builder) =>
+                {
+                    builder.Append(preprocess == C.ECompilerOutput.Preprocess ? "true" : "false");
+                }, options.OutputType));
+                if (!(module is Bam.Core.V2.IModuleGroup))
+                {
+                    groupElement.AppendChild(project.CreateProjectElement("ObjectFileName", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
                 }
-            }, options.TargetLanguage));
-
-            groupElement.AppendChild(project.CreateProjectElement("TreatWarningAsError", (wae, attributeName, builder) =>
-            {
-                builder.Append(wae ? "true" : "false");
-            }, options.WarningsAsErrors));
-
-            groupElement.AppendChild(project.CreateProjectElement("PreprocessToFile", (preprocess, attributeName, builder) =>
-            {
-                builder.Append(preprocess == C.ECompilerOutput.Preprocess ? "true" : "false");
-            }, options.OutputType));
-            if (!(module is Bam.Core.V2.IModuleGroup))
-            {
-                groupElement.AppendChild(project.CreateProjectElement("ObjectFileName", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
             }
         }
     }
@@ -156,7 +174,7 @@ namespace VisualC
         {
             var commandLine = module.MetaData as Bam.Core.StringArray;
             var objectFile = module as C.V2.ObjectFile;
-            if (options.DebugSymbols)
+            if (true == options.DebugSymbols)
             {
                 commandLine.Add("-Z7");
             }
@@ -169,7 +187,7 @@ namespace VisualC
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            if (options.OmitFramePointer)
+            if (true == options.OmitFramePointer)
             {
                 commandLine.Add("-Oy");
             }
@@ -223,7 +241,7 @@ namespace VisualC
                 default:
                     throw new Bam.Core.Exception("Unsupported target language");
             }
-            if (options.WarningsAsErrors)
+            if (true == options.WarningsAsErrors)
             {
                 commandLine.Add("-WX");
             }
@@ -303,12 +321,20 @@ namespace V2
         VisualStudioProcessor.V2.IConvertToProject
     {
         public CompilerSettings(Bam.Core.V2.Module module)
+            : this(module, true)
         {
-            (this as C.V2.ICommonCompilerOptions).Defaults(module);
         }
 
+        public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        {
+            (this as C.V2.ICommonCompilerOptions).Empty();
+            if (useDefaults)
+            {
+                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+            }
+        }
 
-        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
             get;
             set;
@@ -332,43 +358,43 @@ namespace V2
             set;
         }
 
-        C.ECompilerOutput C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.V2.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        C.ELanguageStandard C.V2.ICommonCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;
@@ -443,7 +469,7 @@ namespace V2
         VisualC.V2.ICxxOnlyCompilerOptions
     {
 
-        C.V2.EBit C.V2.ICommonCompilerOptions.Bits
+        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
             get;
             set;
@@ -467,43 +493,43 @@ namespace V2
             set;
         }
 
-        C.ECompilerOutput C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.V2.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        C.ELanguageStandard C.V2.ICommonCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        bool C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;
