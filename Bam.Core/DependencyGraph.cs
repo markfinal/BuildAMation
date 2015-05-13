@@ -289,7 +289,6 @@ namespace V2
                     m.UsePublicPatches(m.Tool);
                 }
                 m.Settings = m.Tool.CreateDefaultSettings(m);
-                // TODO: Tool can also inject macros into the module
             }
             if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
             {
