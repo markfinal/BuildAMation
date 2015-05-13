@@ -162,11 +162,19 @@ namespace V2
         CommandLineProcessor.V2.IConvertToCommandLine
     {
         public CompilerSettings(Bam.Core.V2.Module module)
+            : this(module, useDefaults:true)
         {
-            (this as C.V2.ICommonCompilerOptions).Defaults(module);
-            // TODO: other defaults
         }
 
+        public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        {
+            // TODO: other defaults
+            (this as C.V2.ICommonCompilerOptions).Empty();
+            if (useDefaults)
+            {
+                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+            }
+        }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
