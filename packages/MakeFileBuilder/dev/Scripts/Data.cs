@@ -20,6 +20,9 @@ namespace MakeFileBuilder
 {
 namespace V2
 {
+    // Notes:
+    // A rule is target + prerequisities + receipe
+    // A recipe is a collection of commands
     using System.Linq;
     public sealed class MakeFileMeta
     {
@@ -70,18 +73,6 @@ namespace V2
 
             var command = new System.Text.StringBuilder();
 
-            command.Append("all:");
-            foreach (var module in graph.TopLevelModules)
-            {
-                var metadata = module.MetaData as MakeFileMeta;
-                if (null == metadata)
-                {
-                    throw new Bam.Core.Exception("Top level module did not have any Make metadata");
-                }
-                command.AppendFormat("$({0}) ", metadata.TargetVariable);
-            }
-            command.AppendLine();
-
             foreach (var rank in graph.Reverse())
             {
                 foreach (var module in rank)
@@ -94,6 +85,7 @@ namespace V2
 
                     if (metadata.TargetVariable != null)
                     {
+                        // simply expanded variable
                         command.AppendFormat("{0}:={1}", metadata.TargetVariable, metadata.Target);
                         command.AppendLine();
                         command.AppendFormat("$({0}):", metadata.TargetVariable);
@@ -114,6 +106,18 @@ namespace V2
                     }
                 }
             }
+
+            command.Append("all:");
+            foreach (var module in graph.TopLevelModules)
+            {
+                var metadata = module.MetaData as MakeFileMeta;
+                if (null == metadata)
+                {
+                    throw new Bam.Core.Exception("Top level module did not have any Make metadata");
+                }
+                command.AppendFormat("$({0}) ", metadata.TargetVariable);
+            }
+            command.AppendLine();
 
             Bam.Core.Log.DebugMessage(command.ToString());
 
