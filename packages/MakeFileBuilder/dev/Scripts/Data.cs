@@ -114,7 +114,16 @@ namespace V2
                     }
                 }
             }
+
             Bam.Core.Log.DebugMessage(command.ToString());
+
+            var makeFilePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/Makefile", null);
+            makeFilePath.Parse();
+
+            using (var writer = new System.IO.StreamWriter(makeFilePath.ToString()))
+            {
+                writer.Write(command.ToString());
+            }
         }
     }
 }
