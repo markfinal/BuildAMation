@@ -97,7 +97,7 @@ namespace Bam.Core
             return this.ToString(' ');
         }
 
-        public string
+        public override string
         ToString(
             char separator)
         {
