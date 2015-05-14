@@ -95,18 +95,34 @@ namespace V2
         {
             var graph = Bam.Core.V2.Graph.Instance;
 
-            var makeContents = new System.Text.StringBuilder();
+            var makeVariables = new System.Text.StringBuilder();
+            var makeRules = new System.Text.StringBuilder();
 
             var commonMeta = graph.MetaData as MakeFileCommonMetaData;
             if (commonMeta.Directories.Count > 0)
             {
-                makeContents.Append("DIRS:=");
+                makeVariables.Append("DIRS:=");
                 foreach (var dir in commonMeta.Directories)
                 {
-                    makeContents.AppendFormat("{0} ", dir);
+                    makeVariables.AppendFormat("{0} ", dir);
                 }
-                makeContents.AppendLine();
+                makeVariables.AppendLine();
             }
+
+            makeRules.Append("all:");
+            foreach (var module in graph.TopLevelModules)
+            {
+                var metadata = module.MetaData as MakeFileMeta;
+                if (null == metadata)
+                {
+                    throw new Bam.Core.Exception("Top level module did not have any Make metadata");
+                }
+                makeRules.AppendFormat("$({0}) ", metadata.TargetVariable);
+            }
+            makeRules.AppendLine();
+
+            makeRules.AppendLine("$(DIRS):");
+            makeRules.AppendLine("\tmkdir $@");
 
             foreach (var rank in graph.Reverse())
             {
@@ -121,51 +137,39 @@ namespace V2
                     if (metadata.TargetVariable != null)
                     {
                         // simply expanded variable
-                        makeContents.AppendFormat("{0}:={1}", metadata.TargetVariable, metadata.Target);
-                        makeContents.AppendLine();
-                        makeContents.AppendFormat("$({0}):", metadata.TargetVariable);
+                        makeVariables.AppendFormat("{0}:={1}", metadata.TargetVariable, metadata.Target);
+                        makeVariables.AppendLine();
+
+                        makeRules.AppendFormat("$({0}):", metadata.TargetVariable);
                     }
                     else
                     {
-                        makeContents.AppendFormat("{0}:", metadata.Target);
+                        makeRules.AppendFormat("{0}:", metadata.Target);
                     }
                     foreach (var pre in metadata.Prequisities)
                     {
-                        makeContents.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
+                        makeRules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
                     }
-                    makeContents.AppendFormat("| $(DIRS)");
-                    makeContents.AppendLine();
+                    makeRules.AppendFormat("| $(DIRS)");
+                    makeRules.AppendLine();
                     foreach (var command in metadata.Recipe)
                     {
-                        makeContents.AppendFormat("\t{0}", command);
-                        makeContents.AppendLine();
+                        makeRules.AppendFormat("\t{0}", command);
+                        makeRules.AppendLine();
                     }
                 }
             }
 
-            makeContents.Append("all:");
-            foreach (var module in graph.TopLevelModules)
-            {
-                var metadata = module.MetaData as MakeFileMeta;
-                if (null == metadata)
-                {
-                    throw new Bam.Core.Exception("Top level module did not have any Make metadata");
-                }
-                makeContents.AppendFormat("$({0}) ", metadata.TargetVariable);
-            }
-            makeContents.AppendLine();
-
-            makeContents.AppendLine("$(DIRS):");
-            makeContents.AppendLine("\tmkdir $@");
-
-            Bam.Core.Log.DebugMessage(makeContents.ToString());
+            Bam.Core.Log.DebugMessage(makeVariables.ToString());
+            Bam.Core.Log.DebugMessage(makeRules.ToString());
 
             var makeFilePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/Makefile", null);
             makeFilePath.Parse();
 
             using (var writer = new System.IO.StreamWriter(makeFilePath.ToString()))
             {
-                writer.Write(makeContents.ToString());
+                writer.Write(makeVariables.ToString());
+                writer.Write(makeRules.ToString());
             }
         }
     }
