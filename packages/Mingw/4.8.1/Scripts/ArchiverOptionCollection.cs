@@ -155,6 +155,8 @@ namespace DefaultSettings
     {
         public Librarian()
         {
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("ArchiverPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin\ar.exe", this));
             this.Macros.Add("libprefix", "lib");
             this.Macros.Add("libext", ".a");
 
@@ -165,7 +167,7 @@ namespace DefaultSettings
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\MinGW\bin\ar.exe", null);
+                return this.Macros["ArchiverPath"];
             }
         }
 

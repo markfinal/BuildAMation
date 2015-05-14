@@ -100,7 +100,8 @@ namespace V2
     {
         public Linker()
         {
-            this.Macros.Add("InstallPath", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0");
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin\link.exe", this));
             this.Macros.Add("exeext", ".exe");
 
             this.PublicPatch(settings =>
@@ -120,7 +121,7 @@ namespace V2
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe", null);
+                return this.Macros["LinkerPath"];
             }
         }
 

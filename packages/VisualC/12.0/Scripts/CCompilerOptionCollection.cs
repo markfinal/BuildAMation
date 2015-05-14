@@ -642,7 +642,8 @@ namespace V2
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
 
-            this.Macros.Add("InstallPath", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0");
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
             this.Macros.Add("objext", ".obj");
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE"));
@@ -652,6 +653,14 @@ namespace V2
                     var compilation = settings as C.V2.ICommonCompilerOptions;
                     compilation.SystemIncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
                 });
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return this.Macros["CompilerPath"];
+            }
         }
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
@@ -682,12 +691,9 @@ namespace V2
     public sealed class Compiler32 :
         CompilerBase
     {
-        public override Bam.Core.V2.TokenizedString Executable
+        public Compiler32()
         {
-            get
-            {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe", null); // 32-bit one
-            }
+            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\cl.exe", this));
         }
 
         protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
@@ -704,16 +710,9 @@ namespace V2
         public Compiler64()
             : base()
         {
+            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\x86_amd64\cl.exe", this));
             // some DLLs exist only in the 32-bit bin folder
             this.EnvironmentVariables["PATH"].Add(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin");
-        }
-
-        public override Bam.Core.V2.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\cl.exe", null);
-            }
         }
 
         protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)

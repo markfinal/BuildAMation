@@ -109,7 +109,8 @@ namespace V2
     {
         public Librarian()
         {
-            this.Macros.Add("InstallPath", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0");
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("ArchiverPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin\lib.exe", this));
             this.Macros.Add("libprefix", string.Empty);
             this.Macros.Add("libext", ".lib");
         }
@@ -124,7 +125,7 @@ namespace V2
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\lib.exe", null);
+                return this.Macros["ArchiverPath"];
             }
         }
     }

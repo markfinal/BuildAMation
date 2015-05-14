@@ -461,6 +461,8 @@ namespace V2
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\MinGW\bin"));
 
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin\mingw32-gcc-4.8.1.exe", this));
             this.Macros.Add("objext", ".o");
         }
 
@@ -468,7 +470,7 @@ namespace V2
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\MinGW\bin\mingw32-gcc-4.8.1.exe", null);
+                return this.Macros["CompilerPath"];
             }
         }
 

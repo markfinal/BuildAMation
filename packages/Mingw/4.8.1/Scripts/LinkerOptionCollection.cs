@@ -114,6 +114,8 @@ namespace DefaultSettings
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\MinGW\bin"));
 
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin\mingw32-gcc-4.8.1.exe", this));
             this.Macros.Add("exeext", string.Empty);
         }
 
@@ -121,7 +123,7 @@ namespace DefaultSettings
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\MinGW\bin\mingw32-gcc-4.8.1.exe", null);
+                return this.Macros["LinkerPath"];
             }
         }
 

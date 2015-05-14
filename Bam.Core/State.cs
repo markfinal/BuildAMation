@@ -323,6 +323,19 @@ namespace V2
             this.DictInternal = new System.Collections.Generic.Dictionary<string, TokenizedString>();
         }
 
+        private static string FormattedKey(string key)
+        {
+            return System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
+        }
+
+        public TokenizedString this[string key]
+        {
+            get
+            {
+                return this.Dict[FormattedKey(key)];
+            }
+        }
+
         public void Add(string key, TokenizedString value)
         {
             if (key.StartsWith(TokenizedString.TokenPrefix) || key.EndsWith(TokenizedString.TokenSuffix))
@@ -333,8 +346,7 @@ namespace V2
             {
                 throw new System.Exception("Macro value cannot be null");
             }
-            var formattedKey = System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
-            this.DictInternal[formattedKey] = value;
+            this.DictInternal[FormattedKey(key)] = value;
         }
 
         public void Add(string key, string value)
