@@ -646,7 +646,7 @@ namespace V2
             this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
             this.Macros.Add("objext", ".obj");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE"));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Common7\IDE", this)));
 
             this.PublicPatch(settings =>
                 {
@@ -712,7 +712,7 @@ namespace V2
         {
             this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\x86_amd64\cl.exe", this));
             // some DLLs exist only in the 32-bit bin folder
-            this.EnvironmentVariables["PATH"].Add(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin");
+            this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
         }
 
         protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)

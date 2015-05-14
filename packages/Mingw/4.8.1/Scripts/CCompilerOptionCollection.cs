@@ -459,11 +459,13 @@ namespace V2
         public CompilerBase()
         {
             this.InheritedEnvironmentVariables.Add("TEMP");
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.StringArray(@"C:\MinGW\bin"));
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin\mingw32-gcc-4.8.1.exe", this));
+            this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin", this));
+            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
             this.Macros.Add("objext", ".o");
+
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
         public override Bam.Core.V2.TokenizedString Executable

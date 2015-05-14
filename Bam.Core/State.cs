@@ -477,7 +477,7 @@ namespace V2
         protected Tool()
             : base()
         {
-            this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
+            this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, TokenizedStringArray>();
             this.InheritedEnvironmentVariables = new System.Collections.Generic.List<string>();
         }
 
@@ -500,7 +500,7 @@ namespace V2
             // by default, the execution policy of a tool is to do nothing as it's on disk
         }
 
-        public System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> EnvironmentVariables
+        public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
         {
             get;
             private set;
@@ -522,6 +522,16 @@ namespace V2
         {
             var exists = System.IO.File.Exists(this.Executable.ToString());
             this.IsUpToDate = exists;
+        }
+    }
+
+    public sealed class TokenizedStringArray :
+        Bam.Core.Array<TokenizedString>
+    {
+        public TokenizedStringArray(TokenizedString input)
+            :
+            base(new[] { input })
+        {
         }
     }
 }
