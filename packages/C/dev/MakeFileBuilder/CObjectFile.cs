@@ -43,7 +43,10 @@ namespace V2
 
             var rule = new System.Text.StringBuilder();
             rule.AppendFormat("{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
-            meta.Rules.Add(rule.ToString());
+            meta.Recipe.Add(rule.ToString());
+
+            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath);
+            meta.CommonMetaData.Directories.AddUnique(objectFileDir);
         }
     }
 }
