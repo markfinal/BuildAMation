@@ -185,9 +185,12 @@ namespace VisualC
 
     public static partial class NativeImplementation
     {
-        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this C.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var commandLine = module.MetaData as Bam.Core.StringArray;
             var objectFile = module as C.V2.ObjectFile;
             if (true == options.DebugSymbols)
             {
@@ -273,23 +276,43 @@ namespace VisualC
             }
         }
 
-        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this C.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this VisualCCommon.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this VisualCCommon.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this VisualCCommon.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this VisualCCommon.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this VisualC.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this VisualC.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this VisualC.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this VisualC.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
     }
@@ -457,15 +480,17 @@ namespace V2
             set;
         }
 
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            module.MetaData = new Bam.Core.StringArray();
-            (this as C.V2.ICommonCompilerOptions).Convert(module);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(module);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module);
-            (this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module);
-            (this as VisualC.V2.ICommonCompilerOptions).Convert(module);
-            (this as VisualC.V2.ICOnlyCompilerOptions).Convert(module);
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
         void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)

@@ -21,9 +21,12 @@ namespace Mingw
 {
     public static partial class NativeImplementation
     {
-        public static void Convert(this C.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this C.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var commandLine = module.MetaData as Bam.Core.StringArray;
             var objectFile = module as C.V2.ObjectFile;
             if (options.Bits == C.V2.EBit.ThirtyTwo)
             {
@@ -128,23 +131,43 @@ namespace Mingw
             }
         }
 
-        public static void Convert(this C.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this C.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this MingwCommon.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this MingwCommon.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this MingwCommon.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this MingwCommon.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this Mingw.V2.ICommonCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this Mingw.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
 
-        public static void Convert(this Mingw.V2.ICOnlyCompilerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this Mingw.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
     }
@@ -284,15 +307,17 @@ namespace V2
             set;
         }
 
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            module.MetaData = new Bam.Core.StringArray();
-            (this as C.V2.ICommonCompilerOptions).Convert(module);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(module);
-            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module);
-            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(module);
-            (this as Mingw.V2.ICommonCompilerOptions).Convert(module);
-            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(module);
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
     }
 

@@ -52,11 +52,12 @@ namespace V2
                 }
             }
 
+            sender.MetaData = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender });
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
             }
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath);

@@ -57,9 +57,12 @@ namespace DefaultSettings
 
     public static partial class NativeImplementation
     {
-        public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this C.V2.ICommonArchiverOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var commandLine = module.MetaData as Bam.Core.StringArray;
             var staticLibrary = module as C.V2.StaticLibrary;
 
             switch (options.OutputType)
@@ -73,9 +76,12 @@ namespace DefaultSettings
             }
         }
 
-        public static void Convert(this IArchiverOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this IArchiverOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var commandLine = module.MetaData as Bam.Core.StringArray;
             if (options.Ranlib)
             {
                 commandLine.Add("-s");
@@ -132,12 +138,14 @@ namespace DefaultSettings
             set;
         }
 
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            module.MetaData = new Bam.Core.StringArray();
-            (this as IArchiverOptions).Convert(module);
+            (this as IArchiverOptions).Convert(module, commandLine);
             // output file comes last, before inputs
-            (this as C.V2.ICommonArchiverOptions).Convert(module);
+            (this as C.V2.ICommonArchiverOptions).Convert(module, commandLine);
         }
     }
 

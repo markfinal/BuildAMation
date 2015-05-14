@@ -21,9 +21,12 @@ namespace VisualC
 {
     public static partial class NativeImplementation
     {
-        public static void Convert(this C.V2.ICommonLinkerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this C.V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var commandLine = module.MetaData as Bam.Core.StringArray;
             var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
@@ -43,7 +46,11 @@ namespace VisualC
             }
         }
 
-        public static void Convert(this V2.ICommonLinkerOptions options, Bam.Core.V2.Module module)
+        public static void
+        Convert(
+            this V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
         }
     }
@@ -77,11 +84,13 @@ namespace V2
             set;
         }
 
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module)
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            module.MetaData = new Bam.Core.StringArray();
-            (this as C.V2.ICommonLinkerOptions).Convert(module);
-            (this as ICommonLinkerOptions).Convert(module);
+            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
     }
 

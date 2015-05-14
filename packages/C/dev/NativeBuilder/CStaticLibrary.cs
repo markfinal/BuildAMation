@@ -29,11 +29,12 @@ namespace C
                 string libraryPath,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
             {
+                sender.MetaData = new Bam.Core.StringArray();
                 var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
                 if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
                 {
                     var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                    map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender });
+                    map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
                 }
 
                 var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath);
