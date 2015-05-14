@@ -501,14 +501,14 @@ namespace V2
         }
 
         // TODO: is this on an interface? not all tools will be based on running an executable
-        public abstract string Executable
+        public abstract TokenizedString Executable
         {
             get;
         }
 
         public override void Evaluate()
         {
-            var exists = System.IO.File.Exists(this.Executable);
+            var exists = System.IO.File.Exists(this.Executable.ToString());
             this.IsUpToDate = exists;
         }
     }

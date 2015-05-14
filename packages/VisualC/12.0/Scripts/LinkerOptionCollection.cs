@@ -116,11 +116,11 @@ namespace V2
             return settings;
         }
 
-        public override string Executable
+        public override Bam.Core.V2.TokenizedString Executable
         {
             get
             {
-                return @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe";
+                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe", null);
             }
         }
 

@@ -464,11 +464,11 @@ namespace V2
             this.Macros.Add("objext", ".o");
         }
 
-        public override string Executable
+        public override Bam.Core.V2.TokenizedString Executable
         {
             get
             {
-                return @"C:\MinGW\bin\mingw32-gcc-4.8.1.exe";
+                return Bam.Core.V2.TokenizedString.Create(@"C:\MinGW\bin\mingw32-gcc-4.8.1.exe", null);
             }
         }
 

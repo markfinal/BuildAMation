@@ -682,11 +682,11 @@ namespace V2
     public sealed class Compiler32 :
         CompilerBase
     {
-        public override string Executable
+        public override Bam.Core.V2.TokenizedString Executable
         {
             get
             {
-                return @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe"; // 32-bit one
+                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe", null); // 32-bit one
             }
         }
 
@@ -708,11 +708,11 @@ namespace V2
             this.EnvironmentVariables["PATH"].Add(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin");
         }
 
-        public override string Executable
+        public override Bam.Core.V2.TokenizedString Executable
         {
             get
             {
-                return @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\cl.exe";
+                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\cl.exe", null);
             }
         }
 
