@@ -439,6 +439,20 @@ namespace V2
         }
     }
 
+    public static class Configure
+    {
+        static Configure()
+        {
+            InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\MinGW", null);
+        }
+
+        public static Bam.Core.V2.TokenizedString InstallPath
+        {
+            get;
+            private set;
+        }
+    }
+
     public abstract class CompilerBase :
         C.V2.CompilerTool
     {

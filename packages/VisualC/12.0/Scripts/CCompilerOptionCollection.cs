@@ -618,6 +618,20 @@ namespace V2
         }
     }
 
+    public static class Configure
+    {
+        static Configure()
+        {
+            InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null);
+        }
+
+        public static Bam.Core.V2.TokenizedString InstallPath
+        {
+            get;
+            private set;
+        }
+    }
+
     public abstract class CompilerBase :
         C.V2.CompilerTool
     {
