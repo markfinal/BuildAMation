@@ -29,18 +29,21 @@ namespace V2
             string objectFilePath,
             Bam.Core.V2.Module source)
         {
+            var commandLineArgs = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender });
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLineArgs as object });
             }
 
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             meta.Target = objectFilePath;
             meta.Prequisities.Add(source, C.V2.SourceFile.Key);
-            meta.Rules.Add((sender.MetaData as Bam.Core.StringArray).ToString(' '));
-            sender.MetaData = meta;
+
+            var rule = new System.Text.StringBuilder();
+            rule.AppendFormat("{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            meta.Rules.Add(rule.ToString());
         }
     }
 }

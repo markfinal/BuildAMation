@@ -32,6 +32,8 @@ namespace V2
             {
                 this.TargetVariable = module.GetType().Name;
             }
+
+            module.MetaData = this;
         }
 
         public string Target

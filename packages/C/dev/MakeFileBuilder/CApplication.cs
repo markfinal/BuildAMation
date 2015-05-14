@@ -31,11 +31,12 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+            var commandLineArgs = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender });
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLineArgs as object });
             }
 
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
@@ -59,8 +60,9 @@ namespace V2
                 meta.Prequisities.Add(module, C.V2.StaticLibrary.Key);
             }
             // TODO: frameworks
-            meta.Rules.Add((sender.MetaData as Bam.Core.StringArray).ToString(' '));
-            sender.MetaData = meta;
+            var rule = new System.Text.StringBuilder();
+            rule.AppendFormat("{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            meta.Rules.Add(rule.ToString());
         }
     }
 }
