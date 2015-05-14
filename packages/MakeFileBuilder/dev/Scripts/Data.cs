@@ -98,6 +98,9 @@ namespace V2
             var makeVariables = new System.Text.StringBuilder();
             var makeRules = new System.Text.StringBuilder();
 
+            // delete suffix rules
+            makeVariables.AppendLine(".SUFFIXES:");
+
             var commonMeta = graph.MetaData as MakeFileCommonMetaData;
             if (commonMeta.Directories.Count > 0)
             {
