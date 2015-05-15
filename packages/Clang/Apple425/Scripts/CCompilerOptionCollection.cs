@@ -17,6 +17,7 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
 using C.V2.DefaultSettings;
+using Clang.V2.DefaultSettings;
 namespace Clang
 {
     public static partial class NativeImplementation
@@ -132,8 +133,120 @@ namespace Clang
         }
     }
 
+    public static partial class NativeImplementation
+    {
+        public static void
+        Convert(
+            this C.V2.ICommonArchiverOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            switch (options.OutputType)
+            {
+                case C.EArchiverOutput.StaticLibrary:
+                    commandLine.Add(module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
+                    break;
+            }
+        }
+
+        public static void
+        Convert(
+            this V2.IArchiverOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (options.Ranlib)
+            {
+                commandLine.Add("-s");
+            }
+            if (options.DoNotWarnIfLibraryCreated)
+            {
+                commandLine.Add("-c");
+            }
+            switch (options.Command)
+            {
+                case V2.EArchiverCommand.Replace:
+                    commandLine.Add("-r");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("No such archiver command");
+            }
+        }
+    }
+
+    public static partial class NativeImplementation
+    {
+        public static void
+        Convert(
+            this C.V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            var applicationFile = module as C.V2.ConsoleApplication;
+            switch (options.OutputType)
+            {
+                case C.ELinkerOutput.Executable:
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    break;
+
+                case C.ELinkerOutput.DynamicLibrary:
+                    commandLine.Add("-dynamiclib");
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    // TODO: dylib_install_name
+                    // TODO: current_version
+                    // TODO: compatability_version
+                    break;
+            }
+            foreach (var path in options.LibraryPaths)
+            {
+                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
+                commandLine.Add(System.String.Format(format, path.ToString()));
+            }
+        }
+    }
+
 namespace V2
 {
+    namespace DefaultSettings
+    {
+        public static partial class DefaultSettingsExtensions
+        {
+            public static void Defaults(this IArchiverOptions settings, Bam.Core.V2.Module module)
+            {
+                settings.Ranlib = true;
+                settings.DoNotWarnIfLibraryCreated = true;
+                settings.Command = EArchiverCommand.Replace;
+            }
+        }
+    }
+
+    public enum EArchiverCommand
+    {
+        Replace
+    }
+
+    public interface IArchiverOptions
+    {
+        bool Ranlib
+        {
+            get;
+            set;
+        }
+
+        bool DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        EArchiverCommand Command
+        {
+            get;
+            set;
+        }
+    }
+
     public class CompilerSettings :
         Bam.Core.V2.Settings,
         C.V2.ICommonCompilerOptions,
@@ -328,6 +441,78 @@ namespace V2
         }
     }
 
+    public class LibrarianSettings :
+        Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        C.V2.ICommonArchiverOptions,
+        IArchiverOptions
+    {
+        public LibrarianSettings(Bam.Core.V2.Module module)
+        {
+            (this as C.V2.ICommonArchiverOptions).Defaults(module);
+            (this as IArchiverOptions).Defaults(module);
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as IArchiverOptions).Convert(module, commandLine);
+            // output file comes last, before inputs
+            (this as C.V2.ICommonArchiverOptions).Convert(module, commandLine);
+        }
+
+        C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        bool IArchiverOptions.Ranlib
+        {
+            get;
+            set;
+        }
+
+        bool IArchiverOptions.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        EArchiverCommand IArchiverOptions.Command
+        {
+            get;
+            set;
+        }
+    }
+
+    public class LinkerSettings :
+        Bam.Core.V2.Settings,
+        C.V2.ICommonLinkerOptions,
+        CommandLineProcessor.V2.IConvertToCommandLine
+    {
+        public LinkerSettings(Bam.Core.V2.Module module)
+        {
+            (this as C.V2.ICommonLinkerOptions).Defaults(module);
+        }
+
+        C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+        }
+    }
+
     public static class Configure
     {
         static Configure()
@@ -339,6 +524,67 @@ namespace V2
         {
             get;
             private set;
+        }
+    }
+
+    [C.V2.RegisterArchiver("Clang", Bam.Core.EPlatform.OSX)]
+    public sealed class Librarian :
+        C.V2.LibrarianTool
+    {
+        public Librarian()
+        {
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("libprefix", "lib");
+            this.Macros.Add("libext", ".a");
+            this.Macros.Add("LibrarianPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/ar", this));
+        }
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            var settings = new LibrarianSettings(module);
+            return settings;
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return this.Macros["LibrarianPath"];
+            }
+        }
+    }
+
+    [C.V2.RegisterLinker("Clang", Bam.Core.EPlatform.OSX)]
+    public sealed class Linker :
+        C.V2.LinkerTool
+    {
+        public Linker()
+        {
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("exeext", string.Empty);
+            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/clang", this));
+        }
+
+        public override bool UseLPrefixLibraryPaths
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            var settings = new LinkerSettings(module);
+            return settings;
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return this.Macros["LinkerPath"];
+            }
         }
     }
 
