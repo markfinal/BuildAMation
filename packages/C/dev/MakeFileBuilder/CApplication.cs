@@ -61,11 +61,12 @@ namespace V2
             }
             // TODO: frameworks
             var rule = new System.Text.StringBuilder();
-            rule.AppendFormat("{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
             meta.Recipe.Add(rule.ToString());
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath);
             meta.CommonMetaData.Directories.AddUnique(executableDir);
+            meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
         }
     }
 }

@@ -42,11 +42,12 @@ namespace V2
             meta.Prequisities.Add(source, C.V2.SourceFile.Key);
 
             var rule = new System.Text.StringBuilder();
-            rule.AppendFormat("{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1}" : "{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
             meta.Recipe.Add(rule.ToString());
 
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath);
             meta.CommonMetaData.Directories.AddUnique(objectFileDir);
+            meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
         }
     }
 }

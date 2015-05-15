@@ -54,11 +54,12 @@ namespace V2
                 }
             }
             var rule = new System.Text.StringBuilder();
-            rule.AppendFormat("{0} {1} $<", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
             meta.Recipe.Add(rule.ToString());
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath);
             meta.CommonMetaData.Directories.AddUnique(libraryFileDir);
+            meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
         }
     }
 }

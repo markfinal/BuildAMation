@@ -30,12 +30,40 @@ namespace V2
         public MakeFileCommonMetaData()
         {
             this.Directories = new Bam.Core.StringArray();
+            this.Environment = new System.Collections.Generic.Dictionary<string, string>();
         }
 
         public Bam.Core.StringArray Directories
         {
             get;
             private set;
+        }
+
+        public System.Collections.Generic.Dictionary<string, string> Environment
+        {
+            get;
+            private set;
+        }
+
+        public void
+        ExtendEnvironmentVariables(
+            System.Collections.Generic.Dictionary<string, Bam.Core.V2.TokenizedStringArray> import)
+        {
+            foreach (var env in import)
+            {
+                if (!this.Environment.ContainsKey(env.Key))
+                {
+                    this.Environment.Add(env.Key, string.Empty);
+                }
+                foreach (var path in env.Value)
+                {
+                    if (this.Environment[env.Key].Contains(path.ToString()))
+                    {
+                        continue;
+                    }
+                    this.Environment[env.Key] += path.ToString() + System.IO.Path.PathSeparator;
+                }
+            }
         }
     }
 
@@ -51,8 +79,9 @@ namespace V2
                 this.TargetVariable = module.GetType().Name;
             }
 
-            module.MetaData = this;
             this.CommonMetaData = Bam.Core.V2.Graph.Instance.MetaData as MakeFileCommonMetaData;
+
+            module.MetaData = this;
         }
 
         public MakeFileCommonMetaData CommonMetaData
@@ -94,14 +123,20 @@ namespace V2
         public static void PostExecution()
         {
             var graph = Bam.Core.V2.Graph.Instance;
+            var commonMeta = graph.MetaData as MakeFileCommonMetaData;
 
+            var makeEnvironment = new System.Text.StringBuilder();
             var makeVariables = new System.Text.StringBuilder();
             var makeRules = new System.Text.StringBuilder();
 
             // delete suffix rules
-            makeVariables.AppendLine(".SUFFIXES:");
+            makeEnvironment.AppendLine(".SUFFIXES:");
+            foreach (var env in commonMeta.Environment)
+            {
+                makeEnvironment.AppendFormat("{0}:={1}", env.Key, env.Value);
+                makeEnvironment.AppendLine();
+            }
 
-            var commonMeta = graph.MetaData as MakeFileCommonMetaData;
             if (commonMeta.Directories.Count > 0)
             {
                 makeVariables.Append("DIRS:=");
@@ -163,6 +198,7 @@ namespace V2
                 }
             }
 
+            Bam.Core.Log.DebugMessage(makeEnvironment.ToString());
             Bam.Core.Log.DebugMessage(makeVariables.ToString());
             Bam.Core.Log.DebugMessage(makeRules.ToString());
 
@@ -171,6 +207,7 @@ namespace V2
 
             using (var writer = new System.IO.StreamWriter(makeFilePath.ToString()))
             {
+                writer.Write(makeEnvironment.ToString());
                 writer.Write(makeVariables.ToString());
                 writer.Write(makeRules.ToString());
             }
