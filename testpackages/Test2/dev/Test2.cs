@@ -43,11 +43,6 @@ namespace Test2
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/application.c");
-            source.PrivatePatch(settings =>
-                {
-                    var cOnly = settings as C.V2.ICOnlyCompilerOptions;
-                    cOnly.C99Specific = true;
-                });
             // TODO: what happens for a header only library?
             source.UsePublicPatches(library.Source[0]);
             source.UsePublicPatches(library2.Source[0]);

@@ -277,12 +277,6 @@ namespace V2
             set;
         }
 
-        bool C.V2.ICOnlyCompilerOptions.C99Specific
-        {
-            get;
-            set;
-        }
-
         bool MingwCommon.V2.ICommonCompilerOptions.MCommonCommon
         {
             get;

@@ -143,11 +143,6 @@ namespace DefaultSettings
 
     public interface ICOnlyCompilerOptions
     {
-        bool C99Specific
-        {
-            get;
-            set;
-        }
     }
 }
     public interface ICCompilerOptions

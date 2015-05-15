@@ -450,12 +450,6 @@ namespace V2
             set;
         }
 
-        bool C.V2.ICOnlyCompilerOptions.C99Specific
-        {
-            get;
-            set;
-        }
-
         bool VisualCCommon.V2.ICommonCompilerOptions.VCCommonCommon
         {
             get;
