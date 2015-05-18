@@ -504,14 +504,15 @@ namespace V2
             StaticLibrary
         }
 
-        public Target(string name, Project project, FileReference fileRef, EProductType type) :
+        public Target(Bam.Core.V2.Module module, Project project, FileReference fileRef, EProductType type) :
             base()
         {
-            this.Name = name;
+            this.Name = module.GetType().Name;
             this.FileReference = fileRef;
             this.Type = type;
 
             var config = new Configuration("Debug"); // TODO: is debug?
+            config["PRODUCT_NAME"] = "$(TARGET_NAME)";
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             project.Configurations.Add(config);
@@ -703,16 +704,37 @@ namespace V2
             protected set;
         }
 
+        public string this[string key]
+        {
+            get
+            {
+                return this.Settings[key];
+            }
+
+            set
+            {
+                this.Settings[key] = value;
+            }
+        }
+
+        private System.Collections.Generic.Dictionary<string, string> Settings = new System.Collections.Generic.Dictionary<string, string>();
+
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
+            var indent3 = new string('\t', indentLevel + 2);
             text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
             text.AppendLine();
             text.AppendFormat("{0}isa = XCBuildConfiguration;", indent2);
             text.AppendLine();
             text.AppendFormat("{0}buildSettings = {{", indent2);
             text.AppendLine();
+            foreach (var setting in this.Settings)
+            {
+                text.AppendFormat("{0}{1} = \"{2}\";", indent3, setting.Key, setting.Value);
+                text.AppendLine();
+            }
             text.AppendFormat("{0}}};", indent2);
             text.AppendLine();
             text.AppendFormat("{0}name = {1};", indent2, this.Name);
@@ -883,7 +905,7 @@ namespace V2
             this.Project.FileReferences.Add(library);
             this.Project.ProductRefGroup.Children.Add(library);
 
-            var target = new Target(module.GetType().Name, this.Project, library, V2.Target.EProductType.StaticLibrary);
+            var target = new Target(module, this.Project, library, V2.Target.EProductType.StaticLibrary);
             this.Target = target;
             this.Project.SourcesBuildPhases.Add(target.SourcesBuildPhase);
         }
@@ -894,6 +916,7 @@ namespace V2
             target.SourcesBuildPhase.BuildFiles.Add(output);
 
             this.Project.FileReferences.Add(source);
+            this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
             this.Project.BuildFiles.Add(output);
         }
 
