@@ -398,7 +398,7 @@ namespace V2
             Application
         }
 
-        public VSSolutionMeta(Bam.Core.V2.Module module, Type type)
+        protected VSSolutionMeta(Bam.Core.V2.Module module, Type type)
         {
             var graph = Bam.Core.V2.Graph.Instance;
             var isReferenced = graph.IsReferencedModule(module);

@@ -16,6 +16,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class XcodeCompilation :
+        ICompilationPolicy
+    {
+        void
+        ICompilationPolicy.Compile(
+            ObjectFile sender,
+            string objectFilePath,
+            Bam.Core.V2.Module source)
+        {
+            var objectFile = new XcodeBuilder.V2.XcodeObjectFile(sender);
+            objectFile.Source = new XcodeBuilder.V2.FileReference(source.GeneratedPaths[C.V2.SourceFile.Key].ToString(), XcodeBuilder.V2.FileReference.EFileType.SourceCodeC);
+            objectFile.Output = new XcodeBuilder.V2.BuildFile(objectFilePath, objectFile.Source);
+        }
+    }
+}
+}
 namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder

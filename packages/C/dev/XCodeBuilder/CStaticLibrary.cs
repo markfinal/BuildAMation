@@ -16,6 +16,43 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+    namespace V2
+    {
+        public sealed class XcodeLibrarian :
+            ILibrarianPolicy
+        {
+            void
+            ILibrarianPolicy.Archive(
+                StaticLibrary sender,
+                string libraryPath,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
+            {
+                var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
+
+                foreach (var input in inputs)
+                {
+                    if (input is Bam.Core.V2.IModuleGroup)
+                    {
+                        foreach (var child in input.Children)
+                        {
+                            var meta = child.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                            library.AddSource(meta.Source, meta.Output);
+                            meta.Project = library.Project;
+                        }
+                    }
+                    else
+                    {
+                        var meta = input.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                        library.AddSource(meta.Source, meta.Output);
+                        meta.Project = library.Project;
+                    }
+                }
+            }
+        }
+    }
+}
 namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder
