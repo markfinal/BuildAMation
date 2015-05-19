@@ -236,6 +236,16 @@ namespace V2
             get;
         }
 
+        protected abstract string BuildActionMask
+        {
+            get;
+        }
+
+        protected abstract bool RunOnlyForDeploymentPostprocessing
+        {
+            get;
+        }
+
         public System.Collections.Generic.List<BuildFile> BuildFiles
         {
             get;
@@ -251,6 +261,8 @@ namespace V2
             text.AppendLine();
             text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
+            text.AppendFormat("{0}buildActionMask = {1};", indent2, this.BuildActionMask);
+            text.AppendLine();
             if (this.BuildFiles.Count > 0)
             {
                 text.AppendFormat("{0}files = (", indent2);
@@ -263,6 +275,8 @@ namespace V2
                 text.AppendFormat("{0});", indent2);
                 text.AppendLine();
             }
+            text.AppendFormat("{0}runOnlyForDeploymentPostprocessing = {1};", indent2, this.RunOnlyForDeploymentPostprocessing ? "1" : "0");
+            text.AppendLine();
             text.AppendFormat("{0}}};", indent);
             text.AppendLine();
         }
@@ -276,6 +290,22 @@ namespace V2
             get
             {
                 return "PBXSourcesBuildPhase";
+            }
+        }
+
+        protected override string BuildActionMask
+        {
+            get
+            {
+                return "0";
+            }
+        }
+
+        protected override bool RunOnlyForDeploymentPostprocessing
+        {
+            get
+            {
+                return false;
             }
         }
     }
@@ -302,6 +332,7 @@ namespace V2
 
             var config = new Configuration("Debug"); // TODO: is debug?
             config["USE_HEADERMAP"] = "NO";
+            config["COMBINE_HIDPI_IMAGES"] = "NO"; // TODO: needed to quieten Xcode 4 verification
             config["SYMROOT"] = Bam.Core.State.BuildRoot;
             config["PROJECT_TEMP_DIR"] = "$SYMROOT";
             var configList = new ConfigurationList(this);
@@ -386,6 +417,14 @@ namespace V2
             text.AppendFormat("{0}{1} /* Project object */ = {{", indent, this.GUID);
             text.AppendLine();
             text.AppendFormat("{0}isa = PBXProject;", indent2);
+            text.AppendLine();
+            text.AppendFormat("{0}attributes = {{", indent2);
+            text.AppendLine();
+            text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, "0460"); // TODO: this is for Xcode 4
+            text.AppendLine();
+            text.AppendFormat("{0}}};", indent2);
+            text.AppendLine();
+            text.AppendFormat("{0}compatibilityVersion = \"{1}\";", indent2, "Xcode 3.2"); // TODO
             text.AppendLine();
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for FILLEMIN */;", indent2, this.ConfigurationLists[0].GUID);
             text.AppendLine();
