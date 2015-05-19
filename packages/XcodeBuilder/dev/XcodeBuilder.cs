@@ -126,6 +126,12 @@ namespace V2
             private set;
         }
 
+        public Bam.Core.StringArray Settings
+        {
+            get;
+            set;
+        }
+
         public override string GUID
         {
             get;
@@ -135,7 +141,12 @@ namespace V2
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
-            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{isa = PBXBuildFile; fileRef = {2} /* FILLEMEIN */; }};", indent, this.GUID, this.Source.GUID);
+            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{isa = PBXBuildFile; fileRef = {2} /* FILLEMEIN */; ", indent, this.GUID, this.Source.GUID);
+            if (this.Settings != null)
+            {
+                text.AppendFormat("settings = {{COMPILER_FLAGS = \"{0}\"; }}; ", this.Settings.ToString(' '));
+            }
+            text.AppendFormat("}};", indent, this.GUID, this.Source.GUID);
             text.AppendLine();
         }
     }
@@ -1039,8 +1050,14 @@ namespace V2
             this.Project.SourcesBuildPhases.Add(target.SourcesBuildPhase);
         }
 
-        public void AddSource(FileReference source, BuildFile output)
+        public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
         {
+            if (null != patchSettings)
+            {
+                var commandLine = new Bam.Core.StringArray();
+                (patchSettings as CommandLineProcessor.V2.IConvertToCommandLine).Convert(module, commandLine);
+                output.Settings = commandLine;
+            }
             this.Target.SourcesBuildPhase.BuildFiles.Add(output);
 
             this.Project.FileReferences.Add(source);

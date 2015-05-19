@@ -38,15 +38,22 @@ namespace C
                     {
                         foreach (var child in input.Children)
                         {
+                            Bam.Core.V2.Settings patchSettings = null;
+                            if (child.HasPatches)
+                            {
+                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
+                                child.ApplySettingsPatches(patchSettings, honourParents: false);
+                            }
+
                             var meta = child.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                            library.AddSource(meta.Source, meta.Output);
+                            library.AddSource(child, meta.Source, meta.Output, patchSettings);
                             meta.Project = library.Project;
                         }
                     }
                     else
                     {
                         var meta = input.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                        library.AddSource(meta.Source, meta.Output);
+                        library.AddSource(input, meta.Source, meta.Output, null);
                         meta.Project = library.Project;
                     }
                 }

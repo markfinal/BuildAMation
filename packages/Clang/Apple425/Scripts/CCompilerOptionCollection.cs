@@ -182,17 +182,23 @@ namespace Clang
             Bam.Core.StringArray commandLine)
         {
             var objectFile = module as C.V2.ObjectFile;
-            if (options.Bits == C.V2.EBit.SixtyFour)
+            if (null != options.Bits)
             {
-                commandLine.Add("-arch x86_64");
+                if (options.Bits == C.V2.EBit.SixtyFour)
+                {
+                    commandLine.Add("-arch x86_64");
+                }
+                else
+                {
+                    commandLine.Add("-arch i386");
+                }
             }
-            else
+            if (null != options.DebugSymbols)
             {
-                commandLine.Add("-arch i386");
-            }
-            if (true == options.DebugSymbols)
-            {
-                commandLine.Add("-g");
+                if (true == options.DebugSymbols)
+                {
+                    commandLine.Add("-g");
+                }
             }
             foreach (var warning in options.DisableWarnings)
             {
@@ -203,40 +209,49 @@ namespace Clang
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            switch (options.LanguageStandard)
+            if (null != options.LanguageStandard)
             {
-                case C.ELanguageStandard.C89:
-                    commandLine.Add("-std=c89");
-                    break;
-                case C.ELanguageStandard.C99:
-                    commandLine.Add("-std=c99");
-                    break;
-                default:
-                    // TODO: Might want to split this across C specific and Cxx specific options
-                    throw new Bam.Core.Exception("Invalid language standard");
+                switch (options.LanguageStandard)
+                {
+                    case C.ELanguageStandard.C89:
+                        commandLine.Add("-std=c89");
+                        break;
+                    case C.ELanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+                    default:
+                        // TODO: Might want to split this across C specific and Cxx specific options
+                        throw new Bam.Core.Exception("Invalid language standard, '{0}'", options.LanguageStandard.ToString());
+                }
             }
-            if (true == options.OmitFramePointer)
+            if (null != options.OmitFramePointer)
             {
-                commandLine.Add("-fomit-frame-pointer");
+                if (true == options.OmitFramePointer)
+                {
+                    commandLine.Add("-fomit-frame-pointer");
+                }
+                else
+                {
+                    commandLine.Add("-fno-omit-frame-pointer");
+                }
             }
-            else
+            if (null != options.Optimization)
             {
-                commandLine.Add("-fno-omit-frame-pointer");
-            }
-            switch (options.Optimization)
-            {
-                case C.EOptimization.Off:
-                    commandLine.Add("-O0");
-                    break;
-                case C.EOptimization.Size:
-                    commandLine.Add("-Os");
-                    break;
-                case C.EOptimization.Speed:
-                    commandLine.Add("-O1");
-                    break;
-                case C.EOptimization.Full:
-                    commandLine.Add("-O3");
-                    break;
+                switch (options.Optimization)
+                {
+                    case C.EOptimization.Off:
+                        commandLine.Add("-O0");
+                        break;
+                    case C.EOptimization.Size:
+                        commandLine.Add("-Os");
+                        break;
+                    case C.EOptimization.Speed:
+                        commandLine.Add("-O1");
+                        break;
+                    case C.EOptimization.Full:
+                        commandLine.Add("-O3");
+                        break;
+                }
             }
             foreach (var define in options.PreprocessorDefines)
             {
@@ -258,31 +273,40 @@ namespace Clang
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            switch (options.TargetLanguage)
+            if (null != options.TargetLanguage)
             {
-                case C.ETargetLanguage.C:
-                    commandLine.Add("-x c");
-                    break;
-                case C.ETargetLanguage.Cxx:
-                    commandLine.Add("-x c++");
-                    break;
-                default:
-                    throw new Bam.Core.Exception("Unsupported target language");
+                switch (options.TargetLanguage)
+                {
+                    case C.ETargetLanguage.C:
+                        commandLine.Add("-x c");
+                        break;
+                    case C.ETargetLanguage.Cxx:
+                        commandLine.Add("-x c++");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported target language");
+                }
             }
-            if (true == options.WarningsAsErrors)
+            if (null != options.WarningsAsErrors)
             {
-                commandLine.Add("-Werror");
+                if (true == options.WarningsAsErrors)
+                {
+                    commandLine.Add("-Werror");
+                }
             }
-            switch (options.OutputType)
+            if (null != options.OutputType)
             {
-                case C.ECompilerOutput.CompileOnly:
-                    commandLine.Add(System.String.Format("-c {0}", objectFile.InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
-                    break;
-                case C.ECompilerOutput.Preprocess:
-                    commandLine.Add(System.String.Format("-E {0}", objectFile.InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
-                    break;
+                switch (options.OutputType)
+                {
+                    case C.ECompilerOutput.CompileOnly:
+                        commandLine.Add(System.String.Format("-c {0}", objectFile.InputPath.ToString()));
+                        commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                        break;
+                    case C.ECompilerOutput.Preprocess:
+                        commandLine.Add(System.String.Format("-E {0}", objectFile.InputPath.ToString()));
+                        commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                        break;
+                }
             }
         }
     }
