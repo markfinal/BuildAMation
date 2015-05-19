@@ -986,6 +986,11 @@ namespace V2
 
             var workspaceMeta = Bam.Core.V2.Graph.Instance.MetaData as WorkspaceMeta;
 
+            var workspaceContents = new System.Xml.XmlDocument();
+            var workspace = workspaceContents.CreateElement("Workspace");
+            workspace.Attributes.Append(workspaceContents.CreateAttribute("version")).Value = "1.0";
+            workspaceContents.AppendChild(workspace);
+
             foreach (var project in workspaceMeta.Projects)
             {
                 var text = new System.Text.StringBuilder();
@@ -1024,6 +1029,31 @@ namespace V2
                 {
                     writer.Write(text.ToString());
                 }
+
+                var workspaceFileRef = workspaceContents.CreateElement("FileRef");
+                workspaceFileRef.Attributes.Append(workspaceContents.CreateAttribute("location")).Value = System.String.Format("group:{0}", projectDir);
+                workspace.AppendChild(workspaceFileRef);
+            }
+
+            var workspacePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/workspace.xcworkspace/contents.xcworkspacedata", null);
+            workspacePath.Parse();
+
+            var workspaceDir = System.IO.Path.GetDirectoryName(workspacePath.ToString());
+            if (!System.IO.Directory.Exists(workspaceDir))
+            {
+                System.IO.Directory.CreateDirectory(workspaceDir);
+            }
+
+            var settings = new System.Xml.XmlWriterSettings();
+            settings.OmitXmlDeclaration = false;
+            settings.Encoding = new System.Text.UTF8Encoding(false); // no BOM
+            settings.NewLineChars = System.Environment.NewLine;
+            settings.Indent = true;
+            settings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
+
+            using (var xmlwriter = System.Xml.XmlWriter.Create(workspacePath.ToString(), settings))
+            {
+                workspaceContents.WriteTo(xmlwriter);
             }
         }
     }
