@@ -331,10 +331,10 @@ namespace V2
             this.MainGroup.Children.Add(this.ProductRefGroup);
 
             var config = new Configuration("Debug"); // TODO: is debug?
-            config["USE_HEADERMAP"] = "NO";
-            config["COMBINE_HIDPI_IMAGES"] = "NO"; // TODO: needed to quieten Xcode 4 verification
-            config["SYMROOT"] = Bam.Core.State.BuildRoot;
-            config["PROJECT_TEMP_DIR"] = "$SYMROOT";
+            config["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
+            config["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
+            config["SYMROOT"] = new UniqueConfigurationValue(Bam.Core.State.BuildRoot);
+            config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             this.Configurations.Add(config);
@@ -554,8 +554,8 @@ namespace V2
             this.Type = type;
 
             var config = new Configuration("Debug"); // TODO: is debug?
-            config["PRODUCT_NAME"] = "$(TARGET_NAME)";
-            config["CONFIGURATION_TEMP_DIR"] = "$PROJECT_TEMP_DIR";
+            config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
+            config["CONFIGURATION_TEMP_DIR"] = new UniqueConfigurationValue("$PROJECT_TEMP_DIR");
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             project.Configurations.Add(config);
@@ -739,6 +739,61 @@ namespace V2
         }
     }
 
+    public abstract class ConfigurationValue
+    {
+    }
+
+    public sealed class UniqueConfigurationValue :
+        ConfigurationValue
+    {
+        public UniqueConfigurationValue(string value)
+        {
+            this.Value = value;
+        }
+
+        private string Value
+        {
+            get;
+            set;
+        }
+
+        public override string ToString()
+        {
+            return this.Value;
+        }
+    }
+
+    public sealed class MultiConfigurationValue :
+        ConfigurationValue
+    {
+        public MultiConfigurationValue()
+        {
+            this.Value = new Bam.Core.StringArray();
+        }
+
+        public MultiConfigurationValue(string value)
+            : this()
+        {
+            this.Value.AddUnique(value);
+        }
+
+        private Bam.Core.StringArray Value
+        {
+            get;
+            set;
+        }
+
+        public void Add(string value)
+        {
+            this.Value.AddUnique(value);
+        }
+
+        public override string ToString()
+        {
+            return this.Value.ToString(' ');
+        }
+    }
+
     public sealed class Configuration :
         Object
     {
@@ -760,7 +815,7 @@ namespace V2
             protected set;
         }
 
-        public string this[string key]
+        public ConfigurationValue this[string key]
         {
             get
             {
@@ -773,7 +828,7 @@ namespace V2
             }
         }
 
-        private System.Collections.Generic.Dictionary<string, string> Settings = new System.Collections.Generic.Dictionary<string, string>();
+        private System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
 
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {

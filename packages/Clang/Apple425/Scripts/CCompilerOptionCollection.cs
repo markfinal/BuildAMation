@@ -32,15 +32,17 @@ namespace Clang
             // TODO 64-bit
             if (null != options.DebugSymbols)
             {
-                configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = (options.DebugSymbols == true) ? "YES" : "NO";
+                configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.V2.UniqueConfigurationValue((options.DebugSymbols == true) ? "YES" : "NO");
             }
             // TODO DisableWarnings
             if (options.IncludePaths.Count > 0)
             {
+                var paths = new XcodeBuilder.V2.MultiConfigurationValue();
                 foreach (var path in options.IncludePaths)
                 {
-                    configuration["USER_HEADER_SEARCH_PATHS"] = path.ToString();
+                    paths.Add(path.ToString());
                 }
+                configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }
         }
     }
