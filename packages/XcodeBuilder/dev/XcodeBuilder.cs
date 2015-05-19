@@ -618,6 +618,11 @@ namespace V2
             protected set;
         }
 
+        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        {
+            (settings as XcodeProjectProcessor.V2.IConvertToProject).Convert(module, this.ConfigurationList[0]);
+        }
+
         private string ProductTypeToString()
         {
             switch (this.Type)
@@ -680,6 +685,14 @@ namespace V2
         {
             this.Parent = parent;
             this.Configurations = new System.Collections.Generic.List<Configuration>();
+        }
+
+        public Configuration this[int index]
+        {
+            get
+            {
+                return this.Configurations[index];
+            }
         }
 
         public Object Parent
@@ -848,7 +861,7 @@ namespace V2
             set;
         }
 
-        public Object Target
+        public Target Target
         {
             get;
             protected set;
@@ -955,12 +968,16 @@ namespace V2
 
         public void AddSource(FileReference source, BuildFile output)
         {
-            var target = this.Target as Target;
-            target.SourcesBuildPhase.BuildFiles.Add(output);
+            this.Target.SourcesBuildPhase.BuildFiles.Add(output);
 
             this.Project.FileReferences.Add(source);
             this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
             this.Project.BuildFiles.Add(output);
+        }
+
+        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        {
+            this.Target.SetCommonCompilationOptions(module, settings);
         }
 
         public FileReference Output

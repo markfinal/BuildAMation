@@ -20,6 +20,31 @@ using C.V2.DefaultSettings;
 using Clang.V2.DefaultSettings;
 namespace Clang
 {
+    public static partial class XcodeImplementation
+    {
+        public static void
+        Convert(
+            this C.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+            var objectFile = module as C.V2.ObjectFile;
+            // TODO 64-bit
+            if (null != options.DebugSymbols)
+            {
+                configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = (options.DebugSymbols == true) ? "YES" : "NO";
+            }
+            // TODO DisableWarnings
+            if (options.IncludePaths.Count > 0)
+            {
+                foreach (var path in options.IncludePaths)
+                {
+                    configuration["USER_HEADER_SEARCH_PATHS"] = path.ToString();
+                }
+            }
+        }
+    }
+
     public static partial class NativeImplementation
     {
         public static void
@@ -43,7 +68,7 @@ namespace Clang
             }
             foreach (var warning in options.DisableWarnings)
             {
-                commandLine.Add(warning);
+                commandLine.Add(System.String.Format("-Wno-{0}", warning));
             }
             foreach (var path in options.IncludePaths)
             {
@@ -249,9 +274,10 @@ namespace V2
 
     public class CompilerSettings :
         Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        XcodeProjectProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICOnlyCompilerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        C.V2.ICOnlyCompilerOptions
     {
         public CompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -265,6 +291,16 @@ namespace V2
             {
                 (this as C.V2.ICommonCompilerOptions).Defaults(module);
             }
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+        }
+
+        void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, configuration);
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
@@ -343,11 +379,6 @@ namespace V2
         {
             get;
             set;
-        }
-
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
-        {
-            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
         }
     }
 

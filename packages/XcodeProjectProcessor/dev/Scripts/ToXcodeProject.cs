@@ -18,6 +18,13 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+namespace V2
+{
+    public interface IConvertToProject
+    {
+        void Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration);
+    }
+}
     public static class ToXcodeProject
     {
         public static void

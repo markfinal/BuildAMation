@@ -33,6 +33,7 @@ namespace C
 
                 foreach (var input in inputs)
                 {
+                    library.SetCommonCompilationOptions(input, input.Settings);
                     if (input is Bam.Core.V2.IModuleGroup)
                     {
                         foreach (var child in input.Children)
