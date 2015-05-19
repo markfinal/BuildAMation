@@ -29,12 +29,41 @@ namespace Clang
             XcodeBuilder.V2.Configuration configuration)
         {
             var objectFile = module as C.V2.ObjectFile;
-            // TODO 64-bit
+            if (null != options.Bits)
+            {
+                switch (options.Bits)
+                {
+                    case C.V2.EBit.ThirtyTwo:
+                        {
+                            configuration["VALID_ARCHS"] = new XcodeBuilder.V2.UniqueConfigurationValue("i386");
+                            configuration["ARCHS"] = new XcodeBuilder.V2.UniqueConfigurationValue("$(ARCHS_STANDARD_32_BIT)");
+                        }
+                        break;
+
+                    case C.V2.EBit.SixtyFour:
+                        {
+                            configuration["VALID_ARCHS"] = new XcodeBuilder.V2.UniqueConfigurationValue("x86_64");
+                            configuration["ARCHS"] = new XcodeBuilder.V2.UniqueConfigurationValue("$(ARCHS_STANDARD_64_BIT)");
+                        }
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unknown bit depth");
+                }
+            }
             if (null != options.DebugSymbols)
             {
                 configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.V2.UniqueConfigurationValue((options.DebugSymbols == true) ? "YES" : "NO");
             }
-            // TODO DisableWarnings
+            if (options.DisableWarnings.Count > 0)
+            {
+                var warnings = new XcodeBuilder.V2.MultiConfigurationValue();
+                foreach (var warning in options.DisableWarnings)
+                {
+                    warnings.Add(System.String.Format("-Wno-{0}", warning));
+                }
+                configuration["WARNING_CFLAGS"] = warnings;
+            }
             if (options.IncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.V2.MultiConfigurationValue();
@@ -43,6 +72,103 @@ namespace Clang
                     paths.Add(path.ToString());
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
+            }
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.ELanguageStandard.C89:
+                        configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c89");
+                        break;
+                    case C.ELanguageStandard.C99:
+                        configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c99");
+                        break;
+                    default:
+                        // TODO: Might want to split this across C specific and Cxx specific options
+                        throw new Bam.Core.Exception("Invalid language standard");
+                }
+            }
+            if (null != options.OmitFramePointer)
+            {
+                var arg = (true == options.OmitFramePointer) ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
+                configuration["OTHER_CFLAGS"] = new XcodeBuilder.V2.MultiConfigurationValue(arg);
+            }
+            if (null != options.Optimization)
+            {
+                switch (options.Optimization)
+                {
+                    case C.EOptimization.Off:
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.V2.UniqueConfigurationValue("0");
+                        break;
+                    case C.EOptimization.Size:
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.V2.UniqueConfigurationValue("s");
+                        break;
+                    case C.EOptimization.Speed:
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.V2.UniqueConfigurationValue("1");
+                        break;
+                    case C.EOptimization.Full:
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.V2.UniqueConfigurationValue("3");
+                        break;
+                }
+            }
+            if (options.PreprocessorDefines.Count > 0)
+            {
+                var defines = new XcodeBuilder.V2.MultiConfigurationValue();
+                foreach (var define in options.PreprocessorDefines)
+                {
+                    if (System.String.IsNullOrEmpty(define.Value))
+                    {
+                        defines.Add(define.Key);
+                    }
+                    else
+                    {
+                        defines.Add(System.String.Format("{0}={1}", define.Key, define.Value));
+                    }
+                }
+                configuration["GCC_PREPROCESSOR_DEFINITIONS"] = defines;
+            }
+            if (options.PreprocessorUndefines.Count > 0)
+            {
+                var undefines = new XcodeBuilder.V2.MultiConfigurationValue();
+                foreach (var undefine in options.PreprocessorUndefines)
+                {
+                    undefines.Add(System.String.Format("-U{0}", undefine));
+                }
+                configuration["OTHER_CFLAGS"] = undefines;
+            }
+            if (options.SystemIncludePaths.Count > 0)
+            {
+                var paths = new XcodeBuilder.V2.MultiConfigurationValue();
+                foreach (var path in options.SystemIncludePaths)
+                {
+                    paths.Add(path.ToString());
+                }
+                configuration["HEADER_SEARCH_PATHS"] = paths;
+            }
+            if (null != options.TargetLanguage)
+            {
+                switch (options.TargetLanguage)
+                {
+                    case C.ETargetLanguage.Default:
+                        configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("automatic");
+                        break;
+                    case C.ETargetLanguage.C:
+                        configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("sourcecode.c.c");
+                        break;
+                    case C.ETargetLanguage.Cxx:
+                        configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("sourcecode.cpp.cpp");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported target language");
+                }
+            }
+            if (null != options.WarningsAsErrors)
+            {
+                configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.V2.UniqueConfigurationValue((true == options.WarningsAsErrors) ? "YES" : "NO");
+            }
+            if (null != options.OutputType)
+            {
+                // TODO: anything?
             }
         }
     }
@@ -80,6 +206,7 @@ namespace Clang
             switch (options.LanguageStandard)
             {
                 case C.ELanguageStandard.C89:
+                    commandLine.Add("-std=c89");
                     break;
                 case C.ELanguageStandard.C99:
                     commandLine.Add("-std=c99");
