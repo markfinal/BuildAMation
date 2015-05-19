@@ -301,6 +301,9 @@ namespace V2
             this.MainGroup.Children.Add(this.ProductRefGroup);
 
             var config = new Configuration("Debug"); // TODO: is debug?
+            config["USE_HEADERMAP"] = "NO";
+            config["SYMROOT"] = Bam.Core.State.BuildRoot;
+            config["PROJECT_TEMP_DIR"] = "$SYMROOT";
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             this.Configurations.Add(config);
@@ -513,6 +516,7 @@ namespace V2
 
             var config = new Configuration("Debug"); // TODO: is debug?
             config["PRODUCT_NAME"] = "$(TARGET_NAME)";
+            config["CONFIGURATION_TEMP_DIR"] = "$PROJECT_TEMP_DIR";
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             project.Configurations.Add(config);
