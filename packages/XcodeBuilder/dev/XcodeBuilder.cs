@@ -741,6 +741,7 @@ namespace V2
 
     public abstract class ConfigurationValue
     {
+        public abstract void Merge(ConfigurationValue value);
     }
 
     public sealed class UniqueConfigurationValue :
@@ -749,6 +750,11 @@ namespace V2
         public UniqueConfigurationValue(string value)
         {
             this.Value = value;
+        }
+
+        public override void Merge(ConfigurationValue value)
+        {
+            this.Value = (value as UniqueConfigurationValue).Value;
         }
 
         private string Value
@@ -775,6 +781,11 @@ namespace V2
             : this()
         {
             this.Value.AddUnique(value);
+        }
+
+        public override void Merge(ConfigurationValue value)
+        {
+            this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
         }
 
         private Bam.Core.StringArray Value
@@ -824,7 +835,14 @@ namespace V2
 
             set
             {
-                this.Settings[key] = value;
+                if (!this.Settings.ContainsKey(key))
+                {
+                    this.Settings[key] = value;
+                }
+                else
+                {
+                    this.Settings[key].Merge(value);
+                }
             }
         }
 
