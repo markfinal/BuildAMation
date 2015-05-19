@@ -16,6 +16,53 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace C
+{
+    namespace V2
+    {
+        public sealed class XcodeLinker :
+            ILinkerPolicy
+        {
+            void
+            ILinkerPolicy.Link(
+                ConsoleApplication sender,
+                string executablePath,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+            {
+                var application = new XcodeBuilder.V2.XcodeProgram(sender, executablePath);
+
+                foreach (var input in objectFiles)
+                {
+                    application.SetCommonCompilationOptions(input, input.Settings);
+                    if (input is Bam.Core.V2.IModuleGroup)
+                    {
+                        foreach (var child in input.Children)
+                        {
+                            Bam.Core.V2.Settings patchSettings = null;
+                            if (child.HasPatches)
+                            {
+                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
+                                child.ApplySettingsPatches(patchSettings, honourParents: false);
+                            }
+
+                            var meta = child.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                            application.AddSource(child, meta.Source, meta.Output, patchSettings);
+                            meta.Project = application.Project;
+                        }
+                    }
+                    else
+                    {
+                        var meta = input.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                        application.AddSource(input, meta.Source, meta.Output, null);
+                        meta.Project = application.Project;
+                    }
+                }
+            }
+        }
+    }
+}
 namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder

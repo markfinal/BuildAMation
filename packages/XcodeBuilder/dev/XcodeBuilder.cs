@@ -56,7 +56,8 @@ namespace V2
         public enum EFileType
         {
             SourceCodeC,
-            Archive
+            Archive,
+            Executable
         }
 
         public FileReference(string path, EFileType type)
@@ -92,6 +93,9 @@ namespace V2
 
                 case EFileType.Archive:
                     return "archive.ar";
+
+                case EFileType.Executable:
+                    return "compiled.mach-o.executable";
             }
 
             throw new Bam.Core.Exception("Unrecognized file type");
@@ -324,9 +328,10 @@ namespace V2
     public sealed class Project :
         Object
     {
-        public Project() :
+        public Project(Bam.Core.V2.Module module) :
             base()
         {
+            this.Module = module;
             this.Targets = new System.Collections.Generic.List<Target>();
             this.FileReferences = new System.Collections.Generic.List<FileReference>();
             this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
@@ -350,6 +355,12 @@ namespace V2
             configList.Configurations.Add(config);
             this.Configurations.Add(config);
             this.ConfigurationLists.Add(configList);
+        }
+
+        public Bam.Core.V2.Module Module
+        {
+            get;
+            private set;
         }
 
         public System.Collections.Generic.List<Target> Targets
@@ -554,7 +565,8 @@ namespace V2
     {
         public enum EProductType
         {
-            StaticLibrary
+            StaticLibrary,
+            Executable
         }
 
         public Target(Bam.Core.V2.Module module, Project project, FileReference fileRef, EProductType type) :
@@ -640,6 +652,9 @@ namespace V2
             {
                 case EProductType.StaticLibrary:
                     return "com.apple.product-type.library.static";
+
+                case EProductType.Executable:
+                    return "com.apple.product-type.tool";
             }
 
             throw new Bam.Core.Exception("Unrecognized product type");
@@ -916,7 +931,7 @@ namespace V2
             if (isReferenced)
             {
                 this.ProjectModule = module;
-                this.Project = new Project();
+                this.Project = new Project(module);
                 (graph.MetaData as WorkspaceMeta).Projects.Add(this.Project);
             }
             else
@@ -969,15 +984,6 @@ namespace V2
             // create folder project.xcworkspace
             // create folder xcuserdata
 
-            var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/Test.xcodeproj/project.pbxproj", null);
-            projectPath.Parse();
-
-            var projectDir = System.IO.Path.GetDirectoryName(projectPath.ToString());
-            if (!System.IO.Directory.Exists(projectDir))
-            {
-                System.IO.Directory.CreateDirectory(projectDir);
-            }
-
             var workspaceMeta = Bam.Core.V2.Graph.Instance.MetaData as WorkspaceMeta;
 
             foreach (var project in workspaceMeta.Projects)
@@ -1003,6 +1009,15 @@ namespace V2
                 text.AppendFormat("{0}rootObject = {1} /* Project object */;", indent, project.GUID);
                 text.AppendLine();
                 text.AppendLine("}");
+
+                var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename).xcodeproj/project.pbxproj", project.Module);
+                projectPath.Parse();
+
+                var projectDir = System.IO.Path.GetDirectoryName(projectPath.ToString());
+                if (!System.IO.Directory.Exists(projectDir))
+                {
+                    System.IO.Directory.CreateDirectory(projectDir);
+                }
 
                 //Bam.Core.Log.DebugMessage(text.ToString());
                 using (var writer = new System.IO.StreamWriter(projectPath.ToString()))
@@ -1080,9 +1095,44 @@ namespace V2
     public sealed class XcodeProgram :
         XcodeMeta
     {
-        public XcodeProgram(Bam.Core.V2.Module module) :
+        public XcodeProgram(Bam.Core.V2.Module module, string executablePath) :
             base(module, Type.Application)
-        { }
+        {
+            var application = new FileReference(executablePath, FileReference.EFileType.Executable);
+            this.Output = application;
+            this.Project.FileReferences.Add(application);
+            this.Project.ProductRefGroup.Children.Add(application);
+
+            var target = new Target(module, this.Project, application, V2.Target.EProductType.Executable);
+            this.Target = target;
+            this.Project.SourcesBuildPhases.Add(target.SourcesBuildPhase);
+        }
+
+        public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
+        {
+            if (null != patchSettings)
+            {
+                var commandLine = new Bam.Core.StringArray();
+                (patchSettings as CommandLineProcessor.V2.IConvertToCommandLine).Convert(module, commandLine);
+                output.Settings = commandLine;
+            }
+            this.Target.SourcesBuildPhase.BuildFiles.Add(output);
+
+            this.Project.FileReferences.Add(source);
+            this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
+            this.Project.BuildFiles.Add(output);
+        }
+
+        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        {
+            this.Target.SetCommonCompilationOptions(module, settings);
+        }
+
+        public FileReference Output
+        {
+            get;
+            private set;
+        }
     }
 }
 }
