@@ -57,7 +57,10 @@ namespace VisualC
                     switch (setting)
                     {
                         case C.EArchiverOutput.StaticLibrary:
-                            builder.Append(module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
+                            {
+                                var outPath = module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                                builder.Append(System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)));
+                            }
                             break;
                     }
                 });

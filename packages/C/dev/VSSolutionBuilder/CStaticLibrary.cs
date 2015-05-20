@@ -29,7 +29,7 @@ namespace V2
             string libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
         {
-            var library = new VSSolutionBuilder.V2.VSProjectStaticLibrary(sender);
+            var library = new VSSolutionBuilder.V2.VSProjectStaticLibrary(sender, sender.GeneratedPaths[StaticLibrary.Key]);
             foreach (var input in inputs)
             {
                 library.SetCommonCompilationOptions(input, input.Settings);

@@ -146,7 +146,7 @@ namespace V2
                 content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
                     project.TypeGUID.ToString("B").ToUpper(),
                     System.IO.Path.GetFileNameWithoutExtension(project.ProjectPath),
-                    project.ProjectPath,
+                    project.ProjectPath, // TODO: relative to the solution file
                     project.GUID.ToString("B").ToUpper());
                 content.AppendLine();
                 content.AppendLine("EndProject");
@@ -208,7 +208,7 @@ namespace V2
         }
 
         private static readonly string VCProjNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
-        private ItemGroup ProjectConfiguations;
+        private ItemGroup ProjectConfigurations;
         private PropertyGroup Globals;
         private Import DefaultImport;
         private Import LanguageImport;
@@ -231,8 +231,8 @@ namespace V2
             this.Project.Attributes.Append(this.CreateAttribute("ToolsVersion")).Value = "12.0"; // TODO: in tune with VisualC package version
 
             // ProjectConfigurations element
-            this.ProjectConfiguations = this.CreateItemGroup("ProjectConfigurations");
-            this.Project.AppendChild(this.ProjectConfiguations.Element);
+            this.ProjectConfigurations = this.CreateItemGroup("ProjectConfigurations");
+            this.Project.AppendChild(this.ProjectConfigurations.Element);
 
             // Globals element
             this.Globals = this.CreatePropertyGroup("Globals");
@@ -308,7 +308,12 @@ namespace V2
             return System.String.Format("{0}|{1}", configuration, platform);
         }
 
-        public void AddProjectConfiguration(string configuration, string platform, Bam.Core.V2.Module module)
+        public void
+        AddProjectConfiguration(
+            string configuration,
+            string platform,
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString outPath)
         {
             var configName = GetConfigurationName(configuration, platform);
 
@@ -322,7 +327,7 @@ namespace V2
                 var plat = this.CreateProjectElement("Platform", platform);
                 projconfig.AppendChild(config);
                 projconfig.AppendChild(plat);
-                this.ProjectConfiguations.Element.AppendChild(projconfig);
+                this.ProjectConfigurations.Element.AppendChild(projconfig);
             }
 
             var configExpression = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", configName);
@@ -383,6 +388,24 @@ namespace V2
                 }
                 this.Project.InsertAfter(configGroup.Element, this.LanguageImport.Element);
             }
+
+            // anonymous project settings
+            {
+                var configProps = this.CreatePropertyGroup(null);
+                configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configExpression;
+
+                var outDirEl = this.CreateProjectElement("OutDir");
+                var macros = new Bam.Core.V2.MacroList();
+                macros.Add("buildroot", Bam.Core.V2.TokenizedString.Create("$(SolutionDir)", null, verbatim:true));
+                macros.Add("modulename", Bam.Core.V2.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
+                var outDir = outPath.Parse(macros);
+                outDir = System.IO.Path.GetDirectoryName(outDir);
+                outDir += "\\";
+                outDirEl.InnerText = outDir;
+                configProps.Element.AppendChild(outDirEl);
+
+                this.Project.InsertAfter(configProps.Element, this.LanguageImport.Element);
+            }
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
@@ -428,7 +451,10 @@ namespace V2
         private PropertyGroup CreatePropertyGroup(string label)
         {
             var group = this.CreateProjectElement("PropertyGroup");
-            group.Attributes.Append(this.CreateAttribute("Label")).Value = label;
+            if (null != label)
+            {
+                group.Attributes.Append(this.CreateAttribute("Label")).Value = label;
+            }
             return new PropertyGroup(group);
         }
 
@@ -497,7 +523,10 @@ namespace V2
     {
         protected VSProject Project = null;
 
-        protected VSSolutionMeta(Bam.Core.V2.Module module, VSProject.Type type)
+        protected VSSolutionMeta(
+            Bam.Core.V2.Module module,
+            VSProject.Type type,
+            Bam.Core.V2.TokenizedString outPath)
         {
             var graph = Bam.Core.V2.Graph.Instance;
             var isReferenced = graph.IsReferencedModule(module);
@@ -512,7 +541,7 @@ namespace V2
                 var solution = graph.MetaData as VSSolution;
                 this.Project = solution.FindOrCreateProject(module.GetType(), type);
 
-                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform, module);
+                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform, module, outPath);
 
                 var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename).vcxproj", module);
                 projectPath.Parse();
@@ -590,7 +619,7 @@ namespace V2
         VSSolutionMeta
     {
         public VSProjectObjectFile(Bam.Core.V2.Module module)
-            : base(module, VSProject.Type.NA)
+            : base(module, VSProject.Type.NA, null)
         { }
 
         public string Source
@@ -610,8 +639,10 @@ namespace V2
     public sealed class VSProjectStaticLibrary :
         VSSolutionMeta
     {
-        public VSProjectStaticLibrary(Bam.Core.V2.Module module) :
-            base(module, VSProject.Type.StaticLibrary)
+        public VSProjectStaticLibrary(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString libraryPath) :
+            base(module, VSProject.Type.StaticLibrary, libraryPath)
         {
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
         }
@@ -638,7 +669,7 @@ namespace V2
         VSSolutionMeta
     {
         public VSProjectProgram(Bam.Core.V2.Module module) :
-            base(module, VSProject.Type.Application)
+            base(module, VSProject.Type.Application, null)
         {
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
             this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
