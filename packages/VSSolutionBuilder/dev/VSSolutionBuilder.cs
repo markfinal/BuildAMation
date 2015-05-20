@@ -105,39 +105,125 @@ namespace V2
     }
 
     public sealed class VSSolution :
-        System.Xml.XmlDocument
+        System.Collections.Generic.IEnumerable<VSProject>
     {
         public VSSolution()
         {
             this.Projects = new System.Collections.Generic.Dictionary<System.Type, VSProject>();
         }
 
-        public System.Collections.Generic.Dictionary<System.Type, VSProject> Projects
+        private System.Collections.Generic.Dictionary<System.Type, VSProject> Projects
         {
             get;
-            private set;
+            set;
+        }
+
+        public VSProject FindOrCreateProject(System.Type moduleType, VSProject.Type projectType)
+        {
+            if (this.Projects.ContainsKey(moduleType))
+            {
+                return this.Projects[moduleType];
+            }
+            else
+            {
+                var project = new VSProject(projectType);
+                this.Projects[moduleType] = project;
+                return project;
+            }
+        }
+
+        public System.Text.StringBuilder Serialize()
+        {
+            var content = new System.Text.StringBuilder();
+
+            // TODO: obviously dependent on version
+            content.AppendLine(@"Microsoft Visual Studio Solution File, Format Version 12.00");
+            content.AppendLine(@"# Visual Studio Express 2013 for Windows Desktop");
+
+            var configs = new Bam.Core.StringArray();
+            foreach (var project in this.Projects.Values)
+            {
+                content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+                    project.TypeGUID.ToString("B").ToUpper(),
+                    System.IO.Path.GetFileNameWithoutExtension(project.ProjectPath),
+                    project.ProjectPath,
+                    project.GUID.ToString("B").ToUpper());
+                content.AppendLine();
+                content.AppendLine("EndProject");
+
+                configs.AddRangeUnique(project.Configurations);
+            }
+            content.AppendLine("Global");
+            content.AppendLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
+            foreach (var config in configs)
+            {
+                // TODO: I'm sure these are not meant to be identical, but I don't know what else to put here
+                content.AppendFormat("\t\t{0} = {0}", config);
+                content.AppendLine();
+            }
+            content.AppendLine("\tEndGlobalSection");
+            content.AppendLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
+            foreach (var project in this.Projects.Values)
+            {
+                foreach (var config in project.Configurations)
+                {
+                    var guid = project.GUID.ToString("B").ToUpper();
+                    content.AppendFormat("\t\t{0}.{1}.ActiveConfig = {1}", guid, config);
+                    content.AppendLine();
+                    content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, config);
+                    content.AppendLine();
+                }
+            }
+            content.AppendLine("\tEndGlobalSection");
+            content.AppendLine("\tGlobalSection(SolutionProperties) = preSolution");
+            content.AppendLine("\t\tHideSolutionNode = FALSE");
+            content.AppendLine("\tEndGlobalSection");
+            content.AppendLine("EndGlobal");
+
+            return content;
+        }
+
+        public System.Collections.Generic.IEnumerator<VSProject> GetEnumerator()
+        {
+            foreach (var project in this.Projects)
+            {
+                yield return project.Value;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 
     public sealed class VSProject :
         System.Xml.XmlDocument
     {
+        public enum Type
+        {
+            NA,
+            StaticLibrary,
+            Application
+        }
+
         private static readonly string VCProjNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private ItemGroup ProjectConfiguations;
         private PropertyGroup Globals;
         private Import DefaultImport;
-        private System.Collections.Generic.List<PropertyGroup> Configurations = new System.Collections.Generic.List<PropertyGroup>();
         private Import LanguageImport;
         private System.Collections.Generic.List<ItemDefinitionGroup> ConfigurationDefs = new System.Collections.Generic.List<ItemDefinitionGroup>();
         private ItemGroup SourceGroup;
         private Import LanguageTargets;
-        private System.Guid GUID = System.Guid.NewGuid();
-        private VSSolutionMeta.Type Type;
+        private Type ProjectType;
         private System.Xml.XmlElement CommonCompilationOptionsElement = null;
 
-        public VSProject(VSSolutionMeta.Type type)
+        public VSProject(Type type)
         {
-            this.Type = type;
+            this.ProjectType = type;
+            this.GUID = System.Guid.NewGuid();
+            this.TypeGUID = System.Guid.Parse("8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942");
+            this.Configurations = new Bam.Core.StringArray();
 
             // Project (root) element
             this.AppendChild(this.CreateProjectElement("Project"));
@@ -224,12 +310,14 @@ namespace V2
 
         public void AddProjectConfiguration(string configuration, string platform, Bam.Core.V2.Module module)
         {
-            var combined = GetConfigurationName(configuration, platform);
+            var configName = GetConfigurationName(configuration, platform);
+
+            this.Configurations.AddUnique(configName);
 
             // overall project configurations
             {
                 var projconfig = this.CreateProjectElement("ProjectConfiguration");
-                projconfig.Attributes.Append(this.CreateAttribute("Include")).Value = combined;
+                projconfig.Attributes.Append(this.CreateAttribute("Include")).Value = configName;
                 var config = this.CreateProjectElement("Configuration", configuration);
                 var plat = this.CreateProjectElement("Platform", platform);
                 projconfig.AppendChild(config);
@@ -237,24 +325,24 @@ namespace V2
                 this.ProjectConfiguations.Element.AppendChild(projconfig);
             }
 
-            var configName = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", combined);
+            var configExpression = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", configName);
 
             // project properties
             {
                 var configProps = this.CreatePropertyGroup("Configuration");
-                configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configName;
+                configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configExpression;
                 // TODO: can this be better done with a lambda to get the inner text?
                 var configType = this.CreateProjectElement("ConfigurationType");
-                switch (this.Type)
+                switch (this.ProjectType)
                 {
-                    case VSSolutionMeta.Type.NA:
+                    case VSProject.Type.NA:
                         throw new Bam.Core.Exception("Invalid project type");
 
-                    case VSSolutionMeta.Type.StaticLibrary:
+                    case VSProject.Type.StaticLibrary:
                         configType.InnerText = "StaticLibrary";
                         break;
 
-                    case VSSolutionMeta.Type.Application:
+                    case VSProject.Type.Application:
                         configType.InnerText = "Application";
                         break;
                 }
@@ -266,16 +354,16 @@ namespace V2
 
             // project definitions
             {
-                var configGroup = this.CreateItemDefinitionGroup(configName);
+                var configGroup = this.CreateItemDefinitionGroup(configExpression);
                 var clCompile = this.CreateProjectElement("ClCompile");
                 configGroup.Element.AppendChild(clCompile);
                 this.CommonCompilationOptionsElement = clCompile;
-                switch (this.Type)
+                switch (this.ProjectType)
                 {
-                    case VSSolutionMeta.Type.NA:
+                    case VSProject.Type.NA:
                         throw new Bam.Core.Exception("Invalid project type");
 
-                    case VSSolutionMeta.Type.StaticLibrary:
+                    case VSProject.Type.StaticLibrary:
                         {
                             var tool = this.CreateProjectElement("Lib");
                             configGroup.Element.AppendChild(tool);
@@ -284,7 +372,7 @@ namespace V2
                         }
                         break;
 
-                    case VSSolutionMeta.Type.Application:
+                    case VSProject.Type.Application:
                         {
                             var tool = this.CreateProjectElement("Link");
                             configGroup.Element.AppendChild(tool);
@@ -372,6 +460,24 @@ namespace V2
             set;
         }
 
+        public System.Guid GUID
+        {
+            get;
+            private set;
+        }
+
+        public System.Guid TypeGUID
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.StringArray Configurations
+        {
+            get;
+            private set;
+        }
+
         public void AddToolSetting<T>(
             System.Xml.XmlElement container,
             string settingName,
@@ -391,14 +497,7 @@ namespace V2
     {
         protected VSProject Project = null;
 
-        public enum Type
-        {
-            NA,
-            StaticLibrary,
-            Application
-        }
-
-        protected VSSolutionMeta(Bam.Core.V2.Module module, Type type)
+        protected VSSolutionMeta(Bam.Core.V2.Module module, VSProject.Type type)
         {
             var graph = Bam.Core.V2.Graph.Instance;
             var isReferenced = graph.IsReferencedModule(module);
@@ -411,15 +510,7 @@ namespace V2
             if (isReferenced)
             {
                 var solution = graph.MetaData as VSSolution;
-                if (solution.Projects.ContainsKey(module.GetType()))
-                {
-                    this.Project = solution.Projects[module.GetType()];
-                }
-                else
-                {
-                    this.Project = new VSProject(type);
-                    solution.Projects[module.GetType()] = this.Project;
-                }
+                this.Project = solution.FindOrCreateProject(module.GetType(), type);
 
                 this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform, module);
 
@@ -471,21 +562,26 @@ namespace V2
 
             var graph = Bam.Core.V2.Graph.Instance;
             var solution = graph.MetaData as VSSolution;
-            foreach (var project in solution.Projects)
+            foreach (var project in solution)
             {
                 var builder = new System.Text.StringBuilder();
                 using (var xmlwriter = System.Xml.XmlWriter.Create(builder, settings))
                 {
-                    project.Value.WriteTo(xmlwriter);
+                    project.WriteTo(xmlwriter);
                 }
                 Bam.Core.Log.DebugMessage(builder.ToString());
 
-                using (var xmlwriter = System.Xml.XmlWriter.Create(project.Value.ProjectPath, settings))
+                using (var xmlwriter = System.Xml.XmlWriter.Create(project.ProjectPath, settings))
                 {
-                    project.Value.WriteTo(xmlwriter);
+                    project.WriteTo(xmlwriter);
                 }
             }
-            // TODO: write out solution
+
+            var solutionPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/solution.sln", null).Parse();
+            using (var writer = new System.IO.StreamWriter(solutionPath))
+            {
+                writer.Write(solution.Serialize());
+            }
         }
     }
 
@@ -494,7 +590,7 @@ namespace V2
         VSSolutionMeta
     {
         public VSProjectObjectFile(Bam.Core.V2.Module module)
-            : base(module, Type.NA)
+            : base(module, VSProject.Type.NA)
         { }
 
         public string Source
@@ -515,7 +611,7 @@ namespace V2
         VSSolutionMeta
     {
         public VSProjectStaticLibrary(Bam.Core.V2.Module module) :
-            base(module, Type.StaticLibrary)
+            base(module, VSProject.Type.StaticLibrary)
         {
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
         }
@@ -542,7 +638,7 @@ namespace V2
         VSSolutionMeta
     {
         public VSProjectProgram(Bam.Core.V2.Module module) :
-            base(module, Type.Application)
+            base(module, VSProject.Type.Application)
         {
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
             this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
