@@ -43,7 +43,7 @@ namespace V2
         public static readonly string TokenPrefix = @"$(";
         public static readonly string TokenSuffix = @")";
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
-        private static readonly string FunctionRegExPattern = @"(\$([a-z]*)\((.+)\))";
+        private static readonly string FunctionRegExPattern = @"(\$([a-z]+)\((.+)\))";
         private static readonly string FunctionPrefix = @"$";
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
@@ -51,8 +51,9 @@ namespace V2
         private System.Collections.Generic.List<string> Tokens = null;
         private System.Collections.Generic.List<int> MacroIndices = null;
         private Module ModuleWithMacros = null;
-        private string CachedJoin = null;
         private string OriginalString = null;
+        private string ParsedString = null;
+        private bool Verbatim;
 
         static private System.Collections.Generic.IEnumerable<string> SplitToParse(string original, string regExPattern)
         {
@@ -61,9 +62,16 @@ namespace V2
             return filtered;
         }
 
-        private TokenizedString(string original)
+        private TokenizedString(
+            string original,
+            bool verbatim = false)
         {
+            this.Verbatim = verbatim;
             this.OriginalString = original;
+            if (verbatim)
+            {
+                return;
+            }
             var tokenized = SplitToParse(original, TokenRegExPattern);
             tokenized.Each<string>((item, index) =>
             {
@@ -79,23 +87,38 @@ namespace V2
             this.Tokens = tokenized.ToList<string>();
         }
 
-        private TokenizedString(string original, Module moduleWithMacros)
-            : this(original)
+        private TokenizedString(
+            string original,
+            Module moduleWithMacros,
+            bool verbatim) :
+            this(original, verbatim)
         {
-            if (null == moduleWithMacros && null != this.MacroIndices)
+            if (null == moduleWithMacros)
             {
-                foreach (var tokenIndex in this.MacroIndices)
+                if (null != this.MacroIndices)
                 {
-                    if (!Graph.Instance.Macros.Contains(this.Tokens[tokenIndex]))
+                    foreach (var tokenIndex in this.MacroIndices)
                     {
-                        throw new Exception("Cannot have a tokenized string without a module");
+                        if (!Graph.Instance.Macros.Contains(this.Tokens[tokenIndex]))
+                        {
+                            throw new Exception("Cannot have a tokenized string without a module");
+                        }
                     }
+                }
+                else
+                {
+                    // consider the string parsed, as there is no work to do
+                    this.ParsedString = this.OriginalString;
                 }
             }
             this.ModuleWithMacros = moduleWithMacros;
         }
 
-        public static TokenizedString Create(string tokenizedString, Module macroSource)
+        public static TokenizedString
+        Create(
+            string tokenizedString,
+            Module macroSource,
+            bool verbatim = false)
         {
             var search = Cache.Where((ts) =>
                 {
@@ -107,13 +130,13 @@ namespace V2
             }
             else
             {
-                var ts = new TokenizedString(tokenizedString, macroSource);
+                var ts = new TokenizedString(tokenizedString, macroSource, verbatim);
                 Cache.Add(ts);
                 return ts;
             }
         }
 
-        public string this[int index]
+        private string this[int index]
         {
             get
             {
@@ -130,31 +153,21 @@ namespace V2
             }
         }
 
-        public bool IsExpanded
+        private bool IsExpanded
         {
             get
             {
-                return (null == this.MacroIndices) || (0 == this.MacroIndices.Count);
+                return this.Verbatim || (null != this.ParsedString);
             }
         }
 
-        // safe:true = don't cache anything, and don't throw if it's not expanded
-        // safe:false = cache what you can, and throw if the tokens haven't been expanded
-        private string Join(bool safe)
+        private static string JoinTokens(System.Collections.Generic.List<string> tokens)
         {
-            if (!safe && !this.IsExpanded)
+            if (1 == tokens.Count)
             {
-                throw new System.Exception("TokenizedString not expanded");
+                return tokens[0];
             }
-            if (1 == this.Tokens.Count)
-            {
-                return this.Tokens[0];
-            }
-            if (null != this.CachedJoin)
-            {
-                return this.CachedJoin;
-            }
-            var join = System.String.Join(string.Empty, this.Tokens);
+            var join = System.String.Join(string.Empty, tokens);
             if (OSUtilities.IsWindowsHosting)
             {
                 join = join.Replace('/', '\\');
@@ -163,16 +176,12 @@ namespace V2
             {
                 join = join.Replace('\\', '/');
             }
-            if (!safe)
-            {
-                this.CachedJoin = join;
-            }
             return join;
         }
 
         public override string ToString()
         {
-            return this.Join(safe: false);
+            return this.IsExpanded ? this.ParsedString : this.OriginalString;
         }
 
         public bool Empty
@@ -187,21 +196,38 @@ namespace V2
         {
             foreach (var t in Cache)
             {
-                t.Parse();
+                t.ParsedString = t.Parse();
             }
         }
 
-        public void Parse()
+        public string Parse()
         {
-            if (this.Empty || this.IsExpanded)
+            return this.Parse(null);
+        }
+
+        public string Parse(MacroList customMacros)
+        {
+            if (this.IsExpanded && (null == customMacros))
             {
-                return;
+                return this.ParsedString;
             }
-            var orig = this.Join(safe: true);
+            // take a copy of the macro indices
+            var macroIndices = new System.Collections.Generic.List<int>(this.MacroIndices);
+            var tokens = new System.Collections.Generic.List<string>(this.Tokens); // could just be a reserved list of strings
             foreach (int index in this.MacroIndices.Reverse<int>())
             {
                 var token = this.Tokens[index];
-                if (Graph.Instance.Macros.Dict.ContainsKey(token))
+                if (null != customMacros && customMacros.Dict.ContainsKey(token))
+                {
+                    var value = customMacros.Dict[token];
+                    if (!value.IsExpanded)
+                    {
+                        // recursive
+                        value.Parse();
+                    }
+                    token = value.ToString();
+                }
+                else if (Graph.Instance.Macros.Dict.ContainsKey(token))
                 {
                     var value = Graph.Instance.Macros.Dict[token];
                     if (!value.IsExpanded)
@@ -238,24 +264,40 @@ namespace V2
                     // circumstances?
                     throw new System.Exception(System.String.Format("Unrecognized token '{0}", token));
                 }
-                this.Tokens[index] = token;
-                this.MacroIndices.Remove(index);
+                tokens[index] = token;
+                macroIndices.Remove(index);
             }
-            if (!this.IsExpanded)
+            if (macroIndices.Count > 0)
             {
-                throw new System.Exception(System.String.Format("Input string could not be fully expanded"));
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Input string '{0}' could not be fully expanded. Could not identify tokens", this.OriginalString);
+                message.AppendLine();
+                foreach (var index in macroIndices)
+                {
+                    message.AppendFormat("\t{0}", this.Tokens[index]);
+                    message.AppendLine();
+                }
+                throw new System.Exception(message.ToString());
             }
-            Core.Log.DebugMessage("Converted '{0}' to '{1}'", orig, this.ToString());
-            this.EvaluateFunctions();
+            var joined = this.EvaluateFunctions(tokens);
+            if (null == customMacros)
+            {
+                this.ParsedString = joined;
+            }
+            Core.Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
+            return joined;
         }
 
-        private void EvaluateFunctions()
+        private string
+        EvaluateFunctions(
+            System.Collections.Generic.List<string> tokens)
         {
-            var tokenized = SplitToParse(this.Join(safe: false), FunctionRegExPattern);
+            var joined = JoinTokens(tokens);
+            var tokenized = SplitToParse(joined, FunctionRegExPattern);
             var matchCount = tokenized.Count();
             if (1 == matchCount)
             {
-                return;
+                return joined;
             }
             // triplets of matches
             int matchIndex = 0;
@@ -271,10 +313,9 @@ namespace V2
                 var functionName = tokenized.ElementAt(matchIndex++);
                 var argument = tokenized.ElementAt(matchIndex++);
                 var result = this.FunctionExpression(functionName, argument);
-                // since there is an unsafe join above, we can do this
-                this.CachedJoin = this.CachedJoin.Replace(expr, result);
+                joined = joined.Replace(expr, result);
             }
-            Core.Log.DebugMessage("Converted further to '{0}'", this.CachedJoin);
+            return joined;
         }
 
         private string FunctionExpression(string functionName, string argument)
@@ -297,9 +338,9 @@ namespace V2
                 {
                     throw new Exception("String is not yet expanded");
                 }
-                if (null != this.CachedJoin)
+                if (null != this.ParsedString)
                 {
-                    return this.CachedJoin.Contains(' ');
+                    return this.ParsedString.Contains(' ');
                 }
                 else
                 {
