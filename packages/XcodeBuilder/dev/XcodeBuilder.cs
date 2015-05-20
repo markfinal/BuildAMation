@@ -632,6 +632,7 @@ namespace V2
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
             config["CONFIGURATION_TEMP_DIR"] = new UniqueConfigurationValue("$PROJECT_TEMP_DIR");
+            // TODO: CONFIGURATION_BUILD_DIR needs to be a re-parsing of the library path
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             project.Configurations.Add(config);
@@ -1234,6 +1235,7 @@ namespace V2
             var copyOfLibFileRef = new FileReference(library.Output);
             var libraryBuildFile = new BuildFile(library.Output.Path, copyOfLibFileRef);
             this.Project.FileReferences.Add(copyOfLibFileRef);
+            this.Project.MainGroup.Children.Add(copyOfLibFileRef); // TODO: structure later
             this.Project.BuildFiles.Add(libraryBuildFile);
             this.Frameworks.BuildFiles.Add(libraryBuildFile);
         }
