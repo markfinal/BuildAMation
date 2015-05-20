@@ -381,7 +381,7 @@ namespace V2
             this.ProductRefGroup.Name = "Products";
             this.MainGroup.Children.Add(this.ProductRefGroup);
 
-            var config = new Configuration("Debug"); // TODO: is debug?
+            var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
             config["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
             config["SYMROOT"] = new UniqueConfigurationValue(Bam.Core.State.BuildRoot);
@@ -629,7 +629,7 @@ namespace V2
             this.FileReference = fileRef;
             this.Type = type;
 
-            var config = new Configuration("Debug"); // TODO: is debug?
+            var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
             config["CONFIGURATION_TEMP_DIR"] = new UniqueConfigurationValue("$PROJECT_TEMP_DIR");
             var configList = new ConfigurationList(this);
