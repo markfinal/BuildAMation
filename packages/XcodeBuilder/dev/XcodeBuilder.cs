@@ -66,6 +66,12 @@ namespace V2
             this.Type = type;
         }
 
+        public FileReference(FileReference other)
+        {
+            this.Path = other.Path;
+            this.Type = other.Type;
+        }
+
         public string Path
         {
             get;
@@ -325,6 +331,34 @@ namespace V2
         }
     }
 
+    public sealed class FrameworksBuildPhase :
+        BuildPhase
+    {
+        protected override string IsA
+        {
+            get
+            {
+                return "PBXFrameworksBuildPhase";
+            }
+        }
+
+        protected override string BuildActionMask
+        {
+            get
+            {
+                return "2147483647";
+            }
+        }
+
+        protected override bool RunOnlyForDeploymentPostprocessing
+        {
+            get
+            {
+                return false;
+            }
+        }
+    }
+
     public sealed class Project :
         Object
     {
@@ -339,6 +373,7 @@ namespace V2
             this.Configurations = new System.Collections.Generic.List<Configuration>();
             this.ConfigurationLists = new System.Collections.Generic.List<ConfigurationList>();
             this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
+            this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
 
             this.Groups.Add(new Group()); // main group
             this.Groups.Add(new Group()); // product ref group
@@ -400,6 +435,12 @@ namespace V2
         }
 
         public System.Collections.Generic.List<SourcesBuildPhase> SourcesBuildPhases
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.List<FrameworksBuildPhase> FrameworksBuildPhases
         {
             get;
             private set;
@@ -494,6 +535,18 @@ namespace V2
                     fileRef.Serialize(text, indentLevel);
                 }
                 text.AppendFormat("/* End PBXFileReference section */");
+                text.AppendLine();
+            }
+            if (this.FrameworksBuildPhases.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXFrameworksBuildPhase section */");
+                text.AppendLine();
+                foreach (var phase in this.FrameworksBuildPhases)
+                {
+                    phase.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXFrameworksBuildPhase section */");
                 text.AppendLine();
             }
             if (this.Groups.Count > 0)
@@ -1162,6 +1215,24 @@ namespace V2
         {
             get;
             private set;
+        }
+
+        private FrameworksBuildPhase Frameworks = null;
+
+        public void AddStaticLibrary(XcodeStaticLibrary library)
+        {
+            if (null == this.Frameworks)
+            {
+                this.Frameworks = new FrameworksBuildPhase();
+                this.Project.FrameworksBuildPhases.Add(this.Frameworks);
+                this.Target.BuildPhases.Add(this.Frameworks);
+            }
+            // this generates a new GUID
+            var copyOfLibFileRef = new FileReference(library.Output);
+            var libraryBuildFile = new BuildFile(library.Output.Path, copyOfLibFileRef);
+            this.Project.FileReferences.Add(copyOfLibFileRef);
+            this.Project.BuildFiles.Add(libraryBuildFile);
+            this.Frameworks.BuildFiles.Add(libraryBuildFile);
         }
     }
 }

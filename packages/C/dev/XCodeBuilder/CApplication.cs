@@ -59,6 +59,11 @@ namespace C
                         meta.Project = application.Project;
                     }
                 }
+
+                foreach (var input in libraries)
+                {
+                    application.AddStaticLibrary(input.MetaData as XcodeBuilder.V2.XcodeStaticLibrary);
+                }
             }
         }
     }
