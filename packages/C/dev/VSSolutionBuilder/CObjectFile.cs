@@ -29,9 +29,8 @@ namespace V2
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
-            var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender);
+            var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender, objectFilePath);
             objectFile.Source = source.GeneratedPaths[C.V2.SourceFile.Key];
-            objectFile.Output = objectFilePath;
         }
     }
 }

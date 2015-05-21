@@ -618,8 +618,10 @@ namespace V2
     public sealed class VSProjectObjectFile :
         VSSolutionMeta
     {
-        public VSProjectObjectFile(Bam.Core.V2.Module module)
-            : base(module, VSProject.Type.NA, null)
+        public VSProjectObjectFile(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString objectFilePath)
+            : base(module, VSProject.Type.NA, objectFilePath)
         { }
 
         public Bam.Core.V2.TokenizedString Source
@@ -668,8 +670,10 @@ namespace V2
     public sealed class VSProjectProgram :
         VSSolutionMeta
     {
-        public VSProjectProgram(Bam.Core.V2.Module module) :
-            base(module, VSProject.Type.Application, null)
+        public VSProjectProgram(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString applicationPath) :
+            base(module, VSProject.Type.Application, applicationPath)
         {
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
             this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
