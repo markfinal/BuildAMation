@@ -60,19 +60,45 @@ namespace V2
             Executable
         }
 
-        public FileReference(string path, EFileType type)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="type"></param>
+        /// <param name="explicitType"></param>
+        /// <param name="sourceTree">Options:
+        /// null = <unknown>,
+        /// BUILT_PRODUCTS_DIR=relative_to_build_products,
+        /// SOURCE_ROOT=relative_to_project,
+        /// <absolute>=absolute_path,
+        /// <group>=relative_to_group(which group?),
+        /// DEVELOPER_DIR=relative_to_developer_dir,
+        /// </param>
+        /// <param name="quotedSourceTree"></param>
+        public FileReference(
+            Bam.Core.V2.TokenizedString path,
+            EFileType type,
+            bool explicitType = false,
+            string sourceTree = null,
+            bool quotedSourceTree = true)
         {
             this.Path = path;
             this.Type = type;
+            this.SourceTree = sourceTree;
+            this.ExplicitType = explicitType;
+            this.QuotedSourceTree = quotedSourceTree;
         }
 
         public FileReference(FileReference other)
         {
             this.Path = other.Path;
             this.Type = other.Type;
+            this.SourceTree = other.SourceTree;
+            this.ExplicitType = other.ExplicitType;
+            this.QuotedSourceTree = other.QuotedSourceTree;
         }
 
-        public string Path
+        public Bam.Core.V2.TokenizedString Path
         {
             get;
             private set;
@@ -82,6 +108,24 @@ namespace V2
         {
             get;
             private set;
+        }
+
+        private bool ExplicitType
+        {
+            get;
+            set;
+        }
+
+        private string SourceTree
+        {
+            get;
+            set;
+        }
+
+        private bool QuotedSourceTree
+        {
+            get;
+            set;
         }
 
         public override string GUID
@@ -110,7 +154,27 @@ namespace V2
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
-            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{isa = PBXFileReference; lastKnownFileType = {2}; path = \"{3}\" /* FILLEMEIN */; }};", indent, this.GUID, this.FileTypeAsString(), this.Path);
+            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{isa = PBXFileReference; ", indent, this.GUID);
+            if (this.ExplicitType)
+            {
+                text.AppendFormat("explicitFileType = {0}; ", this.FileTypeAsString());
+            }
+            else
+            {
+                text.AppendFormat("lastKnownFileType = {0}; ", this.FileTypeAsString());
+            }
+            var path = (null != this.SourceTree && this.SourceTree != "<absolute>") ? System.IO.Path.GetFileName(this.Path.ToString()) : this.Path.ToString();
+            text.AppendFormat("path = \"{0}\" /* FILLEMEIN */; ", path);
+            var sourceTree = (null != this.SourceTree) ? this.SourceTree : "<unknown>";
+            if (this.QuotedSourceTree)
+            {
+                text.AppendFormat("sourceTree = \"{0}\"; ", sourceTree);
+            }
+            else
+            {
+                text.AppendFormat("sourceTree = {0}; ", sourceTree);
+            }
+            text.AppendFormat("}};", this.Path, this.SourceTree);
             text.AppendLine();
         }
     }
@@ -632,7 +696,14 @@ namespace V2
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
             config["CONFIGURATION_TEMP_DIR"] = new UniqueConfigurationValue("$PROJECT_TEMP_DIR");
-            // TODO: CONFIGURATION_BUILD_DIR needs to be a re-parsing of the library path
+
+            var libraryPath = fileRef.Path;
+            var macros = new Bam.Core.V2.MacroList();
+            macros.Add("buildroot", Bam.Core.V2.TokenizedString.Create("$SYMROOT", null, verbatim: true));
+            var libraryDir = System.IO.Path.GetDirectoryName(libraryPath.Parse(macros));
+            // on the target, this should override what is in the project setings
+            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(libraryDir);
+
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             project.Configurations.Add(config);
@@ -1144,7 +1215,7 @@ namespace V2
             Bam.Core.V2.TokenizedString libraryPath) :
             base(module, Type.StaticLibrary)
         {
-            var library = new FileReference(libraryPath.ToString(), FileReference.EFileType.Archive);
+            var library = new FileReference(libraryPath, FileReference.EFileType.Archive, explicitType:true, sourceTree:"BUILT_PRODUCTS_DIR", quotedSourceTree:false);
             this.Output = library;
             this.Project.FileReferences.Add(library);
             this.Project.ProductRefGroup.Children.Add(library);
@@ -1189,7 +1260,7 @@ namespace V2
             Bam.Core.V2.TokenizedString executablePath) :
             base(module, Type.Application)
         {
-            var application = new FileReference(executablePath.ToString(), FileReference.EFileType.Executable);
+            var application = new FileReference(executablePath, FileReference.EFileType.Executable);
             this.Output = application;
             this.Project.FileReferences.Add(application);
             this.Project.ProductRefGroup.Children.Add(application);
@@ -1237,7 +1308,7 @@ namespace V2
             }
             // this generates a new GUID
             var copyOfLibFileRef = new FileReference(library.Output);
-            var libraryBuildFile = new BuildFile(library.Output.Path, copyOfLibFileRef);
+            var libraryBuildFile = new BuildFile(library.Output.Path.ToString(), copyOfLibFileRef);
             this.Project.FileReferences.Add(copyOfLibFileRef);
             this.Project.MainGroup.Children.Add(copyOfLibFileRef); // TODO: structure later
             this.Project.BuildFiles.Add(libraryBuildFile);
