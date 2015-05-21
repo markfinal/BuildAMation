@@ -26,7 +26,7 @@ namespace V2
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
-            string executablePath,
+            Bam.Core.V2.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
@@ -60,7 +60,7 @@ namespace V2
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
             }
 
-            var executableDir = System.IO.Path.GetDirectoryName(executablePath);
+            var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
             if (!System.IO.Directory.Exists(executableDir))
             {
                 System.IO.Directory.CreateDirectory(executableDir);

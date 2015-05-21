@@ -264,7 +264,7 @@ namespace V2
         public void AddSourceFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
         {
             var objectFile = module.MetaData as VSProjectObjectFile;
-            var sourcePath = objectFile.Source;
+            var sourcePath = objectFile.Source.ToString();
 
             // check whether this source file has been added before
 #if true
@@ -622,13 +622,13 @@ namespace V2
             : base(module, VSProject.Type.NA, null)
         { }
 
-        public string Source
+        public Bam.Core.V2.TokenizedString Source
         {
             get;
             set;
         }
 
-        public string Output
+        public Bam.Core.V2.TokenizedString Output
         {
             get;
             set;

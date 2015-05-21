@@ -26,7 +26,7 @@ namespace C
             void
             ILibrarianPolicy.Archive(
                 StaticLibrary sender,
-                string libraryPath,
+                Bam.Core.V2.TokenizedString libraryPath,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
             {
                 sender.MetaData = new Bam.Core.StringArray();
@@ -37,7 +37,7 @@ namespace C
                     map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
                 }
 
-                var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath);
+                var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
                 if (!System.IO.Directory.Exists(libraryFileDir))
                 {
                     System.IO.Directory.CreateDirectory(libraryFileDir);

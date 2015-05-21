@@ -26,7 +26,7 @@ namespace C
             void
             ILibrarianPolicy.Archive(
                 StaticLibrary sender,
-                string libraryPath,
+                Bam.Core.V2.TokenizedString libraryPath,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
             {
                 var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);

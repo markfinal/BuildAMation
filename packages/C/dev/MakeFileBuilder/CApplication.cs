@@ -26,7 +26,7 @@ namespace V2
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
-            string executablePath,
+            Bam.Core.V2.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
@@ -64,7 +64,7 @@ namespace V2
             rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
             meta.Recipe.Add(rule.ToString());
 
-            var executableDir = System.IO.Path.GetDirectoryName(executablePath);
+            var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
             meta.CommonMetaData.Directories.AddUnique(executableDir);
             meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
         }

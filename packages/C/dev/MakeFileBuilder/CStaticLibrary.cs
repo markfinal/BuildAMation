@@ -26,7 +26,7 @@ namespace V2
         void
         ILibrarianPolicy.Archive(
             StaticLibrary sender,
-            string libraryPath,
+            Bam.Core.V2.TokenizedString libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
         {
             var commandLineArgs = new Bam.Core.StringArray();
@@ -57,7 +57,7 @@ namespace V2
             rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
             meta.Recipe.Add(rule.ToString());
 
-            var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath);
+            var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
             meta.CommonMetaData.Directories.AddUnique(libraryFileDir);
             meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
         }

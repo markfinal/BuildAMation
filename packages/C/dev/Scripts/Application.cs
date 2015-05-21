@@ -80,7 +80,7 @@ namespace V2
         {
             var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules);
             var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules);
-            var executable = this.GeneratedPaths[Key].ToString();
+            var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, executable, source, linked, null);
         }
 

@@ -26,7 +26,7 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
-            string objectFilePath,
+            Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
             sender.MetaData = new Bam.Core.StringArray();
@@ -37,7 +37,7 @@ namespace V2
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
             }
 
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath);
+            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
             if (!System.IO.Directory.Exists(objectFileDir))
             {
                 System.IO.Directory.CreateDirectory(objectFileDir);

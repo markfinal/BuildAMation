@@ -90,7 +90,7 @@ namespace V2
             private set;
         }
 
-        public string Target
+        public Bam.Core.V2.TokenizedString Target
         {
             get;
             set;

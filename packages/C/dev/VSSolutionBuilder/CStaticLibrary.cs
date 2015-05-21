@@ -26,7 +26,7 @@ namespace V2
         void
         ILibrarianPolicy.Archive(
             StaticLibrary sender,
-            string libraryPath,
+            Bam.Core.V2.TokenizedString libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
         {
             var library = new VSSolutionBuilder.V2.VSProjectStaticLibrary(sender, sender.GeneratedPaths[StaticLibrary.Key]);

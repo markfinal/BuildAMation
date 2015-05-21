@@ -1139,10 +1139,12 @@ namespace V2
     public sealed class XcodeStaticLibrary :
         XcodeMeta
     {
-        public XcodeStaticLibrary(Bam.Core.V2.Module module, string libraryPath) :
+        public XcodeStaticLibrary(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString libraryPath) :
             base(module, Type.StaticLibrary)
         {
-            var library = new FileReference(libraryPath, FileReference.EFileType.Archive);
+            var library = new FileReference(libraryPath.ToString(), FileReference.EFileType.Archive);
             this.Output = library;
             this.Project.FileReferences.Add(library);
             this.Project.ProductRefGroup.Children.Add(library);
@@ -1182,10 +1184,12 @@ namespace V2
     public sealed class XcodeProgram :
         XcodeMeta
     {
-        public XcodeProgram(Bam.Core.V2.Module module, string executablePath) :
+        public XcodeProgram(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString executablePath) :
             base(module, Type.Application)
         {
-            var application = new FileReference(executablePath, FileReference.EFileType.Executable);
+            var application = new FileReference(executablePath.ToString(), FileReference.EFileType.Executable);
             this.Output = application;
             this.Project.FileReferences.Add(application);
             this.Project.ProductRefGroup.Children.Add(application);

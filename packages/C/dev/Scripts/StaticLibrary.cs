@@ -78,7 +78,7 @@ namespace V2
         protected override void ExecuteInternal()
         {
             var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source);
-            var libraryFile = this.GeneratedPaths[Key].ToString();
+            var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, libraryFile, source);
         }
 

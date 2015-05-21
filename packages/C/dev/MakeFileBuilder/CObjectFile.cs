@@ -26,7 +26,7 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
-            string objectFilePath,
+            Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
             var commandLineArgs = new Bam.Core.StringArray();
@@ -45,7 +45,7 @@ namespace V2
             rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1}" : "{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
             meta.Recipe.Add(rule.ToString());
 
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath);
+            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
             meta.CommonMetaData.Directories.AddUnique(objectFileDir);
             meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
         }

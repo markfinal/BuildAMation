@@ -25,7 +25,7 @@ namespace V2
         void
         Compile(
             ObjectFile sender,
-            string objectFilePath,
+            Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source);
     }
 
@@ -34,7 +34,7 @@ namespace V2
         void
         Archive(
             StaticLibrary sender,
-            string libraryPath,
+            Bam.Core.V2.TokenizedString libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs);
     }
 
@@ -43,7 +43,7 @@ namespace V2
         void
         Link(
             ConsoleApplication sender,
-            string executablePath,
+            Bam.Core.V2.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks);
@@ -375,7 +375,7 @@ namespace V2
         protected override void ExecuteInternal()
         {
             var sourceFile = this.Source;
-            var objectFile = this.GeneratedPaths[Key].ToString();
+            var objectFile = this.GeneratedPaths[Key];
             this.Policy.Compile(this, objectFile, sourceFile);
         }
 
