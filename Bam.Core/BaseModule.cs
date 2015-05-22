@@ -59,6 +59,7 @@ namespace V2
                 packageNameSpace = packageNameSpace.Replace(".V2", string.Empty);
             }
             var packageInfo = Core.State.PackageInfo[packageNameSpace];
+            this.Package = packageInfo;
             var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
             this.Macros.Add("pkgroot", packageRoot);
             this.Macros.Add("modulename", this.GetType().Name);
@@ -140,6 +141,12 @@ namespace V2
         {
             get;
             set;
+        }
+
+        public PackageInformation Package
+        {
+            get;
+            private set;
         }
 
         public delegate void PatchDelegate(Settings settings);
