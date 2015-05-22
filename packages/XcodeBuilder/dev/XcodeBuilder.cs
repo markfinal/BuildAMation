@@ -161,7 +161,7 @@ namespace V2
                     return "\"<unknown>\"";
 
                 case ESourceTree.Absolute:
-                    return "\"<absolute\"";
+                    return "\"<absolute>\"";
 
                 case ESourceTree.Group:
                     return "\"<group>\"";
@@ -498,7 +498,7 @@ namespace V2
             config["SYMROOT"] = new UniqueConfigurationValue(Bam.Core.State.BuildRoot);
             config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             // TODO: this should be in the Target settings, but Xcode IDE is looking like it uses this
-            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+            //config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             this.Configurations.Add(config);
@@ -748,8 +748,18 @@ namespace V2
             // reset SRCROOT, or it is taken to be where the workspace is
             config["SRCROOT"] = new UniqueConfigurationValue(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse());
 
+            // let's now override the SYMROOT for this configuration
+            var absLibraryDir = System.IO.Path.GetDirectoryName(fileRef.Path.ToString());
+            config["SYMROOT"] = new UniqueConfigurationValue(absLibraryDir);
+
+            // TODO: guess that this affected the full path, but didn't
+            //config["PROJECT_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+
             config["CONFIGURATION_TEMP_DIR"] = new UniqueConfigurationValue("$PROJECT_TEMP_DIR");
 
+#if true
+            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+#else
             var libraryPath = fileRef.Path;
             var macros = new Bam.Core.V2.MacroList();
             macros.Add("buildroot", Bam.Core.V2.TokenizedString.Create("$(SYMROOT)", null, verbatim: true));
@@ -757,6 +767,7 @@ namespace V2
             // on the target, this should override what is in the project setings
             // TODO: this does seem to happen for writing files, but not for displaying it in the IDE (still red file links)
             config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(libraryDir);
+#endif
 
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
