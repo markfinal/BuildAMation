@@ -60,6 +60,17 @@ namespace V2
             Executable
         }
 
+        public enum ESourceTree
+        {
+            NA,
+            Absolute,
+            Group,
+            SourceRoot,
+            DeveloperDir,
+            BuiltProductsDir,
+            SDKRoot
+        }
+
         /// <summary>
         ///
         /// </summary>
@@ -79,14 +90,12 @@ namespace V2
             Bam.Core.V2.TokenizedString path,
             EFileType type,
             bool explicitType = false,
-            string sourceTree = null,
-            bool quotedSourceTree = true)
+            ESourceTree sourceTree = ESourceTree.NA)
         {
             this.Path = path;
             this.Type = type;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
-            this.QuotedSourceTree = quotedSourceTree;
         }
 
         public FileReference(FileReference other)
@@ -95,7 +104,6 @@ namespace V2
             this.Type = other.Type;
             this.SourceTree = other.SourceTree;
             this.ExplicitType = other.ExplicitType;
-            this.QuotedSourceTree = other.QuotedSourceTree;
         }
 
         public Bam.Core.V2.TokenizedString Path
@@ -116,13 +124,7 @@ namespace V2
             set;
         }
 
-        private string SourceTree
-        {
-            get;
-            set;
-        }
-
-        private bool QuotedSourceTree
+        private ESourceTree SourceTree
         {
             get;
             set;
@@ -151,6 +153,36 @@ namespace V2
             throw new Bam.Core.Exception("Unrecognized file type");
         }
 
+        private string SourceTreeAsString()
+        {
+            switch (this.SourceTree)
+            {
+                case ESourceTree.NA:
+                    return "\"<unknown>\"";
+
+                case ESourceTree.Absolute:
+                    return "\"<absolute\"";
+
+                case ESourceTree.Group:
+                    return "\"<group>\"";
+
+                case ESourceTree.SourceRoot:
+                    return "SOURCE_ROOT";
+
+                case ESourceTree.DeveloperDir:
+                    return "DEVELOPER_DIR";
+
+                case ESourceTree.BuiltProductsDir:
+                    return "BUILT_PRODUCTS_DIR";
+
+                case ESourceTree.SDKRoot:
+                    return "SDKROOT";
+
+                default:
+                    throw new Bam.Core.Exception("Unknown source tree");
+            }
+        }
+
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
@@ -163,18 +195,33 @@ namespace V2
             {
                 text.AppendFormat("lastKnownFileType = {0}; ", this.FileTypeAsString());
             }
-            var path = (null != this.SourceTree && this.SourceTree != "<absolute>") ? System.IO.Path.GetFileName(this.Path.ToString()) : this.Path.ToString();
+
+            var name = System.IO.Path.GetFileName(this.Path.ToString());
+            text.AppendFormat("name = \"{0}\"; ", name);
+
+            string path = null;
+            switch (this.SourceTree)
+            {
+                case ESourceTree.NA:
+                case ESourceTree.Absolute:
+                    path = this.Path.ToString();
+                    break;
+
+                case ESourceTree.BuiltProductsDir:
+                    {
+                        var fully = this.Path.ToString();
+                        var buildroot = Bam.Core.State.BuildRoot;
+                        path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, buildroot + "/");
+                    }
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Other source trees not handled yet");
+            }
             text.AppendFormat("path = \"{0}\" /* FILLEMEIN */; ", path);
-            var sourceTree = (null != this.SourceTree) ? this.SourceTree : "<unknown>";
-            if (this.QuotedSourceTree)
-            {
-                text.AppendFormat("sourceTree = \"{0}\"; ", sourceTree);
-            }
-            else
-            {
-                text.AppendFormat("sourceTree = {0}; ", sourceTree);
-            }
-            text.AppendFormat("}};", this.Path, this.SourceTree);
+
+            text.AppendFormat("sourceTree = {0}; ", this.SourceTreeAsString());
+            text.AppendFormat("}};");
             text.AppendLine();
         }
     }
@@ -450,6 +497,8 @@ namespace V2
             config["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
             config["SYMROOT"] = new UniqueConfigurationValue(Bam.Core.State.BuildRoot);
             config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+            // TODO: this should be in the Target settings, but Xcode IDE is looking like it uses this
+            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             this.Configurations.Add(config);
@@ -695,13 +744,18 @@ namespace V2
 
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
+
+            // reset SRCROOT, or it is taken to be where the workspace is
+            config["SRCROOT"] = new UniqueConfigurationValue(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse());
+
             config["CONFIGURATION_TEMP_DIR"] = new UniqueConfigurationValue("$PROJECT_TEMP_DIR");
 
             var libraryPath = fileRef.Path;
             var macros = new Bam.Core.V2.MacroList();
-            macros.Add("buildroot", Bam.Core.V2.TokenizedString.Create("$SYMROOT", null, verbatim: true));
+            macros.Add("buildroot", Bam.Core.V2.TokenizedString.Create("$(SYMROOT)", null, verbatim: true));
             var libraryDir = System.IO.Path.GetDirectoryName(libraryPath.Parse(macros));
             // on the target, this should override what is in the project setings
+            // TODO: this does seem to happen for writing files, but not for displaying it in the IDE (still red file links)
             config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(libraryDir);
 
             var configList = new ConfigurationList(this);
@@ -1215,7 +1269,11 @@ namespace V2
             Bam.Core.V2.TokenizedString libraryPath) :
             base(module, Type.StaticLibrary)
         {
-            var library = new FileReference(libraryPath, FileReference.EFileType.Archive, explicitType:true, sourceTree:"BUILT_PRODUCTS_DIR", quotedSourceTree:false);
+            var library = new FileReference(
+                libraryPath,
+                FileReference.EFileType.Archive,
+                explicitType:true,
+                sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = library;
             this.Project.FileReferences.Add(library);
             this.Project.ProductRefGroup.Children.Add(library);
@@ -1260,7 +1318,11 @@ namespace V2
             Bam.Core.V2.TokenizedString executablePath) :
             base(module, Type.Application)
         {
-            var application = new FileReference(executablePath, FileReference.EFileType.Executable);
+            var application = new FileReference(
+                executablePath,
+                FileReference.EFileType.Executable,
+                explicitType:true,
+                sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = application;
             this.Project.FileReferences.Add(application);
             this.Project.ProductRefGroup.Children.Add(application);
@@ -1366,6 +1428,10 @@ namespace V2
             plistEl.AppendChild(dictEl);
             doc.AppendChild(plistEl);
 
+#if true
+            // TODO: this seems to be the only way to get the target settings working
+            CreateKeyValuePair(doc, dictEl, "BuildLocationStyle", "UseTargetSettings");
+#else
             // build and intermediate file locations
             CreateKeyValuePair(doc, dictEl, "BuildLocationStyle", "CustomLocation");
             CreateKeyValuePair(doc, dictEl, "CustomBuildIntermediatesPath", "XcodeIntermediates"); // where xxx.build folders are stored
@@ -1375,6 +1441,7 @@ namespace V2
             // derived data
             CreateKeyValuePair(doc, dictEl, "DerivedDataCustomLocation", "XcodeDerivedData");
             CreateKeyValuePair(doc, dictEl, "DerivedDataLocationStyle", "WorkspaceRelativePath");
+#endif
 
             this.Document = doc;
         }
