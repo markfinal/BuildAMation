@@ -33,6 +33,7 @@ namespace V2
         {
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
             var libraryNames = new System.Collections.Generic.List<string>();
+            // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {
                 var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();

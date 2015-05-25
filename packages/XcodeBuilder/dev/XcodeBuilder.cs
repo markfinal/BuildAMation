@@ -89,19 +89,27 @@ namespace V2
         public FileReference(
             Bam.Core.V2.TokenizedString path,
             EFileType type,
+            Project project,
             bool explicitType = false,
             ESourceTree sourceTree = ESourceTree.NA)
         {
             this.Path = path;
             this.Type = type;
+            this.Project = project;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
+
+            if (null != this.Project)
+            {
+                this.Project.FileReferences.Add(this);
+            }
         }
 
         public FileReference(FileReference other)
         {
             this.Path = other.Path;
             this.Type = other.Type;
+            this.Project = other.Project;
             this.SourceTree = other.SourceTree;
             this.ExplicitType = other.ExplicitType;
         }
@@ -116,6 +124,12 @@ namespace V2
         {
             get;
             private set;
+        }
+
+        private Project Project
+        {
+            get;
+            set;
         }
 
         private bool ExplicitType
@@ -210,8 +224,8 @@ namespace V2
                 case ESourceTree.BuiltProductsDir:
                     {
                         var fully = this.Path.ToString();
-                        var buildroot = Bam.Core.State.BuildRoot;
-                        path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, buildroot + "/");
+                        var builtProductsDir = this.Project.BuiltProductsDir;
+                        path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, builtProductsDir + "/");
                     }
                     break;
 
@@ -495,14 +509,24 @@ namespace V2
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
             config["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
-            config["SYMROOT"] = new UniqueConfigurationValue(Bam.Core.State.BuildRoot);
-            config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
-            // TODO: this should be in the Target settings, but Xcode IDE is looking like it uses this
-            //config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+
+            // all 'products' are relative to this in the IDE, regardless of the project settings
+            // needed so that built products are no longer 'red' in the IDE
+            config["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
+
+            //config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
             this.Configurations.Add(config);
             this.ConfigurationLists.Add(configList);
+        }
+
+        public string BuiltProductsDir
+        {
+            get
+            {
+                return this.Module.Package.BuildDirectory;
+            }
         }
 
         public Bam.Core.V2.Module Module
@@ -752,22 +776,7 @@ namespace V2
             var absLibraryDir = System.IO.Path.GetDirectoryName(fileRef.Path.ToString());
             config["SYMROOT"] = new UniqueConfigurationValue(absLibraryDir);
 
-            // TODO: guess that this affected the full path, but didn't
-            //config["PROJECT_DIR"] = new UniqueConfigurationValue("$SYMROOT");
-
-            config["CONFIGURATION_TEMP_DIR"] = new UniqueConfigurationValue("$PROJECT_TEMP_DIR");
-
-#if true
             config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
-#else
-            var libraryPath = fileRef.Path;
-            var macros = new Bam.Core.V2.MacroList();
-            macros.Add("buildroot", Bam.Core.V2.TokenizedString.Create("$(SYMROOT)", null, verbatim: true));
-            var libraryDir = System.IO.Path.GetDirectoryName(libraryPath.Parse(macros));
-            // on the target, this should override what is in the project setings
-            // TODO: this does seem to happen for writing files, but not for displaying it in the IDE (still red file links)
-            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(libraryDir);
-#endif
 
             var configList = new ConfigurationList(this);
             configList.Configurations.Add(config);
@@ -1283,10 +1292,10 @@ namespace V2
             var library = new FileReference(
                 libraryPath,
                 FileReference.EFileType.Archive,
+                this.Project,
                 explicitType:true,
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = library;
-            this.Project.FileReferences.Add(library);
             this.Project.ProductRefGroup.Children.Add(library);
 
             var target = new Target(module, this.Project, library, V2.Target.EProductType.StaticLibrary);
@@ -1332,10 +1341,10 @@ namespace V2
             var application = new FileReference(
                 executablePath,
                 FileReference.EFileType.Executable,
+                this.Project,
                 explicitType:true,
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = application;
-            this.Project.FileReferences.Add(application);
             this.Project.ProductRefGroup.Children.Add(application);
 
             var target = new Target(module, this.Project, application, V2.Target.EProductType.Executable);
