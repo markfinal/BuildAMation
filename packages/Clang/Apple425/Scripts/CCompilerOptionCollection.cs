@@ -181,7 +181,6 @@ namespace Clang
             Bam.Core.V2.Module module,
             XcodeBuilder.V2.Configuration configuration)
         {
-            Bam.Core.Log.MessageAll("Hello world");
             var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
