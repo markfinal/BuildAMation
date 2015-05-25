@@ -352,6 +352,21 @@ namespace V2
                 }
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as TokenizedString;
+            if (this.OriginalString != other.OriginalString)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     /// <summary>
