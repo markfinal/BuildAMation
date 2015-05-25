@@ -1112,17 +1112,50 @@ namespace V2
         }
     }
 
-    public sealed class WorkspaceMeta
+    public sealed class WorkspaceMeta :
+        System.Collections.Generic.IEnumerable<Project>
     {
         public WorkspaceMeta()
         {
-            this.Projects = new System.Collections.Generic.List<Project>();
+            this.Projects = new System.Collections.Generic.Dictionary<System.Type, Project>();
         }
 
-        public System.Collections.Generic.List<Project> Projects
+        private System.Collections.Generic.Dictionary<System.Type, Project> Projects
         {
             get;
-            private set;
+            set;
+        }
+
+        public Project
+        FindOrCreateProject(
+            Bam.Core.V2.Module module,
+            XcodeMeta.Type projectType)
+        {
+            var moduleType = module.GetType();
+            if (this.Projects.ContainsKey(moduleType))
+            {
+                return this.Projects[moduleType];
+            }
+            else
+            {
+                var project = new Project(module);
+                this.Projects[moduleType] = project;
+                return project;
+            }
+        }
+
+
+        public System.Collections.Generic.IEnumerator<Project> GetEnumerator()
+        {
+            foreach (var project in this.Projects)
+            {
+                yield return project.Value;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 
@@ -1141,11 +1174,11 @@ namespace V2
             var isReferenced = graph.IsReferencedModule(module);
             this.IsProjectModule = isReferenced;
 
+            var workspace = graph.MetaData as WorkspaceMeta;
             if (isReferenced)
             {
                 this.ProjectModule = module;
-                this.Project = new Project(module);
-                (graph.MetaData as WorkspaceMeta).Projects.Add(this.Project);
+                this.Project = workspace.FindOrCreateProject(module, type);
             }
             else
             {
@@ -1204,7 +1237,7 @@ namespace V2
             workspace.Attributes.Append(workspaceContents.CreateAttribute("version")).Value = "1.0";
             workspaceContents.AppendChild(workspace);
 
-            foreach (var project in workspaceMeta.Projects)
+            foreach (var project in workspaceMeta)
             {
                 var text = new System.Text.StringBuilder();
                 text.AppendLine("// !$*UTF8*$!");
