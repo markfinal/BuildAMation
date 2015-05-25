@@ -31,7 +31,23 @@ namespace C
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
             {
+                var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+                // TODO: could the lib search paths be in the staticlibrary base class as a patch?
+                foreach (var library in libraries)
+                {
+                    var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                    var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
+                    linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                }
+
                 var application = new XcodeBuilder.V2.XcodeProgram(sender, executablePath);
+
+                var interfaceType = Bam.Core.State.ScriptAssembly.GetType("XcodeProjectProcessor.V2.IConvertToProject");
+                if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+                {
+                    var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                    map.InterfaceMethods[0].Invoke(sender.Settings, new object[] { sender, application.Target.ConfigurationList[0] });
+                }
 
                 foreach (var input in objectFiles)
                 {

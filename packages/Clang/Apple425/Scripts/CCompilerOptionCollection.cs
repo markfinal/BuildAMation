@@ -173,6 +173,37 @@ namespace Clang
         }
     }
 
+    public static partial class XcodeImplementation
+    {
+        public static void
+        Convert(
+            this C.V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+            Bam.Core.Log.MessageAll("Hello world");
+            var applicationFile = module as C.V2.ConsoleApplication;
+            switch (options.OutputType)
+            {
+                case C.ELinkerOutput.DynamicLibrary:
+                    configuration["MACH_O_TYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("mh_dylib");
+                    // TODO: dylib_install_name
+                    // TODO: current_version
+                    // TODO: compatability_version
+                    break;
+            }
+            if (options.LibraryPaths.Count > 0)
+            {
+                var option = new XcodeBuilder.V2.MultiConfigurationValue();
+                foreach (var path in options.LibraryPaths)
+                {
+                    option.Add(path.ToString());
+                }
+                configuration["LIBRARY_SEARCH_PATHS"] = option;
+            }
+        }
+    }
+
     public static partial class NativeImplementation
     {
         public static void
@@ -671,12 +702,23 @@ namespace V2
 
     public class LinkerSettings :
         Bam.Core.V2.Settings,
-        C.V2.ICommonLinkerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        XcodeProjectProcessor.V2.IConvertToProject,
+        C.V2.ICommonLinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+        }
+
+        void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, configuration);
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -689,11 +731,6 @@ namespace V2
         {
             get;
             set;
-        }
-
-        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
-        {
-            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
         }
     }
 
