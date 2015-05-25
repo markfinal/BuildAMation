@@ -105,13 +105,27 @@ namespace V2
             }
         }
 
-        public FileReference(FileReference other)
+        private FileReference(string path, FileReference other)
         {
-            this.Path = other.Path;
+            this.Path = Bam.Core.V2.TokenizedString.Create(path, null);
             this.Type = other.Type;
             this.Project = other.Project;
             this.SourceTree = other.SourceTree;
             this.ExplicitType = other.ExplicitType;
+        }
+
+        public static FileReference
+        MakeLinkedClone(
+            Project project,
+            Bam.Core.EConfiguration configuration,
+            FileReference other)
+        {
+            // need to constructed a path that is the original, relative to the current project's built products dir
+            var originalPath = other.Path.ToString();
+            var thisProjectPath = System.String.Format("{0}/{1}/", project.BuiltProductsDir, configuration.ToString());
+            var relativePath = Bam.Core.RelativePathUtilities.GetPath(originalPath, thisProjectPath);
+            var clone = new FileReference(relativePath, other);
+            return clone;
         }
 
         public Bam.Core.V2.TokenizedString Path
@@ -1389,7 +1403,7 @@ namespace V2
                 this.Target.BuildPhases.Add(this.Frameworks);
             }
             // this generates a new GUID
-            var copyOfLibFileRef = new FileReference(library.Output);
+            var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             var libraryBuildFile = new BuildFile(library.Output.Path.ToString(), copyOfLibFileRef);
             this.Project.FileReferences.Add(copyOfLibFileRef);
             this.Project.MainGroup.Children.Add(copyOfLibFileRef); // TODO: structure later
