@@ -101,7 +101,7 @@ namespace V2
 
             if (null != this.Project)
             {
-                this.Project.FileReferences.Add(this);
+                this.Project.AddFileReference(this);
             }
         }
 
@@ -555,10 +555,10 @@ namespace V2
             private set;
         }
 
-        public System.Collections.Generic.List<FileReference> FileReferences
+        private System.Collections.Generic.List<FileReference> FileReferences
         {
             get;
-            private set;
+            set;
         }
 
         public System.Collections.Generic.List<BuildFile> BuildFiles
@@ -617,6 +617,31 @@ namespace V2
         {
             get;
             protected set;
+        }
+
+        public void
+        AddFileReference(
+            FileReference other)
+        {
+            Bam.Core.Log.MessageAll("Compare {0}", other.Path);
+            foreach (var fileref in this.FileReferences)
+            {
+                Bam.Core.Log.MessageAll("Checking {0}", fileref.Path);
+                if (fileref == other)
+                {
+                    Bam.Core.Log.MessageAll("Found1");
+                    return;
+                }
+
+                if (fileref.Path.Equals(other.Path))
+                {
+                    Bam.Core.Log.MessageAll("Found2");
+                    return;
+                }
+            }
+
+            Bam.Core.Log.MessageAll("Adding");
+            this.FileReferences.Add(other);
         }
 
         private void InternalSerialize(System.Text.StringBuilder text, int indentLevel)
@@ -1360,7 +1385,7 @@ namespace V2
             }
             this.Target.SourcesBuildPhase.BuildFiles.Add(output);
 
-            this.Project.FileReferences.Add(source);
+            this.Project.AddFileReference(source);
             this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
             this.Project.BuildFiles.Add(output);
         }
@@ -1409,7 +1434,7 @@ namespace V2
             }
             this.Target.SourcesBuildPhase.BuildFiles.Add(output);
 
-            this.Project.FileReferences.Add(source);
+            this.Project.AddFileReference(source);
             this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
             this.Project.BuildFiles.Add(output);
         }
@@ -1438,7 +1463,7 @@ namespace V2
             // this generates a new GUID
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             var libraryBuildFile = new BuildFile(library.Output.Path.ToString(), copyOfLibFileRef);
-            this.Project.FileReferences.Add(copyOfLibFileRef);
+            this.Project.AddFileReference(copyOfLibFileRef);
             this.Project.MainGroup.Children.Add(copyOfLibFileRef); // TODO: structure later
             this.Project.BuildFiles.Add(libraryBuildFile);
             this.Frameworks.BuildFiles.Add(libraryBuildFile);
