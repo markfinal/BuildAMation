@@ -380,6 +380,19 @@ namespace V2
             this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
         }
 
+        public void
+        AddBuildFile(BuildFile other)
+        {
+            foreach (var build in this.BuildFiles)
+            {
+                if (build.GUID == other.GUID)
+                {
+                    return;
+                }
+            }
+            this.BuildFiles.Add(other);
+        }
+
         public override string GUID
         {
             get;
@@ -401,10 +414,10 @@ namespace V2
             get;
         }
 
-        public System.Collections.Generic.List<BuildFile> BuildFiles
+        private System.Collections.Generic.List<BuildFile> BuildFiles
         {
             get;
-            private set;
+            set;
         }
 
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
@@ -1446,7 +1459,7 @@ namespace V2
                 (patchSettings as CommandLineProcessor.V2.IConvertToCommandLine).Convert(module, commandLine);
                 output.Settings = commandLine;
             }
-            this.Target.SourcesBuildPhase.BuildFiles.Add(output);
+            this.Target.SourcesBuildPhase.AddBuildFile(output);
             this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
         }
 
@@ -1491,7 +1504,7 @@ namespace V2
                 (patchSettings as CommandLineProcessor.V2.IConvertToCommandLine).Convert(module, commandLine);
                 output.Settings = commandLine;
             }
-            this.Target.SourcesBuildPhase.BuildFiles.Add(output);
+            this.Target.SourcesBuildPhase.AddBuildFile(output);
             this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
         }
 
@@ -1520,7 +1533,7 @@ namespace V2
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
             this.Project.MainGroup.AddReference(copyOfLibFileRef); // TODO: structure later
-            this.Frameworks.BuildFiles.Add(libraryBuildFile);
+            this.Frameworks.AddBuildFile(libraryBuildFile);
         }
     }
 
