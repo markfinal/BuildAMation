@@ -307,10 +307,23 @@ namespace V2
             private set;
         }
 
-        public System.Collections.Generic.List<Object> Children
+        private System.Collections.Generic.List<Object> Children
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        AddReference(Object other)
+        {
+            foreach (var child in this.Children)
+            {
+                if (child.GUID == other.GUID)
+                {
+                    return;
+                }
+            }
+            this.Children.Add(other);
         }
 
         public override string GUID
@@ -487,7 +500,7 @@ namespace V2
             base()
         {
             this.Module = module;
-            this.Targets = new System.Collections.Generic.List<Target>();
+            this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
             this.FileReferences = new System.Collections.Generic.List<FileReference>();
             this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
             this.Groups = new System.Collections.Generic.List<Group>();
@@ -500,7 +513,7 @@ namespace V2
             this.Groups.Add(new Group()); // product ref group
 
             this.ProductRefGroup.Name = "Products";
-            this.MainGroup.Children.Add(this.ProductRefGroup);
+            this.MainGroup.AddReference(this.ProductRefGroup);
 
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
@@ -512,7 +525,7 @@ namespace V2
 
             //config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             var configList = new ConfigurationList(this);
-            configList.Configurations.Add(config);
+            configList.AddConfiguration(config);
             this.Configurations.Add(config);
             this.ConfigurationLists.Add(configList);
         }
@@ -531,10 +544,10 @@ namespace V2
             private set;
         }
 
-        public System.Collections.Generic.List<Target> Targets
+        private System.Collections.Generic.Dictionary<System.Type, Target> Targets
         {
             get;
-            private set;
+            set;
         }
 
         private System.Collections.Generic.List<FileReference> FileReferences
@@ -657,6 +670,51 @@ namespace V2
             return newBuildFile;
         }
 
+        private Target
+        FindOrCreateTarget(
+            Bam.Core.V2.Module module,
+            FileReference fileRef,
+            Target.EProductType type)
+        {
+            foreach (var target in this.Targets)
+            {
+                if (target.Key == module.GetType())
+                {
+                    return target.Value;
+                }
+            }
+
+            var newTarget = new Target(module, this, fileRef, type);
+            this.Targets[module.GetType()] = newTarget;
+            return newTarget;
+        }
+
+        public Target
+        AddNewTargetConfiguration(
+            Bam.Core.V2.Module module,
+            FileReference fileRef,
+            Target.EProductType type)
+        {
+            var target = this.FindOrCreateTarget(module, fileRef, type);
+
+            var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
+            config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
+
+            // reset SRCROOT, or it is taken to be where the workspace is
+            config["SRCROOT"] = new UniqueConfigurationValue(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse());
+
+            // let's now override the SYMROOT for this configuration
+            var absLibraryDir = System.IO.Path.GetDirectoryName(fileRef.Path.ToString());
+            config["SYMROOT"] = new UniqueConfigurationValue(absLibraryDir);
+
+            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+
+            target.ConfigurationList.AddConfiguration(config);
+            this.Configurations.Add(config);
+
+            return target;
+        }
+
         private void InternalSerialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
@@ -686,7 +744,7 @@ namespace V2
             text.AppendLine();
             text.AppendFormat("{0}targets = (", indent2);
             text.AppendLine();
-            foreach (var target in this.Targets)
+            foreach (var target in this.Targets.Values)
             {
                 text.AppendFormat("{0}{1} /* {2} */", indent3, target.GUID, "REPLACENAMEHERE");
                 text.AppendLine();
@@ -755,7 +813,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXNativeTarget section */");
                 text.AppendLine();
-                foreach (var target in this.Targets)
+                foreach (var target in this.Targets.Values)
                 {
                     target.Serialize(text, indentLevel);
                 }
@@ -811,28 +869,18 @@ namespace V2
             Executable
         }
 
-        public Target(Bam.Core.V2.Module module, Project project, FileReference fileRef, EProductType type) :
+        public Target(
+            Bam.Core.V2.Module module,
+            Project project,
+            FileReference fileRef,
+            EProductType type) :
             base()
         {
             this.Name = module.GetType().Name;
             this.FileReference = fileRef;
             this.Type = type;
 
-            var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
-            config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
-
-            // reset SRCROOT, or it is taken to be where the workspace is
-            config["SRCROOT"] = new UniqueConfigurationValue(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse());
-
-            // let's now override the SYMROOT for this configuration
-            var absLibraryDir = System.IO.Path.GetDirectoryName(fileRef.Path.ToString());
-            config["SYMROOT"] = new UniqueConfigurationValue(absLibraryDir);
-
-            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
-
             var configList = new ConfigurationList(this);
-            configList.Configurations.Add(config);
-            project.Configurations.Add(config);
             project.ConfigurationLists.Add(configList);
             this.ConfigurationList = configList;
 
@@ -840,8 +888,8 @@ namespace V2
             this.SourcesBuildPhase = new V2.SourcesBuildPhase();
             this.BuildPhases.Add(this.SourcesBuildPhase);
 
-            project.Targets.Add(this);
             this.Project = project;
+            this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
         }
 
         public string Name
@@ -978,10 +1026,23 @@ namespace V2
             private set;
         }
 
-        public System.Collections.Generic.List<Configuration> Configurations
+        private System.Collections.Generic.List<Configuration> Configurations
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        AddConfiguration(Configuration config)
+        {
+            foreach (var conf in this.Configurations)
+            {
+                if (config.GUID == conf.GUID)
+                {
+                    return;
+                }
+            }
+            this.Configurations.Add(config);
         }
 
         public override string GUID
@@ -1373,11 +1434,8 @@ namespace V2
                 explicitType:true,
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = library;
-            this.Project.ProductRefGroup.Children.Add(library);
-
-            var target = new Target(module, this.Project, library, V2.Target.EProductType.StaticLibrary);
-            this.Target = target;
-            this.Project.SourcesBuildPhases.Add(target.SourcesBuildPhase);
+            this.Project.ProductRefGroup.AddReference(library);
+            this.Target = this.Project.AddNewTargetConfiguration(module, library, V2.Target.EProductType.StaticLibrary);
         }
 
         public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
@@ -1389,7 +1447,7 @@ namespace V2
                 output.Settings = commandLine;
             }
             this.Target.SourcesBuildPhase.BuildFiles.Add(output);
-            this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
+            this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
@@ -1418,7 +1476,7 @@ namespace V2
                 explicitType:true,
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = application;
-            this.Project.ProductRefGroup.Children.Add(application);
+            this.Project.ProductRefGroup.AddReference(application);
 
             var target = new Target(module, this.Project, application, V2.Target.EProductType.Executable);
             this.Target = target;
@@ -1434,7 +1492,7 @@ namespace V2
                 output.Settings = commandLine;
             }
             this.Target.SourcesBuildPhase.BuildFiles.Add(output);
-            this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
+            this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
@@ -1461,7 +1519,7 @@ namespace V2
             // this generates a new GUID
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
-            this.Project.MainGroup.Children.Add(copyOfLibFileRef); // TODO: structure later
+            this.Project.MainGroup.AddReference(copyOfLibFileRef); // TODO: structure later
             this.Frameworks.BuildFiles.Add(libraryBuildFile);
         }
     }
