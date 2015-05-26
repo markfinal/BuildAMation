@@ -528,18 +528,7 @@ namespace V2
             this.ProductRefGroup.Name = "Products";
             this.MainGroup.AddReference(this.ProductRefGroup);
 
-            var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
-            config["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
-            config["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
-
-            // all 'products' are relative to this in the IDE, regardless of the project settings
-            // needed so that built products are no longer 'red' in the IDE
-            config["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
-
-            //config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             var configList = new ConfigurationList(this);
-            configList.AddConfiguration(config);
-            this.Configurations.Add(config);
             this.ConfigurationLists.Add(configList);
         }
 
@@ -708,6 +697,21 @@ namespace V2
             FileReference fileRef,
             Target target)
         {
+            // add configuration to project
+            var projectConfig = new Configuration(module.BuildEnvironment.Configuration.ToString());
+            projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
+            projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
+
+            // all 'products' are relative to this in the IDE, regardless of the project settings
+            // needed so that built products are no longer 'red' in the IDE
+            projectConfig["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
+
+            //config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+            this.ConfigurationLists[0].AddConfiguration(projectConfig);
+            this.Configurations.Add(projectConfig);
+
+
+            // add configuration to target
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
 
