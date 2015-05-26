@@ -623,24 +623,19 @@ namespace V2
         AddFileReference(
             FileReference other)
         {
-            Bam.Core.Log.MessageAll("Compare {0}", other.Path);
             foreach (var fileref in this.FileReferences)
             {
-                Bam.Core.Log.MessageAll("Checking {0}", fileref.Path);
                 if (fileref == other)
                 {
-                    Bam.Core.Log.MessageAll("Found1");
                     return;
                 }
 
                 if (fileref.Path.Equals(other.Path))
                 {
-                    Bam.Core.Log.MessageAll("Found2");
                     return;
                 }
             }
 
-            Bam.Core.Log.MessageAll("Adding");
             this.FileReferences.Add(other);
         }
 
@@ -1200,15 +1195,8 @@ namespace V2
             this.IsProjectModule = isReferenced;
 
             var workspace = graph.MetaData as WorkspaceMeta;
-            if (isReferenced)
-            {
-                this.ProjectModule = module;
-                this.Project = workspace.FindOrCreateProject(module, type);
-            }
-            else
-            {
-                this.ProjectModule = module.GetEncapsulatingReferencedModule();
-            }
+            this.ProjectModule = isReferenced ? module : module.GetEncapsulatingReferencedModule();
+            this.Project = workspace.FindOrCreateProject(this.ProjectModule, type);
 
             module.MetaData = this;
         }
