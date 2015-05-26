@@ -237,13 +237,15 @@ namespace V2
     public sealed class BuildFile :
         Object
     {
-        public BuildFile(string path, FileReference source)
+        public BuildFile(
+            Bam.Core.V2.TokenizedString path,
+            FileReference source)
         {
             this.Path = path;
             this.Source = source;
         }
 
-        public string Path
+        public Bam.Core.V2.TokenizedString Path
         {
             get;
             private set;
@@ -541,10 +543,10 @@ namespace V2
             set;
         }
 
-        public System.Collections.Generic.List<BuildFile> BuildFiles
+        private System.Collections.Generic.List<BuildFile> BuildFiles
         {
             get;
-            private set;
+            set;
         }
 
         public System.Collections.Generic.List<Group> Groups
@@ -617,6 +619,24 @@ namespace V2
             var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
             this.FileReferences.Add(newFileRef);
             return newFileRef;
+        }
+
+        public BuildFile
+        FindOrCreateBuildFile(
+            Bam.Core.V2.TokenizedString path,
+            FileReference fileRef)
+        {
+            foreach (var buildFile in this.BuildFiles)
+            {
+                if (buildFile.Source == fileRef)
+                {
+                    return buildFile;
+                }
+            }
+
+            var newBuildFile = new BuildFile(path, fileRef);
+            this.BuildFiles.Add(newBuildFile);
+            return newBuildFile;
         }
 
         public void
@@ -1374,7 +1394,6 @@ namespace V2
 
             this.Project.AddFileReference(source);
             this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
-            this.Project.BuildFiles.Add(output);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
@@ -1422,7 +1441,6 @@ namespace V2
 
             this.Project.AddFileReference(source);
             this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
-            this.Project.BuildFiles.Add(output);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
@@ -1448,10 +1466,9 @@ namespace V2
             }
             // this generates a new GUID
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
-            var libraryBuildFile = new BuildFile(library.Output.Path.ToString(), copyOfLibFileRef);
+            var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
             this.Project.AddFileReference(copyOfLibFileRef);
             this.Project.MainGroup.Children.Add(copyOfLibFileRef); // TODO: structure later
-            this.Project.BuildFiles.Add(libraryBuildFile);
             this.Frameworks.BuildFiles.Add(libraryBuildFile);
         }
     }

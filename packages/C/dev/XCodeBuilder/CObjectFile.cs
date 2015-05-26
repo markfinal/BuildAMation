@@ -34,7 +34,7 @@ namespace V2
                 source.GeneratedPaths[C.V2.SourceFile.Key],
                 XcodeBuilder.V2.FileReference.EFileType.SourceCodeC,
                 sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
-            objectFile.Output = new XcodeBuilder.V2.BuildFile(objectFilePath.ToString(), objectFile.Source);
+            objectFile.Output = objectFile.Project.FindOrCreateBuildFile(objectFilePath, objectFile.Source);
         }
     }
 }
