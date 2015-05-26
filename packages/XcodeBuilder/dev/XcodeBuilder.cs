@@ -85,7 +85,7 @@ namespace V2
             this.ExplicitType = explicitType;
         }
 
-        private FileReference(string path, FileReference other)
+        public FileReference(string path, FileReference other)
         {
             this.Path = Bam.Core.V2.TokenizedString.Create(path, null);
             this.Type = other.Type;
@@ -104,7 +104,7 @@ namespace V2
             var originalPath = other.Path.ToString();
             var thisProjectPath = System.String.Format("{0}/{1}/", project.BuiltProductsDir, configuration.ToString());
             var relativePath = Bam.Core.RelativePathUtilities.GetPath(originalPath, thisProjectPath);
-            var clone = new FileReference(relativePath, other);
+            var clone = project.FindOrCreateFileReference(relativePath, other);
             return clone;
         }
 
@@ -621,6 +621,24 @@ namespace V2
             return newFileRef;
         }
 
+        public FileReference
+        FindOrCreateFileReference(
+            string path,
+            FileReference other)
+        {
+            foreach (var fileRef in this.FileReferences)
+            {
+                if (fileRef.Path.ToString() == path)
+                {
+                    return fileRef;
+                }
+            }
+
+            var newFileRef = new FileReference(path, other);
+            this.FileReferences.Add(newFileRef);
+            return newFileRef;
+        }
+
         public BuildFile
         FindOrCreateBuildFile(
             Bam.Core.V2.TokenizedString path,
@@ -637,26 +655,6 @@ namespace V2
             var newBuildFile = new BuildFile(path, fileRef);
             this.BuildFiles.Add(newBuildFile);
             return newBuildFile;
-        }
-
-        public void
-        AddFileReference(
-            FileReference other)
-        {
-            foreach (var fileRef in this.FileReferences)
-            {
-                if (fileRef == other)
-                {
-                    return;
-                }
-
-                if (fileRef.Path.Equals(other.Path))
-                {
-                    return;
-                }
-            }
-
-            this.FileReferences.Add(other);
         }
 
         private void InternalSerialize(System.Text.StringBuilder text, int indentLevel)
@@ -1391,8 +1389,6 @@ namespace V2
                 output.Settings = commandLine;
             }
             this.Target.SourcesBuildPhase.BuildFiles.Add(output);
-
-            this.Project.AddFileReference(source);
             this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
         }
 
@@ -1438,8 +1434,6 @@ namespace V2
                 output.Settings = commandLine;
             }
             this.Target.SourcesBuildPhase.BuildFiles.Add(output);
-
-            this.Project.AddFileReference(source);
             this.Project.MainGroup.Children.Add(source); // TODO: will do proper grouping later
         }
 
@@ -1467,7 +1461,6 @@ namespace V2
             // this generates a new GUID
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
-            this.Project.AddFileReference(copyOfLibFileRef);
             this.Project.MainGroup.Children.Add(copyOfLibFileRef); // TODO: structure later
             this.Frameworks.BuildFiles.Add(libraryBuildFile);
         }
