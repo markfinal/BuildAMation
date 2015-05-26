@@ -62,30 +62,15 @@ namespace V2
 
         public enum ESourceTree
         {
-            NA,
-            Absolute,
-            Group,
-            SourceRoot,
-            DeveloperDir,
-            BuiltProductsDir,
-            SDKRoot
+            NA,       /* maps to <unknown> */
+            Absolute, /* absolute path */
+            Group,    /* group of things? (which group, where?) */
+            SourceRoot, /* relative to project */
+            DeveloperDir, /* relative to developer directory */
+            BuiltProductsDir, /* relative to where products are built in project */
+            SDKRoot /* relative to SDK root */
         }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="type"></param>
-        /// <param name="explicitType"></param>
-        /// <param name="sourceTree">Options:
-        /// null = <unknown>,
-        /// BUILT_PRODUCTS_DIR=relative_to_build_products,
-        /// SOURCE_ROOT=relative_to_project,
-        /// <absolute>=absolute_path,
-        /// <group>=relative_to_group(which group?),
-        /// DEVELOPER_DIR=relative_to_developer_dir,
-        /// </param>
-        /// <param name="quotedSourceTree"></param>
         public FileReference(
             Bam.Core.V2.TokenizedString path,
             EFileType type,
@@ -98,11 +83,6 @@ namespace V2
             this.Project = project;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
-
-            if (null != this.Project)
-            {
-                this.Project.AddFileReference(this);
-            }
         }
 
         private FileReference(string path, FileReference other)
@@ -619,18 +599,38 @@ namespace V2
             protected set;
         }
 
+        public FileReference
+        FindOrCreateFileReference(
+            Bam.Core.V2.TokenizedString path,
+            FileReference.EFileType type,
+            bool explicitType = false,
+            FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
+        {
+            foreach (var fileRef in this.FileReferences)
+            {
+                if (fileRef.Path.Equals(path))
+                {
+                    return fileRef;
+                }
+            }
+
+            var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
+            this.FileReferences.Add(newFileRef);
+            return newFileRef;
+        }
+
         public void
         AddFileReference(
             FileReference other)
         {
-            foreach (var fileref in this.FileReferences)
+            foreach (var fileRef in this.FileReferences)
             {
-                if (fileref == other)
+                if (fileRef == other)
                 {
                     return;
                 }
 
-                if (fileref.Path.Equals(other.Path))
+                if (fileRef.Path.Equals(other.Path))
                 {
                     return;
                 }
@@ -1349,10 +1349,9 @@ namespace V2
             Bam.Core.V2.TokenizedString libraryPath) :
             base(module, Type.StaticLibrary)
         {
-            var library = new FileReference(
+            var library = this.Project.FindOrCreateFileReference(
                 libraryPath,
                 FileReference.EFileType.Archive,
-                this.Project,
                 explicitType:true,
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = library;
@@ -1398,10 +1397,9 @@ namespace V2
             Bam.Core.V2.TokenizedString executablePath) :
             base(module, Type.Application)
         {
-            var application = new FileReference(
+            var application = this.Project.FindOrCreateFileReference(
                 executablePath,
                 FileReference.EFileType.Executable,
-                this.Project,
                 explicitType:true,
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = application;

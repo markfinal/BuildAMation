@@ -30,10 +30,9 @@ namespace V2
             Bam.Core.V2.Module source)
         {
             var objectFile = new XcodeBuilder.V2.XcodeObjectFile(sender);
-            objectFile.Source = new XcodeBuilder.V2.FileReference(
+            objectFile.Source = objectFile.Project.FindOrCreateFileReference(
                 source.GeneratedPaths[C.V2.SourceFile.Key],
                 XcodeBuilder.V2.FileReference.EFileType.SourceCodeC,
-                objectFile.Project,
                 sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
             objectFile.Output = new XcodeBuilder.V2.BuildFile(objectFilePath.ToString(), objectFile.Source);
         }
