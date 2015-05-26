@@ -683,7 +683,7 @@ namespace V2
             return newBuildFile;
         }
 
-        private Target
+        public Target
         FindOrCreateTarget(
             Bam.Core.V2.Module module,
             FileReference fileRef,
@@ -702,14 +702,12 @@ namespace V2
             return newTarget;
         }
 
-        public Target
+        public Configuration
         AddNewTargetConfiguration(
             Bam.Core.V2.Module module,
             FileReference fileRef,
-            Target.EProductType type)
+            Target target)
         {
-            var target = this.FindOrCreateTarget(module, fileRef, type);
-
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
 
@@ -725,7 +723,7 @@ namespace V2
             target.ConfigurationList.AddConfiguration(config);
             this.Configurations.Add(config);
 
-            return target;
+            return config;
         }
 
         private void InternalSerialize(System.Text.StringBuilder text, int indentLevel)
@@ -749,6 +747,7 @@ namespace V2
             text.AppendLine();
             text.AppendFormat("{0}compatibilityVersion = \"{1}\";", indent2, "Xcode 3.2"); // TODO
             text.AppendLine();
+            // project configuration list is always the first
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for FILLEMIN */;", indent2, this.ConfigurationLists[0].GUID);
             text.AppendLine();
             text.AppendFormat("{0}mainGroup = {1};", indent2, this.MainGroup.GUID);
@@ -953,9 +952,13 @@ namespace V2
             protected set;
         }
 
-        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        public void
+        SetCommonCompilationOptions(
+            Bam.Core.V2.Module module,
+            Configuration configuration,
+            Bam.Core.V2.Settings settings)
         {
-            (settings as XcodeProjectProcessor.V2.IConvertToProject).Convert(module, this.ConfigurationList[0]);
+            (settings as XcodeProjectProcessor.V2.IConvertToProject).Convert(module, configuration);
         }
 
         private string ProductTypeToString()
@@ -1317,6 +1320,12 @@ namespace V2
             protected set;
         }
 
+        public Configuration Configuration
+        {
+            get;
+            protected set;
+        }
+
         public static void PreExecution()
         {
             Bam.Core.V2.Graph.Instance.MetaData = new WorkspaceMeta();
@@ -1448,7 +1457,8 @@ namespace V2
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = library;
             this.Project.ProductRefGroup.AddReference(library);
-            this.Target = this.Project.AddNewTargetConfiguration(module, library, V2.Target.EProductType.StaticLibrary);
+            this.Target = this.Project.FindOrCreateTarget(module, library, V2.Target.EProductType.StaticLibrary);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, library, this.Target);
         }
 
         public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
@@ -1465,7 +1475,7 @@ namespace V2
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
         {
-            this.Target.SetCommonCompilationOptions(module, settings);
+            this.Target.SetCommonCompilationOptions(module, this.Configuration, settings);
         }
 
         public FileReference Output
@@ -1490,10 +1500,8 @@ namespace V2
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = application;
             this.Project.ProductRefGroup.AddReference(application);
-
-            var target = new Target(module, this.Project, application, V2.Target.EProductType.Executable);
-            this.Target = target;
-            this.Project.SourcesBuildPhases.Add(target.SourcesBuildPhase);
+            this.Target = this.Project.FindOrCreateTarget(module, application, V2.Target.EProductType.Executable);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, application, this.Target);
         }
 
         public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
@@ -1508,9 +1516,12 @@ namespace V2
             this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
         }
 
-        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        public void
+        SetCommonCompilationOptions(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.Settings settings)
         {
-            this.Target.SetCommonCompilationOptions(module, settings);
+            this.Target.SetCommonCompilationOptions(module, this.Configuration, settings);
         }
 
         public FileReference Output
