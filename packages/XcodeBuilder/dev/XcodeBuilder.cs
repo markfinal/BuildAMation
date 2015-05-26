@@ -217,9 +217,10 @@ namespace V2
 
                 case ESourceTree.BuiltProductsDir:
                     {
-                        var fully = this.Path.ToString();
-                        var builtProductsDir = this.Project.BuiltProductsDir;
-                        path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, builtProductsDir + "/");
+                        //var fully = this.Path.ToString();
+                        //var builtProductsDir = this.Project.BuiltProductsDir;
+                        //path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, builtProductsDir + "/");
+                        path = System.IO.Path.GetFileName(this.Path.ToString());
                     }
                     break;
 
@@ -702,9 +703,14 @@ namespace V2
             projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
             projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
+            // reset SRCROOT, or it is taken to be where the workspace is
+            projectConfig["SRCROOT"] = new UniqueConfigurationValue(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse());
+
             // all 'products' are relative to this in the IDE, regardless of the project settings
             // needed so that built products are no longer 'red' in the IDE
             projectConfig["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
+
+            projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(BUILD_DIR)/$(CONFIGURATION)");
 
             //config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
             this.ConfigurationLists[0].AddConfiguration(projectConfig);
@@ -714,15 +720,6 @@ namespace V2
             // add configuration to target
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
-
-            // reset SRCROOT, or it is taken to be where the workspace is
-            config["SRCROOT"] = new UniqueConfigurationValue(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse());
-
-            // let's now override the SYMROOT for this configuration
-            var absLibraryDir = System.IO.Path.GetDirectoryName(fileRef.Path.ToString());
-            config["SYMROOT"] = new UniqueConfigurationValue(absLibraryDir);
-
-            config["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$SYMROOT");
 
             target.ConfigurationList.AddConfiguration(config);
             this.Configurations.Add(config);
