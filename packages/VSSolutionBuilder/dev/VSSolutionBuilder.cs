@@ -402,7 +402,7 @@ namespace V2
 
                 var outDirEl = this.CreateProjectElement("OutDir");
                 var macros = new Bam.Core.V2.MacroList();
-                macros.Add("buildroot", Bam.Core.V2.TokenizedString.Create("$(SolutionDir)", null, verbatim:true));
+                macros.Add("pkgbuilddir", Bam.Core.V2.TokenizedString.Create("$(SolutionDir)", null, verbatim:true));
                 macros.Add("modulename", Bam.Core.V2.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
                 var outDir = outPath.Parse(macros);
                 outDir = System.IO.Path.GetDirectoryName(outDir);
