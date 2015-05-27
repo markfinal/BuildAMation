@@ -929,6 +929,12 @@ namespace V2
             private set;
         }
 
+        public FrameworksBuildPhase FrameworksBuildPhase
+        {
+            get;
+            set;
+        }
+
         public ConfigurationList ConfigurationList
         {
             get;
@@ -1543,21 +1549,20 @@ namespace V2
             private set;
         }
 
-        private FrameworksBuildPhase Frameworks = null;
-
         public void AddStaticLibrary(XcodeStaticLibrary library)
         {
-            if (null == this.Frameworks)
+            if (null == this.Target.FrameworksBuildPhase)
             {
-                this.Frameworks = new FrameworksBuildPhase();
-                this.Project.FrameworksBuildPhases.Add(this.Frameworks);
-                this.Target.BuildPhases.Add(this.Frameworks);
+                var frameworks = new FrameworksBuildPhase();
+                this.Project.FrameworksBuildPhases.Add(frameworks);
+                this.Target.BuildPhases.Add(frameworks);
+                this.Target.FrameworksBuildPhase = frameworks;
             }
             // this generates a new GUID
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
             this.Project.MainGroup.AddReference(copyOfLibFileRef); // TODO: structure later
-            this.Frameworks.AddBuildFile(libraryBuildFile);
+            this.Target.FrameworksBuildPhase.AddBuildFile(libraryBuildFile);
         }
     }
 
