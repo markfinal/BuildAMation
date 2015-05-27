@@ -99,6 +99,14 @@ namespace V2
             this.LinkedTo = other;
         }
 
+        /// <summary>
+        /// This generates a new GUID
+        /// or returns null if the target is in the current project
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="configuration"></param>
+        /// <param name="originalFileRef"></param>
+        /// <returns></returns>
         public static FileReference
         MakeLinkedClone(
             Project project,
@@ -107,7 +115,7 @@ namespace V2
         {
             if (project == originalFileRef.Project)
             {
-                return originalFileRef;
+                return null;
             }
             // need to constructed a path that is the original, relative to the current project's built products dir
             var originalPath = originalFileRef.Path.ToString();
@@ -1575,10 +1583,16 @@ namespace V2
                 this.Target.BuildPhases.Add(frameworks);
                 this.Target.FrameworksBuildPhase = frameworks;
             }
-            // this generates a new GUID
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
+            if (null != copyOfLibFileRef)
+            {
+                this.Project.MainGroup.AddReference(copyOfLibFileRef); // TODO: structure later
+            }
+            else
+            {
+                copyOfLibFileRef = library.Output;
+            }
             var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
-            this.Project.MainGroup.AddReference(copyOfLibFileRef); // TODO: structure later
             this.Target.FrameworksBuildPhase.AddBuildFile(libraryBuildFile);
         }
     }
