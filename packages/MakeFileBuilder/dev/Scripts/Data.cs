@@ -160,7 +160,14 @@ namespace V2
             makeRules.AppendLine();
 
             makeRules.AppendLine("$(DIRS):");
-            makeRules.AppendLine("\tmkdir $@");
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                makeRules.AppendLine("\tmkdir $@");
+            }
+            else
+            {
+                makeRules.AppendLine("\tmkdir -p $@");
+            }
 
             foreach (var rank in graph.Reverse())
             {
