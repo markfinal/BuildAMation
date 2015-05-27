@@ -410,6 +410,8 @@ namespace V2
                 outDirEl.InnerText = outDir;
                 configProps.Element.AppendChild(outDirEl);
 
+                // TODO: IntDir now
+
                 this.Project.InsertAfter(configProps.Element, this.LanguageImport.Element);
             }
         }
@@ -423,9 +425,11 @@ namespace V2
                 return;
             }
 
+            var projectPath = this.ProjectPath;
+            var dependentProjectPath = project.ProjectPath;
+
             var element = this.CreateProjectElement("ProjectReference");
-            // TODO: this probably needs to be relative to either the parent project, or the solution
-            element.Attributes.Append(this.CreateAttribute("Include")).Value = System.IO.Path.GetFileName(project.ProjectPath);
+            element.Attributes.Append(this.CreateAttribute("Include")).Value = Bam.Core.RelativePathUtilities.GetPath(dependentProjectPath, projectPath);
 
             var projectElement = this.CreateProjectElement("Project");
             projectElement.InnerText = project.GUID.ToString("B");
@@ -585,7 +589,7 @@ namespace V2
 
                 this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform, module, outPath);
 
-                var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename).vcxproj", module);
+                var projectPath = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module);
                 projectPath.Parse();
                 this.Project.ProjectPath = projectPath.ToString();
 
@@ -647,6 +651,12 @@ namespace V2
                     project.WriteTo(xmlwriter);
                 }
                 Bam.Core.Log.DebugMessage(builder.ToString());
+
+                var projectPathDir = System.IO.Path.GetDirectoryName(project.ProjectPath);
+                if (!System.IO.Directory.Exists(projectPathDir))
+                {
+                    System.IO.Directory.CreateDirectory(projectPathDir);
+                }
 
                 using (var xmlwriter = System.Xml.XmlWriter.Create(project.ProjectPath, settings))
                 {
