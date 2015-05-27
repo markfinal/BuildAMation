@@ -46,7 +46,7 @@ namespace C
                 if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
                 {
                     var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                    map.InterfaceMethods[0].Invoke(sender.Settings, new object[] { sender, application.Target.ConfigurationList[0] });
+                    map.InterfaceMethods[0].Invoke(sender.Settings, new object[] { sender, application.Configuration });
                 }
 
                 foreach (var input in objectFiles)
