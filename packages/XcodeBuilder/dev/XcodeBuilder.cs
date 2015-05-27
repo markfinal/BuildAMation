@@ -83,6 +83,7 @@ namespace V2
             this.Project = project;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
+            this.LinkedTo = null;
         }
 
         public FileReference(string path, FileReference other)
@@ -92,19 +93,20 @@ namespace V2
             this.Project = other.Project;
             this.SourceTree = other.SourceTree;
             this.ExplicitType = other.ExplicitType;
+            this.LinkedTo = other;
         }
 
         public static FileReference
         MakeLinkedClone(
             Project project,
             Bam.Core.EConfiguration configuration,
-            FileReference other)
+            FileReference originalFileRef)
         {
             // need to constructed a path that is the original, relative to the current project's built products dir
-            var originalPath = other.Path.ToString();
+            var originalPath = originalFileRef.Path.ToString();
             var thisProjectPath = System.String.Format("{0}/{1}/", project.BuiltProductsDir, configuration.ToString());
             var relativePath = Bam.Core.RelativePathUtilities.GetPath(originalPath, thisProjectPath);
-            var clone = project.FindOrCreateFileReference(relativePath, other);
+            var clone = project.FindOrCreateFileReference(relativePath, originalFileRef);
             return clone;
         }
 
@@ -136,6 +138,12 @@ namespace V2
         {
             get;
             set;
+        }
+
+        public FileReference LinkedTo
+        {
+            get;
+            private set;
         }
 
         public override string GUID
@@ -644,7 +652,11 @@ namespace V2
         {
             foreach (var fileRef in this.FileReferences)
             {
-                if (fileRef.Path.ToString() == path)
+                if (null == fileRef.LinkedTo)
+                {
+                    continue;
+                }
+                if (fileRef.LinkedTo.GUID == other.GUID)
                 {
                     return fileRef;
                 }
