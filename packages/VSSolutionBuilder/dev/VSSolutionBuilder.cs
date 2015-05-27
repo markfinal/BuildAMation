@@ -168,7 +168,7 @@ namespace V2
                 foreach (var config in project.Configurations)
                 {
                     var guid = project.GUID.ToString("B").ToUpper();
-                    content.AppendFormat("\t\t{0}.{1}.ActiveConfig = {1}", guid, config);
+                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {1}", guid, config);
                     content.AppendLine();
                     content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, config);
                     content.AppendLine();
