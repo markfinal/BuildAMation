@@ -149,6 +149,16 @@ namespace V2
                     project.ProjectPath, // TODO: relative to the solution file
                     project.GUID.ToString("B").ToUpper());
                 content.AppendLine();
+                if (project.Dependents.Count() > 0)
+                {
+                    content.AppendLine("\tProjectSection(ProjectDependencies) = postProject");
+                    foreach (var dependent in project.Dependents)
+                    {
+                        content.AppendFormat("\t\t{0} = {0}", dependent.GUID.ToString("B").ToUpper());
+                        content.AppendLine();
+                    }
+                    content.AppendLine("\tEndProjectSection");
+                }
                 content.AppendLine("EndProject");
 
                 configs.AddRangeUnique(project.Configurations);
@@ -217,6 +227,7 @@ namespace V2
         private Import LanguageTargets;
         private Type ProjectType;
         private System.Xml.XmlElement CommonCompilationOptionsElement = null;
+        private System.Collections.Generic.List<VSProject> DependentProjects = new System.Collections.Generic.List<VSProject>();
 
         public VSProject(Type type)
         {
@@ -408,6 +419,29 @@ namespace V2
             }
         }
 
+        public void
+        AddDependentProject(
+            VSProject project)
+        {
+            if (this.DependentProjects.Contains(project))
+            {
+                return;
+            }
+            this.DependentProjects.Add(project);
+        }
+
+        public System.Collections.Generic.IEnumerable<VSProject>
+        Dependents
+        {
+            get
+            {
+                foreach (var project in this.DependentProjects)
+                {
+                    yield return project;
+                }
+            }
+        }
+
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
         {
             (settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, this.CommonCompilationOptionsElement, null);
@@ -521,8 +555,6 @@ namespace V2
 
     public abstract class VSSolutionMeta
     {
-        protected VSProject Project = null;
-
         protected VSSolutionMeta(
             Bam.Core.V2.Module module,
             VSProject.Type type,
@@ -560,6 +592,12 @@ namespace V2
         {
             get;
             private set;
+        }
+
+        public VSProject Project
+        {
+            get;
+            protected set;
         }
 
         public Bam.Core.V2.Module ProjectModule
@@ -695,10 +733,23 @@ namespace V2
             set;
         }
 
-        public System.Collections.Generic.List<VSProjectStaticLibrary> Libraries
+        private System.Collections.Generic.List<VSProjectStaticLibrary> Libraries
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        AddStaticLibrary(
+            VSProjectStaticLibrary library)
+        {
+            if (this.Libraries.Contains(library))
+            {
+                return;
+            }
+
+            this.Libraries.Add(library);
+            this.Project.AddDependentProject(library.Project);
         }
     }
 }

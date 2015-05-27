@@ -55,8 +55,7 @@ namespace V2
             }
             foreach (var input in libraries)
             {
-                // TODO: this is a dependency at the solution level?
-                application.Libraries.Add(input.MetaData as VSSolutionBuilder.V2.VSProjectStaticLibrary);
+                application.AddStaticLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectStaticLibrary);
             }
         }
     }
