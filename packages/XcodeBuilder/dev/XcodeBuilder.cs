@@ -105,6 +105,10 @@ namespace V2
             Bam.Core.EConfiguration configuration,
             FileReference originalFileRef)
         {
+            if (project == originalFileRef.Project)
+            {
+                return originalFileRef;
+            }
             // need to constructed a path that is the original, relative to the current project's built products dir
             var originalPath = originalFileRef.Path.ToString();
             var thisProjectPath = System.String.Format("{0}/{1}/", project.BuiltProductsDir, configuration.ToString());
@@ -783,7 +787,7 @@ namespace V2
             text.AppendLine();
             foreach (var target in this.Targets.Values)
             {
-                text.AppendFormat("{0}{1} /* {2} */", indent3, target.GUID, "REPLACENAMEHERE");
+                text.AppendFormat("{0}{1} /* {2} */,", indent3, target.GUID, "REPLACENAMEHERE");
                 text.AppendLine();
             }
             text.AppendFormat("{0});", indent2);
@@ -1263,10 +1267,10 @@ namespace V2
     {
         public WorkspaceMeta()
         {
-            this.Projects = new System.Collections.Generic.Dictionary<System.Type, Project>();
+            this.Projects = new System.Collections.Generic.Dictionary<Bam.Core.PackageInformation, Project>();
         }
 
-        private System.Collections.Generic.Dictionary<System.Type, Project> Projects
+        private System.Collections.Generic.Dictionary<Bam.Core.PackageInformation, Project> Projects
         {
             get;
             set;
@@ -1277,15 +1281,17 @@ namespace V2
             Bam.Core.V2.Module module,
             XcodeMeta.Type projectType)
         {
-            var moduleType = module.GetType();
-            if (this.Projects.ContainsKey(moduleType))
+            // Note: if you want a Xcode project per module, change this from keying off of the package
+            // to the module type
+            var package = module.Package;
+            if (this.Projects.ContainsKey(package))
             {
-                return this.Projects[moduleType];
+                return this.Projects[package];
             }
             else
             {
                 var project = new Project(module);
-                this.Projects[moduleType] = project;
+                this.Projects[package] = project;
                 return project;
             }
         }
@@ -1405,7 +1411,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendLine("}");
 
-                var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename).xcodeproj/project.pbxproj", project.Module);
+                var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj/project.pbxproj", project.Module);
                 projectPath.Parse();
 
                 var projectDir = System.IO.Path.GetDirectoryName(projectPath.ToString());
