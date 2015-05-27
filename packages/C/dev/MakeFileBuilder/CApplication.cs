@@ -31,6 +31,16 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+            var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+            // TODO: could the lib search paths be in the staticlibrary base class as a patch?
+            foreach (var library in libraries)
+            {
+                var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
+                // TODO: watch for duplicates
+                linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+            }
+
             var commandLineArgs = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))

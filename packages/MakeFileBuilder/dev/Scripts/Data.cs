@@ -76,7 +76,8 @@ namespace V2
 
             if (Bam.Core.V2.Graph.Instance.IsReferencedModule(module))
             {
-                this.TargetVariable = module.GetType().Name;
+                // make the target names unique across configurations
+                this.TargetVariable = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
             }
 
             this.CommonMetaData = Bam.Core.V2.Graph.Instance.MetaData as MakeFileCommonMetaData;
