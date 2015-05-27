@@ -86,11 +86,14 @@ namespace V2
             this.LinkedTo = null;
         }
 
-        public FileReference(string path, FileReference other)
+        public FileReference(
+            string path,
+            FileReference other,
+            Project owningProject)
         {
             this.Path = Bam.Core.V2.TokenizedString.Create(path, null);
             this.Type = other.Type;
-            this.Project = other.Project;
+            this.Project = owningProject;
             this.SourceTree = other.SourceTree;
             this.ExplicitType = other.ExplicitType;
             this.LinkedTo = other;
@@ -225,10 +228,19 @@ namespace V2
 
                 case ESourceTree.BuiltProductsDir:
                     {
-                        //var fully = this.Path.ToString();
-                        //var builtProductsDir = this.Project.BuiltProductsDir;
-                        //path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, builtProductsDir + "/");
-                        path = System.IO.Path.GetFileName(this.Path.ToString());
+                        if ((null != this.LinkedTo) &&
+                            (this.LinkedTo.Project.GUID != this.Project.GUID) &&
+                            (this.LinkedTo.Project.BuiltProductsDir != this.Project.BuiltProductsDir))
+                        {
+                            // product is in a different BUILT_PRODUCTS_DIR - make a relative path
+                            var fully = this.Path.ToString();
+                            var builtProductsDir = this.Project.BuiltProductsDir;
+                            path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, builtProductsDir + "/");
+                        }
+                        else
+                        {
+                            path = System.IO.Path.GetFileName(this.Path.ToString());
+                        }
                     }
                     break;
 
@@ -662,7 +674,7 @@ namespace V2
                 }
             }
 
-            var newFileRef = new FileReference(path, other);
+            var newFileRef = new FileReference(path, other, this);
             this.FileReferences.Add(newFileRef);
             return newFileRef;
         }
@@ -1277,7 +1289,6 @@ namespace V2
                 return project;
             }
         }
-
 
         public System.Collections.Generic.IEnumerator<Project> GetEnumerator()
         {
