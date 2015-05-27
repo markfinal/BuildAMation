@@ -431,6 +431,10 @@ namespace V2
             projectElement.InnerText = project.GUID.ToString("B");
             element.AppendChild(projectElement);
 
+            var linkElement = this.CreateProjectElement("LinkLibraryDependencies");
+            linkElement.InnerText = "true"; // TODO: this would be false for an order only dependency
+            element.AppendChild(linkElement);
+
             this.ProjectDependenciesGroup.Element.AppendChild(element);
 
             this.DependentProjects.Add(project);
