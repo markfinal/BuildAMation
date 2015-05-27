@@ -149,16 +149,6 @@ namespace V2
                     project.ProjectPath, // TODO: relative to the solution file
                     project.GUID.ToString("B").ToUpper());
                 content.AppendLine();
-                if (project.Dependents.Count() > 0)
-                {
-                    content.AppendLine("\tProjectSection(ProjectDependencies) = postProject");
-                    foreach (var dependent in project.Dependents)
-                    {
-                        content.AppendFormat("\t\t{0} = {0}", dependent.GUID.ToString("B").ToUpper());
-                        content.AppendLine();
-                    }
-                    content.AppendLine("\tEndProjectSection");
-                }
                 content.AppendLine("EndProject");
 
                 configs.AddRangeUnique(project.Configurations);
@@ -224,6 +214,7 @@ namespace V2
         private Import LanguageImport;
         private System.Collections.Generic.List<ItemDefinitionGroup> ConfigurationDefs = new System.Collections.Generic.List<ItemDefinitionGroup>();
         private ItemGroup SourceGroup;
+        private ItemGroup ProjectDependenciesGroup;
         private Import LanguageTargets;
         private Type ProjectType;
         private System.Xml.XmlElement CommonCompilationOptionsElement = null;
@@ -266,6 +257,10 @@ namespace V2
             // Sources
             this.SourceGroup = this.CreateItemGroup(null);
             this.Project.AppendChild(this.SourceGroup.Element);
+
+            // Project Dependencies
+            this.ProjectDependenciesGroup = this.CreateItemGroup(null);
+            this.Project.AppendChild(this.ProjectDependenciesGroup.Element);
 
             // Language targets
             this.LanguageTargets = this.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.targets");
@@ -427,6 +422,17 @@ namespace V2
             {
                 return;
             }
+
+            var element = this.CreateProjectElement("ProjectReference");
+            // TODO: this probably needs to be relative to either the parent project, or the solution
+            element.Attributes.Append(this.CreateAttribute("Include")).Value = System.IO.Path.GetFileName(project.ProjectPath);
+
+            var projectElement = this.CreateProjectElement("Project");
+            projectElement.InnerText = project.GUID.ToString("B");
+            element.AppendChild(projectElement);
+
+            this.ProjectDependenciesGroup.Element.AppendChild(element);
+
             this.DependentProjects.Add(project);
         }
 
