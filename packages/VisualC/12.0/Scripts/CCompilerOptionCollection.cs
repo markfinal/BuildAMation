@@ -30,12 +30,16 @@ namespace VisualC
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            if (null != options.DebugSymbols)
+            // write nothing for disabled debug symbols, otherwise the source files rebuild continually
+            // and reports a warning that the pdb file does not exist
+            // the IDE can write None into the .vcxproj, but this has the same behaviour
+            // https://connect.microsoft.com/VisualStudio/feedback/details/833494/project-with-debug-information-disabled-always-rebuilds
+            if (null != options.DebugSymbols && options.DebugSymbols == true)
             {
                 project.AddToolSetting(groupElement, "DebugInformationFormat", options.DebugSymbols, configuration,
                     (setting, attributeName, builder) =>
                     {
-                        builder.Append(true == setting ? "OldStyle" : "None");
+                        builder.Append("OldStyle");
                     });
             }
 
