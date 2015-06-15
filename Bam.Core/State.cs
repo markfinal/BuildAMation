@@ -43,8 +43,8 @@ namespace V2
         public static readonly string TokenPrefix = @"$(";
         public static readonly string TokenSuffix = @")";
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
-        private static readonly string FunctionRegExPattern = @"(\$([a-z]+)\((.+)\))";
-        private static readonly string FunctionPrefix = @"$";
+        private static readonly string FunctionRegExPattern = @"(@([a-z]+)\((.+)\))";
+        private static readonly string FunctionPrefix = @"@";
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
