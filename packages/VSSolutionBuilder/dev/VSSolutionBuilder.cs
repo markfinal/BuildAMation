@@ -404,6 +404,8 @@ namespace V2
 
                 var outDirEl = this.CreateProjectElement("OutDir");
                 var macros = new Bam.Core.V2.MacroList();
+                // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
+                // but it does not seem to be a show stopper if it doesn't
                 macros.Add("pkgbuilddir", Bam.Core.V2.TokenizedString.Create("$(ProjectDir)", null, verbatim:true));
                 macros.Add("modulename", Bam.Core.V2.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
                 var outDir = outPath.Parse(macros);
