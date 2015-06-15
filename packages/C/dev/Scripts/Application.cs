@@ -37,7 +37,7 @@ namespace V2
         protected override void Init()
         {
             base.Init();
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)/$(modulename)$(exeext)", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(modulename)/$(config)/$(modulename)$(exeext)", this));
         }
 
         public CObjectFileCollection CreateCSourceContainer()
