@@ -218,6 +218,7 @@ namespace V2
         private Import LanguageTargets;
         private Type ProjectType;
         private System.Xml.XmlElement CommonCompilationOptionsElement = null;
+        private System.Xml.XmlElement AnonymousPropertySettingsElement = null;
         private System.Collections.Generic.List<VSProject> DependentProjects = new System.Collections.Generic.List<VSProject>();
 
         public VSProject(Type type)
@@ -398,6 +399,7 @@ namespace V2
             // anonymous project settings
             {
                 var configProps = this.CreatePropertyGroup(null);
+                this.AnonymousPropertySettingsElement = configProps.Element;
                 configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configExpression;
 
                 var outDirEl = this.CreateProjectElement("OutDir");
@@ -409,8 +411,6 @@ namespace V2
                 outDir += "\\";
                 outDirEl.InnerText = outDir;
                 configProps.Element.AppendChild(outDirEl);
-
-                // TODO: IntDir now
 
                 this.Project.InsertAfter(configProps.Element, this.LanguageImport.Element);
             }
@@ -459,6 +459,19 @@ namespace V2
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
         {
             (settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, this.CommonCompilationOptionsElement, null);
+
+            var moduleWithPath = (module is Bam.Core.V2.IModuleGroup) ? module.Children[0] : module;
+            var intPath = moduleWithPath.GeneratedPaths[C.V2.ObjectFile.Key];
+
+            var intDirEl = this.CreateProjectElement("IntDir");
+            var macros = new Bam.Core.V2.MacroList();
+            macros.Add("pkgbuilddir", Bam.Core.V2.TokenizedString.Create("$(ProjectDir)", null, verbatim: true));
+            macros.Add("modulename", Bam.Core.V2.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
+            var intDir = intPath.Parse(macros);
+            intDir = System.IO.Path.GetDirectoryName(intDir);
+            intDir += "\\";
+            intDirEl.InnerText = intDir;
+            this.AnonymousPropertySettingsElement.AppendChild(intDirEl);
         }
 
         public System.Xml.XmlElement CreateProjectElement(string name)
