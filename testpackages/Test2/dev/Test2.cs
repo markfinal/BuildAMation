@@ -53,7 +53,6 @@ namespace Test2
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
-                // TODO need to distinguish patches for compilation and linking, or the patch needs to be conditional
                 source.UsePublicPatches(windowsSDK); // compiling
                 this.UsePublicPatches(windowsSDK); // linking
             }

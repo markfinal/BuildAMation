@@ -18,6 +18,32 @@
 #endregion // License
 namespace Test5
 {
+    sealed class MyDynamicLibTestAppV2 :
+        C.V2.ConsoleApplication
+    {
+        public MyDynamicLibTestAppV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/dynamicmain.c");
+
+            var staticLib = this.LinkAgainst<Test4.MyStaticLibV2>();
+            var dynamicLib = this.LinkAgainst<Test4.MyDynamicLibV2>();
+
+            source.UsePublicPatches(staticLib.Source[0]);
+            source.UsePublicPatches(dynamicLib);
+
+            // TODO: can the platform check be done with extension wrappers?
+            if (Bam.Core.Platform.Contains(Bam.Core.EPlatform.Windows, this.BuildEnvironment.Platform) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                source.UsePublicPatches(windowsSDK); // compiling
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
     // Define module classes here
     class MyDynamicLibTestApp :
         C.Application

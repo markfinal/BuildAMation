@@ -19,6 +19,50 @@
 
 namespace Test4
 {
+    sealed class MyDynamicLibV2 :
+        C.V2.DynamicLibrary
+    {
+        public MyDynamicLibV2()
+        {
+            this.LinkAgainst<MyStaticLibV2>();
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
+
+            source.PublicPatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                });
+
+            // TODO: can the platform check be done with extension wrappers?
+            if (Bam.Core.Platform.Contains(Bam.Core.EPlatform.Windows, this.BuildEnvironment.Platform) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                source.UsePublicPatches(windowsSDK); // compiling
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    sealed class MyStaticLibV2 :
+        C.V2.StaticLibrary
+    {
+        public MyStaticLibV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/staticlibrary.c");
+
+            source.PublicPatch(settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+            });
+        }
+    }
+
     // Define module classes here
     class MyDynamicLib :
         C.DynamicLibrary
