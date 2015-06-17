@@ -14,7 +14,7 @@
       <Version Id="12" />
     </Package>
     <Package Name="Gcc">
-      <Version Id="4.8" />
+      <Version Id="4.8" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
     </Package>
     <Package Name="LLVMGcc">
       <Version Id="4.2" Default="true" />
