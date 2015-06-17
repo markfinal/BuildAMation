@@ -33,9 +33,12 @@ namespace C
             {
                 var linker = sender.Settings as C.V2.ICommonLinkerOptions;
                 // TODO: could the lib search paths be in the staticlibrary base class as a patch?
+                var configName = sender.BuildEnvironment.Configuration.ToString();
+                var macros = new Bam.Core.V2.MacroList();
+                macros.Add("moduleoutputdir", Bam.Core.V2.TokenizedString.Create(configName, null));
                 foreach (var library in libraries)
                 {
-                    var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                    var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                     linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
                 }

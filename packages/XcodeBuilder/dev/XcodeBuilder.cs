@@ -87,13 +87,13 @@ namespace V2
         }
 
         public FileReference(
-            string path,
             FileReference other,
             Project owningProject)
         {
-            this.Path = Bam.Core.V2.TokenizedString.Create(path, null);
+            this.Path = other.Path;
             this.Type = other.Type;
             this.Project = owningProject;
+            // TODO: Linked FileReferences should be <group> and non-explicit
             this.SourceTree = other.SourceTree;
             this.ExplicitType = other.ExplicitType;
             this.LinkedTo = other;
@@ -117,11 +117,7 @@ namespace V2
             {
                 return null;
             }
-            // need to constructed a path that is the original, relative to the current project's built products dir
-            var originalPath = originalFileRef.Path.ToString();
-            var thisProjectPath = System.String.Format("{0}/{1}/", project.BuiltProductsDir, configuration.ToString());
-            var relativePath = Bam.Core.RelativePathUtilities.GetPath(originalPath, thisProjectPath);
-            var clone = project.FindOrCreateFileReference(relativePath, originalFileRef);
+            var clone = project.FindOrCreateFileReference(originalFileRef);
             return clone;
         }
 
@@ -245,9 +241,14 @@ namespace V2
                             (this.LinkedTo.Project.BuiltProductsDir != this.Project.BuiltProductsDir))
                         {
                             // product is in a different BUILT_PRODUCTS_DIR - make a relative path
-                            var fully = this.Path.ToString();
-                            var builtProductsDir = this.Project.BuiltProductsDir;
-                            path = "./" + Bam.Core.RelativePathUtilities.GetPath(fully, builtProductsDir + "/");
+                            // but must use the definition of CONFIGURATION_BUILD_DIR to denote where it will end up
+                            // cannot use the real path
+                            var configName = this.Project.Module.BuildEnvironment.Configuration.ToString();
+                            var macros = new Bam.Core.V2.MacroList();
+                            macros.Add("moduleoutputdir", Bam.Core.V2.TokenizedString.Create(configName, null));
+                            var fully = this.Path.Parse(macros);
+                            var configurationBuildDir = this.Project.BuiltProductsDir + "/" + configName + "/";
+                            path = Bam.Core.RelativePathUtilities.GetPath(fully, configurationBuildDir);
                         }
                         else
                         {
@@ -545,6 +546,16 @@ namespace V2
         public Project(Bam.Core.V2.Module module) :
             base()
         {
+            var projectDir = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj", module);
+            module.Macros.Add("xcodeprojectdir", projectDir);
+            this.ProjectDir = projectDir.Parse();
+
+            var projectPath = Bam.Core.V2.TokenizedString.Create("$(xcodeprojectdir)/project.pbxproj", module);
+            this.ProjectPath = projectPath.Parse();
+
+            this.SourceRoot = Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse();
+            this.BuildRoot = Bam.Core.V2.TokenizedString.Create("$(buildroot)", module).Parse();
+
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
             this.FileReferences = new System.Collections.Generic.List<FileReference>();
@@ -563,6 +574,30 @@ namespace V2
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
+        }
+
+        public string SourceRoot
+        {
+            get;
+            private set;
+        }
+
+        public string BuildRoot
+        {
+            get;
+            private set;
+        }
+
+        public string ProjectDir
+        {
+            get;
+            private set;
+        }
+
+        public string ProjectPath
+        {
+            get;
+            private set;
         }
 
         public string BuiltProductsDir
@@ -671,7 +706,6 @@ namespace V2
 
         public FileReference
         FindOrCreateFileReference(
-            string path,
             FileReference other)
         {
             foreach (var fileRef in this.FileReferences)
@@ -686,7 +720,7 @@ namespace V2
                 }
             }
 
-            var newFileRef = new FileReference(path, other, this);
+            var newFileRef = new FileReference(other, this);
             this.FileReferences.Add(newFileRef);
             return newFileRef;
         }
@@ -740,15 +774,23 @@ namespace V2
             projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
             // reset SRCROOT, or it is taken to be where the workspace is
-            projectConfig["SRCROOT"] = new UniqueConfigurationValue(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse());
+            projectConfig["SRCROOT"] = new UniqueConfigurationValue(this.SourceRoot);
 
-            // all 'products' are relative to this in the IDE, regardless of the project settings
+            // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
             // needed so that built products are no longer 'red' in the IDE
             projectConfig["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
 
-            projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(BUILD_DIR)/$(CONFIGURATION)");
+            // all intermediate files generated are relative to this
+            projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
 
-            //config["PROJECT_TEMP_DIR"] = new UniqueConfigurationValue("$SYMROOT");
+            // would like to be able to set this to '$(SYMROOT)/$(TARGET_NAME)/$(CONFIGURATION)'
+            // but TARGET_NAME is not defined in the Project configuration settings, and will end up collapsing
+            // to an empty value
+            // 'products' use the Project configuration value of CONFIGURATION_BUILD_DIR for their path, while
+            // written target files use the Target configuration value of CONFIGURATION_BUILD_DIR
+            // if these are inconsistent the IDE shows the product in red
+            projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
+
             this.ConfigurationLists[0].AddConfiguration(projectConfig);
             this.Configurations.Add(projectConfig);
 
@@ -1419,17 +1461,14 @@ namespace V2
                 text.AppendLine();
                 text.AppendLine("}");
 
-                var projectPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj/project.pbxproj", project.Module);
-                projectPath.Parse();
-
-                var projectDir = System.IO.Path.GetDirectoryName(projectPath.ToString());
+                var projectDir = project.ProjectDir;
                 if (!System.IO.Directory.Exists(projectDir))
                 {
                     System.IO.Directory.CreateDirectory(projectDir);
                 }
 
                 //Bam.Core.Log.DebugMessage(text.ToString());
-                using (var writer = new System.IO.StreamWriter(projectPath.ToString()))
+                using (var writer = new System.IO.StreamWriter(project.ProjectPath))
                 {
                     writer.Write(text.ToString());
                 }

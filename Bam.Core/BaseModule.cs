@@ -63,6 +63,7 @@ namespace V2
             var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
             this.Macros.Add("pkgroot", packageRoot);
             this.Macros.Add("modulename", this.GetType().Name);
+            this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(this.GetType().Name, graph.BuildEnvironment.Configuration.ToString()));
             this.Macros.Add("packagename", packageInfo.Name);
             this.Macros.Add("pkgbuilddir", packageInfo.BuildDirectory);
 
