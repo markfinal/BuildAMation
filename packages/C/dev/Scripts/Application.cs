@@ -23,7 +23,7 @@ namespace V2
     public class ConsoleApplication :
         Bam.Core.V2.Module
     {
-        private System.Collections.Generic.List<Bam.Core.V2.Module> sourceModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        protected System.Collections.Generic.List<Bam.Core.V2.Module> sourceModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
         private System.Collections.Generic.List<Bam.Core.V2.Module> linkedModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
         private ILinkerPolicy Policy = null;
 
@@ -32,6 +32,11 @@ namespace V2
         public ConsoleApplication()
         {
             this.Linker = DefaultToolchain.Linker;
+            this.PrivatePatch(setting =>
+            {
+                var linker = setting as C.V2.ICommonLinkerOptions;
+                linker.OutputType = ELinkerOutput.Executable;
+            });
         }
 
         protected override void Init()
@@ -40,17 +45,29 @@ namespace V2
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(modulename)$(exeext)", this));
         }
 
-        public CObjectFileCollection CreateCSourceContainer()
+        public virtual CObjectFileCollection CreateCSourceContainer()
         {
             var source = Bam.Core.V2.Module.Create<CObjectFileCollection>();
+            source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.PreprocessorDefines.Add("_CONSOLE");
+                });
+
             this.sourceModules.Add(source);
             this.DependsOn(source);
             return source;
         }
 
-        public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath)
+        public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath)
         {
             var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>();
+            source.PrivatePatch(settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.PreprocessorDefines.Add("_CONSOLE");
+            });
+
             this.sourceModules.Add(source);
             this.DependsOn(source);
             return source;

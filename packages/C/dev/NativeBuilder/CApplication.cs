@@ -23,6 +23,30 @@ namespace V2
     public sealed class NativeLinker :
         ILinkerPolicy
     {
+        private string
+        GetLibraryPath(Bam.Core.V2.Module module)
+        {
+            if (module is C.V2.StaticLibrary)
+            {
+                return module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+            }
+            else if (module is C.V2.DynamicLibrary)
+            {
+                if (Bam.Core.OSUtilities.IsWindowsHosting)
+                {
+                    return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Dynamic library not supported on this platform");
+                }
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unknown module library type");
+            }
+        }
+
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
@@ -36,7 +60,7 @@ namespace V2
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {
-                var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                var fullLibraryPath = this.GetLibraryPath(library);
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                 // TODO: watch for duplicates
                 linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));

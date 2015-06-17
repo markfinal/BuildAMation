@@ -115,6 +115,9 @@ namespace DefaultSettings
             this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin", this));
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
             this.Macros.Add("exeext", string.Empty);
+            this.Macros.Add("dynamicext", ".dll");
+            this.Macros.Add("libprefix", "lib");
+            this.Macros.Add("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(this.Macros["BinPath"]));
