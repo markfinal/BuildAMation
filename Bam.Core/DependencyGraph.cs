@@ -382,6 +382,7 @@ namespace V2
             {
                 foreach (var m in rank.Value)
                 {
+                    m.Complete();
                     this.InternalValidateGraph(rank.Key, m.Dependents);
                     this.InternalValidateGraph(rank.Key, m.Requirements);
                 }

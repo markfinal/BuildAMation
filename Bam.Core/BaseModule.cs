@@ -63,7 +63,6 @@ namespace V2
             var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
             this.Macros.Add("pkgroot", packageRoot);
             this.Macros.Add("modulename", this.GetType().Name);
-            this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(this.GetType().Name, graph.BuildEnvironment.Configuration.ToString()));
             this.Macros.Add("packagename", packageInfo.Name);
             this.Macros.Add("pkgbuilddir", packageInfo.BuildDirectory);
 
@@ -344,6 +343,14 @@ namespace V2
                 throw new Exception("Too few dependees!");
             }
             return this.DependeesList[0].GetEncapsulatingReferencedModule();
+        }
+
+        public void
+        Complete()
+        {
+            var graph = Graph.Instance;
+            var encapsulatingModule = this.GetEncapsulatingReferencedModule();
+            this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(encapsulatingModule.GetType().Name, this.BuildEnvironment.Configuration.ToString()));
         }
     }
 }
