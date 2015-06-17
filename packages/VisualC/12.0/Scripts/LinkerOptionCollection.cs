@@ -27,7 +27,7 @@ namespace VisualC
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var applicationFile = module as C.V2.ConsoleApplication;
+            //var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
                 case C.ELinkerOutput.Executable:

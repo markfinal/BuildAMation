@@ -63,8 +63,7 @@ namespace DefaultSettings
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var staticLibrary = module as C.V2.StaticLibrary;
-
+            //var staticLibrary = module as C.V2.StaticLibrary;
             switch (options.OutputType)
             {
                 case C.EArchiverOutput.StaticLibrary:

@@ -28,7 +28,7 @@ namespace Clang
             Bam.Core.V2.Module module,
             XcodeBuilder.V2.Configuration configuration)
         {
-            var objectFile = module as C.V2.ObjectFile;
+            //var objectFile = module as C.V2.ObjectFile;
             if (null != options.Bits)
             {
                 switch (options.Bits)
@@ -181,7 +181,7 @@ namespace Clang
             Bam.Core.V2.Module module,
             XcodeBuilder.V2.Configuration configuration)
         {
-            var applicationFile = module as C.V2.ConsoleApplication;
+            //var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
                 case C.ELinkerOutput.DynamicLibrary:
@@ -391,7 +391,7 @@ namespace Clang
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var applicationFile = module as C.V2.ConsoleApplication;
+            //var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
                 case C.ELinkerOutput.Executable:

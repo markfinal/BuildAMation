@@ -113,7 +113,7 @@ namespace V2
                 commandLine.Add(lib);
             }
 
-            var exitStatus = CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.MetaData as Bam.Core.StringArray);
+            /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.MetaData as Bam.Core.StringArray);
         }
     }
 }
