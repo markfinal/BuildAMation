@@ -17,7 +17,9 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
 using C.V2.DefaultSettings;
+using GccCommon.V2.DefaultSettings;
 using Gcc.V2.DefaultSettings;
+using GccCommon.V2; // TODO: for the native implementation
 namespace Gcc
 {
     public static partial class NativeImplementation
@@ -156,21 +158,6 @@ namespace Gcc
                 }
             }
         }
-
-        public static void
-        Convert(
-            this Gcc.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            if (null != options.PositionIndependentCode)
-            {
-                if (true == options.PositionIndependentCode)
-                {
-                    commandLine.Add("-fPIC");
-                }
-            }
-        }
     }
 
     public static partial class NativeImplementation
@@ -255,18 +242,6 @@ namespace V2
                 settings.DoNotWarnIfLibraryCreated = true;
                 settings.Command = EArchiverCommand.Replace;
             }
-
-            public static void
-            Defaults(this ICommonCompilerOptions settings, Bam.Core.V2.Module module)
-            {
-                settings.PositionIndependentCode = false;
-            }
-
-            public static void
-            Empty(this ICommonCompilerOptions settings)
-            {
-                settings.PositionIndependentCode = null;
-            }
         }
     }
 
@@ -296,21 +271,12 @@ namespace V2
         }
     }
 
-    public interface ICommonCompilerOptions
-    {
-        bool? PositionIndependentCode
-        {
-            get;
-            set;
-        }
-    }
-
     public class CompilerSettings :
         Bam.Core.V2.Settings,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
-        ICommonCompilerOptions
+        GccCommon.V2.ICommonCompilerOptions
     {
         public CompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -326,7 +292,7 @@ namespace V2
                 stdCommonCompilerOptions.Defaults(module);
             }
 
-            var commonCompilerOptions = this as ICommonCompilerOptions;
+            var commonCompilerOptions = this as GccCommon.V2.ICommonCompilerOptions;
             commonCompilerOptions.Empty();
             if (useDefaults)
             {
@@ -337,7 +303,7 @@ namespace V2
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as ICommonCompilerOptions).Convert(module, commandLine);
+            (this as GccCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
@@ -418,7 +384,7 @@ namespace V2
             set;
         }
 
-        bool? Gcc.V2.ICommonCompilerOptions.PositionIndependentCode
+        bool? GccCommon.V2.ICommonCompilerOptions.PositionIndependentCode
         {
             get;
             set;

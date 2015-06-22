@@ -18,6 +18,44 @@
 #endregion // License
 namespace GccCommon
 {
+namespace V2
+{
+    namespace DefaultSettings
+    {
+        public static partial class DefaultSettingsExtensions
+        {
+            public static void
+            Defaults(this GccCommon.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
+            {
+                settings.PositionIndependentCode = false;
+            }
+
+            public static void
+            Empty(this GccCommon.V2.ICommonCompilerOptions settings)
+            {
+                settings.PositionIndependentCode = null;
+            }
+        }
+    }
+
+    public static partial class NativeImplementation
+    {
+        public static void
+        Convert(
+            this GccCommon.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.PositionIndependentCode)
+            {
+                if (true == options.PositionIndependentCode)
+                {
+                    commandLine.Add("-fPIC");
+                }
+            }
+        }
+    }
+}
     // Not sealed since the C++ compiler inherits from it
     public partial class CCompilerOptionCollection :
         C.CompilerOptionCollection,

@@ -26,7 +26,7 @@ namespace V2
         CompilerSpecificSettings(
             Bam.Core.V2.Settings settings)
         {
-            var gccCompiler = settings as Gcc.V2.ICommonCompilerOptions;
+            var gccCompiler = settings as GccCommon.V2.ICommonCompilerOptions;
             gccCompiler.PositionIndependentCode = true;
         }
     }

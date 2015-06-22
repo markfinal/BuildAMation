@@ -18,6 +18,17 @@
 #endregion // License
 namespace GccCommon
 {
+namespace V2
+{
+    public interface ICommonCompilerOptions
+    {
+        bool? PositionIndependentCode
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ICCompilerOptions
     {
         bool AllWarnings
