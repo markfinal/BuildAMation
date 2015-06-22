@@ -53,6 +53,7 @@ namespace DefaultSettings
                 case C.ELinkerOutput.DynamicLibrary:
                     commandLine.Add("-shared");
                     commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString()));
                     break;
             }
             foreach (var path in options.LibraryPaths)
@@ -115,8 +116,8 @@ namespace DefaultSettings
             this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin", this));
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
             this.Macros.Add("exeext", string.Empty);
-            this.Macros.Add("dynamicprefix", string.Empty);
-            this.Macros.Add("dynamicext", ".dll");
+            this.Macros.Add("dynamicprefix", "lib");
+            this.Macros.Add("dynamicext", ".so");
             this.Macros.Add("libprefix", "lib");
             this.Macros.Add("libext", ".a");
 
