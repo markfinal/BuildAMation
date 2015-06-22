@@ -38,7 +38,7 @@ namespace V2
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("Dynamic library not supported on this platform");
+                    return module.GeneratedPaths[C.V2.DynamicLibrary.Key].ToString();
                 }
             }
             else
