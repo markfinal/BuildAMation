@@ -54,6 +54,28 @@ namespace Test5
         }
     }
 
+    sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        public RuntimePackage()
+        {
+            var exe = this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key, ".");
+            var dynamic = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".");
+        }
+    }
+
+    sealed class SDKPackage :
+        Publisher.V2.Package
+    {
+        public SDKPackage()
+        {
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                var lib = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, ".");
+            }
+        }
+    }
+
     // Define module classes here
     class MyDynamicLibTestApp :
         C.Application
