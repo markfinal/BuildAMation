@@ -21,5 +21,56 @@
 
 namespace Publisher
 {
+namespace V2
+{
+    public interface IPackagePolicy
+    {
+        void
+        Package(
+            Package sender,
+            Bam.Core.V2.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string> packageObjects);
+    }
+
+    public abstract class Package :
+        Bam.Core.V2.Module
+    {
+        private System.Collections.Generic.List<Bam.Core.V2.Module> dependents = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string> paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>();
+        private IPackagePolicy Policy = null;
+
+        public DependentModule
+        Include<DependentModule>(
+            Bam.Core.V2.FileKey key,
+            string subdir) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.Requires(dependent);
+            this.dependents.Add(dependent);
+
+            this.paths[dependent.GeneratedPaths[key]] = subdir;
+
+            return dependent as DependentModule;
+        }
+
+        public override void Evaluate()
+        {
+            // do nothing
+        }
+
+        protected override void ExecuteInternal()
+        {
+            var paths = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string>(this.paths);
+            var executable = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)", this);
+            this.Policy.Package(this, executable, paths);
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            var className = "Publisher.V2." + mode + "Packager";
+            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IPackagePolicy>.Create(className);
+        }
+    }
+}
     // Add modules here
 }

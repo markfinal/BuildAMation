@@ -16,6 +16,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace Publisher
+{
+namespace V2
+{
+    public sealed class NativePackager :
+        IPackagePolicy
+    {
+        void
+        IPackagePolicy.Package(
+            Package sender,
+            Bam.Core.V2.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string> packageObjects)
+        {
+            Bam.Core.Log.MessageAll("Native builder packaging: {0}", packageRoot.Parse());
+            foreach (var path in packageObjects)
+            {
+                Bam.Core.Log.MessageAll("{0} -> {1}", path.Key.ToString(), path.Value);
+            }
+            Bam.Core.Log.MessageAll("Done");
+        }
+    }
+}
+}
 namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
