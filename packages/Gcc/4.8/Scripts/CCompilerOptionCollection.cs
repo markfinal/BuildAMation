@@ -638,6 +638,7 @@ namespace V2
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("exeext", string.Empty);
+            this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/gcc-4.8", this));
         }

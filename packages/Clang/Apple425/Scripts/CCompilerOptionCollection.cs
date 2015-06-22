@@ -782,6 +782,7 @@ namespace V2
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("exeext", string.Empty);
+            this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".dylib");
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/clang", this));
         }

@@ -41,7 +41,7 @@ namespace V2
         Init()
         {
             base.Init();
-            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(modulename)$(dynamicext)", this);
+            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(modulename)$(dynamicext)", this);
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(modulename)$(libext)", this));

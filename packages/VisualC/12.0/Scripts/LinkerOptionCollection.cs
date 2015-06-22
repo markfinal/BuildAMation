@@ -103,6 +103,7 @@ namespace V2
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin\link.exe", this));
             this.Macros.Add("exeext", ".exe");
+            this.Macros.Add("dynamicprefix", string.Empty);
             this.Macros.Add("dynamicext", ".dll");
             this.Macros.Add("libprefix", string.Empty);
             this.Macros.Add("libext", ".lib");
