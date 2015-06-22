@@ -71,8 +71,11 @@ namespace Test5
         {
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                var lib = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, ".");
+                var lib = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "lib");
             }
+            var dynamic = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, "bin");
+
+            // TODO: add header(s)
         }
     }
 
