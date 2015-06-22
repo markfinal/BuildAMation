@@ -53,7 +53,12 @@ namespace V2
 
     public abstract class CompilerTool :
         Bam.Core.V2.Tool
-    { }
+    {
+        public virtual void
+        CompileAsShared(
+            Bam.Core.V2.Settings settings)
+        {}
+    }
 
     public abstract class LibrarianTool :
         Bam.Core.V2.Tool

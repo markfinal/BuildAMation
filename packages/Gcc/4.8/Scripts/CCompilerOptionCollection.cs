@@ -672,6 +672,14 @@ namespace V2
             }
         }
 
+        public override void
+        CompileAsShared(
+            Bam.Core.V2.Settings settings)
+        {
+            var gccCompiler = settings as GccCommon.V2.ICommonCompilerOptions;
+            gccCompiler.PositionIndependentCode = true;
+        }
+
         protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
     }
 

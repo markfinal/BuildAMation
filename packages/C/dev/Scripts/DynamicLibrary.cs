@@ -56,10 +56,6 @@ namespace V2
             }
         }
 
-        partial void
-        CompilerSpecificSettings(
-            Bam.Core.V2.Settings settings);
-
         public override CObjectFileCollection
         CreateCSourceContainer()
         {
@@ -68,7 +64,7 @@ namespace V2
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
-                this.CompilerSpecificSettings(settings);
+                (collection.Tool as C.V2.CompilerTool).CompileAsShared(settings);
             });
             return collection;
         }
@@ -81,7 +77,7 @@ namespace V2
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
-                this.CompilerSpecificSettings(settings);
+                (collection.Tool as C.V2.CompilerTool).CompileAsShared(settings);
             });
             return collection;
         }
