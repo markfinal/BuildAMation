@@ -35,6 +35,13 @@ namespace V2
             {
                 settings.PositionIndependentCode = null;
             }
+
+            public static void
+            Defaults(this GccCommon.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
+            {
+                settings.CanUseOrigin = false;
+                settings.RPath = new Bam.Core.StringArray();
+            }
         }
     }
 
@@ -52,6 +59,25 @@ namespace V2
                 {
                     commandLine.Add("-fPIC");
                 }
+            }
+        }
+
+        public static void
+        Convert(
+            this GccCommon.V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.CanUseOrigin)
+            {
+                if (true == options.CanUseOrigin)
+                {
+                    commandLine.Add("-Wl,-z,origin");
+                }
+            }
+            foreach (var rpath in options.RPath)
+            {
+                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
             }
         }
     }

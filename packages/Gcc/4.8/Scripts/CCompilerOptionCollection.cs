@@ -528,16 +528,19 @@ namespace V2
     public class LinkerSettings :
         Bam.Core.V2.Settings,
         CommandLineProcessor.V2.IConvertToCommandLine,
-        C.V2.ICommonLinkerOptions
+        C.V2.ICommonLinkerOptions,
+        GccCommon.V2.ICommonLinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
+            (this as GccCommon.V2.ICommonLinkerOptions).Defaults(module);
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as GccCommon.V2.ICommonLinkerOptions).Convert(module, commandLine);
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -547,6 +550,18 @@ namespace V2
         }
 
         Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        bool? ICommonLinkerOptions.CanUseOrigin
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray ICommonLinkerOptions.RPath
         {
             get;
             set;

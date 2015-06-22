@@ -18,6 +18,23 @@
 #endregion // License
 namespace GccCommon
 {
+namespace V2
+{
+    public interface ICommonLinkerOptions
+    {
+        bool? CanUseOrigin
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray RPath
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ILinkerOptions
     {
         bool CanUseOrigin
