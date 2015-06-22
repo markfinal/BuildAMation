@@ -18,6 +18,19 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public partial class DynamicLibrary
+    {
+        partial void
+        CompilerSpecificSettings(
+            Bam.Core.V2.Settings settings)
+        {
+            var gccCompiler = settings as Gcc.V2.ICommonCompilerOptions;
+            gccCompiler.PositionIndependentCode = true;
+        }
+    }
+}
     public partial class DynamicLibrary
     {
         [LocalCompilerOptionsDelegate]

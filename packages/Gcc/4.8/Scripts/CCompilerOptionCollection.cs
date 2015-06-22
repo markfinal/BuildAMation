@@ -156,6 +156,21 @@ namespace Gcc
                 }
             }
         }
+
+        public static void
+        Convert(
+            this Gcc.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.PositionIndependentCode)
+            {
+                if (true == options.PositionIndependentCode)
+                {
+                    commandLine.Add("-fPIC");
+                }
+            }
+        }
     }
 
     public static partial class NativeImplementation
@@ -240,6 +255,18 @@ namespace V2
                 settings.DoNotWarnIfLibraryCreated = true;
                 settings.Command = EArchiverCommand.Replace;
             }
+
+            public static void
+            Defaults(this ICommonCompilerOptions settings, Bam.Core.V2.Module module)
+            {
+                settings.PositionIndependentCode = false;
+            }
+
+            public static void
+            Empty(this ICommonCompilerOptions settings)
+            {
+                settings.PositionIndependentCode = null;
+            }
         }
     }
 
@@ -269,11 +296,21 @@ namespace V2
         }
     }
 
+    public interface ICommonCompilerOptions
+    {
+        bool? PositionIndependentCode
+        {
+            get;
+            set;
+        }
+    }
+
     public class CompilerSettings :
         Bam.Core.V2.Settings,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICOnlyCompilerOptions
+        C.V2.ICOnlyCompilerOptions,
+        ICommonCompilerOptions
     {
         public CompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -282,18 +319,26 @@ namespace V2
 
         public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
-            (this as C.V2.ICommonCompilerOptions).Empty();
+            var stdCommonCompilerOptions = this as C.V2.ICommonCompilerOptions;
+            stdCommonCompilerOptions.Empty();
             if (useDefaults)
             {
-                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+                stdCommonCompilerOptions.Defaults(module);
+            }
+
+            var commonCompilerOptions = this as ICommonCompilerOptions;
+            commonCompilerOptions.Empty();
+            if (useDefaults)
+            {
+                commonCompilerOptions.Defaults(module);
             }
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as ICommonCompilerOptions).Convert(module, commandLine);
         }
-
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
@@ -368,6 +413,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+
+        bool? Gcc.V2.ICommonCompilerOptions.PositionIndependentCode
         {
             get;
             set;

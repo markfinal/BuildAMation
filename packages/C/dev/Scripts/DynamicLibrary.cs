@@ -20,7 +20,7 @@ namespace C
 {
 namespace V2
 {
-    public class DynamicLibrary :
+    public partial class DynamicLibrary :
         ConsoleApplication
     {
         static public Bam.Core.V2.FileKey ImportLibraryKey = Bam.Core.V2.FileKey.Generate("Import Library File");
@@ -56,14 +56,19 @@ namespace V2
             }
         }
 
+        partial void
+        CompilerSpecificSettings(
+            Bam.Core.V2.Settings settings);
+
         public override CObjectFileCollection
         CreateCSourceContainer()
         {
             var collection = base.CreateCSourceContainer();
-            collection.PrivatePatch(setting =>
+            collection.PrivatePatch(settings =>
             {
-                var compiler = setting as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                this.CompilerSpecificSettings(settings);
             });
             return collection;
         }
@@ -72,10 +77,11 @@ namespace V2
         CreateCxxSourceContainer(string wildcardPath)
         {
             var collection = base.CreateCxxSourceContainer(wildcardPath);
-            collection.PrivatePatch(setting =>
+            collection.PrivatePatch(settings =>
             {
-                var compiler = setting as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                this.CompilerSpecificSettings(settings);
             });
             return collection;
         }
