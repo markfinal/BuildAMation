@@ -26,7 +26,14 @@ namespace V2
         CompilerSpecificSettings(
             Bam.Core.V2.Settings settings)
         {
+            // TODO: since this is compiling on non-GCC platforms, if different compilers require
+            // different compiler options for a dynamic library, a partial method is not going to be the solution
+            // as there will be at least two implementations of the partial method
             var gccCompiler = settings as GccCommon.V2.ICommonCompilerOptions;
+            if (null == gccCompiler)
+            {
+                return;
+            }
             gccCompiler.PositionIndependentCode = true;
         }
     }
