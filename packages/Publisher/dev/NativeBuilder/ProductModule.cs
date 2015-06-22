@@ -29,12 +29,18 @@ namespace V2
             Bam.Core.V2.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string> packageObjects)
         {
-            Bam.Core.Log.MessageAll("Native builder packaging: {0}", packageRoot.Parse());
+            var root = packageRoot.Parse();
             foreach (var path in packageObjects)
             {
-                Bam.Core.Log.MessageAll("{0} -> {1}", path.Key.ToString(), path.Value);
+                var sourcePath = path.Key.ToString();
+                var destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(root, path.Value));
+                if (!System.IO.Directory.Exists(destinationPath))
+                {
+                    System.IO.Directory.CreateDirectory(destinationPath);
+                }
+                destinationPath = System.IO.Path.Combine(destinationPath, System.IO.Path.GetFileName(sourcePath));
+                System.IO.File.Copy(sourcePath, destinationPath, true);
             }
-            Bam.Core.Log.MessageAll("Done");
         }
     }
 }
