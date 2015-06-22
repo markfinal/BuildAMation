@@ -23,6 +23,16 @@ namespace Test5
     {
         public MyDynamicLibTestAppV2()
         {
+            this.PrivatePatch(settings =>
+                {
+                    var gccCommon = settings as GccCommon.V2.ICommonLinkerOptions;
+                    if (null != gccCommon)
+                    {
+                        gccCommon.CanUseOrigin = true;
+                        gccCommon.RPath.AddUnique("$ORIGIN");
+                    }
+                });
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamicmain.c");
 
