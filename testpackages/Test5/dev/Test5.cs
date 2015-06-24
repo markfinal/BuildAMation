@@ -79,6 +79,16 @@ namespace Test5
         }
     }
 
+    // TODO: requires filtering on the platform level
+    sealed class Installer :
+        Publisher.V2.InnoSetupInstaller
+    {
+        public Installer()
+        {
+            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+        }
+    }
+
     // Define module classes here
     class MyDynamicLibTestApp :
         C.Application
