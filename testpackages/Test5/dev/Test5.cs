@@ -79,7 +79,7 @@ namespace Test5
         }
     }
 
-    // TODO: requires filtering on the platform level
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class Installer :
         Publisher.V2.InnoSetupInstaller
     {
