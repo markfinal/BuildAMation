@@ -127,7 +127,10 @@ namespace V2
             this.CommonModuleType.Push(typeof(T));
             var newModule = Module.Create<T>();
             this.CommonModuleType.Pop();
-            referencedModules.Add(newModule);
+            if (null != newModule)
+            {
+                referencedModules.Add(newModule);
+            }
             return newModule;
         }
 
@@ -146,7 +149,11 @@ namespace V2
             var allPackageTypes = allTypes.Where(type => type.Namespace == ns && type.IsSubclassOf(typeof(Module)));
             foreach (var moduleType in allPackageTypes)
             {
-                this.TopLevelModules.Add(MakeModuleOfType(moduleType));
+                var newModule = MakeModuleOfType(moduleType);
+                if (newModule != null)
+                {
+                    this.TopLevelModules.Add(newModule);
+                }
             }
             this.BuildEnvironment = null;
             // remove all top level modules that have a reference count > 1

@@ -18,6 +18,25 @@
 #endregion // License
 namespace Bam.Core
 {
+namespace V2
+{
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
+    public sealed class PlatformFilterAttribute :
+        System.Attribute
+    {
+        public PlatformFilterAttribute(
+            EPlatform platform)
+        {
+            this.Platform = platform;
+        }
+
+        public EPlatform Platform
+        {
+            get;
+            private set;
+        }
+    }
+}
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed class ModuleTargetsAttribute :
         BaseTargetFilteredAttribute

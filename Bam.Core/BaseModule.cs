@@ -80,6 +80,12 @@ namespace V2
 
         public static T Create<T>() where T : Module, new()
         {
+            var filters = typeof(T).GetCustomAttributes(typeof(PlatformFilterAttribute), true) as PlatformFilterAttribute[];
+            if (filters.Length > 0 && !filters[0].Platform.Includes(Graph.Instance.BuildEnvironment.Platform))
+            {
+                return null;
+            }
+
             var module = new T();
             module.Init();
             module.GetExecutionPolicy(Graph.Instance.Mode);
