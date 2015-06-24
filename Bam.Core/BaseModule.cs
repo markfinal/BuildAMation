@@ -43,7 +43,7 @@ namespace V2
             var graph = Graph.Instance;
             if (null == graph.BuildEnvironment)
             {
-                throw new System.Exception("No build environment");
+                throw new Bam.Core.Exception("No build environment for module {0}", this.GetType().ToString());
             }
 
             graph.AddModule(this);
