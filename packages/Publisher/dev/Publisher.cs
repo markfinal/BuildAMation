@@ -35,7 +35,7 @@ namespace V2
     public abstract class Package :
         Bam.Core.V2.Module
     {
-        private System.Collections.Generic.List<Bam.Core.V2.Module> dependents = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.V2.Module> dependents = new Bam.Core.Array<Bam.Core.V2.Module>();
         private System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string> paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>();
         private IPackagePolicy Policy = null;
 
@@ -46,9 +46,22 @@ namespace V2
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.Requires(dependent);
-            this.dependents.Add(dependent);
+            this.dependents.AddUnique(dependent);
 
             this.paths[dependent.GeneratedPaths[key]] = subdir;
+        }
+
+        public void
+        IncludeFiles<DependentModule>(
+            string parameterizedFilePath,
+            string subdir) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.Requires(dependent);
+            this.dependents.AddUnique(dependent);
+
+            var tokenString = Bam.Core.V2.TokenizedString.Create(parameterizedFilePath, dependent);
+            this.paths[tokenString] = subdir;
         }
 
         public override void Evaluate()

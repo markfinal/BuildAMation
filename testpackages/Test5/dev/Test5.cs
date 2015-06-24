@@ -75,7 +75,7 @@ namespace Test5
             }
             this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, "bin");
 
-            // TODO: add header(s)
+            this.IncludeFiles<Test4.MyDynamicLibV2>("$(pkgroot)/include/dynamiclibrary.h", "include");
         }
     }
 
