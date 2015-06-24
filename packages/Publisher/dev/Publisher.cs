@@ -39,7 +39,7 @@ namespace V2
         private System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string> paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>();
         private IPackagePolicy Policy = null;
 
-        public DependentModule
+        public void
         Include<DependentModule>(
             Bam.Core.V2.FileKey key,
             string subdir) where DependentModule : Bam.Core.V2.Module, new()
@@ -49,12 +49,11 @@ namespace V2
             this.dependents.Add(dependent);
 
             this.paths[dependent.GeneratedPaths[key]] = subdir;
-
-            return dependent as DependentModule;
         }
 
         public override void Evaluate()
         {
+            // TODO: should this do at least a timestamp check?
             // do nothing
         }
 

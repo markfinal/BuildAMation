@@ -59,8 +59,8 @@ namespace Test5
     {
         public RuntimePackage()
         {
-            var exe = this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key, ".");
-            var dynamic = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".");
+            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".");
         }
     }
 
@@ -71,9 +71,9 @@ namespace Test5
         {
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                var lib = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "lib");
+                this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "lib");
             }
-            var dynamic = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, "bin");
+            this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, "bin");
 
             // TODO: add header(s)
         }
