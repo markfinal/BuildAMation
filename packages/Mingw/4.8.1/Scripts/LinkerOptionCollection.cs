@@ -115,7 +115,7 @@ namespace DefaultSettings
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin", this));
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
-            this.Macros.Add("exeext", string.Empty);
+            this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
             this.Macros.Add("libprefix", "lib");
