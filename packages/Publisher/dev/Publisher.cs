@@ -214,5 +214,135 @@ namespace V2
         }
     }
 }
+namespace V2
+{
+    class NSISScript :
+        Bam.Core.V2.Module
+    {
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+
+        public NSISScript()
+        {
+            this.ScriptPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)/script.nsi", this);
+        }
+
+        public Bam.Core.V2.TokenizedString ScriptPath
+        {
+            get;
+            private set;
+        }
+
+        public void
+        AddFile(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.FileKey key)
+        {
+            this.DependsOn(module);
+            this.Files.Add(module, key);
+        }
+
+        public override void Evaluate()
+        {
+            // do nothing
+        }
+
+        protected override void ExecuteInternal()
+        {
+            var path = this.ScriptPath.Parse();
+            var dir = System.IO.Path.GetDirectoryName(path);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                System.IO.Directory.CreateDirectory(dir);
+            }
+            using (var scriptWriter = new System.IO.StreamWriter(path))
+            {
+                scriptWriter.WriteLine("Name \"{0}\"", this.GetType().ToString());
+                scriptWriter.WriteLine("OutFile \"{0}\"", "Installer.exe");
+                scriptWriter.WriteLine("InstallDir $PROGRAMFILES64\\{0}", this.GetType().ToString());
+                scriptWriter.WriteLine("Page directory");
+                scriptWriter.WriteLine("Page instfiles");
+                scriptWriter.WriteLine("Section \"\"");
+                foreach (var dep in this.Files)
+                {
+                    scriptWriter.WriteLine("\tSetOutPath $INSTDIR");
+                    scriptWriter.WriteLine("\tFile {0}", dep.Key.GeneratedPaths[dep.Value]);
+                }
+                scriptWriter.WriteLine("SectionEnd");
+            }
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+
+    public sealed class NSISCompilerSettings :
+        Bam.Core.V2.Settings
+    {
+    }
+
+    public sealed class NSISCompiler :
+        Bam.Core.V2.Tool
+    {
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            return new NSISCompilerSettings();
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\NSIS\makensis.exe", null);
+            }
+        }
+    }
+
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    public abstract class NSISInstaller :
+        Bam.Core.V2.Module
+    {
+        private NSISScript ScriptModule;
+        private Bam.Core.V2.Tool Compiler;
+
+        public NSISInstaller()
+        {
+            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
+            // need to find a way to instantiate a non-abstract instance of an abstract class
+            // looks like emit is needed
+            this.ScriptModule = Bam.Core.V2.Graph.Instance.FindReferencedModule<NSISScript>();
+            this.DependsOn(this.ScriptModule);
+
+            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<NSISCompiler>();
+            this.Requires(this.Compiler);
+        }
+
+        public void
+        Include<DependentModule>(
+            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.ScriptModule.AddFile(dependent, key);
+        }
+
+        public override void Evaluate()
+        {
+            // do nothing
+        }
+
+        protected override void ExecuteInternal()
+        {
+            var args = new Bam.Core.StringArray();
+            args.Add(this.ScriptModule.ScriptPath.Parse());
+            CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+}
     // Add modules here
 }
