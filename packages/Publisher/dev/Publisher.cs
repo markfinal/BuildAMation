@@ -170,6 +170,7 @@ namespace V2
         }
     }
 
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
     public abstract class InnoSetupInstaller :
         Bam.Core.V2.Module
     {

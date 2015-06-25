@@ -79,7 +79,6 @@ namespace Test5
         }
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class WinInstallerInno :
         Publisher.V2.InnoSetupInstaller
     {
