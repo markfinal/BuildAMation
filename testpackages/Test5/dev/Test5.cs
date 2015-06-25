@@ -97,6 +97,15 @@ namespace Test5
         }
     }
 
+    sealed class TarBallInstaller :
+        Publisher.V2.TarBall
+    {
+        public TarBallInstaller()
+        {
+            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+        }
+    }
+
     // Define module classes here
     class MyDynamicLibTestApp :
         C.Application
