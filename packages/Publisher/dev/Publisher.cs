@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2;
 
 [assembly: Bam.Core.RegisterToolset("Publish", typeof(Publisher.Toolset))]
 
@@ -391,7 +392,16 @@ namespace V2
                 {
                     var filePath = dep.Key.GeneratedPaths[dep.Value].ToString();
                     var fileDir = System.IO.Path.GetDirectoryName(filePath);
-                    scriptWriter.WriteLine("-C {0}", fileDir);
+                    // TODO: this should probably be a setting
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+                    {
+                        scriptWriter.WriteLine("-C");
+                        scriptWriter.WriteLine(fileDir);
+                    }
+                    else
+                    {
+                        scriptWriter.WriteLine("-C {0}", fileDir);
+                    }
                     scriptWriter.WriteLine(System.IO.Path.GetFileName(filePath));
                 }
             }
