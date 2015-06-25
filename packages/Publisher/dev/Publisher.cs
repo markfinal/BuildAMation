@@ -345,5 +345,138 @@ namespace V2
         }
     }
 }
+namespace V2
+{
+    class TarInputFiles :
+        Bam.Core.V2.Module
+    {
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+
+        public TarInputFiles()
+        {
+            this.ScriptPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)/tarinput.txt", this);
+        }
+
+        public Bam.Core.V2.TokenizedString ScriptPath
+        {
+            get;
+            private set;
+        }
+
+        public void
+        AddFile(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.FileKey key)
+        {
+            this.DependsOn(module);
+            this.Files.Add(module, key);
+        }
+
+        public override void Evaluate()
+        {
+            // do nothing
+        }
+
+        protected override void ExecuteInternal()
+        {
+            var path = this.ScriptPath.Parse();
+            var dir = System.IO.Path.GetDirectoryName(path);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                System.IO.Directory.CreateDirectory(dir);
+            }
+            using (var scriptWriter = new System.IO.StreamWriter(path))
+            {
+                foreach (var dep in this.Files)
+                {
+                    var filePath = dep.Key.GeneratedPaths[dep.Value].ToString();
+                    var fileDir = System.IO.Path.GetDirectoryName(filePath);
+                    scriptWriter.WriteLine("-C {0}", fileDir);
+                    scriptWriter.WriteLine(System.IO.Path.GetFileName(filePath));
+                }
+            }
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+
+    public sealed class TarSettings :
+        Bam.Core.V2.Settings
+    {
+    }
+
+    public sealed class TarCompiler :
+        Bam.Core.V2.Tool
+    {
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            return new TarSettings();
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return Bam.Core.V2.TokenizedString.Create("tar", null);
+            }
+        }
+    }
+
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Unix | Bam.Core.EPlatform.OSX)]
+    public abstract class TarBall :
+        Bam.Core.V2.Module
+    {
+        public static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Installer");
+
+        private TarInputFiles InputFiles;
+        private Bam.Core.V2.Tool Compiler;
+
+        public TarBall()
+        {
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/installer.tar", this));
+
+            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
+            // need to find a way to instantiate a non-abstract instance of an abstract class
+            // looks like emit is needed
+            this.InputFiles = Bam.Core.V2.Graph.Instance.FindReferencedModule<TarInputFiles>();
+            this.DependsOn(this.InputFiles);
+
+            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<TarCompiler>();
+            this.Requires(this.Compiler);
+        }
+
+        public void
+        Include<DependentModule>(
+            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.InputFiles.AddFile(dependent, key);
+        }
+
+        public override void Evaluate()
+        {
+            // do nothing
+        }
+
+        protected override void ExecuteInternal()
+        {
+            var args = new Bam.Core.StringArray();
+            args.Add("-c");
+            args.Add("-T");
+            args.Add(this.InputFiles.ScriptPath.Parse());
+            args.Add("-f");
+            args.Add(this.GeneratedPaths[Key].ToString());
+            CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+}
     // Add modules here
 }
