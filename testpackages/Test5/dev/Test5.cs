@@ -80,10 +80,19 @@ namespace Test5
     }
 
     [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
-    sealed class Installer :
+    sealed class WinInstallerInno :
         Publisher.V2.InnoSetupInstaller
     {
-        public Installer()
+        public WinInstallerInno()
+        {
+            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+        }
+    }
+
+    sealed class WinInstallerNSIS :
+        Publisher.V2.NSISInstaller
+    {
+        public WinInstallerNSIS()
         {
             this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
         }
