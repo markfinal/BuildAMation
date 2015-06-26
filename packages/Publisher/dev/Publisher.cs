@@ -96,6 +96,7 @@ namespace V2
         Bam.Core.V2.Module
     {
         private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
 
         public InnoSetupScript()
         {
@@ -115,6 +116,15 @@ namespace V2
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
+        }
+
+        public void
+        AddPath(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.FileKey key)
+        {
+            this.DependsOn(module);
+            this.Paths.Add(module, key);
         }
 
         public override void Evaluate()
@@ -144,6 +154,12 @@ namespace V2
                     scriptWriter.Write(System.String.Format("Source: \"{0}\"; ", dep.Key.GeneratedPaths[dep.Value]));
                     scriptWriter.Write("DestDir: \"{app}\"; ");
                     scriptWriter.Write("DestName: \"Test\"");
+                }
+                foreach (var dep in this.Paths)
+                {
+                    scriptWriter.Write(System.String.Format("Source: \"{0}\\*.*\"; ", dep.Key.GeneratedPaths[dep.Value]));
+                    scriptWriter.Write("DestDir: \"{app}\"; ");
+                    scriptWriter.Write("Flags: recursesubdirs");
                 }
             }
         }
@@ -201,6 +217,14 @@ namespace V2
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddFile(dependent, key);
+        }
+
+        public void
+        SourceFolder<DependentModule>(
+            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.ScriptModule.AddPath(dependent, key);
         }
 
         public override void Evaluate()
