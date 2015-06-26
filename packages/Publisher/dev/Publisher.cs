@@ -148,6 +148,7 @@ namespace V2
                 scriptWriter.WriteLine("DefaultDirName={{sd}}\\{0}", this.GetType().ToString());
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");
                 scriptWriter.WriteLine("ArchitecturesInstallIn64BitMode=x64");
+                scriptWriter.WriteLine("Uninstallable=No");
                 scriptWriter.WriteLine("[Files]");
                 foreach (var dep in this.Files)
                 {
