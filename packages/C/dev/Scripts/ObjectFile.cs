@@ -25,6 +25,7 @@ namespace V2
         void
         Compile(
             ObjectFile sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source);
     }
@@ -34,6 +35,7 @@ namespace V2
         void
         Archive(
             StaticLibrary sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs);
     }
@@ -43,6 +45,7 @@ namespace V2
         void
         Link(
             ConsoleApplication sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
@@ -287,7 +290,9 @@ namespace V2
             // TODO: could do a hash check of the contents
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             // do nothing
         }
@@ -377,11 +382,13 @@ namespace V2
             }
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var sourceFile = this.Source;
             var objectFile = this.GeneratedPaths[Key];
-            this.Policy.Compile(this, objectFile, sourceFile);
+            this.Policy.Compile(this, context, objectFile, sourceFile);
         }
 
         protected override void GetExecutionPolicy(string mode)

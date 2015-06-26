@@ -26,6 +26,7 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
@@ -43,7 +44,7 @@ namespace V2
                 System.IO.Directory.CreateDirectory(objectFileDir);
             }
 
-            /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.MetaData as Bam.Core.StringArray);
+            /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
         }
     }
 }

@@ -546,7 +546,9 @@ namespace V2
 
         public abstract Settings CreateDefaultSettings<T>(T module) where T : Bam.Core.V2.Module;
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            ExecutionContext context)
         {
             // by default, a Tool's execution does nothing as it's on disk
         }
@@ -588,6 +590,53 @@ namespace V2
             :
             base(new[] { input })
         {
+        }
+    }
+
+    public class ExecutionContext
+    {
+        public ExecutionContext()
+        {
+            this.OutputStringBuilder = new System.Text.StringBuilder();
+            this.ErrorStringBuilder = new System.Text.StringBuilder();
+        }
+
+        public System.Text.StringBuilder OutputStringBuilder
+        {
+            get;
+            private set;
+        }
+
+        public System.Text.StringBuilder ErrorStringBuilder
+        {
+            get;
+            private set;
+        }
+
+        public void
+        OutputDataReceived(
+            object sender,
+            System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if (System.String.IsNullOrEmpty(e.Data))
+            {
+                return;
+            }
+            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
+            this.OutputStringBuilder.Append(e.Data + '\n');
+        }
+
+        public void
+        ErrorDataReceived(
+            object sender,
+            System.Diagnostics.DataReceivedEventArgs e)
+        {
+            if (System.String.IsNullOrEmpty(e.Data))
+            {
+                return;
+            }
+            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
+            this.ErrorStringBuilder.Append(e.Data + '\n');
         }
     }
 }

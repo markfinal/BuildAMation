@@ -26,6 +26,7 @@ namespace C
             void
             ILibrarianPolicy.Archive(
                 StaticLibrary sender,
+                Bam.Core.V2.ExecutionContext context,
                 Bam.Core.V2.TokenizedString libraryPath,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
             {
@@ -60,7 +61,7 @@ namespace C
                     }
                 }
 
-                /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.MetaData as Bam.Core.StringArray);
+                /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
             }
         }
     }

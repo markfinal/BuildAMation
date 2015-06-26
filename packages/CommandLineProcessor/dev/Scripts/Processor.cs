@@ -24,6 +24,7 @@ namespace V2
     {
         public static int
         Execute(
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.Tool tool,
             Bam.Core.StringArray commandLine,
             string hostApplication = null,
@@ -100,10 +101,10 @@ namespace V2
             }
             if (null != process)
             {
-                process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(Bam.Core.V2.Graph.Instance.OutputDataReceived);
+                process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.OutputDataReceived);
                 process.BeginOutputReadLine();
 
-                process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(Bam.Core.V2.Graph.Instance.ErrorDataReceived);
+                process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.ErrorDataReceived);
                 process.BeginErrorReadLine();
 
                 // TODO: need to poll for an external cancel op? this currently waits forever

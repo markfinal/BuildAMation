@@ -50,6 +50,7 @@ namespace V2
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
@@ -113,7 +114,7 @@ namespace V2
                 commandLine.Add(lib);
             }
 
-            /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(sender.Tool, sender.MetaData as Bam.Core.StringArray);
+            /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
         }
     }
 }

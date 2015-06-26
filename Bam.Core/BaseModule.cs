@@ -24,7 +24,10 @@ namespace V2
 
     public interface IModuleExecution
     {
-        void Execute();
+        void
+        Execute(
+            ExecutionContext context);
+
         bool IsUpToDate
         {
             get;
@@ -229,11 +232,15 @@ namespace V2
             set;
         }
 
-        protected abstract void ExecuteInternal();
+        protected abstract void
+        ExecuteInternal(
+            ExecutionContext context);
 
-        void IModuleExecution.Execute()
+        void
+        IModuleExecution.Execute(
+            ExecutionContext context)
         {
-            this.ExecuteInternal();
+            this.ExecuteInternal(context);
         }
 
         public bool TopLevel

@@ -26,6 +26,7 @@ namespace V2
         void
         ILibrarianPolicy.Archive(
             StaticLibrary sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString libraryPath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
         {

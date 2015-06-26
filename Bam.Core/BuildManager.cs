@@ -58,6 +58,7 @@ namespace V2
                 System.IO.Directory.CreateDirectory(Core.State.BuildRoot);
             }
 
+            var contextQueue = new System.Collections.Generic.Queue<ExecutionContext>();
             foreach (var rank in graph.Reverse())
             {
                 foreach (IModuleExecution module in rank)
@@ -67,17 +68,21 @@ namespace V2
                         Log.DebugMessage("Module {0} is up-to-date", module.ToString());
                         continue;
                     }
-                    Log.DebugMessage("Module {0} requires building", module.ToString());
-                    module.Execute();
-                }
-            }
 
-            // TODO: shouldn't be full
-            // TODO: should be per module, and must be for parallelism
-            Log.Full(graph.OutputStringBuilder.ToString());
-            if (graph.ErrorStringBuilder.Length > 0)
-            {
-                Log.ErrorMessage(graph.ErrorStringBuilder.ToString());
+                    var context = new ExecutionContext();
+                    contextQueue.Enqueue(context);
+
+                    Log.DebugMessage("Module {0} requires building", module.ToString());
+                    module.Execute(context);
+
+                    // deal with the latest context
+                    var dealWithContext = contextQueue.Dequeue();
+                    Log.Full(dealWithContext.OutputStringBuilder.ToString());
+                    if (dealWithContext.ErrorStringBuilder.Length > 0)
+                    {
+                        Log.ErrorMessage(dealWithContext.ErrorStringBuilder.ToString());
+                    }
+                }
             }
 
             if (null != metaData)

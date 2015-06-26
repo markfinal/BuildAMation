@@ -77,7 +77,9 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var paths = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string>(this.paths);
             this.Policy.Package(this, this.GeneratedPaths[PackageRoot], paths);
@@ -132,7 +134,9 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var path = this.ScriptPath.Parse();
             var dir = System.IO.Path.GetDirectoryName(path);
@@ -233,11 +237,13 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var args = new Bam.Core.StringArray();
             args.Add(this.ScriptModule.ScriptPath.Parse());
-            CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
         }
 
         protected override void GetExecutionPolicy(string mode)
@@ -288,7 +294,9 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var path = this.ScriptPath.Parse();
             var dir = System.IO.Path.GetDirectoryName(path);
@@ -386,11 +394,13 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var args = new Bam.Core.StringArray();
             args.Add(this.ScriptModule.ScriptPath.Parse());
-            CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
         }
 
         protected override void GetExecutionPolicy(string mode)
@@ -431,7 +441,9 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var path = this.ScriptPath.Parse();
             var dir = System.IO.Path.GetDirectoryName(path);
@@ -524,7 +536,9 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var args = new Bam.Core.StringArray();
             args.Add("-c");
@@ -532,7 +546,7 @@ namespace V2
             args.Add(this.InputFiles.ScriptPath.Parse());
             args.Add("-f");
             args.Add(this.GeneratedPaths[Key].ToString());
-            CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
         }
 
         protected override void GetExecutionPolicy(string mode)
@@ -596,7 +610,9 @@ namespace V2
             // do nothing
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var volumeName = "My Volume";
             var diskImagePathName = this.GeneratedPaths[Key].ToString();
@@ -615,7 +631,7 @@ namespace V2
                 args.Add("-volname");
                 args.Add(System.String.Format("\"{0}\"", volumeName));
                 args.Add(diskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
             }
 
             // mount disk image
@@ -624,7 +640,7 @@ namespace V2
                 args.Add("attach");
                 args.Add("-quiet");
                 args.Add(diskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
             }
 
                 // TODO
@@ -636,7 +652,7 @@ namespace V2
                 args.Add("detach");
                 args.Add("-quiet");
                 args.Add(System.String.Format("\"/Volumes/{0}\"", volumeName));
-                CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
             }
 
             // hdiutil convert myimg.dmg -format UDZO -o myoutputimg.dmg
@@ -649,7 +665,7 @@ namespace V2
                 args.Add("UDZ0");
                 args.Add("-o");
                 args.Add(diskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(this.Compiler, args);
+                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
             }
         }
 

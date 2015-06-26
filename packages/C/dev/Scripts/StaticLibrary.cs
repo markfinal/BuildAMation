@@ -75,11 +75,13 @@ namespace V2
             }
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source);
             var libraryFile = this.GeneratedPaths[Key];
-            this.Policy.Archive(this, libraryFile, source);
+            this.Policy.Archive(this, context, libraryFile, source);
         }
 
         protected override void GetExecutionPolicy(string mode)

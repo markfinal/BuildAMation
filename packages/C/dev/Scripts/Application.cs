@@ -93,12 +93,14 @@ namespace V2
             }
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules);
             var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules);
             var executable = this.GeneratedPaths[Key];
-            this.Policy.Link(this, executable, source, linked, null);
+            this.Policy.Link(this, context, executable, source, linked, null);
         }
 
         protected override void GetExecutionPolicy(string mode)

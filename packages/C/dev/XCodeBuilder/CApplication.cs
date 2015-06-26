@@ -26,6 +26,7 @@ namespace C
             void
             ILinkerPolicy.Link(
                 ConsoleApplication sender,
+                Bam.Core.V2.ExecutionContext context,
                 Bam.Core.V2.TokenizedString executablePath,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,

@@ -26,6 +26,7 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {

@@ -54,7 +54,9 @@ namespace V2
             return child;
         }
 
-        protected override void ExecuteInternal()
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
         {
             // do nothing
         }
