@@ -93,7 +93,7 @@ namespace Test5
     {
         public WinInstallerNSIS()
         {
-            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
         }
     }
 
