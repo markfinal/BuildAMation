@@ -39,6 +39,12 @@ namespace V2
         private Bam.Core.Array<Bam.Core.V2.Module> dependents = new Bam.Core.Array<Bam.Core.V2.Module>();
         private System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string> paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>();
         private IPackagePolicy Policy = null;
+        public static Bam.Core.V2.FileKey PackageRoot = Bam.Core.V2.FileKey.Generate("Package Root");
+
+        protected Package()
+        {
+            this.RegisterGeneratedFile(PackageRoot, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)", this));
+        }
 
         public void
         Include<DependentModule>(
@@ -74,8 +80,7 @@ namespace V2
         protected override void ExecuteInternal()
         {
             var paths = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string>(this.paths);
-            var executable = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)", this);
-            this.Policy.Package(this, executable, paths);
+            this.Policy.Package(this, this.GeneratedPaths[PackageRoot], paths);
         }
 
         protected override void GetExecutionPolicy(string mode)
@@ -490,71 +495,6 @@ namespace V2
 }
 namespace V2
 {
-    class DiskImageInputFiles :
-        Bam.Core.V2.Module
-    {
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
-
-        public DiskImageInputFiles()
-        {
-            this.ScriptPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)/diskimageinput.txt", this);
-        }
-
-        public Bam.Core.V2.TokenizedString ScriptPath
-        {
-            get;
-            private set;
-        }
-
-        public void
-        AddFile(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
-        {
-            this.DependsOn(module);
-            this.Files.Add(module, key);
-        }
-
-        public override void Evaluate()
-        {
-            // do nothing
-        }
-
-        protected override void ExecuteInternal()
-        {
-            var path = this.ScriptPath.Parse();
-            var dir = System.IO.Path.GetDirectoryName(path);
-            if (!System.IO.Directory.Exists(dir))
-            {
-                System.IO.Directory.CreateDirectory(dir);
-            }
-            using (var scriptWriter = new System.IO.StreamWriter(path))
-            {
-                foreach (var dep in this.Files)
-                {
-                    var filePath = dep.Key.GeneratedPaths[dep.Value].ToString();
-                    var fileDir = System.IO.Path.GetDirectoryName(filePath);
-                    // TODO: this should probably be a setting
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
-                    {
-                        scriptWriter.WriteLine("-C");
-                        scriptWriter.WriteLine(fileDir);
-                    }
-                    else
-                    {
-                        scriptWriter.WriteLine("-C {0}", fileDir);
-                    }
-                    scriptWriter.WriteLine(System.IO.Path.GetFileName(filePath));
-                }
-            }
-        }
-
-        protected override void GetExecutionPolicy(string mode)
-        {
-            // do nothing
-        }
-    }
-
     public sealed class DiskImageSettings :
         Bam.Core.V2.Settings
     {
@@ -583,29 +523,24 @@ namespace V2
     {
         public static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Installer");
 
-        private DiskImageInputFiles InputFiles;
+        private Bam.Core.V2.TokenizedString SourceFolderPath;
         private Bam.Core.V2.Tool Compiler;
 
         public DiskImage()
         {
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/installer.dmg", this));
 
-            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
-            // need to find a way to instantiate a non-abstract instance of an abstract class
-            // looks like emit is needed
-            this.InputFiles = Bam.Core.V2.Graph.Instance.FindReferencedModule<DiskImageInputFiles>();
-            this.DependsOn(this.InputFiles);
-
             this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
             this.Requires(this.Compiler);
         }
 
         public void
-        Include<DependentModule>(
+        SourceFolder<DependentModule>(
             Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
-            this.InputFiles.AddFile(dependent, key);
+            this.DependsOn(dependent);
+            this.SourceFolderPath = dependent.GeneratedPaths[key];
         }
 
         public override void Evaluate()
@@ -623,6 +558,8 @@ namespace V2
                 var args = new Bam.Core.StringArray();
                 args.Add("create");
                 args.Add("-quiet");
+                args.Add("-srcfolder");
+                args.Add(System.String.Format("\"{0}\"", this.SourceFolderPath.ToString()));
                 args.Add("-size");
                 args.Add("32m");
                 args.Add("-fs");
