@@ -106,6 +106,15 @@ namespace Test5
         }
     }
 
+    sealed class DiskImageInstaller :
+        Publisher.V2.DiskImage
+    {
+        public DiskImageInstaller()
+        {
+            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+        }
+    }
+
     // Define module classes here
     class MyDynamicLibTestApp :
         C.Application
