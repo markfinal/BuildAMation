@@ -251,6 +251,7 @@ namespace V2
         Bam.Core.V2.Module
     {
         private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
 
         public NSISScript()
         {
@@ -270,6 +271,15 @@ namespace V2
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
+        }
+
+        public void
+        AddPath(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.FileKey key)
+        {
+            this.DependsOn(module);
+            this.Paths.Add(module, key);
         }
 
         public override void Evaluate()
@@ -297,6 +307,11 @@ namespace V2
                 {
                     scriptWriter.WriteLine("\tSetOutPath $INSTDIR");
                     scriptWriter.WriteLine("\tFile {0}", dep.Key.GeneratedPaths[dep.Value]);
+                }
+                foreach (var dep in this.Paths)
+                {
+                    scriptWriter.WriteLine("\tSetOutPath $INSTDIR");
+                    scriptWriter.WriteLine("\tFile /r {0}\\*.*", dep.Key.GeneratedPaths[dep.Value]);
                 }
                 scriptWriter.WriteLine("SectionEnd");
             }
@@ -355,6 +370,14 @@ namespace V2
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddFile(dependent, key);
+        }
+
+        public void
+        SourceFolder<DependentModule>(
+            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.ScriptModule.AddPath(dependent, key);
         }
 
         public override void Evaluate()
