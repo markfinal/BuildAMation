@@ -24,9 +24,21 @@ namespace Test7
     {
         public ExplicitDynamicLibraryV2()
         {
+            // TODO: this is annoying it is mentioned both here, and for the source,
+            // it cannot easily come out as a standalone lambda, because of the 'this'
+            this.PublicPatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    if (null == compiler)
+                    {
+                        return;
+                    }
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                });
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
-            source.PublicPatch(settings =>
+            source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));

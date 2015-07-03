@@ -16,8 +16,38 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test8
 {
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    sealed class ApplicationTestV2 :
+        C.V2.ConsoleApplication
+    {
+        public ApplicationTestV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.c");
+
+            var dynamicLib = Bam.Core.V2.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibraryV2>();
+            this.Requires(dynamicLib);
+            source.UsePublicPatches(dynamicLib);
+
+            if (this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                source.UsePublicPatches(windowsSDK); // compiling
+                this.UsePublicPatches(windowsSDK); // linking
+
+                this.PrivatePatch(settings =>
+                    {
+                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        // TODO: add dbghelp.lib
+                    });
+            }
+        }
+    }
+
     // Define module classes here
 
     [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.Windows)]
