@@ -16,8 +16,45 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test6
 {
+    sealed class ConditionApplicationV2 :
+        C.V2.ConsoleApplication
+    {
+        public ConditionApplicationV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                });
+
+            var main = source.AddFile("$(pkgroot)/source/main.c");
+            main.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.PreprocessorDefines.Add("MAIN_C");
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include/platform", this));
+                });
+
+            var platformPath = (this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ?
+                "$(pkgroot)/source/debug/debug.c" :
+                "$(pkgroot)/source/optimized/optimized.c";
+            source.AddFile(platformPath);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                source.UsePublicPatches(windowsSDK); // compiling
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
     // Define module classes here
     class ConditionalApplication :
         C.Application
