@@ -16,8 +16,33 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test7
 {
+    sealed class ExplicitDynamicLibraryV2 :
+        C.V2.DynamicLibrary
+    {
+        public ExplicitDynamicLibraryV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
+            source.PublicPatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                });
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                source.UsePublicPatches(windowsSDK); // compiling
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
     // Define module classes here
     class ExplicitDynamicLibrary :
         C.DynamicLibrary
