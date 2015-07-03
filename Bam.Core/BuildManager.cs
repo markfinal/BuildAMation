@@ -27,19 +27,24 @@ namespace V2
     /// </summary>
     public sealed class Executor
     {
-        public Executor()
-        {
-        }
-
         public void Run()
         {
+            // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
+
+            var allUpToDate = true;
             var graph = Graph.Instance;
             foreach (var rank in graph.Reverse())
             {
                 foreach (Module module in rank)
                 {
                     module.Evaluate();
+                    allUpToDate &= module.IsUpToDate;
                 }
+            }
+            if (allUpToDate)
+            {
+                Log.DebugMessage("Everything up to date");
+                return;
             }
 
             var metaName = System.String.Format("{0}Builder.V2.{0}Meta", Core.State.BuilderName);
@@ -58,29 +63,83 @@ namespace V2
                 System.IO.Directory.CreateDirectory(Core.State.BuildRoot);
             }
 
-            var contextQueue = new System.Collections.Generic.Queue<ExecutionContext>();
-            foreach (var rank in graph.Reverse())
+            var threaded = CommandLineProcessor.Evaluate(new MultiThreaded());
+
+            if (threaded)
             {
-                foreach (IModuleExecution module in rank)
+                var tasks = new Array<System.Threading.Tasks.Task>();
+                foreach (var rank in graph.Reverse())
                 {
-                    if (module.IsUpToDate)
+                    foreach (var module in rank)
                     {
-                        Log.DebugMessage("Module {0} is up-to-date", module.ToString());
-                        continue;
+                        if (module.IsUpToDate)
+                        {
+                            Log.DebugMessage("Module {0} is up-to-date", module.ToString());
+                            continue;
+                        }
+
+                        Log.DebugMessage("Module {0} requires building", module.ToString());
+                        var context = new ExecutionContext();
+
+                        var task = System.Threading.Tasks.Task.Factory.StartNew(() =>
+                            {
+                                var depTasks = new Array<System.Threading.Tasks.Task>();
+                                foreach (var dep in module.Dependents)
+                                {
+                                    if (null == dep.ExecutionTask)
+                                    {
+                                        continue;
+                                    }
+                                    depTasks.Add(dep.ExecutionTask);
+                                }
+                                foreach (var dep in module.Requirements)
+                                {
+                                    if (null == dep.ExecutionTask)
+                                    {
+                                        continue;
+                                    }
+                                    depTasks.Add(dep.ExecutionTask);
+                                }
+                                System.Threading.Tasks.Task.WaitAll(depTasks.ToArray());
+
+                                (module as IModuleExecution).Execute(context);
+
+                                Log.Full(context.OutputStringBuilder.ToString());
+                                if (context.ErrorStringBuilder.Length > 0)
+                                {
+                                    Log.ErrorMessage(context.ErrorStringBuilder.ToString());
+                                }
+                            });
+                        tasks.Add(task);
+                        module.ExecutionTask = task;
                     }
-
-                    var context = new ExecutionContext();
-                    contextQueue.Enqueue(context);
-
-                    Log.DebugMessage("Module {0} requires building", module.ToString());
-                    module.Execute(context);
-
-                    // deal with the latest context
-                    var dealWithContext = contextQueue.Dequeue();
-                    Log.Full(dealWithContext.OutputStringBuilder.ToString());
-                    if (dealWithContext.ErrorStringBuilder.Length > 0)
+                }
+                foreach (var task in tasks)
+                {
+                    task.Wait();
+                }
+            }
+            else
+            {
+                foreach (var rank in graph.Reverse())
+                {
+                    foreach (IModuleExecution module in rank)
                     {
-                        Log.ErrorMessage(dealWithContext.ErrorStringBuilder.ToString());
+                        if (module.IsUpToDate)
+                        {
+                            Log.DebugMessage("Module {0} is up-to-date", module.ToString());
+                            continue;
+                        }
+                        Log.DebugMessage("Module {0} requires building", module.ToString());
+
+                        var context = new ExecutionContext();
+                        module.Execute(context);
+
+                        Log.Full(context.OutputStringBuilder.ToString());
+                        if (context.ErrorStringBuilder.Length > 0)
+                        {
+                            Log.ErrorMessage(context.ErrorStringBuilder.ToString());
+                        }
                     }
                 }
             }

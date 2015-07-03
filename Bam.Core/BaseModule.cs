@@ -32,6 +32,12 @@ namespace V2
         {
             get;
         }
+
+        System.Threading.Tasks.Task ExecutionTask
+        {
+            get;
+            set;
+        }
     }
 
     /// <summary>
@@ -331,6 +337,12 @@ namespace V2
         {
             get;
             protected set;
+        }
+
+        public System.Threading.Tasks.Task ExecutionTask
+        {
+            get;
+            set;
         }
 
         public abstract void Evaluate();

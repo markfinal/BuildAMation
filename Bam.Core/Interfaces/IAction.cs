@@ -60,6 +60,26 @@ namespace V2
             }
         }
     }
+
+    public sealed class MultiThreaded :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-j";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--threaded";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable
