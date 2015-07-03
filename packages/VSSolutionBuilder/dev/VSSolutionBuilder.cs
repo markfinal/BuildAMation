@@ -120,15 +120,18 @@ namespace V2
 
         public VSProject FindOrCreateProject(System.Type moduleType, VSProject.Type projectType)
         {
-            if (this.Projects.ContainsKey(moduleType))
+            lock(this)
             {
-                return this.Projects[moduleType];
-            }
-            else
-            {
-                var project = new VSProject(projectType);
-                this.Projects[moduleType] = project;
-                return project;
+                if (this.Projects.ContainsKey(moduleType))
+                {
+                    return this.Projects[moduleType];
+                }
+                else
+                {
+                    var project = new VSProject(projectType);
+                    this.Projects[moduleType] = project;
+                    return project;
+                }
             }
         }
 
