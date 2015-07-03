@@ -43,6 +43,7 @@ namespace WindowsSDK
         public override void Evaluate()
         {
             // do nothing
+            this.IsUpToDate = true;
         }
 
         protected override void

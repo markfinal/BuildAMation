@@ -286,15 +286,16 @@ namespace V2
 
         public override void Evaluate()
         {
-            // do nothing
-            // TODO: could do a hash check of the contents
+            // TODO: could do a hash check of the contents?
+            this.IsUpToDate = true;
         }
 
         protected override void
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            // do nothing
+            // TODO: exception to this is generated source, but there ought to be an override for that
+            throw new Bam.Core.Exception("Source files should not require building");
         }
 
         protected override void GetExecutionPolicy(string mode)
@@ -406,7 +407,7 @@ namespace V2
             }
             var sourceWriteTime = System.IO.File.GetLastWriteTime(this.InputPath.ToString());
             var outputWriteTime = System.IO.File.GetLastWriteTime(this.GeneratedPaths[Key].ToString());
-            if (sourceWriteTime <= outputWriteTime)
+            if (outputWriteTime < sourceWriteTime)
             {
                 return;
             }
