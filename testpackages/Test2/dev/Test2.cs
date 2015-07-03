@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test2
 {
     sealed class LibraryV2 :
@@ -47,8 +48,7 @@ namespace Test2
             source.UsePublicPatches(library.Source[0]);
             source.UsePublicPatches(library2.Source[0]);
 
-            // TODO: can the platform check be done with extension wrappers?
-            if (Bam.Core.Platform.Contains(Bam.Core.EPlatform.Windows, this.BuildEnvironment.Platform) &&
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.Linker)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
