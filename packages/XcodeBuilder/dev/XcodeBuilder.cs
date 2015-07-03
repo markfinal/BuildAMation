@@ -1331,18 +1331,21 @@ namespace V2
             Bam.Core.V2.Module module,
             XcodeMeta.Type projectType)
         {
-            // Note: if you want a Xcode project per module, change this from keying off of the package
-            // to the module type
-            var package = module.Package;
-            if (this.Projects.ContainsKey(package))
+            lock(this)
             {
-                return this.Projects[package];
-            }
-            else
-            {
-                var project = new Project(module);
-                this.Projects[package] = project;
-                return project;
+                // Note: if you want a Xcode project per module, change this from keying off of the package
+                // to the module type
+                var package = module.Package;
+                if (this.Projects.ContainsKey(package))
+                {
+                    return this.Projects[package];
+                }
+                else
+                {
+                    var project = new Project(module);
+                    this.Projects[package] = project;
+                    return project;
+                }
             }
         }
 
