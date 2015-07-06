@@ -94,7 +94,7 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterLinker("VisualC", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows)]
     public sealed class Linker :
         C.V2.LinkerTool
     {

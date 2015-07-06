@@ -17,6 +17,7 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
 using C.V2.DefaultSettings;
+using C.Cxx.V2.DefaultSettings;
 namespace Mingw
 {
     public static partial class NativeImplementation
@@ -141,6 +142,31 @@ namespace Mingw
 
         public static void
         Convert(
+            this C.V2.ICxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.ExceptionHandler)
+            {
+                switch (options.ExceptionHandler)
+                {
+                    case C.Cxx.EExceptionHandler.Disabled:
+                        commandLine.Add("-fno-exceptions");
+                        break;
+
+                    case C.Cxx.EExceptionHandler.Asynchronous:
+                    case C.Cxx.EExceptionHandler.Synchronous:
+                        commandLine.Add("-fexceptions");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+        }
+
+        public static void
+        Convert(
             this MingwCommon.V2.ICommonCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
@@ -150,6 +176,14 @@ namespace Mingw
         public static void
         Convert(
             this MingwCommon.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void
+        Convert(
+            this MingwCommon.V2.ICxxOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -170,19 +204,27 @@ namespace Mingw
             Bam.Core.StringArray commandLine)
         {
         }
+
+        public static void
+        Convert(
+            this Mingw.V2.ICxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+        }
     }
 
 namespace V2
 {
     public class CompilerSettings :
         Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
         MingwCommon.V2.ICommonCompilerOptions,
         MingwCommon.V2.ICOnlyCompilerOptions,
         Mingw.V2.ICommonCompilerOptions,
-        Mingw.V2.ICOnlyCompilerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        Mingw.V2.ICOnlyCompilerOptions
     {
         public CompilerSettings(Bam.Core.V2.Module module)
             : this(module, useDefaults:true)
@@ -197,6 +239,19 @@ namespace V2
             {
                 (this as C.V2.ICommonCompilerOptions).Defaults(module);
             }
+        }
+
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
@@ -300,23 +355,11 @@ namespace V2
             get;
             set;
         }
-
-        void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-        }
     }
 
     public sealed class CxxCompilerSettings :
         Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
         MingwCommon.V2.ICommonCompilerOptions,
@@ -324,6 +367,36 @@ namespace V2
         Mingw.V2.ICommonCompilerOptions,
         Mingw.V2.ICxxOnlyCompilerOptions
     {
+        public CxxCompilerSettings(Bam.Core.V2.Module module)
+            : this(module, useDefaults:true)
+        {
+        }
+
+        public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        {
+            // TODO: other defaults
+            (this as C.V2.ICommonCompilerOptions).Empty();
+            (this as C.V2.ICxxOnlyCompilerOptions).Empty();
+            if (useDefaults)
+            {
+                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+                (this as C.V2.ICxxOnlyCompilerOptions).Defaults(module);
+            }
+        }
+
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+        }
+
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
             get;
@@ -402,7 +475,7 @@ namespace V2
             set;
         }
 
-        C.Cxx.EExceptionHandler C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
         {
             get;
             set;
@@ -421,12 +494,6 @@ namespace V2
         }
 
         bool ICommonCompilerOptions.M48Common
-        {
-            get;
-            set;
-        }
-
-        int ICxxOnlyCompilerOptions.M48CxxOnly
         {
             get;
             set;
@@ -475,7 +542,7 @@ namespace V2
             if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
                 typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new CxxCompilerSettings();
+                var settings = new CxxCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
@@ -495,14 +562,31 @@ namespace V2
         protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
     }
 
-    [C.V2.RegisterCompiler("Mingw", Bam.Core.EPlatform.Windows)]
-    public sealed class Compiler32 :
+    [C.V2.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows)]
+    public class Compiler32 :
         CompilerBase
     {
         protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.ThirtyTwo;
+        }
+    }
+
+    [C.V2.RegisterCxxCompiler("Mingw", Bam.Core.EPlatform.Windows)]
+    public sealed class Compiler32Cxx :
+        Compiler32
+    {
+        public Compiler32Cxx()
+        {
+            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
+        }
+
+        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        {
+            base.OverrideDefaultSettings(settings);
+            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
 

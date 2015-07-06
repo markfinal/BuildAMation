@@ -20,9 +20,27 @@ namespace C.Cxx
 {
 namespace V2
 {
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this C.V2.ICxxOnlyCompilerOptions settings, Bam.Core.V2.Module module)
+        {
+            settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
+        }
+        public static void Empty(this C.V2.ICxxOnlyCompilerOptions settings)
+        {
+            settings.ExceptionHandler = null;
+        }
+    }
+}
     public class ObjectFile :
         C.V2.ObjectFile
     {
+        public ObjectFile()
+        {
+            this.Compiler = C.V2.DefaultToolchain.Cxx_Compiler;
+        }
     }
 }
     /// <summary>

@@ -57,6 +57,7 @@ namespace V2
     public abstract class CompilerTool :
         Bam.Core.V2.Tool
     {
+        // TODO: is this needed?
         public virtual void
         CompileAsShared(
             Bam.Core.V2.Settings settings)
@@ -99,10 +100,22 @@ namespace V2
         }
     }
 
-    public sealed class RegisterCompilerAttribute :
+    public sealed class RegisterCCompilerAttribute :
         ToolRegistration
     {
-        public RegisterCompilerAttribute(
+        public RegisterCCompilerAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform)
+            :
+            base(toolsetName, platform)
+        {
+        }
+    }
+
+    public sealed class RegisterCxxCompilerAttribute :
+        ToolRegistration
+    {
+        public RegisterCxxCompilerAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform)
             :
@@ -123,10 +136,22 @@ namespace V2
         }
     }
 
-    public sealed class RegisterLinkerAttribute :
+    public sealed class RegisterCLinkerAttribute :
         ToolRegistration
     {
-        public RegisterLinkerAttribute(
+        public RegisterCLinkerAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform)
+            :
+            base(toolsetName, platform)
+        {
+        }
+    }
+
+    public sealed class RegisterCxxLinkerAttribute :
+        ToolRegistration
+    {
+        public RegisterCxxLinkerAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform)
             :
@@ -157,9 +182,11 @@ namespace V2
             }
         }
 
-        private static System.Collections.Generic.List<CompilerTool> Compilers = new System.Collections.Generic.List<CompilerTool>();
+        private static System.Collections.Generic.List<CompilerTool> C_Compilers = new System.Collections.Generic.List<CompilerTool>();
+        private static System.Collections.Generic.List<CompilerTool> Cxx_Compilers = new System.Collections.Generic.List<CompilerTool>();
         private static System.Collections.Generic.List<LibrarianTool> Archivers = new System.Collections.Generic.List<LibrarianTool>();
-        private static System.Collections.Generic.List<LinkerTool> Linkers = new System.Collections.Generic.List<LinkerTool>();
+        private static System.Collections.Generic.List<LinkerTool> C_Linkers = new System.Collections.Generic.List<LinkerTool>();
+        private static System.Collections.Generic.List<LinkerTool> Cxx_Linkers = new System.Collections.Generic.List<LinkerTool>();
         private static string DefaultToolChain = null;
 
         private static System.Collections.Generic.IEnumerable<System.Type> GetTools<T>() where T : ToolRegistration
@@ -182,33 +209,41 @@ namespace V2
             DefaultToolChain = Bam.Core.V2.CommandLineProcessor.Evaluate(new DefaultToolchainCommand());
 
             var graph = Bam.Core.V2.Graph.Instance;
-            foreach (var type in GetTools<RegisterCompilerAttribute>())
+            foreach (var type in GetTools<RegisterCCompilerAttribute>())
             {
-                Compilers.Add(graph.MakeModuleOfType(type) as CompilerTool);
+                C_Compilers.Add(graph.MakeModuleOfType(type) as CompilerTool);
+            }
+            foreach (var type in GetTools<RegisterCxxCompilerAttribute>())
+            {
+                Cxx_Compilers.Add(graph.MakeModuleOfType(type) as CompilerTool);
             }
             foreach (var type in GetTools<RegisterArchiverAttribute>())
             {
                 Archivers.Add(graph.MakeModuleOfType(type) as LibrarianTool);
             }
-            foreach (var type in GetTools<RegisterLinkerAttribute>())
+            foreach (var type in GetTools<RegisterCLinkerAttribute>())
             {
-                Linkers.Add(graph.MakeModuleOfType(type) as LinkerTool);
+                C_Linkers.Add(graph.MakeModuleOfType(type) as LinkerTool);
+            }
+            foreach (var type in GetTools<RegisterCxxLinkerAttribute>())
+            {
+                Cxx_Linkers.Add(graph.MakeModuleOfType(type) as LinkerTool);
             }
         }
 
-        public static CompilerTool Compiler
+        public static CompilerTool C_Compiler
         {
             get
             {
-                if (0 == Compilers.Count)
+                if (0 == C_Compilers.Count)
                 {
-                    throw new Bam.Core.Exception("No default compilers for this platform");
+                    throw new Bam.Core.Exception("No default C compilers for this platform");
                 }
-                if (Compilers.Count > 1)
+                if (C_Compilers.Count > 1)
                 {
                     if (null != DefaultToolChain)
                     {
-                        foreach (var tool in Compilers)
+                        foreach (var tool in C_Compilers)
                         {
                             var attr = tool.GetType().GetCustomAttributes(false);
                             if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
@@ -217,9 +252,52 @@ namespace V2
                             }
                         }
                     }
-                    throw new Bam.Core.Exception("There are {0} possible compilers for this platform", Compilers.Count);
+
+                    var tooManyCompilers = new System.Text.StringBuilder();
+                    tooManyCompilers.AppendFormat("There are {0} possible C compilers for this platform", C_Compilers.Count);
+                    tooManyCompilers.AppendLine();
+                    foreach (var compiler in C_Compilers)
+                    {
+                        tooManyCompilers.AppendLine(compiler.Name);
+                    }
+                    throw new Bam.Core.Exception(tooManyCompilers.ToString());
                 }
-                return Compilers[0];
+                return C_Compilers[0];
+            }
+        }
+
+        public static CompilerTool Cxx_Compiler
+        {
+            get
+            {
+                if (0 == Cxx_Compilers.Count)
+                {
+                    throw new Bam.Core.Exception("No default C++ compilers for this platform");
+                }
+                if (Cxx_Compilers.Count > 1)
+                {
+                    if (null != DefaultToolChain)
+                    {
+                        foreach (var tool in Cxx_Compilers)
+                        {
+                            var attr = tool.GetType().GetCustomAttributes(false);
+                            if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
+                            {
+                                return tool;
+                            }
+                        }
+                    }
+
+                    var tooManyCompilers = new System.Text.StringBuilder();
+                    tooManyCompilers.AppendFormat("There are {0} possible C++ compilers for this platform", Cxx_Compilers.Count);
+                    tooManyCompilers.AppendLine();
+                    foreach (var compiler in Cxx_Compilers)
+                    {
+                        tooManyCompilers.AppendLine(compiler.Name);
+                    }
+                    throw new Bam.Core.Exception(tooManyCompilers.ToString());
+                }
+                return Cxx_Compilers[0];
             }
         }
 
@@ -250,19 +328,19 @@ namespace V2
             }
         }
 
-        public static LinkerTool Linker
+        public static LinkerTool C_Linker
         {
             get
             {
-                if (0 == Linkers.Count)
+                if (0 == C_Linkers.Count)
                 {
-                    throw new Bam.Core.Exception("No default linkers for this platform");
+                    throw new Bam.Core.Exception("No default C linkers for this platform");
                 }
-                if (Linkers.Count > 1)
+                if (C_Linkers.Count > 1)
                 {
                     if (null != DefaultToolChain)
                     {
-                        foreach (var tool in Linkers)
+                        foreach (var tool in C_Linkers)
                         {
                             var attr = tool.GetType().GetCustomAttributes(false);
                             if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
@@ -271,9 +349,36 @@ namespace V2
                             }
                         }
                     }
-                    throw new Bam.Core.Exception("There are {0} possible linkers for this platform", Linkers.Count);
+                    throw new Bam.Core.Exception("There are {0} possible C linkers for this platform", C_Linkers.Count);
                 }
-                return Linkers[0];
+                return C_Linkers[0];
+            }
+        }
+
+        public static LinkerTool Cxx_Linker
+        {
+            get
+            {
+                if (0 == Cxx_Linkers.Count)
+                {
+                    throw new Bam.Core.Exception("No default C++ linkers for this platform");
+                }
+                if (Cxx_Linkers.Count > 1)
+                {
+                    if (null != DefaultToolChain)
+                    {
+                        foreach (var tool in Cxx_Linkers)
+                        {
+                            var attr = tool.GetType().GetCustomAttributes(false);
+                            if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
+                            {
+                                return tool;
+                            }
+                        }
+                    }
+                    throw new Bam.Core.Exception("There are {0} possible C++ linkers for this platform", Cxx_Linkers.Count);
+                }
+                return Cxx_Linkers[0];
             }
         }
     }
@@ -329,7 +434,7 @@ namespace V2
 
         public ObjectFile()
         {
-            this.Compiler = DefaultToolchain.Compiler;
+            this.Compiler = DefaultToolchain.C_Compiler;
         }
 
         protected override void Init()

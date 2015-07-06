@@ -31,7 +31,7 @@ namespace V2
 
         public ConsoleApplication()
         {
-            this.Linker = DefaultToolchain.Linker;
+            this.Linker = DefaultToolchain.C_Linker;
             this.PrivatePatch(setting =>
             {
                 var linker = setting as C.V2.ICommonLinkerOptions;

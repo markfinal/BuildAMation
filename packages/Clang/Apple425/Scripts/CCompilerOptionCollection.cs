@@ -648,7 +648,7 @@ namespace V2
             set;
         }
 
-        C.Cxx.EExceptionHandler C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
         {
             get;
             set;
@@ -774,7 +774,7 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterLinker("Clang", Bam.Core.EPlatform.OSX)]
+    [C.V2.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX)]
     public sealed class Linker :
         C.V2.LinkerTool
     {
@@ -853,7 +853,7 @@ namespace V2
         protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
     }
 
-    [C.V2.RegisterCompiler("Clang", Bam.Core.EPlatform.OSX)]
+    [C.V2.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX)]
     public sealed class CCompiler :
         CompilerBase
     {

@@ -106,7 +106,7 @@ namespace DefaultSettings
         }
     }
 
-    [C.V2.RegisterLinker("Mingw", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows)]
     public sealed class Linker :
         C.V2.LinkerTool
     {

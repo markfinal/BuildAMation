@@ -17,6 +17,7 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
 using C.V2.DefaultSettings;
+using C.Cxx.V2.DefaultSettings;
 namespace VisualC
 {
     public static partial class VSSolutionImplementation
@@ -185,6 +186,41 @@ namespace VisualC
                 }
             }
         }
+
+        public static void
+        Convert(
+            this C.V2.ICxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
+        {
+            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+
+            if (null != options.ExceptionHandler)
+            {
+                project.AddToolSetting(groupElement, "ExceptionHandling", options.ExceptionHandler, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        switch (options.ExceptionHandler)
+                        {
+                            case C.Cxx.EExceptionHandler.Disabled:
+                                builder.Append("false");
+                                break;
+                            case C.Cxx.EExceptionHandler.Asynchronous:
+                                builder.Append("Async");
+                                break;
+                            case C.Cxx.EExceptionHandler.Synchronous:
+                                builder.Append("Sync");
+                                break;
+                            case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
+                                builder.Append("SyncCThrow");
+                                break;
+                            default:
+                                throw new Bam.Core.Exception("Unrecognized exception handler option");
+                        }
+                    });
+            }
+        }
     }
 
     public static partial class NativeImplementation
@@ -290,6 +326,34 @@ namespace VisualC
 
         public static void
         Convert(
+            this C.V2.ICxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.ExceptionHandler)
+            {
+                switch (options.ExceptionHandler)
+                {
+                    case C.Cxx.EExceptionHandler.Disabled:
+                        // nothing
+                        break;
+                    case C.Cxx.EExceptionHandler.Asynchronous:
+                        commandLine.Add("-EHa");
+                        break;
+                    case C.Cxx.EExceptionHandler.Synchronous:
+                        commandLine.Add("-EHsc");
+                        break;
+                    case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
+                        commandLine.Add("-EHs");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+        }
+
+        public static void
+        Convert(
             this VisualCCommon.V2.ICommonCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
@@ -306,6 +370,14 @@ namespace VisualC
 
         public static void
         Convert(
+            this VisualCCommon.V2.ICxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void
+        Convert(
             this VisualC.V2.ICommonCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
@@ -315,6 +387,14 @@ namespace VisualC
         public static void
         Convert(
             this VisualC.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+        }
+
+        public static void
+        Convert(
+            this VisualC.V2.ICxxOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -499,6 +579,8 @@ namespace V2
 
     public sealed class CxxCompilerSettings :
         Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        VisualStudioProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
         VisualCCommon.V2.ICommonCompilerOptions,
@@ -506,6 +588,40 @@ namespace V2
         VisualC.V2.ICommonCompilerOptions,
         VisualC.V2.ICxxOnlyCompilerOptions
     {
+        public CxxCompilerSettings(Bam.Core.V2.Module module)
+            : this(module, true)
+        {
+        }
+
+        public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        {
+            (this as C.V2.ICommonCompilerOptions).Empty();
+            (this as C.V2.ICxxOnlyCompilerOptions).Empty();
+            if (useDefaults)
+            {
+                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+                (this as C.V2.ICxxOnlyCompilerOptions).Defaults(module);
+            }
+        }
+
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as VisualC.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+        }
+
+        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
+            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, groupElement, configuration);
+        }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
@@ -585,7 +701,7 @@ namespace V2
             set;
         }
 
-        C.Cxx.EExceptionHandler C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
         {
             get;
             set;
@@ -666,7 +782,7 @@ namespace V2
             if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
                 typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new CxxCompilerSettings();
+                var settings = new CxxCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
@@ -701,8 +817,8 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCompiler("VisualC", Bam.Core.EPlatform.Windows)]
-    public sealed class Compiler64 :
+    [C.V2.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows)]
+    public class Compiler64 :
         CompilerBase
     {
         public Compiler64()
@@ -717,6 +833,24 @@ namespace V2
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.SixtyFour;
+        }
+    }
+
+
+    [C.V2.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows)]
+    public sealed class CxxCompiler64 :
+        Compiler64
+    {
+        public CxxCompiler64()
+            : base()
+        {
+        }
+
+        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        {
+            base.OverrideDefaultSettings(settings);
+            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
     // -V2

@@ -26,7 +26,7 @@ namespace V2
         protected override void Init()
         {
             base.Init();
-            this.Tool = C.V2.DefaultToolchain.Compiler;
+            this.Tool = C.V2.DefaultToolchain.C_Compiler;
         }
     }
 }

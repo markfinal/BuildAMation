@@ -40,11 +40,6 @@ namespace V2
 
     public interface ICxxOnlyCompilerOptions
     {
-        int M48CxxOnly
-        {
-            get;
-            set;
-        }
     }
 }
     public interface ICCompilerOptions

@@ -22,7 +22,7 @@ namespace V2
 {
     public interface ICxxOnlyCompilerOptions
     {
-        C.Cxx.EExceptionHandler ExceptionHandler
+        C.Cxx.EExceptionHandler? ExceptionHandler
         {
             get;
             set;
