@@ -288,7 +288,8 @@ namespace V2
             if (m.Tool != null)
             {
                 m.Requires(m.Tool);
-                if (!(m is IChildModule))
+                var child = m as IChildModule;
+                if ((null == child) || (null == child.Parent))
                 {
                     // children inherit the settings from their parents
                     m.UsePublicPatches(m.Tool);
