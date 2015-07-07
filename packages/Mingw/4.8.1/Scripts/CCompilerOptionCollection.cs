@@ -57,6 +57,12 @@ namespace Mingw
                 case C.ELanguageStandard.C99:
                     commandLine.Add("-std=c99");
                     break;
+                case C.ELanguageStandard.Cxx98:
+                    commandLine.Add("-std=c++98");
+                    break;
+                case C.ELanguageStandard.Cxx11:
+                    commandLine.Add("-std=c++11");
+                    break;
                 default:
                     // TODO: Might want to split this across C specific and Cxx specific options
                     throw new Bam.Core.Exception("Invalid language standard");
