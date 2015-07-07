@@ -18,6 +18,38 @@
 #endregion // License
 namespace Test9
 {
+    sealed class CFileV2 :
+        C.V2.ObjectFile
+    {
+        public CFileV2()
+        {
+            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main_c.c", this);
+        }
+    }
+
+    sealed class CFileCollectionV2 :
+        C.V2.CObjectFileCollection
+    {
+        public CFileCollectionV2()
+        {
+            this.AddFile("$(pkgroot)/source/main_c.c");
+        }
+    }
+
+    sealed class CppFileV2 :
+        C.Cxx.V2.ObjectFile
+    {
+        public CppFileV2()
+        {
+            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main_cpp.c", this);
+            this.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    compiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+                });
+        }
+    }
+
     // Define module classes here
     class CFile :
         C.ObjectFile
