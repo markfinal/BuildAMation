@@ -154,6 +154,10 @@ namespace V2
                 }
             }
             this.BuildEnvironment = null;
+            if (0 == this.TopLevelModules.Count)
+            {
+                throw new Exception("No modules found in the namespace '{0}'", ns);
+            }
             // remove all top level modules that have a reference count > 1
             foreach (var tlm in this.TopLevelModules.Reverse<Module>())
             {
