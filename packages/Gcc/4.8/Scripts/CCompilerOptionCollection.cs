@@ -17,6 +17,7 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
 using C.V2.DefaultSettings;
+using C.Cxx.V2.DefaultSettings;
 using GccCommon.V2.DefaultSettings;
 using Gcc.V2.DefaultSettings;
 using GccCommon.V2; // TODO: for the native implementation
@@ -65,9 +66,19 @@ namespace Gcc
                     case C.ELanguageStandard.C89:
                         commandLine.Add("-std=c89");
                         break;
+
                     case C.ELanguageStandard.C99:
                         commandLine.Add("-std=c99");
                         break;
+
+                    case C.ELanguageStandard.Cxx98:
+                        commandLine.Add("-std=c++98");
+                        break;
+
+                    case C.ELanguageStandard.Cxx11:
+                        commandLine.Add("-std=c++11");
+                        break;
+
                     default:
                         // TODO: Might want to split this across C specific and Cxx specific options
                         throw new Bam.Core.Exception("Invalid language standard, '{0}'", options.LanguageStandard.ToString());
@@ -155,6 +166,31 @@ namespace Gcc
                         commandLine.Add(System.String.Format("-E {0}", objectFile.InputPath.ToString()));
                         commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
                         break;
+                }
+            }
+        }
+
+        public static void
+        Convert(
+            this C.V2.ICxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.ExceptionHandler)
+            {
+                switch (options.ExceptionHandler)
+                {
+                case C.Cxx.EExceptionHandler.Disabled:
+                    commandLine.Add("-fno-exceptions");
+                    break;
+
+                case C.Cxx.EExceptionHandler.Asynchronous:
+                case C.Cxx.EExceptionHandler.Synchronous:
+                    commandLine.Add("-fexceptions");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized exception handler option");
                 }
             }
         }
@@ -393,9 +429,47 @@ namespace V2
 
     public sealed class CxxCompilerSettings :
         Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICxxOnlyCompilerOptions
+        C.V2.ICxxOnlyCompilerOptions,
+        GccCommon.V2.ICommonCompilerOptions
     {
+        public CxxCompilerSettings(Bam.Core.V2.Module module)
+            : this(module, true)
+        {
+        }
+
+        public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        {
+            var stdCommonCompilerOptions = this as C.V2.ICommonCompilerOptions;
+            stdCommonCompilerOptions.Empty();
+            if (useDefaults)
+            {
+                stdCommonCompilerOptions.Defaults(module);
+            }
+
+            var stdCommonCxxCompilerSettings = this as C.V2.ICxxOnlyCompilerOptions;
+            stdCommonCxxCompilerSettings.Empty();
+            if (useDefaults)
+            {
+                stdCommonCxxCompilerSettings.Defaults(module);
+            }
+
+            var commonCompilerOptions = this as GccCommon.V2.ICommonCompilerOptions;
+            commonCompilerOptions.Empty();
+            if (useDefaults)
+            {
+                commonCompilerOptions.Defaults(module);
+            }
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as GccCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+        }
+
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {
             get;
@@ -475,6 +549,12 @@ namespace V2
         }
 
         C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        bool? GccCommon.V2.ICommonCompilerOptions.PositionIndependentCode
         {
             get;
             set;
@@ -669,7 +749,7 @@ namespace V2
             if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
                 typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new CxxCompilerSettings();
+                var settings = new CxxCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
