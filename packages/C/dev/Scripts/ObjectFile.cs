@@ -262,7 +262,13 @@ namespace V2
                     }
                     throw new Bam.Core.Exception(tooManyCompilers.ToString());
                 }
-                return C_Compilers[0];
+                var compilerTool = C_Compilers[0];
+                var compilerToolset = (compilerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+                if (compilerToolset != DefaultToolChain)
+                {
+                    throw new Bam.Core.Exception("C compiler is from toolchain {0}, not the toolchain requested {1}", compilerToolset, DefaultToolChain);
+                }
+                return compilerTool;
             }
         }
 
@@ -297,7 +303,13 @@ namespace V2
                     }
                     throw new Bam.Core.Exception(tooManyCompilers.ToString());
                 }
-                return Cxx_Compilers[0];
+                var compilerTool = Cxx_Compilers[0];
+                var compilerToolset = (compilerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+                if (compilerToolset != DefaultToolChain)
+                {
+                    throw new Bam.Core.Exception("C++ compiler is from toolchain {0}, not the toolchain requested {1}", compilerToolset, DefaultToolChain);
+                }
+                return compilerTool;
             }
         }
 
@@ -324,7 +336,13 @@ namespace V2
                     }
                     throw new Bam.Core.Exception("There are {0} possible librarians for this platform", Archivers.Count);
                 }
-                return Archivers[0];
+                var archiverTool = Archivers[0];
+                var archiverToolset = (archiverTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+                if (archiverToolset != DefaultToolChain)
+                {
+                    throw new Bam.Core.Exception("Librarian is from toolchain {0}, not the toolchain requested {1}", archiverToolset, DefaultToolChain);
+                }
+                return archiverTool;
             }
         }
 
@@ -351,7 +369,13 @@ namespace V2
                     }
                     throw new Bam.Core.Exception("There are {0} possible C linkers for this platform", C_Linkers.Count);
                 }
-                return C_Linkers[0];
+                var linkerTool = C_Linkers[0];
+                var linkerToolset = (linkerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+                if (linkerToolset != DefaultToolChain)
+                {
+                    throw new Bam.Core.Exception("C linker is from toolchain {0}, not the toolchain requested {1}", linkerToolset, DefaultToolChain);
+                }
+                return linkerTool;
             }
         }
 
@@ -378,7 +402,13 @@ namespace V2
                     }
                     throw new Bam.Core.Exception("There are {0} possible C++ linkers for this platform", Cxx_Linkers.Count);
                 }
-                return Cxx_Linkers[0];
+                var linkerTool = Cxx_Linkers[0];
+                var linkerToolset = (linkerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+                if (linkerToolset != DefaultToolChain)
+                {
+                    throw new Bam.Core.Exception("C++ linker is from toolchain {0}, not the toolchain requested {1}", linkerToolset, DefaultToolChain);
+                }
+                return linkerTool;
             }
         }
     }
