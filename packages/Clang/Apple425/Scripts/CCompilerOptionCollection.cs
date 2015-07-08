@@ -860,17 +860,17 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX)]
-    public sealed class Linker :
+    public abstract class LinkerBase :
         C.V2.LinkerTool
     {
-        public Linker()
+        public LinkerBase(
+            string executablePath)
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("exeext", string.Empty);
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".dylib");
-            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/clang", this));
+            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/" + executablePath, this));
         }
 
         public override bool UseLPrefixLibraryPaths
@@ -894,6 +894,24 @@ namespace V2
                 return this.Macros["LinkerPath"];
             }
         }
+    }
+
+    [C.V2.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX)]
+    public sealed class Linker :
+        LinkerBase
+    {
+        public Linker() :
+            base("clang")
+        {}
+    }
+
+    [C.V2.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX)]
+    public sealed class LinkerCxx :
+        LinkerBase
+    {
+        public LinkerCxx() :
+            base("clang++")
+        {}
     }
 
     public abstract class CompilerBase :
