@@ -59,7 +59,7 @@ namespace V2
             return source;
         }
 
-        public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath)
+        public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath = null)
         {
             var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>();
             source.PrivatePatch(settings =>
