@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test9
 {
     sealed class CFileV2 :
@@ -47,6 +48,41 @@ namespace Test9
                     var compiler = settings as C.V2.ICxxOnlyCompilerOptions;
                     compiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
+        }
+    }
+
+    // Note: Uses the C++ application module, in order to use the C++ linker, in order to link in C++ runtimes
+    sealed class MixedLanguageApplicationV2 :
+        C.Cxx.V2.ConsoleApplication
+    {
+        public MixedLanguageApplicationV2()
+        {
+            var cSource = this.CreateCSourceContainer();
+            cSource.AddFile("$(pkgroot)/source/library_c.c");
+            cSource.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                });
+
+            var cxxSource = this.CreateCxxSourceContainer();
+            cxxSource.AddFile("$(pkgroot)/source/library_cpp.c");
+            cxxSource.AddFile("$(pkgroot)/source/appmain_cpp.c");
+            cxxSource.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+                });
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
         }
     }
 
