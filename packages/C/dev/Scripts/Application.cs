@@ -129,6 +129,21 @@ namespace V2
         }
     }
 }
+namespace Cxx
+{
+namespace V2
+{
+    public class ConsoleApplication :
+        C.V2.ConsoleApplication
+    {
+        public ConsoleApplication()
+            : base()
+        {
+            this.Linker = C.V2.DefaultToolchain.Cxx_Linker;
+        }
+    }
+}
+}
     /// <summary>
     /// C/C++ console application
     /// </summary>
