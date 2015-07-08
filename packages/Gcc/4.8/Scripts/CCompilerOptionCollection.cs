@@ -689,11 +689,11 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCLinker("GCC", Bam.Core.EPlatform.Unix)]
-    public sealed class Linker :
+    public abstract class LinkerBase :
         C.V2.LinkerTool
     {
-        public Linker()
+        public LinkerBase(
+            string executable)
         {
             this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)", this)));
 
@@ -701,7 +701,7 @@ namespace V2
             this.Macros.Add("exeext", string.Empty);
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
-            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/gcc-4.8", this));
+            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/" + executable, this));
         }
 
         public override bool UseLPrefixLibraryPaths
@@ -725,6 +725,24 @@ namespace V2
                 return this.Macros["LinkerPath"];
             }
         }
+    }
+
+    [C.V2.RegisterCLinker("GCC", Bam.Core.EPlatform.Unix)]
+    public sealed class Linker :
+        LinkerBase
+    {
+        public Linker()
+            : base("gcc-4.8")
+        {}
+    }
+
+    [C.V2.RegisterCxxLinker("GCC", Bam.Core.EPlatform.Unix)]
+    public sealed class LinkerCxx :
+        LinkerBase
+    {
+        public LinkerCxx()
+            : base("g++-4.8")
+        {}
     }
 
     public abstract class CompilerBase :
