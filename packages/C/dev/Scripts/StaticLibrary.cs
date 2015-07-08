@@ -55,7 +55,7 @@ namespace V2
             return source;
         }
 
-        public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath)
+        public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath = null)
         {
             var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>();
             this.source.Add(source);
