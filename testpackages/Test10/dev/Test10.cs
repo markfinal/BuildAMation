@@ -16,8 +16,98 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test10
 {
+    sealed class MyStaticLibraryV2 :
+        C.V2.StaticLibrary
+    {
+        public MyStaticLibraryV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/stlib.c");
+        }
+    }
+
+    sealed class MyDynamicLibraryV2 :
+        C.V2.DynamicLibrary
+    {
+        public MyDynamicLibraryV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/dylib.c");
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    class MyStandaloneAppV2 :
+        C.V2.ConsoleApplication
+    {
+        public MyStandaloneAppV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/standaloneapp.c");
+
+            this.LinkAgainst<MyStaticLibraryV2>();
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    class DllDependentAppV2 :
+        C.V2.ConsoleApplication
+    {
+        public DllDependentAppV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/dlldependentapp.c");
+
+            this.PrivatePatch(settings =>
+                {
+                    var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                    if (gccLinker != null)
+                    {
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.Add("$ORIGIN");
+                    }
+                });
+
+            this.LinkAgainst<MyDynamicLibraryV2>();
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        public RuntimePackage()
+        {
+            this.Include<MyStandaloneAppV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<DllDependentAppV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<MyDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".");
+        }
+    }
+
     class MyStaticLibrary :
         C.StaticLibrary
     {
