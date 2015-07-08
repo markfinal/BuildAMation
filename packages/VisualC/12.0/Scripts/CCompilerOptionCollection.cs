@@ -836,7 +836,6 @@ namespace V2
         }
     }
 
-
     [C.V2.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows)]
     public sealed class CxxCompiler64 :
         Compiler64

@@ -106,15 +106,15 @@ namespace DefaultSettings
         }
     }
 
-    [C.V2.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows)]
-    public sealed class Linker :
+    public abstract class LinkerBase :
         C.V2.LinkerTool
     {
-        public Linker()
+        public LinkerBase(
+            string executable)
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin", this));
-            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
+            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\" + executable, this));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
@@ -146,6 +146,24 @@ namespace DefaultSettings
                 return true;
             }
         }
+    }
+
+    [C.V2.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows)]
+    public sealed class Linker :
+        LinkerBase
+    {
+        public Linker()
+            : base("mingw32-gcc-4.8.1.exe")
+        {}
+    }
+
+    [C.V2.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows)]
+    public sealed class LinkerCxx :
+        LinkerBase
+    {
+        public LinkerCxx()
+            : base("mingw32-g++.exe")
+        { }
     }
 }
     public class LinkerOptionCollection :
