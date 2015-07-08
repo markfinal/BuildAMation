@@ -15,10 +15,10 @@
     </Package>
     <Package Name="Gcc">
       <Version Id="4.1" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
-      <Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
+      <Version Id="4.4" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
       <Version Id="4.5" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
       <Version Id="4.6" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
-      <Version Id="4.8" />
+      <Version Id="4.8" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" Default="true" />
     </Package>
     <Package Name="LLVMGcc">
       <Version Id="4.2" Default="true" />
@@ -60,8 +60,9 @@
     <BamAssembly Name="Bam.Core" />
   </RequiredBamAssemblies>
   <RequiredDotNetAssemblies>
-    <DotNetAssembly Name="System" RequiredTargetFramework="2.0.50727" />
-    <DotNetAssembly Name="System.Xml" RequiredTargetFramework="2.0.50727" />
+    <DotNetAssembly Name="System" RequiredTargetFramework="4.0.30319" />
+    <DotNetAssembly Name="System.Xml" RequiredTargetFramework="4.0.30319" />
+    <DotNetAssembly Name="System.Core" RequiredTargetFramework="4.0.30319" />
   </RequiredDotNetAssemblies>
   <SupportedPlatforms>
     <Platform Name="Windows" />

@@ -16,8 +16,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test11
 {
+    sealed class CrossPlatformApplicationV2 :
+        C.V2.ConsoleApplication
+    {
+        public CrossPlatformApplicationV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.c");
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                source.AddFile("$(pkgroot)/source/win/win.c");
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                source.AddFile("$(pkgroot)/source/unix/unix.c");
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                source.AddFile("$(pkgroot)/source/osx/osx.c");
+            }
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
     // Define module classes here
     class CrossPlatformApplication :
         C.Application
