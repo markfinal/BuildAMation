@@ -86,6 +86,89 @@ namespace Test9
         }
     }
 
+    sealed class CStaticLibraryFromCollectionV2 :
+        C.V2.StaticLibrary
+    {
+        public
+        CStaticLibraryFromCollectionV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/library_c.c");
+            source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                });
+        }
+    }
+
+    sealed class CppStaticLibaryFromCollectionV2 :
+        C.V2.StaticLibrary
+    {
+        public CppStaticLibaryFromCollectionV2()
+        {
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/library_cpp.c");
+            source.PrivatePatch(settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+
+                var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+            });
+        }
+    }
+
+    sealed class CDynamicLibraryFromCollectionV2 :
+        C.V2.DynamicLibrary
+    {
+        public CDynamicLibraryFromCollectionV2()
+        {
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/library_c.c");
+            source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                });
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    sealed class CppDynamicLibaryFromCollectionV2 :
+        C.V2.DynamicLibrary
+    {
+        public CppDynamicLibaryFromCollectionV2()
+        {
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/library_cpp.c");
+            source.PrivatePatch(settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+
+                var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+            });
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
     // Define module classes here
     class CFile :
         C.ObjectFile
