@@ -78,22 +78,16 @@ namespace V2
                 }
             }
 
-            sender.MetaData = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
-            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
-            {
-                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
-            }
-
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
             if (!System.IO.Directory.Exists(executableDir))
             {
                 System.IO.Directory.CreateDirectory(executableDir);
             }
 
+            sender.MetaData = new Bam.Core.StringArray();
             var commandLine = sender.MetaData as Bam.Core.StringArray;
 
+            // first object files
             foreach (var input in objectFiles)
             {
                 if (input is Bam.Core.V2.IModuleGroup)
@@ -109,9 +103,18 @@ namespace V2
                 }
             }
 
+            // then dependent module libraries
             foreach (var lib in libraryNames)
             {
                 commandLine.Add(lib);
+            }
+
+            // then all options
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
             }
 
             /*var exitStatus = */CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
