@@ -16,8 +16,40 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using QtCommon.V2.MocExtension;
 namespace Test13
 {
+    sealed class QtApplicationV2 :
+        C.V2.ConsoleApplication
+    {
+        public QtApplicationV2()
+        {
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.cpp");
+            source.AddFile("$(pkgroot)/source/myobject.cpp");
+            source.AddFile("$(pkgroot)/source/myobject2.cpp");
+
+            //var myObjectMoc = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject.h", this));
+            //var myObject2Moc = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject2.h", this));
+
+            this.PrivatePatch(settings =>
+            {
+                var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                if (gccLinker != null)
+                {
+                    gccLinker.CanUseOrigin = true;
+                    gccLinker.RPath.Add("$ORIGIN");
+                }
+            });
+
+            var qtCore = this.LinkAgainst<Qt.V2.Core>();
+            source.UsePublicPatches(qtCore);
+
+            var qtGui = this.LinkAgainst<Qt.V2.Gui>();
+            source.UsePublicPatches(qtGui);
+        }
+    }
+
     class QtApplication :
         C.Application
     {
