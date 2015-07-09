@@ -28,6 +28,7 @@ namespace DefaultSettings
         {
             settings.OutputType = ELinkerOutput.Executable;
             settings.LibraryPaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.Libraries = new Bam.Core.StringArray();
         }
     }
 }
@@ -41,6 +42,12 @@ namespace DefaultSettings
         }
 
         Bam.Core.Array<Bam.Core.V2.TokenizedString> LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray Libraries
         {
             get;
             set;

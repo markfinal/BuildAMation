@@ -61,6 +61,10 @@ namespace DefaultSettings
                 var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
                 commandLine.Add(System.String.Format(format, path.ToString()));
             }
+            foreach (var path in options.Libraries)
+            {
+                commandLine.Add(path);
+            }
         }
 
         public static void
@@ -74,14 +78,23 @@ namespace DefaultSettings
 
     public sealed class LinkerSettings :
         Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonLinkerOptions,
-        ILinkerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        ILinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
             (this as ILinkerOptions).Defaults(module);
+        }
+
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as ILinkerOptions).Convert(module, commandLine);
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -96,13 +109,10 @@ namespace DefaultSettings
             set;
         }
 
-        void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
-            Bam.Core.StringArray commandLine)
+        Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
         {
-            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
-            (this as ILinkerOptions).Convert(module, commandLine);
+            get;
+            set;
         }
     }
 

@@ -17,6 +17,7 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
 using C.V2.DefaultSettings;
+using VisualC.V2.DefaultSettings;
 namespace VisualC
 {
     public static partial class NativeImplementation
@@ -44,6 +45,10 @@ namespace VisualC
                 var format = path.ContainsSpace ? "-LIBPATH:\"{0}\"" : "-LIBPATH:{0}";
                 commandLine.Add(System.String.Format(format, path.ToString()));
             }
+            foreach (var path in options.Libraries)
+            {
+                commandLine.Add(path);
+            }
         }
 
         public static void
@@ -57,19 +62,39 @@ namespace VisualC
 
 namespace V2
 {
+    namespace DefaultSettings
+    {
+        public static partial class DefaultSettingsExtensions
+        {
+            public static void Defaults(this VisualC.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
+            {
+            }
+        }
+    }
+
     public interface ICommonLinkerOptions
     {
     }
 
     public class LinkerSettings :
         Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonLinkerOptions,
-        ICommonLinkerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        ICommonLinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
+            (this as ICommonLinkerOptions).Defaults(module);
+        }
+
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -84,13 +109,10 @@ namespace V2
             set;
         }
 
-        void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
-            Bam.Core.StringArray commandLine)
+        Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
         {
-            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
-            (this as ICommonLinkerOptions).Convert(module, commandLine);
+            get;
+            set;
         }
     }
 

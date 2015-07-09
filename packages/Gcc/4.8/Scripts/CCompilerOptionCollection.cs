@@ -263,6 +263,10 @@ namespace Gcc
                 var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
                 commandLine.Add(System.String.Format(format, path.ToString()));
             }
+            foreach (var path in options.Libraries)
+            {
+                commandLine.Add(path);
+            }
         }
     }
 
@@ -630,6 +634,12 @@ namespace V2
         }
 
         Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
         {
             get;
             set;
