@@ -16,8 +16,46 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test12
 {
+    sealed class MyOpenGLApplicationV2 :
+        C.V2.ConsoleApplication // TODO: windowed application
+    {
+        public MyOpenGLApplicationV2()
+        {
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.cpp");
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                source.AddFile("$(pkgroot)/source/win/win.cpp");
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                source.AddFile("$(pkgroot)/source/unix/unix.cpp");
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                source.AddFile("$(pkgroot)/source/osx/osx.cpp");
+            }
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.Linker)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                source.UsePublicPatches(windowsSDK); // compiling
+                this.UsePublicPatches(windowsSDK); // linking
+
+                this.PrivatePatch(settings =>
+                    {
+                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        linker.Libraries.Add("USER32.lib");
+                    });
+            }
+        }
+    }
+
     // Define module classes here
     class MyOpenGLApplication :
         C.WindowsApplication
