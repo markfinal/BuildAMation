@@ -53,6 +53,14 @@ namespace Test12
                         linker.Libraries.Add("USER32.lib");
                     });
             }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                this.PrivatePatch(settings =>
+                    {
+                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        linker.Libraries.Add("-lX11");
+                    });
+            }
         }
     }
 
