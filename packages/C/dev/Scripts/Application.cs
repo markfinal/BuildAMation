@@ -45,14 +45,16 @@ namespace V2
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(modulename)$(exeext)", this));
         }
 
+        private Bam.Core.V2.Module.PatchDelegate ConsolePreprocessor = settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.PreprocessorDefines.Add("_CONSOLE");
+            };
+
         public virtual CObjectFileCollection CreateCSourceContainer()
         {
             var source = Bam.Core.V2.Module.Create<CObjectFileCollection>();
-            source.PrivatePatch(settings =>
-                {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.PreprocessorDefines.Add("_CONSOLE");
-                });
+            source.PrivatePatch(ConsolePreprocessor);
 
             this.sourceModules.Add(source);
             this.DependsOn(source);
@@ -62,11 +64,7 @@ namespace V2
         public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath = null)
         {
             var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>();
-            source.PrivatePatch(settings =>
-            {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
-                compiler.PreprocessorDefines.Add("_CONSOLE");
-            });
+            source.PrivatePatch(ConsolePreprocessor);
 
             this.sourceModules.Add(source);
             this.DependsOn(source);
