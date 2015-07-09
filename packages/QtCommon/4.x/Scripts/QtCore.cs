@@ -18,6 +18,16 @@
 #endregion // License
 namespace QtCommon
 {
+namespace V2
+{
+    public abstract class Core :
+        CommonModule
+    {
+        public Core() :
+            base("QtCore")
+        {}
+    }
+}
     public abstract class Core :
         Base
     {

@@ -18,6 +18,64 @@
 #endregion // License
 namespace QtCommon
 {
+namespace V2
+{
+    public abstract class CommonModule :
+        C.V2.DynamicLibrary
+    {
+        protected CommonModule(
+            string moduleName) :
+            base()
+        {
+            this.Macros.Add("QtModuleName", moduleName);
+            this.Macros.Add("QtInstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5", null));
+        }
+
+        protected override void Init()
+        {
+            base.Init();
+            this.Macros.Add("QtIncludePath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/include", this));
+            this.Macros.Add("QtLibraryPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/lib", this));
+            this.Macros.Add("QtConfig", Bam.Core.V2.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
+
+            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(dynamicprefix)$(QtModuleName)$(QtConfig)4$(dynamicext)", this);
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                this.GeneratedPaths[ImportLibraryKey] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)$(QtModuleName)$(QtConfig)4$(libext)", this);
+            }
+
+            this.PublicPatch(settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(this.Macros["QtIncludePath"]);
+                }
+
+                var linker = settings as C.V2.ICommonLinkerOptions;
+                if (null != linker)
+                {
+                    linker.LibraryPaths.Add(this.Macros["QtLibraryPath"]);
+                }
+            });
+        }
+
+        public override void Evaluate()
+        {
+            // prebuilt - no evaluation
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // prebuilt - no execution
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // prebuilt - no execution policy
+        }
+    }
+}
     public abstract class Base :
         ThirdPartyModule
     {

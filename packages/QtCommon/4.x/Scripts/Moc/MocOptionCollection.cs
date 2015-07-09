@@ -18,6 +18,22 @@
 #endregion // License
 namespace QtCommon
 {
+namespace V2
+{
+    namespace MocExtension
+    {
+        public static class MocExtension
+        {
+            public static Bam.Core.V2.Module
+            MocHeader(
+                this C.Cxx.V2.ObjectFileCollection module,
+                Bam.Core.V2.TokenizedString mocHeaderPath)
+            {
+                return null;
+            }
+        }
+    }
+}
     public sealed partial class MocOptionCollection :
         Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport,

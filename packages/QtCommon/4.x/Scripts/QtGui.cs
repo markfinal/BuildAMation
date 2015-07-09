@@ -18,6 +18,16 @@
 #endregion // License
 namespace QtCommon
 {
+namespace V2
+{
+    public abstract class Gui :
+        CommonModule
+    {
+        public Gui() :
+            base("QtGui")
+        { }
+    }
+}
     public abstract class Gui :
         Base
     {
