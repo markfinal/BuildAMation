@@ -24,13 +24,86 @@ namespace V2
     {
         public static class MocExtension
         {
-            public static Bam.Core.V2.Module
+            public static System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>
             MocHeader(
                 this C.Cxx.V2.ObjectFileCollection module,
                 Bam.Core.V2.TokenizedString mocHeaderPath)
             {
-                return null;
+                // moc file
+                var mocFile = Bam.Core.V2.Module.Create<MocModule>(module);
+                mocFile.MocHeader = mocHeaderPath;
+
+                // compile source
+                var objFile = module.AddFile(MocModule.Key, mocFile);
+
+                return new System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>(mocFile, objFile);
             }
+        }
+    }
+
+    public sealed class MocSettings :
+        Bam.Core.V2.Settings
+    {
+    }
+
+    public sealed class MocTool :
+        Bam.Core.V2.Tool
+    {
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            return new MocSettings();
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                // TODO: centralize install path
+                return Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5\bin\moc", null);
+            }
+        }
+    }
+
+    public class MocModule :
+        C.V2.SourceFile
+    {
+        private Bam.Core.V2.Tool Compiler;
+        private Bam.Core.V2.TokenizedString MocHeaderValue;
+
+        public MocModule()
+        {
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/@basename($(mocheaderpath))_moc.cpp", this));
+            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<MocTool>();
+            this.Requires(this.Compiler);
+        }
+
+        public Bam.Core.V2.TokenizedString MocHeader
+        {
+            get
+            {
+                return this.MocHeaderValue;
+            }
+            set
+            {
+                this.MocHeaderValue = value;
+                this.Macros.Add("mocheaderpath", value);
+            }
+        }
+
+        public override void
+        Evaluate()
+        {
+            this.IsUpToDate = false;
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
+        {
+            var args = new Bam.Core.StringArray();
+            args.Add(System.String.Format("-o{0}", this.GeneratedPaths[Key].ToString()));
+            args.Add(this.MocHeader.ToString());
+            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
         }
     }
 }

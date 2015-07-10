@@ -38,9 +38,10 @@ namespace V2
         }
 
         protected override void
-        Init()
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            base.Init();
+            base.Init(parent);
             this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(modulename)$(dynamicext)", this);
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {

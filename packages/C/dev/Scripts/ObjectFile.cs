@@ -77,14 +77,18 @@ namespace V2
         }
     }
 
-    [System.AttributeUsage(System.AttributeTargets.Class)]
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
     public abstract class ToolRegistration :
         System.Attribute
     {
-        protected ToolRegistration(string toolsetName, Bam.Core.EPlatform platform)
+        protected ToolRegistration(
+            string toolsetName,
+            Bam.Core.EPlatform platform,
+            EBit bitDepth = EBit.SixtyFour) // TODO: remove default when all tools go this way
         {
             this.ToolsetName = toolsetName;
             this.Platform = platform;
+            this.BitDepth = bitDepth;
         }
 
         public string ToolsetName
@@ -94,6 +98,12 @@ namespace V2
         }
 
         public Bam.Core.EPlatform Platform
+        {
+            get;
+            private set;
+        }
+
+        public EBit BitDepth
         {
             get;
             private set;
@@ -117,9 +127,10 @@ namespace V2
     {
         public RegisterCxxCompilerAttribute(
             string toolsetName,
-            Bam.Core.EPlatform platform)
+            Bam.Core.EPlatform platform,
+            EBit bitDepth)
             :
-            base(toolsetName, platform)
+            base(toolsetName, platform, bitDepth)
         {
         }
     }
@@ -141,9 +152,10 @@ namespace V2
     {
         public RegisterCLinkerAttribute(
             string toolsetName,
-            Bam.Core.EPlatform platform)
+            Bam.Core.EPlatform platform,
+            EBit bitDepth)
             :
-            base(toolsetName, platform)
+            base(toolsetName, platform, bitDepth)
         {
         }
     }
@@ -153,9 +165,10 @@ namespace V2
     {
         public RegisterCxxLinkerAttribute(
             string toolsetName,
-            Bam.Core.EPlatform platform)
+            Bam.Core.EPlatform platform,
+            EBit bitDepth)
             :
-            base(toolsetName, platform)
+            base(toolsetName, platform, bitDepth)
         {
         }
     }
@@ -183,22 +196,22 @@ namespace V2
         }
 
         private static System.Collections.Generic.List<CompilerTool> C_Compilers = new System.Collections.Generic.List<CompilerTool>();
-        private static System.Collections.Generic.List<CompilerTool> Cxx_Compilers = new System.Collections.Generic.List<CompilerTool>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>> Cxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
         private static System.Collections.Generic.List<LibrarianTool> Archivers = new System.Collections.Generic.List<LibrarianTool>();
-        private static System.Collections.Generic.List<LinkerTool> C_Linkers = new System.Collections.Generic.List<LinkerTool>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>> C_Linkers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>();
         private static System.Collections.Generic.List<LinkerTool> Cxx_Linkers = new System.Collections.Generic.List<LinkerTool>();
         private static string DefaultToolChain = null;
 
-        private static System.Collections.Generic.IEnumerable<System.Type> GetTools<T>() where T : ToolRegistration
+        private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>> GetTools<T>() where T : ToolRegistration
         {
             foreach (var type in Bam.Core.State.ScriptAssembly.GetTypes())
             {
-                var tool = type.GetCustomAttributes(typeof(T), false) as T[];
-                if (tool.Length > 0)
+                var tools = type.GetCustomAttributes(typeof(T), false) as T[];
+                if (tools.Length > 0)
                 {
-                    if (Bam.Core.OSUtilities.CurrentOS == tool[0].Platform)
+                    if (Bam.Core.OSUtilities.CurrentOS == tools[0].Platform)
                     {
-                        yield return type;
+                        yield return new System.Tuple<System.Type, T>(type, tools[0]);
                     }
                 }
             }
@@ -209,25 +222,43 @@ namespace V2
             DefaultToolChain = Bam.Core.V2.CommandLineProcessor.Evaluate(new DefaultToolchainCommand());
 
             var graph = Bam.Core.V2.Graph.Instance;
-            foreach (var type in GetTools<RegisterCCompilerAttribute>())
+            foreach (var toolData in GetTools<RegisterCCompilerAttribute>())
             {
-                C_Compilers.Add(graph.MakeModuleOfType(type) as CompilerTool);
+                C_Compilers.Add(graph.MakeModuleOfType<CompilerTool>(toolData.Item1));
             }
-            foreach (var type in GetTools<RegisterCxxCompilerAttribute>())
+            foreach (var toolData in GetTools<RegisterCxxCompilerAttribute>())
             {
-                Cxx_Compilers.Add(graph.MakeModuleOfType(type) as CompilerTool);
+                var tool = graph.MakeModuleOfType<CompilerTool>(toolData.Item1);
+                var bits = toolData.Item2.BitDepth;
+                if (!C_Linkers.ContainsKey(bits))
+                {
+                    Cxx_Compilers[bits] = new Bam.Core.Array<CompilerTool>(tool);
+                }
+                else
+                {
+                    Cxx_Compilers[bits].AddUnique(tool);
+                }
             }
-            foreach (var type in GetTools<RegisterArchiverAttribute>())
+            foreach (var toolData in GetTools<RegisterArchiverAttribute>())
             {
-                Archivers.Add(graph.MakeModuleOfType(type) as LibrarianTool);
+                Archivers.Add(graph.MakeModuleOfType<LibrarianTool>(toolData.Item1));
             }
-            foreach (var type in GetTools<RegisterCLinkerAttribute>())
+            foreach (var toolData in GetTools<RegisterCLinkerAttribute>())
             {
-                C_Linkers.Add(graph.MakeModuleOfType(type) as LinkerTool);
+                var tool = graph.MakeModuleOfType<LinkerTool>(toolData.Item1);
+                var bits = toolData.Item2.BitDepth;
+                if (!C_Linkers.ContainsKey(bits))
+                {
+                    C_Linkers[bits] = new Bam.Core.Array<LinkerTool>(tool);
+                }
+                else
+                {
+                    C_Linkers[bits].AddUnique(tool);
+                }
             }
-            foreach (var type in GetTools<RegisterCxxLinkerAttribute>())
+            foreach (var toolData in GetTools<RegisterCxxLinkerAttribute>())
             {
-                Cxx_Linkers.Add(graph.MakeModuleOfType(type) as LinkerTool);
+                Cxx_Linkers.Add(graph.MakeModuleOfType<LinkerTool>(toolData.Item1));
             }
         }
 
@@ -272,45 +303,43 @@ namespace V2
             }
         }
 
-        public static CompilerTool Cxx_Compiler
+        public static CompilerTool Cxx_Compiler(EBit bitDepth)
         {
-            get
+            if (!Cxx_Compilers.ContainsKey(bitDepth) || 0 == Cxx_Compilers[bitDepth].Count)
             {
-                if (0 == Cxx_Compilers.Count)
+                throw new Bam.Core.Exception("No default C++ compilers for this platform in {0} bits", (int)bitDepth);
+            }
+            var candidates = Cxx_Compilers[bitDepth];
+            if (candidates.Count > 1)
+            {
+                if (null != DefaultToolChain)
                 {
-                    throw new Bam.Core.Exception("No default C++ compilers for this platform");
-                }
-                if (Cxx_Compilers.Count > 1)
-                {
-                    if (null != DefaultToolChain)
+                    foreach (var tool in candidates)
                     {
-                        foreach (var tool in Cxx_Compilers)
+                        var attr = tool.GetType().GetCustomAttributes(false);
+                        if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
                         {
-                            var attr = tool.GetType().GetCustomAttributes(false);
-                            if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
-                            {
-                                return tool;
-                            }
+                            return tool;
                         }
                     }
+                }
 
-                    var tooManyCompilers = new System.Text.StringBuilder();
-                    tooManyCompilers.AppendFormat("There are {0} possible C++ compilers for this platform", Cxx_Compilers.Count);
-                    tooManyCompilers.AppendLine();
-                    foreach (var compiler in Cxx_Compilers)
-                    {
-                        tooManyCompilers.AppendLine(compiler.Name);
-                    }
-                    throw new Bam.Core.Exception(tooManyCompilers.ToString());
-                }
-                var compilerTool = Cxx_Compilers[0];
-                var compilerToolset = (compilerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
-                if (compilerToolset != DefaultToolChain)
+                var tooManyCompilers = new System.Text.StringBuilder();
+                tooManyCompilers.AppendFormat("There are {0} possible C++ compilers for this platform in {0} bits", candidates.Count, bitDepth);
+                tooManyCompilers.AppendLine();
+                foreach (var compiler in candidates)
                 {
-                    throw new Bam.Core.Exception("C++ compiler is from toolchain {0}, not the toolchain requested {1}", compilerToolset, DefaultToolChain);
+                    tooManyCompilers.AppendLine(compiler.Name);
                 }
-                return compilerTool;
+                throw new Bam.Core.Exception(tooManyCompilers.ToString());
             }
+            var compilerTool = candidates[0];
+            var compilerToolset = (compilerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+            if (compilerToolset != DefaultToolChain)
+            {
+                throw new Bam.Core.Exception("C++ compiler is from toolchain {0}, not the toolchain requested {1}", compilerToolset, DefaultToolChain);
+            }
+            return compilerTool;
         }
 
         public static LibrarianTool Librarian
@@ -346,37 +375,35 @@ namespace V2
             }
         }
 
-        public static LinkerTool C_Linker
+        public static LinkerTool C_Linker(EBit bitDepth)
         {
-            get
+            if (!C_Linkers.ContainsKey(bitDepth) || 0 == C_Linkers[bitDepth].Count)
             {
-                if (0 == C_Linkers.Count)
+                throw new Bam.Core.Exception("No default C linkers for this platform in {0} bits", (int)bitDepth);
+            }
+            var candidates = C_Linkers[bitDepth];
+            if (candidates.Count > 1)
+            {
+                if (null != DefaultToolChain)
                 {
-                    throw new Bam.Core.Exception("No default C linkers for this platform");
-                }
-                if (C_Linkers.Count > 1)
-                {
-                    if (null != DefaultToolChain)
+                    foreach (var tool in candidates)
                     {
-                        foreach (var tool in C_Linkers)
+                        var attr = tool.GetType().GetCustomAttributes(false);
+                        if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
                         {
-                            var attr = tool.GetType().GetCustomAttributes(false);
-                            if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
-                            {
-                                return tool;
-                            }
+                            return tool;
                         }
                     }
-                    throw new Bam.Core.Exception("There are {0} possible C linkers for this platform", C_Linkers.Count);
                 }
-                var linkerTool = C_Linkers[0];
-                var linkerToolset = (linkerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
-                if (linkerToolset != DefaultToolChain)
-                {
-                    throw new Bam.Core.Exception("C linker is from toolchain {0}, not the toolchain requested {1}", linkerToolset, DefaultToolChain);
-                }
-                return linkerTool;
+                throw new Bam.Core.Exception("There are {0} possible C linkers for this platform in {0} bits", C_Linkers.Count, (int)bitDepth);
             }
+            var linkerTool = candidates[0];
+            var linkerToolset = (linkerTool.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+            if (linkerToolset != DefaultToolChain)
+            {
+                throw new Bam.Core.Exception("C linker is from toolchain {0}, not the toolchain requested {1}", linkerToolset, DefaultToolChain);
+            }
+            return linkerTool;
         }
 
         public static LinkerTool Cxx_Linker
@@ -452,7 +479,7 @@ namespace V2
     }
 
     public class ObjectFile :
-        Bam.Core.V2.Module,
+        CModule,
         Bam.Core.V2.IChildModule,
         Bam.Core.V2.IInputPath
     {
@@ -462,13 +489,12 @@ namespace V2
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
 
-        public ObjectFile()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
             this.Compiler = DefaultToolchain.C_Compiler;
-        }
-
-        protected override void Init()
-        {
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/@basename($(inputpath))$(objext)", this));
         }
 

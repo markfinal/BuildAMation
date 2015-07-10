@@ -906,7 +906,8 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX)]
+    [C.V2.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.SixtyFour)]
     public sealed class Linker :
         LinkerBase
     {
@@ -915,7 +916,8 @@ namespace V2
         {}
     }
 
-    [C.V2.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX)]
+    [C.V2.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.SixtyFour)]
     public sealed class LinkerCxx :
         LinkerBase
     {
@@ -983,7 +985,8 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX)]
+    [C.V2.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.SixtyFour)]
     public sealed class CxxCompiler :
         CompilerBase
     {

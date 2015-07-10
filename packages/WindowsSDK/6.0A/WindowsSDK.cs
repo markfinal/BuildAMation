@@ -19,7 +19,7 @@
 namespace WindowsSDK
 {
     public sealed class WindowsSDKV2 :
-        Bam.Core.V2.Module
+        C.V2.CModule
     {
         public WindowsSDKV2()
         {
@@ -35,7 +35,14 @@ namespace WindowsSDK
                     var linking = settings as C.V2.ICommonLinkerOptions;
                     if (null != linking)
                     {
-                        linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib\x64", this));
+                        if (this.BitDepth == C.V2.EBit.ThirtyTwo)
+                        {
+                            linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib", this));
+                        }
+                        else
+                        {
+                            linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib\x64", this));
+                        }
                     }
                 });
         }

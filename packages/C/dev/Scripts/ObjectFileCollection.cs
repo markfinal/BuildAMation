@@ -23,9 +23,11 @@ namespace V2
     public class CObjectFileCollection :
         BaseObjectFiles<ObjectFile>
     {
-        protected override void Init()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            base.Init();
+            base.Init(parent);
             this.Tool = DefaultToolchain.C_Compiler;
         }
     }

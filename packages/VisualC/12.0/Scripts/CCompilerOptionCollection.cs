@@ -802,7 +802,7 @@ namespace V2
         protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
     }
 
-    public sealed class Compiler32 :
+    public class Compiler32 :
         CompilerBase
     {
         public Compiler32()
@@ -814,6 +814,23 @@ namespace V2
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.ThirtyTwo;
+        }
+    }
+
+    [C.V2.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    public sealed class CxxCompiler32 :
+        Compiler32
+    {
+        public CxxCompiler32()
+            : base()
+        {
+        }
+
+        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        {
+            base.OverrideDefaultSettings(settings);
+            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
 
@@ -836,7 +853,7 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
     public sealed class CxxCompiler64 :
         Compiler64
     {

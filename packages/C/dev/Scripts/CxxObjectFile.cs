@@ -39,9 +39,12 @@ namespace DefaultSettings
     public class ObjectFile :
         C.V2.ObjectFile
     {
-        public ObjectFile()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            this.Compiler = C.V2.DefaultToolchain.Cxx_Compiler;
+            base.Init(parent);
+            this.Compiler = C.V2.DefaultToolchain.Cxx_Compiler(this.BitDepth);
         }
     }
 }

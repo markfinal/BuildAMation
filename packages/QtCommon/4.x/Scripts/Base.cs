@@ -20,6 +20,20 @@ namespace QtCommon
 {
 namespace V2
 {
+    public static class Configure
+    {
+        static Configure()
+        {
+            InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5", null);
+        }
+
+        public static Bam.Core.V2.TokenizedString InstallPath
+        {
+            get;
+            private set;
+        }
+    }
+
     public abstract class CommonModule :
         C.V2.DynamicLibrary
     {
@@ -28,17 +42,20 @@ namespace V2
             base()
         {
             this.Macros.Add("QtModuleName", moduleName);
-            this.Macros.Add("QtInstallPath", Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5", null));
+            this.Macros.Add("QtInstallPath", Configure.InstallPath);
         }
 
-        protected override void Init()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            base.Init();
+            base.Init(parent);
             this.Macros.Add("QtIncludePath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/include", this));
             this.Macros.Add("QtLibraryPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/lib", this));
+            this.Macros.Add("QtBinaryPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/bin", this));
             this.Macros.Add("QtConfig", Bam.Core.V2.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
 
-            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(dynamicprefix)$(QtModuleName)$(QtConfig)4$(dynamicext)", this);
+            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtBinaryPath)/$(dynamicprefix)$(QtModuleName)$(QtConfig)4$(dynamicext)", this);
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 this.GeneratedPaths[ImportLibraryKey] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)$(QtModuleName)$(QtConfig)4$(libext)", this);

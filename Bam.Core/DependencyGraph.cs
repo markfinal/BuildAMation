@@ -132,12 +132,21 @@ namespace V2
             return newModule;
         }
 
-        public Module MakeModuleOfType(System.Type moduleType)
+        private Module
+        MakeModuleOfType(
+            System.Type moduleType)
         {
             var m = typeof(Graph).GetMethod("FindReferencedModule");
             var gm = m.MakeGenericMethod(moduleType);
             var module = gm.Invoke(Graph.Instance, null) as Module;
             return module;
+        }
+
+        public ModuleType
+        MakeModuleOfType<ModuleType>(
+            System.Type moduleType) where ModuleType : Module
+        {
+            return this.MakeModuleOfType(moduleType) as ModuleType;
         }
 
         public void CreateTopLevelModules(System.Reflection.Assembly assembly, Environment env, string ns)

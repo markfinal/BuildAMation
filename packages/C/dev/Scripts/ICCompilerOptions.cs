@@ -26,7 +26,7 @@ namespace DefaultSettings
     {
         public static void Defaults(this C.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
         {
-            settings.Bits = EBit.SixtyFour;
+            settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug;
             settings.LanguageStandard = ELanguageStandard.C89;
             settings.OmitFramePointer = module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug;

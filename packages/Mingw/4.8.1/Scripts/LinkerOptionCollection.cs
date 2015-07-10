@@ -158,7 +158,7 @@ namespace DefaultSettings
         }
     }
 
-    [C.V2.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
     public sealed class Linker :
         LinkerBase
     {
@@ -167,7 +167,7 @@ namespace DefaultSettings
         {}
     }
 
-    [C.V2.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
     public sealed class LinkerCxx :
         LinkerBase
     {

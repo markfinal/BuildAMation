@@ -116,15 +116,15 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows)]
-    [C.V2.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows)]
-    public sealed class Linker :
+    public abstract class LinkerBase :
         C.V2.LinkerTool
     {
-        public Linker()
+        public LinkerBase(
+            string toolPath,
+            string libPath)
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin\link.exe", this));
+            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + toolPath, this));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", string.Empty);
             this.Macros.Add("dynamicext", ".dll");
@@ -134,7 +134,7 @@ namespace V2
             this.PublicPatch(settings =>
             {
                 var linking = settings as C.V2.ICommonLinkerOptions;
-                linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\lib\amd64", this));
+                linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
             });
         }
 
@@ -159,6 +159,26 @@ namespace V2
                 return false;
             }
         }
+    }
+
+    [C.V2.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    public sealed class Linker32 :
+        LinkerBase
+    {
+        public Linker32() :
+            base(@"\VC\bin\link.exe", @"\VC\lib")
+        {}
+    }
+
+    [C.V2.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
+    [C.V2.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
+    public sealed class Linker64 :
+        LinkerBase
+    {
+        public Linker64() :
+            base(@"\VC\bin\x86_amd64\link.exe", @"\VC\lib\amd64")
+        { }
     }
 }
 

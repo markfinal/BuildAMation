@@ -33,9 +33,11 @@ namespace V2
             this.Librarian = DefaultToolchain.Librarian;
         }
 
-        protected override void Init()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            base.Init();
+            base.Init(parent);
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(modulename)$(libext)", this));
         }
 

@@ -20,8 +20,38 @@ namespace C
 {
 namespace V2
 {
-    public class ConsoleApplication :
+    public abstract class CModule :
         Bam.Core.V2.Module
+    {
+        public CModule()
+        {
+            // default bit depth
+            // TODO: override on command line
+            this.BitDepth = EBit.SixtyFour;
+        }
+
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            // if there is a parent from which this module is created, inherit bitdepth
+            if (null != parent)
+            {
+                this.BitDepth = (parent as CModule).BitDepth;
+            }
+        }
+
+        public EBit BitDepth
+        {
+            get;
+            set;
+        }
+    }
+
+    public class ConsoleApplication :
+        CModule
     {
         protected System.Collections.Generic.List<Bam.Core.V2.Module> sourceModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
         private System.Collections.Generic.List<Bam.Core.V2.Module> linkedModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
@@ -29,20 +59,18 @@ namespace V2
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("ExecutableFile");
 
-        public ConsoleApplication()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            this.Linker = DefaultToolchain.C_Linker;
+            base.Init(parent);
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(modulename)$(exeext)", this));
+            this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             this.PrivatePatch(setting =>
             {
                 var linker = setting as C.V2.ICommonLinkerOptions;
                 linker.OutputType = ELinkerOutput.Executable;
             });
-        }
-
-        protected override void Init()
-        {
-            base.Init();
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(modulename)$(exeext)", this));
         }
 
         private Bam.Core.V2.Module.PatchDelegate ConsolePreprocessor = settings =>
@@ -53,7 +81,7 @@ namespace V2
 
         public virtual CObjectFileCollection CreateCSourceContainer()
         {
-            var source = Bam.Core.V2.Module.Create<CObjectFileCollection>();
+            var source = Bam.Core.V2.Module.Create<CObjectFileCollection>(this);
             source.PrivatePatch(ConsolePreprocessor);
 
             this.sourceModules.Add(source);
@@ -63,7 +91,7 @@ namespace V2
 
         public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath = null)
         {
-            var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>();
+            var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>(this);
             source.PrivatePatch(ConsolePreprocessor);
 
             this.sourceModules.Add(source);

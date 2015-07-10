@@ -21,7 +21,7 @@ namespace C
 namespace V2
 {
     public abstract class BaseObjectFiles<ChildModuleType> :
-        Bam.Core.V2.Module,
+        CModule,
         Bam.Core.V2.IModuleGroup
         where ChildModuleType : Bam.Core.V2.Module, Bam.Core.V2.IInputPath, Bam.Core.V2.IChildModule, new()
     {
@@ -31,7 +31,7 @@ namespace V2
         {
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
-            var child = Bam.Core.V2.Module.Create<ChildModuleType>();
+            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this);
             child.InputPath = Bam.Core.V2.TokenizedString.Create(path, this);
             (child as Bam.Core.V2.IChildModule).Parent = this;
             this.children.Add(child);
@@ -45,7 +45,7 @@ namespace V2
             {
                 throw new System.Exception(System.String.Format("No generated path found with key '{0}'", generatedFileKey.Id));
             }
-            var child = Bam.Core.V2.Module.Create<ChildModuleType>();
+            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this);
             child.InputPath = module.GeneratedPaths[generatedFileKey];
             (child as Bam.Core.V2.IChildModule).Parent = this;
             this.children.Add(child);

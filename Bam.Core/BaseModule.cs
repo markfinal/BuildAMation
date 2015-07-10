@@ -84,10 +84,14 @@ namespace V2
         }
 
         // TODO: is this virtual or abstract?
-        protected virtual void Init()
+        protected virtual void
+        Init(
+            Module parent)
         { }
 
-        public static T Create<T>() where T : Module, new()
+        public static T
+        Create<T>(
+            Module parent = null) where T : Module, new()
         {
             var filters = typeof(T).GetCustomAttributes(typeof(PlatformFilterAttribute), true) as PlatformFilterAttribute[];
             if (filters.Length > 0 && !filters[0].Platform.Includes(Graph.Instance.BuildEnvironment.Platform))
@@ -96,7 +100,7 @@ namespace V2
             }
 
             var module = new T();
-            module.Init();
+            module.Init(parent);
             module.GetExecutionPolicy(Graph.Instance.Mode);
             return module;
         }

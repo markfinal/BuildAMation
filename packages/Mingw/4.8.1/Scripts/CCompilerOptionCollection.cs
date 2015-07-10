@@ -579,7 +579,7 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterCxxCompiler("Mingw", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCxxCompiler("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
     public sealed class Compiler32Cxx :
         Compiler32
     {
