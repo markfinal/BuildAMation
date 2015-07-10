@@ -25,14 +25,14 @@ namespace Test6
         public ConditionApplicationV2()
         {
             var source = this.CreateCSourceContainer();
-            source.PrivatePatch(settings =>
+            source.PrivatePatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
             var main = source.AddFile("$(pkgroot)/source/main.c");
-            main.PrivatePatch(settings =>
+            main.PrivatePatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.PreprocessorDefines.Add("MAIN_C");

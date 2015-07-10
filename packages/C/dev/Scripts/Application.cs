@@ -66,14 +66,14 @@ namespace V2
             base.Init(parent);
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(modulename)$(exeext)", this));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
-            this.PrivatePatch(setting =>
+            this.PrivatePatch((settings, appliedTo) =>
             {
-                var linker = setting as C.V2.ICommonLinkerOptions;
+                var linker = settings as C.V2.ICommonLinkerOptions;
                 linker.OutputType = ELinkerOutput.Executable;
             });
         }
 
-        private Bam.Core.V2.Module.PatchDelegate ConsolePreprocessor = settings =>
+        private Bam.Core.V2.Module.PatchDelegate ConsolePreprocessor = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("_CONSOLE");

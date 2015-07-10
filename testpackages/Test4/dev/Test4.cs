@@ -29,7 +29,7 @@ namespace Test4
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
 
-            source.PublicPatch(settings =>
+            source.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
@@ -54,7 +54,7 @@ namespace Test4
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/staticlibrary.c");
 
-            source.PublicPatch(settings =>
+            source.PublicPatch((settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));

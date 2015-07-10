@@ -24,7 +24,7 @@ namespace Test5
     {
         public MyDynamicLibTestAppV2()
         {
-            this.PrivatePatch(settings =>
+            this.PrivatePatch((settings, appliedTo) =>
                 {
                     var gccCommon = settings as GccCommon.V2.ICommonLinkerOptions;
                     if (null != gccCommon)

@@ -131,7 +131,7 @@ namespace V2
             this.Macros.Add("libprefix", string.Empty);
             this.Macros.Add("libext", ".lib");
 
-            this.PublicPatch(settings =>
+            this.PublicPatch((settings, appliedTo) =>
             {
                 var linking = settings as C.V2.ICommonLinkerOptions;
                 linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + libPath, this));

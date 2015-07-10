@@ -24,7 +24,7 @@ namespace WindowsSDK
         public WindowsSDKV2()
         {
             this.Macros.Add("InstallPath", @"C:\Program Files\Microsoft SDKs\Windows\v6.0A");
-            this.PublicPatch(settings =>
+            this.PublicPatch((settings, appliedTo) =>
                 {
                     var compilation = settings as C.V2.ICommonCompilerOptions;
                     if (null != compilation)
@@ -35,7 +35,7 @@ namespace WindowsSDK
                     var linking = settings as C.V2.ICommonLinkerOptions;
                     if (null != linking)
                     {
-                        if (this.BitDepth == C.V2.EBit.ThirtyTwo)
+                        if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
                         {
                             linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib", this));
                         }

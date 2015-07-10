@@ -25,7 +25,7 @@ namespace Test3
         {
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library2.c");
-            source.PublicPatch(settings =>
+            source.PublicPatch((settings, appliedTo) =>
             {
                 var common = settings as C.V2.ICommonCompilerOptions;
                 common.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", source));

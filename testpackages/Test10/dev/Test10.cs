@@ -75,7 +75,7 @@ namespace Test10
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dlldependentapp.c");
 
-            this.PrivatePatch(settings =>
+            this.PrivatePatch((settings, appliedTo) =>
                 {
                     var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
                     if (gccLinker != null)

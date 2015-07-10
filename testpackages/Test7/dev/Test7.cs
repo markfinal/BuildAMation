@@ -26,7 +26,7 @@ namespace Test7
         {
             // TODO: this is annoying it is mentioned both here, and for the source,
             // it cannot easily come out as a standalone lambda, because of the 'this'
-            this.PublicPatch(settings =>
+            this.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     if (null == compiler)
@@ -38,7 +38,7 @@ namespace Test7
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
-            source.PrivatePatch(settings =>
+            source.PrivatePatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));

@@ -38,12 +38,10 @@ namespace Test13
             source.AddFile("$(pkgroot)/source/myobject.cpp");
             source.AddFile("$(pkgroot)/source/myobject2.cpp");
 
-            // TODO: not only do I need to inject settings into the Moc step, but potentially also into the compilation
-            // of the generated .cpp
             var myObjectMocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject.h", this));
             var myObject2MocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject2.h", this));
 
-            this.PrivatePatch(settings =>
+            this.PrivatePatch((settings, appliedTo) =>
             {
                 var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
                 if (gccLinker != null)
@@ -62,10 +60,7 @@ namespace Test13
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                // TODO: if a 64-bit module comes along, it will find this too, which gives the wrong idea
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
-                // TODO: this is wrong, because it will change the common version
-                windowsSDK.BitDepth = this.BitDepth;
                 this.Requires(windowsSDK);
                 this.UsePublicPatches(windowsSDK); // linking
             }

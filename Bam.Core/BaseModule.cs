@@ -170,7 +170,7 @@ namespace V2
             private set;
         }
 
-        public delegate void PatchDelegate(Settings settings);
+        public delegate void PatchDelegate(Settings settings, Module appliedTo);
         public void PrivatePatch(PatchDelegate dlg)
         {
             this.PrivatePatches.Add(dlg);
@@ -287,7 +287,10 @@ namespace V2
             this.ApplySettingsPatches(this.Settings, true);
         }
 
-        public void ApplySettingsPatches(Settings settings, bool honourParents)
+        public void
+        ApplySettingsPatches(
+            Settings settings,
+            bool honourParents)
         {
             if (null == settings)
             {
@@ -300,23 +303,23 @@ namespace V2
             {
                 foreach (var patch in parentModule.PrivatePatches)
                 {
-                    patch(settings);
+                    patch(settings, this);
                 }
             }
             foreach (var patch in this.PrivatePatches)
             {
-                patch(settings);
+                patch(settings, this);
             }
             if (parentModule != null)
             {
                 foreach (var patch in parentModule.PublicPatches)
                 {
-                    patch(settings);
+                    patch(settings, this);
                 }
             }
             foreach (var patch in this.PublicPatches)
             {
-                patch(settings);
+                patch(settings, this);
             }
             if (parentModule != null)
             {
@@ -324,7 +327,7 @@ namespace V2
                 {
                     foreach (var patch in patchList)
                     {
-                        patch(settings);
+                        patch(settings, this);
                     }
                 }
             }
@@ -332,7 +335,7 @@ namespace V2
             {
                 foreach (var patch in patchList)
                 {
-                    patch(settings);
+                    patch(settings, this);
                 }
             }
         }

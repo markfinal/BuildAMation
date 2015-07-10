@@ -61,7 +61,7 @@ namespace V2
                 this.GeneratedPaths[ImportLibraryKey] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)$(QtModuleName)$(QtConfig)4$(libext)", this);
             }
 
-            this.PublicPatch(settings =>
+            this.PublicPatch((settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null != compiler)

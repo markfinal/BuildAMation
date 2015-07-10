@@ -27,9 +27,9 @@ namespace V2
 
         public DynamicLibrary()
         {
-            this.PrivatePatch(setting =>
+            this.PrivatePatch((settings, appliedTo) =>
                 {
-                    var linker = setting as C.V2.ICommonLinkerOptions;
+                    var linker = settings as C.V2.ICommonLinkerOptions;
                     if (null != linker)
                     {
                         linker.OutputType = ELinkerOutput.DynamicLibrary;
@@ -61,7 +61,7 @@ namespace V2
         CreateCSourceContainer()
         {
             var collection = base.CreateCSourceContainer();
-            collection.PrivatePatch(settings =>
+            collection.PrivatePatch((settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
@@ -74,7 +74,7 @@ namespace V2
         CreateCxxSourceContainer(string wildcardPath = null)
         {
             var collection = base.CreateCxxSourceContainer(wildcardPath);
-            collection.PrivatePatch(settings =>
+            collection.PrivatePatch((settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");

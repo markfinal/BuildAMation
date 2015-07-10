@@ -39,7 +39,7 @@ namespace Test8
                 source.UsePublicPatches(windowsSDK); // compiling
                 this.UsePublicPatches(windowsSDK); // linking
 
-                this.PrivatePatch(settings =>
+                this.PrivatePatch((settings, appliedTo) =>
                     {
                         var linker = settings as C.V2.ICommonLinkerOptions;
                         // TODO: add dbghelp.lib

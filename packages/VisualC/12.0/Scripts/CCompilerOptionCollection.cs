@@ -762,7 +762,7 @@ namespace V2
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Common7\IDE", this)));
 
-            this.PublicPatch(settings =>
+            this.PublicPatch((settings, appliedTo) =>
                 {
                     var compilation = settings as C.V2.ICommonCompilerOptions;
                     compilation.SystemIncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
