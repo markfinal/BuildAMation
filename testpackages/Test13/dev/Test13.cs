@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 using QtCommon.V2.MocExtension;
 namespace Test13
 {
@@ -24,13 +25,23 @@ namespace Test13
     {
         public QtApplicationV2()
         {
+            this.BitDepth = C.V2.EBit.ThirtyTwo;
+        }
+
+        protected override void
+        Init(
+            Module parent)
+        {
+            base.Init(parent);
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/main.cpp");
             source.AddFile("$(pkgroot)/source/myobject.cpp");
             source.AddFile("$(pkgroot)/source/myobject2.cpp");
 
-            //var myObjectMoc = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject.h", this));
-            //var myObject2Moc = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject2.h", this));
+            // TODO: not only do I need to inject settings into the Moc step, but potentially also into the compilation
+            // of the generated .cpp
+            var myObjectMocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject.h", this));
+            var myObject2MocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject2.h", this));
 
             this.PrivatePatch(settings =>
             {
@@ -47,6 +58,28 @@ namespace Test13
 
             var qtGui = this.LinkAgainst<Qt.V2.Gui>();
             source.UsePublicPatches(qtGui);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                // TODO: if a 64-bit module comes along, it will find this too, which gives the wrong idea
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                // TODO: this is wrong, because it will change the common version
+                windowsSDK.BitDepth = this.BitDepth;
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        public RuntimePackage()
+        {
+            this.Include<QtApplicationV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".");
+            this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".");
         }
     }
 
