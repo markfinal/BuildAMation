@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace C
 {
 namespace V2
@@ -25,28 +26,26 @@ namespace V2
     {
         static public Bam.Core.V2.FileKey ImportLibraryKey = Bam.Core.V2.FileKey.Generate("Import Library File");
 
-        public DynamicLibrary()
-        {
-            this.PrivatePatch((settings, appliedTo) =>
-                {
-                    var linker = settings as C.V2.ICommonLinkerOptions;
-                    if (null != linker)
-                    {
-                        linker.OutputType = ELinkerOutput.DynamicLibrary;
-                    }
-                });
-        }
-
         protected override void
         Init(
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
             this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(modulename)$(dynamicext)", this);
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(modulename)$(libext)", this));
             }
+
+            this.PrivatePatch((settings, appliedTo) =>
+            {
+                var linker = settings as C.V2.ICommonLinkerOptions;
+                if (null != linker)
+                {
+                    linker.OutputType = ELinkerOutput.DynamicLibrary;
+                }
+            });
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source
