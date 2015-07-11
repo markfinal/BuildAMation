@@ -21,23 +21,19 @@ namespace C
 namespace V2
 {
     public class StaticLibrary :
-        Bam.Core.V2.Module
+        CModule
     {
         private System.Collections.Generic.List<Bam.Core.V2.Module> source = new System.Collections.Generic.List<Bam.Core.V2.Module>();
         private ILibrarianPolicy Policy = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Static Library File");
 
-        public StaticLibrary()
-        {
-            this.Librarian = DefaultToolchain.Librarian;
-        }
-
         protected override void
         Init(
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+            this.Librarian = DefaultToolchain.Librarian;
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
         }
 
