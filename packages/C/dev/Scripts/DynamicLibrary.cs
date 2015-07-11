@@ -31,11 +31,11 @@ namespace V2
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(modulename)$(dynamicext)", this);
+            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(modulename)$(libext)", this));
+                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
             }
 
             this.PrivatePatch((settings, appliedTo) =>

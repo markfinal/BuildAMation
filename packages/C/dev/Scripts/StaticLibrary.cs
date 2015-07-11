@@ -38,7 +38,7 @@ namespace V2
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(modulename)$(libext)", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source

@@ -25,6 +25,7 @@ namespace V2
     {
         public CModule()
         {
+            this.Macros.Add("OutputName", this.Macros["modulename"]);
             // default bit depth
             // TODO: override on command line
             this.BitDepth = EBit.SixtyFour;
@@ -64,7 +65,7 @@ namespace V2
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(modulename)$(exeext)", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)", this));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             this.PrivatePatch((settings, appliedTo) =>
             {
