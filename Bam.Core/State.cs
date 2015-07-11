@@ -390,6 +390,10 @@ namespace V2
             {
                 return this.Dict[FormattedKey(key)];
             }
+            set
+            {
+                this.DictInternal[FormattedKey(key)] = value;
+            }
         }
 
         public void Add(string key, TokenizedString value)
