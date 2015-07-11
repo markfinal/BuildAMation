@@ -23,8 +23,12 @@ namespace Test8
     sealed class ApplicationTestV2 :
         C.V2.ConsoleApplication
     {
-        public ApplicationTestV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/main.c");
 
@@ -32,7 +36,7 @@ namespace Test8
             this.Requires(dynamicLib);
             source.UsePublicPatches(dynamicLib);
 
-            if (this.Linker is VisualC.V2.Linker)
+            if (this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
@@ -42,9 +46,23 @@ namespace Test8
                 this.PrivatePatch((settings, appliedTo) =>
                     {
                         var linker = settings as C.V2.ICommonLinkerOptions;
-                        // TODO: add dbghelp.lib
+                        linker.Libraries.Add("dbghelp.lib");
                     });
             }
+        }
+    }
+
+    sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.Include<ApplicationTestV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<Test7.ExplicitDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".");
         }
     }
 

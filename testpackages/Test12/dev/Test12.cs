@@ -22,8 +22,12 @@ namespace Test12
     sealed class MyOpenGLApplicationV2 :
         C.V2.ConsoleApplication // TODO: windowed application
     {
-        public MyOpenGLApplicationV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/main.cpp");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -40,7 +44,7 @@ namespace Test12
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);

@@ -22,8 +22,14 @@ namespace Test7
     sealed class ExplicitDynamicLibraryV2 :
         C.V2.DynamicLibrary
     {
-        public ExplicitDynamicLibraryV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
+            this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("ExplicitDynamicLibrary", null);
+
             // TODO: this is annoying it is mentioned both here, and for the source,
             // it cannot easily come out as a standalone lambda, because of the 'this'
             this.PublicPatch((settings, appliedTo) =>
@@ -45,7 +51,7 @@ namespace Test7
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);

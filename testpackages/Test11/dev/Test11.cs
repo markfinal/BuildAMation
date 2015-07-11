@@ -22,8 +22,12 @@ namespace Test11
     sealed class CrossPlatformApplicationV2 :
         C.V2.ConsoleApplication
     {
-        public CrossPlatformApplicationV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/main.c");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -40,7 +44,7 @@ namespace Test11
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);

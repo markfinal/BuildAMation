@@ -70,8 +70,12 @@ namespace Test13
     sealed class RuntimePackage :
         Publisher.V2.Package
     {
-        public RuntimePackage()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.Include<QtApplicationV2>(C.V2.ConsoleApplication.Key, ".");
             this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".");
             this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".");

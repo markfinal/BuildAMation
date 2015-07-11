@@ -22,8 +22,12 @@ namespace Test6
     sealed class ConditionApplicationV2 :
         C.V2.ConsoleApplication
     {
-        public ConditionApplicationV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.PrivatePatch((settings, appliedTo) =>
                 {
@@ -45,7 +49,7 @@ namespace Test6
             source.AddFile(platformPath);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);

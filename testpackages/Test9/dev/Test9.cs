@@ -22,8 +22,12 @@ namespace Test9
     sealed class CFileV2 :
         C.V2.ObjectFile
     {
-        public CFileV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main_c.c", this);
         }
     }
@@ -31,8 +35,12 @@ namespace Test9
     sealed class CFileCollectionV2 :
         C.V2.CObjectFileCollection
     {
-        public CFileCollectionV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.AddFile("$(pkgroot)/source/main_c.c");
         }
     }
@@ -40,8 +48,12 @@ namespace Test9
     sealed class CppFileV2 :
         C.Cxx.V2.ObjectFile
     {
-        public CppFileV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main_cpp.c", this);
             this.PrivatePatch((settings, appliedTo) =>
                 {
@@ -55,8 +67,12 @@ namespace Test9
     sealed class MixedLanguageApplicationV2 :
         C.Cxx.V2.ConsoleApplication
     {
-        public MixedLanguageApplicationV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var cSource = this.CreateCSourceContainer();
             cSource.AddFile("$(pkgroot)/source/library_c.c");
             cSource.PrivatePatch((settings, appliedTo) =>
@@ -77,7 +93,7 @@ namespace Test9
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
@@ -89,9 +105,12 @@ namespace Test9
     sealed class CStaticLibraryFromCollectionV2 :
         C.V2.StaticLibrary
     {
-        public
-        CStaticLibraryFromCollectionV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library_c.c");
             source.PrivatePatch((settings, appliedTo) =>
@@ -105,8 +124,12 @@ namespace Test9
     sealed class CppStaticLibaryFromCollectionV2 :
         C.V2.StaticLibrary
     {
-        public CppStaticLibaryFromCollectionV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/library_cpp.c");
             source.PrivatePatch((settings, appliedTo) =>
@@ -123,8 +146,12 @@ namespace Test9
     sealed class CDynamicLibraryFromCollectionV2 :
         C.V2.DynamicLibrary
     {
-        public CDynamicLibraryFromCollectionV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library_c.c");
             source.PrivatePatch((settings, appliedTo) =>
@@ -134,7 +161,7 @@ namespace Test9
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
@@ -146,8 +173,12 @@ namespace Test9
     sealed class CppDynamicLibaryFromCollectionV2 :
         C.V2.DynamicLibrary
     {
-        public CppDynamicLibaryFromCollectionV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/library_cpp.c");
             source.PrivatePatch((settings, appliedTo) =>
@@ -160,7 +191,7 @@ namespace Test9
             });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);

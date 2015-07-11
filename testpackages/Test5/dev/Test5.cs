@@ -22,8 +22,12 @@ namespace Test5
     sealed class MyDynamicLibTestAppV2 :
         C.V2.ConsoleApplication
     {
-        public MyDynamicLibTestAppV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.PrivatePatch((settings, appliedTo) =>
                 {
                     var gccCommon = settings as GccCommon.V2.ICommonLinkerOptions;
@@ -44,7 +48,7 @@ namespace Test5
             source.UsePublicPatches(dynamicLib);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
@@ -57,8 +61,12 @@ namespace Test5
     sealed class RuntimePackage :
         Publisher.V2.Package
     {
-        public RuntimePackage()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key, ".");
             this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".");
         }
@@ -67,8 +75,12 @@ namespace Test5
     sealed class SDKPackage :
         Publisher.V2.Package
     {
-        public SDKPackage()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "lib");
@@ -82,8 +94,12 @@ namespace Test5
     sealed class WinInstallerInno :
         Publisher.V2.InnoSetupInstaller
     {
-        public WinInstallerInno()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
         }
     }
@@ -91,8 +107,12 @@ namespace Test5
     sealed class WinInstallerNSIS :
         Publisher.V2.NSISInstaller
     {
-        public WinInstallerNSIS()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
         }
     }
@@ -100,8 +120,12 @@ namespace Test5
     sealed class TarBallInstaller :
         Publisher.V2.TarBall
     {
-        public TarBallInstaller()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
         }
     }
@@ -109,8 +133,12 @@ namespace Test5
     sealed class DiskImageInstaller :
         Publisher.V2.DiskImage
     {
-        public DiskImageInstaller()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
         }
     }

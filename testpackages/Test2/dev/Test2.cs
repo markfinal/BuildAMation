@@ -22,8 +22,12 @@ namespace Test2
     sealed class LibraryV2 :
         C.V2.StaticLibrary
     {
-        public LibraryV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library.c");
             source.PublicPatch((settings, appliedTo) =>
@@ -37,8 +41,12 @@ namespace Test2
     sealed class ApplicationV2 :
         C.V2.ConsoleApplication
     {
-        public ApplicationV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var library = this.LinkAgainst<LibraryV2>();
             var library2 = this.LinkAgainst<Test3.Library2V2>();
 
@@ -49,7 +57,7 @@ namespace Test2
             source.UsePublicPatches(library2.Source[0]);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);

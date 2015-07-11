@@ -22,8 +22,12 @@ namespace Test4
     sealed class MyDynamicLibV2 :
         C.V2.DynamicLibrary
     {
-        public MyDynamicLibV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             this.LinkAgainst<MyStaticLibV2>();
 
             var source = this.CreateCSourceContainer();
@@ -36,7 +40,7 @@ namespace Test4
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.Linker)
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
@@ -49,8 +53,12 @@ namespace Test4
     sealed class MyStaticLibV2 :
         C.V2.StaticLibrary
     {
-        public MyStaticLibV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/staticlibrary.c");
 

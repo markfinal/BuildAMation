@@ -21,8 +21,12 @@ namespace Test3
     sealed class Library2V2 :
         C.V2.StaticLibrary
     {
-        public Library2V2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library2.c");
             source.PublicPatch((settings, appliedTo) =>
