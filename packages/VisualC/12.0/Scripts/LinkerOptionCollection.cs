@@ -124,6 +124,7 @@ namespace V2
             string libPath)
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + toolPath, this));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", string.Empty);
@@ -178,7 +179,10 @@ namespace V2
     {
         public Linker64() :
             base(@"\VC\bin\x86_amd64\link.exe", @"\VC\lib\amd64")
-        { }
+        {
+            // some DLLs exist only in the 32-bit bin folder
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(this.Macros["BinPath"]));
+        }
     }
 }
 
