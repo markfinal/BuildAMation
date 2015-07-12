@@ -41,9 +41,14 @@ namespace V2
                     return module.GeneratedPaths[C.V2.DynamicLibrary.Key].ToString();
                 }
             }
+            else if (module is C.V2.CSDKModule)
+            {
+                // collection of libraries, none in particular
+                return null;
+            }
             else
             {
-                throw new Bam.Core.Exception("Unknown module library type");
+                throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
             }
         }
 
@@ -62,6 +67,10 @@ namespace V2
             foreach (var library in libraries)
             {
                 var fullLibraryPath = this.GetLibraryPath(library);
+                if (null == fullLibraryPath)
+                {
+                    continue;
+                }
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                 // TODO: watch for duplicates
                 linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));

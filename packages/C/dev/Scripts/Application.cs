@@ -51,6 +51,10 @@ namespace V2
         }
     }
 
+    public abstract class CSDKModule :
+        CModule
+    {}
+
     public class ConsoleApplication :
         CModule
     {

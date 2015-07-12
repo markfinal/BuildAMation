@@ -19,7 +19,7 @@
 namespace WindowsSDK
 {
     public sealed class WindowsSDKV2 :
-        C.V2.CModule
+        C.V2.CSDKModule
     {
         public WindowsSDKV2()
         {
