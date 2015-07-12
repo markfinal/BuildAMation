@@ -106,7 +106,8 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterArchiver("VisualC", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterArchiver("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterArchiver("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
     public sealed class Librarian :
         C.V2.LibrarianTool
     {

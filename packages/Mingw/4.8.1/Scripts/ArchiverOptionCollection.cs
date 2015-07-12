@@ -148,7 +148,7 @@ namespace DefaultSettings
         }
     }
 
-    [C.V2.RegisterArchiver("Mingw", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterArchiver("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
     public sealed class Librarian :
         C.V2.LibrarianTool
     {

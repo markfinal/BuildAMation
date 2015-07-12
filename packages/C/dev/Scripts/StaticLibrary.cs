@@ -33,7 +33,7 @@ namespace V2
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
-            this.Librarian = DefaultToolchain.Librarian;
+            this.Librarian = DefaultToolchain.Librarian(this.BitDepth);
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
         }
 

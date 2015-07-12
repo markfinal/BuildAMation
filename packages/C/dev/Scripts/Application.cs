@@ -173,7 +173,7 @@ namespace V2
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
-            this.Linker = C.V2.DefaultToolchain.Cxx_Linker;
+            this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);
         }
     }
 }

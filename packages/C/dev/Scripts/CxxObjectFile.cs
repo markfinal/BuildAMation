@@ -44,6 +44,7 @@ namespace DefaultSettings
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+            // TODO: shouldn't attempt to find the default C compiler if only C++ is of interest
             this.Compiler = C.V2.DefaultToolchain.Cxx_Compiler(this.BitDepth);
         }
     }

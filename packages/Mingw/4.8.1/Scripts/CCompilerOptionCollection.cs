@@ -568,7 +568,7 @@ namespace V2
         protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
     }
 
-    [C.V2.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows)]
+    [C.V2.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
     public class Compiler32 :
         CompilerBase
     {

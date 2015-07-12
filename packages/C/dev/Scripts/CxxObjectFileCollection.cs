@@ -28,7 +28,7 @@ namespace V2
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
-            this.Tool = C.V2.DefaultToolchain.C_Compiler;
+            this.Tool = C.V2.DefaultToolchain.Cxx_Compiler(this.BitDepth);
         }
     }
 }

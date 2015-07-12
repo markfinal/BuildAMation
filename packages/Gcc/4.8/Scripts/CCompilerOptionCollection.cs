@@ -672,7 +672,8 @@ namespace V2
         }
     }
 
-    [C.V2.RegisterArchiver("GCC", Bam.Core.EPlatform.Unix)]
+    [C.V2.RegisterArchiver("GCC", Bam.Core.EPlatform.Unix, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterArchiver("GCC", Bam.Core.EPlatform.Unix, C.V2.EBit.SixtyFour)]
     public sealed class Librarian :
         C.V2.LibrarianTool
     {
@@ -808,7 +809,8 @@ namespace V2
         protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
     }
 
-    [C.V2.RegisterCCompiler("GCC", Bam.Core.EPlatform.Unix)]
+    [C.V2.RegisterCCompiler("GCC", Bam.Core.EPlatform.Unix, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterCCompiler("GCC", Bam.Core.EPlatform.Unix, C.V2.EBit.SixtyFour)]
     public sealed class CCompiler :
         CompilerBase
     {
