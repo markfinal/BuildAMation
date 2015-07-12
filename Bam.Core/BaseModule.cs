@@ -170,13 +170,14 @@ namespace V2
             private set;
         }
 
-        public delegate void PatchDelegate(Settings settings, Module appliedTo);
-        public void PrivatePatch(PatchDelegate dlg)
+        public delegate void PrivatePatchDelegate(Settings settings);
+        public void PrivatePatch(PrivatePatchDelegate dlg)
         {
             this.PrivatePatches.Add(dlg);
         }
 
-        public void PublicPatch(PatchDelegate dlg)
+        public delegate void PublicPatchDelegate(Settings settings, Module appliedTo);
+        public void PublicPatch(PublicPatchDelegate dlg)
         {
             this.PublicPatches.Add(dlg);
         }
@@ -226,9 +227,9 @@ namespace V2
         private System.Collections.Generic.List<Module> RequiredDependentsList = new System.Collections.Generic.List<Module>();
         private System.Collections.Generic.List<Module> RequiredDependeesList = new System.Collections.Generic.List<Module>();
 
-        private System.Collections.Generic.List<PatchDelegate> PrivatePatches = new System.Collections.Generic.List<PatchDelegate>();
-        private System.Collections.Generic.List<PatchDelegate> PublicPatches = new System.Collections.Generic.List<PatchDelegate>();
-        private System.Collections.Generic.List<System.Collections.Generic.List<PatchDelegate>> ExternalPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PatchDelegate>>();
+        private System.Collections.Generic.List<PrivatePatchDelegate> PrivatePatches = new System.Collections.Generic.List<PrivatePatchDelegate>();
+        private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();
+        private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> ExternalPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
 
         public System.Collections.Generic.Dictionary<FileKey, TokenizedString> GeneratedPaths
         {
@@ -303,12 +304,12 @@ namespace V2
             {
                 foreach (var patch in parentModule.PrivatePatches)
                 {
-                    patch(settings, this);
+                    patch(settings);
                 }
             }
             foreach (var patch in this.PrivatePatches)
             {
-                patch(settings, this);
+                patch(settings);
             }
             if (parentModule != null)
             {

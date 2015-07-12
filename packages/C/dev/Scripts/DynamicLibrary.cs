@@ -38,7 +38,7 @@ namespace V2
                 this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
             }
 
-            this.PrivatePatch((settings, appliedTo) =>
+            this.PrivatePatch(settings =>
             {
                 var linker = settings as C.V2.ICommonLinkerOptions;
                 if (null != linker)
@@ -60,7 +60,7 @@ namespace V2
         CreateCSourceContainer()
         {
             var collection = base.CreateCSourceContainer();
-            collection.PrivatePatch((settings, appliedTo) =>
+            collection.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
@@ -73,7 +73,7 @@ namespace V2
         CreateCxxSourceContainer(string wildcardPath = null)
         {
             var collection = base.CreateCxxSourceContainer(wildcardPath);
-            collection.PrivatePatch((settings, appliedTo) =>
+            collection.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");

@@ -22,7 +22,7 @@ namespace Test14
     public sealed class DynamicLibraryAV2 :
         C.V2.DynamicLibrary
     {
-        private Bam.Core.V2.Module.PatchDelegate includePaths = (settings, appliedTo) =>
+        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null != compiler)
@@ -39,7 +39,7 @@ namespace Test14
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamicLibraryA.c");
-            source.PrivatePatch((settings, appliedTo) => this.includePaths(settings, this));
+            source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
 
@@ -56,7 +56,7 @@ namespace Test14
     public sealed class DynamicLibraryBV2 :
         C.V2.DynamicLibrary
     {
-        private Bam.Core.V2.Module.PatchDelegate includePaths = (settings, appliedTo) =>
+        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
         {
             var compiler = settings as C.V2.ICommonCompilerOptions;
             if (null != compiler)
@@ -73,7 +73,7 @@ namespace Test14
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamicLibraryB.c");
-            source.PrivatePatch((settings, appliedTo) => this.includePaths(settings, this));
+            source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
 
@@ -101,7 +101,7 @@ namespace Test14
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/main.c");
 
-            this.PrivatePatch((settings, appliedTo) =>
+            this.PrivatePatch(settings =>
                 {
                     var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
                     if (null != gccLinker)

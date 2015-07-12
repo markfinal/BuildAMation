@@ -22,6 +22,16 @@ namespace Test7
     sealed class ExplicitDynamicLibraryV2 :
         C.V2.DynamicLibrary
     {
+        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null == compiler)
+                {
+                    return;
+                }
+                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+            };
+
         protected override void
         Init(
             Bam.Core.V2.Module parent)
@@ -30,25 +40,11 @@ namespace Test7
 
             this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("ExplicitDynamicLibrary", null);
 
-            // TODO: this is annoying it is mentioned both here, and for the source,
-            // it cannot easily come out as a standalone lambda, because of the 'this'
-            this.PublicPatch((settings, appliedTo) =>
-                {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
-                    if (null == compiler)
-                    {
-                        return;
-                    }
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
-                });
+            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
-            source.PrivatePatch((settings, appliedTo) =>
-                {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
-                });
+            source.PrivatePatch(settings => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)

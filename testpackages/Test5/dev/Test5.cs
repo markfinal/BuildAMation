@@ -28,7 +28,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.PrivatePatch((settings, appliedTo) =>
+            this.PrivatePatch(settings =>
                 {
                     var gccCommon = settings as GccCommon.V2.ICommonLinkerOptions;
                     if (null != gccCommon)

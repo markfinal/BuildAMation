@@ -29,14 +29,14 @@ namespace Test6
             base.Init(parent);
 
             var source = this.CreateCSourceContainer();
-            source.PrivatePatch((settings, appliedTo) =>
+            source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
             var main = source.AddFile("$(pkgroot)/source/main.c");
-            main.PrivatePatch((settings, appliedTo) =>
+            main.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.PreprocessorDefines.Add("MAIN_C");

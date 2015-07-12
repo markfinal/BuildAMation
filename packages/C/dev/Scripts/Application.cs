@@ -67,14 +67,14 @@ namespace V2
             base.Init(parent);
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)", this));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
-            this.PrivatePatch((settings, appliedTo) =>
+            this.PrivatePatch(settings =>
             {
                 var linker = settings as C.V2.ICommonLinkerOptions;
                 linker.OutputType = ELinkerOutput.Executable;
             });
         }
 
-        private Bam.Core.V2.Module.PatchDelegate ConsolePreprocessor = (settings, appliedTo) =>
+        private Bam.Core.V2.Module.PublicPatchDelegate ConsolePreprocessor = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("_CONSOLE");
@@ -83,7 +83,7 @@ namespace V2
         public virtual CObjectFileCollection CreateCSourceContainer()
         {
             var source = Bam.Core.V2.Module.Create<CObjectFileCollection>(this);
-            source.PrivatePatch(ConsolePreprocessor);
+            source.PrivatePatch(settings => this.ConsolePreprocessor(settings, this));
 
             this.sourceModules.Add(source);
             this.DependsOn(source);
@@ -93,7 +93,7 @@ namespace V2
         public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath = null)
         {
             var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>(this);
-            source.PrivatePatch(ConsolePreprocessor);
+            source.PrivatePatch(settings => this.ConsolePreprocessor(settings, this));
 
             this.sourceModules.Add(source);
             this.DependsOn(source);

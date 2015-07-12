@@ -55,7 +55,7 @@ namespace Test9
             base.Init(parent);
 
             this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main_cpp.c", this);
-            this.PrivatePatch((settings, appliedTo) =>
+            this.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICxxOnlyCompilerOptions;
                     compiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -75,7 +75,7 @@ namespace Test9
 
             var cSource = this.CreateCSourceContainer();
             cSource.AddFile("$(pkgroot)/source/library_c.c");
-            cSource.PrivatePatch((settings, appliedTo) =>
+            cSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
@@ -84,7 +84,7 @@ namespace Test9
             var cxxSource = this.CreateCxxSourceContainer();
             cxxSource.AddFile("$(pkgroot)/source/library_cpp.c");
             cxxSource.AddFile("$(pkgroot)/source/appmain_cpp.c");
-            cxxSource.PrivatePatch((settings, appliedTo) =>
+            cxxSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
@@ -113,7 +113,7 @@ namespace Test9
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library_c.c");
-            source.PrivatePatch((settings, appliedTo) =>
+            source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
@@ -132,7 +132,7 @@ namespace Test9
 
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/library_cpp.c");
-            source.PrivatePatch((settings, appliedTo) =>
+            source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
@@ -154,7 +154,7 @@ namespace Test9
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library_c.c");
-            source.PrivatePatch((settings, appliedTo) =>
+            source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
@@ -181,7 +181,7 @@ namespace Test9
 
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/library_cpp.c");
-            source.PrivatePatch((settings, appliedTo) =>
+            source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));

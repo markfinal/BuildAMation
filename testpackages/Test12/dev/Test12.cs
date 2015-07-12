@@ -51,7 +51,7 @@ namespace Test12
                 source.UsePublicPatches(windowsSDK); // compiling
                 this.UsePublicPatches(windowsSDK); // linking
 
-                this.PrivatePatch((settings, appliedTo) =>
+                this.PrivatePatch(settings =>
                     {
                         var linker = settings as C.V2.ICommonLinkerOptions;
                         linker.Libraries.Add("USER32.lib");
@@ -59,7 +59,7 @@ namespace Test12
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
             {
-                this.PrivatePatch((settings, appliedTo) =>
+                this.PrivatePatch(settings =>
                     {
                         var linker = settings as C.V2.ICommonLinkerOptions;
                         linker.Libraries.Add("-lX11");

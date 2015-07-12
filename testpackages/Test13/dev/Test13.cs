@@ -41,7 +41,7 @@ namespace Test13
             var myObjectMocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject.h", this));
             var myObject2MocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject2.h", this));
 
-            this.PrivatePatch((settings, appliedTo) =>
+            this.PrivatePatch(settings =>
             {
                 var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
                 if (gccLinker != null)
