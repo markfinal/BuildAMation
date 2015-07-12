@@ -16,8 +16,33 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test17
 {
+    public sealed class ApplicationV2 :
+        C.V2.ConsoleApplication
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.c");
+
+            // TODO: this is missing the automatic link dependency on StaticLibrary1V2
+            var lib = this.LinkAgainst<Test16.StaticLibrary2V2>();
+            source.UsePublicPatches(lib);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
     public class Application :
         C.Application
     {

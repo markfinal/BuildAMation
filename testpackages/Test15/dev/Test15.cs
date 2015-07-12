@@ -18,6 +18,30 @@
 #endregion // License
 namespace Test15
 {
+    public sealed class StaticLibrary1V2 :
+        C.V2.StaticLibrary
+    {
+        private Bam.Core.V2.Module.PublicPatchDelegate includePath = (settings, appliedTo) =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                }
+            };
+
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/staticlibrary1.c");
+            source.PrivatePatch(settings => this.includePath(settings, this));
+
+            this.PublicPatch((settings, appliedTo) => this.includePath(settings, this));
+        }
+    }
+
     public class StaticLibrary1 :
         C.StaticLibrary
     {
