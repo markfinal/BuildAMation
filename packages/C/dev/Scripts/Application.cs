@@ -58,8 +58,8 @@ namespace V2
     public class ConsoleApplication :
         CModule
     {
-        protected System.Collections.Generic.List<Bam.Core.V2.Module> sourceModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
-        private System.Collections.Generic.List<Bam.Core.V2.Module> linkedModules = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        protected Bam.Core.Array<Bam.Core.V2.Module> sourceModules = new Bam.Core.Array<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.V2.Module> linkedModules = new Bam.Core.Array<Bam.Core.V2.Module>();
         private ILinkerPolicy Policy = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("ExecutableFile");
@@ -104,12 +104,26 @@ namespace V2
             return source;
         }
 
-        public DependentModule LinkAgainst<DependentModule>() where DependentModule : Bam.Core.V2.Module, new()
+        public void LinkAgainst<DependentModule>() where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.linkedModules.Add(dependent);
-            return dependent as DependentModule;
+            this.UsePublicPatches(dependent);
+        }
+
+        public void
+        CompileAndLinkAgainst<DependentModule>(
+            params CModule[] affectedSources) where DependentModule : CModule, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.DependsOn(dependent);
+            this.linkedModules.Add(dependent);
+            this.UsePublicPatches(dependent);
+            foreach (var source in affectedSources)
+            {
+                source.UsePublicPatches(dependent);
+            }
         }
 
         public LinkerTool Linker
@@ -128,8 +142,8 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules);
-            var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules);
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules.ToArray());
+            var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules.ToArray());
             var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, context, executable, source, linked, null);
         }

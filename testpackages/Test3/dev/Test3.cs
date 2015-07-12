@@ -21,6 +21,15 @@ namespace Test3
     sealed class Library2V2 :
         C.V2.StaticLibrary
     {
+        public Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                }
+            };
+
         protected override void
         Init(
             Bam.Core.V2.Module parent)
@@ -29,11 +38,9 @@ namespace Test3
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library2.c");
-            source.PublicPatch((settings, appliedTo) =>
-            {
-                var common = settings as C.V2.ICommonCompilerOptions;
-                common.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", source));
-            });
+            source.PrivatePatch(settings => this.includePaths(settings, this));
+
+            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
         }
     }
 

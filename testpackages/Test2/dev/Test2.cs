@@ -22,6 +22,15 @@ namespace Test2
     sealed class LibraryV2 :
         C.V2.StaticLibrary
     {
+        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                }
+            };
+
         protected override void
         Init(
             Bam.Core.V2.Module parent)
@@ -30,11 +39,9 @@ namespace Test2
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library.c");
-            source.PublicPatch((settings, appliedTo) =>
-                {
-                    var common = settings as C.V2.ICommonCompilerOptions;
-                    common.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", source));
-                });
+            source.PrivatePatch(settings => this.includePaths(settings, this));
+
+            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
         }
     }
 
@@ -47,22 +54,16 @@ namespace Test2
         {
             base.Init(parent);
 
-            var library = this.LinkAgainst<LibraryV2>();
-            var library2 = this.LinkAgainst<Test3.Library2V2>();
-
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/application.c");
-            // TODO: what happens for a header only library?
-            source.UsePublicPatches(library.Source[0]);
-            source.UsePublicPatches(library2.Source[0]);
+
+            this.CompileAndLinkAgainst<LibraryV2>(source);
+            this.CompileAndLinkAgainst<Test3.Library2V2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
-                this.Requires(windowsSDK);
-                source.UsePublicPatches(windowsSDK); // compiling
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
     }

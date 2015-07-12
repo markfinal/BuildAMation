@@ -41,19 +41,13 @@ namespace Test5
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamicmain.c");
 
-            var staticLib = this.LinkAgainst<Test4.MyStaticLibV2>();
-            var dynamicLib = this.LinkAgainst<Test4.MyDynamicLibV2>();
-
-            source.UsePublicPatches(staticLib.Source[0]);
-            source.UsePublicPatches(dynamicLib);
+            this.LinkAgainst<Test4.MyStaticLibV2>();
+            this.CompileAndLinkAgainst<Test4.MyDynamicLibV2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
-                this.Requires(windowsSDK);
-                source.UsePublicPatches(windowsSDK); // compiling
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
     }

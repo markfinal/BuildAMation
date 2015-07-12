@@ -46,9 +46,7 @@ namespace Test14
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
-                this.Requires(windowsSDK);
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
     }
@@ -82,9 +80,7 @@ namespace Test14
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
-                this.Requires(windowsSDK);
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
     }
@@ -111,17 +107,13 @@ namespace Test14
                     }
                 });
 
-            var dynLibA = this.LinkAgainst<DynamicLibraryAV2>();
-            var dynLibB = this.LinkAgainst<DynamicLibraryBV2>();
-            source.UsePublicPatches(dynLibA);
-            source.UsePublicPatches(dynLibB);
+            this.CompileAndLinkAgainst<DynamicLibraryAV2>(source);
+            this.CompileAndLinkAgainst<DynamicLibraryBV2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
-                this.Requires(windowsSDK);
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
     }

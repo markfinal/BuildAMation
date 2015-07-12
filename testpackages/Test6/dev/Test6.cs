@@ -51,10 +51,7 @@ namespace Test6
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
-                this.Requires(windowsSDK);
-                source.UsePublicPatches(windowsSDK); // compiling
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
     }

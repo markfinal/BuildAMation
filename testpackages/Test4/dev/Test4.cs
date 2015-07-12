@@ -22,6 +22,15 @@ namespace Test4
     sealed class MyDynamicLibV2 :
         C.V2.DynamicLibrary
     {
+        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                }
+            };
+
         protected override void
         Init(
             Bam.Core.V2.Module parent)
@@ -33,11 +42,8 @@ namespace Test4
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
 
-            source.PublicPatch((settings, appliedTo) =>
-                {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
-                });
+            source.PrivatePatch(settings => this.includePaths(settings, this));
+            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
