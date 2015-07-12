@@ -16,8 +16,131 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test14
 {
+    public sealed class DynamicLibraryAV2 :
+        C.V2.DynamicLibrary
+    {
+        private Bam.Core.V2.Module.PatchDelegate includePaths = (settings, appliedTo) =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                }
+            };
+
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/dynamicLibraryA.c");
+            source.PrivatePatch((settings, appliedTo) => this.includePaths(settings, this));
+
+            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    public sealed class DynamicLibraryBV2 :
+        C.V2.DynamicLibrary
+    {
+        private Bam.Core.V2.Module.PatchDelegate includePaths = (settings, appliedTo) =>
+        {
+            var compiler = settings as C.V2.ICommonCompilerOptions;
+            if (null != compiler)
+            {
+                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+            }
+        };
+
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/dynamicLibraryB.c");
+            source.PrivatePatch((settings, appliedTo) => this.includePaths(settings, this));
+
+            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
+
+            this.LinkAgainst<DynamicLibraryAV2>();
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    public sealed class ApplicationV2 :
+        C.V2.ConsoleApplication
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.c");
+
+            this.PrivatePatch((settings, appliedTo) =>
+                {
+                    var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                    if (null != gccLinker)
+                    {
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.Add("$(ORIGIN)");
+                    }
+                });
+
+            var dynLibA = this.LinkAgainst<DynamicLibraryAV2>();
+            var dynLibB = this.LinkAgainst<DynamicLibraryBV2>();
+            source.UsePublicPatches(dynLibA);
+            source.UsePublicPatches(dynLibB);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                this.Requires(windowsSDK);
+                this.UsePublicPatches(windowsSDK); // linking
+            }
+        }
+    }
+
+    public sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.Include<ApplicationV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<DynamicLibraryAV2>(C.V2.DynamicLibrary.Key, ".");
+            this.Include<DynamicLibraryBV2>(C.V2.DynamicLibrary.Key, ".");
+        }
+    }
+
     // Define module classes here
     class DynamicLibraryA :
         C.DynamicLibrary
