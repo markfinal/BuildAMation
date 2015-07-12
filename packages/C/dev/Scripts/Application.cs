@@ -168,9 +168,11 @@ namespace V2
     public class ConsoleApplication :
         C.V2.ConsoleApplication
     {
-        public ConsoleApplication()
-            : base()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
             this.Linker = C.V2.DefaultToolchain.Cxx_Linker;
         }
     }
