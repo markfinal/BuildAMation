@@ -18,6 +18,89 @@
 #endregion // License
 namespace DirectXSDK
 {
+    public static class Direct3D9Location
+    {
+        static Direct3D9Location()
+        {
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                throw new Bam.Core.Exception("DirectX package only valid on Windows");
+            }
+
+            const string registryPath = @"Microsoft\DirectX\Microsoft DirectX SDK (June 2010)";
+            using (var dxInstallLocation = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(registryPath))
+            {
+                if (null == dxInstallLocation)
+                {
+                    throw new Bam.Core.Exception("DirectX SDK has not been installed on this machine");
+                }
+
+                InstallPath = dxInstallLocation.GetValue("InstallPath") as string;
+            }
+        }
+
+        public static string InstallPath
+        {
+            get;
+            set;
+        }
+    }
+
+    sealed class Direct3D9V2 :
+        C.V2.CSDKModule
+    {
+        public Direct3D9V2()
+        {
+            var installPath = Direct3D9Location.InstallPath;
+
+            this.Macros.Add("InstallPath", installPath);
+            this.Macros.Add("IncludePath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/include", this));
+            this.Macros.Add("LibraryPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/lib", this));
+        }
+
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.Add(this.Macros["IncludePath"]);
+                    }
+
+                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    if (null != linker)
+                    {
+                        if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
+                        {
+                            linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create("$(LibraryPath)/x86", this));
+                        }
+                        else
+                        {
+                            linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create("$(LibraryPath)/x64", this));
+                        }
+                    }
+                });
+        }
+
+        public override void Evaluate()
+        {
+            this.IsUpToDate = true;
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+
     // TODO: need to add modules for Direct3D10, Direct3D11, and the other DX components
     class Direct3D9 :
         C.ThirdPartyModule
