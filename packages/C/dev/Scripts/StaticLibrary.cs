@@ -23,7 +23,8 @@ namespace V2
     public class StaticLibrary :
         CModule
     {
-        private System.Collections.Generic.List<Bam.Core.V2.Module> source = new System.Collections.Generic.List<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.V2.Module> source = new Bam.Core.Array<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
         private ILibrarianPolicy Policy = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Static Library File");
@@ -41,7 +42,15 @@ namespace V2
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source);
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source.ToArray());
+            }
+        }
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> ForwardedStaticLibraries
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.forwardedDeps.ToArray());
             }
         }
 
@@ -61,6 +70,23 @@ namespace V2
             return source;
         }
 
+        public void
+        CompileAgainst<DependentModule>(
+            params CModule[] affectedSources) where DependentModule : CModule, new()
+        {
+            if (0 == affectedSources.Length)
+            {
+                throw new Bam.Core.Exception("At least one source must be provided");
+            }
+            // no graph dependency, as it's just using patches
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.forwardedDeps.AddUnique(dependent);
+            foreach (var source in affectedSources)
+            {
+                source.UsePublicPatches(dependent);
+            }
+        }
+
         public LibrarianTool Librarian
         {
             get
@@ -77,7 +103,7 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source);
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source.ToArray());
             var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, context, libraryFile, source);
         }

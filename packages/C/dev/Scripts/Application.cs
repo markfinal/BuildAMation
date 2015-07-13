@@ -124,6 +124,14 @@ namespace V2
             {
                 source.UsePublicPatches(dependent);
             }
+            if (dependent is StaticLibrary)
+            {
+                foreach (var forwarded in (dependent as StaticLibrary).ForwardedStaticLibraries)
+                {
+                    this.DependsOn(forwarded);
+                    this.linkedModules.Add(forwarded);
+                }
+            }
         }
 
         public LinkerTool Linker

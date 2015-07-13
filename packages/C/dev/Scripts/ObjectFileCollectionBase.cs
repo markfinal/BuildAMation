@@ -54,14 +54,6 @@ namespace V2
             return child;
         }
 
-        public DependentModule CompileAgainst<DependentModule>() where DependentModule : Bam.Core.V2.Module, new()
-        {
-            // no graph dependency, as it's just using patches
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
-            this.UsePublicPatches(dependent);
-            return dependent as DependentModule;
-        }
-
         protected override void
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
