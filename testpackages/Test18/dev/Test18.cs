@@ -18,6 +18,42 @@
 #endregion // License
 namespace Test18
 {
+    public sealed class ControlV2 :
+        C.V2.ConsoleApplication
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.LinkAgainst<XV2>();
+            this.LinkAgainst<YV2>();
+            this.LinkAgainst<ZV2>();
+        }
+    }
+
+    public sealed class XV2 :
+        C.V2.StaticLibrary
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            this.CompileAgainst<YV2>();
+        }
+    }
+
+    public sealed class YV2 :
+        C.V2.DynamicLibrary
+    {
+    }
+
+    public sealed class ZV2 :
+        C.V2.StaticLibrary
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            this.CompileAgainst<XV2>();
+        }
+    }
+
     class Control : C.Application
     {
         [Bam.Core.DependentModules]
