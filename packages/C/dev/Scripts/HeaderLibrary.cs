@@ -18,6 +18,27 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+    public abstract class HeaderLibrary :
+        CModule
+    {
+        public override void Evaluate()
+        {
+            this.IsUpToDate = true;
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+}
     /// <summary>
     /// C/C++ header only library
     /// </summary>

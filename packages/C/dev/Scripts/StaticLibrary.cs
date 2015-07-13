@@ -78,12 +78,16 @@ namespace V2
             {
                 throw new Bam.Core.Exception("At least one source must be provided");
             }
+
             // no graph dependency, as it's just using patches
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
-            this.forwardedDeps.AddUnique(dependent);
             foreach (var source in affectedSources)
             {
                 source.UsePublicPatches(dependent);
+            }
+            if (!(dependent is HeaderLibrary))
+            {
+                this.forwardedDeps.AddUnique(dependent);
             }
         }
 
