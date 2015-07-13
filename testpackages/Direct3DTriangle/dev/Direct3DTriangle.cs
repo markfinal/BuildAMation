@@ -18,6 +18,51 @@
 #endregion // License
 namespace Direct3DTriangle
 {
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    sealed class D3D9TriangleTestV2 :
+        C.V2.ConsoleApplication
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/application.cpp");
+            source.AddFile("$(pkgroot)/source/errorhandler.cpp");
+            source.AddFile("$(pkgroot)/source/main.cpp");
+            source.AddFile("$(pkgroot)/source/renderer.cpp");
+
+            source.PrivatePatch(settings =>
+                {
+                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+                });
+
+            if (this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.CompileAndLinkAgainst<DirectXSDK.Direct3D9V2>(source);
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            }
+
+            this.PrivatePatch(settings =>
+                {
+                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    linker.Libraries.Add("USER32.lib");
+                    linker.Libraries.Add("d3d9.lib");
+                    linker.Libraries.Add("dxerr.lib");
+
+                    if (this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug)
+                    {
+                        linker.Libraries.Add("d3dx9d.lib");
+                    }
+                    else
+                    {
+                        linker.Libraries.Add("d3dx9.lib");
+                    }
+                });
+        }
+    }
+
     // Define module classes here
     [Bam.Core.ModuleTargets(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
     class D3D9TriangleTest :
