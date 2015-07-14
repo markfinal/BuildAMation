@@ -21,7 +21,7 @@ namespace C
 {
 namespace V2
 {
-    public partial class DynamicLibrary :
+    public class DynamicLibrary :
         ConsoleApplication
     {
         static public Bam.Core.V2.FileKey ImportLibraryKey = Bam.Core.V2.FileKey.Generate("Import Library File");
@@ -82,6 +82,23 @@ namespace V2
             return collection;
         }
     }
+}
+namespace Cxx
+{
+namespace V2
+{
+    public class DynamicLibrary :
+        C.V2.DynamicLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+            this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);
+        }
+    }
+}
 }
     /// <summary>
     /// C/C++ dynamic library
