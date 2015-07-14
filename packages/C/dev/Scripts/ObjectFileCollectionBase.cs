@@ -27,12 +27,16 @@ namespace V2
     {
         private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
 
-        public ChildModuleType AddFile(string path)
+        public ChildModuleType
+        AddFile(
+            string path,
+            Bam.Core.V2.Module macroModuleOverride = null)
         {
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.V2.Module.Create<ChildModuleType>(this);
-            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, this);
+            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, macroModule);
             (child as Bam.Core.V2.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);
