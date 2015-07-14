@@ -16,8 +16,60 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace PluginTest
 {
+    public sealed class ApplicationV2 :
+        C.Cxx.V2.ConsoleApplication
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/application/main.cpp");
+
+            var plugin = Bam.Core.V2.Graph.Instance.FindReferencedModule<PluginV2>();
+            this.Requires(plugin);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+            }
+        }
+    }
+
+    public sealed class PluginV2 :
+        C.Cxx.V2.DynamicLibrary
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/plugin/pluginmain.cpp");
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+            }
+        }
+    }
+
+    public sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.Include<ApplicationV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<PluginV2>(C.V2.DynamicLibrary.Key, ".");
+        }
+    }
+
     class Application : C.Application
     {
         class Source : C.Cxx.ObjectFileCollection
