@@ -18,6 +18,49 @@
 #endregion // License
 namespace OpenGLSDK
 {
+    // TODO: this is pretty pointless at the moment
+    public sealed class OpenGLV2 :
+        C.V2.CSDKModule
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            /*
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    if (null != linker)
+                    {
+                        if (linker is VisualC.V2.LinkerBase)
+                        {
+                            linker.Libraries.Add("OPENGL32.lib");
+                        }
+                        else if (linker is Mingw.V2.LinkerBase)
+                        {
+                            linker.Libraries.Add("-lopengl32");
+                        }
+                    }
+                });
+             **/
+        }
+
+        public override void Evaluate()
+        {
+            this.IsUpToDate = true;
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+
     class OpenGL :
         C.ThirdPartyModule
     {

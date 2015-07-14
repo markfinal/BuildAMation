@@ -18,6 +18,39 @@
 #endregion // License
 namespace GLEW
 {
+    sealed class GLEWStaticV2 :
+        C.V2.StaticLibrary
+    {
+        public GLEWStaticV2()
+        {
+            this.Macros.Add("GLEWRootDir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/glew-1.5.7", this));
+        }
+
+        private Bam.Core.V2.Module.PublicPatchDelegate exported = (settings, appliedTo) =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                if (null != compiler)
+                {
+                    compiler.PreprocessorDefines.Add("GLEW_STATIC");
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(GLEWRootDir)/include", appliedTo));
+                }
+            };
+
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(GLEWRootDir)/src/glew.c", macroModuleOverride:this);
+            source.PrivatePatch(settings => this.exported(settings, this));
+
+            this.PublicPatch((settings, appliedTo) => this.exported(settings, this));
+
+            this.CompileAgainst<OpenGLSDK.OpenGLV2>(source);
+            this.CompileAgainst<WindowsSDK.WindowsSDKV2>(source);
+        }
+    }
+
     // Define module classes here
     class GLEWStatic :
         C.StaticLibrary
