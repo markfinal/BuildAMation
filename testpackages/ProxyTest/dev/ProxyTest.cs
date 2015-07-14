@@ -18,6 +18,38 @@
 #endregion // License
 namespace ProxyTest
 {
+    public sealed class ProxiedObjectFileV2 :
+        C.V2.ObjectFile
+    {
+        public ProxiedObjectFileV2()
+        {
+            this.Macros["proxypkgroot"] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/../../FakePackage", this);
+        }
+
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(proxypkgroot)/main.c", this);
+        }
+    }
+
+    public sealed class ProxiedObjectFileCollectionV2 :
+        C.V2.CObjectFileCollection
+    {
+        public ProxiedObjectFileCollectionV2()
+        {
+            this.Macros["proxypkgroot"] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/../../FakePackage", this);
+        }
+
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.AddFile("$(proxypkgroot)/main.c");
+        }
+    }
+
     class ProxiedObjectFile :
         C.ObjectFile
     {
