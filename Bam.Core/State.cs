@@ -262,7 +262,25 @@ namespace V2
                     // TODO: this could be due to the user not having set a property, e.g. inputpath
                     // is there a better error message that could be returned, other than this in those
                     // circumstances?
-                    throw new System.Exception(System.String.Format("Unrecognized token '{0}", token));
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("Unrecognized token '{0}'", token);
+                    message.AppendLine();
+                    if (null != customMacros)
+                    {
+                        message.AppendLine("Searched in custom macros");
+                    }
+                    message.AppendLine("Searched in global macros");
+                    if (null != this.ModuleWithMacros)
+                    {
+                        message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                        message.AppendLine();
+                        if (null != this.ModuleWithMacros.Tool)
+                        {
+                            message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
+                            message.AppendLine();
+                        }
+                    }
+                    throw new System.Exception(message.ToString());
                 }
                 tokens[index] = token;
                 macroIndices.Remove(index);
