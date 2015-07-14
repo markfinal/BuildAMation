@@ -16,8 +16,55 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace OpenGLUniformBufferTest
 {
+    sealed class GLUniformBufferTestV2 :
+        C.Cxx.V2.ConsoleApplication
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/application.cpp");
+            source.AddFile("$(pkgroot)/source/errorhandler.cpp");
+            source.AddFile("$(pkgroot)/source/main.cpp");
+            var rendererObj = source.AddFile("$(pkgroot)/source/renderer.cpp");
+
+            source.PrivatePatch(settings =>
+                {
+                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+                });
+
+            this.LinkAgainst<OpenGLSDK.OpenGLV2>();
+            this.CompileAndLinkAgainst<GLEW.GLEWStaticV2>(rendererObj);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            }
+
+            this.PrivatePatch(settings =>
+                {
+                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    if (this.Linker is VisualC.V2.LinkerBase)
+                    {
+                        linker.Libraries.Add("OPENGL32.lib");
+                        linker.Libraries.Add("USER32.lib");
+                        linker.Libraries.Add("GDI32.lib");
+                    }
+                    else if (this.Linker is Mingw.V2.LinkerBase)
+                    {
+                        linker.Libraries.Add("-lopengl32");
+                        linker.Libraries.Add("-lgdi32");
+                    }
+                });
+        }
+    }
+
     // Define module classes here
     class GLUniformBufferTest :
         C.WindowsApplication
