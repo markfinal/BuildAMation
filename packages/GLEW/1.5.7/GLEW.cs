@@ -47,7 +47,10 @@ namespace GLEW
             this.PublicPatch((settings, appliedTo) => this.exported(settings, this));
 
             this.CompileAgainst<OpenGLSDK.OpenGLV2>(source);
-            this.CompileAgainst<WindowsSDK.WindowsSDKV2>(source);
+            if (this.Librarian is VisualC.V2.Librarian)
+            {
+                this.CompileAgainst<WindowsSDK.WindowsSDKV2>(source);
+            }
         }
     }
 
