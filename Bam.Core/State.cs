@@ -181,7 +181,18 @@ namespace V2
 
         public override string ToString()
         {
-            return this.IsExpanded ? this.ParsedString : this.OriginalString;
+            if (this.Verbatim)
+            {
+                return this.OriginalString;
+            }
+            else
+            {
+                if (!this.IsExpanded)
+                {
+                    throw new Exception("TokenizedString {0} was not expanded", this.OriginalString);
+                }
+                return this.ParsedString;
+            }
         }
 
         public bool Empty
@@ -281,6 +292,10 @@ namespace V2
                         }
                     }
                     throw new System.Exception(message.ToString());
+                }
+                if (null == token)
+                {
+                    throw new Exception("Token replacement for {0} was null - something went wrong during parsing", tokens[index]);
                 }
                 tokens[index] = token;
                 macroIndices.Remove(index);
