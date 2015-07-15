@@ -16,8 +16,59 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace zeromq
 {
+    public sealed class ZMQSharedLibraryV2 :
+        C.Cxx.V2.DynamicLibrary
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.Macros.Add("zmqsrcdir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src", this));
+
+            var source = this.CreateCxxSourceContainer();
+            source.AddFiles("$(zmqsrcdir)/*.cpp", macroModuleOverride: this);
+
+            source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.PreprocessorDefines.Add("DLL_EXPORT");
+
+                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/builds/msvc", this));
+                    }
+                });
+
+            this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/include", this));
+                    }
+                });
+
+            this.PrivatePatch(settings =>
+                {
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                        this.Linker is VisualC.V2.LinkerBase)
+                    {
+                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        linker.Libraries.Add("Ws2_32.lib");
+                        linker.Libraries.Add("Advapi32.lib");
+                    }
+                });
+        }
+    }
+
     class ZMQSharedLibrary :
         C.DynamicLibrary
     {
