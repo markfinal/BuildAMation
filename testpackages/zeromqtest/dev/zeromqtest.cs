@@ -16,8 +16,42 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace zeromqtest
 {
+    public sealed class TestV2 :
+        C.Cxx.V2.ConsoleApplication
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCxxSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.cpp");
+
+            this.CompileAndLinkAgainst<zeromq.ZMQSharedLibraryV2>(source);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            }
+        }
+    }
+
+    public sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.Include<TestV2>(C.V2.ConsoleApplication.Key, ".");
+            this.Include<zeromq.ZMQSharedLibraryV2>(C.V2.DynamicLibrary.Key, ".");
+        }
+    }
+
+
     class Test :
         C.Application
     {
