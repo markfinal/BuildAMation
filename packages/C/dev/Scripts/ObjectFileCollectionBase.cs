@@ -30,17 +30,42 @@ namespace V2
         public ChildModuleType
         AddFile(
             string path,
-            Bam.Core.V2.Module macroModuleOverride = null)
+            Bam.Core.V2.Module macroModuleOverride = null,
+            bool verbatim = false)
         {
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.V2.Module.Create<ChildModuleType>(this);
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, macroModule);
+            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, macroModule, verbatim);
             (child as Bam.Core.V2.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);
             return child;
+        }
+
+        public Bam.Core.Array<Bam.Core.V2.Module>
+        AddFiles(
+            string path,
+            Bam.Core.V2.Module macroModuleOverride = null)
+        {
+            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+            var wildcardPath = Bam.Core.V2.TokenizedString.Create(path, macroModule).Parse();
+
+            var dir = System.IO.Path.GetDirectoryName(wildcardPath);
+            var leafname = System.IO.Path.GetFileName(wildcardPath);
+            var files = System.IO.Directory.GetFiles(dir, leafname, System.IO.SearchOption.TopDirectoryOnly);
+            if (0 == files.Length)
+            {
+                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
+            }
+            var modulesCreated = new Bam.Core.Array<Bam.Core.V2.Module>();
+            foreach (var filepath in files)
+            {
+                var fp = filepath;
+                modulesCreated.Add(this.AddFile(fp, verbatim: true));
+            }
+            return modulesCreated;
         }
 
         public ChildModuleType AddFile(Bam.Core.V2.FileKey generatedFileKey, Bam.Core.V2.Module module)
