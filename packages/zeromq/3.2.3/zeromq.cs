@@ -53,6 +53,18 @@ namespace zeromq
                                 continue;
                             }
                         }
+                        else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                        {
+                            // change #undefs to #defines
+                            // some need to have a non-zero value, rather than just be defined
+                            if (line.Contains("#undef ZMQ_HAVE_LINUX") ||
+                                line.Contains("#undef ZMQ_HAVE_UIO"))
+                            {
+                                var split = line.Split(new [] { ' ' });
+                                writeFile.WriteLine("#define " + split[1] + " 1");
+                                continue;
+                            }
+                        }
                         writeFile.WriteLine(line);
                     }
                 }
@@ -90,7 +102,7 @@ namespace zeromq
                         compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/builds/msvc", this));
                     }
                 });
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX | Bam.Core.EPlatform.Unix))
             {
                 // TODO: is there a call for a CompileWith function?
                 var platformHeader = Bam.Core.V2.Graph.Instance.FindReferencedModule<ZMQPlatformHeader>();
@@ -121,12 +133,16 @@ namespace zeromq
 
             this.PrivatePatch(settings =>
                 {
+                    var linker = settings as C.V2.ICommonLinkerOptions;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                         this.Linker is VisualC.V2.LinkerBase)
                     {
-                        var linker = settings as C.V2.ICommonLinkerOptions;
                         linker.Libraries.Add("Ws2_32.lib");
                         linker.Libraries.Add("Advapi32.lib");
+                    }
+                    else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                    {
+                        linker.Libraries.Add("-lpthread");
                     }
                 });
         }
