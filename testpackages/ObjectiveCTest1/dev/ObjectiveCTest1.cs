@@ -18,6 +18,27 @@
 #endregion // License
 namespace ObjectiveCTest1
 {
+    sealed class ProgramV2 :
+        C.V2.ConsoleApplication
+    {
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateObjectiveCSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.m");
+
+            this.PrivatePatch(settings =>
+                {
+                    var osxLinker = settings as C.V2.ILinkerOptionsOSX;
+                    if (null != osxLinker)
+                    {
+                        osxLinker.Frameworks.Add("Cocoa");
+                    }
+                });
+        }
+    }
+
     class Program :
         C.Application
     {
