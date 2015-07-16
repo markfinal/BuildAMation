@@ -217,7 +217,7 @@ namespace V2
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList.Where(item => (item as IChildModule).Parent == this).ToList());
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList.Where(item => (item is IChildModule) && ((item as IChildModule).Parent == this)).ToList());
             }
         }
 
