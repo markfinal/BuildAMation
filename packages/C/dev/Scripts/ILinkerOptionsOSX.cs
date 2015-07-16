@@ -18,6 +18,27 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this C.V2.ILinkerOptionsOSX settings, Bam.Core.V2.Module module)
+        {
+            settings.Frameworks = new Bam.Core.StringArray();
+        }
+    }
+}
+    public interface ILinkerOptionsOSX
+    {
+        Bam.Core.StringArray Frameworks
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ILinkerOptionsOSX
     {
         /// <summary>

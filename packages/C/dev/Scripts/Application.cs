@@ -84,9 +84,9 @@ namespace V2
                 compiler.PreprocessorDefines.Add("_CONSOLE");
             };
 
-        public virtual CObjectFileCollection CreateCSourceContainer()
+        private T CreateContainer<T>() where T : CModule, new()
         {
-            var source = Bam.Core.V2.Module.Create<CObjectFileCollection>(this);
+            var source = Bam.Core.V2.Module.Create<T>(this);
             source.PrivatePatch(settings => this.ConsolePreprocessor(settings, this));
 
             this.sourceModules.Add(source);
@@ -94,14 +94,24 @@ namespace V2
             return source;
         }
 
+        public virtual CObjectFileCollection CreateCSourceContainer()
+        {
+            return this.CreateContainer<CObjectFileCollection>();
+        }
+
         public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath = null)
         {
-            var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>(this);
-            source.PrivatePatch(settings => this.ConsolePreprocessor(settings, this));
+            return this.CreateContainer<Cxx.V2.ObjectFileCollection>();
+        }
 
-            this.sourceModules.Add(source);
-            this.DependsOn(source);
-            return source;
+        public virtual C.ObjC.V2.ObjectFileCollection CreateObjectiveCSourceContainer()
+        {
+            return this.CreateContainer<C.ObjC.V2.ObjectFileCollection>();
+        }
+
+        public virtual C.ObjCxx.V2.ObjectFileCollection CreateObjectiveCxxSourceContainer()
+        {
+            return this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>();
         }
 
         public void

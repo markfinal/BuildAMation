@@ -18,6 +18,20 @@
 #endregion // License
 namespace C.ObjC
 {
+namespace V2
+{
+    public class ObjectFileCollection :
+        C.V2.BaseObjectFiles<ObjectFile>
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+            this.Tool = C.V2.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);
+        }
+    }
+}
     /// <summary>
     /// ObjectiveC object file collection
     /// </summary>

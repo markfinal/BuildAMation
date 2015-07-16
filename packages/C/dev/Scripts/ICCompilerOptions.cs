@@ -144,6 +144,14 @@ namespace DefaultSettings
     public interface ICOnlyCompilerOptions
     {
     }
+
+    public interface IObjectiveCOnlyCompilerOptions
+    {
+    }
+
+    public interface IObjectiveCxxOnlyCompilerOptions
+    {
+    }
 }
     public interface ICCompilerOptions
     {

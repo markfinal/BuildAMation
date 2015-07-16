@@ -18,6 +18,8 @@
 #endregion // License
 using C.V2.DefaultSettings;
 using C.Cxx.V2.DefaultSettings;
+using C.ObjC.V2.DefaultSettings;
+using C.ObjCxx.V2.DefaultSettings;
 using Clang.V2.DefaultSettings;
 namespace Clang
 {
@@ -227,6 +229,23 @@ namespace Clang
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
             }
         }
+
+        public static void
+        Convert(
+            this C.V2.ILinkerOptionsOSX options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+            if (options.Frameworks.Count > 0)
+            {
+                // TODO
+                /*
+                foreach (var framework in options.Frameworks)
+                {
+                }
+                */
+            }
+        }
     }
 
     public static partial class NativeImplementation
@@ -344,6 +363,12 @@ namespace Clang
                         break;
                     case C.ETargetLanguage.Cxx:
                         commandLine.Add("-x c++");
+                        break;
+                    case C.ETargetLanguage.ObjectiveC:
+                        commandLine.Add("-x objective-c");
+                        break;
+                    case C.ETargetLanguage.ObjectiveCxx:
+                        commandLine.Add("-x objective-c++");
                         break;
                     default:
                         throw new Bam.Core.Exception("Unsupported target language");
@@ -471,6 +496,18 @@ namespace Clang
             foreach (var path in options.Libraries)
             {
                 commandLine.Add(path);
+            }
+        }
+
+        public static void
+        Convert(
+            this C.V2.ILinkerOptionsOSX options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            foreach (var framework in options.Frameworks)
+            {
+                commandLine.Add(System.String.Format("-framework {0}", framework.ToString()));
             }
         }
     }
@@ -745,6 +782,249 @@ namespace V2
         }
     }
 
+    public class ObjectiveCCompilerSettings :
+        Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        XcodeProjectProcessor.V2.IConvertToProject,
+        C.V2.ICommonCompilerOptions,
+        C.V2.ICOnlyCompilerOptions,
+        C.V2.IObjectiveCOnlyCompilerOptions
+    {
+        public ObjectiveCCompilerSettings(Bam.Core.V2.Module module)
+            : this(module, true)
+        {
+        }
+
+        public ObjectiveCCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        {
+            (this as C.V2.ICommonCompilerOptions).Empty();
+            (this as C.V2.ICOnlyCompilerOptions).Empty();
+            (this as C.V2.IObjectiveCOnlyCompilerOptions).Empty();
+            if (useDefaults)
+            {
+                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+                (this as C.V2.ICOnlyCompilerOptions).Defaults(module);
+                (this as C.V2.IObjectiveCOnlyCompilerOptions).Defaults(module);
+            }
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            //(this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            //(this as C.V2.IObjectiveCOnlyCompilerOptions).Convert(module, commandLine);
+        }
+
+        void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, configuration);
+            //(this as C.V2.ICOnlyCompilerOptions).Convert(module, configuration);
+            //(this as C.V2.IObjectiveCOnlyCompilerOptions).Convert(module, configuration);
+        }
+
+        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
+        {
+            get;
+            set;
+        }
+
+        C.V2.PreprocessorDefinitions C.V2.ICommonCompilerOptions.PreprocessorDefines
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        {
+            get;
+            set;
+        }
+
+        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonCompilerOptions.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
+        {
+            get;
+            set;
+        }
+
+        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
+        {
+            get;
+            set;
+        }
+
+        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
+        {
+            get;
+            set;
+        }
+
+        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.V2.ICommonCompilerOptions.DisableWarnings
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+    }
+
+    public sealed class ObjectiveCxxCompilerSettings :
+        Bam.Core.V2.Settings,
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        XcodeProjectProcessor.V2.IConvertToProject,
+        C.V2.ICommonCompilerOptions,
+        C.V2.ICxxOnlyCompilerOptions,
+        C.V2.IObjectiveCxxOnlyCompilerOptions
+    {
+        public ObjectiveCxxCompilerSettings(Bam.Core.V2.Module module)
+            : this(module, true)
+        {}
+
+        public ObjectiveCxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        {
+            (this as C.V2.ICommonCompilerOptions).Empty();
+            (this as C.V2.ICxxOnlyCompilerOptions).Empty();
+            (this as C.V2.IObjectiveCxxOnlyCompilerOptions).Empty();
+            if (useDefaults)
+            {
+                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+                (this as C.V2.ICxxOnlyCompilerOptions).Defaults(module);
+                (this as C.V2.IObjectiveCxxOnlyCompilerOptions).Defaults(module);
+            }
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            //(this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            //(this as C.V2.IObjectiveCxxOnlyCompilerOptions).Convert(module, commandLine);
+        }
+
+        void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, configuration);
+            //(this as C.V2.ICxxOnlyCompilerOptions).Convert(module, configuration);
+            //(this as C.V2.IObjectiveCxxOnlyCompilerOptions).Convert(module, configuration);
+        }
+
+        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
+        {
+            get;
+            set;
+        }
+
+        C.V2.PreprocessorDefinitions C.V2.ICommonCompilerOptions.PreprocessorDefines
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        {
+            get;
+            set;
+        }
+
+        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonCompilerOptions.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
+        {
+            get;
+            set;
+        }
+
+        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
+        {
+            get;
+            set;
+        }
+
+        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
+        {
+            get;
+            set;
+        }
+
+        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.V2.ICommonCompilerOptions.DisableWarnings
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+    }
+
     public class LibrarianSettings :
         Bam.Core.V2.Settings,
         CommandLineProcessor.V2.IConvertToCommandLine,
@@ -793,21 +1073,25 @@ namespace V2
         Bam.Core.V2.Settings,
         CommandLineProcessor.V2.IConvertToCommandLine,
         XcodeProjectProcessor.V2.IConvertToProject,
-        C.V2.ICommonLinkerOptions
+        C.V2.ICommonLinkerOptions,
+        C.V2.ILinkerOptionsOSX
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
+            (this as C.V2.ILinkerOptionsOSX).Defaults(module);
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as C.V2.ILinkerOptionsOSX).Convert(module, commandLine);
         }
 
         void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
         {
             (this as C.V2.ICommonLinkerOptions).Convert(module, configuration);
+            (this as C.V2.ILinkerOptionsOSX).Convert(module, configuration);
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -823,6 +1107,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.V2.ILinkerOptionsOSX.Frameworks
         {
             get;
             set;
@@ -946,8 +1236,24 @@ namespace V2
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
-            if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
-                typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
+            // NOTE: note that super classes need to be checked last in order to
+            // honour the class hierarchy
+            if (typeof(C.ObjCxx.V2.ObjectFile).IsInstanceOfType(module) ||
+                typeof(C.ObjCxx.V2.ObjectFileCollection).IsInstanceOfType(module))
+            {
+                var settings = new ObjectiveCxxCompilerSettings(module);
+                this.OverrideDefaultSettings(settings);
+                return settings;
+            }
+            else if (typeof(C.ObjC.V2.ObjectFile).IsInstanceOfType(module) ||
+                     typeof(C.ObjC.V2.ObjectFileCollection).IsInstanceOfType(module))
+            {
+                var settings = new ObjectiveCCompilerSettings(module);
+                this.OverrideDefaultSettings(settings);
+                return settings;
+            }
+            else if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
+                     typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new CxxCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
@@ -960,7 +1266,6 @@ namespace V2
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
-            // TODO: objective C
             else
             {
                 throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
@@ -1001,6 +1306,40 @@ namespace V2
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
+        }
+    }
+
+    [C.V2.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.SixtyFour)]
+    public sealed class ObjectiveCCompiler :
+        CompilerBase
+    {
+            public ObjectiveCCompiler()
+        {
+            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/clang", this));
+        }
+
+        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        {
+            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveC;
+        }
+    }
+
+    [C.V2.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.ThirtyTwo)]
+    [C.V2.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.SixtyFour)]
+    public sealed class ObjectiveCxxCompiler :
+    CompilerBase
+    {
+            public ObjectiveCxxCompiler()
+        {
+            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/clang++", this));
+        }
+
+        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        {
+            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
         }
     }
 }

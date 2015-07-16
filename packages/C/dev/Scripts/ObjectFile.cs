@@ -20,6 +20,19 @@ namespace C
 {
 namespace V2
 {
+    namespace DefaultSettings
+    {
+        public static partial class DefaultSettingsExtensions
+        {
+            public static void Defaults(this C.V2.ICOnlyCompilerOptions settings, Bam.Core.V2.Module module)
+            {
+            }
+            public static void Empty(this C.V2.ICOnlyCompilerOptions settings)
+            {
+            }
+        }
+    }
+
     public interface ICompilationPolicy
     {
         void
@@ -175,6 +188,32 @@ namespace V2
         }
     }
 
+    public sealed class RegisterObjectiveCCompilerAttribute :
+        ToolRegistration
+    {
+        public RegisterObjectiveCCompilerAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform,
+            EBit bitDepth)
+            :
+        base(toolsetName, platform, bitDepth)
+        {
+        }
+    }
+
+    public sealed class RegisterObjectiveCxxCompilerAttribute :
+        ToolRegistration
+    {
+        public RegisterObjectiveCxxCompilerAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform,
+            EBit bitDepth)
+            :
+        base(toolsetName, platform, bitDepth)
+        {
+        }
+    }
+
     public static class DefaultToolchain
     {
         public class DefaultToolchainCommand :
@@ -202,6 +241,8 @@ namespace V2
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LibrarianTool>> Archivers     = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LibrarianTool>>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>    C_Linkers     = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>    Cxx_Linkers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  ObjectiveC_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  ObjectiveCxx_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
         private static string DefaultToolChain = null;
 
         private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
@@ -256,6 +297,8 @@ namespace V2
             FindTools<RegisterArchiverAttribute, LibrarianTool>(Archivers);
             FindTools<RegisterCLinkerAttribute, LinkerTool>(C_Linkers);
             FindTools<RegisterCxxLinkerAttribute, LinkerTool>(Cxx_Linkers);
+            FindTools<RegisterObjectiveCCompilerAttribute, CompilerTool>(ObjectiveC_Compilers);
+            FindTools<RegisterObjectiveCxxCompilerAttribute, CompilerTool>(ObjectiveCxx_Compilers);
         }
 
         private static ToolType
@@ -325,6 +368,16 @@ namespace V2
         public static LinkerTool Cxx_Linker(EBit bitDepth)
         {
             return GetTool<LinkerTool>(Cxx_Linkers, bitDepth, "C++ linker");
+        }
+
+        public static CompilerTool ObjectiveC_Compiler(EBit bitDepth)
+        {
+            return GetTool<CompilerTool>(ObjectiveC_Compilers, bitDepth, "Objective C compiler");
+        }
+
+        public static CompilerTool ObjectiveCxx_Compiler(EBit bitDepth)
+        {
+            return GetTool<CompilerTool>(ObjectiveCxx_Compilers, bitDepth, "Objective C++ compiler");
         }
     }
 

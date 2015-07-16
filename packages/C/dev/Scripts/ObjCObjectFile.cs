@@ -18,6 +18,32 @@
 #endregion // License
 namespace C.ObjC
 {
+namespace V2
+{
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this C.V2.IObjectiveCOnlyCompilerOptions settings, Bam.Core.V2.Module module)
+        {
+        }
+        public static void Empty(this C.V2.IObjectiveCOnlyCompilerOptions settings)
+        {
+        }
+    }
+}
+    public class ObjectFile :
+        C.V2.ObjectFile
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+            this.Compiler = C.V2.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);
+        }
+    }
+}
     /// <summary>
     /// ObjectiveC object file
     /// </summary>
