@@ -19,6 +19,52 @@
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace zeromq
 {
+    public sealed class ZMQPlatformHeader :
+        C.V2.CModule
+    {
+        public override void Evaluate()
+        {
+            this.IsUpToDate = false;
+        }
+
+        protected override void ExecuteInternal(ExecutionContext context)
+        {
+            var source = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src/platform.hpp.in", this);
+            var dest = Bam.Core.V2.TokenizedString.Create("$(buildroot)/platform.hpp", this);
+
+            // parse the input header, and modify it while writing it out
+            // modifications are platform specific
+            using (System.IO.TextReader readFile = new System.IO.StreamReader(source.Parse()))
+            {
+                using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(dest.Parse()))
+                {
+                    string line;
+                    while ((line = readFile.ReadLine()) != null)
+                    {
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+                        {
+                            // change #undefs to #defines
+                            // some need to have a non-zero value, rather than just be defined
+                            if (line.Contains("#undef ZMQ_HAVE_OSX") ||
+                                line.Contains("#undef ZMQ_HAVE_UIO"))
+                            {
+                                var split = line.Split(new [] { ' ' });
+                                writeFile.WriteLine("#define " + split[1] + " 1");
+                                continue;
+                            }
+                        }
+                        writeFile.WriteLine(line);
+                    }
+                }
+            }
+        }
+
+        protected override void GetExecutionPolicy (string mode)
+        {
+            // TODO: do nothing
+        }
+    }
+
     public sealed class ZMQSharedLibraryV2 :
         C.Cxx.V2.DynamicLibrary
     {
@@ -44,8 +90,25 @@ namespace zeromq
                         compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/builds/msvc", this));
                     }
                 });
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                // TODO: is there a call for a CompileWith function?
+                var platformHeader = Bam.Core.V2.Graph.Instance.FindReferencedModule<ZMQPlatformHeader>();
+                source.DependsOn(platformHeader);
+                source.UsePublicPatches(platformHeader);
+                // TODO: end of function
 
-            this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(buildroot)", this));
+                });
+            }
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            }
 
             this.PublicPatch((settings, appliedTo) =>
                 {
