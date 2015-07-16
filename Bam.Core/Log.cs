@@ -82,9 +82,16 @@ namespace Bam.Core
         {
             if (State.VerbosityLevel >= level)
             {
-                var formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(EscapeString(format), args);
-                Message(formattedMessage.ToString(), false);
+                if (args.Length > 0)
+                {
+                    var formattedMessage = new System.Text.StringBuilder();
+                    formattedMessage.AppendFormat(EscapeString(format), args);
+                    Message(formattedMessage.ToString(), false);
+                }
+                else
+                {
+                    Message(format, false);
+                }
             }
         }
 
@@ -93,9 +100,16 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            var formattedMessage = new System.Text.StringBuilder();
-            formattedMessage.AppendFormat(EscapeString(format), args);
-            Message(formattedMessage.ToString(), false);
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString(format), args);
+                Message(formattedMessage.ToString(), false);
+            }
+            else
+            {
+                Message(format, false);
+            }
         }
 
         public static void
@@ -105,9 +119,16 @@ namespace Bam.Core
         {
             if (State.VerbosityLevel >= EVerboseLevel.Info)
             {
-                var formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(EscapeString(format), args);
-                Message(formattedMessage.ToString(), false);
+                if (args.Length > 0)
+                {
+                    var formattedMessage = new System.Text.StringBuilder();
+                    formattedMessage.AppendFormat(EscapeString(format), args);
+                    Message(formattedMessage.ToString(), false);
+                }
+                else
+                {
+                    Message(format, false);
+                }
             }
         }
 
@@ -118,9 +139,16 @@ namespace Bam.Core
         {
             if (State.VerbosityLevel >= EVerboseLevel.Detail)
             {
-                var formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(EscapeString(format), args);
-                Message(formattedMessage.ToString(), false);
+                if (args.Length > 0)
+                {
+                    var formattedMessage = new System.Text.StringBuilder();
+                    formattedMessage.AppendFormat(EscapeString(format), args);
+                    Message(formattedMessage.ToString(), false);
+                }
+                else
+                {
+                    Message(format, false);
+                }
             }
         }
 
@@ -131,9 +159,16 @@ namespace Bam.Core
         {
             if (EVerboseLevel.Full == State.VerbosityLevel)
             {
-                var formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(EscapeString(format), args);
-                Message(formattedMessage.ToString(), false);
+                if (args.Length > 0)
+                {
+                    var formattedMessage = new System.Text.StringBuilder();
+                    formattedMessage.AppendFormat(EscapeString(format), args);
+                    Message(formattedMessage.ToString(), false);
+                }
+                else
+                {
+                    Message(format, false);
+                }
             }
         }
 
@@ -142,9 +177,16 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            var formattedMessage = new System.Text.StringBuilder();
-            formattedMessage.AppendFormat(EscapeString("ERROR: " + format), args);
-            Message(formattedMessage.ToString(), true);
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString("ERROR: " + format), args);
+                Message(formattedMessage.ToString(), true);
+            }
+            else
+            {
+                Message(format, true);
+            }
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -155,10 +197,16 @@ namespace Bam.Core
         {
             if (State.VerbosityLevel > EVerboseLevel.Detail)
             {
-                var formattedMessage = new System.Text.StringBuilder();
-                var escaped = EscapeString(format);
-                formattedMessage.AppendFormat(escaped, args);
-                Message(formattedMessage.ToString(), false);
+                if (args.Length > 0)
+                {
+                    var formattedMessage = new System.Text.StringBuilder();
+                    formattedMessage.AppendFormat(EscapeString(format), args);
+                    Message(formattedMessage.ToString(), false);
+                }
+                else
+                {
+                    Message(format, false);
+                }
             }
         }
     }
