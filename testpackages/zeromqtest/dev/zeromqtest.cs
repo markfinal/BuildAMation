@@ -36,6 +36,19 @@ namespace zeromqtest
             {
                 this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
+
+            this.PrivatePatch(settings =>
+                {
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                    {
+                        var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                        if (null != gccLinker)
+                        {
+                            gccLinker.CanUseOrigin = true;
+                            gccLinker.RPath.AddUnique("$ORIGIN");
+                        }
+                    }
+                });
         }
     }
 
