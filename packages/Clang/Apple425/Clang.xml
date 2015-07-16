@@ -4,6 +4,9 @@
     <Package Name="ClangCommon">
       <Version Id="dev" />
     </Package>
+    <Package Name="GccCommon">
+      <Version Id="dev" />
+    </Package>
     <Package Name="XcodeBuilder">
       <Version Id="dev" />
     </Package>
