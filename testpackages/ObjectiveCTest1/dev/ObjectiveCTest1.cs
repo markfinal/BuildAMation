@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace ObjectiveCTest1
 {
     sealed class ProgramV2 :
@@ -28,12 +29,31 @@ namespace ObjectiveCTest1
             var source = this.CreateObjectiveCSourceContainer();
             source.AddFile("$(pkgroot)/source/main.m");
 
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                source.PrivatePatch(settings =>
+                    {
+                        var compiler = settings as C.V2.ICommonCompilerOptions;
+                        compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("/usr/include/GNUstep", null, verbatim: true));
+
+                        var objcCompiler = settings as C.V2.IObjectiveCOnlyCompilerOptions;
+                        objcCompiler.ConstantStringClass = "NSConstantString";
+                    });
+            }
+
             this.PrivatePatch(settings =>
                 {
                     var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                     if (null != osxLinker)
                     {
                         osxLinker.Frameworks.Add("Cocoa");
+                    }
+
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                    {
+                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        linker.Libraries.Add("-lobjc");
+                        linker.Libraries.Add("-lgnustep-base");
                     }
                 });
         }
