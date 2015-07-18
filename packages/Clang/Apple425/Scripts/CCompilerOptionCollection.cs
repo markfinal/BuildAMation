@@ -421,6 +421,18 @@ namespace Clang
                 }
             }
         }
+
+        public static void
+        Convert(
+            this C.V2.IObjectiveCOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.ConstantStringClass)
+            {
+                commandLine.Add(System.String.Format("-fconstant-string-class={0}", options.ConstantStringClass));
+            }
+        }
     }
 
     public static partial class NativeImplementation
@@ -812,7 +824,7 @@ namespace V2
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             //(this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            //(this as C.V2.IObjectiveCOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.IObjectiveCOnlyCompilerOptions).Convert(module, commandLine);
         }
 
         void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
