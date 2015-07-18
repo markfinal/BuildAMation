@@ -196,7 +196,7 @@ namespace V2
             Bam.Core.EPlatform platform,
             EBit bitDepth)
             :
-        base(toolsetName, platform, bitDepth)
+            base(toolsetName, platform, bitDepth)
         {
         }
     }
@@ -209,7 +209,7 @@ namespace V2
             Bam.Core.EPlatform platform,
             EBit bitDepth)
             :
-        base(toolsetName, platform, bitDepth)
+            base(toolsetName, platform, bitDepth)
         {
         }
     }

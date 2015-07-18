@@ -899,6 +899,12 @@ namespace V2
             get;
             set;
         }
+
+        string C.V2.IObjectiveCOnlyCompilerOptions.ConstantStringClass
+        {
+            get;
+            set;
+        }
     }
 
     public sealed class ObjectiveCxxCompilerSettings :

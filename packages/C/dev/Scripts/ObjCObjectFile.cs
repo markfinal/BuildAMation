@@ -29,6 +29,7 @@ namespace DefaultSettings
         }
         public static void Empty(this C.V2.IObjectiveCOnlyCompilerOptions settings)
         {
+            settings.ConstantStringClass = null;
         }
     }
 }

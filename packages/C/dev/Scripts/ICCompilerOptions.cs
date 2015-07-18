@@ -147,6 +147,11 @@ namespace DefaultSettings
 
     public interface IObjectiveCOnlyCompilerOptions
     {
+        string ConstantStringClass
+        {
+            get;
+            set;
+        }
     }
 
     public interface IObjectiveCxxOnlyCompilerOptions

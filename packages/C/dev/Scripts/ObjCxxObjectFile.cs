@@ -27,7 +27,7 @@ namespace DefaultSettings
         public static void Defaults(this C.V2.IObjectiveCxxOnlyCompilerOptions settings, Bam.Core.V2.Module module)
         {
         }
-            public static void Empty(this C.V2.IObjectiveCxxOnlyCompilerOptions settings)
+        public static void Empty(this C.V2.IObjectiveCxxOnlyCompilerOptions settings)
         {
         }
     }
