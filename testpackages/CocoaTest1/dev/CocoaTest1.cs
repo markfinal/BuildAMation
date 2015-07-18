@@ -18,6 +18,45 @@
 #endregion // License
 namespace CocoaTest1
 {
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.OSX)]
+    sealed class CLibraryV2 :
+        C.V2.StaticLibrary
+    {
+        protected override void Init (Bam.Core.V2.Module parent)
+        {
+            base.Init (parent);
+
+            var source = this.CreateCSourceContainer();
+            source.AddFile("$(pkgroot)/source/library.c");
+        }
+    }
+
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.OSX)]
+    sealed class CocoaTestV2 :
+        C.V2.ConsoleApplication
+    {
+        protected override void Init (Bam.Core.V2.Module parent)
+        {
+            base.Init (parent);
+
+            var source = this.CreateObjectiveCSourceContainer();
+            source.AddFile("$(pkgroot)/source/main.m");
+
+            this.LinkAgainst<CLibraryV2>();
+
+            this.PrivatePatch(settings =>
+                {
+                    var linker = settings as C.V2.ILinkerOptionsOSX;
+                    if (null != linker)
+                    {
+                        linker.Frameworks.Add("Cocoa");
+                    }
+                });
+        }
+    }
+
+    // TODO: make app bundle
+
     [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.OSX)]
     class CLibrary :
         C.StaticLibrary
