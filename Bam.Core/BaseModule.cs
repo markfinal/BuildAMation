@@ -89,12 +89,30 @@ namespace V2
             Module parent)
         { }
 
+        public static bool
+        CanCreate(
+            System.Type moduleType)
+        {
+            var filters = moduleType.GetCustomAttributes(typeof(PlatformFilterAttribute), true) as PlatformFilterAttribute[];
+            if (0 == filters.Length)
+            {
+                // unconditional
+                return true;
+            }
+            if (filters[0].Platform.Includes(Graph.Instance.BuildEnvironment.Platform))
+            {
+                // platform is a match
+                return true;
+            }
+            Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the platform filter", moduleType.ToString());
+            return false;
+        }
+
         public static T
         Create<T>(
             Module parent = null) where T : Module, new()
         {
-            var filters = typeof(T).GetCustomAttributes(typeof(PlatformFilterAttribute), true) as PlatformFilterAttribute[];
-            if (filters.Length > 0 && !filters[0].Platform.Includes(Graph.Instance.BuildEnvironment.Platform))
+            if (!CanCreate(typeof(T)))
             {
                 return null;
             }
