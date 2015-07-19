@@ -46,6 +46,12 @@ namespace V2
                 {
                     linker.OutputType = ELinkerOutput.DynamicLibrary;
                 }
+
+                var osxLinker = settings as C.V2.ILinkerOptionsOSX;
+                if (null != osxLinker)
+                {
+                    osxLinker.InstallName = Bam.Core.V2.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
+                }
             });
         }
 
