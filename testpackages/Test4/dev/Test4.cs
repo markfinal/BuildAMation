@@ -45,15 +45,6 @@ namespace Test4
             source.PrivatePatch(settings => this.includePaths(settings, this));
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
-            this.PrivatePatch(settings =>
-                {
-                    var osxLinker = settings as C.V2.ILinkerOptionsOSX;
-                    if (null != osxLinker)
-                    {
-                        osxLinker.InstallName = Bam.Core.V2.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
-                    }
-                });
-
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
