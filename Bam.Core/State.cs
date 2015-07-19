@@ -338,12 +338,20 @@ namespace V2
             {
                 var index = matchIndex++;
                 var expr = tokenized.ElementAt(index);
-                if (!expr.StartsWith(FunctionPrefix))
+                // look for an expression containing the entire function call first (the regex expression)
+                if (!(expr.StartsWith(FunctionPrefix) && expr.EndsWith(")")))
                 {
                     continue;
                 }
 
+                // then the match is the function name
                 var functionName = tokenized.ElementAt(matchIndex++);
+                if (!functionName.All(char.IsLetter))
+                {
+                    continue;
+                }
+
+                // then the match is the argument
                 var argument = tokenized.ElementAt(matchIndex++);
                 var result = this.FunctionExpression(functionName, argument);
                 joined = joined.Replace(expr, result);
@@ -358,8 +366,11 @@ namespace V2
                 case "basename":
                     return System.IO.Path.GetFileNameWithoutExtension(argument);
 
+                case "filename":
+                    return System.IO.Path.GetFileName(argument);
+
                 default:
-                    throw new System.Exception("Unknown function");
+                    throw new Exception("Unknown function, {0}", functionName);
             }
         }
 
