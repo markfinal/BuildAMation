@@ -49,6 +49,7 @@ namespace Test8
         }
     }
 
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class RuntimePackage :
         Publisher.V2.Package
     {
