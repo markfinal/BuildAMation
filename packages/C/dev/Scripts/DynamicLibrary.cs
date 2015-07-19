@@ -32,6 +32,7 @@ namespace V2
         {
             base.Init(parent);
             this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+            this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {

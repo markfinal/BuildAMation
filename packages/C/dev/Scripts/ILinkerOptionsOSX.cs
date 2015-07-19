@@ -37,6 +37,12 @@ namespace DefaultSettings
             get;
             set;
         }
+
+        Bam.Core.V2.TokenizedString InstallName
+        {
+            get;
+            set;
+        }
     }
 }
     public interface ILinkerOptionsOSX

@@ -212,12 +212,18 @@ namespace Clang
             //var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
-                case C.ELinkerOutput.DynamicLibrary:
+            case C.ELinkerOutput.DynamicLibrary:
+                {
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("mh_dylib");
-                    // TODO: dylib_install_name
+                    var osxOpts = options as C.V2.ILinkerOptionsOSX;
+                    if (null != osxOpts.InstallName)
+                    {
+                        // TODO: dylib_install_name
+                    }
                     // TODO: current_version
                     // TODO: compatability_version
-                    break;
+                }
+                break;
             }
             if (options.LibraryPaths.Count > 0)
             {
@@ -492,13 +498,19 @@ namespace Clang
                     commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
                     break;
 
-                case C.ELinkerOutput.DynamicLibrary:
+            case C.ELinkerOutput.DynamicLibrary:
+                {
                     commandLine.Add("-dynamiclib");
                     commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
-                    // TODO: dylib_install_name
+                    var osxOpts = options as C.V2.ILinkerOptionsOSX;
+                    if (null != osxOpts.InstallName)
+                    {
+                        commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", osxOpts.InstallName.Parse()));
+                    }
                     // TODO: current_version
                     // TODO: compatability_version
-                    break;
+                }
+                break;
             }
             foreach (var path in options.LibraryPaths)
             {
@@ -1131,6 +1143,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ILinkerOptionsOSX.Frameworks
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.V2.TokenizedString C.V2.ILinkerOptionsOSX.InstallName
         {
             get;
             set;
