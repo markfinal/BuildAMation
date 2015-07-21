@@ -132,6 +132,9 @@ namespace V2
             this.Macros.Add("libprefix", string.Empty);
             this.Macros.Add("libext", ".lib");
 
+            this.InheritedEnvironmentVariables.Add("TEMP");
+            this.InheritedEnvironmentVariables.Add("TMP");
+
             this.PublicPatch((settings, appliedTo) =>
             {
                 var linking = settings as C.V2.ICommonLinkerOptions;
