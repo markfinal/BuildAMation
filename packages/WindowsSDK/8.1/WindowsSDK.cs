@@ -23,13 +23,25 @@ namespace WindowsSDK
     {
         public WindowsSDKV2()
         {
-            this.Macros.Add("InstallPath", @"C:\Program Files\Microsoft SDKs\Windows\v6.0A");
+            string installPath;
+            using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Windows Kits\Installed Roots"))
+            {
+                if (null == key)
+                {
+                    throw new Bam.Core.Exception("Windows SDKs were not installed");
+                }
+
+                installPath = key.GetValue("KitsRoot81") as string;
+                Bam.Core.Log.DebugMessage("Windows 8.1 SDK installation folder is {0}", installPath);
+            }
+
+            this.Macros.Add("InstallPath", installPath);
             this.PublicPatch((settings, appliedTo) =>
             {
                 var compilation = settings as C.V2.ICommonCompilerOptions;
                 if (null != compilation)
                 {
-                    compilation.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Include", this));
+                    compilation.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Include\um", this));
                 }
 
                 var linking = settings as C.V2.ICommonLinkerOptions;
@@ -37,11 +49,11 @@ namespace WindowsSDK
                 {
                     if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
                     {
-                        linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib", this));
+                        linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x86", this));
                     }
                     else
                     {
-                        linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib\x64", this));
+                        linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x64", this));
                     }
                 }
             });
