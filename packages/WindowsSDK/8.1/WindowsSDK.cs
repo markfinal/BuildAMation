@@ -42,6 +42,7 @@ namespace WindowsSDK
                 if (null != compilation)
                 {
                     compilation.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Include\um", this));
+                    compilation.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Include\shared", this));
                 }
 
                 var linking = settings as C.V2.ICommonLinkerOptions;
