@@ -80,6 +80,26 @@ namespace V2
             }
         }
     }
+
+    public sealed class UseTests :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-t";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--tests";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

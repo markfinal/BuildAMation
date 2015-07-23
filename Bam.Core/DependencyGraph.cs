@@ -152,8 +152,9 @@ namespace V2
         public void CreateTopLevelModules(System.Reflection.Assembly assembly, Environment env, string ns)
         {
             this.BuildEnvironment = env;
+            var includeTests = CommandLineProcessor.Evaluate(new UseTests());
             var allTypes = assembly.GetTypes();
-            var allPackageTypes = allTypes.Where(type => type.Namespace == ns && type.IsSubclassOf(typeof(Module)));
+            var allPackageTypes = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)));
             foreach (var moduleType in allPackageTypes)
             {
                 var newModule = MakeModuleOfType(moduleType);

@@ -68,6 +68,20 @@ namespace V2
                 packageNameSpace = packageNameSpace.Replace(".V2", string.Empty);
             }
             var packageInfo = Core.State.PackageInfo[packageNameSpace];
+            if (null == packageInfo)
+            {
+                var includeTests = CommandLineProcessor.Evaluate(new UseTests());
+                if (includeTests && packageNameSpace.EndsWith(".tests"))
+                {
+                    packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
+                    packageInfo = Core.State.PackageInfo[packageNameSpace];
+                }
+
+                if (null == packageInfo)
+                {
+                    throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
+                }
+            }
             this.Package = packageInfo;
             var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
             this.Macros.Add("pkgroot", packageRoot);
