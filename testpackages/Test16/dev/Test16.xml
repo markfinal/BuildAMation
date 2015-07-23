@@ -32,6 +32,11 @@
       <Version Id="11.0" />
       <Version Id="12.0" Default="true" />
     </Package>
+    <Package Name="WindowsSDK">
+      <Version Id="6.0A" />
+      <Version Id="7.1" />
+      <Version Id="8.1" Default="true" />
+    </Package>
     <Package Name="XcodeBuilder">
       <Version Id="dev" />
     </Package>

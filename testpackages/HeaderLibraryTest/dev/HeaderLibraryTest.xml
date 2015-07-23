@@ -42,8 +42,8 @@
       <Version Id="dev" />
     </Package>
     <Package Name="WindowsSDK">
-      <Version Id="6.0A" Default="true" />
-      <Version Id="8.1" />
+      <Version Id="6.0A" />
+      <Version Id="8.1" Default="true" />
     </Package>
     <Package Name="XcodeBuilder">
       <Version Id="dev" />
