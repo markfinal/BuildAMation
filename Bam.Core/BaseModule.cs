@@ -217,6 +217,7 @@ namespace V2
         public void UsePublicPatches(Module module)
         {
             this.ExternalPatches.Add(module.PublicPatches);
+            this.ExternalPatches.AddRange(module.ExternalPatches);
         }
 
         public bool HasPatches
