@@ -23,6 +23,8 @@ namespace V2
     public abstract class HeaderLibrary :
         CModule
     {
+        private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
+
         public override void Evaluate()
         {
             this.IsUpToDate = true;
@@ -36,6 +38,26 @@ namespace V2
         protected override void GetExecutionPolicy(string mode)
         {
             // do nothing
+        }
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> ForwardedStaticLibraries
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.forwardedDeps.ToArray());
+            }
+        }
+
+        public void
+        CompileAgainst<DependentModule>() where DependentModule : CModule, new()
+        {
+            // no graph dependency, as it's just using patches
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.UsePublicPatches(dependent);
+            if (!(dependent is HeaderLibrary))
+            {
+                this.forwardedDeps.AddUnique(dependent);
+            }
         }
     }
 }
