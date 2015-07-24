@@ -120,7 +120,7 @@ namespace V2
         {
             if (0 == affectedSources.Length)
             {
-                throw new Bam.Core.Exception("At least one source must be provided");
+                throw new Bam.Core.Exception("At least one source module argument must be passed to {0} in {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, this.ToString());
             }
 
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
