@@ -46,6 +46,8 @@ namespace V2
     public abstract class Module :
         IModuleExecution
     {
+        static protected System.Collections.Generic.List<Module> AllModules = new System.Collections.Generic.List<Module>();
+
         // private so that the factory method must be used
         protected Module()
         {
@@ -134,6 +136,7 @@ namespace V2
             var module = new T();
             module.Init(parent);
             module.GetExecutionPolicy(Graph.Instance.Mode);
+            AllModules.Add(module);
             return module;
         }
 
@@ -411,12 +414,21 @@ namespace V2
             return this.DependeesList[0].GetEncapsulatingReferencedModule();
         }
 
-        public void
+        private void
         Complete()
         {
             var graph = Graph.Instance;
             var encapsulatingModule = this.GetEncapsulatingReferencedModule();
             this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(encapsulatingModule.GetType().Name, this.BuildEnvironment.Configuration.ToString()));
+        }
+
+        static public void
+        CompleteModules()
+        {
+            foreach (var module in AllModules.Reverse<Module>())
+            {
+                module.Complete();
+            }
         }
     }
 }

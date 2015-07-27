@@ -80,7 +80,7 @@ namespace Bam
                     Core.Log.DebugMessage(m.ToString());
                 }
                 Core.Log.DebugMessage("End: Top level modules");
-                // not only does this generate the dependency graph, but also creates the default settings for each module
+                // not only does this generate the dependency graph, but also creates the default settings for each module, and completes them
                 graph.SortDependencies();
                 // TODO: make validation optional, if it starts showing on profiles
                 graph.Validate();

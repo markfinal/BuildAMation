@@ -342,6 +342,7 @@ namespace V2
                 currentRank.Add(m);
                 this.InternalArrangeDependents(m, 0);
             }
+            Module.CompleteModules();
         }
 
         public void Dump()
@@ -402,7 +403,6 @@ namespace V2
             {
                 foreach (var m in rank.Value)
                 {
-                    m.Complete();
                     this.InternalValidateGraph(rank.Key, m.Dependents);
                     this.InternalValidateGraph(rank.Key, m.Requirements);
                 }
