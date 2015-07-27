@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace C
 {
 namespace V2
@@ -33,6 +34,22 @@ namespace DefaultSettings
             settings.Optimization = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug ? EOptimization.Off : EOptimization.Speed;
             settings.OutputType = ECompilerOutput.CompileOnly;
             settings.PreprocessorDefines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", module.BuildEnvironment.Configuration.ToString().ToUpper()));
+            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_WINDOWS");
+            }
+            else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_UNIX");
+            }
+            else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_OSX");
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unknown platform");
+            }
             settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
         }
