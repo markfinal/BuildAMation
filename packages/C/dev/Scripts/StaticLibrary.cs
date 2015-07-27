@@ -80,6 +80,7 @@ namespace V2
             }
 
             // no graph dependency, as it's just using patches
+            // note that this won't add the module into the graph, unless a link dependency is made
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             foreach (var source in affectedSources)
             {

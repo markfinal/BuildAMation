@@ -52,6 +52,7 @@ namespace V2
         CompileAgainst<DependentModule>() where DependentModule : CModule, new()
         {
             // no graph dependency, as it's just using patches
+            // note that this won't add the module into the graph, unless a link dependency is made
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.UsePublicPatches(dependent);
             if (!(dependent is HeaderLibrary))
