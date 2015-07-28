@@ -72,20 +72,25 @@ namespace V2
         }
     }
 
-    public interface ICommonLinkerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonLinkerOptions : Bam.Core.V2.ISettingsBase
     {
     }
 
     public class LinkerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
-        C.V2.ICommonLinkerOptions,
-        ICommonLinkerOptions
+        C.V2.ICommonLinkerOptions
+        //ICommonLinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
+#if true
+            this.InitializeAllInterfaces(module, false, true);
+#else
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
             (this as ICommonLinkerOptions).Defaults(module);
+#endif
         }
 
         void

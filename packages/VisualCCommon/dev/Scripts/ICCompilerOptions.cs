@@ -20,7 +20,8 @@ namespace VisualCCommon
 {
 namespace V2
 {
-    public interface ICommonCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         bool VCCommonCommon
         {
@@ -29,7 +30,8 @@ namespace V2
         }
     }
 
-    public interface ICOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         int VCCommonCOnly
         {
@@ -38,7 +40,8 @@ namespace V2
         }
     }
 
-    public interface ICxxOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         string VCCommonCxxOnly
         {

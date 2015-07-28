@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using System.Linq;
 using C.V2.DefaultSettings;
 using C.Cxx.V2.DefaultSettings;
 namespace VisualC
@@ -403,7 +404,8 @@ namespace VisualC
 
 namespace V2
 {
-    public interface ICommonCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         bool VC12Common
         {
@@ -412,7 +414,8 @@ namespace V2
         }
     }
 
-    public interface ICOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         int VC12COnly
         {
@@ -421,7 +424,8 @@ namespace V2
         }
     }
 
-    public interface ICxxOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         Bam.Core.EPlatform VC12CxxOnly
         {
@@ -430,15 +434,16 @@ namespace V2
         }
     }
 }
+
     // V2
     public class CompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
-        VisualCCommon.V2.ICommonCompilerOptions,
-        VisualCCommon.V2.ICOnlyCompilerOptions,
-        VisualC.V2.ICommonCompilerOptions,
-        VisualC.V2.ICOnlyCompilerOptions,
+        //VisualCCommon.V2.ICommonCompilerOptions,
+        //VisualCCommon.V2.ICOnlyCompilerOptions,
+        //VisualC.V2.ICommonCompilerOptions,
+        //VisualC.V2.ICOnlyCompilerOptions,
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject
     {
@@ -449,11 +454,15 @@ namespace V2
 
         public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             (this as C.V2.ICommonCompilerOptions).Empty();
             if (useDefaults)
             {
                 (this as C.V2.ICommonCompilerOptions).Defaults(module);
             }
+#endif
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
@@ -534,6 +543,7 @@ namespace V2
             set;
         }
 
+#if false
         bool VisualCCommon.V2.ICommonCompilerOptions.VCCommonCommon
         {
             get;
@@ -557,6 +567,7 @@ namespace V2
             get;
             set;
         }
+#endif
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
@@ -565,10 +576,10 @@ namespace V2
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            //(this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            //(this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            //(this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            //(this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
         void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
@@ -578,15 +589,15 @@ namespace V2
     }
 
     public sealed class CxxCompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICxxOnlyCompilerOptions,
-        VisualCCommon.V2.ICommonCompilerOptions,
-        VisualCCommon.V2.ICxxOnlyCompilerOptions,
-        VisualC.V2.ICommonCompilerOptions,
-        VisualC.V2.ICxxOnlyCompilerOptions
+        C.V2.ICxxOnlyCompilerOptions
+        //VisualCCommon.V2.ICommonCompilerOptions,
+        //VisualCCommon.V2.ICxxOnlyCompilerOptions,
+        //VisualC.V2.ICommonCompilerOptions,
+        //VisualC.V2.ICxxOnlyCompilerOptions
     {
         public CxxCompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -595,6 +606,9 @@ namespace V2
 
         public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             (this as C.V2.ICommonCompilerOptions).Empty();
             (this as C.V2.ICxxOnlyCompilerOptions).Empty();
             if (useDefaults)
@@ -602,6 +616,7 @@ namespace V2
                 (this as C.V2.ICommonCompilerOptions).Defaults(module);
                 (this as C.V2.ICxxOnlyCompilerOptions).Defaults(module);
             }
+#endif
         }
 
         void
@@ -609,12 +624,15 @@ namespace V2
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            // TODO: iterate in reflection, in a well defined static class
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+#if false
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as VisualCCommon.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
             (this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as VisualC.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+#endif
         }
 
         void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
@@ -707,6 +725,7 @@ namespace V2
             set;
         }
 
+#if false
         bool VisualCCommon.V2.ICommonCompilerOptions.VCCommonCommon
         {
             get;
@@ -730,6 +749,7 @@ namespace V2
             get;
             set;
         }
+#endif
     }
 
     public static class Configure

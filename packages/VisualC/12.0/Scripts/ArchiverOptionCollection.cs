@@ -69,20 +69,25 @@ namespace VisualC
 
 namespace V2
 {
-    public interface ICommonArchiverOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonArchiverOptions : Bam.Core.V2.ISettingsBase
     {
     }
 
     public class ArchiverSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         C.V2.ICommonArchiverOptions,
-        ICommonArchiverOptions,
+        //ICommonArchiverOptions,
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject
     {
         public ArchiverSettings(Bam.Core.V2.Module module)
         {
+#if true
+            this.InitializeAllInterfaces(module, false, true);
+#else
             (this as C.V2.ICommonArchiverOptions).Defaults(module);
+#endif
         }
 
         C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType

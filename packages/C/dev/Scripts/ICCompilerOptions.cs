@@ -71,13 +71,69 @@ namespace DefaultSettings
         }
     }
 }
+    public abstract class SettingsBase :
+        Bam.Core.V2.Settings
+    {
+        protected void
+        InitializeAllInterfaces(
+            Bam.Core.V2.Module module,
+            bool emptyFirst,
+            bool useDefaults)
+        {
+            var attributeType = typeof(Bam.Core.V2.SettingsExtensionsAttribute);
+            var moduleType = typeof(Bam.Core.V2.Module);
+            var baseI = typeof(Bam.Core.V2.ISettingsBase);
+            foreach (var i in this.GetType().GetInterfaces())
+            {
+                // is it a true settings interface?
+                if (!baseI.IsAssignableFrom(i))
+                {
+                    continue;
+                }
+                if (i == baseI)
+                {
+                    continue;
+                }
+
+                var attributeArray = i.GetCustomAttributes(attributeType, false);
+                if (0 == attributeArray.Length)
+                {
+                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                }
+
+                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
+
+                if (emptyFirst)
+                {
+                    var emptyMethod = attribute.GetMethod("Empty", new[] { i });
+                    if (null == emptyMethod)
+                    {
+                        throw new Bam.Core.Exception("Unable to find method {0}.Empty({1})", attribute.ClassType.ToString(), i.ToString());
+                    }
+                    emptyMethod.Invoke(null, new[] { this });
+                }
+
+                if (useDefaults)
+                {
+                    var defaultMethod = attribute.GetMethod("Defaults", new[] { i, moduleType });
+                    if (null == defaultMethod)
+                    {
+                        throw new Bam.Core.Exception("Unable to find method {0}.Defaults({1}, {2})", attribute.ClassType.ToString(), i.ToString(), moduleType.ToString());
+                    }
+                    defaultMethod.Invoke(null, new object[] { this, module });
+                }
+            }
+        }
+    }
+
     public enum EBit
     {
         ThirtyTwo = 32,
         SixtyFour = 64
     }
 
-    public interface ICommonCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         EBit? Bits
         {
@@ -158,11 +214,13 @@ namespace DefaultSettings
         }
     }
 
-    public interface ICOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
     }
 
-    public interface IObjectiveCOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IObjectiveCOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         string ConstantStringClass
         {
@@ -171,7 +229,8 @@ namespace DefaultSettings
         }
     }
 
-    public interface IObjectiveCxxOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IObjectiveCxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
     }
 }

@@ -30,7 +30,8 @@ namespace DefaultSettings
         }
     }
 }
-    public interface ILinkerOptionsOSX
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ILinkerOptionsOSX : Bam.Core.V2.ISettingsBase
     {
         Bam.Core.StringArray Frameworks
         {

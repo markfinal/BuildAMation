@@ -31,7 +31,8 @@ namespace DefaultSettings
     }
 }
 
-    public interface ICommonArchiverOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonArchiverOptions : Bam.Core.V2.ISettingsBase
     {
         C.EArchiverOutput OutputType
         {

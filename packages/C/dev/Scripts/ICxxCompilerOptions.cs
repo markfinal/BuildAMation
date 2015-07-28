@@ -20,7 +20,8 @@ namespace C
 {
 namespace V2
 {
-    public interface ICxxOnlyCompilerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.Cxx.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         C.Cxx.EExceptionHandler? ExceptionHandler
         {

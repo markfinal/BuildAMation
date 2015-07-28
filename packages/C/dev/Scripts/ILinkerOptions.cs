@@ -33,7 +33,8 @@ namespace DefaultSettings
     }
 }
 
-    public interface ICommonLinkerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonLinkerOptions : Bam.Core.V2.ISettingsBase
     {
         C.ELinkerOutput OutputType
         {
