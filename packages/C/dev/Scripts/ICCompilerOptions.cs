@@ -88,6 +88,7 @@ namespace DefaultSettings
                 // is it a true settings interface?
                 if (!baseI.IsAssignableFrom(i))
                 {
+                    Bam.Core.Log.DebugMessage("Ignored interface {0} on {1}", i.ToString(), this.GetType().ToString());
                     continue;
                 }
                 if (i == baseI)
@@ -110,6 +111,7 @@ namespace DefaultSettings
                     {
                         throw new Bam.Core.Exception("Unable to find method {0}.Empty({1})", attribute.ClassType.ToString(), i.ToString());
                     }
+                    Bam.Core.Log.DebugMessage("Executing {0}", emptyMethod.ToString());
                     emptyMethod.Invoke(null, new[] { this });
                 }
 
@@ -120,6 +122,7 @@ namespace DefaultSettings
                     {
                         throw new Bam.Core.Exception("Unable to find method {0}.Defaults({1}, {2})", attribute.ClassType.ToString(), i.ToString(), moduleType.ToString());
                     }
+                    Bam.Core.Log.DebugMessage("Executing {0}", defaultMethod.ToString());
                     defaultMethod.Invoke(null, new object[] { this, module });
                 }
             }
