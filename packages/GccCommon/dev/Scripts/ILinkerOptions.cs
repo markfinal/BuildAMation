@@ -20,7 +20,8 @@ namespace GccCommon
 {
 namespace V2
 {
-    public interface ICommonLinkerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(GccCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonLinkerOptions : Bam.Core.V2.ISettingsBase
     {
         bool? CanUseOrigin
         {

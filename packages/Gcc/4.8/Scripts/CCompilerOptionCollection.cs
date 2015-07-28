@@ -309,7 +309,8 @@ namespace V2
         Replace
     }
 
-    public interface IArchiverOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(Gcc.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IArchiverOptions : Bam.Core.V2.ISettingsBase
     {
         bool Ranlib
         {
@@ -331,7 +332,7 @@ namespace V2
     }
 
     public class CompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
@@ -344,6 +345,9 @@ namespace V2
 
         public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             var stdCommonCompilerOptions = this as C.V2.ICommonCompilerOptions;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
@@ -357,6 +361,7 @@ namespace V2
             {
                 commonCompilerOptions.Defaults(module);
             }
+#endif
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
@@ -451,7 +456,7 @@ namespace V2
     }
 
     public sealed class CxxCompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
@@ -464,6 +469,9 @@ namespace V2
 
         public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             var stdCommonCompilerOptions = this as C.V2.ICommonCompilerOptions;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
@@ -484,6 +492,7 @@ namespace V2
             {
                 commonCompilerOptions.Defaults(module);
             }
+#endif
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
@@ -585,7 +594,7 @@ namespace V2
     }
 
     public class ObjectiveCCompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
@@ -599,6 +608,9 @@ namespace V2
 
         public ObjectiveCCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             var stdCommonCompilerOptions = this as C.V2.ICommonCompilerOptions;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
@@ -619,6 +631,7 @@ namespace V2
             {
                 commonCompilerOptions.Defaults(module);
             }
+#endif
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
@@ -720,7 +733,7 @@ namespace V2
     }
 
     public sealed class ObjectiveCxxCompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
@@ -734,6 +747,9 @@ namespace V2
 
         public ObjectiveCxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             var stdCommonCompilerOptions = this as C.V2.ICommonCompilerOptions;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
@@ -754,6 +770,7 @@ namespace V2
             {
                 commonCompilerOptions.Defaults(module);
             }
+#endif
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
@@ -855,15 +872,19 @@ namespace V2
     }
 
     public class LibrarianSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonArchiverOptions,
         IArchiverOptions
     {
         public LibrarianSettings(Bam.Core.V2.Module module)
         {
+#if true
+            this.InitializeAllInterfaces(module, false, true);
+#else
             (this as C.V2.ICommonArchiverOptions).Defaults(module);
             (this as IArchiverOptions).Defaults(module);
+#endif
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
@@ -899,15 +920,19 @@ namespace V2
     }
 
     public class LinkerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonLinkerOptions,
         GccCommon.V2.ICommonLinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
+#if true
+            this.InitializeAllInterfaces(module, false, true);
+#else
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
             (this as GccCommon.V2.ICommonLinkerOptions).Defaults(module);
+#endif
         }
 
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
