@@ -219,7 +219,7 @@ namespace DefaultSettings
     {
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.V2.SettingsExtensions(typeof(C.ObjC.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface IObjectiveCOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
         string ConstantStringClass
