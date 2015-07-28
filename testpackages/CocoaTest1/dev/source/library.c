@@ -20,5 +20,5 @@ along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 
 const char *getWindowTitle()
 {
-	return "Hello World";
+    return "Hello World";
 }
