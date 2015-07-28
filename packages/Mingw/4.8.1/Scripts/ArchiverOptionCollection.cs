@@ -34,7 +34,8 @@ namespace DefaultSettings
         }
     }
 }
-    public interface IArchiverOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IArchiverOptions : Bam.Core.V2.ISettingsBase
     {
         bool Ranlib
         {
@@ -102,15 +103,19 @@ namespace DefaultSettings
     }
 
     public class LibrarianSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         C.V2.ICommonArchiverOptions,
         IArchiverOptions,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
         public LibrarianSettings(Bam.Core.V2.Module module)
         {
+#if true
+            this.InitializeAllInterfaces(module, false, true);
+#else
             (this as C.V2.ICommonArchiverOptions).Defaults(module);
             (this as IArchiverOptions).Defaults(module);
+#endif
         }
 
         C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType

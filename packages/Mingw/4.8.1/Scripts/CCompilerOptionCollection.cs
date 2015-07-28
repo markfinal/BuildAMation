@@ -223,7 +223,7 @@ namespace Mingw
 namespace V2
 {
     public class CompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
@@ -239,12 +239,15 @@ namespace V2
 
         public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
-            // TODO: other defaults
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             (this as C.V2.ICommonCompilerOptions).Empty();
             if (useDefaults)
             {
                 (this as C.V2.ICommonCompilerOptions).Defaults(module);
             }
+#endif
         }
 
         void
@@ -364,7 +367,7 @@ namespace V2
     }
 
     public sealed class CxxCompilerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
@@ -380,7 +383,9 @@ namespace V2
 
         public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
         {
-            // TODO: other defaults
+#if true
+            this.InitializeAllInterfaces(module, true, useDefaults);
+#else
             (this as C.V2.ICommonCompilerOptions).Empty();
             (this as C.V2.ICxxOnlyCompilerOptions).Empty();
             if (useDefaults)
@@ -388,6 +393,7 @@ namespace V2
                 (this as C.V2.ICommonCompilerOptions).Defaults(module);
                 (this as C.V2.ICxxOnlyCompilerOptions).Defaults(module);
             }
+#endif
         }
 
         void

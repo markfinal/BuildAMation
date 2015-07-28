@@ -31,7 +31,8 @@ namespace DefaultSettings
         }
     }
 }
-    public interface ILinkerOptions
+    [Bam.Core.V2.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ILinkerOptions : Bam.Core.V2.ISettingsBase
     {
     }
 
@@ -77,15 +78,19 @@ namespace DefaultSettings
     }
 
     public sealed class LinkerSettings :
-        Bam.Core.V2.Settings,
+        C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonLinkerOptions,
         ILinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
+#if true
+            this.InitializeAllInterfaces(module, false, true);
+#else
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
             (this as ILinkerOptions).Defaults(module);
+#endif
         }
 
         void
