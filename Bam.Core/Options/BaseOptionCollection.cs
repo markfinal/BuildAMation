@@ -20,6 +20,33 @@ namespace Bam.Core
 {
 namespace V2
 {
+    [System.AttributeUsage(System.AttributeTargets.Interface)]
+    public sealed class SettingsExtensionsAttribute : System.Attribute
+    {
+        public SettingsExtensionsAttribute(System.Type extensionClass)
+        {
+            this.ClassType = extensionClass;
+        }
+
+        public System.Type ClassType
+        {
+            get;
+            private set;
+        }
+
+        public System.Reflection.MethodInfo
+        GetMethod(
+            string name,
+            params System.Type[] inputs)
+        {
+            return this.ClassType.GetMethod(name, inputs);
+        }
+    }
+
+    public interface ISettingsBase
+    {
+    }
+
     /// <summary>
     /// Abstract base class for all settings
     /// </summary>
