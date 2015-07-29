@@ -382,7 +382,6 @@ namespace V2
                         {
                             var tool = this.CreateProjectElement("Lib");
                             configGroup.Element.AppendChild(tool);
-
                             (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, tool, null);
                         }
                         break;
@@ -391,8 +390,7 @@ namespace V2
                         {
                             var tool = this.CreateProjectElement("Link");
                             configGroup.Element.AppendChild(tool);
-
-                            // TODO: convert settings
+                            (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, tool, null);
                         }
                         break;
                 }

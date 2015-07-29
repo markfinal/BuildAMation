@@ -64,6 +64,38 @@ namespace VisualC
         }
     }
 
+    public static partial class VSSolutionImplementation
+    {
+        public static void
+        Convert(
+            this C.V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
+        {
+            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+        }
+
+        public static void
+        Convert(
+            this V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
+        {
+            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+
+            project.AddToolSetting(groupElement, "SuppressStartupBanner", options.NoLogo, configuration,
+                (setting, attributeName, builder) =>
+                {
+                    if (options.NoLogo.GetValueOrDefault())
+                    {
+                        builder.Append(options.NoLogo.ToString().ToLower());
+                    }
+                });
+        }
+    }
+
 namespace V2
 {
     namespace DefaultSettings
@@ -89,9 +121,10 @@ namespace V2
 
     public class LinkerSettings :
         C.V2.SettingsBase,
-        CommandLineProcessor.V2.IConvertToCommandLine,
         C.V2.ICommonLinkerOptions,
-        ICommonLinkerOptions
+        ICommonLinkerOptions,
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        VisualStudioProcessor.V2.IConvertToProject
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
@@ -101,15 +134,6 @@ namespace V2
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
             (this as ICommonLinkerOptions).Defaults(module);
 #endif
-        }
-
-        void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
-            (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -134,6 +158,25 @@ namespace V2
         {
             get;
             set;
+        }
+
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as ICommonLinkerOptions).Convert(module, commandLine);
+        }
+
+        void
+        VisualStudioProcessor.V2.IConvertToProject.Convert(
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, groupElement, configuration);
+            (this as ICommonLinkerOptions).Convert(module, groupElement, configuration);
         }
     }
 
