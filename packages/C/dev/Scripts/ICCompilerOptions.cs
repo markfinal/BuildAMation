@@ -104,6 +104,8 @@ namespace DefaultSettings
 
                 var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
 
+                // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
+                // although it won't then be a centralized definition, so the extension method as-is is probably better
                 if (emptyFirst)
                 {
                     var emptyMethod = attribute.GetMethod("Empty", new[] { i });
