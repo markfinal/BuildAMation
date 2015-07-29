@@ -32,7 +32,8 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
-            var application = new VSSolutionBuilder.V2.VSProjectProgram(sender, executablePath);
+            var platform = sender.Linker is VisualC.V2.Linker64 ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
+            var application = new VSSolutionBuilder.V2.VSProjectProgram(sender, executablePath, platform);
             foreach (var input in objectFiles)
             {
                 application.SetCommonCompilationOptions(input, input.Settings);

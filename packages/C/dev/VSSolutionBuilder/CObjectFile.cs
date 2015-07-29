@@ -30,7 +30,8 @@ namespace V2
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
-            var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender, objectFilePath);
+            var platform = (sender.Compiler is VisualC.Compiler64 || sender.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
+            var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender, objectFilePath, platform);
             objectFile.Source = source.GeneratedPaths[C.V2.SourceFile.Key];
         }
     }

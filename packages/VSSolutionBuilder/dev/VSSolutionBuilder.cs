@@ -585,25 +585,31 @@ namespace V2
 
     public abstract class VSSolutionMeta
     {
+        public enum EPlatform
+        {
+            ThirtyTwo,
+            SixtyFour
+        }
+
         protected VSSolutionMeta(
             Bam.Core.V2.Module module,
             VSProject.Type type,
-            Bam.Core.V2.TokenizedString outPath)
+            Bam.Core.V2.TokenizedString outPath,
+            EPlatform platform)
         {
             var graph = Bam.Core.V2.Graph.Instance;
             var isReferenced = graph.IsReferencedModule(module);
             this.IsProjectModule = isReferenced;
 
-            // TODO: platform isn't the Environment platform, but the tools in use
-            var platform = "Win32";
-            this.Configuration = VSProject.GetConfigurationName(module.BuildEnvironment.Configuration.ToString(), platform);
+            var platformName = (platform == EPlatform.SixtyFour) ? "x64" : "Win32";
+            this.Configuration = VSProject.GetConfigurationName(module.BuildEnvironment.Configuration.ToString(), platformName);
 
             if (isReferenced)
             {
                 var solution = graph.MetaData as VSSolution;
                 this.Project = solution.FindOrCreateProject(module.GetType(), type);
 
-                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platform, module, outPath);
+                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platformName, module, outPath);
 
                 var projectPath = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module);
                 projectPath.Parse();
@@ -694,8 +700,9 @@ namespace V2
     {
         public VSProjectObjectFile(
             Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString objectFilePath)
-            : base(module, VSProject.Type.NA, objectFilePath)
+            Bam.Core.V2.TokenizedString objectFilePath,
+            VSSolutionMeta.EPlatform platform)
+            : base(module, VSProject.Type.NA, objectFilePath, platform)
         { }
 
         public Bam.Core.V2.TokenizedString Source
@@ -717,8 +724,9 @@ namespace V2
     {
         public VSProjectStaticLibrary(
             Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString libraryPath) :
-            base(module, VSProject.Type.StaticLibrary, libraryPath)
+            Bam.Core.V2.TokenizedString libraryPath,
+            VSSolutionMeta.EPlatform platform) :
+            base(module, VSProject.Type.StaticLibrary, libraryPath, platform)
         {
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
         }
@@ -746,8 +754,9 @@ namespace V2
     {
         public VSProjectProgram(
             Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString applicationPath) :
-            base(module, VSProject.Type.Application, applicationPath)
+            Bam.Core.V2.TokenizedString applicationPath,
+            VSSolutionMeta.EPlatform platform) :
+            base(module, VSProject.Type.Application, applicationPath, platform)
         {
             this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
             this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
