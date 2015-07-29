@@ -20,7 +20,7 @@ namespace C
 {
 namespace V2
 {
-    public sealed class VSSolutionLinker :
+    public sealed partial class VSSolutionLinker :
         ILinkerPolicy
     {
         void
@@ -33,7 +33,15 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
             var platform = sender.Linker is VisualC.V2.Linker64 ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
-            var application = new VSSolutionBuilder.V2.VSProjectProgram(sender, executablePath, platform);
+            VSSolutionBuilder.V2.VSCommonLinkableProject application = null;
+            if (sender is DynamicLibrary)
+            {
+                application = new VSSolutionBuilder.V2.VSProjectDynamicLibrary(sender, executablePath, platform);
+            }
+            else
+            {
+                application = new VSSolutionBuilder.V2.VSProjectProgram(sender, executablePath, platform);
+            }
             foreach (var input in objectFiles)
             {
                 application.SetCommonCompilationOptions(input, input.Settings);
@@ -63,7 +71,7 @@ namespace V2
                 }
                 else if (input is C.V2.DynamicLibrary)
                 {
-                    throw new Bam.Core.Exception("Don't know how to handle this: dynamic");
+                    application.AddDynamicLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectDynamicLibrary);
                 }
                 else if (input is C.V2.CSDKModule)
                 {

@@ -207,6 +207,7 @@ namespace V2
         {
             NA,
             StaticLibrary,
+            DynamicLibrary,
             Application
         }
 
@@ -360,6 +361,13 @@ namespace V2
                     case VSProject.Type.Application:
                         configType.InnerText = "Application";
                         break;
+
+                    case VSProject.Type.DynamicLibrary:
+                        configType.InnerText = "DynamicLibrary";
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unknown project type, {0}", this.ProjectType.ToString());
                 }
                 configProps.Element.AppendChild(configType);
                 var platformToolset = this.CreateProjectElement("PlatformToolset", "v120"); // TODO: dependent upon the version of VisualC
@@ -387,12 +395,16 @@ namespace V2
                         break;
 
                     case VSProject.Type.Application:
+                    case VSProject.Type.DynamicLibrary:
                         {
                             var tool = this.CreateProjectElement("Link");
                             configGroup.Element.AppendChild(tool);
                             (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, tool, null);
                         }
                         break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unknown project type, {0}", this.ProjectType.ToString());
                 }
                 this.Project.InsertAfter(configGroup.Element, this.LanguageImport.Element);
             }
@@ -718,9 +730,32 @@ namespace V2
         }
     }
 
+    public abstract class VSCommonProject :
+        VSSolutionMeta
+    {
+        protected VSCommonProject(
+            Bam.Core.V2.Module module,
+            VSProject.Type type,
+            Bam.Core.V2.TokenizedString outPath,
+            EPlatform platform) :
+            base(module, type, outPath, platform)
+        {
+        }
+
+        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
+        {
+            this.Project.AddSourceFile(module, patchSettings, configuration);
+        }
+
+        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        {
+            this.Project.SetCommonCompilationOptions(module, settings);
+        }
+    }
+
     // TODO: add XML document
     public sealed class VSProjectStaticLibrary :
-        VSSolutionMeta
+        VSCommonProject
     {
         public VSProjectStaticLibrary(
             Bam.Core.V2.Module module,
@@ -728,57 +763,23 @@ namespace V2
             VSSolutionMeta.EPlatform platform) :
             base(module, VSProject.Type.StaticLibrary, libraryPath, platform)
         {
-            this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
-        }
-
-        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
-        {
-            this.Project.AddSourceFile(module, patchSettings, configuration);
-        }
-
-        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
-        {
-            this.Project.SetCommonCompilationOptions(module, settings);
-        }
-
-        private System.Collections.Generic.List<VSProjectObjectFile> ObjectFiles
-        {
-            get;
-            set;
         }
     }
 
-    // TODO: add XML document
-    public sealed class VSProjectProgram :
-        VSSolutionMeta
+    public abstract class VSCommonLinkableProject :
+        VSCommonProject
     {
-        public VSProjectProgram(
+        protected VSCommonLinkableProject(
             Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString applicationPath,
-            VSSolutionMeta.EPlatform platform) :
-            base(module, VSProject.Type.Application, applicationPath, platform)
+            VSProject.Type type,
+            Bam.Core.V2.TokenizedString outPath,
+            EPlatform platform) :
+            base(module, type, outPath, platform)
         {
-            this.ObjectFiles = new System.Collections.Generic.List<VSProjectObjectFile>();
-            this.Libraries = new System.Collections.Generic.List<VSProjectStaticLibrary>();
+            this.Libraries = new System.Collections.Generic.List<VSSolutionMeta>();
         }
 
-        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
-        {
-            this.Project.AddSourceFile(module, patchSettings, configuration);
-        }
-
-        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
-        {
-            this.Project.SetCommonCompilationOptions(module, settings);
-        }
-
-        private System.Collections.Generic.List<VSProjectObjectFile> ObjectFiles
-        {
-            get;
-            set;
-        }
-
-        private System.Collections.Generic.List<VSProjectStaticLibrary> Libraries
+        private System.Collections.Generic.List<VSSolutionMeta> Libraries
         {
             get;
             set;
@@ -795,6 +796,45 @@ namespace V2
 
             this.Libraries.Add(library);
             this.Project.AddDependentProject(library.Project);
+        }
+
+        public void
+        AddDynamicLibrary(
+            VSProjectDynamicLibrary library)
+        {
+            if (this.Libraries.Contains(library))
+            {
+                return;
+            }
+
+            this.Libraries.Add(library);
+            this.Project.AddDependentProject(library.Project);
+        }
+    }
+
+    // TODO: add XML document
+    public sealed class VSProjectDynamicLibrary :
+        VSCommonLinkableProject
+    {
+        public VSProjectDynamicLibrary(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString libraryPath,
+            VSSolutionMeta.EPlatform platform) :
+            base(module, VSProject.Type.DynamicLibrary, libraryPath, platform)
+        {
+        }
+    }
+
+    // TODO: add XML document
+    public sealed class VSProjectProgram :
+        VSCommonLinkableProject
+    {
+        public VSProjectProgram(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString applicationPath,
+            VSSolutionMeta.EPlatform platform) :
+            base(module, VSProject.Type.Application, applicationPath, platform)
+        {
         }
     }
 }
