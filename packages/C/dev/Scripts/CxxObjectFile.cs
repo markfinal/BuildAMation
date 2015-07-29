@@ -30,10 +30,6 @@ namespace DefaultSettings
             // TODO: separate C language standards from C++
             (settings as C.V2.ICommonCompilerOptions).LanguageStandard = ELanguageStandard.Cxx98;
         }
-        public static void Empty(this C.V2.ICxxOnlyCompilerOptions settings)
-        {
-            settings.ExceptionHandler = null;
-        }
     }
 }
     public class ObjectFile :

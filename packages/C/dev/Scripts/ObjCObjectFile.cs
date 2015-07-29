@@ -27,10 +27,6 @@ namespace DefaultSettings
         public static void Defaults(this C.V2.IObjectiveCOnlyCompilerOptions settings, Bam.Core.V2.Module module)
         {
         }
-        public static void Empty(this C.V2.IObjectiveCOnlyCompilerOptions settings)
-        {
-            settings.ConstantStringClass = null;
-        }
     }
 }
     public class ObjectFile :

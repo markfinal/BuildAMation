@@ -55,19 +55,11 @@ namespace DefaultSettings
         }
         public static void Empty(this C.V2.ICommonCompilerOptions settings)
         {
-            settings.Bits = null;
-            settings.DebugSymbols = null;
             settings.DisableWarnings = new Bam.Core.StringArray();
             settings.IncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
-            settings.LanguageStandard = null;
-            settings.OmitFramePointer = null;
-            settings.Optimization = null;
-            settings.OutputType = null;
             settings.PreprocessorDefines = new PreprocessorDefinitions();
             settings.PreprocessorUndefines = new Bam.Core.StringArray();
             settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
-            settings.TargetLanguage = null;
-            settings.WarningsAsErrors = null;
         }
     }
 }
@@ -109,12 +101,15 @@ namespace DefaultSettings
                 if (emptyFirst)
                 {
                     var emptyMethod = attribute.GetMethod("Empty", new[] { i });
-                    if (null == emptyMethod)
+                    if (null != emptyMethod)
                     {
-                        throw new Bam.Core.Exception("Unable to find method {0}.Empty({1})", attribute.ClassType.ToString(), i.ToString());
+                        Bam.Core.Log.DebugMessage("Executing {0}", emptyMethod.ToString());
+                        emptyMethod.Invoke(null, new[] { this });
                     }
-                    Bam.Core.Log.DebugMessage("Executing {0}", emptyMethod.ToString());
-                    emptyMethod.Invoke(null, new[] { this });
+                    else
+                    {
+                        Bam.Core.Log.DebugMessage("Unable to find method {0}.Empty({1})", attribute.ClassType.ToString(), i.ToString());
+                    }
                 }
 
                 if (useDefaults)

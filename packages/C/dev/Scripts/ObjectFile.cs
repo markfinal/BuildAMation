@@ -27,9 +27,6 @@ namespace V2
             public static void Defaults(this C.V2.ICOnlyCompilerOptions settings, Bam.Core.V2.Module module)
             {
             }
-            public static void Empty(this C.V2.ICOnlyCompilerOptions settings)
-            {
-            }
         }
     }
 

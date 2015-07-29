@@ -31,12 +31,6 @@ namespace V2
             }
 
             public static void
-            Empty(this GccCommon.V2.ICommonCompilerOptions settings)
-            {
-                settings.PositionIndependentCode = null;
-            }
-
-            public static void
             Defaults(this GccCommon.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
             {
                 settings.CanUseOrigin = false;
