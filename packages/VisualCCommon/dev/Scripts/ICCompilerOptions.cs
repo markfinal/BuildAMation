@@ -20,10 +20,21 @@ namespace VisualCCommon
 {
 namespace V2
 {
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this VisualCCommon.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
+        {
+            settings.NoLogo = true;
+        }
+    }
+}
+
+    [Bam.Core.V2.SettingsExtensions(typeof(VisualCCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
     {
-        bool VCCommonCommon
+        bool? NoLogo
         {
             get;
             set;

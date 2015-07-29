@@ -42,12 +42,21 @@ namespace VisualC
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            if (options.NoLogo.GetValueOrDefault())
+            {
+                commandLine.Add("-NOLOGO");
+            }
         }
     }
 
     public static partial class VSSolutionImplementation
     {
-        public static void Convert(this C.V2.ICommonArchiverOptions options, Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
+        public static void
+        Convert(
+            this C.V2.ICommonArchiverOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
@@ -65,19 +74,53 @@ namespace VisualC
                     }
                 });
         }
+
+        public static void
+        Convert(
+            this V2.ICommonArchiverOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
+        {
+            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+
+            project.AddToolSetting(groupElement, "SuppressStartupBanner", options.NoLogo, configuration,
+                (setting, attributeName, builder) =>
+                {
+                    if (options.NoLogo.GetValueOrDefault())
+                    {
+                        builder.Append(options.NoLogo.ToString().ToLower());
+                    }
+                });
+        }
     }
 
 namespace V2
 {
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+namespace DefaultSettings
+{
+    static partial class DefaultSettingsExtensions
+    {
+        public static void Defaults(this ICommonArchiverOptions settings, Bam.Core.V2.Module module)
+        {
+            settings.NoLogo = true;
+        }
+    }
+}
+    [Bam.Core.V2.SettingsExtensions(typeof(VisualC.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonArchiverOptions : Bam.Core.V2.ISettingsBase
     {
+        bool? NoLogo
+        {
+            get;
+            set;
+        }
     }
 
     public class ArchiverSettings :
         C.V2.SettingsBase,
         C.V2.ICommonArchiverOptions,
-        //ICommonArchiverOptions,
+        ICommonArchiverOptions,
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject
     {
@@ -91,6 +134,12 @@ namespace V2
         }
 
         C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        bool? ICommonArchiverOptions.NoLogo
         {
             get;
             set;

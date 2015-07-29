@@ -190,6 +190,15 @@ namespace VisualC
 
         public static void
         Convert(
+            this C.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
+        {
+        }
+
+        public static void
+        Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
@@ -219,6 +228,25 @@ namespace VisualC
                             default:
                                 throw new Bam.Core.Exception("Unrecognized exception handler option");
                         }
+                    });
+            }
+        }
+
+        public static void
+        Convert(
+            this VisualCCommon.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            string configuration)
+        {
+            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+
+            if (null != options.NoLogo)
+            {
+                project.AddToolSetting(groupElement, "SuppressStartupBanner", options.NoLogo, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        builder.Append(options.NoLogo.ToString().ToLower());
                     });
             }
         }
@@ -359,6 +387,13 @@ namespace VisualC
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            if (null != options.NoLogo)
+            {
+                if (options.NoLogo == true)
+                {
+                    commandLine.Add("-nologo");
+                }
+            }
         }
 
         public static void
@@ -440,7 +475,7 @@ namespace V2
         C.V2.SettingsBase,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
-        //VisualCCommon.V2.ICommonCompilerOptions,
+        VisualCCommon.V2.ICommonCompilerOptions,
         //VisualCCommon.V2.ICOnlyCompilerOptions,
         //VisualC.V2.ICommonCompilerOptions,
         //VisualC.V2.ICOnlyCompilerOptions,
@@ -543,13 +578,13 @@ namespace V2
             set;
         }
 
-#if false
-        bool VisualCCommon.V2.ICommonCompilerOptions.VCCommonCommon
+        bool? VisualCCommon.V2.ICommonCompilerOptions.NoLogo
         {
             get;
             set;
         }
 
+#if false
         int VisualCCommon.V2.ICOnlyCompilerOptions.VCCommonCOnly
         {
             get;
@@ -576,7 +611,7 @@ namespace V2
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            //(this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
             //(this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
             //(this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
             //(this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
@@ -585,6 +620,8 @@ namespace V2
         void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module, groupElement, configuration);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
         }
     }
 
@@ -593,8 +630,8 @@ namespace V2
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICxxOnlyCompilerOptions
-        //VisualCCommon.V2.ICommonCompilerOptions,
+        C.V2.ICxxOnlyCompilerOptions,
+        VisualCCommon.V2.ICommonCompilerOptions
         //VisualCCommon.V2.ICxxOnlyCompilerOptions,
         //VisualC.V2.ICommonCompilerOptions,
         //VisualC.V2.ICxxOnlyCompilerOptions
@@ -627,8 +664,8 @@ namespace V2
             // TODO: iterate in reflection, in a well defined static class
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-#if false
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+#if false
             (this as VisualCCommon.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
             (this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as VisualC.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
@@ -639,6 +676,7 @@ namespace V2
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, groupElement, configuration);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
@@ -725,13 +763,13 @@ namespace V2
             set;
         }
 
-#if false
-        bool VisualCCommon.V2.ICommonCompilerOptions.VCCommonCommon
+        bool? VisualCCommon.V2.ICommonCompilerOptions.NoLogo
         {
             get;
             set;
         }
 
+#if false
         string VisualCCommon.V2.ICxxOnlyCompilerOptions.VCCommonCxxOnly
         {
             get;

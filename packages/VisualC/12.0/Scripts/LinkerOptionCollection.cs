@@ -57,6 +57,10 @@ namespace VisualC
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            if (options.NoLogo.GetValueOrDefault())
+            {
+                commandLine.Add("-NOLOGO");
+            }
         }
     }
 
@@ -68,20 +72,26 @@ namespace V2
         {
             public static void Defaults(this VisualC.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
             {
+                settings.NoLogo = true;
             }
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.V2.SettingsExtensions(typeof(VisualC.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerOptions : Bam.Core.V2.ISettingsBase
     {
+        bool? NoLogo
+        {
+            get;
+            set;
+        }
     }
 
     public class LinkerSettings :
         C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
-        C.V2.ICommonLinkerOptions
-        //ICommonLinkerOptions
+        C.V2.ICommonLinkerOptions,
+        ICommonLinkerOptions
     {
         public LinkerSettings(Bam.Core.V2.Module module)
         {
@@ -115,6 +125,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? ICommonLinkerOptions.NoLogo
         {
             get;
             set;
