@@ -56,7 +56,23 @@ namespace V2
             }
             foreach (var input in libraries)
             {
-                application.AddStaticLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectStaticLibrary);
+                if (input is C.V2.StaticLibrary)
+                {
+                    application.AddStaticLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectStaticLibrary);
+                }
+                else if (input is C.V2.DynamicLibrary)
+                {
+                    throw new Bam.Core.Exception("Don't know how to handle this: dynamic");
+                }
+                else if (input is C.V2.CSDKModule)
+                {
+                    // do nothing for SDKs
+                    continue;
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Don't know how to handle this: other");
+                }
             }
         }
     }
