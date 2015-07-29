@@ -29,6 +29,7 @@ namespace DefaultSettings
             settings.OutputType = ELinkerOutput.Executable;
             settings.LibraryPaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             settings.Libraries = new Bam.Core.StringArray();
+            settings.DebugSymbols = (module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug || module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Profile);
         }
     }
 }
@@ -49,6 +50,12 @@ namespace DefaultSettings
         }
 
         Bam.Core.StringArray Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? DebugSymbols
         {
             get;
             set;

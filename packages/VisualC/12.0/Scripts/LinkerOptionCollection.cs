@@ -49,6 +49,10 @@ namespace VisualC
             {
                 commandLine.Add(path);
             }
+            if (options.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-DEBUG");
+            }
         }
 
         public static void
@@ -127,6 +131,11 @@ namespace VisualC
                         }
                     });
             }
+            project.AddToolSetting(groupElement, "GenerateDebugInformation", options.DebugSymbols, configuration,
+                (setting, attributeName, builder) =>
+                {
+                    builder.AppendFormat(setting.Value.ToString().ToLower());
+                });
         }
 
         public static void
@@ -202,6 +211,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonLinkerOptions.DebugSymbols
         {
             get;
             set;

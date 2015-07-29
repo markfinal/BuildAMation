@@ -234,6 +234,12 @@ namespace Clang
                 }
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
             }
+            if (options.DebugSymbols.GetValueOrDefault())
+            {
+                var option = new XcodeBuilder.V2.MultiConfigurationValue();
+                option.Add("-g");
+                configuration["OTHER_LDFLAGS"] = option;
+            }
         }
 
         public static void
@@ -520,6 +526,10 @@ namespace Clang
             foreach (var path in options.Libraries)
             {
                 commandLine.Add(path);
+            }
+            if (options.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-g");
             }
         }
 
@@ -1162,6 +1172,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonLinkerOptions.DebugSymbols
         {
             get;
             set;

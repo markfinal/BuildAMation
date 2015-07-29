@@ -66,6 +66,10 @@ namespace DefaultSettings
             {
                 commandLine.Add(path);
             }
+            if (options.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-g");
+            }
         }
 
         public static void
@@ -115,6 +119,12 @@ namespace DefaultSettings
         }
 
         Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonLinkerOptions.DebugSymbols
         {
             get;
             set;

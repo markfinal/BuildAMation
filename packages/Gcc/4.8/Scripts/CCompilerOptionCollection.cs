@@ -286,6 +286,10 @@ namespace Gcc
             {
                 commandLine.Add(path);
             }
+            if (options.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-g");
+            }
         }
     }
 
@@ -954,6 +958,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonLinkerOptions.DebugSymbols
         {
             get;
             set;
