@@ -74,6 +74,59 @@ namespace VisualC
             string configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
+
+            project.AddToolSetting(groupElement, "OutputFile", options.OutputType, configuration,
+                (setting, attributeName, builder) =>
+                {
+                    switch (setting)
+                    {
+                        case C.ELinkerOutput.Executable:
+                            {
+                                var outPath = module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString();
+                                builder.Append(System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)));
+                            }
+                            break;
+
+                        case C.ELinkerOutput.DynamicLibrary:
+                            {
+                                var outPath = module.GeneratedPaths[C.V2.DynamicLibrary.Key].ToString();
+                                builder.Append(System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)));
+                            }
+                            break;
+                    }
+                });
+            if (C.ELinkerOutput.DynamicLibrary == options.OutputType)
+            {
+                project.AddToolSetting(groupElement, "ImportLibrary", options.OutputType, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        var outPath = module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                        builder.Append(System.String.Format("$(IntDir)\\{0}", System.IO.Path.GetFileName(outPath)));
+                    });
+            }
+
+            if (options.LibraryPaths.Count > 0)
+            {
+                project.AddToolSetting(groupElement, "AdditionalLibraryDirectories", options.LibraryPaths, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        foreach (var path in options.LibraryPaths)
+                        {
+                            builder.AppendFormat("{0};", path);
+                        }
+                    });
+            }
+            if (options.Libraries.Count > 0)
+            {
+                project.AddToolSetting(groupElement, "AdditionalDependencies", options.Libraries, configuration,
+                    (setting, attributeName, builder) =>
+                    {
+                        foreach (var path in options.Libraries)
+                        {
+                            builder.AppendFormat("{0};", path);
+                        }
+                    });
+            }
         }
 
         public static void
