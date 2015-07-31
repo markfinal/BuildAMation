@@ -241,6 +241,14 @@ namespace V2
             }
         }
 
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependees
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependeesList);
+            }
+        }
+
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirements
         {
             get
