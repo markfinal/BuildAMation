@@ -16,6 +16,49 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace Publisher
+{
+namespace V2
+{
+    public sealed class VSSolutionPackager :
+        IPackagePolicy
+    {
+        void
+        IPackagePolicy.Package(
+            Package sender,
+            Bam.Core.V2.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> packageObjects)
+        {
+            // instead of copying to the package root, modules are copied next to their dependees
+            foreach (var module in packageObjects)
+            {
+                foreach (var dependee in module.Key.Dependees)
+                {
+                    if (packageObjects.ContainsKey(dependee))
+                    {
+                        foreach (var path in packageObjects[dependee].Keys)
+                        {
+                            var dir = System.IO.Path.GetDirectoryName(path.ToString());
+                            // the subdir on the dependee is ignored here, as it was never copied anywhere
+                            foreach (var modulePath in module.Value)
+                            {
+                                // the dependent's subdir must be honoured, as the runtime might expect it
+                                var dependentSubDir = modulePath.Value;
+                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
+
+                                var commands = new Bam.Core.StringArray();
+                                commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
+                                commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
+                                (module.Key.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder

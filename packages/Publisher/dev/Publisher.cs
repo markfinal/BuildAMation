@@ -30,14 +30,13 @@ namespace V2
         Package(
             Package sender,
             Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string> packageObjects);
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> packageObjects);
     }
 
     public abstract class Package :
         Bam.Core.V2.Module
     {
-        private Bam.Core.Array<Bam.Core.V2.Module> dependents = new Bam.Core.Array<Bam.Core.V2.Module>();
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string> paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>();
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> dependents = new System.Collections.Generic.Dictionary<Module,System.Collections.Generic.Dictionary<TokenizedString,string>>();
         private IPackagePolicy Policy = null;
         public static Bam.Core.V2.FileKey PackageRoot = Bam.Core.V2.FileKey.Generate("Package Root");
 
@@ -53,9 +52,11 @@ namespace V2
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.Requires(dependent);
-            this.dependents.AddUnique(dependent);
-
-            this.paths[dependent.GeneratedPaths[key]] = subdir;
+            if (!this.dependents.ContainsKey(dependent))
+            {
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, string>());
+            }
+            this.dependents[dependent].Add(dependent.GeneratedPaths[key], subdir);
         }
 
         public void
@@ -65,10 +66,12 @@ namespace V2
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.Requires(dependent);
-            this.dependents.AddUnique(dependent);
-
+            if (!this.dependents.ContainsKey(dependent))
+            {
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, string>());
+            }
             var tokenString = Bam.Core.V2.TokenizedString.Create(parameterizedFilePath, dependent);
-            this.paths[tokenString] = subdir;
+            this.dependents[dependent].Add(tokenString, subdir);
         }
 
         public override void Evaluate()
@@ -81,8 +84,9 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var paths = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string>(this.paths);
-            this.Policy.Package(this, this.GeneratedPaths[PackageRoot], paths);
+            // TODO: the nested dictionary is not readonly - not sure how to construct this
+            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>>(this.dependents);
+            this.Policy.Package(this, this.GeneratedPaths[PackageRoot], packageObjects);
         }
 
         protected override void GetExecutionPolicy(string mode)

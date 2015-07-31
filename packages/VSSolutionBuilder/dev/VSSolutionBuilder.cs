@@ -221,7 +221,9 @@ namespace V2
         private ItemGroup ProjectDependenciesGroup;
         private Import LanguageTargets;
         private Type ProjectType;
+        private System.Xml.XmlElement ConfigToolsPropertiesElement = null;
         private System.Xml.XmlElement CommonCompilationOptionsElement = null;
+        private System.Xml.XmlElement PostBuildCommandElement = null;
         private System.Xml.XmlElement AnonymousPropertySettingsElement = null;
         private System.Collections.Generic.List<VSProject> DependentProjects = new System.Collections.Generic.List<VSProject>();
 
@@ -407,6 +409,7 @@ namespace V2
                         throw new Bam.Core.Exception("Unknown project type, {0}", this.ProjectType.ToString());
                 }
                 this.Project.InsertAfter(configGroup.Element, this.LanguageImport.Element);
+                this.ConfigToolsPropertiesElement = configGroup.Element;
             }
 
             // anonymous project settings
@@ -487,6 +490,29 @@ namespace V2
             intDir += "\\";
             intDirEl.InnerText = intDir;
             this.AnonymousPropertySettingsElement.AppendChild(intDirEl);
+        }
+
+        public void
+        AddPostBuildCommands(
+            Bam.Core.StringArray commands)
+        {
+            if (null == this.PostBuildCommandElement)
+            {
+                var tool = this.CreateProjectElement("PostBuildEvent");
+                this.ConfigToolsPropertiesElement.AppendChild(tool);
+
+                var commandElement = this.CreateProjectElement("Command");
+                tool.AppendChild(commandElement);
+
+                this.PostBuildCommandElement = commandElement;
+            }
+
+            var commandText = new System.Text.StringBuilder();
+            foreach (var command in commands)
+            {
+                commandText.AppendFormat("{0}{1}", command, System.Environment.NewLine);
+            }
+            this.PostBuildCommandElement.InnerText += commandText.ToString();
         }
 
         public System.Xml.XmlElement CreateProjectElement(string name)
@@ -750,6 +776,13 @@ namespace V2
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
         {
             this.Project.SetCommonCompilationOptions(module, settings);
+        }
+
+        public void
+        AddPostBuildCommands(
+            Bam.Core.StringArray commands)
+        {
+            this.Project.AddPostBuildCommands(commands);
         }
     }
 

@@ -27,19 +27,22 @@ namespace V2
         IPackagePolicy.Package(
             Package sender,
             Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.TokenizedString, string> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> packageObjects)
         {
             var root = packageRoot.Parse();
-            foreach (var path in packageObjects)
+            foreach (var module in packageObjects)
             {
-                var sourcePath = path.Key.ToString();
-                var destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(root, path.Value));
-                if (!System.IO.Directory.Exists(destinationPath))
+                foreach (var path in module.Value)
                 {
-                    System.IO.Directory.CreateDirectory(destinationPath);
+                    var sourcePath = path.Key.ToString();
+                    var destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(root, path.Value));
+                    if (!System.IO.Directory.Exists(destinationPath))
+                    {
+                        System.IO.Directory.CreateDirectory(destinationPath);
+                    }
+                    destinationPath = System.IO.Path.Combine(destinationPath, System.IO.Path.GetFileName(sourcePath));
+                    System.IO.File.Copy(sourcePath, destinationPath, true);
                 }
-                destinationPath = System.IO.Path.Combine(destinationPath, System.IO.Path.GetFileName(sourcePath));
-                System.IO.File.Copy(sourcePath, destinationPath, true);
             }
         }
     }
