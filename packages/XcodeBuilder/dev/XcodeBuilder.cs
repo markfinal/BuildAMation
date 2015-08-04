@@ -452,7 +452,7 @@ namespace V2
             get;
         }
 
-        private System.Collections.Generic.List<BuildFile> BuildFiles
+        protected System.Collections.Generic.List<BuildFile> BuildFiles
         {
             get;
             set;
@@ -544,6 +544,140 @@ namespace V2
         }
     }
 
+    public sealed class ShellScriptBuildPhase :
+        BuildPhase
+    {
+        public ShellScriptBuildPhase()
+        {
+            this.ShellPath = "/bin/sh";
+            this.ShowEnvironmentInLog = true;
+            this.InputPaths = new Bam.Core.StringArray();
+            this.OutputPaths = new Bam.Core.StringArray();
+            this.ShellScriptCommandLines = new Bam.Core.StringArray();
+        }
+
+        protected override string IsA
+        {
+            get
+            {
+                return "PBXShellScriptBuildPhase";
+            }
+        }
+
+        protected override string BuildActionMask
+        {
+            get
+            {
+                return "2147483647";
+            }
+        }
+
+        protected override bool RunOnlyForDeploymentPostprocessing
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public string ShellPath
+        {
+            get;
+            private set;
+        }
+
+        public bool ShowEnvironmentInLog
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.StringArray InputPaths
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.StringArray OutputPaths
+        {
+            get;
+            set;
+        }
+
+        public Bam.Core.StringArray ShellScriptCommandLines
+        {
+            get;
+            private set;
+        }
+
+        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        {
+            var indent = new string('\t', indentLevel);
+            var indent2 = new string('\t', indentLevel + 1);
+            var indent3 = new string('\t', indentLevel + 2);
+            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{", indent, this.GUID);
+            text.AppendLine();
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
+            text.AppendLine();
+            text.AppendFormat("{0}buildActionMask = {1};", indent2, this.BuildActionMask);
+            text.AppendLine();
+            if (this.BuildFiles.Count > 0)
+            {
+                text.AppendFormat("{0}files = (", indent2);
+                text.AppendLine();
+                foreach (var file in this.BuildFiles)
+                {
+                    text.AppendFormat("{0}{1} /* FILLMEIN */,", indent3, file.GUID);
+                    text.AppendLine();
+                }
+                text.AppendFormat("{0});", indent2);
+                text.AppendLine();
+            }
+            if (this.InputPaths.Count > 0)
+            {
+                text.AppendFormat("{0}inputPaths = (", indent2);
+                text.AppendLine();
+                foreach (var path in this.InputPaths)
+                {
+                    text.AppendFormat("{0}\"{1}\",", indent3, path);
+                    text.AppendLine();
+                }
+                text.AppendFormat("{0});", indent2);
+                text.AppendLine();
+            }
+            if (this.OutputPaths.Count > 0)
+            {
+                text.AppendFormat("{0}outputPaths = (", indent2);
+                text.AppendLine();
+                foreach (var path in this.OutputPaths)
+                {
+                    text.AppendFormat("{0}\"{1}\",", indent3, path);
+                    text.AppendLine();
+                }
+                text.AppendFormat("{0});", indent2);
+                text.AppendLine();
+            }
+            text.AppendFormat("{0}runOnlyForDeploymentPostprocessing = {1};", indent2, this.RunOnlyForDeploymentPostprocessing ? "1" : "0");
+            text.AppendLine();
+            text.AppendFormat("{0}shellPath = {1};", indent2, this.ShellPath);
+            text.AppendLine();
+            var shellScript = new System.Text.StringBuilder();
+            foreach (var line in this.ShellScriptCommandLines)
+            {
+                shellScript.AppendFormat("{0}\\n", line);
+            }
+            text.AppendFormat("{0}shellScript = \"{1}\";", indent2, shellScript.ToString());
+            text.AppendLine();
+            if (!this.ShowEnvironmentInLog)
+            {
+                text.AppendFormat("{0}showEnvVarsInLog = 0;", indent2);
+                text.AppendLine();
+            }
+            text.AppendFormat("{0}}};", indent);
+            text.AppendLine();
+        }
+    }
+
     public sealed class Project :
         Object
     {
@@ -569,6 +703,7 @@ namespace V2
             this.ConfigurationLists = new System.Collections.Generic.List<ConfigurationList>();
             this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
             this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
+            this.ShellScriptsBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
 
             this.Groups.Add(new Group()); // main group
             this.Groups.Add(new Group()); // product ref group
@@ -661,6 +796,12 @@ namespace V2
         }
 
         public System.Collections.Generic.List<FrameworksBuildPhase> FrameworksBuildPhases
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
         {
             get;
             private set;
@@ -915,7 +1056,19 @@ namespace V2
                 text.AppendFormat("/* End PBXNativeTarget section */");
                 text.AppendLine();
             }
-            this.InternalSerialize(text, indentLevel);
+            this.InternalSerialize(text, indentLevel); //this is the PBXProject :)
+            if (this.ShellScriptsBuildPhases.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXShellScriptBuildPhase section */");
+                text.AppendLine();
+                foreach (var phase in this.ShellScriptsBuildPhases)
+                {
+                    phase.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXShellScriptBuildPhase section */");
+                text.AppendLine();
+            }
             if (this.SourcesBuildPhases.Count > 0)
             {
                 text.AppendLine();
@@ -1001,6 +1154,12 @@ namespace V2
         }
 
         public FrameworksBuildPhase FrameworksBuildPhase
+        {
+            get;
+            set;
+        }
+
+        public ShellScriptBuildPhase PostBuildBuildPhase
         {
             get;
             set;
@@ -1563,6 +1722,20 @@ namespace V2
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
         {
             this.Target.SetCommonCompilationOptions(module, this.Configuration, settings);
+        }
+
+        public void AddPostBuildCommands(
+            Bam.Core.StringArray commands)
+        {
+            if (null == this.Target.PostBuildBuildPhase)
+            {
+                var postBuildBuildPhase = new ShellScriptBuildPhase();
+                this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
+                this.Target.BuildPhases.Add(postBuildBuildPhase);
+                this.Target.PostBuildBuildPhase = postBuildBuildPhase;
+            }
+
+            this.Target.PostBuildBuildPhase.ShellScriptCommandLines.AddRangeUnique(commands);
         }
 
         public FileReference Output
