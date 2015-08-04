@@ -57,7 +57,8 @@ namespace V2
         {
             SourceCodeC,
             Archive,
-            Executable
+            Executable,
+            DynamicLibrary
         }
 
         public enum ESourceTree
@@ -175,6 +176,9 @@ namespace V2
 
                 case EFileType.Executable:
                     return "compiled.mach-o.executable";
+
+                case EFileType.DynamicLibrary:
+                    return "compiled.mach-o.dylib";
             }
 
             throw new Bam.Core.Exception("Unrecognized file type");
@@ -957,7 +961,8 @@ namespace V2
         public enum EProductType
         {
             StaticLibrary,
-            Executable
+            Executable,
+            DynamicLibrary
         }
 
         public Target(
@@ -1055,6 +1060,9 @@ namespace V2
 
                 case EProductType.Executable:
                     return "com.apple.product-type.tool";
+
+                case EProductType.DynamicLibrary:
+                    return "com.apple.product-type.library.dynamic";
             }
 
             throw new Bam.Core.Exception("Unrecognized product type");
@@ -1369,7 +1377,8 @@ namespace V2
         {
             NA,
             StaticLibrary,
-            Application
+            Application,
+            DynamicLibrary
         }
 
         protected XcodeMeta(Bam.Core.V2.Module module, Type type)
@@ -1528,23 +1537,15 @@ namespace V2
         }
     }
 
-    public sealed class XcodeStaticLibrary :
+    public abstract class XcodeCommonProject :
         XcodeMeta
     {
-        public XcodeStaticLibrary(
+        public XcodeCommonProject(
             Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString libraryPath) :
-            base(module, Type.StaticLibrary)
+            Bam.Core.V2.TokenizedString libraryPath,
+            XcodeMeta.Type type) :
+            base(module, type)
         {
-            var library = this.Project.FindOrCreateFileReference(
-                libraryPath,
-                FileReference.EFileType.Archive,
-                explicitType:true,
-                sourceTree:FileReference.ESourceTree.BuiltProductsDir);
-            this.Output = library;
-            this.Project.ProductRefGroup.AddReference(library);
-            this.Target = this.Project.FindOrCreateTarget(module, library, V2.Target.EProductType.StaticLibrary);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, library, this.Target);
         }
 
         public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
@@ -1567,56 +1568,44 @@ namespace V2
         public FileReference Output
         {
             get;
-            private set;
+            protected set;
         }
     }
 
-    public sealed class XcodeProgram :
-        XcodeMeta
+    public sealed class XcodeStaticLibrary :
+        XcodeCommonProject
     {
-        public XcodeProgram(
+        public XcodeStaticLibrary(
             Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString executablePath) :
-            base(module, Type.Application)
+            Bam.Core.V2.TokenizedString libraryPath) :
+            base(module, libraryPath, Type.StaticLibrary)
         {
-            var application = this.Project.FindOrCreateFileReference(
-                executablePath,
-                FileReference.EFileType.Executable,
+            var library = this.Project.FindOrCreateFileReference(
+                libraryPath,
+                FileReference.EFileType.Archive,
                 explicitType:true,
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
-            this.Output = application;
-            this.Project.ProductRefGroup.AddReference(application);
-            this.Target = this.Project.FindOrCreateTarget(module, application, V2.Target.EProductType.Executable);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, application, this.Target);
+            this.Output = library;
+            this.Project.ProductRefGroup.AddReference(library);
+            this.Target = this.Project.FindOrCreateTarget(module, library, V2.Target.EProductType.StaticLibrary);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, library, this.Target);
         }
+    }
 
-        public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
+    public abstract class XcodeCommonLinkable :
+        XcodeCommonProject
+    {
+        public XcodeCommonLinkable(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString libraryPath,
+            XcodeMeta.Type type) :
+            base(module, libraryPath, type)
         {
-            if (null != patchSettings)
-            {
-                var commandLine = new Bam.Core.StringArray();
-                (patchSettings as CommandLineProcessor.V2.IConvertToCommandLine).Convert(module, commandLine);
-                output.Settings = commandLine;
-            }
-            this.Target.SourcesBuildPhase.AddBuildFile(output);
-            this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
         }
 
         public void
-        SetCommonCompilationOptions(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.Settings settings)
-        {
-            this.Target.SetCommonCompilationOptions(module, this.Configuration, settings);
-        }
-
-        public FileReference Output
-        {
-            get;
-            private set;
-        }
-
-        public void AddStaticLibrary(XcodeStaticLibrary library)
+        AddStaticLibrary(
+            XcodeStaticLibrary library)
         {
             if (null == this.Target.FrameworksBuildPhase)
             {
@@ -1636,6 +1625,70 @@ namespace V2
             }
             var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
             this.Target.FrameworksBuildPhase.AddBuildFile(libraryBuildFile);
+        }
+
+        public void
+        AddDynamicLibrary(
+            XcodeDynamicLibrary library)
+        {
+            if (null == this.Target.FrameworksBuildPhase)
+            {
+                var frameworks = new FrameworksBuildPhase();
+                this.Project.FrameworksBuildPhases.Add(frameworks);
+                this.Target.BuildPhases.Add(frameworks);
+                this.Target.FrameworksBuildPhase = frameworks;
+            }
+            var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
+            if (null != copyOfLibFileRef)
+            {
+                this.Project.MainGroup.AddReference(copyOfLibFileRef); // TODO: structure later
+            }
+            else
+            {
+                copyOfLibFileRef = library.Output;
+            }
+            var libraryBuildFile = this.Project.FindOrCreateBuildFile(library.Output.Path, copyOfLibFileRef);
+            this.Target.FrameworksBuildPhase.AddBuildFile(libraryBuildFile);
+        }
+    }
+
+    public sealed class XcodeProgram :
+        XcodeCommonLinkable
+    {
+        public XcodeProgram(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString executablePath) :
+            base(module, executablePath, Type.Application)
+        {
+            var application = this.Project.FindOrCreateFileReference(
+                executablePath,
+                FileReference.EFileType.Executable,
+                explicitType:true,
+                sourceTree:FileReference.ESourceTree.BuiltProductsDir);
+            this.Output = application;
+            this.Project.ProductRefGroup.AddReference(application);
+            this.Target = this.Project.FindOrCreateTarget(module, application, V2.Target.EProductType.Executable);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, application, this.Target);
+        }
+    }
+
+    public sealed class XcodeDynamicLibrary :
+        XcodeCommonLinkable
+    {
+        public XcodeDynamicLibrary(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.TokenizedString libraryPath) :
+            base(module, libraryPath, Type.DynamicLibrary)
+        {
+            var dynamicLibrary = this.Project.FindOrCreateFileReference(
+                libraryPath,
+                FileReference.EFileType.DynamicLibrary,
+                explicitType:true,
+                sourceTree:FileReference.ESourceTree.BuiltProductsDir);
+            this.Output = dynamicLibrary;
+            this.Project.ProductRefGroup.AddReference(dynamicLibrary);
+            this.Target = this.Project.FindOrCreateTarget(module, dynamicLibrary, V2.Target.EProductType.DynamicLibrary);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, dynamicLibrary, this.Target);
         }
     }
 

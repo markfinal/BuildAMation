@@ -39,12 +39,37 @@ namespace C
                 macros.Add("moduleoutputdir", Bam.Core.V2.TokenizedString.Create(configName, null));
                 foreach (var library in libraries)
                 {
-                    var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].Parse(macros);
-                    var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                    linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                    if (library is C.V2.StaticLibrary)
+                    {
+                        var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].Parse(macros);
+                        var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
+                        linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                    }
+                    else if (library is C.V2.DynamicLibrary)
+                    {
+                        var fullLibraryPath = library.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse(macros);
+                        var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
+                        linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                    }
+                    else if (library is C.V2.CSDKModule)
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this module type: CSDKModule");
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this module type");
+                    }
                 }
 
-                var application = new XcodeBuilder.V2.XcodeProgram(sender, executablePath);
+                XcodeBuilder.V2.XcodeCommonLinkable application;
+                if (sender is DynamicLibrary)
+                {
+                    application = new XcodeBuilder.V2.XcodeDynamicLibrary(sender, executablePath);
+                }
+                else
+                {
+                    application = new XcodeBuilder.V2.XcodeProgram(sender, executablePath);
+                }
 
                 var interfaceType = Bam.Core.State.ScriptAssembly.GetType("XcodeProjectProcessor.V2.IConvertToProject");
                 if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
@@ -80,9 +105,24 @@ namespace C
                     }
                 }
 
-                foreach (var input in libraries)
+                foreach (var library in libraries)
                 {
-                    application.AddStaticLibrary(input.MetaData as XcodeBuilder.V2.XcodeStaticLibrary);
+                    if (library is C.V2.StaticLibrary)
+                    {
+                        application.AddStaticLibrary(library.MetaData as XcodeBuilder.V2.XcodeStaticLibrary);
+                    }
+                    else if (library is C.V2.DynamicLibrary)
+                    {
+                        application.AddDynamicLibrary(library.MetaData as XcodeBuilder.V2.XcodeDynamicLibrary);
+                    }
+                    else if (library is C.V2.CSDKModule)
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this module type: CSDKModule");
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this module type");
+                    }
                 }
             }
         }

@@ -212,13 +212,22 @@ namespace Clang
             //var applicationFile = module as C.V2.ConsoleApplication;
             switch (options.OutputType)
             {
+            case C.ELinkerOutput.Executable:
+                {
+                    configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.V2.UniqueConfigurationValue(string.Empty);
+                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.V2.UniqueConfigurationValue(module.Tool.Macros["exeext"].Parse().TrimStart(new [] {'.'}));
+                }
+                break;
+
             case C.ELinkerOutput.DynamicLibrary:
                 {
+                    configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.V2.UniqueConfigurationValue(module.Tool.Macros["dynamicprefix"].Parse());
+                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.V2.UniqueConfigurationValue(module.Tool.Macros["dynamicext"].Parse().TrimStart(new [] {'.'}));
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("mh_dylib");
                     var osxOpts = options as C.V2.ILinkerOptionsOSX;
                     if (null != osxOpts.InstallName)
                     {
-                        // TODO: dylib_install_name
+                        configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.V2.UniqueConfigurationValue(osxOpts.InstallName.Parse());
                     }
                     // TODO: current_version
                     // TODO: compatability_version
