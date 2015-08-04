@@ -547,13 +547,14 @@ namespace V2
     public sealed class ShellScriptBuildPhase :
         BuildPhase
     {
-        public ShellScriptBuildPhase()
+        public ShellScriptBuildPhase(
+            Target target)
         {
             this.ShellPath = "/bin/sh";
             this.ShowEnvironmentInLog = true;
             this.InputPaths = new Bam.Core.StringArray();
             this.OutputPaths = new Bam.Core.StringArray();
-            this.ShellScriptCommandLines = new Bam.Core.StringArray();
+            this.AssociatedTarget = target;
         }
 
         protected override string IsA
@@ -604,7 +605,7 @@ namespace V2
             set;
         }
 
-        public Bam.Core.StringArray ShellScriptCommandLines
+        public Target AssociatedTarget
         {
             get;
             private set;
@@ -662,9 +663,14 @@ namespace V2
             text.AppendFormat("{0}shellPath = {1};", indent2, this.ShellPath);
             text.AppendLine();
             var shellScript = new System.Text.StringBuilder();
-            foreach (var line in this.ShellScriptCommandLines)
+            foreach (var config in this.AssociatedTarget.ConfigurationList)
             {
-                shellScript.AppendFormat("{0}\\n", line);
+                shellScript.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\n\n", config.Name);
+                foreach (var line in config.PostBuildCommands)
+                {
+                    shellScript.AppendFormat("  {0}\\n", line);
+                }
+                shellScript.AppendFormat("fi\n\n");
             }
             text.AppendFormat("{0}shellScript = \"{1}\";", indent2, shellScript.ToString());
             text.AppendLine();
@@ -1272,7 +1278,8 @@ namespace V2
     }
 
     public sealed class ConfigurationList :
-        Object
+        Object,
+        System.Collections.Generic.IEnumerable<Configuration>
     {
         public ConfigurationList(Object parent)
         {
@@ -1342,6 +1349,19 @@ namespace V2
             }
             text.AppendFormat("{0}}};", indent);
             text.AppendLine();
+        }
+
+        public System.Collections.Generic.IEnumerator<Configuration> GetEnumerator()
+        {
+            foreach (var config in this.Configurations)
+            {
+                yield return config;
+            }
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        {
+            return this.GetEnumerator();
         }
     }
 
@@ -1418,9 +1438,16 @@ namespace V2
             : base()
         {
             this.Name = name;
+            this.PostBuildCommands = new Bam.Core.StringArray();
         }
 
         public string Name
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.StringArray PostBuildCommands
         {
             get;
             private set;
@@ -1729,13 +1756,13 @@ namespace V2
         {
             if (null == this.Target.PostBuildBuildPhase)
             {
-                var postBuildBuildPhase = new ShellScriptBuildPhase();
+                var postBuildBuildPhase = new ShellScriptBuildPhase(this.Target);
                 this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
                 this.Target.BuildPhases.Add(postBuildBuildPhase);
                 this.Target.PostBuildBuildPhase = postBuildBuildPhase;
             }
 
-            this.Target.PostBuildBuildPhase.ShellScriptCommandLines.AddRangeUnique(commands);
+            this.Configuration.PostBuildCommands.AddRange(commands);
         }
 
         public FileReference Output
