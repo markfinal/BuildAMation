@@ -83,9 +83,21 @@ namespace Clang
                     case C.ELanguageStandard.C89:
                         configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c89");
                         break;
+
                     case C.ELanguageStandard.C99:
                         configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c99");
                         break;
+
+                    case C.ELanguageStandard.Cxx98:
+                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++98");
+                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libstdc++");
+                        break;
+
+                    case C.ELanguageStandard.Cxx11:
+                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++11");
+                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libc++");
+                        break;
+
                     default:
                         // TODO: Might want to split this across C specific and Cxx specific options
                         throw new Bam.Core.Exception("Invalid language standard");
