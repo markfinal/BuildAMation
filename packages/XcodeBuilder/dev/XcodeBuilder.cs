@@ -415,7 +415,7 @@ namespace V2
     {
         protected BuildPhase()
         {
-            this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
+            this.BuildFiles = new Bam.Core.Array<BuildFile>();
         }
 
         public void
@@ -452,10 +452,10 @@ namespace V2
             get;
         }
 
-        protected System.Collections.Generic.List<BuildFile> BuildFiles
+        public Bam.Core.Array<BuildFile> BuildFiles
         {
             get;
-            set;
+            protected set;
         }
 
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
@@ -956,6 +956,28 @@ namespace V2
             return config;
         }
 
+        public void
+        FixupPerConfigurationData()
+        {
+            foreach (var targetPair in this.Targets)
+            {
+                var target = targetPair.Value;
+                foreach (var config in target.ConfigurationList)
+                {
+                    var diff = target.SourcesBuildPhase.BuildFiles.Complement(config.BuildFiles);
+                    if (diff.Count > 0)
+                    {
+                        var excluded = new Bam.Core.StringArray();
+                        foreach (var file in diff)
+                        {
+                            excluded.AddUnique(file.Source.Path.Parse());
+                        }
+                        config["EXCLUDED_SOURCE_FILE_NAMES"] = new UniqueConfigurationValue(excluded.ToString(" "));
+                    }
+                }
+            }
+        }
+
         private void InternalSerialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
@@ -1140,7 +1162,7 @@ namespace V2
             this.ConfigurationList = configList;
 
             this.BuildPhases = new System.Collections.Generic.List<BuildPhase>();
-            this.SourcesBuildPhase = new V2.SourcesBuildPhase();
+            this.SourcesBuildPhase = new SourcesBuildPhase();
             this.BuildPhases.Add(this.SourcesBuildPhase);
 
             this.Project = project;
@@ -1439,6 +1461,7 @@ namespace V2
         {
             this.Name = name;
             this.PostBuildCommands = new Bam.Core.StringArray();
+            this.BuildFiles = new Bam.Core.Array<BuildFile>();
         }
 
         public string Name
@@ -1448,6 +1471,12 @@ namespace V2
         }
 
         public Bam.Core.StringArray PostBuildCommands
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<BuildFile> BuildFiles
         {
             get;
             private set;
@@ -1637,6 +1666,8 @@ namespace V2
 
             foreach (var project in workspaceMeta)
             {
+                project.FixupPerConfigurationData();
+
                 var text = new System.Text.StringBuilder();
                 text.AppendLine("// !$*UTF8*$!");
                 text.AppendLine("{");
@@ -1742,8 +1773,9 @@ namespace V2
                 (patchSettings as CommandLineProcessor.V2.IConvertToCommandLine).Convert(module, commandLine);
                 output.Settings = commandLine;
             }
-            this.Target.SourcesBuildPhase.AddBuildFile(output);
+            this.Target.SourcesBuildPhase.AddBuildFile(output); // this is shared among configurations
             this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
+            this.Configuration.BuildFiles.Add(output);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
