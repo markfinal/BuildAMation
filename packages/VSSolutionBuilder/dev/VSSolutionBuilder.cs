@@ -154,7 +154,10 @@ namespace V2
                 content.AppendLine();
                 content.AppendLine("EndProject");
 
-                configs.AddRangeUnique(project.Configurations);
+                foreach (var config in project.Configurations)
+                {
+                    configs.AddUnique(config.FullName);
+                }
             }
             content.AppendLine("Global");
             content.AppendLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
@@ -226,13 +229,14 @@ namespace V2
         private System.Xml.XmlElement PostBuildCommandElement = null;
         private System.Xml.XmlElement AnonymousPropertySettingsElement = null;
         private System.Collections.Generic.List<VSProject> DependentProjects = new System.Collections.Generic.List<VSProject>();
+        private System.Collections.Generic.Dictionary<string, System.Xml.XmlElement> SourceXMLMap = new System.Collections.Generic.Dictionary<string, System.Xml.XmlElement>();
 
         public VSProject(Type type)
         {
             this.ProjectType = type;
             this.GUID = System.Guid.NewGuid();
             this.TypeGUID = System.Guid.Parse("8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942");
-            this.Configurations = new Bam.Core.StringArray();
+            this.Configurations = new Bam.Core.Array<VSProjectConfiguration>();
 
             // Project (root) element
             this.AppendChild(this.CreateProjectElement("Project"));
@@ -274,12 +278,19 @@ namespace V2
             this.Project.AppendChild(this.LanguageTargets.Element);
         }
 
-        public void AddSourceFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
+        public void
+        AddSourceFile(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.Settings patchSettings,
+            VSProjectConfiguration configuration)
         {
             var objectFile = module.MetaData as VSProjectObjectFile;
             var sourcePath = objectFile.Source.ToString();
 
-            // check whether this source file has been added before
+            // always add the source to the configuration
+            configuration.Source.AddUnique(sourcePath);
+
+            // check whether this source file has been added before, for the actual project
 #if true
             foreach (var el in this.SourceGroup)
             {
@@ -310,9 +321,11 @@ namespace V2
             element.Attributes.Append(this.CreateAttribute("Include")).Value = sourcePath;
             this.SourceGroup.Element.AppendChild(element);
 
+            this.SourceXMLMap.Add(sourcePath, element);
+
             if (null != patchSettings)
             {
-                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element, configuration);
+                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element, configuration.FullName);
             }
         }
 
@@ -323,27 +336,24 @@ namespace V2
 
         public void
         AddProjectConfiguration(
-            string configuration,
-            string platform,
+            VSProjectConfiguration configuration,
             Bam.Core.V2.Module module,
             Bam.Core.V2.TokenizedString outPath)
         {
-            var configName = GetConfigurationName(configuration, platform);
-
-            this.Configurations.AddUnique(configName);
+            this.Configurations.AddUnique(configuration);
 
             // overall project configurations
             {
                 var projconfig = this.CreateProjectElement("ProjectConfiguration");
-                projconfig.Attributes.Append(this.CreateAttribute("Include")).Value = configName;
-                var config = this.CreateProjectElement("Configuration", configuration);
-                var plat = this.CreateProjectElement("Platform", platform);
+                projconfig.Attributes.Append(this.CreateAttribute("Include")).Value = configuration.FullName;
+                var config = this.CreateProjectElement("Configuration", configuration.Config);
+                var plat = this.CreateProjectElement("Platform", configuration.Platform);
                 projconfig.AppendChild(config);
                 projconfig.AppendChild(plat);
                 this.ProjectConfigurations.Element.AppendChild(projconfig);
             }
 
-            var configExpression = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", configName);
+            var configExpression = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", configuration.FullName);
 
             // project properties
             {
@@ -600,7 +610,7 @@ namespace V2
             private set;
         }
 
-        public Bam.Core.StringArray Configurations
+        public Bam.Core.Array<VSProjectConfiguration> Configurations
         {
             get;
             private set;
@@ -619,8 +629,67 @@ namespace V2
                 settingElement.Attributes.Append(this.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", conditionalConfiguration);
             }
         }
+
+        public void
+        FixupPerConfigurationData()
+        {
+            foreach (var config in this.Configurations)
+            {
+                var delta = (new Bam.Core.StringArray(this.SourceXMLMap.Keys)).Complement(config.Source);
+                if (delta.Count > 0)
+                {
+                    foreach (var excludedSource in delta)
+                    {
+                        var element = this.SourceXMLMap[excludedSource];
+                        this.AddToolSetting(element, "ExcludedFromBuild", excludedSource, config.FullName,
+                            (setting, attributeName, builder) =>
+                            {
+                                builder.Append("true");
+                            });
+                    }
+                }
+            }
+        }
     }
 
+    public sealed class VSProjectConfiguration
+    {
+        public VSProjectConfiguration(
+            string config,
+            string platform)
+        {
+            this.Config = config;
+            this.Platform = platform;
+            this.FullName = VSProject.GetConfigurationName(config, platform);
+            this.Source = new Bam.Core.StringArray();
+        }
+
+        public string FullName
+        {
+            get;
+            private set;
+        }
+
+        public string Config
+        {
+            get;
+            private set;
+        }
+
+        public string Platform
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.StringArray Source
+        {
+            get;
+            private set;
+        }
+    }
+
+    // TODO: rename to VSProjectMeta
     public abstract class VSSolutionMeta
     {
         public enum EPlatform
@@ -640,14 +709,14 @@ namespace V2
             this.IsProjectModule = isReferenced;
 
             var platformName = (platform == EPlatform.SixtyFour) ? "x64" : "Win32";
-            this.Configuration = VSProject.GetConfigurationName(module.BuildEnvironment.Configuration.ToString(), platformName);
+            this.Configuration = new VSProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platformName);
 
             if (isReferenced)
             {
                 var solution = graph.MetaData as VSSolution;
                 this.Project = solution.FindOrCreateProject(module.GetType(), type);
 
-                this.Project.AddProjectConfiguration(module.BuildEnvironment.Configuration.ToString(), platformName, module, outPath);
+                this.Project.AddProjectConfiguration(this.Configuration, module, outPath);
 
                 var projectPath = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module);
                 projectPath.Parse();
@@ -680,7 +749,7 @@ namespace V2
             private set;
         }
 
-        public string Configuration
+        public VSProjectConfiguration Configuration
         {
             get;
             private set;
@@ -705,6 +774,8 @@ namespace V2
             var solution = graph.MetaData as VSSolution;
             foreach (var project in solution)
             {
+                project.FixupPerConfigurationData();
+
                 var builder = new System.Text.StringBuilder();
                 using (var xmlwriter = System.Xml.XmlWriter.Create(builder, settings))
                 {
