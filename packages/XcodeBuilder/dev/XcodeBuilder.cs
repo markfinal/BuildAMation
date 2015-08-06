@@ -342,6 +342,12 @@ namespace V2
             set;
         }
 
+        public Object Parent
+        {
+            get;
+            set;
+        }
+
         public override string GUID
         {
             get;
@@ -354,7 +360,7 @@ namespace V2
             text.AppendFormat("{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
                 indent, this.GUID, this.Source.GUID,
                 this.Name,
-                string.Empty,
+                this.Parent.Name,
                 this.IsA);
             if (this.Settings != null)
             {
@@ -473,6 +479,7 @@ namespace V2
                 }
             }
             this.BuildFiles.Add(other);
+            other.Parent = this;
         }
 
         public override string GUID
