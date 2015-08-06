@@ -32,17 +32,32 @@ namespace C
             {
                 var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
 
+                var commonObject = inputs[0];
+                library.SetCommonCompilationOptions(commonObject, commonObject.Settings);
+
                 foreach (var input in inputs)
                 {
-                    library.SetCommonCompilationOptions(input, input.Settings);
+                    C.V2.SettingsBase deltaSettings = null;
+                    if (input != commonObject)
+                    {
+                        deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObject.Settings, input);
+                    }
+
                     if (input is Bam.Core.V2.IModuleGroup)
                     {
                         foreach (var child in input.Children)
                         {
-                            Bam.Core.V2.Settings patchSettings = null;
+                            Bam.Core.V2.Settings patchSettings = deltaSettings;
                             if (child.HasPatches)
                             {
-                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
+                                if (null == patchSettings)
+                                {
+                                    patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
+                                }
+                                else
+                                {
+                                    patchSettings = deltaSettings.Clone(child);
+                                }
                                 child.ApplySettingsPatches(patchSettings, honourParents: false);
                             }
 
@@ -54,7 +69,7 @@ namespace C
                     else
                     {
                         var meta = input.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                        library.AddSource(input, meta.Source, meta.Output, null);
+                        library.AddSource(input, meta.Source, meta.Output, deltaSettings);
                         meta.Project = library.Project;
                     }
                 }
