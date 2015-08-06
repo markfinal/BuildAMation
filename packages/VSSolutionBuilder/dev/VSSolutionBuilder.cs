@@ -694,7 +694,8 @@ namespace V2
         }
     }
 
-    public abstract class VSProjectMeta
+    // although this is project related data, it needs to be named after the builder, VSSolution
+    public abstract class VSSolutionMeta
     {
         public enum EPlatform
         {
@@ -702,7 +703,7 @@ namespace V2
             SixtyFour
         }
 
-        protected VSProjectMeta(
+        protected VSSolutionMeta(
             Bam.Core.V2.Module module,
             VSProject.Type type,
             Bam.Core.V2.TokenizedString outPath,
@@ -809,12 +810,12 @@ namespace V2
 
     // TODO: add XML element
     public sealed class VSProjectObjectFile :
-        VSProjectMeta
+        VSSolutionMeta
     {
         public VSProjectObjectFile(
             Bam.Core.V2.Module module,
             Bam.Core.V2.TokenizedString objectFilePath,
-            VSProjectMeta.EPlatform platform)
+            VSSolutionMeta.EPlatform platform)
             : base(module, VSProject.Type.NA, objectFilePath, platform)
         { }
 
@@ -832,7 +833,7 @@ namespace V2
     }
 
     public abstract class VSCommonProject :
-        VSProjectMeta
+        VSSolutionMeta
     {
         protected VSCommonProject(
             Bam.Core.V2.Module module,
@@ -868,7 +869,7 @@ namespace V2
         public VSProjectStaticLibrary(
             Bam.Core.V2.Module module,
             Bam.Core.V2.TokenizedString libraryPath,
-            VSProjectMeta.EPlatform platform) :
+            VSSolutionMeta.EPlatform platform) :
             base(module, VSProject.Type.StaticLibrary, libraryPath, platform)
         {
         }
@@ -884,10 +885,10 @@ namespace V2
             EPlatform platform) :
             base(module, type, outPath, platform)
         {
-            this.Libraries = new System.Collections.Generic.List<VSProjectMeta>();
+            this.Libraries = new System.Collections.Generic.List<VSSolutionMeta>();
         }
 
-        private System.Collections.Generic.List<VSProjectMeta> Libraries
+        private System.Collections.Generic.List<VSSolutionMeta> Libraries
         {
             get;
             set;
@@ -927,7 +928,7 @@ namespace V2
         public VSProjectDynamicLibrary(
             Bam.Core.V2.Module module,
             Bam.Core.V2.TokenizedString libraryPath,
-            VSProjectMeta.EPlatform platform) :
+            VSSolutionMeta.EPlatform platform) :
             base(module, VSProject.Type.DynamicLibrary, libraryPath, platform)
         {
         }
@@ -940,7 +941,7 @@ namespace V2
         public VSProjectProgram(
             Bam.Core.V2.Module module,
             Bam.Core.V2.TokenizedString applicationPath,
-            VSProjectMeta.EPlatform platform) :
+            VSSolutionMeta.EPlatform platform) :
             base(module, VSProject.Type.Application, applicationPath, platform)
         {
         }

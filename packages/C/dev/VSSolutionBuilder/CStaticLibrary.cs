@@ -32,7 +32,7 @@ namespace V2
         {
             // cannot tell the architecture from the Librarian tool, so look at all the inputs
             // these should be consistent
-            VSSolutionBuilder.V2.VSProjectMeta.EPlatform? platform = null;
+            VSSolutionBuilder.V2.VSSolutionMeta.EPlatform? platform = null;
             foreach (var input in inputs)
             {
                 if (input is Bam.Core.V2.IModuleGroup)
@@ -40,7 +40,7 @@ namespace V2
                     foreach (var child in input.Children)
                     {
                         var obj = child as C.V2.ObjectFile;
-                        var thisPlatform = (obj.Compiler is VisualC.Compiler64 || obj.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSProjectMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSProjectMeta.EPlatform.ThirtyTwo;
+                        var thisPlatform = (obj.Compiler is VisualC.Compiler64 || obj.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
                         if (null == platform)
                         {
                             platform = thisPlatform;
@@ -54,7 +54,7 @@ namespace V2
                 else
                 {
                     var obj = input as C.V2.ObjectFile;
-                    var thisPlatform = (obj.Compiler is VisualC.Compiler64 || obj.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSProjectMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSProjectMeta.EPlatform.ThirtyTwo;
+                    var thisPlatform = (obj.Compiler is VisualC.Compiler64 || obj.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
                     if (null == platform)
                     {
                         platform = thisPlatform;
