@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
-
+using System.Linq;
 [assembly: Bam.Core.DeclareBuilder("Xcode", typeof(XcodeBuilder.XcodeBuilder))]
 
 namespace XcodeBuilder
@@ -1029,7 +1029,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXBuildFile section */");
                 text.AppendLine();
-                foreach (var buildFile in this.BuildFiles)
+                foreach (var buildFile in this.BuildFiles.OrderBy(key => key.GUID))
                 {
                     buildFile.Serialize(text, indentLevel);
                 }
@@ -1041,7 +1041,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXFileReference section */");
                 text.AppendLine();
-                foreach (var fileRef in this.FileReferences)
+                foreach (var fileRef in this.FileReferences.OrderBy(key => key.GUID))
                 {
                     fileRef.Serialize(text, indentLevel);
                 }
@@ -1053,7 +1053,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXFrameworksBuildPhase section */");
                 text.AppendLine();
-                foreach (var phase in this.FrameworksBuildPhases)
+                foreach (var phase in this.FrameworksBuildPhases.OrderBy(key => key.GUID))
                 {
                     phase.Serialize(text, indentLevel);
                 }
@@ -1065,7 +1065,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXGroup section */");
                 text.AppendLine();
-                foreach (var group in this.Groups)
+                foreach (var group in this.Groups.OrderBy(key => key.GUID))
                 {
                     group.Serialize(text, indentLevel);
                 }
@@ -1077,7 +1077,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXNativeTarget section */");
                 text.AppendLine();
-                foreach (var target in this.Targets.Values)
+                foreach (var target in this.Targets.Values.OrderBy(key => key.GUID))
                 {
                     target.Serialize(text, indentLevel);
                 }
@@ -1090,7 +1090,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXShellScriptBuildPhase section */");
                 text.AppendLine();
-                foreach (var phase in this.ShellScriptsBuildPhases)
+                foreach (var phase in this.ShellScriptsBuildPhases.OrderBy(key => key.GUID))
                 {
                     phase.Serialize(text, indentLevel);
                 }
@@ -1102,7 +1102,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXSourcesBuildPhase section */");
                 text.AppendLine();
-                foreach (var phase in this.SourcesBuildPhases)
+                foreach (var phase in this.SourcesBuildPhases.OrderBy(key => key.GUID))
                 {
                     phase.Serialize(text, indentLevel);
                 }
@@ -1114,7 +1114,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin XCBuildConfiguration section */");
                 text.AppendLine();
-                foreach (var config in this.Configurations)
+                foreach (var config in this.Configurations.OrderBy(key => key.GUID))
                 {
                     config.Serialize(text, indentLevel);
                 }
@@ -1126,7 +1126,7 @@ namespace V2
                 text.AppendLine();
                 text.AppendFormat("/* Begin XCConfigurationList section */");
                 text.AppendLine();
-                foreach (var configList in this.ConfigurationLists)
+                foreach (var configList in this.ConfigurationLists.OrderBy(key => key.GUID))
                 {
                     configList.Serialize(text, indentLevel);
                 }
