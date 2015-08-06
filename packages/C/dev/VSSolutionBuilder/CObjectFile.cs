@@ -36,7 +36,7 @@ namespace V2
                 // do nothing for source files not part of a library or application
                 return;
             }
-            var platform = (sender.Compiler is VisualC.Compiler64 || sender.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSProjectMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSProjectMeta.EPlatform.ThirtyTwo;
+            var platform = (sender.Compiler is VisualC.Compiler64 || sender.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
             var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender, objectFilePath, platform);
             objectFile.Source = source.GeneratedPaths[C.V2.SourceFile.Key];
         }

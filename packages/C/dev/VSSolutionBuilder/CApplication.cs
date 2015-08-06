@@ -32,7 +32,7 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
-            var platform = sender.Linker is VisualC.V2.Linker64 ? VSSolutionBuilder.V2.VSProjectMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSProjectMeta.EPlatform.ThirtyTwo;
+            var platform = sender.Linker is VisualC.V2.Linker64 ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
             VSSolutionBuilder.V2.VSCommonLinkableProject application = null;
             if (sender is DynamicLibrary)
             {
