@@ -302,6 +302,11 @@ namespace V2
                 if (include.Value == sourcePath)
                 {
                     Bam.Core.Log.DebugMessage("Source path '{0}' already added", sourcePath);
+                    // still need to apply the patch
+                    if (null != patchSettings)
+                    {
+                        (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, el, configuration.FullName);
+                    }
                     return;
                 }
             }
