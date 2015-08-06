@@ -43,6 +43,22 @@ namespace V2
             }
         }
 
+        public bool
+        Contains(
+            string key)
+        {
+            return this.Defines.ContainsKey(key);
+        }
+
+        public string
+        this[string key]
+        {
+            get
+            {
+                return this.Defines[key];
+            }
+        }
+
         public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
         {
             foreach (var item in this.Defines)
