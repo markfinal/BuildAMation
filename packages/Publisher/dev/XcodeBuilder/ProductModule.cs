@@ -36,6 +36,11 @@ namespace V2
                 {
                     if (packageObjects.ContainsKey(dependee))
                     {
+                        if (dependee.Package == module.Key.Package)
+                        {
+                            // same package has the same output folder, so don't bother copying
+                            continue;
+                        }
                         foreach (var path in packageObjects[dependee].Keys)
                         {
                             // this has to be the path that Xcode writes to
