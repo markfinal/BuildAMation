@@ -404,6 +404,10 @@ namespace V2
             {
                 return false;
             }
+            if (this.ModuleWithMacros != other.ModuleWithMacros)
+            {
+                return false;
+            }
             return true;
         }
 
