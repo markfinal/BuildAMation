@@ -42,25 +42,39 @@ namespace V2
             {
                 application = new VSSolutionBuilder.V2.VSProjectProgram(sender, executablePath, platform);
             }
+            var commonObject = objectFiles[0];
+            application.SetCommonCompilationOptions(commonObject, commonObject.Settings);
             foreach (var input in objectFiles)
             {
-                application.SetCommonCompilationOptions(input, input.Settings);
+                C.V2.SettingsBase deltaSettings = null;
+                if (input != commonObject)
+                {
+                    deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObject.Settings, input);
+                }
+
                 if (input is Bam.Core.V2.IModuleGroup)
                 {
                     foreach (var child in input.Children)
                     {
-                        Bam.Core.V2.Settings patchSettings = null;
+                        C.V2.SettingsBase patchSettings = deltaSettings;
                         if (child.HasPatches)
                         {
-                            patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
+                            if (null == patchSettings)
+                            {
+                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
+                            }
+                            else
+                            {
+                                patchSettings = deltaSettings.Clone(child);
+                            }
                             child.ApplySettingsPatches(patchSettings, honourParents: false);
                         }
-                        application.AddObjectFile(child, patchSettings, application.Configuration);
+                        application.AddObjectFile(child, patchSettings);
                     }
                 }
                 else
                 {
-                    application.AddObjectFile(input, null, null);
+                    application.AddObjectFile(input, deltaSettings);
                 }
             }
             foreach (var input in libraries)

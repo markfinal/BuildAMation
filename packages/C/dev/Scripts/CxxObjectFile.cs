@@ -24,11 +24,21 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICxxOnlyCompilerOptions settings, Bam.Core.V2.Module module)
+        public static void
+        Defaults(
+            this C.V2.ICxxOnlyCompilerOptions settings,
+            Bam.Core.V2.Module module)
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
             // TODO: separate C language standards from C++
             (settings as C.V2.ICommonCompilerOptions).LanguageStandard = ELanguageStandard.Cxx98;
+        }
+        public static void
+        Clone(
+            this C.V2.ICxxOnlyCompilerOptions settings,
+            C.V2.ICxxOnlyCompilerOptions other)
+        {
+            settings.ExceptionHandler = other.ExceptionHandler;
         }
     }
 }

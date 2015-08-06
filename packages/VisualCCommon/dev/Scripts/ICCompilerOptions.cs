@@ -28,6 +28,26 @@ namespace DefaultSettings
         {
             settings.NoLogo = true;
         }
+
+        public static void
+        Delta(
+            this VisualCCommon.V2.ICommonCompilerOptions settings,
+            VisualCCommon.V2.ICommonCompilerOptions delta,
+            VisualCCommon.V2.ICommonCompilerOptions other)
+        {
+            if (settings.NoLogo != other.NoLogo)
+            {
+                delta.NoLogo = settings.NoLogo;
+            }
+        }
+
+        public static void
+        Clone(
+            this VisualCCommon.V2.ICommonCompilerOptions settings,
+            VisualCCommon.V2.ICommonCompilerOptions other)
+        {
+            settings.NoLogo = other.NoLogo;
+        }
     }
 }
 

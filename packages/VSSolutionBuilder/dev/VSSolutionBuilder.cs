@@ -768,9 +768,9 @@ namespace V2
         {
         }
 
-        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings, string configuration)
+        public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
         {
-            this.Project.AddSourceFile(module, patchSettings, configuration);
+            this.Project.AddSourceFile(module, patchSettings, this.Configuration);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)

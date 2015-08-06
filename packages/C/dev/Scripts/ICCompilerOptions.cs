@@ -61,6 +61,115 @@ namespace DefaultSettings
             settings.PreprocessorUndefines = new Bam.Core.StringArray();
             settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
         }
+        public static void
+        Delta(
+            this C.V2.ICommonCompilerOptions settings,
+            C.V2.ICommonCompilerOptions delta,
+            C.V2.ICommonCompilerOptions other)
+        {
+            if (settings.Bits != other.Bits)
+            {
+                delta.Bits = settings.Bits;
+            }
+            foreach (var define in settings.PreprocessorDefines)
+            {
+                if (!other.PreprocessorDefines.Contains(define.Key) ||
+                    define.Value != other.PreprocessorDefines[define.Key])
+                {
+                    delta.PreprocessorDefines.Add(define.Key, define.Value);
+                }
+            }
+            foreach (var path in settings.IncludePaths)
+            {
+                if (!other.IncludePaths.Contains(path))
+                {
+                    delta.IncludePaths.AddUnique(path);
+                }
+            }
+            foreach (var path in settings.SystemIncludePaths)
+            {
+                if (!other.SystemIncludePaths.Contains(path))
+                {
+                    delta.SystemIncludePaths.AddUnique(path);
+                }
+            }
+            if (settings.OutputType != other.OutputType)
+            {
+                delta.OutputType = settings.OutputType;
+            }
+            if (settings.DebugSymbols != other.DebugSymbols)
+            {
+                delta.DebugSymbols = settings.DebugSymbols;
+            }
+            if (settings.WarningsAsErrors != other.WarningsAsErrors)
+            {
+                delta.WarningsAsErrors = settings.WarningsAsErrors;
+            }
+            if (settings.Optimization != other.Optimization)
+            {
+                delta.Optimization = settings.Optimization;
+            }
+            if (settings.TargetLanguage != other.TargetLanguage)
+            {
+                delta.TargetLanguage = settings.TargetLanguage;
+            }
+            if (settings.LanguageStandard != other.LanguageStandard)
+            {
+                delta.LanguageStandard = settings.LanguageStandard;
+            }
+            if (settings.OmitFramePointer != other.OmitFramePointer)
+            {
+                delta.OmitFramePointer = settings.OmitFramePointer;
+            }
+            foreach (var path in settings.DisableWarnings)
+            {
+                if (!other.DisableWarnings.Contains(path))
+                {
+                    delta.DisableWarnings.AddUnique(path);
+                }
+            }
+            foreach (var path in settings.PreprocessorUndefines)
+            {
+                if (!other.PreprocessorUndefines.Contains(path))
+                {
+                    delta.PreprocessorUndefines.AddUnique(path);
+                }
+            }
+        }
+        public static void
+        Clone(
+            this C.V2.ICommonCompilerOptions settings,
+            C.V2.ICommonCompilerOptions other)
+        {
+            settings.Bits = other.Bits;
+            foreach (var define in other.PreprocessorDefines)
+            {
+                settings.PreprocessorDefines.Add(define.Key, define.Value);
+            }
+            foreach (var path in other.IncludePaths)
+            {
+                settings.IncludePaths.AddUnique(path);
+            }
+            foreach (var path in other.SystemIncludePaths)
+            {
+                settings.SystemIncludePaths.AddUnique(path);
+            }
+            settings.OutputType = other.OutputType;
+            settings.DebugSymbols = other.DebugSymbols;
+            settings.WarningsAsErrors = other.WarningsAsErrors;
+            settings.Optimization = other.Optimization;
+            settings.TargetLanguage = other.TargetLanguage;
+            settings.LanguageStandard = other.LanguageStandard;
+            settings.OmitFramePointer = other.OmitFramePointer;
+            foreach (var path in other.DisableWarnings)
+            {
+                settings.DisableWarnings.AddUnique(path);
+            }
+            foreach (var path in other.PreprocessorUndefines)
+            {
+                settings.PreprocessorUndefines.AddUnique(path);
+            }
+        }
     }
 }
     public abstract class SettingsBase :
@@ -123,6 +232,105 @@ namespace DefaultSettings
                     defaultMethod.Invoke(null, new object[] { this, module });
                 }
             }
+        }
+
+        public SettingsBase
+        Delta(
+            Bam.Core.V2.Settings other,
+            Module module)
+        {
+            var settingsType = this.GetType();
+            var deltaSettings = System.Activator.CreateInstance(settingsType, module, false) as SettingsBase;
+
+            var baseI = typeof(ISettingsBase);
+            var attributeType = typeof(SettingsExtensionsAttribute);
+
+            var interfaces = settingsType.GetInterfaces();
+            foreach (var i in interfaces)
+            {
+                // is it a true settings interface?
+                if (!baseI.IsAssignableFrom(i))
+                {
+                    Bam.Core.Log.DebugMessage("Ignored interface {0} on {1}", i.ToString(), this.GetType().ToString());
+                    continue;
+                }
+                if (i == baseI)
+                {
+                    continue;
+                }
+                if (!i.IsAssignableFrom(other.GetType()))
+                {
+                    continue;
+                }
+
+                var attributeArray = i.GetCustomAttributes(attributeType, false);
+                if (0 == attributeArray.Length)
+                {
+                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                }
+
+                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
+
+                var deltaMethod = attribute.GetMethod("Delta", new[] { i, i, i });
+                if (null != deltaMethod)
+                {
+                    Bam.Core.Log.DebugMessage("Executing {0}", deltaMethod.ToString());
+                    deltaMethod.Invoke(null, new[] { this, deltaSettings, other });
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Unable to find method {0}.Delta({1}, {1}, {1})", attribute.ClassType.ToString(), i.ToString());
+                }
+            }
+
+            return deltaSettings;
+        }
+
+        public SettingsBase
+        Clone(
+            Module module)
+        {
+            var settingsType = this.GetType();
+            var clonedSettings = System.Activator.CreateInstance(settingsType, module, false) as SettingsBase;
+
+            var baseI = typeof(ISettingsBase);
+            var attributeType = typeof(SettingsExtensionsAttribute);
+
+            var interfaces = settingsType.GetInterfaces();
+            foreach (var i in interfaces)
+            {
+                // is it a true settings interface?
+                if (!baseI.IsAssignableFrom(i))
+                {
+                    Bam.Core.Log.DebugMessage("Ignored interface {0} on {1}", i.ToString(), this.GetType().ToString());
+                    continue;
+                }
+                if (i == baseI)
+                {
+                    continue;
+                }
+
+                var attributeArray = i.GetCustomAttributes(attributeType, false);
+                if (0 == attributeArray.Length)
+                {
+                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                }
+
+                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
+
+                var cloneMethod = attribute.GetMethod("Clone", new[] { i, i });
+                if (null != cloneMethod)
+                {
+                    Bam.Core.Log.DebugMessage("Executing {0}", cloneMethod.ToString());
+                    cloneMethod.Invoke(null, new[] { clonedSettings, this });
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Unable to find method {0}.Clone({1}, {1})", attribute.ClassType.ToString(), i.ToString());
+                }
+            }
+
+            return clonedSettings;
         }
     }
 

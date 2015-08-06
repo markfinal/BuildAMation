@@ -67,25 +67,40 @@ namespace V2
             }
 
             var library = new VSSolutionBuilder.V2.VSProjectStaticLibrary(sender, libraryPath, platform.Value);
+            var commonObject = inputs[0];
+            library.SetCommonCompilationOptions(commonObject, commonObject.Settings);
+
             foreach (var input in inputs)
             {
-                library.SetCommonCompilationOptions(input, input.Settings);
+                C.V2.SettingsBase deltaSettings = null;
+                if (input != commonObject)
+                {
+                    deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObject.Settings, input);
+                }
+
                 if (input is Bam.Core.V2.IModuleGroup)
                 {
                     foreach (var child in input.Children)
                     {
-                        Bam.Core.V2.Settings patchSettings = null;
+                        C.V2.SettingsBase patchSettings = deltaSettings;
                         if (child.HasPatches)
                         {
-                            patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as Bam.Core.V2.Settings;
+                            if (null == patchSettings)
+                            {
+                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
+                            }
+                            else
+                            {
+                                patchSettings = deltaSettings.Clone(child);
+                            }
                             child.ApplySettingsPatches(patchSettings, honourParents: false);
                         }
-                        library.AddObjectFile(child, patchSettings, library.Configuration);
+                        library.AddObjectFile(child, patchSettings);
                     }
                 }
                 else
                 {
-                    library.AddObjectFile(input, null, null);
+                    library.AddObjectFile(input, deltaSettings);
                 }
             }
         }
