@@ -28,6 +28,8 @@ namespace V2
         protected Object()
         {
             this.GUID = MakeGUID();
+            this.Name = "Please Provide Name";
+            this.IsA = "Undefined Xcode Object Type";
         }
 
         protected static string MakeGUID()
@@ -42,6 +44,18 @@ namespace V2
         }
 
         public abstract string GUID
+        {
+            get;
+            protected set;
+        }
+
+        public string Name
+        {
+            get;
+            protected set;
+        }
+
+        public string IsA
         {
             get;
             protected set;
@@ -72,12 +86,19 @@ namespace V2
             SDKRoot /* relative to SDK root */
         }
 
+        private FileReference()
+        {
+            this.IsA = "PBXFileReference";
+        }
+
         public FileReference(
             Bam.Core.V2.TokenizedString path,
             EFileType type,
             Project project,
             bool explicitType = false,
             ESourceTree sourceTree = ESourceTree.NA)
+            :
+            this()
         {
             this.Path = path;
             this.Type = type;
@@ -90,6 +111,8 @@ namespace V2
         public FileReference(
             FileReference other,
             Project owningProject)
+            :
+            this()
         {
             this.Path = other.Path;
             this.Type = other.Type;
@@ -122,10 +145,18 @@ namespace V2
             return clone;
         }
 
+        private Bam.Core.V2.TokenizedString ThePath;
         public Bam.Core.V2.TokenizedString Path
         {
-            get;
-            private set;
+            get
+            {
+                return this.ThePath;
+            }
+            private set
+            {
+                this.ThePath = value;
+                this.Name = System.IO.Path.GetFileName(value.Parse());
+            }
         }
 
         public EFileType Type
@@ -216,8 +247,10 @@ namespace V2
 
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
+            var leafname = System.IO.Path.GetFileName(this.Path.ToString());
+
             var indent = new string('\t', indentLevel);
-            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{isa = PBXFileReference; ", indent, this.GUID);
+            text.AppendFormat("{0}{1} /* {2} */ = {{isa = {3}; ", indent, this.GUID, leafname, this.IsA);
             if (this.ExplicitType)
             {
                 text.AppendFormat("explicitFileType = {0}; ", this.FileTypeAsString());
@@ -227,8 +260,7 @@ namespace V2
                 text.AppendFormat("lastKnownFileType = {0}; ", this.FileTypeAsString());
             }
 
-            var name = System.IO.Path.GetFileName(this.Path.ToString());
-            text.AppendFormat("name = \"{0}\"; ", name);
+            text.AppendFormat("name = \"{0}\"; ", leafname);
 
             string path = null;
             switch (this.SourceTree)
@@ -264,7 +296,7 @@ namespace V2
                 default:
                     throw new Bam.Core.Exception("Other source trees not handled yet");
             }
-            text.AppendFormat("path = \"{0}\" /* FILLEMEIN */; ", path);
+            text.AppendFormat("path = \"{0}\"; ", path);
 
             text.AppendFormat("sourceTree = {0}; ", this.SourceTreeAsString());
             text.AppendFormat("}};");
@@ -279,6 +311,7 @@ namespace V2
             Bam.Core.V2.TokenizedString path,
             FileReference source)
         {
+            this.IsA = "PBXBuildFile";
             this.Path = path;
             this.Source = source;
         }
@@ -289,10 +322,18 @@ namespace V2
             private set;
         }
 
+        private FileReference TheSource;
         public FileReference Source
         {
-            get;
-            private set;
+            get
+            {
+                return this.TheSource;
+            }
+            private set
+            {
+                this.TheSource = value;
+                this.Name = System.IO.Path.GetFileName(value.Path.ToString());
+            }
         }
 
         public Bam.Core.StringArray Settings
@@ -310,7 +351,11 @@ namespace V2
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
-            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{isa = PBXBuildFile; fileRef = {2} /* FILLEMEIN */; ", indent, this.GUID, this.Source.GUID);
+            text.AppendFormat("{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
+                indent, this.GUID, this.Source.GUID,
+                this.Name,
+                string.Empty,
+                this.IsA);
             if (this.Settings != null)
             {
                 text.AppendFormat("settings = {{COMPILER_FLAGS = \"{0}\"; }}; ", this.Settings.ToString(' '));
@@ -323,20 +368,19 @@ namespace V2
     public sealed class Group :
         Object
     {
-        public Group()
-            : this("<group>")
+        public Group(
+            string name = null)
+            : this(name, "<group>")
         {}
 
-        public Group(string sourceTree)
+        private Group(
+            string name,
+            string sourceTree)
         {
+            this.IsA = "PBXGroup";
+            this.Name = name;
             this.Children = new System.Collections.Generic.List<Object>();
             this.SourceTree = sourceTree;
-        }
-
-        public string Name
-        {
-            get;
-            set;
         }
 
         public string SourceTree
@@ -384,7 +428,7 @@ namespace V2
                 text.AppendFormat("{0}{1} = {{", indent, this.GUID);
             }
             text.AppendLine();
-            text.AppendFormat("{0}isa = PBXGroup;", indent2);
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
             if (this.Children.Count > 0)
             {
@@ -392,7 +436,7 @@ namespace V2
                 text.AppendLine();
                 foreach (var child in this.Children)
                 {
-                    text.AppendFormat("{0}{1} /* FILLMEIN */,", indent3, child.GUID);
+                    text.AppendFormat("{0}{1} /* {2} */,", indent3, child.GUID, child.Name);
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);
@@ -437,11 +481,6 @@ namespace V2
             protected set;
         }
 
-        protected abstract string IsA
-        {
-            get;
-        }
-
         protected abstract string BuildActionMask
         {
             get;
@@ -463,7 +502,7 @@ namespace V2
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{", indent, this.GUID);
+            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
             text.AppendLine();
             text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
@@ -475,7 +514,7 @@ namespace V2
                 text.AppendLine();
                 foreach (var file in this.BuildFiles)
                 {
-                    text.AppendFormat("{0}{1} /* FILLMEIN */,", indent3, file.GUID);
+                    text.AppendFormat("{0}{1} /* {2} in {3} */,", indent3, file.GUID, file.Name, this.Name);
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);
@@ -491,12 +530,10 @@ namespace V2
     public sealed class SourcesBuildPhase :
         BuildPhase
     {
-        protected override string IsA
+        public SourcesBuildPhase()
         {
-            get
-            {
-                return "PBXSourcesBuildPhase";
-            }
+            this.Name = "Sources";
+            this.IsA = "PBXSourcesBuildPhase";
         }
 
         protected override string BuildActionMask
@@ -519,12 +556,10 @@ namespace V2
     public sealed class FrameworksBuildPhase :
         BuildPhase
     {
-        protected override string IsA
+        public FrameworksBuildPhase()
         {
-            get
-            {
-                return "PBXFrameworksBuildPhase";
-            }
+            this.Name = "Frameworks";
+                this.IsA = "PBXFrameworksBuildPhase";
         }
 
         protected override string BuildActionMask
@@ -550,19 +585,13 @@ namespace V2
         public ShellScriptBuildPhase(
             Target target)
         {
+            this.Name = "ShellScript";
+            this.IsA = "PBXShellScriptBuildPhase";
             this.ShellPath = "/bin/sh";
             this.ShowEnvironmentInLog = true;
             this.InputPaths = new Bam.Core.StringArray();
             this.OutputPaths = new Bam.Core.StringArray();
             this.AssociatedTarget = target;
-        }
-
-        protected override string IsA
-        {
-            get
-            {
-                return "PBXShellScriptBuildPhase";
-            }
         }
 
         protected override string BuildActionMask
@@ -616,7 +645,7 @@ namespace V2
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{", indent, this.GUID);
+            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
             text.AppendLine();
             text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
@@ -665,12 +694,12 @@ namespace V2
             var shellScript = new System.Text.StringBuilder();
             foreach (var config in this.AssociatedTarget.ConfigurationList)
             {
-                shellScript.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\n\n", config.Name);
+                shellScript.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
                 foreach (var line in config.PostBuildCommands)
                 {
                     shellScript.AppendFormat("  {0}\\n", line);
                 }
-                shellScript.AppendFormat("fi\n\n");
+                shellScript.AppendFormat("fi\\n\\n");
             }
             text.AppendFormat("{0}shellScript = \"{1}\";", indent2, shellScript.ToString());
             text.AppendLine();
@@ -687,9 +716,12 @@ namespace V2
     public sealed class Project :
         Object
     {
-        public Project(Bam.Core.V2.Module module) :
-            base()
+        public Project(
+            Bam.Core.V2.Module module,
+            string name)
         {
+            this.IsA = "PBXProject";
+            this.Name = name;
             var projectDir = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj", module);
             module.Macros.Add("xcodeprojectdir", projectDir);
             this.ProjectDir = projectDir.Parse();
@@ -712,9 +744,8 @@ namespace V2
             this.ShellScriptsBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
 
             this.Groups.Add(new Group()); // main group
-            this.Groups.Add(new Group()); // product ref group
+            this.Groups.Add(new Group("Products")); // product ref group
 
-            this.ProductRefGroup.Name = "Products";
             this.MainGroup.AddReference(this.ProductRefGroup);
 
             var configList = new ConfigurationList(this);
@@ -989,7 +1020,7 @@ namespace V2
 
             text.AppendFormat("{0}{1} /* Project object */ = {{", indent, this.GUID);
             text.AppendLine();
-            text.AppendFormat("{0}isa = PBXProject;", indent2);
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
             text.AppendFormat("{0}attributes = {{", indent2);
             text.AppendLine();
@@ -997,20 +1028,21 @@ namespace V2
             text.AppendLine();
             text.AppendFormat("{0}}};", indent2);
             text.AppendLine();
-            text.AppendFormat("{0}compatibilityVersion = \"{1}\";", indent2, "Xcode 3.2"); // TODO
-            text.AppendLine();
             // project configuration list is always the first
-            text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for FILLEMIN */;", indent2, this.ConfigurationLists[0].GUID);
+            var projectConfigurationList = this.ConfigurationLists[0];
+            text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, projectConfigurationList.GUID, projectConfigurationList.Parent.IsA, projectConfigurationList.Parent.Name);
+            text.AppendLine();
+            text.AppendFormat("{0}compatibilityVersion = \"{1}\";", indent2, "Xcode 3.2"); // TODO
             text.AppendLine();
             text.AppendFormat("{0}mainGroup = {1};", indent2, this.MainGroup.GUID);
             text.AppendLine();
-            text.AppendFormat("{0}productRefGroup = {1} /* FILLMEIN */;", indent2, this.ProductRefGroup.GUID);
+            text.AppendFormat("{0}productRefGroup = {1} /* {2} */;", indent2, this.ProductRefGroup.GUID, this.ProductRefGroup.Name);
             text.AppendLine();
             text.AppendFormat("{0}targets = (", indent2);
             text.AppendLine();
             foreach (var target in this.Targets.Values)
             {
-                text.AppendFormat("{0}{1} /* {2} */,", indent3, target.GUID, "REPLACENAMEHERE");
+                text.AppendFormat("{0}{1} /* {2} */,", indent3, target.GUID, target.Name);
                 text.AppendLine();
             }
             text.AppendFormat("{0});", indent2);
@@ -1150,9 +1182,9 @@ namespace V2
             Bam.Core.V2.Module module,
             Project project,
             FileReference fileRef,
-            EProductType type) :
-            base()
+            EProductType type)
         {
+            this.IsA = "PBXNativeTarget";
             this.Name = module.GetType().Name;
             this.FileReference = fileRef;
             this.Type = type;
@@ -1167,12 +1199,6 @@ namespace V2
 
             this.Project = project;
             this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
-        }
-
-        public string Name
-        {
-            get;
-            private set;
         }
 
         public SourcesBuildPhase SourcesBuildPhase
@@ -1260,11 +1286,11 @@ namespace V2
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* FILLMEIN */ = {{", indent, this.GUID);
+            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
             text.AppendLine();
-            text.AppendFormat("{0}isa = PBXNativeTarget;", indent2);
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
-            text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for FILLMEIN */;", indent2, this.ConfigurationList.GUID);
+            text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, this.ConfigurationList.GUID, this.ConfigurationList.Parent.IsA, this.ConfigurationList.Parent.Name);
             text.AppendLine();
             if (this.BuildPhases.Count > 0)
             {
@@ -1272,7 +1298,7 @@ namespace V2
                 text.AppendLine();
                 foreach (var phase in this.BuildPhases)
                 {
-                    text.AppendFormat("{0}{1} /* FILLMEIN */,", indent3, phase.GUID);
+                    text.AppendFormat("{0}{1} /* {2} */,", indent3, phase.GUID, phase.Name);
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);
@@ -1290,7 +1316,7 @@ namespace V2
             text.AppendLine();
             text.AppendFormat("{0}productName = {1};", indent2, this.Name);
             text.AppendLine();
-            text.AppendFormat("{0}productReference = {1} /* FILLMEIN */;", indent2, this.FileReference.GUID);
+            text.AppendFormat("{0}productReference = {1} /* {2} */;", indent2, this.FileReference.GUID, this.FileReference.Name);
             text.AppendLine();
             text.AppendFormat("{0}productType = \"{1}\";", indent2, this.ProductTypeToString());
             text.AppendLine();
@@ -1305,6 +1331,7 @@ namespace V2
     {
         public ConfigurationList(Object parent)
         {
+            this.IsA = "XCConfigurationList";
             this.Parent = parent;
             this.Configurations = new System.Collections.Generic.List<Configuration>();
         }
@@ -1353,9 +1380,9 @@ namespace V2
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* Build configuration list for FILLMEIN */ = {{", indent, this.GUID);
+            text.AppendFormat("{0}{1} /* Build configuration list for {2} \"{3}\" */ = {{", indent, this.GUID, this.Parent.IsA, this.Parent.Name);
             text.AppendLine();
-            text.AppendFormat("{0}isa = XCConfigurationList;", indent2);
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
             if (this.Configurations.Count > 0)
             {
@@ -1363,7 +1390,7 @@ namespace V2
                 text.AppendLine();
                 foreach (var config in this.Configurations)
                 {
-                    text.AppendFormat("{0}{1} /* FILLMEIN */,", indent3, config.GUID);
+                    text.AppendFormat("{0}{1} /* {2} */,", indent3, config.GUID, config.Name);
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);
@@ -1459,15 +1486,10 @@ namespace V2
         public Configuration(string name)
             : base()
         {
+            this.IsA = "XCBuildConfiguration";
             this.Name = name;
             this.PostBuildCommands = new Bam.Core.StringArray();
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
-        }
-
-        public string Name
-        {
-            get;
-            private set;
         }
 
         public Bam.Core.StringArray PostBuildCommands
@@ -1517,11 +1539,11 @@ namespace V2
             var indent3 = new string('\t', indentLevel + 2);
             text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
             text.AppendLine();
-            text.AppendFormat("{0}isa = XCBuildConfiguration;", indent2);
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
             text.AppendFormat("{0}buildSettings = {{", indent2);
             text.AppendLine();
-            foreach (var setting in this.Settings)
+            foreach (var setting in this.Settings.OrderBy(key => key.Key))
             {
                 text.AppendFormat("{0}{1} = \"{2}\";", indent3, setting.Key, setting.Value);
                 text.AppendLine();
@@ -1565,7 +1587,7 @@ namespace V2
                 }
                 else
                 {
-                    var project = new Project(module);
+                    var project = new Project(module, module.Package.Name);
                     this.Projects[package] = project;
                     return project;
                 }
