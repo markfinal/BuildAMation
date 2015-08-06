@@ -30,6 +30,12 @@ namespace V2
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
+            if (!(sender is Bam.Core.V2.IChildModule) || (null == (sender as Bam.Core.V2.IChildModule).Parent))
+            {
+                Bam.Core.Log.DebugMessage("Standalone source file {0} not converted into VS project", source.GeneratedPaths[C.V2.SourceFile.Key].Parse());
+                // do nothing for source files not part of a library or application
+                return;
+            }
             var platform = (sender.Compiler is VisualC.Compiler64 || sender.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
             var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender, objectFilePath, platform);
             objectFile.Source = source.GeneratedPaths[C.V2.SourceFile.Key];
