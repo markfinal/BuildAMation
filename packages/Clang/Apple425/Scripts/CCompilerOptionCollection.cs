@@ -173,6 +173,12 @@ namespace Clang
                     case C.ETargetLanguage.Cxx:
                         configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("sourcecode.cpp.cpp");
                         break;
+                    case C.ETargetLanguage.ObjectiveC:
+                        configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("sourcecode.c.objc");
+                        break;
+                    case C.ETargetLanguage.ObjectiveCxx:
+                        configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.V2.UniqueConfigurationValue("sourcecode.cpp.objcpp");
+                        break;
                     default:
                         throw new Bam.Core.Exception("Unsupported target language");
                 }
@@ -271,12 +277,24 @@ namespace Clang
         {
             if (options.Frameworks.Count > 0)
             {
-                // TODO
-                /*
+                var meta = module.MetaData as XcodeBuilder.V2.XcodeMeta;
+                (meta as XcodeBuilder.V2.XcodeCommonLinkable).EnsureFrameworksBuildPhaseExists();
+                var project = meta.Project;
                 foreach (var framework in options.Frameworks)
                 {
+                    var frameworkPath = Bam.Core.V2.TokenizedString.Create("/System/Library/Frameworks/" + framework + ".framework", null, verbatim:true);
+
+                    var fileRef = project.FindOrCreateFileReference(
+                        frameworkPath,
+                        XcodeBuilder.V2.FileReference.EFileType.WrapperFramework);
+                    project.MainGroup.AddReference(fileRef);
+
+                    var buildFile = project.FindOrCreateBuildFile(
+                        frameworkPath,
+                        fileRef);
+
+                    meta.Target.FrameworksBuildPhase.AddBuildFile(buildFile);
                 }
-                */
             }
         }
     }

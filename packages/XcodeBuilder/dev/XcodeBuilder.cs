@@ -72,7 +72,8 @@ namespace V2
             SourceCodeC,
             Archive,
             Executable,
-            DynamicLibrary
+            DynamicLibrary,
+            WrapperFramework
         }
 
         public enum ESourceTree
@@ -210,9 +211,12 @@ namespace V2
 
                 case EFileType.DynamicLibrary:
                     return "compiled.mach-o.dylib";
+
+                case EFileType.WrapperFramework:
+                    return "wrapper.framework";
             }
 
-            throw new Bam.Core.Exception("Unrecognized file type");
+            throw new Bam.Core.Exception("Unrecognized file type {0}", this.Type.ToString());
         }
 
         private string SourceTreeAsString()
@@ -566,7 +570,7 @@ namespace V2
         public FrameworksBuildPhase()
         {
             this.Name = "Frameworks";
-                this.IsA = "PBXFrameworksBuildPhase";
+            this.IsA = "PBXFrameworksBuildPhase";
         }
 
         protected override string BuildActionMask
@@ -1865,8 +1869,7 @@ namespace V2
         }
 
         public void
-        AddStaticLibrary(
-            XcodeStaticLibrary library)
+        EnsureFrameworksBuildPhaseExists()
         {
             if (null == this.Target.FrameworksBuildPhase)
             {
@@ -1875,6 +1878,13 @@ namespace V2
                 this.Target.BuildPhases.Add(frameworks);
                 this.Target.FrameworksBuildPhase = frameworks;
             }
+        }
+
+        public void
+        AddStaticLibrary(
+            XcodeStaticLibrary library)
+        {
+            this.EnsureFrameworksBuildPhaseExists();
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             if (null != copyOfLibFileRef)
             {
@@ -1892,13 +1902,7 @@ namespace V2
         AddDynamicLibrary(
             XcodeDynamicLibrary library)
         {
-            if (null == this.Target.FrameworksBuildPhase)
-            {
-                var frameworks = new FrameworksBuildPhase();
-                this.Project.FrameworksBuildPhases.Add(frameworks);
-                this.Target.BuildPhases.Add(frameworks);
-                this.Target.FrameworksBuildPhase = frameworks;
-            }
+            this.EnsureFrameworksBuildPhaseExists();
             var copyOfLibFileRef = FileReference.MakeLinkedClone(this.Project, this.ProjectModule.BuildEnvironment.Configuration, library.Output);
             if (null != copyOfLibFileRef)
             {
