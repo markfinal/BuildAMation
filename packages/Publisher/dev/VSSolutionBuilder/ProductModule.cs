@@ -34,23 +34,26 @@ namespace V2
             {
                 foreach (var dependee in module.Key.Dependees)
                 {
-                    if (packageObjects.ContainsKey(dependee))
+                    if (!packageObjects.ContainsKey(dependee))
                     {
-                        foreach (var path in packageObjects[dependee].Keys)
+                        // the dependee wasn't being packaged, so the dependent isn't needed to be either
+                        Bam.Core.Log.DebugMessage("Module {0} is packaged, but {1} is dependent upon it but isn't packaged, and thus ignored", module.ToString(), dependee.ToString());
+                        continue;
+                    }
+                    foreach (var path in packageObjects[dependee].Keys)
+                    {
+                        var dir = System.IO.Path.GetDirectoryName(path.ToString());
+                        // the subdir on the dependee is ignored here, as it was never copied anywhere
+                        foreach (var modulePath in module.Value)
                         {
-                            var dir = System.IO.Path.GetDirectoryName(path.ToString());
-                            // the subdir on the dependee is ignored here, as it was never copied anywhere
-                            foreach (var modulePath in module.Value)
-                            {
-                                // the dependent's subdir must be honoured, as the runtime might expect it
-                                var dependentSubDir = modulePath.Value;
-                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
+                            // the dependent's subdir must be honoured, as the runtime might expect it
+                            var dependentSubDir = modulePath.Value;
+                            var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
 
-                                var commands = new Bam.Core.StringArray();
-                                commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
-                                commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
-                                (module.Key.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
-                            }
+                            var commands = new Bam.Core.StringArray();
+                            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
+                            commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
+                            (module.Key.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
                         }
                     }
                 }

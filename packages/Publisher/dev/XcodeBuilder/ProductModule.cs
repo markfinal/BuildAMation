@@ -34,29 +34,32 @@ namespace V2
             {
                 foreach (var dependee in module.Key.Dependees)
                 {
-                    if (packageObjects.ContainsKey(dependee))
+                    if (!packageObjects.ContainsKey(dependee))
                     {
-                        if (dependee.Package == module.Key.Package)
+                        // the dependee wasn't being packaged, so the dependent isn't needed to be either
+                        Bam.Core.Log.DebugMessage("Module {0} is packaged, but {1} is dependent upon it but isn't packaged, and thus ignored", module.ToString(), dependee.ToString());
+                        continue;
+                    }
+                    if (dependee.Package == module.Key.Package)
+                    {
+                        // same package has the same output folder, so don't bother copying
+                        continue;
+                    }
+                    foreach (var path in packageObjects[dependee].Keys)
+                    {
+                        // this has to be the path that Xcode writes to
+                        var dir = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", dependee).Parse();
+                        // the subdir on the dependee is ignored here, as it was never copied anywhere
+                        foreach (var modulePath in module.Value)
                         {
-                            // same package has the same output folder, so don't bother copying
-                            continue;
-                        }
-                        foreach (var path in packageObjects[dependee].Keys)
-                        {
-                            // this has to be the path that Xcode writes to
-                            var dir = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", dependee).Parse();
-                            // the subdir on the dependee is ignored here, as it was never copied anywhere
-                            foreach (var modulePath in module.Value)
-                            {
-                                // the dependent's subdir must be honoured, as the runtime might expect it
-                                var dependentSubDir = modulePath.Value;
-                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
+                            // the dependent's subdir must be honoured, as the runtime might expect it
+                            var dependentSubDir = modulePath.Value;
+                            var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
 
-                                var commands = new Bam.Core.StringArray();
-                                commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
-                                commands.Add(System.String.Format("cp -v $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {0}/$EXECUTABLE_NAME", destinationDir));
-                                (module.Key.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
-                            }
+                            var commands = new Bam.Core.StringArray();
+                            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
+                            commands.Add(System.String.Format("cp -v $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {0}/$EXECUTABLE_NAME", destinationDir));
+                            (module.Key.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
                         }
                     }
                 }
