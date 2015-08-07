@@ -70,6 +70,7 @@ namespace V2
             this.OriginalString = original;
             if (verbatim)
             {
+                this.ParsedString = original;
                 return;
             }
             var tokenized = SplitToParse(original, TokenRegExPattern);
@@ -400,15 +401,8 @@ namespace V2
         public override bool Equals(object obj)
         {
             var other = obj as TokenizedString;
-            if (this.OriginalString != other.OriginalString)
-            {
-                return false;
-            }
-            if (this.ModuleWithMacros != other.ModuleWithMacros)
-            {
-                return false;
-            }
-            return true;
+            var equal = (this.Parse() == other.Parse());
+            return equal;
         }
 
         public override int GetHashCode()
