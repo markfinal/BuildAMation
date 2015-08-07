@@ -42,7 +42,7 @@ namespace V2
 
         protected Package()
         {
-            this.RegisterGeneratedFile(PackageRoot, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)", this));
+            this.RegisterGeneratedFile(PackageRoot, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
         }
 
         public void
