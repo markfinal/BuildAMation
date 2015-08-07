@@ -117,7 +117,8 @@ namespace zeromq
                 });
             }
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
             {
                 this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
@@ -134,11 +135,18 @@ namespace zeromq
             this.PrivatePatch(settings =>
                 {
                     var linker = settings as C.V2.ICommonLinkerOptions;
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                        this.Linker is VisualC.V2.LinkerBase)
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        linker.Libraries.Add("Ws2_32.lib");
-                        linker.Libraries.Add("Advapi32.lib");
+                        if (this.Linker is VisualC.V2.LinkerBase)
+                        {
+                            linker.Libraries.Add("Ws2_32.lib");
+                            linker.Libraries.Add("Advapi32.lib");
+                        }
+                        else if (this.Linker is Mingw.V2.LinkerBase)
+                        {
+                            linker.Libraries.Add("-lws2_32");
+                            linker.Libraries.Add("-ladvapi32");
+                        }
                     }
                     else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
                     {
