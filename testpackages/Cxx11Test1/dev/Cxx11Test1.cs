@@ -21,7 +21,7 @@ using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Cxx11Test1
 {
     public sealed class TestProgV2 :
-        C.V2.ConsoleApplication
+        C.Cxx.V2.ConsoleApplication
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {
@@ -32,11 +32,9 @@ namespace Cxx11Test1
 
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.LanguageStandard = C.ELanguageStandard.Cxx11;
-
                     var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+                    cxxCompiler.LanguageStandard = C.Cxx.ELanguageStandard.Cxx11;
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
