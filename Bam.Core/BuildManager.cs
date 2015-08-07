@@ -109,15 +109,13 @@ namespace V2
                                 {
                                     Log.ErrorMessage(context.ErrorStringBuilder.ToString());
                                 }
-                            });
+                            },
+                            System.Threading.Tasks.TaskCreationOptions.LongRunning); // LongRunning is absolutely necessary in order to achieve paralleism
                         tasks.Add(task);
                         module.ExecutionTask = task;
                     }
                 }
-                foreach (var task in tasks)
-                {
-                    task.Wait();
-                }
+                System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
             }
             else
             {
