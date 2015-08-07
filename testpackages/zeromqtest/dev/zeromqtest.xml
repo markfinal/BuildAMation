@@ -17,6 +17,11 @@
     <Package Name="MakeFileBuilder">
       <Version Id="dev" />
     </Package>
+    <Package Name="Mingw">
+      <Version Id="3.4.5" />
+      <Version Id="4.5.0" />
+      <Version Id="4.8.1" Default="true" />
+    </Package>
     <Package Name="Publisher">
       <Version Id="dev" />
     </Package>
