@@ -60,31 +60,6 @@ namespace Gcc
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            if (null != options.LanguageStandard)
-            {
-                switch (options.LanguageStandard)
-                {
-                    case C.ELanguageStandard.C89:
-                        commandLine.Add("-std=c89");
-                        break;
-
-                    case C.ELanguageStandard.C99:
-                        commandLine.Add("-std=c99");
-                        break;
-
-                    case C.ELanguageStandard.Cxx98:
-                        commandLine.Add("-std=c++98");
-                        break;
-
-                    case C.ELanguageStandard.Cxx11:
-                        commandLine.Add("-std=c++11");
-                        break;
-
-                    default:
-                        // TODO: Might want to split this across C specific and Cxx specific options
-                        throw new Bam.Core.Exception("Invalid language standard, '{0}'", options.LanguageStandard.ToString());
-                }
-            }
             if (null != options.OmitFramePointer)
             {
                 if (true == options.OmitFramePointer)
@@ -179,6 +154,29 @@ namespace Gcc
 
         public static void
         Convert(
+            this C.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.ECLanguageStandard.C89:
+                        commandLine.Add("-std=c89");
+                        break;
+
+                    case C.ECLanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard, '{0}'", options.LanguageStandard.ToString());
+                }
+            }
+        }
+        public static void
+        Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
@@ -198,6 +196,22 @@ namespace Gcc
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.Cxx.ELanguageStandard.Cxx98:
+                        commandLine.Add("-std=c++98");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.Cxx11:
+                        commandLine.Add("-std=c++11");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Invalid C++ language standard, '{0}'", options.LanguageStandard.ToString());
                 }
             }
         }
@@ -428,12 +442,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -447,6 +455,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+
+        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -560,12 +574,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -585,6 +593,12 @@ namespace V2
         }
 
         C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -699,12 +713,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -723,13 +731,19 @@ namespace V2
             set;
         }
 
-        bool? GccCommon.V2.ICommonCompilerOptions.PositionIndependentCode
+        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
         string C.V2.IObjectiveCOnlyCompilerOptions.ConstantStringClass
+        {
+            get;
+            set;
+        }
+
+        bool? GccCommon.V2.ICommonCompilerOptions.PositionIndependentCode
         {
             get;
             set;
@@ -838,12 +852,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -863,6 +871,12 @@ namespace V2
         }
 
         C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -1194,9 +1208,10 @@ namespace V2
 
         protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
         {
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
-            cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveC;
-            cSettings.LanguageStandard = C.ELanguageStandard.C99;
+            var compiler = settings as C.V2.ICommonCompilerOptions;
+            compiler.TargetLanguage = C.ETargetLanguage.ObjectiveC;
+            var cCompiler = settings as C.V2.ICOnlyCompilerOptions;
+            cCompiler.LanguageStandard = C.ECLanguageStandard.C99;
         }
     }
 

@@ -30,8 +30,7 @@ namespace DefaultSettings
             Bam.Core.V2.Module module)
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
-            // TODO: separate C language standards from C++
-            (settings as C.V2.ICommonCompilerOptions).LanguageStandard = ELanguageStandard.Cxx98;
+            settings.LanguageStandard = ELanguageStandard.Cxx98;
         }
         public static void
         Clone(

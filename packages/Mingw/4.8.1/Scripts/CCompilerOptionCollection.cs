@@ -50,23 +50,6 @@ namespace Mingw
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            switch (options.LanguageStandard)
-            {
-                case C.ELanguageStandard.C89:
-                    break;
-                case C.ELanguageStandard.C99:
-                    commandLine.Add("-std=c99");
-                    break;
-                case C.ELanguageStandard.Cxx98:
-                    commandLine.Add("-std=c++98");
-                    break;
-                case C.ELanguageStandard.Cxx11:
-                    commandLine.Add("-std=c++11");
-                    break;
-                default:
-                    // TODO: Might want to split this across C specific and Cxx specific options
-                    throw new Bam.Core.Exception("Invalid language standard");
-            }
             if (true == options.OmitFramePointer)
             {
                 commandLine.Add("-fomit-frame-pointer");
@@ -144,6 +127,16 @@ namespace Mingw
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            switch (options.LanguageStandard)
+            {
+                case C.ECLanguageStandard.C89:
+                    break;
+                case C.ECLanguageStandard.C99:
+                    commandLine.Add("-std=c99");
+                    break;
+                default:
+                    throw new Bam.Core.Exception("Invalid C language standard {0}", options.LanguageStandard.ToString());
+            }
         }
 
         public static void
@@ -168,6 +161,17 @@ namespace Mingw
                     default:
                         throw new Bam.Core.Exception("Unrecognized exception handler option");
                 }
+            }
+            switch (options.LanguageStandard)
+            {
+                case C.Cxx.ELanguageStandard.Cxx98:
+                    commandLine.Add("-std=c++98");
+                    break;
+                case C.Cxx.ELanguageStandard.Cxx11:
+                    commandLine.Add("-std=c++11");
+                    break;
+                default:
+                    throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
             }
         }
 
@@ -317,12 +321,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -336,6 +334,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+
+        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -463,12 +467,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -488,6 +486,12 @@ namespace V2
         }
 
         C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;

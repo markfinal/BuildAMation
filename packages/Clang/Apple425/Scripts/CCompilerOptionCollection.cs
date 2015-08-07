@@ -76,33 +76,6 @@ namespace Clang
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }
-            if (null != options.LanguageStandard)
-            {
-                switch (options.LanguageStandard)
-                {
-                    case C.ELanguageStandard.C89:
-                        configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c89");
-                        break;
-
-                    case C.ELanguageStandard.C99:
-                        configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c99");
-                        break;
-
-                    case C.ELanguageStandard.Cxx98:
-                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++98");
-                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libstdc++");
-                        break;
-
-                    case C.ELanguageStandard.Cxx11:
-                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++11");
-                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libc++");
-                        break;
-
-                    default:
-                        // TODO: Might want to split this across C specific and Cxx specific options
-                        throw new Bam.Core.Exception("Invalid language standard");
-                }
-            }
             if (null != options.OmitFramePointer)
             {
                 var arg = (true == options.OmitFramePointer) ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
@@ -195,6 +168,30 @@ namespace Clang
 
         public static void
         Convert(
+            this C.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.ECLanguageStandard.C89:
+                        configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c89");
+                        break;
+
+                    case C.ECLanguageStandard.C99:
+                        configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c99");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard, {0}", options.LanguageStandard.ToString());
+                }
+            }
+        }
+
+        public static void
+        Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             XcodeBuilder.V2.Configuration configuration)
@@ -214,6 +211,24 @@ namespace Clang
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.Cxx.ELanguageStandard.Cxx98:
+                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++98");
+                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libstdc++");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.Cxx11:
+                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++11");
+                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libc++");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
                 }
             }
         }
@@ -335,27 +350,6 @@ namespace Clang
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            if (null != options.LanguageStandard)
-            {
-                switch (options.LanguageStandard)
-                {
-                    case C.ELanguageStandard.C89:
-                        commandLine.Add("-std=c89");
-                        break;
-                    case C.ELanguageStandard.C99:
-                        commandLine.Add("-std=c99");
-                        break;
-                    case C.ELanguageStandard.Cxx98:
-                        commandLine.Add("-std=c++98");
-                        break;
-                    case C.ELanguageStandard.Cxx11:
-                        commandLine.Add("-std=c++11");
-                        break;
-                    default:
-                        // TODO: Might want to split this across C specific and Cxx specific options
-                        throw new Bam.Core.Exception("Invalid language standard, '{0}'", options.LanguageStandard.ToString());
-                }
-            }
             if (null != options.OmitFramePointer)
             {
                 if (true == options.OmitFramePointer)
@@ -450,6 +444,28 @@ namespace Clang
 
         public static void
         Convert(
+            this C.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.ECLanguageStandard.C89:
+                        commandLine.Add("-std=c89");
+                        break;
+                    case C.ECLanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard, {0}", options.LanguageStandard.ToString());
+                }
+            }
+        }
+
+        public static void
+        Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
@@ -469,6 +485,20 @@ namespace Clang
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.Cxx.ELanguageStandard.Cxx98:
+                        commandLine.Add("-std=c++98");
+                        break;
+                    case C.Cxx.ELanguageStandard.Cxx11:
+                        commandLine.Add("-std=c++11");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
                 }
             }
         }
@@ -716,12 +746,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -735,6 +759,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+
+        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -833,12 +863,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -858,6 +882,12 @@ namespace V2
         }
 
         C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -962,12 +992,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -981,6 +1005,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+
+        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -1090,12 +1120,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -1115,6 +1139,12 @@ namespace V2
         }
 
         C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;

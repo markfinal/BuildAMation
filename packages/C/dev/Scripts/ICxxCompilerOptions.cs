@@ -28,6 +28,12 @@ namespace V2
             get;
             set;
         }
+
+        C.Cxx.ELanguageStandard? LanguageStandard
+        {
+            get;
+            set;
+        }
     }
 }
     public interface ICxxCompilerOptions

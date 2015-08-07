@@ -26,4 +26,11 @@ namespace C.Cxx
         Asynchronous = 2,
         SyncWithCExternFunctions = 3
     }
+
+    public enum ELanguageStandard
+    {
+        NotSet,
+        Cxx98,
+        Cxx11
+    }
 }

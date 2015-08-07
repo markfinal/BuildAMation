@@ -554,12 +554,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -573,6 +567,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        {
+            get;
+            set;
+        }
+
+        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -733,12 +733,6 @@ namespace V2
             set;
         }
 
-        C.ELanguageStandard? C.V2.ICommonCompilerOptions.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? C.V2.ICommonCompilerOptions.OmitFramePointer
         {
             get;
@@ -758,6 +752,12 @@ namespace V2
         }
 
         C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;

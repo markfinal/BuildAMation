@@ -57,4 +57,12 @@ namespace C
         Cxx98,
         Cxx11
     }
+
+    // TODO: rename back to ELanguageStandard
+    public enum ECLanguageStandard
+    {
+        NotSet,
+        C89,
+        C99
+    }
 }

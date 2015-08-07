@@ -29,7 +29,6 @@ namespace DefaultSettings
         {
             settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug;
-            settings.LanguageStandard = ELanguageStandard.C89;
             settings.OmitFramePointer = module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug;
             settings.Optimization = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug ? EOptimization.Off : EOptimization.Speed;
             settings.OutputType = ECompilerOutput.CompileOnly;
@@ -113,10 +112,6 @@ namespace DefaultSettings
             {
                 delta.TargetLanguage = settings.TargetLanguage;
             }
-            if (settings.LanguageStandard != other.LanguageStandard)
-            {
-                delta.LanguageStandard = settings.LanguageStandard;
-            }
             if (settings.OmitFramePointer != other.OmitFramePointer)
             {
                 delta.OmitFramePointer = settings.OmitFramePointer;
@@ -159,7 +154,6 @@ namespace DefaultSettings
             settings.WarningsAsErrors = other.WarningsAsErrors;
             settings.Optimization = other.Optimization;
             settings.TargetLanguage = other.TargetLanguage;
-            settings.LanguageStandard = other.LanguageStandard;
             settings.OmitFramePointer = other.OmitFramePointer;
             foreach (var path in other.DisableWarnings)
             {
@@ -397,12 +391,6 @@ namespace DefaultSettings
             set;
         }
 
-        C.ELanguageStandard? LanguageStandard
-        {
-            get;
-            set;
-        }
-
         bool? OmitFramePointer
         {
             get;
@@ -425,6 +413,11 @@ namespace DefaultSettings
     [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
+        C.ECLanguageStandard? LanguageStandard
+        {
+            get;
+            set;
+        }
     }
 
     [Bam.Core.V2.SettingsExtensions(typeof(C.ObjC.V2.DefaultSettings.DefaultSettingsExtensions))]
