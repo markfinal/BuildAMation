@@ -30,12 +30,18 @@ namespace zeromq
         protected override void ExecuteInternal(ExecutionContext context)
         {
             var source = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src/platform.hpp.in", this);
-            var dest = Bam.Core.V2.TokenizedString.Create("$(buildroot)/platform.hpp", this);
+            var dest = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)/platform.hpp", this);
 
             // parse the input header, and modify it while writing it out
             // modifications are platform specific
             using (System.IO.TextReader readFile = new System.IO.StreamReader(source.Parse()))
             {
+                var destPath = dest.Parse();
+                var destDir = System.IO.Path.GetDirectoryName(destPath);
+                if (!System.IO.Directory.Exists(destDir))
+                {
+                    System.IO.Directory.CreateDirectory(destDir);
+                }
                 using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(dest.Parse()))
                 {
                     string line;
@@ -113,7 +119,7 @@ namespace zeromq
                 source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(buildroot)", this));
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", this));
                 });
             }
 
