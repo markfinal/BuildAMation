@@ -17,6 +17,7 @@
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using System.Linq;
 namespace zeromq
 {
     public sealed class ZMQPlatformHeader :
@@ -93,7 +94,7 @@ namespace zeromq
             this.Macros.Add("zmqsrcdir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src", this));
 
             var source = this.CreateCxxSourceContainer();
-            source.AddFiles("$(zmqsrcdir)/*.cpp", macroModuleOverride: this);
+            var allSource = source.AddFiles("$(zmqsrcdir)/*.cpp", macroModuleOverride: this);
 
             source.PrivatePatch(settings =>
                 {
@@ -121,6 +122,15 @@ namespace zeromq
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", this));
                 });
+
+                if (this.Linker is Clang.V2.LinkerBase)
+                {
+                    var ipc_listener = allSource.Where(item => (item as C.V2.ObjectFile).InputPath.Parse().EndsWith("ipc_listener.cpp"));
+                    ipc_listener.ElementAt(0).PrivatePatch(settings => {
+                        var compiler = settings as C.V2.ICommonCompilerOptions;
+                        compiler.DisableWarnings.Add("deprecated-declarations");
+                    });
+                }
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
