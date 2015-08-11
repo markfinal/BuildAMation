@@ -185,9 +185,13 @@ namespace V2
                 System.IO.Directory.CreateDirectory(Core.State.BuildRoot);
             }
 
-            var threaded = CommandLineProcessor.Evaluate(new MultiThreaded());
+            var threadCount = CommandLineProcessor.Evaluate(new MultiThreaded());
+            if (0 == threadCount)
+            {
+                threadCount = System.Environment.ProcessorCount;
+            }
 
-            if (threaded)
+            if (threadCount > 1)
             {
                 var cancellationSource = new System.Threading.CancellationTokenSource();
                 var cancellationToken = cancellationSource.Token;
@@ -196,9 +200,7 @@ namespace V2
                 var creationOpts = System.Threading.Tasks.TaskCreationOptions.LongRunning;
                 var continuationOpts = System.Threading.Tasks.TaskContinuationOptions.LongRunning;
 
-                //var scheduler = new LimitedConcurrencyLevelTaskScheduler(System.Environment.ProcessorCount);
-                //var scheduler = new LimitedConcurrencyLevelTaskScheduler(1);
-                var scheduler = System.Threading.Tasks.TaskScheduler.Default;
+                var scheduler = new LimitedConcurrencyLevelTaskScheduler(threadCount);
 
                 var factory = new System.Threading.Tasks.TaskFactory(
                         cancellationToken,

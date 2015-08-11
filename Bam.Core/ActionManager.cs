@@ -29,7 +29,9 @@ namespace V2
             Arguments = new StringArray(System.Environment.GetCommandLineArgs());
         }
 
-        public static bool Evaluate(IBooleanCommandLineArgument realArg)
+        public static bool
+        Evaluate(
+            IBooleanCommandLineArgument realArg)
         {
             foreach (var arg in Arguments)
             {
@@ -48,7 +50,9 @@ namespace V2
             return false;
         }
 
-        public static string Evaluate(IStringCommandLineArgument realArg)
+        public static string
+        Evaluate(
+            IStringCommandLineArgument realArg)
         {
             foreach (var arg in Arguments)
             {
@@ -65,6 +69,27 @@ namespace V2
                 }
             }
             return null;
+        }
+
+        public static int
+        Evaluate(
+            IIntegerCommandLineArgument realArg)
+        {
+            foreach (var arg in Arguments)
+            {
+                var splitArg = arg.Split('=');
+                if (splitArg.Length != 2)
+                {
+                    continue;
+                }
+
+                if ((splitArg[0].StartsWith("--") && splitArg[0].EndsWith(realArg.LongName)) ||
+                    ((realArg.ShortName != null) && (splitArg[0].StartsWith("-") && splitArg[0].EndsWith(realArg.ShortName))))
+                {
+                    return System.Convert.ToInt32(splitArg[1]);
+                }
+            }
+            return realArg.Default;
         }
     }
 }

@@ -41,6 +41,14 @@ namespace V2
     {
     }
 
+    public interface IIntegerCommandLineArgument : ICommandLineArgument
+    {
+        int Default
+        {
+            get;
+        }
+    }
+
     public sealed class BuilderName :
         IStringCommandLineArgument
     {
@@ -62,7 +70,7 @@ namespace V2
     }
 
     public sealed class MultiThreaded :
-        IBooleanCommandLineArgument
+        IIntegerCommandLineArgument
     {
         string ICommandLineArgument.ShortName
         {
@@ -77,6 +85,14 @@ namespace V2
             get
             {
                 return "--threaded";
+            }
+        }
+
+        int IIntegerCommandLineArgument.Default
+        {
+            get
+            {
+                return 1; // single threaded by default
             }
         }
     }
