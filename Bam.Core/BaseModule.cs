@@ -419,7 +419,9 @@ namespace V2
             {
                 throw new Exception("Too few dependees!");
             }
-            return this.DependeesList[0].GetEncapsulatingReferencedModule();
+            var encapsulating = this.DependeesList[0].GetEncapsulatingReferencedModule();
+            this.Macros.Add("encapsulatingpkgbuilddir", encapsulating.Macros["pkgbuilddir"]);
+            return encapsulating;
         }
 
         private void
