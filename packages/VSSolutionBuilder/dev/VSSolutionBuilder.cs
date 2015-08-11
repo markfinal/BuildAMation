@@ -118,8 +118,13 @@ namespace V2
             set;
         }
 
-        public VSProject FindOrCreateProject(System.Type moduleType, VSProject.Type projectType)
+        public VSProject
+        FindOrCreateProject(
+            Bam.Core.V2.Module module,
+            VSProject.Type projectType,
+            string projectPath)
         {
+            var moduleType = module.GetType();
             lock(this)
             {
                 if (this.Projects.ContainsKey(moduleType))
@@ -128,7 +133,7 @@ namespace V2
                 }
                 else
                 {
-                    var project = new VSProject(projectType);
+                    var project = new VSProject(projectType, module, projectPath);
                     this.Projects[moduleType] = project;
                     return project;
                 }
@@ -203,6 +208,137 @@ namespace V2
         }
     }
 
+    // TODO: this class does share some aspects of the VSProject class
+    public sealed class VSProjectFilter :
+        System.Xml.XmlDocument
+    {
+        private static readonly string VCProjNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
+
+        public VSProjectFilter(
+            string path,
+            Bam.Core.V2.Module module)
+        {
+            this.Path = Bam.Core.V2.TokenizedString.Create(path, module).Parse();
+            var project = this.AppendChild(this.CreateProjectElement("Project"));
+            project.Attributes.Append(this.CreateAttribute("ToolsVersion")).Value = "4.0";
+
+            this.Groups = this.CreateItemGroup(null).Element;
+            project.AppendChild(this.Groups);
+            this.Files = this.CreateItemGroup(null).Element;
+            project.AppendChild(this.Files);
+        }
+
+        public string Path
+        {
+            get;
+            private set;
+        }
+
+        public void
+        AddFile(
+            System.Xml.XmlElement fileElement,
+            string groupname,
+            params string [] extensions)
+        {
+            System.Func<System.Xml.XmlNode> findGroupName = () =>
+                {
+                    foreach (System.Xml.XmlNode node in this.Groups.ChildNodes)
+                    {
+                        foreach (System.Xml.XmlAttribute attr in node.Attributes)
+                        {
+                            if (attr.Value == groupname)
+                            {
+                                return node;
+                            }
+                        }
+                    }
+                    return null;
+                };
+            var group = findGroupName();
+            if (null == group)
+            {
+                this.Groups.AppendChild(this.CreateFilter(groupname, new Bam.Core.StringArray(extensions)));
+            }
+
+            var fileType = fileElement.NodeType.ToString();
+            var filePath = fileElement.Attributes["Include"].Value;
+
+            System.Func<System.Xml.XmlNode> findFileName = () =>
+                {
+                    foreach (System.Xml.XmlNode node in this.Files.ChildNodes)
+                    {
+                        if (node.Attributes["Include"].Value == filePath)
+                        {
+                            return node;
+                        }
+                    }
+                    return null;
+                };
+            var file = findFileName();
+            if (null == file)
+            {
+                var fileFilter = this.CreateProjectElement(fileType);
+                fileFilter.Attributes.Append(this.CreateAttribute("Include")).Value = filePath;
+
+                var filter = this.CreateProjectElement("Filter");
+                filter.InnerText = groupname;
+                fileFilter.AppendChild(filter);
+
+                this.Files.AppendChild(fileFilter);
+            }
+        }
+
+        private System.Xml.XmlElement Groups
+        {
+            get;
+            set;
+        }
+
+        private System.Xml.XmlElement Files
+        {
+            get;
+            set;
+        }
+
+        private System.Xml.XmlElement
+        CreateProjectElement(
+            string name)
+        {
+            return this.CreateElement(name, VCProjNamespace);
+        }
+
+        private ItemGroup
+        CreateItemGroup(
+            string label)
+        {
+            var group = this.CreateProjectElement("ItemGroup");
+            if (null != label)
+            {
+                group.Attributes.Append(this.CreateAttribute("Label")).Value = label;
+            }
+            return new ItemGroup(group);
+        }
+
+        private System.Xml.XmlElement
+        CreateFilter(
+            string name,
+            Bam.Core.StringArray validExtensions)
+        {
+            var filter = this.CreateProjectElement("Filter");
+            filter.Attributes.Append(this.CreateAttribute("Include")).Value = name;
+
+            var uid = this.CreateProjectElement("UniqueIdentifier");
+            uid.InnerText = System.Guid.NewGuid().ToString("B").ToUpper();
+            filter.AppendChild(uid);
+
+            var extensions = this.CreateProjectElement("Extensions");
+            extensions.InnerText = validExtensions.ToString(';');
+            filter.AppendChild(extensions);
+
+            return filter;
+        }
+    }
+
     public sealed class VSProject :
         System.Xml.XmlDocument
     {
@@ -231,9 +367,15 @@ namespace V2
         private System.Collections.Generic.List<VSProject> DependentProjects = new System.Collections.Generic.List<VSProject>();
         private System.Collections.Generic.Dictionary<string, System.Xml.XmlElement> SourceXMLMap = new System.Collections.Generic.Dictionary<string, System.Xml.XmlElement>();
 
-        public VSProject(Type type)
+        public VSProject(
+            Type type,
+            Bam.Core.V2.Module module,
+            string projectPath)
         {
             this.ProjectType = type;
+            this.ProjectPath = Bam.Core.V2.TokenizedString.Create(projectPath, module).Parse();
+            this.Filter = new VSProjectFilter(projectPath + ".filters", module);
+
             this.GUID = System.Guid.NewGuid();
             this.TypeGUID = System.Guid.Parse("8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942");
             this.Configurations = new Bam.Core.Array<VSProjectConfiguration>();
@@ -332,6 +474,8 @@ namespace V2
             {
                 (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element, configuration.FullName);
             }
+
+            this.Filter.AddFile(element, "Source Files", "cpp");
         }
 
         public static string GetConfigurationName(string configuration, string platform)
@@ -603,6 +747,12 @@ namespace V2
             set;
         }
 
+        public VSProjectFilter Filter
+        {
+            get;
+            private set;
+        }
+
         public System.Guid GUID
         {
             get;
@@ -719,14 +869,8 @@ namespace V2
             if (isReferenced)
             {
                 var solution = graph.MetaData as VSSolution;
-                this.Project = solution.FindOrCreateProject(module.GetType(), type);
-
+                this.Project = solution.FindOrCreateProject(module, type, "$(pkgbuilddir)/$(modulename).vcxproj");
                 this.Project.AddProjectConfiguration(this.Configuration, module, outPath);
-
-                var projectPath = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module);
-                projectPath.Parse();
-                this.Project.ProjectPath = projectPath.ToString();
-
                 this.ProjectModule = module;
             }
             else
@@ -797,6 +941,11 @@ namespace V2
                 using (var xmlwriter = System.Xml.XmlWriter.Create(project.ProjectPath, settings))
                 {
                     project.WriteTo(xmlwriter);
+                }
+
+                using (var xmlwriter = System.Xml.XmlWriter.Create(project.Filter.Path, settings))
+                {
+                    project.Filter.WriteTo(xmlwriter);
                 }
             }
 
