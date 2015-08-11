@@ -99,6 +99,7 @@ namespace V2
             {
                 throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
             }
+            var exitCode = -1;
             if (null != process)
             {
                 process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.OutputDataReceived);
@@ -109,13 +110,12 @@ namespace V2
 
                 // TODO: need to poll for an external cancel op? this currently waits forever
                 process.WaitForExit();
-                var exitCode = process.ExitCode;
+                exitCode = process.ExitCode;
                 //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
-
-                return exitCode;
             }
 
-            return -1;
+            process.Close();
+            return exitCode;
         }
     }
 }
