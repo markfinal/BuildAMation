@@ -58,8 +58,7 @@ namespace V2
         {
             get
             {
-                // TODO: centralize install path
-                return Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5\bin\moc", null);
+                return Bam.Core.V2.TokenizedString.Create(System.IO.Path.Combine(new [] {QtCommon.V2.Configure.InstallPath.Parse(), "bin", "moc"}), null);
             }
         }
     }
