@@ -238,18 +238,15 @@ namespace V2
         AddFile(
             System.Xml.XmlElement fileElement,
             string groupname,
-            params string [] extensions)
+            string extension)
         {
             System.Func<System.Xml.XmlNode> findGroupName = () =>
                 {
                     foreach (System.Xml.XmlNode node in this.Groups.ChildNodes)
                     {
-                        foreach (System.Xml.XmlAttribute attr in node.Attributes)
+                        if (node.Attributes["Include"].Value == groupname)
                         {
-                            if (attr.Value == groupname)
-                            {
-                                return node;
-                            }
+                            return node;
                         }
                     }
                     return null;
@@ -257,10 +254,16 @@ namespace V2
             var group = findGroupName();
             if (null == group)
             {
-                this.Groups.AppendChild(this.CreateFilter(groupname, new Bam.Core.StringArray(extensions)));
+                this.Groups.AppendChild(this.CreateFilter(groupname, extension));
+            }
+            else
+            {
+                var existingExtensions = new Bam.Core.StringArray(group.LastChild.InnerText.Split(new[] { ';' }));
+                existingExtensions.AddUnique(extension);
+                group.LastChild.InnerText = existingExtensions.ToString(';');
             }
 
-            var fileType = fileElement.NodeType.ToString();
+            var fileType = fileElement.Name;
             var filePath = fileElement.Attributes["Include"].Value;
 
             System.Func<System.Xml.XmlNode> findFileName = () =>
@@ -322,7 +325,7 @@ namespace V2
         private System.Xml.XmlElement
         CreateFilter(
             string name,
-            Bam.Core.StringArray validExtensions)
+            string extension)
         {
             var filter = this.CreateProjectElement("Filter");
             filter.Attributes.Append(this.CreateAttribute("Include")).Value = name;
@@ -332,7 +335,7 @@ namespace V2
             filter.AppendChild(uid);
 
             var extensions = this.CreateProjectElement("Extensions");
-            extensions.InnerText = validExtensions.ToString(';');
+            extensions.InnerText = extension;
             filter.AppendChild(extensions);
 
             return filter;
@@ -475,7 +478,8 @@ namespace V2
                 (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element, configuration.FullName);
             }
 
-            this.Filter.AddFile(element, "Source Files", "cpp");
+            var ext = System.IO.Path.GetExtension(sourcePath).TrimStart(new[] { '.' });
+            this.Filter.AddFile(element, "Source Files", ext);
         }
 
         public static string GetConfigurationName(string configuration, string platform)
