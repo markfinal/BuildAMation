@@ -69,9 +69,12 @@ namespace V2
         private Bam.Core.V2.Tool Compiler;
         private Bam.Core.V2.TokenizedString MocHeaderValue;
 
-        public MocModule()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/@basename($(mocheaderpath))_moc.cpp", this));
+            base.Init(parent);
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(encapsulatingpkgbuilddir)/$(config)/@basename($(mocheaderpath))_moc.cpp", this));
             this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<MocTool>();
             this.Requires(this.Compiler);
         }
@@ -99,8 +102,15 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
+            var mocOutputPath = this.GeneratedPaths[Key].ToString();
+            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+            if (!System.IO.Directory.Exists(mocOutputDir))
+            {
+                System.IO.Directory.CreateDirectory(mocOutputDir);
+            }
+
             var args = new Bam.Core.StringArray();
-            args.Add(System.String.Format("-o{0}", this.GeneratedPaths[Key].ToString()));
+            args.Add(System.String.Format("-o{0}", mocOutputPath));
             args.Add(this.MocHeader.ToString());
             CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
         }
