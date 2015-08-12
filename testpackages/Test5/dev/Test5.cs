@@ -85,6 +85,7 @@ namespace Test5
         }
     }
 
+#if false
     sealed class WinInstallerInno :
         Publisher.V2.InnoSetupInstaller
     {
@@ -136,6 +137,7 @@ namespace Test5
             this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
         }
     }
+#endif
 
     // Define module classes here
     class MyDynamicLibTestApp :

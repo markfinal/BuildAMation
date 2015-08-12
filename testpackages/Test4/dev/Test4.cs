@@ -39,6 +39,9 @@ namespace Test4
 
             this.LinkAgainst<MyStaticLibV2>();
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/dynamiclibrary.h");
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
 
@@ -64,6 +67,9 @@ namespace Test4
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/staticlibrary.h");
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/staticlibrary.c");

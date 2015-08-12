@@ -37,6 +37,9 @@ namespace Test14
         {
             base.Init(parent);
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/dynamicLibraryA.h");
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamicLibraryA.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
@@ -68,6 +71,9 @@ namespace Test14
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/dynamicLibraryB.h");
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamicLibraryB.c");

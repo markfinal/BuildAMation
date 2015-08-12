@@ -28,6 +28,10 @@ namespace Test6
         {
             base.Init(parent);
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/header.h");
+            headers.AddFile("$(pkgroot)/include/platform/platform.h");
+
             var source = this.CreateCSourceContainer();
             source.PrivatePatch(settings =>
                 {

@@ -26,6 +26,12 @@ namespace OpenGLUniformBufferTest
         {
             base.Init(parent);
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/source/application.h");
+            headers.AddFile("$(pkgroot)/source/common.h");
+            headers.AddFile("$(pkgroot)/source/errorhandler.h");
+            headers.AddFile("$(pkgroot)/source/renderer.h");
+
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/application.cpp");
             source.AddFile("$(pkgroot)/source/errorhandler.cpp");

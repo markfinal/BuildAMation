@@ -42,6 +42,9 @@ namespace Test7
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/dynamiclibrary.h");
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));

@@ -26,6 +26,9 @@ namespace HeaderLibraryTest
         {
             base.Init(parent);
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/unusedmacros.h");
+
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;

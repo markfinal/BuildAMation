@@ -73,6 +73,10 @@ namespace Test9
         {
             base.Init(parent);
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/library_c.h");
+            headers.AddFile("$(pkgroot)/include/library_cpp.h");
+
             var cSource = this.CreateCSourceContainer();
             cSource.AddFile("$(pkgroot)/source/library_c.c");
             cSource.PrivatePatch(settings =>
@@ -109,6 +113,9 @@ namespace Test9
         {
             base.Init(parent);
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/library_c.h");
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library_c.c");
             source.PrivatePatch(settings =>
@@ -127,6 +134,9 @@ namespace Test9
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/library_cpp.h");
 
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/library_cpp.c");
@@ -149,6 +159,9 @@ namespace Test9
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/library_c.h");
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/library_c.c");
@@ -174,6 +187,9 @@ namespace Test9
             Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/library_cpp.h");
 
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/library_cpp.c");

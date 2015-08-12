@@ -34,6 +34,9 @@ namespace Test15
         {
             base.Init(parent);
 
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(pkgroot)/include/staticlibrary1.h");
+
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/staticlibrary1.c");
             source.PrivatePatch(settings => this.includePath(settings, this));
