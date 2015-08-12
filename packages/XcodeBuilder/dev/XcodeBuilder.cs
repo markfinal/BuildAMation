@@ -454,7 +454,7 @@ namespace V2
             }
             if (null != this.Name)
             {
-                text.AppendFormat("{0}name = {1};", indent2, this.Name);
+                text.AppendFormat("{0}name = \"{1}\";", indent2, this.Name);
                 text.AppendLine();
             }
             text.AppendFormat("{0}sourceTree = \"{1}\";", indent2, this.SourceTree);
@@ -756,8 +756,10 @@ namespace V2
 
             this.Groups.Add(new Group()); // main group
             this.Groups.Add(new Group("Products")); // product ref group
+            this.Groups.Add(new Group("Source Files"));
 
             this.MainGroup.AddReference(this.ProductRefGroup);
+            this.MainGroup.AddReference(this.SourceFilesGroup);
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
@@ -868,6 +870,14 @@ namespace V2
             get
             {
                 return this.Groups[1];
+            }
+        }
+
+        public Group SourceFilesGroup
+        {
+            get
+            {
+                return this.Groups[2];
             }
         }
 
@@ -1807,7 +1817,7 @@ namespace V2
                 output.Settings = commandLine;
             }
             this.Target.SourcesBuildPhase.AddBuildFile(output); // this is shared among configurations
-            this.Project.MainGroup.AddReference(source); // TODO: will do proper grouping later
+            this.Project.SourceFilesGroup.AddReference(source);
             this.Configuration.BuildFiles.Add(output);
         }
 
