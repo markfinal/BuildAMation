@@ -121,6 +121,31 @@ namespace C
                     }
                 }
 
+                foreach (var header in headers)
+                {
+                    if (header is Bam.Core.V2.IModuleGroup)
+                    {
+                        foreach (var child in header.Children)
+                        {
+                            var headerMod = child as HeaderFile;
+                            var headerFileRef = application.Project.FindOrCreateFileReference(
+                                headerMod.InputPath,
+                                XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
+                                sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                            application.AddHeader(headerFileRef);
+                        }
+                    }
+                    else
+                    {
+                        var headerMod = header as HeaderFile;
+                        var headerFileRef = application.Project.FindOrCreateFileReference(
+                            headerMod.InputPath,
+                            XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
+                            sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                        application.AddHeader(headerFileRef);
+                    }
+                }
+
                 foreach (var library in libraries)
                 {
                     if (library is C.V2.StaticLibrary)

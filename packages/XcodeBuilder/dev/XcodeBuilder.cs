@@ -70,6 +70,7 @@ namespace V2
         public enum EFileType
         {
             SourceCodeC,
+            HeaderFile,
             Archive,
             Executable,
             DynamicLibrary,
@@ -202,6 +203,9 @@ namespace V2
             {
                 case EFileType.SourceCodeC:
                     return "sourcecode.c.c";
+
+                case EFileType.HeaderFile:
+                    return "sourcecode.c.h";
 
                 case EFileType.Archive:
                     return "archive.ar";
@@ -757,9 +761,11 @@ namespace V2
             this.Groups.Add(new Group()); // main group
             this.Groups.Add(new Group("Products")); // product ref group
             this.Groups.Add(new Group("Source Files"));
+            this.Groups.Add(new Group("Header Files"));
 
             this.MainGroup.AddReference(this.ProductRefGroup);
             this.MainGroup.AddReference(this.SourceFilesGroup);
+            this.MainGroup.AddReference(this.HeaderFilesGroup);
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
@@ -878,6 +884,14 @@ namespace V2
             get
             {
                 return this.Groups[2];
+            }
+        }
+
+        public Group HeaderFilesGroup
+        {
+            get
+            {
+                return this.Groups[3];
             }
         }
 
@@ -1776,6 +1790,21 @@ namespace V2
         }
     }
 
+    public sealed class XcodeHeaderFile :
+        XcodeMeta
+    {
+        public XcodeHeaderFile(Bam.Core.V2.Module module) :
+            base(module, Type.NA)
+        {
+        }
+
+        public FileReference Source
+        {
+            get;
+            set;
+        }
+    }
+
     public sealed class XcodeObjectFile :
         XcodeMeta
     {
@@ -1806,6 +1835,13 @@ namespace V2
             XcodeMeta.Type type) :
             base(module, type)
         {
+        }
+
+        public void
+        AddHeader(
+            FileReference header)
+        {
+            this.Project.HeaderFilesGroup.AddReference(header);
         }
 
         public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
