@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace GLEW
 {
     sealed class GLEWStaticV2 :
@@ -39,6 +40,14 @@ namespace GLEW
         protected override void Init(Bam.Core.V2.Module parent)
         {
             base.Init(parent);
+
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile("$(GLEWRootDir)/include/GL/glew.h", macroModuleOverride: this);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                headers.AddFile("$(GLEWRootDir)/include/GL/wglew.h", macroModuleOverride: this);
+            }
+            // TODO: glxew.h
 
             var source = this.CreateCSourceContainer();
             source.AddFile("$(GLEWRootDir)/src/glew.c", macroModuleOverride:this);
