@@ -23,6 +23,7 @@ namespace V2
     public abstract class HeaderLibrary :
         CModule
     {
+        private Bam.Core.Array<Bam.Core.V2.Module> headers = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
 
         public override void Evaluate()
@@ -46,6 +47,15 @@ namespace V2
             {
                 return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.forwardedDeps.ToArray());
             }
+        }
+
+        public HeaderFileCollection
+        CreateHeaderContainer()
+        {
+            var headers = Bam.Core.V2.Module.Create<HeaderFileCollection>();
+            this.headers.Add(headers);
+            this.Requires(headers);
+            return headers;
         }
 
         public void
