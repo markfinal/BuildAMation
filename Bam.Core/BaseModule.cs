@@ -415,11 +415,23 @@ namespace V2
             {
                 throw new Exception("Too many dependees!");
             }
+            if (this.RequiredDependeesList.Count > 1)
+            {
+                throw new Exception("Too many requirees!");
+            }
+            Module encapsulating;
             if (0 == this.DependeesList.Count)
             {
-                throw new Exception("Too few dependees!");
+                if (0 == this.RequiredDependeesList.Count)
+                {
+                    throw new Exception("Too few dependees!");
+                }
+                encapsulating = this.RequiredDependeesList[0].GetEncapsulatingReferencedModule();
             }
-            var encapsulating = this.DependeesList[0].GetEncapsulatingReferencedModule();
+            else
+            {
+                encapsulating = this.DependeesList[0].GetEncapsulatingReferencedModule();
+            }
             this.Macros.Add("encapsulatingpkgbuilddir", encapsulating.Macros["pkgbuilddir"]);
             return encapsulating;
         }
