@@ -214,6 +214,8 @@ namespace V2
     {
         private static readonly string VCProjNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
+        private System.Collections.Generic.Dictionary<string, System.Xml.XmlElement> GroupToItemGroup = new System.Collections.Generic.Dictionary<string, System.Xml.XmlElement>();
+
         public VSProjectFilter(
             string path,
             Bam.Core.V2.Module module)
@@ -224,8 +226,14 @@ namespace V2
 
             this.Groups = this.CreateItemGroup(null).Element;
             project.AppendChild(this.Groups);
-            this.Files = this.CreateItemGroup(null).Element;
-            project.AppendChild(this.Files);
+
+            this.ProjectElement = project;
+        }
+
+        private System.Xml.XmlNode ProjectElement
+        {
+            get;
+            set;
         }
 
         public string Path
@@ -265,10 +273,17 @@ namespace V2
 
             var fileType = fileElement.Name;
             var filePath = fileElement.Attributes["Include"].Value;
+            if (!this.GroupToItemGroup.ContainsKey(groupname))
+            {
+                var files = this.CreateItemGroup(null).Element;
+                this.ProjectElement.AppendChild(files);
+                this.GroupToItemGroup.Add(groupname, files);
+            }
+            var fileItemGroup = this.GroupToItemGroup[groupname];
 
             System.Func<System.Xml.XmlNode> findFileName = () =>
                 {
-                    foreach (System.Xml.XmlNode node in this.Files.ChildNodes)
+                    foreach (System.Xml.XmlNode node in fileItemGroup.ChildNodes)
                     {
                         if (node.Attributes["Include"].Value == filePath)
                         {
@@ -287,17 +302,11 @@ namespace V2
                 filter.InnerText = groupname;
                 fileFilter.AppendChild(filter);
 
-                this.Files.AppendChild(fileFilter);
+                fileItemGroup.AppendChild(fileFilter);
             }
         }
 
         private System.Xml.XmlElement Groups
-        {
-            get;
-            set;
-        }
-
-        private System.Xml.XmlElement Files
         {
             get;
             set;
@@ -360,6 +369,7 @@ namespace V2
         private Import LanguageImport;
         private System.Collections.Generic.List<ItemDefinitionGroup> ConfigurationDefs = new System.Collections.Generic.List<ItemDefinitionGroup>();
         private ItemGroup SourceGroup;
+        private ItemGroup HeaderGroup;
         private ItemGroup ProjectDependenciesGroup;
         private Import LanguageTargets;
         private Type ProjectType;
@@ -421,6 +431,41 @@ namespace V2
             // Language targets
             this.LanguageTargets = this.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.targets");
             this.Project.AppendChild(this.LanguageTargets.Element);
+        }
+
+        public void
+        AddHeaderFile(
+            C.V2.HeaderFile module)
+        {
+            var headerPath = module.InputPath.Parse();
+
+            if (null == this.HeaderGroup)
+            {
+                this.HeaderGroup = this.CreateItemGroup(null);
+                this.Project.InsertAfter(this.HeaderGroup.Element, this.SourceGroup.Element);
+            }
+
+            // check whether this header file has been added before, for the actual project
+            foreach (var el in this.HeaderGroup)
+            {
+                if (!el.HasAttribute("Include"))
+                {
+                    continue;
+                }
+                var include = el.Attributes["Include"];
+                if (include.Value == headerPath)
+                {
+                    Bam.Core.Log.DebugMessage("Header path '{0}' already added", headerPath);
+                    return;
+                }
+            }
+
+            var element = this.CreateProjectElement("ClInclude");
+            element.Attributes.Append(this.CreateAttribute("Include")).Value = headerPath;
+            this.HeaderGroup.Element.AppendChild(element);
+
+            var ext = System.IO.Path.GetExtension(headerPath).TrimStart(new[] { '.' });
+            this.Filter.AddFile(element, "Header Files", ext);
         }
 
         public void
@@ -1000,6 +1045,13 @@ namespace V2
         public void AddObjectFile(Bam.Core.V2.Module module, Bam.Core.V2.Settings patchSettings)
         {
             this.Project.AddSourceFile(module, patchSettings, this.Configuration);
+        }
+
+        public void
+        AddHeaderFile(
+            C.V2.HeaderFile module)
+        {
+            this.Project.AddHeaderFile(module);
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)

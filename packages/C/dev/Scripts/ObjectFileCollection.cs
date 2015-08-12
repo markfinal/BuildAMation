@@ -20,6 +20,50 @@ namespace C
 {
 namespace V2
 {
+    public class HeaderFileCollection :
+        Bam.Core.V2.Module,
+        Bam.Core.V2.IModuleGroup
+    {
+        private Bam.Core.Array<HeaderFile> children = new Bam.Core.Array<HeaderFile>();
+
+        public HeaderFile
+        AddFile(
+            string path,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            bool verbatim = false)
+        {
+            var child = Bam.Core.V2.Module.Create<HeaderFile>(this);
+            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, macroModule, verbatim);
+            (child as Bam.Core.V2.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            return child;
+        }
+
+        public override void Evaluate()
+        {
+            foreach (var child in this.children)
+            {
+                if (!child.IsUpToDate)
+                {
+                    return;
+                }
+            }
+            this.IsUpToDate = true;
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+
     public class CObjectFileCollection :
         BaseObjectFiles<ObjectFile>
     {

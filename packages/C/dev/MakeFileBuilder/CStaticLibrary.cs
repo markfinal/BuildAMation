@@ -28,7 +28,8 @@ namespace V2
             StaticLibrary sender,
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
             var commandLineArgs = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");

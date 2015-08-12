@@ -29,6 +29,7 @@ namespace V2
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
@@ -77,6 +78,22 @@ namespace V2
                     application.AddObjectFile(input, deltaSettings);
                 }
             }
+
+            foreach (var header in headers)
+            {
+                if (header is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in header.Children)
+                    {
+                        application.AddHeaderFile(child as HeaderFile);
+                    }
+                }
+                else
+                {
+                    application.AddHeaderFile(header as HeaderFile);
+                }
+            }
+
             foreach (var input in libraries)
             {
                 if (input is C.V2.StaticLibrary)
@@ -85,7 +102,11 @@ namespace V2
                 }
                 else if (input is C.V2.DynamicLibrary)
                 {
-                    application.AddDynamicLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectDynamicLibrary);
+                    if (null != input.MetaData)
+                    {
+                        application.AddDynamicLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectDynamicLibrary);
+                    }
+                    // TODO: could be a prebuilt DLL
                 }
                 else if (input is C.V2.CSDKModule)
                 {

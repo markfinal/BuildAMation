@@ -47,7 +47,8 @@ namespace V2
             StaticLibrary sender,
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs);
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers);
     }
 
     public interface ILinkerPolicy
@@ -58,6 +59,7 @@ namespace V2
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks);
     }
@@ -413,6 +415,51 @@ namespace V2
             {
                 this.GeneratedPaths[Key] = value;
             }
+        }
+    }
+
+    public sealed class HeaderFile :
+        Bam.Core.V2.Module,
+        Bam.Core.V2.IInputPath,
+        Bam.Core.V2.IChildModule
+    {
+        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Header File");
+
+        public override void Evaluate()
+        {
+            // TODO: could do a hash check of the contents?
+            this.IsUpToDate = true;
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
+        {
+            // TODO: exception to this is generated source, but there ought to be an override for that
+            throw new Bam.Core.Exception("Header files should not require building");
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // there is no execution policy
+        }
+
+        public Bam.Core.V2.TokenizedString InputPath
+        {
+            get
+            {
+                return this.GeneratedPaths[Key];
+            }
+            set
+            {
+                this.GeneratedPaths[Key] = value;
+            }
+        }
+
+        Bam.Core.V2.Module Bam.Core.V2.IChildModule.Parent
+        {
+            get;
+            set;
         }
     }
 

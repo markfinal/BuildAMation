@@ -24,6 +24,7 @@ namespace V2
         CModule
     {
         private Bam.Core.Array<Bam.Core.V2.Module> source = new Bam.Core.Array<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.V2.Module> headers = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
         private ILibrarianPolicy Policy = null;
 
@@ -52,6 +53,15 @@ namespace V2
             {
                 return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.forwardedDeps.ToArray());
             }
+        }
+
+        public HeaderFileCollection
+        CreateHeaderContainer()
+        {
+            var headers = Bam.Core.V2.Module.Create<HeaderFileCollection>();
+            this.headers.Add(headers);
+            this.Requires(headers);
+            return headers;
         }
 
         public CObjectFileCollection CreateCSourceContainer()
@@ -109,8 +119,9 @@ namespace V2
             Bam.Core.V2.ExecutionContext context)
         {
             var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source.ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.headers.ToArray());
             var libraryFile = this.GeneratedPaths[Key];
-            this.Policy.Archive(this, context, libraryFile, source);
+            this.Policy.Archive(this, context, libraryFile, source, headers);
         }
 
         protected override void GetExecutionPolicy(string mode)

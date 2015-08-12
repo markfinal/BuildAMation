@@ -28,7 +28,8 @@ namespace V2
             StaticLibrary sender,
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs)
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
             // cannot tell the architecture from the Librarian tool, so look at all the inputs
             // these should be consistent
@@ -101,6 +102,21 @@ namespace V2
                 else
                 {
                     library.AddObjectFile(input, deltaSettings);
+                }
+            }
+
+            foreach (var header in headers)
+            {
+                if (header is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in header.Children)
+                    {
+                        library.AddHeaderFile(child as HeaderFile);
+                    }
+                }
+                else
+                {
+                    library.AddHeaderFile(header as HeaderFile);
                 }
             }
         }

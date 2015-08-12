@@ -29,6 +29,7 @@ namespace C
                 Bam.Core.V2.ExecutionContext context,
                 Bam.Core.V2.TokenizedString executablePath,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
             {

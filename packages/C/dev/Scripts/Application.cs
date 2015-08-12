@@ -59,6 +59,7 @@ namespace V2
         CModule
     {
         protected Bam.Core.Array<Bam.Core.V2.Module> sourceModules = new Bam.Core.Array<Bam.Core.V2.Module>();
+        protected Bam.Core.Array<Bam.Core.V2.Module> headerModules = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> linkedModules = new Bam.Core.Array<Bam.Core.V2.Module>();
         private ILinkerPolicy Policy = null;
 
@@ -83,6 +84,15 @@ namespace V2
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("_CONSOLE");
             };
+
+        public HeaderFileCollection
+        CreateHeaderContainer()
+        {
+            var headers = Bam.Core.V2.Module.Create<HeaderFileCollection>();
+            this.headerModules.Add(headers);
+            this.Requires(headers);
+            return headers;
+        }
 
         private T CreateContainer<T>() where T : CModule, new()
         {
@@ -183,9 +193,10 @@ namespace V2
             Bam.Core.V2.ExecutionContext context)
         {
             var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules.ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.headerModules.ToArray());
             var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules.ToArray());
             var executable = this.GeneratedPaths[Key];
-            this.Policy.Link(this, context, executable, source, linked, null);
+            this.Policy.Link(this, context, executable, source, headers, linked, null);
         }
 
         protected override void GetExecutionPolicy(string mode)
