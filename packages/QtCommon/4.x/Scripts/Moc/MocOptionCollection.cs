@@ -38,6 +38,23 @@ namespace V2
 
                 return new System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>(mocFile, objFile);
             }
+
+            public static System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>
+            MocHeader(
+                this C.Cxx.V2.ObjectFileCollection module,
+                C.V2.HeaderFile header)
+            {
+                // moc file
+                var mocFile = Bam.Core.V2.Module.Create<MocModule>(module);
+                mocFile.MocHeader = header.InputPath;
+                // TODO: reinstate this - but causes an exception in finding the encapsulating module
+                //mocFile.DependsOn(header);
+
+                // compile source
+                var objFile = module.AddFile(MocModule.Key, mocFile);
+
+                return new System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>(mocFile, objFile);
+            }
         }
     }
 

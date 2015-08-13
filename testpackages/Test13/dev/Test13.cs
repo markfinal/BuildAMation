@@ -33,13 +33,18 @@ namespace Test13
             Module parent)
         {
             base.Init(parent);
+
+            var headers = this.CreateHeaderContainer();
+            var myobjectHeader = headers.AddFile("$(pkgroot)/source/myobject.h");
+            var myobject2Header = headers.AddFile("$(pkgroot)/source/myobject2.h");
+
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/main.cpp");
             source.AddFile("$(pkgroot)/source/myobject.cpp");
             source.AddFile("$(pkgroot)/source/myobject2.cpp");
 
-            var myObjectMocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject.h", this));
-            var myObject2MocTuple = source.MocHeader(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/myobject2.h", this));
+            var myObjectMocTuple = source.MocHeader(myobjectHeader);
+            var myObject2MocTuple = source.MocHeader(myobject2Header);
 
             this.PrivatePatch(settings =>
             {
