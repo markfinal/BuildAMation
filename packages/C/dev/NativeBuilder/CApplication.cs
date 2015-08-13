@@ -116,7 +116,7 @@ namespace V2
             // then dependent module libraries
             foreach (var lib in libraryNames)
             {
-                commandLine.Add(lib);
+                linker.Libraries.Add(lib);
             }
 
             // then all options
