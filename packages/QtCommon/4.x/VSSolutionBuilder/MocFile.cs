@@ -16,6 +16,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace QtCommon
+{
+namespace V2
+{
+    public sealed class VSSolutionMocGeneration :
+        IMocGenerationPolicy
+    {
+        void
+        IMocGenerationPolicy.Moc(
+            MocModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.TokenizedString generatedMocSource,
+            Bam.Core.V2.TokenizedString source)
+        {
+        }
+    }
+}
+}
 namespace VSSolutionBuilder
 {
     public partial class VSSolutionBuilder

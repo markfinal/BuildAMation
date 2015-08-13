@@ -16,6 +16,36 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+namespace QtCommon
+{
+namespace V2
+{
+    public sealed class NativeMocGeneration :
+        IMocGenerationPolicy
+    {
+        void
+        IMocGenerationPolicy.Moc(
+            MocModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.TokenizedString generatedMocSource,
+            Bam.Core.V2.TokenizedString source)
+        {
+            var mocOutputPath = generatedMocSource.Parse();
+            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+            if (!System.IO.Directory.Exists(mocOutputDir))
+            {
+                System.IO.Directory.CreateDirectory(mocOutputDir);
+            }
+
+            var args = new Bam.Core.StringArray();
+            args.Add(System.String.Format("-o{0}", mocOutputPath));
+            args.Add(source.Parse());
+            CommandLineProcessor.V2.Processor.Execute(context, mocCompiler, args);
+        }
+    }
+}
+}
 namespace NativeBuilder
 {
     public partial class NativeBuilder

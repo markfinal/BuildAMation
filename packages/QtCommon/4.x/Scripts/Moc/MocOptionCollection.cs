@@ -80,11 +80,23 @@ namespace V2
         }
     }
 
+    public interface IMocGenerationPolicy
+    {
+        void
+        Moc(
+            MocModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.TokenizedString generatedMocSource,
+            Bam.Core.V2.TokenizedString source);
+    }
+
     public class MocModule :
         C.V2.SourceFile
     {
         private Bam.Core.V2.Tool Compiler;
         private Bam.Core.V2.TokenizedString MocHeaderValue;
+        private IMocGenerationPolicy Policy = null;
 
         protected override void
         Init(
@@ -119,17 +131,15 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var mocOutputPath = this.GeneratedPaths[Key].ToString();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
-            if (!System.IO.Directory.Exists(mocOutputDir))
-            {
-                System.IO.Directory.CreateDirectory(mocOutputDir);
-            }
+            this.Policy.Moc(this, context, this.Compiler, this.GeneratedPaths[Key], this.MocHeader);
+        }
 
-            var args = new Bam.Core.StringArray();
-            args.Add(System.String.Format("-o{0}", mocOutputPath));
-            args.Add(this.MocHeader.ToString());
-            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            var className = "QtCommon.V2." + mode + "MocGeneration";
+            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IMocGenerationPolicy>.Create(className);
         }
     }
 }
