@@ -370,6 +370,7 @@ namespace V2
         private System.Collections.Generic.List<ItemDefinitionGroup> ConfigurationDefs = new System.Collections.Generic.List<ItemDefinitionGroup>();
         private ItemGroup SourceGroup;
         private ItemGroup HeaderGroup;
+        private ItemGroup CustomBuildGroup;
         private ItemGroup ProjectDependenciesGroup;
         private Import LanguageTargets;
         private Type ProjectType;
@@ -431,6 +432,75 @@ namespace V2
             // Language targets
             this.LanguageTargets = this.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.targets");
             this.Project.AppendChild(this.LanguageTargets.Element);
+        }
+
+        public void
+        AddCustomBuildFile(
+            C.V2.HeaderFile module,
+            VSProjectCustomBuild custom,
+            VSProjectConfiguration config)
+        {
+            var headerPath = module.InputPath.Parse();
+
+            if (null == this.CustomBuildGroup)
+            {
+                this.CustomBuildGroup = this.CreateItemGroup(null);
+                // TODO: better to just have a 'last added' element?
+                if (null == this.HeaderGroup)
+                {
+                    this.Project.InsertAfter(this.CustomBuildGroup.Element, this.SourceGroup.Element);
+                }
+                else
+                {
+                    this.Project.InsertAfter(this.CustomBuildGroup.Element, this.HeaderGroup.Element);
+                }
+            }
+
+            System.Action<System.Xml.XmlElement> addCustomBuild = (element) =>
+            {
+                if (null == element)
+                {
+                    element = this.CreateProjectElement("CustomBuild");
+                    element.Attributes.Append(this.CreateAttribute("Include")).Value = headerPath;
+                    this.CustomBuildGroup.Element.AppendChild(element);
+                }
+
+                var commandEl = this.CreateProjectElement("Command");
+                this.MakeNodeConditional(commandEl, config.FullName);
+                commandEl.InnerText = custom.Command;
+                element.AppendChild(commandEl);
+
+                var messageEl = this.CreateProjectElement("Message");
+                this.MakeNodeConditional(messageEl, config.FullName);
+                messageEl.InnerText = custom.Message;
+                element.AppendChild(messageEl);
+
+                var outputsEl = this.CreateProjectElement("Outputs");
+                this.MakeNodeConditional(outputsEl, config.FullName);
+                outputsEl.InnerText = custom.Outputs.ToString(';');
+                element.AppendChild(outputsEl);
+
+                var ext = System.IO.Path.GetExtension(headerPath).TrimStart(new[] { '.' });
+                this.Filter.AddFile(element, "Custom Build", ext);
+            };
+
+            // check whether this header file has been added before, for the actual project
+            foreach (var el in this.CustomBuildGroup)
+            {
+                if (!el.HasAttribute("Include"))
+                {
+                    continue;
+                }
+                var include = el.Attributes["Include"];
+                if (include.Value == headerPath)
+                {
+                    Bam.Core.Log.DebugMessage("Custom build path '{0}' already added", headerPath);
+                    addCustomBuild(el);
+                    return;
+                }
+            }
+
+            addCustomBuild(null);
         }
 
         public void
@@ -820,6 +890,14 @@ namespace V2
             private set;
         }
 
+        public void
+        MakeNodeConditional(
+            System.Xml.XmlNode node,
+            string conditionalConfiguration)
+        {
+            node.Attributes.Append(this.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", conditionalConfiguration);
+        }
+
         public void AddToolSetting<T>(
             System.Xml.XmlElement container,
             string settingName,
@@ -830,7 +908,7 @@ namespace V2
             var settingElement = container.AppendChild(this.CreateProjectElement(settingName, process, settingValue));
             if (null != conditionalConfiguration)
             {
-                settingElement.Attributes.Append(this.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", conditionalConfiguration);
+                this.MakeNodeConditional(settingElement, conditionalConfiguration);
             }
         }
 
@@ -1030,6 +1108,58 @@ namespace V2
         }
     }
 
+    public sealed class VSProjectCustomBuild :
+        VSSolutionMeta
+    {
+        public VSProjectCustomBuild(
+            Bam.Core.V2.Module module,
+            VSSolutionMeta.EPlatform platform) :
+            base(module, VSProject.Type.NA, null, platform)
+        {
+            this.Outputs = new Bam.Core.StringArray();
+        }
+
+        public string Command
+        {
+            get;
+            set;
+        }
+
+        public string Message
+        {
+            get;
+            set;
+        }
+
+        public Bam.Core.StringArray Outputs
+        {
+            get;
+            private set;
+        }
+    }
+
+    public sealed class VSProjectHeaderFile :
+        VSSolutionMeta
+    {
+        public VSProjectHeaderFile(
+            Bam.Core.V2.Module module,
+            VSSolutionMeta.EPlatform platform) :
+            base(module, VSProject.Type.NA, null, platform)
+        {}
+
+        public Bam.Core.V2.TokenizedString Source
+        {
+            get;
+            set;
+        }
+
+        public VSProjectCustomBuild CustomBuild
+        {
+            get;
+            set;
+        }
+    }
+
     public abstract class VSCommonProject :
         VSSolutionMeta
     {
@@ -1051,7 +1181,21 @@ namespace V2
         AddHeaderFile(
             C.V2.HeaderFile module)
         {
-            this.Project.AddHeaderFile(module);
+            if (null == module.MetaData)
+            {
+                // add a bog-standard header
+                this.Project.AddHeaderFile(module);
+            }
+            else
+            {
+                var headerFile = module.MetaData as VSProjectHeaderFile;
+                if (null == headerFile.CustomBuild)
+                {
+                    throw new Bam.Core.Exception("Header does not have a custom build");
+                }
+                var customBuild = headerFile.CustomBuild;
+                this.Project.AddCustomBuildFile(module, customBuild, this.Configuration);
+            }
         }
 
         public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)

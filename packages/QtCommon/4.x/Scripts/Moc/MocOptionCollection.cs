@@ -27,26 +27,11 @@ namespace V2
             public static System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>
             MocHeader(
                 this C.Cxx.V2.ObjectFileCollection module,
-                Bam.Core.V2.TokenizedString mocHeaderPath)
-            {
-                // moc file
-                var mocFile = Bam.Core.V2.Module.Create<MocModule>(module);
-                mocFile.MocHeader = mocHeaderPath;
-
-                // compile source
-                var objFile = module.AddFile(MocModule.Key, mocFile);
-
-                return new System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>(mocFile, objFile);
-            }
-
-            public static System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>
-            MocHeader(
-                this C.Cxx.V2.ObjectFileCollection module,
                 C.V2.HeaderFile header)
             {
                 // moc file
                 var mocFile = Bam.Core.V2.Module.Create<MocModule>(module);
-                mocFile.MocHeader = header.InputPath;
+                mocFile.SourceHeader = header;
                 // TODO: reinstate this - but causes an exception in finding the encapsulating module
                 //mocFile.DependsOn(header);
 
@@ -88,14 +73,14 @@ namespace V2
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.Tool mocCompiler,
             Bam.Core.V2.TokenizedString generatedMocSource,
-            Bam.Core.V2.TokenizedString source);
+            C.V2.HeaderFile source);
     }
 
     public class MocModule :
         C.V2.SourceFile
     {
         private Bam.Core.V2.Tool Compiler;
-        private Bam.Core.V2.TokenizedString MocHeaderValue;
+        private C.V2.HeaderFile SourceHeaderModule;
         private IMocGenerationPolicy Policy = null;
 
         protected override void
@@ -108,16 +93,16 @@ namespace V2
             this.Requires(this.Compiler);
         }
 
-        public Bam.Core.V2.TokenizedString MocHeader
+        public C.V2.HeaderFile SourceHeader
         {
             get
             {
-                return this.MocHeaderValue;
+                return this.SourceHeaderModule;
             }
             set
             {
-                this.MocHeaderValue = value;
-                this.Macros.Add("mocheaderpath", value);
+                this.SourceHeaderModule = value;
+                this.Macros.Add("mocheaderpath", value.InputPath);
             }
         }
 
@@ -131,7 +116,7 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            this.Policy.Moc(this, context, this.Compiler, this.GeneratedPaths[Key], this.MocHeader);
+            this.Policy.Moc(this, context, this.Compiler, this.GeneratedPaths[Key], this.SourceHeader);
         }
 
         protected override void

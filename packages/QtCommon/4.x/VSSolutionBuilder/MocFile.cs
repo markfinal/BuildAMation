@@ -29,8 +29,31 @@ namespace V2
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.Tool mocCompiler,
             Bam.Core.V2.TokenizedString generatedMocSource,
-            Bam.Core.V2.TokenizedString source)
+            C.V2.HeaderFile source)
         {
+            if (null != source.MetaData)
+            {
+                throw new Bam.Core.Exception("Header file {0} already has VSSolution metadata", source.InputPath.Parse());
+            }
+
+            // TODO: this is hardcoded - needed a better way to figure this out
+            var platform = VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour;
+
+            var output = generatedMocSource.Parse();
+
+            var args = new Bam.Core.StringArray();
+            args.Add(mocCompiler.Executable.Parse());
+            args.Add(System.String.Format("-o{0}", output));
+            args.Add("%(FullPath)");
+
+            var customBuild = new VSSolutionBuilder.V2.VSProjectCustomBuild(source, platform);
+            customBuild.Message = "Moccing";
+            customBuild.Command = args.ToString(' ');
+            customBuild.Outputs.AddUnique(generatedMocSource.Parse());
+
+            var headerFile = new VSSolutionBuilder.V2.VSProjectHeaderFile(source, platform);
+            headerFile.Source = source.GeneratedPaths[C.V2.HeaderFile.Key];
+            headerFile.CustomBuild = customBuild;
         }
     }
 }

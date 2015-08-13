@@ -29,7 +29,7 @@ namespace V2
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.Tool mocCompiler,
             Bam.Core.V2.TokenizedString generatedMocSource,
-            Bam.Core.V2.TokenizedString source)
+            C.V2.HeaderFile source)
         {
             var mocOutputPath = generatedMocSource.Parse();
             var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
@@ -40,7 +40,7 @@ namespace V2
 
             var args = new Bam.Core.StringArray();
             args.Add(System.String.Format("-o{0}", mocOutputPath));
-            args.Add(source.Parse());
+            args.Add(source.InputPath.Parse());
             CommandLineProcessor.V2.Processor.Execute(context, mocCompiler, args);
         }
     }
