@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with BuildAMation.  If not, see <http://www.gnu.org/licenses/>.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace C
 {
 namespace V2
@@ -33,6 +34,59 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+            // inspect prebuilt library dependencies, which are added as part of the linker options
+            foreach (var input in libraries)
+            {
+                if (input.MetaData != null)
+                {
+                    continue;
+                }
+
+                if (input is C.V2.StaticLibrary)
+                {
+                    // TODO: probably a simplification of the DLL codepath
+                    throw new System.NotImplementedException();
+                }
+                else if (input is C.V2.DynamicLibrary)
+                {
+                    var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+                    if (sender.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        var libraryPath = input.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].Parse();
+                        var libraryDir = System.IO.Path.GetDirectoryName(libraryPath);
+                        var libraryName = System.IO.Path.GetFileName(libraryPath);
+                        linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(libraryDir, null));
+                        linker.Libraries.AddUnique(libraryName);
+                    }
+                    else
+                    {
+                        var libraryPath = input.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
+                        var libraryDir = System.IO.Path.GetDirectoryName(libraryPath);
+                        linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(libraryDir, null));
+                        if ((sender.Tool as C.V2.LinkerTool).UseLPrefixLibraryPaths)
+                        {
+                            var libName = System.IO.Path.GetFileNameWithoutExtension(libraryPath);
+                            libName = libName.Substring(3); // trim off lib prefix
+                            linker.Libraries.AddUnique(System.String.Format("-l{0}", libName));
+                        }
+                        else
+                        {
+                            var libraryName = System.IO.Path.GetFileName(libraryPath);
+                            linker.Libraries.AddUnique(libraryName);
+                        }
+                    }
+                }
+                else if (input is C.V2.CSDKModule)
+                {
+                    // do nothing for SDKs
+                    continue;
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Don't know how to handle this library module, {0}", input.ToString());
+                }
+            }
+
             var platform = sender.Linker is VisualC.V2.Linker64 ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
             VSSolutionBuilder.V2.VSCommonLinkableProject application = null;
             if (sender is DynamicLibrary)
@@ -94,19 +148,22 @@ namespace V2
                 }
             }
 
+            // loop over libraries that have been built in projects, and which require a dependency set up
             foreach (var input in libraries)
             {
+                if (null == input.MetaData)
+                {
+                    // prebuilts handled earlier
+                    continue;
+                }
+
                 if (input is C.V2.StaticLibrary)
                 {
                     application.AddStaticLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectStaticLibrary);
                 }
                 else if (input is C.V2.DynamicLibrary)
                 {
-                    if (null != input.MetaData)
-                    {
-                        application.AddDynamicLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectDynamicLibrary);
-                    }
-                    // TODO: could be a prebuilt DLL
+                    application.AddDynamicLibrary(input.MetaData as VSSolutionBuilder.V2.VSProjectDynamicLibrary);
                 }
                 else if (input is C.V2.CSDKModule)
                 {
@@ -115,7 +172,7 @@ namespace V2
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("Don't know how to handle this: other");
+                    throw new Bam.Core.Exception("Don't know how to handle this library module, {0}", input.ToString());
                 }
             }
         }
