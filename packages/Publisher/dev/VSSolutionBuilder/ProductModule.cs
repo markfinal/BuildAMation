@@ -48,12 +48,21 @@ namespace V2
                         {
                             // the dependent's subdir must be honoured, as the runtime might expect it
                             var dependentSubDir = modulePath.Value;
-                            var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
 
                             var commands = new Bam.Core.StringArray();
-                            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
-                            commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
-                            (module.Key.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                            if (null != module.Key.MetaData)
+                            {
+                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
+                                commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
+                                commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
+                                (module.Key.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                            }
+                            else
+                            {
+                                var sourcePath = modulePath.Key.Parse();
+                                commands.Add(System.String.Format(@"copy /V /Y {0} $(OutDir)\{1}\{2}", sourcePath, dependentSubDir, System.IO.Path.GetFileName(sourcePath)));
+                                (dependee.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                            }
                         }
                     }
                 }

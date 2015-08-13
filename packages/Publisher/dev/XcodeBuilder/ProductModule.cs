@@ -54,12 +54,21 @@ namespace V2
                         {
                             // the dependent's subdir must be honoured, as the runtime might expect it
                             var dependentSubDir = modulePath.Value;
-                            var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
 
                             var commands = new Bam.Core.StringArray();
-                            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
-                            commands.Add(System.String.Format("cp -v $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {0}/$EXECUTABLE_NAME", destinationDir));
-                            (module.Key.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
+                            if (null != module.Key.MetaData)
+                            {
+                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
+                                commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
+                                commands.Add(System.String.Format("cp -v $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {0}/$EXECUTABLE_NAME", destinationDir));
+                                (module.Key.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
+                            }
+                            else
+                            {
+                                var sourcePath = modulePath.Key.Parse();
+                                commands.Add(System.String.Format("cp -v {0} $CONFIGURATION_BUILD_DIR/{1}/{2}", sourcePath, dependentSubDir, System.IO.Path.GetFileName(sourcePath)));
+                                (dependee.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                            }
                         }
                     }
                 }
