@@ -322,6 +322,15 @@ namespace Clang
                     meta.Target.FrameworksBuildPhase.AddBuildFile(buildFile);
                 }
             }
+            if (options.FrameworkSearchDirectories.Count > 0)
+            {
+                var option = new XcodeBuilder.V2.MultiConfigurationValue();
+                foreach (var path in options.FrameworkSearchDirectories)
+                {
+                    option.Add(path.Parse());
+                }
+                configuration["FRAMEWORK_SEARCH_PATHS"] = option;
+            }
         }
     }
 
@@ -634,7 +643,11 @@ namespace Clang
         {
             foreach (var framework in options.Frameworks)
             {
-                commandLine.Add(System.String.Format("-framework {0}", framework.ToString()));
+                commandLine.Add(System.String.Format("-framework {0}", framework));
+            }
+            foreach (var path in options.FrameworkSearchDirectories)
+            {
+                commandLine.Add(System.String.Format("-F {0}", path.Parse()));
             }
         }
     }
@@ -1306,6 +1319,12 @@ namespace V2
         }
 
         Bam.Core.StringArray C.V2.ILinkerOptionsOSX.Frameworks
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ILinkerOptionsOSX.FrameworkSearchDirectories
         {
             get;
             set;

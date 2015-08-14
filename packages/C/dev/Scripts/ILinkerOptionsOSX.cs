@@ -38,6 +38,7 @@ namespace DefaultSettings
         public static void Defaults(this C.V2.ILinkerOptionsOSX settings, Bam.Core.V2.Module module)
         {
             settings.Frameworks = new Bam.Core.StringArray();
+            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
         }
     }
 }
@@ -45,6 +46,12 @@ namespace DefaultSettings
     public interface ILinkerOptionsOSX : Bam.Core.V2.ISettingsBase
     {
         Bam.Core.StringArray Frameworks
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> FrameworkSearchDirectories
         {
             get;
             set;
