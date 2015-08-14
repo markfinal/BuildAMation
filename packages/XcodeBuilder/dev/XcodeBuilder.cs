@@ -1367,10 +1367,22 @@ namespace V2
             {
                 text.AppendFormat("{0}buildPhases = (", indent2);
                 text.AppendLine();
-                foreach (var phase in this.BuildPhases)
+                System.Action<BuildPhase> dumpPhase = (phase) =>
                 {
                     text.AppendFormat("{0}{1} /* {2} */,", indent3, phase.GUID, phase.Name);
                     text.AppendLine();
+                };
+                if (null != this.PreBuildBuildPhase)
+                {
+                    dumpPhase(this.PreBuildBuildPhase);
+                }
+                foreach (var phase in this.BuildPhases)
+                {
+                    dumpPhase(phase);
+                }
+                if (null != this.PostBuildBuildPhase)
+                {
+                    dumpPhase(this.PostBuildBuildPhase);
                 }
                 text.AppendFormat("{0});", indent2);
                 text.AppendLine();
@@ -1943,8 +1955,8 @@ namespace V2
                         return content.ToString();
                     });
                 this.Project.ShellScriptsBuildPhases.Add(preBuildBuildPhase);
-                this.Target.BuildPhases.Add(preBuildBuildPhase);
                 this.Target.PreBuildBuildPhase = preBuildBuildPhase;
+                // do not add PreBuildBuildPhase to this.Target.BuildPhases, so that it can be serialized in the right order
             }
 
             this.Configuration.PreBuildCommands.AddRange(commands);
@@ -1971,8 +1983,8 @@ namespace V2
                         return content.ToString();
                     });
                 this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
-                this.Target.BuildPhases.Add(postBuildBuildPhase);
                 this.Target.PostBuildBuildPhase = postBuildBuildPhase;
+                // do not add PostBuildBuildPhase to this.Target.BuildPhases, so that it can be serialized in the right order
             }
 
             this.Configuration.PostBuildCommands.AddRange(commands);
