@@ -174,7 +174,11 @@ namespace C
                     }
                     else if (library is C.V2.CSDKModule)
                     {
-                        throw new Bam.Core.Exception("Don't know how to handle this module type: CSDKModule");
+                        // do nothing, just an area for external
+                    }
+                    else if (library is ExternalFramework)
+                    {
+                        // TODO: add framework
                     }
                     else
                     {
