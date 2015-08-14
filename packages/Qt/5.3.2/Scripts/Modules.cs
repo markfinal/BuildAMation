@@ -33,15 +33,29 @@ namespace V2
 {
     public sealed class Core :
         QtCommon.V2.Core
-    { }
+    {}
 
     public sealed class Gui :
         QtCommon.V2.Gui
-    { }
+    {}
 
     public sealed class Widgets :
         QtCommon.V2.Widgets
-    { }
+    {}
+}
+namespace V2
+{
+    public sealed class CoreFramework :
+        QtCommon.V2.CoreFramework
+    {}
+
+    public sealed class GuiFramework :
+        QtCommon.V2.GuiFramework
+    {}
+
+    public sealed class WidgetsFramework :
+        QtCommon.V2.WidgetsFramework
+    {}
 }
     public sealed class Phonon :
         QtCommon.Phonon

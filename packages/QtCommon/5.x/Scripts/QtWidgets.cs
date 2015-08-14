@@ -36,7 +36,15 @@ namespace V2
     {
         public Widgets() :
             base("Widgets")
-        { }
+        {}
+    }
+
+    public abstract class WidgetsFramework :
+        CommonFramework
+    {
+        public WidgetsFramework() :
+            base("Widgets")
+        {}
     }
 }
     public abstract class Widgets :

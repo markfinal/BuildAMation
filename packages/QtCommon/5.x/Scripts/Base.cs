@@ -36,13 +36,66 @@ namespace V2
         static Configure()
         {
             //InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5", null);
-            InstallPath = Bam.Core.V2.TokenizedString.Create(@"D:\Qt\Qt5.3.2\5.3\msvc2013_64_opengl", null);
+            //InstallPath = Bam.Core.V2.TokenizedString.Create(@"D:\Qt\Qt5.3.2\5.3\msvc2013_64_opengl", null);
+            InstallPath = Bam.Core.V2.TokenizedString.Create("/Users/mark/Qt5.3.2/5.3/clang_64/", null);
         }
 
         public static Bam.Core.V2.TokenizedString InstallPath
         {
             get;
             private set;
+        }
+    }
+
+    public abstract class CommonFramework :
+        C.V2.ExternalFramework
+    {
+        protected CommonFramework(
+            string moduleName) :
+            base()
+        {
+            this.Macros.Add("QtModuleName", System.String.Format("Qt{0}", moduleName));
+            this.Macros.Add("QtInstallPath", Configure.InstallPath);
+        }
+
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+            this.Macros.Add("QtFrameworkPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/lib", this));
+            this.Macros.Add("QtConfig", Bam.Core.V2.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
+
+            this.PublicPatch((settings, appliedTo) =>
+            {
+                var osxCompiler = settings as C.V2.ICCompilerOptionsOSX;
+                if (null != osxCompiler)
+                {
+                    osxCompiler.FrameworkSearchDirectories.Add(this.Macros["QtFrameworkPath"]);
+                }
+
+                var osxLinker = settings as C.V2.ILinkerOptionsOSX;
+                if (null != osxLinker)
+                {
+                    osxLinker.Frameworks.AddUnique(this.Macros["QtModuleName"].Parse());
+                    osxLinker.FrameworkSearchDirectories.Add(this.Macros["QtFrameworkPath"]);
+                }
+            });
+        }
+
+        public override void Evaluate()
+        {
+            // prebuilt - no evaluation
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // prebuilt - no execution
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // prebuilt - no execution policy
         }
     }
 

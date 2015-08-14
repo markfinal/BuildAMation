@@ -36,7 +36,15 @@ namespace V2
     {
         public Gui() :
             base("Gui")
-        { }
+        {}
+    }
+
+    public abstract class GuiFramework :
+        CommonFramework
+    {
+        public GuiFramework() :
+            base("Gui")
+        {}
     }
 }
     public abstract class Gui :

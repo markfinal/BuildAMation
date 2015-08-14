@@ -36,7 +36,15 @@ namespace V2
     {
         public Core() :
             base("Core")
-        { }
+        {}
+    }
+
+    public abstract class CoreFramework :
+        CommonFramework
+    {
+        public CoreFramework() :
+            base("Core")
+        {}
     }
 }
     public abstract class Core :
