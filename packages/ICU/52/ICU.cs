@@ -29,6 +29,70 @@
 #endregion // License
 namespace ICU
 {
+namespace V2
+{
+    public abstract class ICUBase :
+        C.V2.DynamicLibrary
+    {
+        protected ICUBase(
+            string name)
+        {
+            this.Name = name;
+        }
+
+        protected string Name
+        {
+            get;
+            set;
+        }
+
+        protected override void Init(Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+            this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create(this.Name, null, verbatim: true);
+            this.GeneratedPaths[C.V2.DynamicLibrary.Key] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/bin/win64-msvc10/bin64/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+        }
+
+        public override void Evaluate()
+        {
+            this.IsUpToDate = true;
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // do nothing
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // do nothing
+        }
+    }
+
+    public sealed class ICUIN :
+        ICUBase
+    {
+        public ICUIN() :
+            base("icuin52")
+        {}
+    }
+
+    public sealed class ICUUC :
+        ICUBase
+    {
+        public ICUUC() :
+            base("icuuc52")
+        { }
+    }
+
+    public sealed class ICUDT :
+        ICUBase
+    {
+        public ICUDT() :
+            base("icudt52")
+        { }
+    }
+}
     abstract class ICUBase :
         C.ThirdPartyModule
     {
