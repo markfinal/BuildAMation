@@ -675,7 +675,16 @@ namespace V2
                 configProps.Element.AppendChild(useDebugLibs);
                 this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
 
-                // TODO characterset?
+                // character set
+                // assume unicode for most flexibility
+                var characterset = this.CreateProjectElement("CharacterSet", "Unicode");
+                configProps.Element.AppendChild(characterset);
+                this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
+
+                // whole program optimization
+                var wpo = this.CreateProjectElement("WholeProgramOptimization", (configuration.Config == "Debug") ? "false" : "true");
+                configProps.Element.AppendChild(wpo);
+                this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
 
                 this.ConfigurationGroups.Add(configuration, configProps);
             }
@@ -995,12 +1004,14 @@ namespace V2
             private set;
         }
 
+        // TODO: should this not be the EConfiguration enum?
         public string Config
         {
             get;
             private set;
         }
 
+        // TODO: should this not be the EPlatform enum?
         public string Platform
         {
             get;
