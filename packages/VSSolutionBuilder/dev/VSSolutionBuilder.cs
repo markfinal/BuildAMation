@@ -389,6 +389,7 @@ namespace V2
         private Type ProjectType;
         private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> ConfigToolsProperties = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
         private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> CommonCompilationOptions = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
+        private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> PreBuildCommand = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
         private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> PostBuildCommand = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
         private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> AnonymousPropertySettings = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
         private System.Collections.Generic.List<VSProject> DependentProjects = new System.Collections.Generic.List<VSProject>();
@@ -830,6 +831,30 @@ namespace V2
         }
 
         public void
+        AddPreBuildCommands(
+            Bam.Core.StringArray commands,
+            VSProjectConfiguration config)
+        {
+            if (!this.PreBuildCommand.ContainsKey(config))
+            {
+                var tool = this.CreateProjectElement("PreBuildEvent");
+                this.ConfigToolsProperties[config].AppendChild(tool);
+
+                var commandElement = this.CreateProjectElement("Command");
+                tool.AppendChild(commandElement);
+
+                this.PreBuildCommand.Add(config, commandElement);
+            }
+
+            var commandText = new System.Text.StringBuilder();
+            foreach (var command in commands)
+            {
+                commandText.AppendFormat("{0}{1}", command, System.Environment.NewLine);
+            }
+            this.PreBuildCommand[config].InnerText += commandText.ToString();
+        }
+
+        public void
         AddPostBuildCommands(
             Bam.Core.StringArray commands,
             VSProjectConfiguration config)
@@ -1268,6 +1293,13 @@ namespace V2
             Bam.Core.V2.Settings settings)
         {
             this.Project.SetCommonCompilationOptions(module, settings, this.Configuration);
+        }
+
+        public void
+        AddPreBuildCommands(
+            Bam.Core.StringArray commands)
+        {
+            this.Project.AddPreBuildCommands(commands, this.Configuration);
         }
 
         public void
