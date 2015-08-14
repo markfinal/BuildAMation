@@ -478,17 +478,17 @@ namespace V2
                 }
 
                 var commandEl = this.CreateProjectElement("Command");
-                this.MakeNodeConditional(commandEl, config.FullName);
+                this.MakeNodeConditional(commandEl, config);
                 commandEl.InnerText = custom.Command;
                 element.AppendChild(commandEl);
 
                 var messageEl = this.CreateProjectElement("Message");
-                this.MakeNodeConditional(messageEl, config.FullName);
+                this.MakeNodeConditional(messageEl, config);
                 messageEl.InnerText = custom.Message;
                 element.AppendChild(messageEl);
 
                 var outputsEl = this.CreateProjectElement("Outputs");
-                this.MakeNodeConditional(outputsEl, config.FullName);
+                this.MakeNodeConditional(outputsEl, config);
                 outputsEl.InnerText = custom.Outputs.ToString(';');
                 element.AppendChild(outputsEl);
 
@@ -577,7 +577,7 @@ namespace V2
                     // still need to apply the patch
                     if (null != patchSettings)
                     {
-                        (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, el, configuration.FullName);
+                        (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, el, configuration);
                     }
                     return;
                 }
@@ -602,7 +602,7 @@ namespace V2
 
             if (null != patchSettings)
             {
-                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element, configuration.FullName);
+                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, element, configuration);
             }
 
             var ext = System.IO.Path.GetExtension(sourcePath).TrimStart(new[] { '.' });
@@ -923,22 +923,22 @@ namespace V2
         public void
         MakeNodeConditional(
             System.Xml.XmlNode node,
-            string conditionalConfiguration)
+            VSProjectConfiguration configuration)
         {
-            node.Attributes.Append(this.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", conditionalConfiguration);
+            node.Attributes.Append(this.CreateAttribute("Condition")).Value = System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", configuration.FullName);
         }
 
         public void AddToolSetting<T>(
             System.Xml.XmlElement container,
             string settingName,
             T settingValue,
-            string conditionalConfiguration,
+            VSProjectConfiguration configuration,
             System.Action<T, string, System.Text.StringBuilder> process)
         {
             var settingElement = container.AppendChild(this.CreateProjectElement(settingName, process, settingValue));
-            if (null != conditionalConfiguration)
+            if (null != configuration)
             {
-                this.MakeNodeConditional(settingElement, conditionalConfiguration);
+                this.MakeNodeConditional(settingElement, configuration);
             }
         }
 
@@ -953,7 +953,7 @@ namespace V2
                     foreach (var excludedSource in delta)
                     {
                         var element = this.SourceXMLMap[excludedSource];
-                        this.AddToolSetting(element, "ExcludedFromBuild", excludedSource, config.FullName,
+                        this.AddToolSetting(element, "ExcludedFromBuild", excludedSource, config,
                             (setting, attributeName, builder) =>
                             {
                                 builder.Append("true");

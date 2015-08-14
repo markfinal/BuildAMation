@@ -39,7 +39,7 @@ namespace VisualC
             this C.V2.ICommonCompilerOptions options,
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
-            string configuration)
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
@@ -204,7 +204,7 @@ namespace VisualC
             this C.V2.ICOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
-            string configuration)
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
         }
 
@@ -213,7 +213,7 @@ namespace VisualC
             this C.V2.ICxxOnlyCompilerOptions options,
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
-            string configuration)
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
@@ -248,7 +248,7 @@ namespace VisualC
             this VisualCCommon.V2.ICommonCompilerOptions options,
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
-            string configuration)
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
@@ -628,7 +628,11 @@ namespace V2
             //(this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
-        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
+        void
+        VisualStudioProcessor.V2.IConvertToProject.Convert(
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, groupElement, configuration);
@@ -683,7 +687,11 @@ namespace V2
 #endif
         }
 
-        void VisualStudioProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, System.Xml.XmlElement groupElement, string configuration)
+        void
+        VisualStudioProcessor.V2.IConvertToProject.Convert(
+            Bam.Core.V2.Module module,
+            System.Xml.XmlElement groupElement,
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, groupElement, configuration);

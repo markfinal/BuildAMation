@@ -86,7 +86,7 @@ namespace VisualC
             this C.V2.ICommonLinkerOptions options,
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
-            string configuration)
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
@@ -154,7 +154,7 @@ namespace VisualC
             this V2.ICommonLinkerOptions options,
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
-            string configuration)
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
@@ -252,7 +252,7 @@ namespace V2
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
-            string configuration)
+            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
             (this as C.V2.ICommonLinkerOptions).Convert(module, groupElement, configuration);
             (this as ICommonLinkerOptions).Convert(module, groupElement, configuration);
