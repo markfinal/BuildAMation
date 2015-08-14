@@ -707,6 +707,7 @@ namespace V2
                 this.AnonymousPropertySettingsElement = configProps.Element;
                 configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configExpression;
 
+                // build output directory
                 var outDirEl = this.CreateProjectElement("OutDir");
                 var macros = new Bam.Core.V2.MacroList();
                 // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
@@ -717,9 +718,19 @@ namespace V2
                 outDir = System.IO.Path.GetDirectoryName(outDir);
                 outDir += "\\";
                 outDirEl.InnerText = outDir;
-                configProps.Element.AppendChild(outDirEl);
+                this.AnonymousPropertySettingsElement.AppendChild(outDirEl);
 
-                this.Project.InsertAfter(configProps.Element, this.LanguageImport.Element);
+                // does the target name differ?
+                var outputName = module.Macros["OutputName"].Parse();
+                var moduleName = module.Macros["modulename"].Parse();
+                if (outputName != moduleName)
+                {
+                    var targetNameEl = this.CreateProjectElement("TargetName");
+                    targetNameEl.InnerText = outputName;
+                    this.AnonymousPropertySettingsElement.AppendChild(targetNameEl);
+                }
+
+                this.Project.InsertAfter(this.AnonymousPropertySettingsElement, this.LanguageImport.Element);
             }
         }
 
