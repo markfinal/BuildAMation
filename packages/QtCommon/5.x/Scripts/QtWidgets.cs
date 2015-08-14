@@ -29,6 +29,16 @@
 #endregion // License
 namespace QtCommon
 {
+namespace V2
+{
+    public abstract class Widgets :
+        CommonModule
+    {
+        public Widgets() :
+            base("Widgets")
+        { }
+    }
+}
     public abstract class Widgets :
         Base
     {

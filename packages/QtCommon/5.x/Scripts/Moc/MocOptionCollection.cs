@@ -29,6 +29,116 @@
 #endregion // License
 namespace QtCommon
 {
+namespace V2
+{
+    namespace MocExtension
+    {
+        public static class MocExtension
+        {
+            public static System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>
+            MocHeader(
+                this C.Cxx.V2.ObjectFileCollection module,
+                C.V2.HeaderFile header)
+            {
+                // moc file
+                var mocFile = Bam.Core.V2.Module.Create<MocModule>(module);
+                mocFile.SourceHeader = header;
+                // TODO: reinstate this - but causes an exception in finding the encapsulating module
+                //mocFile.DependsOn(header);
+
+                // compile source
+                var objFile = module.AddFile(MocModule.Key, mocFile);
+
+                return new System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>(mocFile, objFile);
+            }
+        }
+    }
+
+    public sealed class MocSettings :
+        Bam.Core.V2.Settings
+    {
+    }
+
+    public sealed class MocTool :
+        Bam.Core.V2.Tool
+    {
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            return new MocSettings();
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return Bam.Core.V2.TokenizedString.Create(System.IO.Path.Combine(new[] { QtCommon.V2.Configure.InstallPath.Parse(), "bin", "moc" }), null);
+            }
+        }
+    }
+
+    public interface IMocGenerationPolicy
+    {
+        void
+        Moc(
+            MocModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.TokenizedString generatedMocSource,
+            C.V2.HeaderFile source);
+    }
+
+    public class MocModule :
+        C.V2.SourceFile
+    {
+        private Bam.Core.V2.Tool Compiler;
+        private C.V2.HeaderFile SourceHeaderModule;
+        private IMocGenerationPolicy Policy = null;
+
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(encapsulatingpkgbuilddir)/$(config)/@basename($(mocheaderpath))_moc.cpp", this));
+            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<MocTool>();
+            this.Requires(this.Compiler);
+        }
+
+        public C.V2.HeaderFile SourceHeader
+        {
+            get
+            {
+                return this.SourceHeaderModule;
+            }
+            set
+            {
+                this.SourceHeaderModule = value;
+                this.Macros.Add("mocheaderpath", value.InputPath);
+            }
+        }
+
+        public override void
+        Evaluate()
+        {
+            this.IsUpToDate = false;
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
+        {
+            this.Policy.Moc(this, context, this.Compiler, this.GeneratedPaths[Key], this.SourceHeader);
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            var className = "QtCommon.V2." + mode + "MocGeneration";
+            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IMocGenerationPolicy>.Create(className);
+        }
+    }
+}
     public sealed partial class MocOptionCollection :
         Bam.Core.BaseOptionCollection,
         CommandLineProcessor.ICommandLineSupport,

@@ -27,6 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace QtCommon
+{
+namespace V2
+{
+    public sealed class NativeMocGeneration :
+        IMocGenerationPolicy
+    {
+        void
+        IMocGenerationPolicy.Moc(
+            MocModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.TokenizedString generatedMocSource,
+            C.V2.HeaderFile source)
+        {
+            var mocOutputPath = generatedMocSource.Parse();
+            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+            if (!System.IO.Directory.Exists(mocOutputDir))
+            {
+                System.IO.Directory.CreateDirectory(mocOutputDir);
+            }
+
+            var args = new Bam.Core.StringArray();
+            args.Add(System.String.Format("-o{0}", mocOutputPath));
+            args.Add(source.InputPath.Parse());
+            CommandLineProcessor.V2.Processor.Execute(context, mocCompiler, args);
+        }
+    }
+}
+}
 namespace NativeBuilder
 {
     public partial class NativeBuilder

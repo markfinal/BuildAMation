@@ -29,6 +29,20 @@
 #endregion // License
 namespace Qt
 {
+namespace V2
+{
+    public sealed class Core :
+        QtCommon.V2.Core
+    { }
+
+    public sealed class Gui :
+        QtCommon.V2.Gui
+    { }
+
+    public sealed class Widgets :
+        QtCommon.V2.Widgets
+    { }
+}
     public sealed class Phonon :
         QtCommon.Phonon
     {}
