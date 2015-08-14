@@ -75,6 +75,15 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks);
     }
 
+    public interface IHeaderLibraryPolicy
+    {
+        void
+        HeadersOnly(
+            HeaderLibrary sender,
+            Bam.Core.V2.ExecutionContext context,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers);
+    }
+
     // TODO: register a tooltype, e.g. compiler, linker, archiver
 
     public abstract class CompilerTool :

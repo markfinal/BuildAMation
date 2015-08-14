@@ -27,6 +27,38 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class VSSolutionHeaderLibrary :
+        IHeaderLibraryPolicy
+    {
+        void
+        IHeaderLibraryPolicy.HeadersOnly(
+            HeaderLibrary sender,
+            Bam.Core.V2.ExecutionContext context,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+        {
+            var library = new VSSolutionBuilder.V2.VSProjectHeaderLibrary(sender);
+            foreach (var header in headers)
+            {
+                if (header is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in header.Children)
+                    {
+                        library.AddHeaderFile(child as HeaderFile);
+                    }
+                }
+                else
+                {
+                    library.AddHeaderFile(header as HeaderFile);
+                }
+            }
+        }
+    }
+}
+}
 namespace VSSolutionBuilder
 {
     public sealed partial class VSSolutionBuilder

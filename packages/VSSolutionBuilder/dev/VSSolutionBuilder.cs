@@ -370,7 +370,8 @@ namespace V2
             NA,
             StaticLibrary,
             DynamicLibrary,
-            Application
+            Application,
+            Utility
         }
 
         private static readonly string VCProjNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
@@ -659,6 +660,10 @@ namespace V2
                         configType.InnerText = "DynamicLibrary";
                         break;
 
+                    case VSProject.Type.Utility:
+                        configType.InnerText = "Utility";
+                        break;
+
                     default:
                         throw new Bam.Core.Exception("Unknown project type, {0}", this.ProjectType.ToString());
                 }
@@ -717,6 +722,10 @@ namespace V2
                         }
                         break;
 
+                    case VSProject.Type.Utility:
+                        // no tools required
+                        break;
+
                     default:
                         throw new Bam.Core.Exception("Unknown project type, {0}", this.ProjectType.ToString());
                 }
@@ -724,7 +733,8 @@ namespace V2
                 this.ConfigToolsProperties.Add(configuration, configGroup.Element);
             }
 
-            // anonymous project settings
+            // anonymous project settings (not present for utility projects)
+            if (null != outPath)
             {
                 var configProps = this.CreatePropertyGroup(null);
                 this.AnonymousPropertySettings.Add(configuration, configProps.Element);
@@ -1265,6 +1275,22 @@ namespace V2
             Bam.Core.StringArray commands)
         {
             this.Project.AddPostBuildCommands(commands, this.Configuration);
+        }
+    }
+
+    public sealed class VSProjectHeaderLibrary :
+        VSSolutionMeta
+    {
+        public VSProjectHeaderLibrary(
+            Bam.Core.V2.Module module) :
+            base(module, VSProject.Type.Utility, null, EPlatform.SixtyFour) // TODO: hard coded platform
+        {}
+
+        public void
+        AddHeaderFile(
+            C.V2.HeaderFile module)
+        {
+            this.Project.AddHeaderFile(module);
         }
     }
 

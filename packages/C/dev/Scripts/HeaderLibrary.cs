@@ -36,20 +36,33 @@ namespace V2
     {
         private Bam.Core.Array<Bam.Core.V2.Module> headers = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
+        private IHeaderLibraryPolicy Policy;
 
         public override void Evaluate()
         {
-            this.IsUpToDate = true;
+            this.IsUpToDate = false;
         }
 
         protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
         {
-            // do nothing
+            if (null == this.Policy)
+            {
+                return;
+            }
+
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.headers.ToArray());
+            this.Policy.HeadersOnly(this, context, headers);
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
-            // do nothing
+            if (mode == "VSSolution")
+            {
+                var className = "C.V2." + mode + "HeaderLibrary";
+                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
+            }
         }
 
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> ForwardedStaticLibraries
