@@ -634,12 +634,10 @@ namespace V2
                 this.ProjectConfigurations.Add(configuration, projconfig);
             }
 
-            var configExpression = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", configuration.FullName);
-
             // project properties
             {
                 var configProps = this.CreatePropertyGroup("Configuration");
-                configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configExpression;
+                this.MakeNodeConditional(configProps.Element, configuration);
                 // TODO: can this be better done with a lambda to get the inner text?
                 var configType = this.CreateProjectElement("ConfigurationType");
                 switch (this.ProjectType)
@@ -671,7 +669,7 @@ namespace V2
 
             // project definitions
             {
-                var configGroup = this.CreateItemDefinitionGroup(configExpression);
+                var configGroup = this.CreateItemDefinitionGroup(configuration);
                 var clCompile = this.CreateProjectElement("ClCompile");
                 configGroup.Element.AppendChild(clCompile);
                 this.CommonCompilationOptions.Add(configuration, clCompile);
@@ -708,7 +706,7 @@ namespace V2
             {
                 var configProps = this.CreatePropertyGroup(null);
                 this.AnonymousPropertySettings.Add(configuration, configProps.Element);
-                configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configExpression;
+                this.MakeNodeConditional(configProps.Element, configuration);
 
                 // build output directory
                 var outDirEl = this.CreateProjectElement("OutDir");
@@ -875,10 +873,12 @@ namespace V2
             return new Import(import);
         }
 
-        private ItemGroup CreateItemDefinitionGroup(string condition)
+        private ItemGroup
+        CreateItemDefinitionGroup(
+            VSProjectConfiguration configuration)
         {
             var group = this.CreateProjectElement("ItemDefinitionGroup");
-            group.Attributes.Append(this.CreateAttribute("Condition")).Value = condition;
+            this.MakeNodeConditional(group, configuration);
             return new ItemGroup(group);
         }
 
