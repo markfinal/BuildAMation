@@ -608,17 +608,24 @@ namespace V2
     public sealed class ShellScriptBuildPhase :
         BuildPhase
     {
+        public delegate string GenerateScriptDelegate(Target target);
+
         public ShellScriptBuildPhase(
-            Target target)
+            Target target,
+            string name,
+            GenerateScriptDelegate generateScript)
         {
-            this.Name = "ShellScript";
+            this.Name = name;
             this.IsA = "PBXShellScriptBuildPhase";
             this.ShellPath = "/bin/sh";
             this.ShowEnvironmentInLog = true;
             this.InputPaths = new Bam.Core.StringArray();
             this.OutputPaths = new Bam.Core.StringArray();
             this.AssociatedTarget = target;
+            this.GenerateScript = generateScript;
         }
+
+        private GenerateScriptDelegate GenerateScript;
 
         protected override string BuildActionMask
         {
@@ -701,6 +708,8 @@ namespace V2
                 text.AppendFormat("{0});", indent2);
                 text.AppendLine();
             }
+            text.AppendFormat("{0}name = \"{1}\";", indent2, this.Name);
+            text.AppendLine();
             if (this.OutputPaths.Count > 0)
             {
                 text.AppendFormat("{0}outputPaths = (", indent2);
@@ -717,17 +726,8 @@ namespace V2
             text.AppendLine();
             text.AppendFormat("{0}shellPath = {1};", indent2, this.ShellPath);
             text.AppendLine();
-            var shellScript = new System.Text.StringBuilder();
-            foreach (var config in this.AssociatedTarget.ConfigurationList)
-            {
-                shellScript.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
-                foreach (var line in config.PostBuildCommands)
-                {
-                    shellScript.AppendFormat("  {0}\\n", line);
-                }
-                shellScript.AppendFormat("fi\\n\\n");
-            }
-            text.AppendFormat("{0}shellScript = \"{1}\";", indent2, shellScript.ToString());
+            var scriptContent = this.GenerateScript(this.AssociatedTarget);
+            text.AppendFormat("{0}shellScript = \"{1}\";", indent2, scriptContent);
             text.AppendLine();
             if (!this.ShowEnvironmentInLog)
             {
@@ -999,12 +999,18 @@ namespace V2
             return newTarget;
         }
 
-        private void
+        public void
         AddNewProjectConfiguration(
             Bam.Core.V2.Module module)
         {
+            var config = module.BuildEnvironment.Configuration;
+            if (this.ProjectConfigurations.ContainsKey(config))
+            {
+                return;
+            }
+
             // add configuration to project
-            var projectConfig = new Configuration(module.BuildEnvironment.Configuration.ToString());
+            var projectConfig = new Configuration(config.ToString());
             projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
             projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
@@ -1028,7 +1034,7 @@ namespace V2
 
             this.ConfigurationLists[0].AddConfiguration(projectConfig);
             this.AllConfigurations.Add(projectConfig);
-            this.ProjectConfigurations.Add(module.BuildEnvironment.Configuration, projectConfig);
+            this.ProjectConfigurations.Add(config, projectConfig);
         }
 
         public Configuration
@@ -1655,7 +1661,9 @@ namespace V2
                 var package = module.Package;
                 if (this.Projects.ContainsKey(package))
                 {
-                    return this.Projects[package];
+                    var project = this.Projects[package];
+                    project.AddNewProjectConfiguration(module);
+                    return project;
                 }
                 else
                 {
@@ -1874,6 +1882,21 @@ namespace V2
         {
         }
 
+        protected void
+        PullInProjectPreOrPostBuildSteps()
+        {
+            var postBuildCommands = this.Project.ProjectConfigurations[this.ProjectModule.BuildEnvironment.Configuration].PostBuildCommands;
+            if (postBuildCommands.Count > 0)
+            {
+                this.AddPostBuildCommands(postBuildCommands);
+            }
+            var preBuildCommands = this.Project.ProjectConfigurations[this.ProjectModule.BuildEnvironment.Configuration].PreBuildCommands;
+            if (preBuildCommands.Count > 0)
+            {
+                this.AddPreBuildCommands(preBuildCommands);
+            }
+        }
+
         public void
         AddHeader(
             FileReference header)
@@ -1905,7 +1928,20 @@ namespace V2
         {
             if (null == this.Target.PreBuildBuildPhase)
             {
-                var preBuildBuildPhase = new ShellScriptBuildPhase(this.Target);
+                var preBuildBuildPhase = new ShellScriptBuildPhase(this.Target, "Pre Build", (target) =>
+                    {
+                        var content = new System.Text.StringBuilder();
+                        foreach (var config in target.ConfigurationList)
+                        {
+                            content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                            foreach (var line in config.PreBuildCommands)
+                            {
+                                content.AppendFormat("  {0}\\n", line);
+                            }
+                            content.AppendFormat("fi\\n\\n");
+                        }
+                        return content.ToString();
+                    });
                 this.Project.ShellScriptsBuildPhases.Add(preBuildBuildPhase);
                 this.Target.BuildPhases.Add(preBuildBuildPhase);
                 this.Target.PreBuildBuildPhase = preBuildBuildPhase;
@@ -1920,7 +1956,20 @@ namespace V2
         {
             if (null == this.Target.PostBuildBuildPhase)
             {
-                var postBuildBuildPhase = new ShellScriptBuildPhase(this.Target);
+                var postBuildBuildPhase = new ShellScriptBuildPhase(this.Target, "Post Build", (target) =>
+                    {
+                        var content = new System.Text.StringBuilder();
+                        foreach (var config in target.ConfigurationList)
+                        {
+                            content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                            foreach (var line in config.PostBuildCommands)
+                            {
+                                content.AppendFormat("  {0}\\n", line);
+                            }
+                            content.AppendFormat("fi\\n\\n");
+                        }
+                        return content.ToString();
+                    });
                 this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
                 this.Target.BuildPhases.Add(postBuildBuildPhase);
                 this.Target.PostBuildBuildPhase = postBuildBuildPhase;
@@ -1953,6 +2002,7 @@ namespace V2
             this.Project.ProductRefGroup.AddReference(library);
             this.Target = this.Project.FindOrCreateTarget(module, library, V2.Target.EProductType.StaticLibrary);
             this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
+            this.PullInProjectPreOrPostBuildSteps();
         }
     }
 
@@ -2033,6 +2083,7 @@ namespace V2
             this.Project.ProductRefGroup.AddReference(application);
             this.Target = this.Project.FindOrCreateTarget(module, application, V2.Target.EProductType.Executable);
             this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
+            this.PullInProjectPreOrPostBuildSteps();
         }
     }
 
@@ -2053,6 +2104,7 @@ namespace V2
             this.Project.ProductRefGroup.AddReference(dynamicLibrary);
             this.Target = this.Project.FindOrCreateTarget(module, dynamicLibrary, V2.Target.EProductType.DynamicLibrary);
             this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
+            this.PullInProjectPreOrPostBuildSteps();
         }
     }
 
