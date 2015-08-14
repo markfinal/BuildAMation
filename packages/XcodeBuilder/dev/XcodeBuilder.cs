@@ -990,11 +990,9 @@ namespace V2
             return newTarget;
         }
 
-        public Configuration
-        AddNewTargetConfiguration(
-            Bam.Core.V2.Module module,
-            FileReference fileRef,
-            Target target)
+        private void
+        AddNewProjectConfiguration(
+            Bam.Core.V2.Module module)
         {
             // add configuration to project
             var projectConfig = new Configuration(module.BuildEnvironment.Configuration.ToString());
@@ -1021,7 +1019,14 @@ namespace V2
 
             this.ConfigurationLists[0].AddConfiguration(projectConfig);
             this.Configurations.Add(projectConfig);
+        }
 
+        public Configuration
+        AddNewTargetConfiguration(
+            Bam.Core.V2.Module module,
+            Target target)
+        {
+            this.AddNewProjectConfiguration(module);
 
             // add configuration to target
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
@@ -1939,7 +1944,7 @@ namespace V2
             this.Output = library;
             this.Project.ProductRefGroup.AddReference(library);
             this.Target = this.Project.FindOrCreateTarget(module, library, V2.Target.EProductType.StaticLibrary);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, library, this.Target);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
         }
     }
 
@@ -2019,7 +2024,7 @@ namespace V2
             this.Output = application;
             this.Project.ProductRefGroup.AddReference(application);
             this.Target = this.Project.FindOrCreateTarget(module, application, V2.Target.EProductType.Executable);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, application, this.Target);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
         }
     }
 
@@ -2039,7 +2044,7 @@ namespace V2
             this.Output = dynamicLibrary;
             this.Project.ProductRefGroup.AddReference(dynamicLibrary);
             this.Target = this.Project.FindOrCreateTarget(module, dynamicLibrary, V2.Target.EProductType.DynamicLibrary);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, dynamicLibrary, this.Target);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
         }
     }
 
