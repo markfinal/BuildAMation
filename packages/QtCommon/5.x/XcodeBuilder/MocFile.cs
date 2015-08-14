@@ -42,31 +42,17 @@ namespace V2
             Bam.Core.V2.TokenizedString generatedMocSource,
             C.V2.HeaderFile source)
         {
-#if false
-            if (null != source.MetaData)
-            {
-                throw new Bam.Core.Exception("Header file {0} already has VSSolution metadata", source.InputPath.Parse());
-            }
-
-            // TODO: this is hardcoded - needed a better way to figure this out
-            var platform = VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour;
-
             var output = generatedMocSource.Parse();
 
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            args.Add(System.String.Format("-o{0}", output));
-            args.Add("%(FullPath)");
+            var commands = new Bam.Core.StringArray();
+            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));
 
-            var customBuild = new VSSolutionBuilder.V2.VSProjectCustomBuild(source, platform);
-            customBuild.Message = "Moccing";
-            customBuild.Command = args.ToString(' ');
-            customBuild.Outputs.AddUnique(generatedMocSource.Parse());
+            var mocInvoke = new System.Text.StringBuilder();
+            mocInvoke.AppendFormat("{0} -o{1} {2}", mocCompiler.Executable.Parse(), output, source.InputPath.Parse());
+            commands.Add(mocInvoke.ToString());
 
-            var headerFile = new VSSolutionBuilder.V2.VSProjectHeaderFile(source, platform);
-            headerFile.Source = source.GeneratedPaths[C.V2.HeaderFile.Key];
-            headerFile.CustomBuild = customBuild;
-#endif
+            var header = new XcodeBuilder.V2.XcodeHeaderFile(sender);
+            header.Project.ProjectConfigurations[sender.BuildEnvironment.Configuration].PreBuildCommands.AddRange(commands);
         }
     }
 }
