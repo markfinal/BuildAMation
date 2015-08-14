@@ -38,41 +38,38 @@ namespace V2
         IPackagePolicy.Package(
             Package sender,
             Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects)
         {
             // instead of copying to the package root, modules are copied next to their dependees
             foreach (var module in packageObjects)
             {
-                foreach (var dependee in module.Key.Dependees)
+                foreach (var path in module.Value)
                 {
-                    if (!packageObjects.ContainsKey(dependee))
+                    var sourcePath = path.Key.ToString();
+                    if (path.Value.IsMarker)
                     {
-                        // the dependee wasn't being packaged, so the dependent isn't needed to be either
-                        Bam.Core.Log.DebugMessage("Module {0} is packaged, but {1} is dependent upon it but isn't packaged, and thus ignored", module.ToString(), dependee.ToString());
-                        continue;
+                        // no copy is needed, but as we're copying other files relative to this, record where they have to go
+                        // therefore ignore any subdirectory on this module
+                        path.Value.DestinationDir = System.IO.Path.GetDirectoryName(sourcePath);
                     }
-                    foreach (var path in packageObjects[dependee].Keys)
+                    else
                     {
-                        var dir = System.IO.Path.GetDirectoryName(path.ToString());
-                        // the subdir on the dependee is ignored here, as it was never copied anywhere
-                        foreach (var modulePath in module.Value)
+                        var subdir = path.Value.SubDirectory;
+                        foreach (var reference in path.Value.References)
                         {
-                            // the dependent's subdir must be honoured, as the runtime might expect it
-                            var dependentSubDir = modulePath.Value;
-
                             var commands = new Bam.Core.StringArray();
                             if (null != module.Key.MetaData)
                             {
-                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(dir, dependentSubDir));
+                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, subdir));
                                 commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
                                 commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
                                 (module.Key.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                                path.Value.DestinationDir = destinationDir;
                             }
                             else
                             {
-                                var sourcePath = modulePath.Key.Parse();
-                                commands.Add(System.String.Format(@"copy /V /Y {0} $(OutDir)\{1}\{2}", sourcePath, dependentSubDir, System.IO.Path.GetFileName(sourcePath)));
-                                (dependee.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                                commands.Add(System.String.Format(@"copy /V /Y {0} $(OutDir)\{1}\{2}", sourcePath, subdir, System.IO.Path.GetFileName(sourcePath)));
+                                (reference.Module.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
                             }
                         }
                     }

@@ -87,9 +87,9 @@ namespace Test13
         {
             base.Init(parent);
 
-            this.Include<QtApplicationV2>(C.V2.ConsoleApplication.Key, ".");
-            this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".");
-            this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".");
+            var app = this.Include<QtApplicationV2>(C.V2.ConsoleApplication.Key);
+            this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
+            this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
 

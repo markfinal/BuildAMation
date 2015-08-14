@@ -72,8 +72,8 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key, ".");
-            this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".");
+            var app = this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+            this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
 
@@ -86,17 +86,16 @@ namespace Test5
         {
             base.Init(parent);
 
+            var dll = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, "bin");
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "lib");
+                this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "../lib", dll);
             }
-            this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, "bin");
 
-            this.IncludeFiles<Test4.MyDynamicLibV2>("$(pkgroot)/include/dynamiclibrary.h", "include");
+            this.IncludeFiles<Test4.MyDynamicLibV2>("$(pkgroot)/include/dynamiclibrary.h", "../include", dll);
         }
     }
 
-#if false
     sealed class WinInstallerInno :
         Publisher.V2.InnoSetupInstaller
     {
@@ -148,7 +147,6 @@ namespace Test5
             this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
         }
     }
-#endif
 
     // Define module classes here
     class MyDynamicLibTestApp :

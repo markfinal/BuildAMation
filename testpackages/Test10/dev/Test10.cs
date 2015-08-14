@@ -131,9 +131,9 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.Include<MyStandaloneAppV2>(C.V2.ConsoleApplication.Key, ".");
-            this.Include<DllDependentAppV2>(C.V2.ConsoleApplication.Key, ".");
-            this.Include<MyDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".");
+            this.Include<MyStandaloneAppV2>(C.V2.ConsoleApplication.Key, "Standalone");
+            var app = this.Include<DllDependentAppV2>(C.V2.ConsoleApplication.Key, "Dynamic");
+            this.Include<MyDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
 

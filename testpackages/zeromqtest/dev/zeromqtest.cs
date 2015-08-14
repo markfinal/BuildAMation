@@ -70,8 +70,8 @@ namespace zeromqtest
         {
             base.Init(parent);
 
-            this.Include<TestV2>(C.V2.ConsoleApplication.Key, ".");
-            this.Include<zeromq.ZMQSharedLibraryV2>(C.V2.DynamicLibrary.Key, ".");
+            var app = this.Include<TestV2>(C.V2.ConsoleApplication.Key);
+            this.Include<zeromq.ZMQSharedLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
 

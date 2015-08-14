@@ -35,19 +35,64 @@ namespace Publisher
 {
 namespace V2
 {
+    public sealed class PackageReference
+    {
+        public PackageReference(
+            Bam.Core.V2.Module module,
+            string subdirectory,
+            Bam.Core.Array<PackageReference> references)
+        {
+            this.Module = module;
+            this.SubDirectory = subdirectory;
+            this.References = references;
+        }
+
+        public bool IsMarker
+        {
+            get
+            {
+                return (null == this.References);
+            }
+        }
+
+        public Bam.Core.V2.Module Module
+        {
+            get;
+            private set;
+        }
+
+        public string SubDirectory
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<PackageReference> References
+        {
+            get;
+            private set;
+        }
+
+        public string DestinationDir
+        {
+            get;
+            set;
+        }
+    }
+
     public interface IPackagePolicy
     {
         void
         Package(
             Package sender,
             Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> packageObjects);
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects);
     }
 
     public abstract class Package :
         Bam.Core.V2.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> dependents = new System.Collections.Generic.Dictionary<Module,System.Collections.Generic.Dictionary<TokenizedString,string>>();
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, PackageReference>>();
         private IPackagePolicy Policy = null;
         public static Bam.Core.V2.FileKey PackageRoot = Bam.Core.V2.FileKey.Generate("Package Root");
 
@@ -56,33 +101,59 @@ namespace V2
             this.RegisterGeneratedFile(PackageRoot, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
         }
 
-        public void
+        public PackageReference
         Include<DependentModule>(
             Bam.Core.V2.FileKey key,
-            string subdir) where DependentModule : Bam.Core.V2.Module, new()
+            string subdir = null) where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, string>());
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, PackageReference>());
             }
-            this.dependents[dependent].Add(dependent.GeneratedPaths[key], subdir);
+            var packaging = new PackageReference(dependent, subdir, null);
+            this.dependents[dependent].Add(dependent.GeneratedPaths[key], packaging);
+            return packaging;
+        }
+
+        public void
+        Include<DependentModule>(
+            Bam.Core.V2.FileKey key,
+            string subdir,
+            PackageReference reference,
+            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.Requires(dependent);
+            if (!this.dependents.ContainsKey(dependent))
+            {
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, PackageReference>());
+            }
+            var refs = new Bam.Core.Array<PackageReference>(reference);
+            refs.AddRangeUnique(new Bam.Core.Array<PackageReference>(additionalReferences));
+            var packaging = new PackageReference(dependent, subdir, refs);
+            this.dependents[dependent].Add(dependent.GeneratedPaths[key], packaging);
         }
 
         public void
         IncludeFiles<DependentModule>(
             string parameterizedFilePath,
-            string subdir) where DependentModule : Bam.Core.V2.Module, new()
+            string subdir,
+            PackageReference reference,
+            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, string>());
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, PackageReference>());
             }
+            var refs = new Bam.Core.Array<PackageReference>(reference);
+            refs.AddRangeUnique(new Bam.Core.Array<PackageReference>(additionalReferences));
             var tokenString = Bam.Core.V2.TokenizedString.Create(parameterizedFilePath, dependent);
-            this.dependents[dependent].Add(tokenString, subdir);
+            var packaging = new PackageReference(dependent, subdir, refs);
+            this.dependents[dependent].Add(tokenString, packaging);
         }
 
         public override void Evaluate()
@@ -96,7 +167,7 @@ namespace V2
             Bam.Core.V2.ExecutionContext context)
         {
             // TODO: the nested dictionary is not readonly - not sure how to construct this
-            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>>(this.dependents);
+            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>>(this.dependents);
             this.Policy.Package(this, this.GeneratedPaths[PackageRoot], packageObjects);
         }
 

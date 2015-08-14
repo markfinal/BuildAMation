@@ -38,11 +38,44 @@ namespace V2
         IPackagePolicy.Package(
             Package sender,
             Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects)
         {
             // instead of copying to the package root, modules are copied next to their dependees
             foreach (var module in packageObjects)
             {
+#if true
+                foreach (var path in module.Value)
+                {
+                    var sourcePath = path.Key.ToString();
+                    if (path.Value.IsMarker)
+                    {
+                        // no copy is needed, but as we're copying other files relative to this, record where they have to go
+                        // therefore ignore any subdirectory on this module
+                        path.Value.DestinationDir = System.IO.Path.GetDirectoryName(sourcePath);
+                    }
+                    else
+                    {
+                        var subdir = path.Value.SubDirectory;
+                        foreach (var reference in path.Value.References)
+                        {
+                            var commands = new Bam.Core.StringArray();
+                            if (null != module.Key.MetaData)
+                            {
+                                var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, subdir));
+                                commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
+                                commands.Add(System.String.Format("cp -v $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {0}/$EXECUTABLE_NAME", destinationDir));
+                                (module.Key.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
+                                path.Value.DestinationDir = destinationDir;
+                            }
+                            else
+                            {
+                                commands.Add(System.String.Format("cp -v {0} $CONFIGURATION_BUILD_DIR/{1}/{2}", sourcePath, subdir, System.IO.Path.GetFileName(sourcePath)));
+                                (reference.Module.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                            }
+                        }
+                    }
+                }
+#else
                 foreach (var dependee in module.Key.Dependees)
                 {
                     if (!packageObjects.ContainsKey(dependee))
@@ -64,7 +97,7 @@ namespace V2
                         foreach (var modulePath in module.Value)
                         {
                             // the dependent's subdir must be honoured, as the runtime might expect it
-                            var dependentSubDir = modulePath.Value;
+                            var dependentSubDir = modulePath.Value.SubDirectory;
 
                             var commands = new Bam.Core.StringArray();
                             if (null != module.Key.MetaData)
@@ -83,6 +116,7 @@ namespace V2
                         }
                     }
                 }
+#endif
             }
         }
     }

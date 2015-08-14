@@ -82,13 +82,13 @@ namespace Qt5Test1
         {
             base.Init(parent);
 
-            this.Include<Qt5Application>(C.V2.ConsoleApplication.Key, ".");
-            this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".");
-            this.Include<Qt.V2.Widgets>(C.V2.DynamicLibrary.Key, ".");
-            this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".");
-            this.Include<ICU.V2.ICUIN>(C.V2.DynamicLibrary.Key, ".");
-            this.Include<ICU.V2.ICUUC>(C.V2.DynamicLibrary.Key, ".");
-            this.Include<ICU.V2.ICUDT>(C.V2.DynamicLibrary.Key, ".");
+            var app = this.Include<Qt5Application>(C.V2.ConsoleApplication.Key);
+            this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
+            this.Include<Qt.V2.Widgets>(C.V2.DynamicLibrary.Key, ".", app);
+            this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
+            this.Include<ICU.V2.ICUIN>(C.V2.DynamicLibrary.Key, ".", app);
+            this.Include<ICU.V2.ICUUC>(C.V2.DynamicLibrary.Key, ".", app);
+            this.Include<ICU.V2.ICUDT>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
 }

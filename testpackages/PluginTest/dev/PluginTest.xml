@@ -24,6 +24,11 @@
     <Package Name="VSSolutionBuilder">
       <Version Id="dev" />
     </Package>
+    <Package Name="WindowsSDK">
+      <Version Id="6.0A" />
+      <Version Id="7.1" />
+      <Version Id="8.1" Default="true" />
+    </Package>
   </RequiredPackages>
   <RequiredBamAssemblies>
     <BamAssembly Name="Bam.Core" />

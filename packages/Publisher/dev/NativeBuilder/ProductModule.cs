@@ -34,11 +34,24 @@ namespace V2
     public sealed class NativePackager :
         IPackagePolicy
     {
+        static private void
+        CopyFile(
+            string sourcePath,
+            string destinationDir)
+        {
+            if (!System.IO.Directory.Exists(destinationDir))
+            {
+                System.IO.Directory.CreateDirectory(destinationDir);
+            }
+            var destinationPath = System.IO.Path.Combine(destinationDir, System.IO.Path.GetFileName(sourcePath));
+            System.IO.File.Copy(sourcePath, destinationPath, true);
+        }
+
         void
         IPackagePolicy.Package(
             Package sender,
             Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, string>> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects)
         {
             var root = packageRoot.Parse();
             foreach (var module in packageObjects)
@@ -46,13 +59,26 @@ namespace V2
                 foreach (var path in module.Value)
                 {
                     var sourcePath = path.Key.ToString();
-                    var destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(root, path.Value));
-                    if (!System.IO.Directory.Exists(destinationPath))
+                    if (path.Value.IsMarker)
                     {
-                        System.IO.Directory.CreateDirectory(destinationPath);
+                        var destinationDir = root;
+                        if (null != path.Value.SubDirectory)
+                        {
+                            destinationDir = System.IO.Path.Combine(destinationDir, path.Value.SubDirectory);
+                        }
+                        CopyFile(sourcePath, destinationDir);
+                        path.Value.DestinationDir = destinationDir;
                     }
-                    destinationPath = System.IO.Path.Combine(destinationPath, System.IO.Path.GetFileName(sourcePath));
-                    System.IO.File.Copy(sourcePath, destinationPath, true);
+                    else
+                    {
+                        var subdir = path.Value.SubDirectory;
+                        foreach (var reference in path.Value.References)
+                        {
+                            var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, path.Value.SubDirectory));
+                            CopyFile(sourcePath, destinationDir);
+                            path.Value.DestinationDir = destinationDir;
+                        }
+                    }
                 }
             }
         }
