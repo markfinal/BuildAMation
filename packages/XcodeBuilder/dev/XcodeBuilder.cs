@@ -764,6 +764,7 @@ namespace V2
             this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
             this.Groups = new System.Collections.Generic.List<Group>();
             this.AllConfigurations = new System.Collections.Generic.List<Configuration>();
+            this.ProjectConfigurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration>();
             this.ConfigurationLists = new System.Collections.Generic.List<ConfigurationList>();
             this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
             this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
@@ -780,6 +781,8 @@ namespace V2
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
+
+            this.AddNewProjectConfiguration(module);
         }
 
         public string SourceRoot
@@ -845,6 +848,12 @@ namespace V2
         }
 
         public System.Collections.Generic.List<Configuration> AllConfigurations
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations
         {
             get;
             private set;
@@ -1019,6 +1028,7 @@ namespace V2
 
             this.ConfigurationLists[0].AddConfiguration(projectConfig);
             this.AllConfigurations.Add(projectConfig);
+            this.ProjectConfigurations.Add(module.BuildEnvironment.Configuration, projectConfig);
         }
 
         public Configuration
@@ -1026,8 +1036,6 @@ namespace V2
             Bam.Core.V2.Module module,
             Target target)
         {
-            this.AddNewProjectConfiguration(module);
-
             // add configuration to target
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
