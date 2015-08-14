@@ -32,7 +32,7 @@ using QtCommon.V2.MocExtension;
 namespace Qt5Test1
 {
     sealed class Qt5Application :
-        C.V2.ConsoleApplication
+        C.Cxx.V2.ConsoleApplication
     {
         protected override void
         Init(
@@ -49,8 +49,8 @@ namespace Qt5Test1
             source.AddFile("$(pkgroot)/source/myobject.cpp");
             source.AddFile("$(pkgroot)/source/myobject2.cpp");
 
-            var myObjectMocTuple = source.MocHeader(myobjectHeader);
-            var myObject2MocTuple = source.MocHeader(myobject2Header);
+            /*var myObjectMocTuple = */source.MocHeader(myobjectHeader);
+            /*var myObject2MocTuple = */source.MocHeader(myobject2Header);
 
             this.PrivatePatch(settings =>
             {
@@ -62,8 +62,16 @@ namespace Qt5Test1
                 }
             });
 
-            this.CompileAndLinkAgainst<Qt.V2.Core>(source);
-            this.CompileAndLinkAgainst<Qt.V2.Widgets>(source);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                this.CompileAndLinkAgainst<Qt.V2.CoreFramework>(source);
+                this.CompileAndLinkAgainst<Qt.V2.WidgetsFramework>(source);
+            }
+            else
+            {
+                this.CompileAndLinkAgainst<Qt.V2.Core>(source);
+                this.CompileAndLinkAgainst<Qt.V2.Widgets>(source);
+            }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
@@ -83,12 +91,18 @@ namespace Qt5Test1
             base.Init(parent);
 
             var app = this.Include<Qt5Application>(C.V2.ConsoleApplication.Key);
-            this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
-            this.Include<Qt.V2.Widgets>(C.V2.DynamicLibrary.Key, ".", app);
-            this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
-            this.Include<ICU.V2.ICUIN>(C.V2.DynamicLibrary.Key, ".", app);
-            this.Include<ICU.V2.ICUUC>(C.V2.DynamicLibrary.Key, ".", app);
-            this.Include<ICU.V2.ICUDT>(C.V2.DynamicLibrary.Key, ".", app);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+            }
+            else
+            {
+                this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.V2.Widgets>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<ICU.V2.ICUIN>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<ICU.V2.ICUUC>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<ICU.V2.ICUDT>(C.V2.DynamicLibrary.Key, ".", app);
+            }
         }
     }
 }
