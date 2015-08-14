@@ -638,6 +638,8 @@ namespace V2
             {
                 var configProps = this.CreatePropertyGroup("Configuration");
                 this.MakeNodeConditional(configProps.Element, configuration);
+
+                // configuration type
                 // TODO: can this be better done with a lambda to get the inner text?
                 var configType = this.CreateProjectElement("ConfigurationType");
                 switch (this.ProjectType)
@@ -661,9 +663,20 @@ namespace V2
                         throw new Bam.Core.Exception("Unknown project type, {0}", this.ProjectType.ToString());
                 }
                 configProps.Element.AppendChild(configType);
+
+                // platform toolset
                 var platformToolset = this.CreateProjectElement("PlatformToolset", "v120"); // TODO: dependent upon the version of VisualC
                 configProps.Element.AppendChild(platformToolset);
                 this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
+
+                // use of debug runtimes?
+                // assume not for speed initially
+                var useDebugLibs = this.CreateProjectElement("UseDebugLibraries", "false");
+                configProps.Element.AppendChild(useDebugLibs);
+                this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
+
+                // TODO characterset?
+
                 this.ConfigurationGroups.Add(configuration, configProps);
             }
 
