@@ -374,21 +374,22 @@ namespace V2
         }
 
         private static readonly string VCProjNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
-        private ItemGroup ProjectConfigurations;
+        private ItemGroup ProjectConfigurationsGroup;
+        private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> ProjectConfigurations = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
+        private System.Collections.Generic.Dictionary<VSProjectConfiguration, PropertyGroup> ConfigurationGroups = new System.Collections.Generic.Dictionary<VSProjectConfiguration, PropertyGroup>();
         private PropertyGroup Globals;
         private Import DefaultImport;
         private Import LanguageImport;
-        private System.Collections.Generic.List<ItemDefinitionGroup> ConfigurationDefs = new System.Collections.Generic.List<ItemDefinitionGroup>();
         private ItemGroup SourceGroup;
         private ItemGroup HeaderGroup;
         private ItemGroup CustomBuildGroup;
         private ItemGroup ProjectDependenciesGroup;
         private Import LanguageTargets;
         private Type ProjectType;
-        private System.Xml.XmlElement ConfigToolsPropertiesElement = null;
-        private System.Xml.XmlElement CommonCompilationOptionsElement = null;
-        private System.Xml.XmlElement PostBuildCommandElement = null;
-        private System.Xml.XmlElement AnonymousPropertySettingsElement = null;
+        private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> ConfigToolsProperties = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
+        private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> CommonCompilationOptions = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
+        private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> PostBuildCommand = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
+        private System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement> AnonymousPropertySettings = new System.Collections.Generic.Dictionary<VSProjectConfiguration, System.Xml.XmlElement>();
         private System.Collections.Generic.List<VSProject> DependentProjects = new System.Collections.Generic.List<VSProject>();
         private System.Collections.Generic.Dictionary<string, System.Xml.XmlElement> SourceXMLMap = new System.Collections.Generic.Dictionary<string, System.Xml.XmlElement>();
 
@@ -410,9 +411,9 @@ namespace V2
             this.Project.Attributes.Append(this.CreateAttribute("DefaultTargets")).Value = "Build";
             this.Project.Attributes.Append(this.CreateAttribute("ToolsVersion")).Value = "12.0"; // TODO: in tune with VisualC package version
 
-            // ProjectConfigurations element
-            this.ProjectConfigurations = this.CreateItemGroup("ProjectConfigurations");
-            this.Project.AppendChild(this.ProjectConfigurations.Element);
+            // ProjectConfigurationsGroup element
+            this.ProjectConfigurationsGroup = this.CreateItemGroup("ProjectConfigurations");
+            this.Project.AppendChild(this.ProjectConfigurationsGroup.Element);
 
             // Globals element
             this.Globals = this.CreatePropertyGroup("Globals");
@@ -629,7 +630,8 @@ namespace V2
                 var plat = this.CreateProjectElement("Platform", configuration.Platform);
                 projconfig.AppendChild(config);
                 projconfig.AppendChild(plat);
-                this.ProjectConfigurations.Element.AppendChild(projconfig);
+                this.ProjectConfigurationsGroup.Element.AppendChild(projconfig);
+                this.ProjectConfigurations.Add(configuration, projconfig);
             }
 
             var configExpression = System.String.Format(@"'$(Configuration)|$(Platform)'=='{0}'", configuration.FullName);
@@ -664,6 +666,7 @@ namespace V2
                 var platformToolset = this.CreateProjectElement("PlatformToolset", "v120"); // TODO: dependent upon the version of VisualC
                 configProps.Element.AppendChild(platformToolset);
                 this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
+                this.ConfigurationGroups.Add(configuration, configProps);
             }
 
             // project definitions
@@ -671,7 +674,7 @@ namespace V2
                 var configGroup = this.CreateItemDefinitionGroup(configExpression);
                 var clCompile = this.CreateProjectElement("ClCompile");
                 configGroup.Element.AppendChild(clCompile);
-                this.CommonCompilationOptionsElement = clCompile;
+                this.CommonCompilationOptions.Add(configuration, clCompile);
                 switch (this.ProjectType)
                 {
                     case VSProject.Type.NA:
@@ -698,13 +701,13 @@ namespace V2
                         throw new Bam.Core.Exception("Unknown project type, {0}", this.ProjectType.ToString());
                 }
                 this.Project.InsertAfter(configGroup.Element, this.LanguageImport.Element);
-                this.ConfigToolsPropertiesElement = configGroup.Element;
+                this.ConfigToolsProperties.Add(configuration, configGroup.Element);
             }
 
             // anonymous project settings
             {
                 var configProps = this.CreatePropertyGroup(null);
-                this.AnonymousPropertySettingsElement = configProps.Element;
+                this.AnonymousPropertySettings.Add(configuration, configProps.Element);
                 configProps.Element.Attributes.Append(this.CreateAttribute("Condition")).Value = configExpression;
 
                 // build output directory
@@ -718,7 +721,7 @@ namespace V2
                 outDir = System.IO.Path.GetDirectoryName(outDir);
                 outDir += "\\";
                 outDirEl.InnerText = outDir;
-                this.AnonymousPropertySettingsElement.AppendChild(outDirEl);
+                this.AnonymousPropertySettings[configuration].AppendChild(outDirEl);
 
                 // does the target name differ?
                 var outputName = module.Macros["OutputName"].Parse();
@@ -727,10 +730,10 @@ namespace V2
                 {
                     var targetNameEl = this.CreateProjectElement("TargetName");
                     targetNameEl.InnerText = outputName;
-                    this.AnonymousPropertySettingsElement.AppendChild(targetNameEl);
+                    this.AnonymousPropertySettings[configuration].AppendChild(targetNameEl);
                 }
 
-                this.Project.InsertAfter(this.AnonymousPropertySettingsElement, this.LanguageImport.Element);
+                this.Project.InsertAfter(this.AnonymousPropertySettings[configuration], this.LanguageImport.Element);
             }
         }
 
@@ -774,9 +777,13 @@ namespace V2
             }
         }
 
-        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        public void
+        SetCommonCompilationOptions(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.Settings settings,
+            VSProjectConfiguration config)
         {
-            (settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, this.CommonCompilationOptionsElement, null);
+            (settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, this.CommonCompilationOptions[config], null);
 
             var moduleWithPath = (module is Bam.Core.V2.IModuleGroup) ? module.Children[0] : module;
             var intPath = moduleWithPath.GeneratedPaths[C.V2.ObjectFile.Key];
@@ -789,22 +796,23 @@ namespace V2
             intDir = System.IO.Path.GetDirectoryName(intDir);
             intDir += "\\";
             intDirEl.InnerText = intDir;
-            this.AnonymousPropertySettingsElement.AppendChild(intDirEl);
+            this.AnonymousPropertySettings[config].AppendChild(intDirEl);
         }
 
         public void
         AddPostBuildCommands(
-            Bam.Core.StringArray commands)
+            Bam.Core.StringArray commands,
+            VSProjectConfiguration config)
         {
-            if (null == this.PostBuildCommandElement)
+            if (!this.PostBuildCommand.ContainsKey(config))
             {
                 var tool = this.CreateProjectElement("PostBuildEvent");
-                this.ConfigToolsPropertiesElement.AppendChild(tool);
+                this.ConfigToolsProperties[config].AppendChild(tool);
 
                 var commandElement = this.CreateProjectElement("Command");
                 tool.AppendChild(commandElement);
 
-                this.PostBuildCommandElement = commandElement;
+                this.PostBuildCommand.Add(config, commandElement);
             }
 
             var commandText = new System.Text.StringBuilder();
@@ -812,7 +820,7 @@ namespace V2
             {
                 commandText.AppendFormat("{0}{1}", command, System.Environment.NewLine);
             }
-            this.PostBuildCommandElement.InnerText += commandText.ToString();
+            this.PostBuildCommand[config].InnerText += commandText.ToString();
         }
 
         public System.Xml.XmlElement CreateProjectElement(string name)
@@ -1220,16 +1228,19 @@ namespace V2
             }
         }
 
-        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        public void
+        SetCommonCompilationOptions(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.Settings settings)
         {
-            this.Project.SetCommonCompilationOptions(module, settings);
+            this.Project.SetCommonCompilationOptions(module, settings, this.Configuration);
         }
 
         public void
         AddPostBuildCommands(
             Bam.Core.StringArray commands)
         {
-            this.Project.AddPostBuildCommands(commands);
+            this.Project.AddPostBuildCommands(commands, this.Configuration);
         }
     }
 
