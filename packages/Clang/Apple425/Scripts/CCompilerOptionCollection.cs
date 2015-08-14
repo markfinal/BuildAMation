@@ -525,6 +525,19 @@ namespace Clang
                 commandLine.Add(System.String.Format("-fconstant-string-class={0}", options.ConstantStringClass));
             }
         }
+
+        public static void
+        Convert(
+            this C.V2.ICCompilerOptionsOSX options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            foreach (var path in options.FrameworkSearchDirectories)
+            {
+                var formatString = path.ContainsSpace ? "-F\"{0}\"" : "-F{0}";
+                commandLine.Add(System.String.Format(formatString, path));
+            }
+        }
     }
 
     public static partial class NativeImplementation
@@ -673,7 +686,8 @@ namespace V2
         CommandLineProcessor.V2.IConvertToCommandLine,
         XcodeProjectProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICOnlyCompilerOptions
+        C.V2.ICOnlyCompilerOptions,
+        C.V2.ICCompilerOptionsOSX
     {
         public CompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -780,6 +794,12 @@ namespace V2
             get;
             set;
         }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICCompilerOptionsOSX.FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
     }
 
     public sealed class CxxCompilerSettings :
@@ -787,7 +807,8 @@ namespace V2
         CommandLineProcessor.V2.IConvertToCommandLine,
         XcodeProjectProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
-        C.V2.ICxxOnlyCompilerOptions
+        C.V2.ICxxOnlyCompilerOptions,
+        C.V2.ICCompilerOptionsOSX
     {
         public CxxCompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -812,6 +833,7 @@ namespace V2
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICCompilerOptionsOSX).Convert(module, commandLine);
         }
 
         void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
@@ -903,6 +925,12 @@ namespace V2
             get;
             set;
         }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICCompilerOptionsOSX.FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
     }
 
     public class ObjectiveCCompilerSettings :
@@ -911,7 +939,8 @@ namespace V2
         XcodeProjectProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
-        C.V2.IObjectiveCOnlyCompilerOptions
+        C.V2.IObjectiveCOnlyCompilerOptions,
+        C.V2.ICCompilerOptionsOSX
     {
         public ObjectiveCCompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -1032,6 +1061,12 @@ namespace V2
             get;
             set;
         }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICCompilerOptionsOSX.FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
     }
 
     public sealed class ObjectiveCxxCompilerSettings :
@@ -1040,7 +1075,8 @@ namespace V2
         XcodeProjectProcessor.V2.IConvertToProject,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
-        C.V2.IObjectiveCxxOnlyCompilerOptions
+        C.V2.IObjectiveCxxOnlyCompilerOptions,
+        C.V2.ICCompilerOptionsOSX
     {
         public ObjectiveCxxCompilerSettings(Bam.Core.V2.Module module)
             : this(module, true)
@@ -1156,6 +1192,12 @@ namespace V2
         }
 
         C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICCompilerOptionsOSX.FrameworkSearchDirectories
         {
             get;
             set;

@@ -29,6 +29,61 @@
 #endregion // License
 namespace C
 {
+namespace V2
+{
+namespace DefaultSettings
+{
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void
+        Defaults(
+            this C.V2.ICCompilerOptionsOSX settings,
+            Bam.Core.V2.Module module)
+        {
+        }
+        public static void
+        Empty(
+            this C.V2.ICCompilerOptionsOSX settings)
+        {
+            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+        }
+        public static void
+        Delta(
+            this C.V2.ICCompilerOptionsOSX settings,
+            C.V2.ICCompilerOptionsOSX delta,
+            C.V2.ICCompilerOptionsOSX other)
+        {
+            foreach (var path in settings.FrameworkSearchDirectories)
+            {
+                if (!other.FrameworkSearchDirectories.Contains(path))
+                {
+                    delta.FrameworkSearchDirectories.AddUnique(path);
+                }
+            }
+        }
+        public static void
+        Clone(
+            this C.V2.ICCompilerOptionsOSX settings,
+            C.V2.ICCompilerOptionsOSX other)
+        {
+            foreach (var path in other.FrameworkSearchDirectories)
+            {
+                settings.FrameworkSearchDirectories.AddUnique(path);
+            }
+        }
+    }
+}
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICCompilerOptionsOSX :
+        Bam.Core.V2.ISettingsBase
+    {
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ICCompilerOptionsOSX
     {
         /// <summary>
