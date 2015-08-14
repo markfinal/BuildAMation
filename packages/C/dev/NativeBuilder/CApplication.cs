@@ -74,7 +74,7 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
-            var libraryNames = new System.Collections.Generic.List<string>();
+            var libraryNames = new Bam.Core.StringArray();
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {
@@ -84,18 +84,17 @@ namespace V2
                     continue;
                 }
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                // TODO: watch for duplicates
-                linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(dir, null));
                 if ((sender.Tool as C.V2.LinkerTool).UseLPrefixLibraryPaths)
                 {
                     var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
                     libName = libName.Substring(3); // trim off lib prefix
-                    libraryNames.Add(System.String.Format("-l{0}", libName));
+                    libraryNames.AddUnique(System.String.Format("-l{0}", libName));
                 }
                 else
                 {
                     var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
-                    libraryNames.Add(libFilename);
+                    libraryNames.AddUnique(libFilename);
                 }
             }
 
@@ -127,7 +126,7 @@ namespace V2
             // then dependent module libraries
             foreach (var lib in libraryNames)
             {
-                linker.Libraries.Add(lib);
+                linker.Libraries.AddUnique(lib);
             }
 
             // then all options

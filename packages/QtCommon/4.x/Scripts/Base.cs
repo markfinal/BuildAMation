@@ -77,13 +77,13 @@ namespace V2
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null != compiler)
                 {
-                    compiler.IncludePaths.Add(this.Macros["QtIncludePath"]);
+                    compiler.IncludePaths.AddUnique(this.Macros["QtIncludePath"]);
                 }
 
                 var linker = settings as C.V2.ICommonLinkerOptions;
                 if (null != linker)
                 {
-                    linker.LibraryPaths.Add(this.Macros["QtLibraryPath"]);
+                    linker.LibraryPaths.AddUnique(this.Macros["QtLibraryPath"]);
                 }
             });
         }
