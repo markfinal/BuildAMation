@@ -763,7 +763,7 @@ namespace V2
             this.FileReferences = new System.Collections.Generic.List<FileReference>();
             this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
             this.Groups = new System.Collections.Generic.List<Group>();
-            this.Configurations = new System.Collections.Generic.List<Configuration>();
+            this.AllConfigurations = new System.Collections.Generic.List<Configuration>();
             this.ConfigurationLists = new System.Collections.Generic.List<ConfigurationList>();
             this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
             this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
@@ -844,7 +844,7 @@ namespace V2
             private set;
         }
 
-        public System.Collections.Generic.List<Configuration> Configurations
+        public System.Collections.Generic.List<Configuration> AllConfigurations
         {
             get;
             private set;
@@ -1018,7 +1018,7 @@ namespace V2
             projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
 
             this.ConfigurationLists[0].AddConfiguration(projectConfig);
-            this.Configurations.Add(projectConfig);
+            this.AllConfigurations.Add(projectConfig);
         }
 
         public Configuration
@@ -1033,7 +1033,7 @@ namespace V2
             config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
 
             target.ConfigurationList.AddConfiguration(config);
-            this.Configurations.Add(config);
+            this.AllConfigurations.Add(config);
 
             return config;
         }
@@ -1192,12 +1192,12 @@ namespace V2
                 text.AppendFormat("/* End PBXSourcesBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.Configurations.Count > 0)
+            if (this.AllConfigurations.Count > 0)
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin XCBuildConfiguration section */");
                 text.AppendLine();
-                foreach (var config in this.Configurations.OrderBy(key => key.GUID))
+                foreach (var config in this.AllConfigurations.OrderBy(key => key.GUID))
                 {
                     config.Serialize(text, indentLevel);
                 }
