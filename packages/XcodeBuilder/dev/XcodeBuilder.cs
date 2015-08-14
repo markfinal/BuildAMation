@@ -1259,6 +1259,12 @@ namespace V2
             set;
         }
 
+        public ShellScriptBuildPhase PreBuildBuildPhase
+        {
+            get;
+            set;
+        }
+
         public ShellScriptBuildPhase PostBuildBuildPhase
         {
             get;
@@ -1534,8 +1540,15 @@ namespace V2
         {
             this.IsA = "XCBuildConfiguration";
             this.Name = name;
+            this.PreBuildCommands = new Bam.Core.StringArray();
             this.PostBuildCommands = new Bam.Core.StringArray();
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
+        }
+
+        public Bam.Core.StringArray PreBuildCommands
+        {
+            get;
+            private set;
         }
 
         public Bam.Core.StringArray PostBuildCommands
@@ -1873,7 +1886,23 @@ namespace V2
             this.Target.SetCommonCompilationOptions(module, this.Configuration, settings);
         }
 
-        public void AddPostBuildCommands(
+        public void
+        AddPreBuildCommands(
+            Bam.Core.StringArray commands)
+        {
+            if (null == this.Target.PreBuildBuildPhase)
+            {
+                var preBuildBuildPhase = new ShellScriptBuildPhase(this.Target);
+                this.Project.ShellScriptsBuildPhases.Add(preBuildBuildPhase);
+                this.Target.BuildPhases.Add(preBuildBuildPhase);
+                this.Target.PreBuildBuildPhase = preBuildBuildPhase;
+            }
+
+            this.Configuration.PreBuildCommands.AddRange(commands);
+        }
+
+        public void
+        AddPostBuildCommands(
             Bam.Core.StringArray commands)
         {
             if (null == this.Target.PostBuildBuildPhase)
