@@ -66,6 +66,10 @@ namespace V2
         CModule
     {}
 
+    public abstract class ExternalFramework :
+        CModule
+    {}
+
     public class ConsoleApplication :
         CModule
     {

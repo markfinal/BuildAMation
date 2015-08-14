@@ -34,7 +34,7 @@ namespace V2
     public sealed class NativeLinker :
         ILinkerPolicy
     {
-        private string
+        private static string
         GetLibraryPath(Bam.Core.V2.Module module)
         {
             if (module is C.V2.StaticLibrary)
@@ -55,6 +55,11 @@ namespace V2
             else if (module is C.V2.CSDKModule)
             {
                 // collection of libraries, none in particular
+                return null;
+            }
+            else if (module is ExternalFramework)
+            {
+                // dealt with elsewhere
                 return null;
             }
             else
@@ -78,7 +83,7 @@ namespace V2
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {
-                var fullLibraryPath = this.GetLibraryPath(library);
+                var fullLibraryPath = GetLibraryPath(library);
                 if (null == fullLibraryPath)
                 {
                     continue;

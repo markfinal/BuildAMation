@@ -65,11 +65,16 @@ namespace C
                     }
                     else if (library is C.V2.CSDKModule)
                     {
-                        throw new Bam.Core.Exception("Don't know how to handle this module type: CSDKModule");
+                        // SDK modules are collections of libraries, not one in particular
+                        // thus do nothing as they are undefined at this point, and may yet be pulled in automatically
+                    }
+                    else if (library is ExternalFramework)
+                    {
+                        // frameworks are dealt with elsewhere
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Don't know how to handle this module type");
+                        throw new Bam.Core.Exception("Don't know how to handle this module type, {0}", library.ToString());
                     }
                 }
 

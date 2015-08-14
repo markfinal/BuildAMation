@@ -92,6 +92,10 @@ namespace V2
                     // do nothing for SDKs
                     continue;
                 }
+                else if (input is ExternalFramework)
+                {
+                    throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
+                }
                 else
                 {
                     throw new Bam.Core.Exception("Don't know how to handle this library module, {0}", input.ToString());
