@@ -57,7 +57,7 @@ namespace ObjectiveCTest1
                     var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                     if (null != osxLinker)
                     {
-                        osxLinker.Frameworks.Add("Cocoa");
+                        osxLinker.Frameworks.Add(Bam.Core.V2.TokenizedString.Create("Cocoa", null, verbatim:true));
                     }
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))

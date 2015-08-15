@@ -308,15 +308,23 @@ namespace Clang
                 var project = meta.Project;
                 foreach (var framework in options.Frameworks)
                 {
-                    var frameworkPath = Bam.Core.V2.TokenizedString.Create("/System/Library/Frameworks/" + framework + ".framework", null, verbatim:true);
+                    var frameworkFileRefPath = framework;
+                    var isAbsolute = System.IO.Path.IsPathRooted(frameworkFileRefPath.Parse());
+
+                    if (!isAbsolute)
+                    {
+                        // assume it's a system framework
+                        frameworkFileRefPath = Bam.Core.V2.TokenizedString.Create("/System/Library/Frameworks/" + framework.Parse() + ".framework", null, verbatim:true);
+                    }
 
                     var fileRef = project.FindOrCreateFileReference(
-                        frameworkPath,
-                        XcodeBuilder.V2.FileReference.EFileType.WrapperFramework);
+                        frameworkFileRefPath,
+                        XcodeBuilder.V2.FileReference.EFileType.WrapperFramework,
+                        sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
                     project.MainGroup.AddReference(fileRef);
 
                     var buildFile = project.FindOrCreateBuildFile(
-                        frameworkPath,
+                        frameworkFileRefPath,
                         fileRef);
 
                     meta.Target.FrameworksBuildPhase.AddBuildFile(buildFile);
@@ -643,7 +651,8 @@ namespace Clang
         {
             foreach (var framework in options.Frameworks)
             {
-                commandLine.Add(System.String.Format("-framework {0}", framework));
+                var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());
+                commandLine.Add(System.String.Format("-framework {0}", frameworkName));
             }
             foreach (var path in options.FrameworkSearchDirectories)
             {
@@ -1318,7 +1327,7 @@ namespace V2
             set;
         }
 
-        Bam.Core.StringArray C.V2.ILinkerOptionsOSX.Frameworks
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ILinkerOptionsOSX.Frameworks
         {
             get;
             set;

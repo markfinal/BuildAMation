@@ -60,7 +60,7 @@ namespace CocoaTest1
                     var linker = settings as C.V2.ILinkerOptionsOSX;
                     if (null != linker)
                     {
-                        linker.Frameworks.Add("Cocoa");
+                        linker.Frameworks.Add(Bam.Core.V2.TokenizedString.Create("Cocoa", null, verbatim:true));
                     }
                 });
         }
