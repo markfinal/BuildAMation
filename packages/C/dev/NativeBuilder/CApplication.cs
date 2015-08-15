@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace C
 {
 namespace V2
@@ -43,7 +44,7 @@ namespace V2
             }
             else if (module is C.V2.DynamicLibrary)
             {
-                if (Bam.Core.OSUtilities.IsWindowsHosting)
+                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
                     return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
                 }
