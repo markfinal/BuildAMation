@@ -72,7 +72,7 @@ namespace V2
                             else
                             {
                                 commands.Add(System.String.Format("cp -v {0} $CONFIGURATION_BUILD_DIR/{1}/{2}", sourcePath, subdir, System.IO.Path.GetFileName(sourcePath)));
-                                (reference.Module.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+                                (reference.Module.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
                             }
                         }
                     }
