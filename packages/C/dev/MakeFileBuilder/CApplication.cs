@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace C
 {
 namespace V2
@@ -34,6 +35,40 @@ namespace V2
     public sealed class MakeFileLinker :
         ILinkerPolicy
     {
+        private static string
+        GetLibraryPath(Bam.Core.V2.Module module)
+        {
+            if (module is C.V2.StaticLibrary)
+            {
+                return module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+            }
+            else if (module is C.V2.DynamicLibrary)
+            {
+                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                }
+                else
+                {
+                    return module.GeneratedPaths[C.V2.DynamicLibrary.Key].ToString();
+                }
+            }
+            else if (module is C.V2.CSDKModule)
+            {
+                // collection of libraries, none in particular
+                return null;
+            }
+            else if (module is ExternalFramework)
+            {
+                // dealt with elsewhere
+                return null;
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
+            }
+        }
+
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
@@ -48,10 +83,13 @@ namespace V2
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {
-                var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                var fullLibraryPath = GetLibraryPath(library);
+                if (null == fullLibraryPath)
+                {
+                    continue;
+                }
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                // TODO: watch for duplicates
-                linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(dir, null));
             }
 
             var commandLineArgs = new Bam.Core.StringArray();
@@ -80,7 +118,33 @@ namespace V2
             }
             foreach (var module in libraries)
             {
-                meta.Prequisities.Add(module, C.V2.StaticLibrary.Key);
+                if (module is StaticLibrary)
+                {
+                    meta.Prequisities.Add(module, C.V2.StaticLibrary.Key);
+                }
+                else if (module is DynamicLibrary)
+                {
+                    if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        meta.Prequisities.Add(module, C.V2.DynamicLibrary.ImportLibraryKey);
+                    }
+                    else
+                    {
+                        meta.Prequisities.Add(module, C.V2.DynamicLibrary.Key);
+                    }
+                }
+                else if (module is CSDKModule)
+                {
+                    continue;
+                }
+                else if (module is ExternalFramework)
+                {
+                    continue;
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
+                }
             }
             // TODO: frameworks
             var rule = new System.Text.StringBuilder();
