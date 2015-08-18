@@ -27,6 +27,85 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace Publisher
+{
+namespace V2
+{
+    public sealed class MakeFilePackager :
+        IPackagePolicy
+    {
+        private static void
+        CopyFileRule(
+            MakeFileBuilder.V2.MakeFileMeta meta,
+            MakeFileBuilder.V2.MakeFileMeta sourceMeta,
+            MakeFileBuilder.V2.Rule parentRule,
+            string outputDirectory,
+            Bam.Core.V2.TokenizedString sourcePath)
+        {
+            var copyRule = meta.AddRule();
+            var target = copyRule.AddTarget(Bam.Core.V2.TokenizedString.Create(outputDirectory + "/" + System.IO.Path.GetFileName(sourcePath.Parse()), null));
+
+            foreach (var sourceRule in sourceMeta.Rules)
+            {
+                foreach (var sourceTarget in sourceRule.Targets)
+                {
+                    copyRule.AddPrerequisite(sourceTarget);
+                }
+            }
+
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat("cp -fv $< $@");
+            copyRule.AddShellCommand(command.ToString());
+
+            parentRule.AddPrerequisite(target);
+
+            meta.CommonMetaData.Directories.AddUnique(outputDirectory);
+        }
+
+        void
+        IPackagePolicy.Package(
+            Package sender,
+            Bam.Core.V2.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module,
+            System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString,
+            PackageReference>> packageObjects)
+        {
+            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var rule = meta.AddRule();
+            rule.AddTarget(Bam.Core.V2.TokenizedString.Create("publish", null, verbatim:true), isPhony:true);
+
+            foreach (var module in packageObjects)
+            {
+                var moduleMeta = module.Key.MetaData as MakeFileBuilder.V2.MakeFileMeta;
+                foreach (var path in module.Value)
+                {
+                    if (path.Value.IsMarker)
+                    {
+                        var outputDir = packageRoot.Parse();
+                        if (null != path.Value.SubDirectory)
+                        {
+                            outputDir = System.IO.Path.Combine(outputDir, path.Value.SubDirectory);
+                        }
+
+                        CopyFileRule(meta, moduleMeta, rule, outputDir, path.Key);
+                        path.Value.DestinationDir = outputDir;
+                    }
+                    else
+                    {
+                        var subdir = path.Value.SubDirectory;
+                        foreach (var reference in path.Value.References)
+                        {
+                            var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, path.Value.SubDirectory));
+                            CopyFileRule(meta, moduleMeta, rule, destinationDir, path.Key);
+                            path.Value.DestinationDir = destinationDir;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+}
 namespace MakeFileBuilder
 {
     public sealed partial class MakeFileBuilder

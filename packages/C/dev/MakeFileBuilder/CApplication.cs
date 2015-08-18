@@ -101,36 +101,37 @@ namespace V2
             }
 
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
-            meta.Target = executablePath;
+            var rule = meta.AddRule();
+            rule.AddTarget(executablePath);
             foreach (var module in objectFiles)
             {
                 if (module is Bam.Core.V2.IModuleGroup)
                 {
                     foreach (var child in module.Children)
                     {
-                        meta.Prequisities.Add(child, C.V2.ObjectFile.Key);
+                        rule.AddPrerequisite(child, C.V2.ObjectFile.Key);
                     }
                 }
                 else
                 {
-                    meta.Prequisities.Add(module, C.V2.ObjectFile.Key);
+                    rule.AddPrerequisite(module, C.V2.ObjectFile.Key);
                 }
             }
             foreach (var module in libraries)
             {
                 if (module is StaticLibrary)
                 {
-                    meta.Prequisities.Add(module, C.V2.StaticLibrary.Key);
+                    rule.AddPrerequisite(module, C.V2.StaticLibrary.Key);
                 }
                 else if (module is DynamicLibrary)
                 {
                     if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        meta.Prequisities.Add(module, C.V2.DynamicLibrary.ImportLibraryKey);
+                        rule.AddPrerequisite(module, C.V2.DynamicLibrary.ImportLibraryKey);
                     }
                     else
                     {
-                        meta.Prequisities.Add(module, C.V2.DynamicLibrary.Key);
+                        rule.AddPrerequisite(module, C.V2.DynamicLibrary.Key);
                     }
                 }
                 else if (module is CSDKModule)
@@ -146,10 +147,10 @@ namespace V2
                     throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
                 }
             }
-            // TODO: frameworks
-            var rule = new System.Text.StringBuilder();
-            rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
-            meta.Recipe.Add(rule.ToString());
+
+            var commands = new System.Text.StringBuilder();
+            commands.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            rule.AddShellCommand(commands.ToString());
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
             meta.CommonMetaData.Directories.AddUnique(executableDir);

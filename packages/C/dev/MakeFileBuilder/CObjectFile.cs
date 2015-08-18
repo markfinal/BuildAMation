@@ -50,12 +50,13 @@ namespace V2
             }
 
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
-            meta.Target = objectFilePath;
-            meta.Prequisities.Add(source, C.V2.SourceFile.Key);
+            var rule = meta.AddRule();
+            rule.AddTarget(objectFilePath);
+            rule.AddPrerequisite(source, C.V2.SourceFile.Key);
 
-            var rule = new System.Text.StringBuilder();
-            rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1}" : "{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
-            meta.Recipe.Add(rule.ToString());
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1}" : "{0} {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            rule.AddShellCommand(command.ToString());
 
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
             meta.CommonMetaData.Directories.AddUnique(objectFileDir);

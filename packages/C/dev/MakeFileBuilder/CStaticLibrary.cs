@@ -51,24 +51,26 @@ namespace V2
             }
 
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
-            meta.Target = libraryPath;
+            var rule = meta.AddRule();
+            rule.AddTarget(libraryPath);
             foreach (var module in inputs)
             {
                 if (module is Bam.Core.V2.IModuleGroup)
                 {
                     foreach (var child in module.Children)
                     {
-                        meta.Prequisities.Add(child, C.V2.ObjectFile.Key);
+                        rule.AddPrerequisite(child, C.V2.ObjectFile.Key);
                     }
                 }
                 else
                 {
-                    meta.Prequisities.Add(module, C.V2.ObjectFile.Key);
+                    rule.AddPrerequisite(module, C.V2.ObjectFile.Key);
                 }
             }
-            var rule = new System.Text.StringBuilder();
-            rule.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
-            meta.Recipe.Add(rule.ToString());
+
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            rule.AddShellCommand(command.ToString());
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
             meta.CommonMetaData.Directories.AddUnique(libraryFileDir);

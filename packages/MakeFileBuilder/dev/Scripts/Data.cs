@@ -78,22 +78,237 @@ namespace V2
         }
     }
 
-    public sealed class MakeFileMeta
+    public sealed class Target
     {
-        public MakeFileMeta(Bam.Core.V2.Module module)
+        public Target(
+            Bam.Core.V2.TokenizedString nameOrOutput,
+            bool isPhony,
+            Bam.Core.V2.Module module,
+            int count)
         {
-            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
-            this.Recipe = new System.Collections.Generic.List<string>();
-
+            this.Path = nameOrOutput;
+            this.IsPhony = isPhony;
+            if (isPhony)
+            {
+                return;
+            }
+            if (count > 0)
+            {
+                return;
+            }
             if (Bam.Core.V2.Graph.Instance.IsReferencedModule(module))
             {
                 // make the target names unique across configurations
-                this.TargetVariable = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
+                this.VariableName = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
+            }
+        }
+
+        public Bam.Core.V2.TokenizedString Path
+        {
+            get;
+            private set;
+        }
+
+        public bool IsPhony
+        {
+            get;
+            private set;
+        }
+
+        public string VariableName
+        {
+            get;
+            private set;
+        }
+    }
+
+    public sealed class Rule
+    {
+        public Rule(
+            Bam.Core.V2.Module module,
+            int count)
+        {
+            this.RuleCount = count;
+            this.Module = module;
+            this.Targets = new Bam.Core.Array<Target>();
+            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+            this.PrerequisiteTargets = new Bam.Core.Array<Target>();
+            this.ShellCommands = new Bam.Core.StringArray();
+        }
+
+        public Target
+        AddTarget(
+            Bam.Core.V2.TokenizedString targetNameOrOutput,
+            bool isPhony = false)
+        {
+            var target = new Target(targetNameOrOutput, isPhony, this.Module, this.RuleCount);
+            this.Targets.Add(target);
+            return target;
+        }
+
+        public void
+        AddPrerequisite(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.FileKey key)
+        {
+            if (this.Prequisities.ContainsKey(module))
+            {
+                throw new Bam.Core.Exception("Module {0} is already a prerequisite", module.ToString());
             }
 
-            this.CommonMetaData = Bam.Core.V2.Graph.Instance.MetaData as MakeFileCommonMetaData;
+            this.Prequisities.Add(module, key);
+        }
 
+        public void
+        AddPrerequisite(
+            Target target)
+        {
+            this.PrerequisiteTargets.Add(target);
+        }
+
+        public void
+        AddShellCommand(
+            string command)
+        {
+            this.ShellCommands.Add(command);
+        }
+
+        public bool
+        IsFirstRule
+        {
+            get
+            {
+                return (this.RuleCount == 0);
+            }
+        }
+
+        public void
+        AppendTargetNames(
+            Bam.Core.StringArray variableNames)
+        {
+            foreach (var target in this.Targets)
+            {
+                var name = target.VariableName;
+                variableNames.Add((null == name) ? target.Path.Parse() : name);
+            }
+        }
+
+        public void
+        WriteVariables(
+            System.Text.StringBuilder variables)
+        {
+            foreach (var target in this.Targets)
+            {
+                var name = target.VariableName;
+                if (null == name)
+                {
+                    continue;
+                }
+
+                if (target.IsPhony)
+                {
+                    variables.AppendFormat(".PHONY: {0}", name);
+                    variables.AppendLine();
+                }
+
+                // simply expanded variable
+                variables.AppendFormat("{0}:={1}", name, target.Path);
+                variables.AppendLine();
+            }
+        }
+
+        public void
+        WriteRules(
+            System.Text.StringBuilder rules)
+        {
+            foreach (var target in this.Targets)
+            {
+                var name = target.VariableName;
+                if (null != name)
+                {
+                    rules.AppendFormat("$({0}):", name);
+                }
+                else
+                {
+                    if (target.IsPhony)
+                    {
+                        rules.AppendFormat(".PHONY: {0}", target.Path);
+                        rules.AppendLine();
+                    }
+                    rules.AppendFormat("{0}:", target.Path);
+                }
+                foreach (var pre in this.Prequisities)
+                {
+                    rules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
+                }
+                foreach (var pre in this.PrerequisiteTargets)
+                {
+                    var preName = pre.VariableName;
+                    if (null == preName)
+                    {
+                        rules.AppendFormat("{0} ", pre.Path.Parse());
+                    }
+                    else
+                    {
+                        rules.AppendFormat("$({0}) ", preName);
+                    }
+                }
+                rules.AppendFormat("| $(DIRS)");
+                rules.AppendLine();
+                foreach (var command in this.ShellCommands)
+                {
+                    rules.AppendFormat("\t{0}", command);
+                    rules.AppendLine();
+                }
+            }
+        }
+
+        private int RuleCount
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.V2.Module Module
+        {
+            get;
+            set;
+        }
+
+        public Bam.Core.Array<Target> Targets
+        {
+            get;
+            private set;
+        }
+
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Prequisities
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<Target> PrerequisiteTargets
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.StringArray ShellCommands
+        {
+            get;
+            set;
+        }
+    }
+
+    public sealed class MakeFileMeta
+    {
+        public MakeFileMeta(
+            Bam.Core.V2.Module module)
+        {
+            this.Module = module;
             module.MetaData = this;
+            this.CommonMetaData = Bam.Core.V2.Graph.Instance.MetaData as MakeFileCommonMetaData;
+            this.Rules = new Bam.Core.Array<Rule>();
         }
 
         public MakeFileCommonMetaData CommonMetaData
@@ -102,28 +317,24 @@ namespace V2
             private set;
         }
 
-        public Bam.Core.V2.TokenizedString Target
+        public Rule
+        AddRule()
+        {
+            var rule = new Rule(this.Module, this.Rules.Count);
+            this.Rules.Add(rule);
+            return rule;
+        }
+
+        public Bam.Core.Array<Rule> Rules
+        {
+            get;
+            private set;
+        }
+
+        private Bam.Core.V2.Module Module
         {
             get;
             set;
-        }
-
-        public System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Prequisities
-        {
-            get;
-            private set;
-        }
-
-        public System.Collections.Generic.List<string> Recipe
-        {
-            get;
-            private set;
-        }
-
-        public string TargetVariable
-        {
-            get;
-            private set;
         }
 
         public static void PreExecution()
@@ -159,7 +370,9 @@ namespace V2
                 makeVariables.AppendLine();
             }
 
+            // prerequisites of target: all
             makeRules.Append("all:");
+            var allPrerequisites = new Bam.Core.StringArray();
             foreach (var module in graph.TopLevelModules)
             {
                 var metadata = module.MetaData as MakeFileMeta;
@@ -167,9 +380,17 @@ namespace V2
                 {
                     throw new Bam.Core.Exception("Top level module did not have any Make metadata");
                 }
-                makeRules.AppendFormat("$({0}) ", metadata.TargetVariable);
+                foreach (var rule in metadata.Rules)
+                {
+                    // TODO: could just exit from the loop after the first iteration
+                    if (!rule.IsFirstRule)
+                    {
+                        continue;
+                    }
+                    rule.AppendTargetNames(allPrerequisites);
+                }
             }
-            makeRules.AppendLine();
+            makeRules.AppendLine(allPrerequisites.ToString(' '));
 
             makeRules.AppendLine("$(DIRS):");
             if (Bam.Core.OSUtilities.IsWindowsHosting)
@@ -191,35 +412,19 @@ namespace V2
                         continue;
                     }
 
-                    if (metadata.TargetVariable != null)
+                    foreach (var rule in metadata.Rules)
                     {
-                        // simply expanded variable
-                        makeVariables.AppendFormat("{0}:={1}", metadata.TargetVariable, metadata.Target);
-                        makeVariables.AppendLine();
-
-                        makeRules.AppendFormat("$({0}):", metadata.TargetVariable);
-                    }
-                    else
-                    {
-                        makeRules.AppendFormat("{0}:", metadata.Target);
-                    }
-                    foreach (var pre in metadata.Prequisities)
-                    {
-                        makeRules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
-                    }
-                    makeRules.AppendFormat("| $(DIRS)");
-                    makeRules.AppendLine();
-                    foreach (var command in metadata.Recipe)
-                    {
-                        makeRules.AppendFormat("\t{0}", command);
-                        makeRules.AppendLine();
+                        rule.WriteVariables(makeVariables);
+                        rule.WriteRules(makeRules);
                     }
                 }
             }
 
+            Bam.Core.Log.DebugMessage("MAKEFILE CONTENTS: BEGIN");
             Bam.Core.Log.DebugMessage(makeEnvironment.ToString());
             Bam.Core.Log.DebugMessage(makeVariables.ToString());
             Bam.Core.Log.DebugMessage(makeRules.ToString());
+            Bam.Core.Log.DebugMessage("MAKEFILE CONTENTS: END");
 
             var makeFilePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/Makefile", null);
             makeFilePath.Parse();
