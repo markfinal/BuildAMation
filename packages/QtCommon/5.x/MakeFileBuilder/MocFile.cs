@@ -27,6 +27,37 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace QtCommon
+{
+namespace V2
+{
+    public sealed class MakeFileMocGeneration :
+        IMocGenerationPolicy
+    {
+        void
+        IMocGenerationPolicy.Moc(
+            MocModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.TokenizedString generatedMocSource,
+            C.V2.HeaderFile source)
+        {
+            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var rule = meta.AddRule();
+            rule.AddTarget(generatedMocSource);
+            rule.AddPrerequisite(source, C.V2.HeaderFile.Key);
+
+            var mocOutputPath = generatedMocSource.Parse();
+            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat(System.String.Format("{0} -o{1} {2}", mocCompiler.Executable, mocOutputPath, source.InputPath.Parse()));
+            rule.AddShellCommand(command.ToString());
+
+            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+        }
+    }
+}
+}
 namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder
