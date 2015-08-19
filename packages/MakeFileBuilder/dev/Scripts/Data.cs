@@ -200,11 +200,11 @@ namespace V2
                 var name = target.VariableName;
                 if (null != name)
                 {
-                    variableNames.Add("$(" + name + ")");
+                    variableNames.AddUnique("$(" + name + ")");
                 }
                 else
                 {
-                    variableNames.Add(target.Path.Parse());
+                    variableNames.AddUnique(target.Path.Parse());
                 }
             }
         }
