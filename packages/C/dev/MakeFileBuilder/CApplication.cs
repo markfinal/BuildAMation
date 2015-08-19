@@ -149,7 +149,7 @@ namespace V2
             }
 
             var commands = new System.Text.StringBuilder();
-            commands.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            commands.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" $^ {1}" : "{0} $^ {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
             rule.AddShellCommand(commands.ToString());
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
