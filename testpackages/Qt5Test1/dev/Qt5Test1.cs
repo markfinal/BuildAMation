@@ -52,6 +52,15 @@ namespace Qt5Test1
             /*var myObjectMocTuple = */source.MocHeader(myobjectHeader);
             /*var myObject2MocTuple = */source.MocHeader(myobject2Header);
 
+            source.PrivatePatch(settings =>
+                {
+                    var gccCompiler = settings as GccCommon.V2.ICommonCompilerOptions;
+                    if (null != gccCompiler)
+                    {
+                        gccCompiler.PositionIndependentCode = true;
+                    }
+                });
+
             this.PrivatePatch(settings =>
             {
                 var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
@@ -71,6 +80,10 @@ namespace Qt5Test1
             {
                 this.CompileAndLinkAgainst<Qt.V2.Core>(source);
                 this.CompileAndLinkAgainst<Qt.V2.Widgets>(source);
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                {
+                    this.LinkAgainst<Qt.V2.Gui>();
+                }
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
