@@ -258,7 +258,9 @@ namespace V2
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)
                 {
-                    rules.AppendFormat("\t{0}", command);
+                    // look for text like $ORIGIN, which needs a double $ prefix to avoid being interpreted as an environment variable by Make
+                    var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"$$$$$1");
+                    rules.AppendFormat("\t{0}", escapedCommand);
                     rules.AppendLine();
                 }
             }
