@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace QtCommon
 {
 namespace V2
@@ -35,9 +36,22 @@ namespace V2
     {
         static Configure()
         {
-            //InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5", null);
-            //InstallPath = Bam.Core.V2.TokenizedString.Create(@"D:\Qt\Qt5.3.2\5.3\msvc2013_64_opengl", null);
-            InstallPath = Bam.Core.V2.TokenizedString.Create("/Users/mark/Qt5.3.2/5.3/clang_64/", null);
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                InstallPath = Bam.Core.V2.TokenizedString.Create(@"D:\Qt\Qt5.3.2\5.3\msvc2013_64_opengl", null);
+            }
+            else if (Bam.Core.OSUtilities.IsOSXHosting)
+            {
+                InstallPath = Bam.Core.V2.TokenizedString.Create("/Users/mark/Qt5.3.2/5.3/clang_64/", null);
+            }
+            else if (Bam.Core.OSUtilities.IsUnixHosting)
+            {
+                InstallPath = Bam.Core.V2.TokenizedString.Create("/home/mark/Qt5.3.2/5.3/gcc_64", null);
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Qt installation not found");
+            }
         }
 
         public static Bam.Core.V2.TokenizedString InstallPath
@@ -64,7 +78,6 @@ namespace V2
         {
             base.Init(parent);
             this.Macros.Add("QtFrameworkPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/lib", this));
-            this.Macros.Add("QtConfig", Bam.Core.V2.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
 
             this.PublicPatch((settings, appliedTo) =>
             {
@@ -120,10 +133,14 @@ namespace V2
             this.Macros.Add("QtBinaryPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/bin", this));
             this.Macros.Add("QtConfig", Bam.Core.V2.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
 
-            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtBinaryPath)/$(dynamicprefix)Qt5$(QtModuleName)$(QtConfig)$(dynamicext)", this);
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
+                this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtBinaryPath)/$(dynamicprefix)Qt5$(QtModuleName)$(QtConfig)$(dynamicext)", this);
                 this.GeneratedPaths[ImportLibraryKey] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)Qt5$(QtModuleName)$(QtConfig)$(libext)", this);
+            }
+            else
+            {
+                this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(dynamicprefix)Qt5$(QtModuleName)$(dynamicext)", this);
             }
 
             this.PublicPatch((settings, appliedTo) =>
