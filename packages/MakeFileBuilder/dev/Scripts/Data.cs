@@ -134,6 +134,7 @@ namespace V2
             this.Targets = new Bam.Core.Array<Target>();
             this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
+            this.PrerequisitePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             this.ShellCommands = new Bam.Core.StringArray();
         }
 
@@ -158,6 +159,13 @@ namespace V2
             }
 
             this.Prequisities.Add(module, key);
+        }
+
+        public void
+        AddPrerequisite(
+            Bam.Core.V2.TokenizedString path)
+        {
+            this.PrerequisitePaths.Add(path);
         }
 
         public void
@@ -249,6 +257,10 @@ namespace V2
                 {
                     rules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
                 }
+                foreach (var pre in this.PrerequisitePaths)
+                {
+                    rules.AppendFormat("{0} ", pre);
+                }
                 foreach (var pre in this.PrerequisiteTargets)
                 {
                     var preName = pre.VariableName;
@@ -298,6 +310,12 @@ namespace V2
         }
 
         private Bam.Core.Array<Target> PrerequisiteTargets
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<Bam.Core.V2.TokenizedString> PrerequisitePaths
         {
             get;
             set;
