@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace ICU
 {
 namespace V2
@@ -34,23 +35,18 @@ namespace V2
     public abstract class ICUBase :
         C.V2.DynamicLibrary
     {
-        protected ICUBase(
-            string name)
-        {
-            this.Name = name;
-        }
-
-        protected string Name
-        {
-            get;
-            set;
-        }
-
         protected override void Init(Bam.Core.V2.Module parent)
         {
             base.Init(parent);
-            this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create(this.Name, null, verbatim: true);
-            this.GeneratedPaths[C.V2.DynamicLibrary.Key] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/bin/win64-msvc10/bin64/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.Macros.Add("ICUInstallPath", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/bin/win64-msvc10/bin64", this));
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                this.Macros.Add("ICUInstallPath", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/bin/linux64-gcc44/usr/local/lib", this));
+            }
+            this.GeneratedPaths[C.V2.DynamicLibrary.Key] = Bam.Core.V2.TokenizedString.Create("$(ICUInstallPath)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
         }
 
         public override void Evaluate()
@@ -72,25 +68,61 @@ namespace V2
     public sealed class ICUIN :
         ICUBase
     {
-        public ICUIN() :
-            base("icuin52")
-        {}
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icuin52", null, verbatim:true);
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icui18n", null, verbatim:true);
+                this.Macros["dynamicext"] = Bam.Core.V2.TokenizedString.Create(".so.52", null, verbatim:true);
+            }
+            base.Init(parent);
+        }
     }
 
     public sealed class ICUUC :
         ICUBase
     {
-        public ICUUC() :
-            base("icuuc52")
-        { }
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icuuc52", null, verbatim:true);
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icuuc", null, verbatim:true);
+                this.Macros["dynamicext"] = Bam.Core.V2.TokenizedString.Create(".so.52", null, verbatim:true);
+            }
+            base.Init(parent);
+        }
     }
 
     public sealed class ICUDT :
         ICUBase
     {
-        public ICUDT() :
-            base("icudt52")
-        { }
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icudt52", null, verbatim:true);
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icudata", null, verbatim:true);
+                this.Macros["dynamicext"] = Bam.Core.V2.TokenizedString.Create(".so.52", null, verbatim:true);
+            }
+            base.Init(parent);
+        }
     }
 }
     abstract class ICUBase :
