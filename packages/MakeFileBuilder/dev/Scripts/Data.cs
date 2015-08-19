@@ -402,7 +402,7 @@ namespace V2
             }
             else
             {
-                makeRules.AppendLine("\tmkdir -p $@");
+                makeRules.AppendLine("\tmkdir -pv $@");
             }
 
             foreach (var rank in graph.Reverse())
