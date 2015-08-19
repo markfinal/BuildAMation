@@ -41,7 +41,7 @@ namespace V2
         public MakeFileCommonMetaData()
         {
             this.Directories = new Bam.Core.StringArray();
-            this.Environment = new System.Collections.Generic.Dictionary<string, string>();
+            this.Environment = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
         }
 
         public Bam.Core.StringArray Directories
@@ -50,7 +50,7 @@ namespace V2
             private set;
         }
 
-        public System.Collections.Generic.Dictionary<string, string> Environment
+        public System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> Environment
         {
             get;
             private set;
@@ -64,15 +64,11 @@ namespace V2
             {
                 if (!this.Environment.ContainsKey(env.Key))
                 {
-                    this.Environment.Add(env.Key, string.Empty);
+                    this.Environment.Add(env.Key, new Bam.Core.StringArray());
                 }
                 foreach (var path in env.Value)
                 {
-                    if (this.Environment[env.Key].Contains(path.ToString()))
-                    {
-                        continue;
-                    }
-                    this.Environment[env.Key] += path.ToString() + System.IO.Path.PathSeparator;
+                    this.Environment[env.Key].AddUnique(path.ToString());
                 }
             }
         }
@@ -356,7 +352,7 @@ namespace V2
             makeEnvironment.AppendLine(".SUFFIXES:");
             foreach (var env in commonMeta.Environment)
             {
-                makeEnvironment.AppendFormat("{0}:={1}", env.Key, env.Value);
+                makeEnvironment.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
                 makeEnvironment.AppendLine();
             }
 
