@@ -190,7 +190,14 @@ namespace V2
             foreach (var target in this.Targets)
             {
                 var name = target.VariableName;
-                variableNames.Add((null == name) ? target.Path.Parse() : name);
+                if (null != name)
+                {
+                    variableNames.Add("$(" + name + ")");
+                }
+                else
+                {
+                    variableNames.Add(target.Path.Parse());
+                }
             }
         }
 
