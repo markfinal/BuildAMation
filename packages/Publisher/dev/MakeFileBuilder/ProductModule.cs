@@ -45,13 +45,8 @@ namespace V2
             var copyRule = meta.AddRule();
             var target = copyRule.AddTarget(Bam.Core.V2.TokenizedString.Create(outputDirectory + "/" + System.IO.Path.GetFileName(sourcePath.Parse()), null));
 
-            foreach (var sourceRule in sourceMeta.Rules)
-            {
-                foreach (var sourceTarget in sourceRule.Targets)
-                {
-                    copyRule.AddPrerequisite(sourceTarget);
-                }
-            }
+            // TODO: there needs to be a mapping from this path to any existing targets so that the target variable names can be used
+            copyRule.AddPrerequisite(sourcePath);
 
             var command = new System.Text.StringBuilder();
             command.AppendFormat("cp -fv $< $@");
