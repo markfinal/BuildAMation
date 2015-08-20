@@ -755,8 +755,9 @@ namespace V2
                 this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
 
                 // character set
+                var characterset = this.CreateProjectElement("CharacterSet", "NotSet");
                 // assume unicode for most flexibility
-                var characterset = this.CreateProjectElement("CharacterSet", "Unicode");
+                //var characterset = this.CreateProjectElement("CharacterSet", "Unicode");
                 configProps.Element.AppendChild(characterset);
                 this.Project.InsertAfter(configProps.Element, this.DefaultImport.Element);
 
