@@ -52,6 +52,30 @@ namespace V2
             return child;
         }
 
+        public Bam.Core.Array<Bam.Core.V2.Module>
+        AddFiles(
+            string path,
+            Bam.Core.V2.Module macroModuleOverride = null)
+        {
+            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+            var wildcardPath = Bam.Core.V2.TokenizedString.Create(path, macroModule).Parse();
+
+            var dir = System.IO.Path.GetDirectoryName(wildcardPath);
+            var leafname = System.IO.Path.GetFileName(wildcardPath);
+            var files = System.IO.Directory.GetFiles(dir, leafname, System.IO.SearchOption.TopDirectoryOnly);
+            if (0 == files.Length)
+            {
+                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
+            }
+            var modulesCreated = new Bam.Core.Array<Bam.Core.V2.Module>();
+            foreach (var filepath in files)
+            {
+                var fp = filepath;
+                modulesCreated.Add(this.AddFile(fp, verbatim: true));
+            }
+            return modulesCreated;
+        }
+
         public override void Evaluate()
         {
             foreach (var child in this.children)
