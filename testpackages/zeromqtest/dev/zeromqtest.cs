@@ -70,11 +70,10 @@ namespace zeromqtest
         {
             base.Init(parent);
 
-            var app = this.Include<TestV2>(C.V2.ConsoleApplication.Key);
+            var app = this.Include<TestV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<zeromq.ZMQSharedLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
-
 
     class Test :
         C.Application

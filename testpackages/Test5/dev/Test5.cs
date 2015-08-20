@@ -72,7 +72,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            var app = this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+            var app = this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
@@ -86,8 +86,8 @@ namespace Test5
         {
             base.Init(parent);
 
-            var dll = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, "bin");
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            var dll = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "../lib", dll);
             }

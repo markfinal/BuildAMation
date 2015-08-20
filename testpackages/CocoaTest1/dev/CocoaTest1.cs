@@ -66,7 +66,18 @@ namespace CocoaTest1
         }
     }
 
-    // TODO: make app bundle
+    public sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.Include<CocoaTestV2>(C.V2.ConsoleApplication.Key, EPublishingType.WindowedApplication);
+        }
+    }
 
     [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.OSX)]
     class CLibrary :

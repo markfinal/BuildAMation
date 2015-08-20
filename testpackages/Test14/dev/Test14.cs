@@ -144,7 +144,7 @@ namespace Test14
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationV2>(C.V2.ConsoleApplication.Key);
+            var app = this.Include<ApplicationV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<DynamicLibraryAV2>(C.V2.DynamicLibrary.Key, ".", app);
             this.Include<DynamicLibraryBV2>(C.V2.DynamicLibrary.Key, ".", app);
         }

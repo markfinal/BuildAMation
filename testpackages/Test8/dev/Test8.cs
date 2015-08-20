@@ -70,8 +70,8 @@ namespace Test8
         {
             base.Init(parent);
 
-            this.Include<ApplicationTestV2>(C.V2.ConsoleApplication.Key, ".");
-            this.Include<Test7.ExplicitDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".");
+            var app = this.Include<ApplicationTestV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Test7.ExplicitDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
 

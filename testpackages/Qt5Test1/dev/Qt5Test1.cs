@@ -103,7 +103,7 @@ namespace Qt5Test1
         {
             base.Init(parent);
 
-            var app = this.Include<Qt5Application>(C.V2.ConsoleApplication.Key);
+            var app = this.Include<Qt5Application>(C.V2.ConsoleApplication.Key, EPublishingType.WindowedApplication);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
             }

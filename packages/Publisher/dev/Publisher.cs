@@ -101,9 +101,41 @@ namespace V2
             this.RegisterGeneratedFile(PackageRoot, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
         }
 
+        public enum EPublishingType
+        {
+            ConsoleApplication,
+            WindowedApplication
+        }
+
+        private string
+        PublishingPath(
+            Bam.Core.V2.Module module,
+            EPublishingType type)
+        {
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                switch (type)
+                {
+                case EPublishingType.ConsoleApplication:
+                    return null;
+
+                case EPublishingType.WindowedApplication:
+                    return Bam.Core.V2.TokenizedString.Create("$(OutputName).app/Contents/MacOS", module).Parse();
+
+                default:
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public PackageReference
         Include<DependentModule>(
             Bam.Core.V2.FileKey key,
+            EPublishingType type,
             string subdir = null) where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
@@ -112,7 +144,24 @@ namespace V2
             {
                 this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, PackageReference>());
             }
-            var packaging = new PackageReference(dependent, subdir, null);
+            var path = this.PublishingPath(dependent, type);
+            string destSubDir;
+            if (null == path)
+            {
+                destSubDir = subdir;
+            }
+            else
+            {
+                if (null != subdir)
+                {
+                    destSubDir = System.IO.Path.Combine(path, subdir);
+                }
+                else
+                {
+                    destSubDir = path;
+                }
+            }
+            var packaging = new PackageReference(dependent, destSubDir, null);
             this.dependents[dependent].Add(dependent.GeneratedPaths[key], packaging);
             return packaging;
         }

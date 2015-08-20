@@ -76,7 +76,7 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationV2>(C.V2.ConsoleApplication.Key);
+            var app = this.Include<ApplicationV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<PluginV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
