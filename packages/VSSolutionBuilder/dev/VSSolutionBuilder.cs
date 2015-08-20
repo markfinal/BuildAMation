@@ -115,15 +115,46 @@ namespace V2
         }
     }
 
+    sealed class VSSolutionFolder
+    {
+        public VSSolutionFolder(
+            string name)
+        {
+            this.Guid = System.Guid.NewGuid().ToString("B").ToUpper();
+            this.Projects = new Bam.Core.Array<VSProject>();
+        }
+
+        public string Guid
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<VSProject> Projects
+        {
+            get;
+            private set;
+        }
+    }
+
     public sealed class VSSolution :
         System.Collections.Generic.IEnumerable<VSProject>
     {
+        static private readonly System.Guid SolutionFolderGUID = System.Guid.Parse("2150E333-8FDC-42A3-9474-1A3956D46DE8");
+
         public VSSolution()
         {
             this.Projects = new System.Collections.Generic.Dictionary<System.Type, VSProject>();
+            this.SolutionFolders = new System.Collections.Generic.Dictionary<string, VSSolutionFolder>();
         }
 
         private System.Collections.Generic.Dictionary<System.Type, VSProject> Projects
+        {
+            get;
+            set;
+        }
+
+        private System.Collections.Generic.Dictionary<string, VSSolutionFolder> SolutionFolders
         {
             get;
             set;
@@ -146,6 +177,18 @@ namespace V2
                 {
                     var project = new VSProject(projectType, module, projectPath);
                     this.Projects[moduleType] = project;
+
+                    var groups = module.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
+                    if (groups.Length > 0)
+                    {
+                        var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
+                        if (!this.SolutionFolders.ContainsKey(solutionFolderName))
+                        {
+                            this.SolutionFolders.Add(solutionFolderName, new VSSolutionFolder(solutionFolderName));
+                        }
+                        this.SolutionFolders[solutionFolderName].Projects.AddUnique(project);
+                    }
+
                     return project;
                 }
             }
@@ -175,6 +218,16 @@ namespace V2
                     configs.AddUnique(config.FullName);
                 }
             }
+            foreach (var folder in this.SolutionFolders)
+            {
+                content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
+                    SolutionFolderGUID.ToString("B").ToUpper(),
+                    folder.Key,
+                    folder.Key,
+                    folder.Value.Guid);
+                content.AppendLine();
+                content.AppendLine("EndProject");
+            }
             content.AppendLine("Global");
             content.AppendLine("\tGlobalSection(SolutionConfigurationPlatforms) = preSolution");
             foreach (var config in configs)
@@ -199,6 +252,16 @@ namespace V2
             content.AppendLine("\tEndGlobalSection");
             content.AppendLine("\tGlobalSection(SolutionProperties) = preSolution");
             content.AppendLine("\t\tHideSolutionNode = FALSE");
+            content.AppendLine("\tEndGlobalSection");
+            content.AppendLine("\tGlobalSection(NestedProjects) = preSolution");
+            foreach (var folder in this.SolutionFolders)
+            {
+                foreach (var project in folder.Value.Projects)
+                {
+                    content.AppendFormat("\t\t{0} = {1}", project.GUID.ToString("B").ToUpper(), folder.Value.Guid);
+                    content.AppendLine();
+                }
+            }
             content.AppendLine("\tEndGlobalSection");
             content.AppendLine("EndGlobal");
 
