@@ -29,7 +29,24 @@
 #endregion // License
 namespace C
 {
-    /// <summary>
+namespace V2
+{
+    public abstract class Plugin :
+        DynamicLibrary
+    {
+    }
+}
+    namespace Cxx
+    {
+    namespace V2
+    {
+        public abstract class Plugin :
+            DynamicLibrary
+        {
+        }
+    }
+    }
+/// <summary>
     /// C/C++ plugin, a dynamic library that is not linked against, but loaded at runtime
     /// </summary>
     public partial class Plugin :
