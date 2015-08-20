@@ -253,6 +253,14 @@ namespace V2
                     return null;
                 }
             }
+
+            string Bam.Core.V2.ICommandLineArgument.ContextHelp
+            {
+                get
+                {
+                    return "Define the default C toolchain, used as resolution when multiple toolchains are present";
+                }
+            }
         }
 
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  C_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
