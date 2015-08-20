@@ -46,8 +46,13 @@ namespace Bam
         {
             if (UseV2)
             {
-                var createDebugProject = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.CreateDebugProject());
-                if (createDebugProject)
+                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.PrintVersion()))
+                {
+                    Core.Log.MessageAll(Core.State.VersionString);
+                    return;
+                }
+
+                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.CreateDebugProject()))
                 {
                     V2.DebugProject.Create();
                     return;

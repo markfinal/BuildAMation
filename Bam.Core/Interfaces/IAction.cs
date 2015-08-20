@@ -147,6 +147,26 @@ namespace V2
             }
         }
     }
+
+    public sealed class PrintVersion :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--version";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable
