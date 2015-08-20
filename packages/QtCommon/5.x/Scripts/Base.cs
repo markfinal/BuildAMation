@@ -84,14 +84,14 @@ namespace V2
                 var osxCompiler = settings as C.V2.ICCompilerOptionsOSX;
                 if (null != osxCompiler)
                 {
-                    osxCompiler.FrameworkSearchDirectories.Add(this.Macros["QtFrameworkPath"]);
+                    osxCompiler.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
                 }
 
                 var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                 if (null != osxLinker)
                 {
                     osxLinker.Frameworks.AddUnique(Bam.Core.V2.TokenizedString.Create("$(QtFrameworkPath)/$(QtModuleName).framework", this));
-                    osxLinker.FrameworkSearchDirectories.Add(this.Macros["QtFrameworkPath"]);
+                    osxLinker.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
                 }
             });
         }
