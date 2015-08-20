@@ -195,26 +195,36 @@ namespace V2
         WriteEntryPoint(
             string path)
         {
+            System.Func<int, string> indent = (level) =>
+                {
+                    if (0 == level)
+                    {
+                        return string.Empty;
+                    }
+                    return new string(' ', level * 4);
+                };
+
             using (System.IO.TextWriter writer = new System.IO.StreamWriter(path))
             {
-                writer.WriteLine("namespace Bam");
-                writer.WriteLine("{");
-                writer.WriteLine("\tclass Program");
-                writer.WriteLine("\t{");
-                writer.WriteLine("\t\tstatic void Main(string[] args)");
-                writer.WriteLine("\t\t{");
-                writer.WriteLine("\t\t\t// configure");
-                writer.WriteLine("\t\t\tCore.State.BuildRoot = \"debug_build\";");
-                writer.WriteLine("\t\t\tCore.State.VerbosityLevel = Core.EVerboseLevel.Full;");
-                writer.WriteLine("\t\t\tCore.State.CompileWithDebugSymbols = true;");
-                writer.WriteLine("\t\t\tCore.State.BuilderName = \"Native\";");
-                writer.WriteLine("\t\t\tvar debug = new Core.V2.Environment();");
-                writer.WriteLine("\t\t\tdebug.Configuration = Core.EConfiguration.Debug;");
-                writer.WriteLine("\t\t\tvar activeConfigs = new Core.Array<Core.V2.Environment>(debug);");
-                writer.WriteLine("\t\t\tCore.V2.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());");
-                writer.WriteLine("\t\t}");
-                writer.WriteLine("\t}");
-                writer.WriteLine("}");
+                writer.WriteLine("{0}namespace Bam", indent(0));
+                writer.WriteLine("{0}{{", indent(0));
+                writer.WriteLine("{0}class Program", indent(1));
+                writer.WriteLine("{0}{{", indent(1));
+                writer.WriteLine("{0}static void Main(string[] args)", indent(2));
+                writer.WriteLine("{0}{{", indent(2));
+                writer.WriteLine("{0}// configure", indent(3));
+                writer.WriteLine("{0}Core.State.BuildRoot = \"debug_build\";", indent(3));
+                writer.WriteLine("{0}Core.State.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
+                writer.WriteLine("{0}Core.State.CompileWithDebugSymbols = true;", indent(3));
+                writer.WriteLine("{0}Core.State.BuilderName = \"Native\";", indent(3));
+                writer.WriteLine("{0}var debug = new Core.V2.Environment();", indent(3));
+                writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
+                writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.V2.Environment>(debug);", indent(3));
+                writer.WriteLine("{0}// execute", indent(3));
+                writer.WriteLine("{0}Core.V2.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());", indent(3));
+                writer.WriteLine("{0}}}", indent(2));
+                writer.WriteLine("{0}}}", indent(1));
+                writer.WriteLine("{0}}}", indent(0));
             }
         }
 
