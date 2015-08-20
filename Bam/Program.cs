@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam
 {
     /// <summary>
@@ -35,6 +36,32 @@ namespace Bam
     class Program
     {
         static bool UseV2 = true;
+
+        public static class CommandLineArgumentHelper
+        {
+            public static void
+            PrintHelp()
+            {
+                Core.Log.Info("Bam");
+                Core.Log.Info("Syntax:");
+                Core.Log.Info("    bam [[option[=value]]...]");
+                // TODO: this does not cover any arguments in the package assembly
+                var argumentTypes = System.AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => typeof(Core.V2.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
+                Core.Log.Info("Options");
+                foreach (var argType in argumentTypes)
+                {
+                    var arg = System.Activator.CreateInstance(argType) as Core.V2.ICommandLineArgument;
+                    if (null == arg.ShortName)
+                    {
+                        Core.Log.Info("{0}: {1}", arg.LongName, arg.ContextHelp);
+                    }
+                    else
+                    {
+                        Core.Log.Info("{0} (or {1}): {2}", arg.LongName, arg.ShortName, arg.ContextHelp);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Application entry point.
@@ -46,6 +73,12 @@ namespace Bam
         {
             if (UseV2)
             {
+                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.PrintHelp()))
+                {
+                    CommandLineArgumentHelper.PrintHelp();
+                    return;
+                }
+
                 if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.PrintVersion()))
                 {
                     Core.Log.MessageAll(Core.State.VersionString);

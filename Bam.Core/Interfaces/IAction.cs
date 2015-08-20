@@ -42,6 +42,11 @@ namespace V2
         {
             get;
         }
+
+        string ContextHelp
+        {
+            get;
+        }
     }
 
     public interface IBooleanCommandLineArgument : ICommandLineArgument
@@ -78,6 +83,14 @@ namespace V2
                 return "--builder";
             }
         }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Define the name of the builder to use";
+            }
+        }
     }
 
     public sealed class MultiThreaded :
@@ -96,6 +109,14 @@ namespace V2
             get
             {
                 return "--threaded";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Define the number of thread to use to build (zero means to use the processor count)";
             }
         }
 
@@ -126,6 +147,14 @@ namespace V2
                 return "--tests";
             }
         }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Include modules in the tests nested namespace of the top level module";
+            }
+        }
     }
 
     public sealed class CreateDebugProject :
@@ -146,6 +175,14 @@ namespace V2
                 return "--createdebugproject";
             }
         }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Create a standalone VisualStudio project to debug a Bam package build";
+            }
+        }
     }
 
     public sealed class PrintVersion :
@@ -164,6 +201,42 @@ namespace V2
             get
             {
                 return "--version";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Print the version of Bam!";
+            }
+        }
+    }
+
+    public sealed class PrintHelp :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-h";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--help";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Print this help";
             }
         }
     }
