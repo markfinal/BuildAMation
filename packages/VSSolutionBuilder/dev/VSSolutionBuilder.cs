@@ -808,19 +808,20 @@ namespace V2
                 this.ConfigToolsProperties.Add(configuration, configGroup.Element);
             }
 
-            // anonymous project settings (not present for utility projects)
+            // anonymous project settings
+            var anonConfigProps = this.CreatePropertyGroup(null);
+            this.AnonymousPropertySettings.Add(configuration, anonConfigProps.Element);
+            this.MakeNodeConditional(anonConfigProps.Element, configuration);
+
+            // outPath is null for utility projects
             if (null != outPath)
             {
-                var configProps = this.CreatePropertyGroup(null);
-                this.AnonymousPropertySettings.Add(configuration, configProps.Element);
-                this.MakeNodeConditional(configProps.Element, configuration);
-
                 // build output directory
                 var outDirEl = this.CreateProjectElement("OutDir");
                 var macros = new Bam.Core.V2.MacroList();
                 // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
                 // but it does not seem to be a show stopper if it doesn't
-                macros.Add("pkgbuilddir", Bam.Core.V2.TokenizedString.Create("$(ProjectDir)", null, verbatim:true));
+                macros.Add("pkgbuilddir", Bam.Core.V2.TokenizedString.Create("$(ProjectDir)", null, verbatim: true));
                 macros.Add("modulename", Bam.Core.V2.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
                 var outDir = outPath.Parse(macros);
                 outDir = System.IO.Path.GetDirectoryName(outDir);
@@ -837,9 +838,14 @@ namespace V2
                     targetNameEl.InnerText = outputName;
                     this.AnonymousPropertySettings[configuration].AppendChild(targetNameEl);
                 }
-
-                this.Project.InsertAfter(this.AnonymousPropertySettings[configuration], this.LanguageImport.Element);
             }
+            else
+            {
+                var intDirEl = this.CreateProjectElement("IntDir");
+                intDirEl.InnerText = @"$(ProjectDir)\$(ProjectName)\$(Configuration)\";
+                this.AnonymousPropertySettings[configuration].AppendChild(intDirEl);
+            }
+            this.Project.InsertAfter(this.AnonymousPropertySettings[configuration], this.LanguageImport.Element);
         }
 
         public void
