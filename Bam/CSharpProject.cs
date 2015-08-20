@@ -329,6 +329,11 @@ namespace V2
             {
                 Document.WriteTo(writer);
             }
+
+            Core.Log.Info("Successfully created debug project for package '{0}'",
+                          mainPackage.Identifier.ToString("-"));
+            Core.Log.Info("\t{0}",
+                          mainPackage.DebugProjectFilename);
         }
     }
 }
