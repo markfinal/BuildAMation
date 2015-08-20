@@ -262,13 +262,15 @@ namespace V2
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>    Cxx_Linkers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  ObjectiveC_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  ObjectiveCxx_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
+        // TODO: slightly confusing there is a class and a variable almost identically named
         private static string DefaultToolChain = null;
 
         private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
         GetToolsFromMetaData<T>()
             where T : ToolRegistration
         {
-            foreach (var type in Bam.Core.State.ScriptAssembly.GetTypes())
+            var allTypes = Bam.Core.State.ScriptAssembly.GetTypes();
+            foreach (var type in allTypes)
             {
                 var tools = type.GetCustomAttributes(typeof(T), false) as T[];
                 if (0 == tools.Length)
@@ -357,7 +359,7 @@ namespace V2
             }
             var toolToUse = candidates[0];
             var toolToolSet = (toolToUse.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
-            if (toolToolSet != DefaultToolChain)
+            if ((null != DefaultToolChain) && (toolToolSet != DefaultToolChain))
             {
                 throw new Bam.Core.Exception("{0} is from toolchain {1}, not the toolchain requested {2}", toolDescription, toolToolSet, DefaultToolChain);
             }
