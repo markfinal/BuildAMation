@@ -60,6 +60,36 @@ namespace Bam.Core
             return resourceFilePathName;
         }
 
+        private static void
+        AddResHeader(
+            System.Xml.XmlDocument document,
+            string name,
+            string value,
+            System.Xml.XmlElement parent)
+        {
+            var resHeader = document.CreateElement("resheader");
+            parent.AppendChild(resHeader);
+
+            resHeader.SetAttribute("name", name);
+            resHeader.InnerText = value;
+        }
+
+        private static void
+        AddData(
+            System.Xml.XmlDocument document,
+            string name,
+            string value,
+            System.Xml.XmlElement parent)
+        {
+            var data = document.CreateElement("data");
+            parent.AppendChild(data);
+
+            data.SetAttribute("name", name);
+            var valueEl = document.CreateElement("value");
+            valueEl.InnerText = value;
+            data.AppendChild(valueEl);
+        }
+
         public static string
         WriteResXFile()
         {
@@ -82,44 +112,17 @@ namespace Bam.Core
             var root = resourceFile.CreateElement("root");
             resourceFile.AppendChild(root);
 
-            {
-                var mimeType = resourceFile.CreateElement("resheader");
-                mimeType.SetAttribute("name", "resmimetype");
-                mimeType.InnerText = "text/microsoft-resx";
-                root.AppendChild(mimeType);
-            }
+            AddResHeader(resourceFile, "resmimetype", "text/microsoft-resx", root);
+            AddResHeader(resourceFile, "version", "2.0", root);
+            // TODO: this looks like the System.Windows.Forms.dll assembly
+            AddResHeader(resourceFile, "reader", "System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
+            AddResHeader(resourceFile, "writer", "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
 
-            {
-                var version = resourceFile.CreateElement("resheader");
-                version.SetAttribute("name", "version");
-                version.InnerText = "2.0";
-                root.AppendChild(version);
-            }
-
-            {
-                var reader = resourceFile.CreateElement("resheader");
-                reader.SetAttribute("name", "reader");
-                // TODO: this looks like the System.Windows.Forms.dll assembly
-                reader.InnerText = "System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-                root.AppendChild(reader);
-            }
-
-            {
-                var writer = resourceFile.CreateElement("resheader");
-                writer.SetAttribute("name", "writer");
-                // TODO: this looks like the System.Windows.Forms.dll assembly
-                writer.InnerText = "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-                root.AppendChild(writer);
-            }
-
+            AddData(resourceFile, "BamInstallDir", State.ExecutableDirectory, root);
+            AddData(resourceFile, "WorkingDir", mainPackage.Identifier.Path, root);
             foreach (var package in State.PackageInfo)
             {
-                var data = resourceFile.CreateElement("data");
-                data.SetAttribute("name", package.Identifier.ToString("_"));
-                var value = resourceFile.CreateElement("value");
-                value.InnerText = package.Identifier.Root.AbsolutePath;
-                data.AppendChild(value);
-                root.AppendChild(data);
+                AddData(resourceFile, package.Identifier.ToString("_"), package.Identifier.Root.AbsolutePath, root);
             }
 
             var xmlWriterSettings = new System.Xml.XmlWriterSettings();

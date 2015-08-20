@@ -29,6 +29,299 @@
 #endregion // License
 namespace Bam
 {
+namespace V2
+{
+    public static class DebugProject
+    {
+        private static readonly string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
+
+        private static System.Xml.XmlDocument Document = new System.Xml.XmlDocument();
+        private static System.Uri RootUri;
+
+        private static System.Xml.XmlElement
+        CreateElement(
+            string name,
+            System.Xml.XmlDocument parent = null)
+        {
+            var element = Document.CreateElement(name, MSBuildNamespace);
+            if (null != parent)
+            {
+                parent.AppendChild(element);
+            }
+            return element;
+        }
+
+        private static System.Xml.XmlElement
+        CreateElement(
+            string name,
+            string condition = null,
+            string value = null,
+            System.Xml.XmlElement parent = null)
+        {
+            var element = Document.CreateElement(name, MSBuildNamespace);
+            if (null != parent)
+            {
+                parent.AppendChild(element);
+            }
+            if (null != condition)
+            {
+                CreateAttribute("Condition", condition, element);
+            }
+            if (null != value)
+            {
+                element.InnerText = value;
+            }
+            return element;
+        }
+
+        private static void
+        CreateAttribute(
+            string name,
+            string value,
+            System.Xml.XmlElement parent)
+        {
+            parent.SetAttribute(name, value);
+        }
+
+        private static System.Xml.XmlElement
+        CreatePropertyGroup(
+            string condition = null,
+            System.Xml.XmlElement parent = null)
+        {
+            return CreateElement("PropertyGroup", condition: condition, parent: parent);
+        }
+
+        private static System.Xml.XmlElement
+        CreateItemGroup(
+            string condition = null,
+            System.Xml.XmlElement parent = null)
+        {
+            return CreateElement("ItemGroup", condition: condition, parent: parent);
+        }
+
+        private static void
+        CreateImport(
+            string project,
+            bool conditional,
+            System.Xml.XmlElement parent)
+        {
+            var import = CreateElement("Import", parent:parent);
+            CreateAttribute("Project", project, import);
+            if (conditional)
+            {
+                CreateAttribute("Condition", System.String.Format("Exists('{0}')", project), import);
+            }
+        }
+
+        private static void
+        CreateReference(
+            string include,
+            System.Xml.XmlElement parent,
+            string hintpath = null,
+            string targetframework = null)
+        {
+            var reference = CreateElement("Reference", parent: parent);
+            CreateAttribute("Include", include, reference);
+            if (null != hintpath)
+            {
+                CreateElement("HintPath", value: Core.RelativePathUtilities.GetPath(hintpath, RootUri), parent: reference);
+                //CreateElement("Private", value: "False", parent: reference); // copylocal
+            }
+            if (null != targetframework)
+            {
+                CreateElement("RequiredTargetFramework", value: targetframework, parent: reference);
+            }
+        }
+
+        private static void
+        CreateCompilableSourceFile(
+            string include,
+            Core.PackageInformation packageInfo,
+            System.Xml.XmlElement parent)
+        {
+            var source = CreateElement("Compile", parent: parent);
+            CreateAttribute("Include", Core.RelativePathUtilities.GetPath(include, RootUri), source);
+            if (null != packageInfo)
+            {
+                var linkPath = include.Replace(packageInfo.Identifier.Path, packageInfo.FullName);
+                CreateElement("Link", parent: source, value: linkPath);
+            }
+        }
+
+        private static void
+        CreateOtherSourceFile(
+            string include,
+            Core.PackageInformation packageInfo,
+            System.Xml.XmlElement parent)
+        {
+            var source = CreateElement("None", parent: parent);
+            CreateAttribute("Include", Core.RelativePathUtilities.GetPath(include, RootUri), source);
+            var linkPath = include.Replace(packageInfo.Identifier.Path, packageInfo.FullName);
+            CreateElement("Link", parent: source, value: linkPath);
+        }
+
+        private static void
+        CreateEmbeddedResourceFile(
+            string include,
+            System.Xml.XmlElement parent)
+        {
+            var source = CreateElement("EmbeddedResource", parent: parent);
+            CreateAttribute("Include", Core.RelativePathUtilities.GetPath(include, RootUri), source);
+        }
+
+        private static string
+        GetPreprocessorDefines()
+        {
+            var allDefines = new Core.StringArray();
+            allDefines.Add("DEBUG");
+            allDefines.Add("TRACE");
+            allDefines.Add(Core.PackageUtilities.VersionDefineForCompiler);
+            allDefines.Add(Core.PackageUtilities.HostPlatformDefineForCompiler);
+            // custom definitions from all the packages in the compilation
+            foreach (var info in Core.State.PackageInfo)
+            {
+                allDefines.AddRange(info.Identifier.Definition.Definitions);
+                allDefines.Add(info.Identifier.CompilationDefinition);
+            }
+            // command line definitions
+            allDefines.AddRange(Core.State.PackageCompilationDefines);
+            allDefines.Sort();
+            allDefines.RemoveAll(Core.State.PackageCompilationUndefines);
+
+            return allDefines.ToString(';');
+        }
+
+        public static void
+        WriteEntryPoint(
+            string path)
+        {
+            using (System.IO.TextWriter writer = new System.IO.StreamWriter(path))
+            {
+                writer.WriteLine("namespace Bam");
+                writer.WriteLine("{");
+                writer.WriteLine("\tclass Program");
+                writer.WriteLine("\t{");
+                writer.WriteLine("\t\tstatic void Main(string[] args)");
+                writer.WriteLine("\t\t{");
+                writer.WriteLine("\t\t\t// configure");
+                writer.WriteLine("\t\t\tCore.State.BuildRoot = \"debug_build\";");
+                writer.WriteLine("\t\t\tCore.State.VerbosityLevel = Core.EVerboseLevel.Full;");
+                writer.WriteLine("\t\t\tCore.State.CompileWithDebugSymbols = true;");
+                writer.WriteLine("\t\t\tCore.State.BuilderName = \"Native\";");
+                writer.WriteLine("\t\t\tvar debug = new Core.V2.Environment();");
+                writer.WriteLine("\t\t\tdebug.Configuration = Core.EConfiguration.Debug;");
+                writer.WriteLine("\t\t\tvar activeConfigs = new Core.Array<Core.V2.Environment>(debug);");
+                writer.WriteLine("\t\t\tCore.V2.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());");
+                writer.WriteLine("\t\t}");
+                writer.WriteLine("\t}");
+                writer.WriteLine("}");
+            }
+        }
+
+        public static void
+        Create()
+        {
+            Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
+
+            var mainPackage = Core.State.PackageInfo.MainPackage;
+            var projectFilename = mainPackage.DebugProjectFilename;
+            RootUri = new System.Uri(projectFilename);
+
+            if (!System.IO.Directory.Exists(mainPackage.ProjectDirectory))
+            {
+                System.IO.Directory.CreateDirectory(mainPackage.ProjectDirectory);
+            }
+
+            var mainSourceFile = System.IO.Path.Combine(mainPackage.ProjectDirectory, "main.cs");
+            WriteEntryPoint(mainSourceFile);
+
+            Document.AppendChild(Document.CreateComment("Automatically generated by BuildAMation"));
+            var project = CreateElement("Project", Document);
+            CreateAttribute("ToolsVersion", "12.0", project);
+            CreateAttribute("DefaultsTarget", "Build", project);
+
+            CreateImport(@"$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props", true, project);
+
+            var generalProperties = CreatePropertyGroup(parent:project);
+            CreateElement("Configuration", condition: @" '$(Configuration)' == '' ", parent: generalProperties, value:"Debug");
+            CreateElement("Platform", condition: @" '$(Platform)' == '' ", parent: generalProperties, value: "AnyCPU");
+            CreateElement("ProjectGuid", parent: generalProperties, value: System.Guid.NewGuid().ToString("B").ToUpper());
+            CreateElement("OutputType", parent: generalProperties, value:"Exe");
+            CreateElement("RootNamespace", parent: generalProperties, value:mainPackage.Name);
+            CreateElement("AssemblyName", parent: generalProperties, value: mainPackage.Name);
+            CreateElement("TargetFrameworkVersion", parent: generalProperties, value: "v4.5");
+            CreateElement("WarningLevel", parent: generalProperties, value: "4");
+            CreateElement("TreatWarningsAsErrors", parent: generalProperties, value: "true");
+
+            var debugProperties = CreatePropertyGroup(condition: @" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ", parent: project);
+            CreateElement("PlatformTarget", parent: debugProperties, value: "AnyCPU");
+            CreateElement("DebugSymbols", parent: debugProperties, value: "true");
+            CreateElement("DebugType", parent: debugProperties, value: "full");
+            CreateElement("Optimize", parent: debugProperties, value: "false");
+            CreateElement("OutputPath", parent: debugProperties, value: @"bin\Debug\");
+            CreateElement("CheckForOverflowUnderflow", parent: debugProperties, value: "true");
+            CreateElement("AllowUnsafeBlocks", parent: debugProperties, value: "false");
+            CreateElement("DefineConstants", parent: debugProperties, value: GetPreprocessorDefines());
+
+            var references = CreateItemGroup(parent: project);
+            foreach (var desc in mainPackage.Identifier.Definition.DotNetAssemblies)
+            {
+                CreateReference(desc.Name, references, targetframework:desc.RequiredTargetFramework);
+            }
+            if (Core.State.RunningMono)
+            {
+                CreateReference("Mono.Posix", references);
+            }
+            foreach (var assembly in mainPackage.Identifier.Definition.BamAssemblies)
+            {
+                var assemblyPath = System.IO.Path.Combine(Core.State.ExecutableDirectory, assembly) + ".dll";
+                CreateReference(assembly, references, hintpath: assemblyPath);
+            }
+
+            var mainSource = CreateItemGroup(parent: project);
+            CreateCompilableSourceFile(mainSourceFile, null, mainSource);
+
+            foreach (var package in Core.State.PackageInfo)
+            {
+                var packageSource = CreateItemGroup(parent: project);
+
+                CreateCompilableSourceFile(package.Identifier.ScriptPathName, package, packageSource);
+                CreateOtherSourceFile(package.Identifier.DefinitionPathName, package, packageSource);
+
+                if (null != package.Scripts)
+                {
+                    foreach (var script in package.Scripts)
+                    {
+                        CreateCompilableSourceFile(script, package, packageSource);
+                    }
+                }
+
+                if (null != package.BuilderScripts)
+                {
+                    foreach (var builderScript in package.BuilderScripts)
+                    {
+                        CreateCompilableSourceFile(builderScript, package, packageSource);
+                    }
+                }
+            }
+
+            var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile();
+            var resources = CreateItemGroup(parent: project);
+            CreateEmbeddedResourceFile(resourceFilePathName, resources);
+
+            CreateImport(@"$(MSBuildBinPath)\Microsoft.CSharp.Targets", false, project);
+
+            var xmlWriterSettings = new System.Xml.XmlWriterSettings();
+            xmlWriterSettings.Indent = true;
+            xmlWriterSettings.CloseOutput = true;
+            xmlWriterSettings.OmitXmlDeclaration = false;
+            using (var writer = System.Xml.XmlWriter.Create(mainPackage.DebugProjectFilename, xmlWriterSettings))
+            {
+                Document.WriteTo(writer);
+            }
+        }
+    }
+}
     public enum VisualStudioVersion
     {
         VS2008,

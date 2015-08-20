@@ -127,6 +127,26 @@ namespace V2
             }
         }
     }
+
+    public sealed class CreateDebugProject :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--createdebugproject";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

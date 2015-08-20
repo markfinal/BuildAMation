@@ -37,15 +37,25 @@ namespace V2
     {
         public static void
         Execute(
-            Array<Environment> environments)
+            Array<Environment> environments,
+            System.Reflection.Assembly packageAssembly = null)
         {
-            var compiledSuccessfully = PackageUtilities.CompilePackageAssembly();
-            if (!compiledSuccessfully)
+            if (null != packageAssembly)
             {
-                throw new Exception("Package compilation failed");
+                PackageUtilities.IdentifyMainAndDependentPackages(true, false);
+                State.ScriptAssembly = packageAssembly;
+                State.ScriptAssemblyPathname = packageAssembly.Location;
+            }
+            else
+            {
+                var compiledSuccessfully = PackageUtilities.CompilePackageAssembly();
+                if (!compiledSuccessfully)
+                {
+                    throw new Exception("Package compilation failed");
+                }
+                PackageUtilities.LoadPackageAssembly();
             }
 
-            PackageUtilities.LoadPackageAssembly();
             var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
 
             var graph = Graph.Instance;
@@ -791,6 +801,37 @@ namespace V2
             }
         }
 
+        private static string
+        GetBamDirectory()
+        {
+            var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
+            var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
+            try
+            {
+                return rm.GetString("BamInstallDir");
+            }
+            catch (System.Resources.MissingManifestResourceException)
+            {
+                // this assumes running an executable from the BAM! installation folder
+                return System.IO.Path.GetDirectoryName(bamAssembly.Location);
+            }
+        }
+
+        private static string
+        GetWorkingDirectory()
+        {
+            var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
+            var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
+            try
+            {
+                return rm.GetString("WorkingDir");
+            }
+            catch (System.Resources.MissingManifestResourceException)
+            {
+                return System.IO.Directory.GetCurrentDirectory();
+            }
+        }
+
         static
         State()
         {
@@ -801,12 +842,13 @@ namespace V2
             GetAssemblyVersionData(out assemblyVersion, out productVersion);
 
             AddCategory("BuildAMation");
-            var bamAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-            var assemblyDirectory = System.IO.Path.GetDirectoryName(bamAssembly.Location);
+            Add<bool>("BuildAMation", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
+
+            string assemblyDirectory = GetBamDirectory();
             Add<string>("BuildAMation", "Directory", assemblyDirectory);
+
             Add<System.Version>("BuildAMation", "Version", assemblyVersion);
             Add<string>("BuildAMation", "VersionString", productVersion);
-            Add<bool>("BuildAMation", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
 
             // TODO: commented out as the TargetFrameworkAttribute was only introduced in CLR 4
 #if false
@@ -852,7 +894,8 @@ namespace V2
             OSUtilities.SetupPlatform();
             Add<TimeProfile[]>("System", "Profiling", new TimeProfile[System.Enum.GetValues(typeof(ETimingProfiles)).Length]);
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
-            Add<string>("System", "WorkingDirectory", System.IO.Directory.GetCurrentDirectory());
+
+            Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
             Add<bool>("System", "Pedantic", false);
 
             var primaryPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(assemblyDirectory).FullName).FullName, "packages");

@@ -46,6 +46,13 @@ namespace Bam
         {
             if (UseV2)
             {
+                var createDebugProject = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.CreateDebugProject());
+                if (createDebugProject)
+                {
+                    V2.DebugProject.Create();
+                    return;
+                }
+
                 // configure
                 Core.State.BuildRoot = "build";
                 Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
