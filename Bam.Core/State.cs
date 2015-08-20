@@ -33,6 +33,68 @@ namespace V2
 {
     using System.Linq;
 
+    public static class EntryPoint
+    {
+        public static void
+        Execute(
+            Array<Environment> environments)
+        {
+            var compiledSuccessfully = PackageUtilities.CompilePackageAssembly();
+            if (!compiledSuccessfully)
+            {
+                throw new Exception("Package compilation failed");
+            }
+
+            PackageUtilities.LoadPackageAssembly();
+            var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
+
+            var graph = Graph.Instance;
+            graph.Mode = State.BuilderName;
+
+            // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
+            foreach (var env in environments)
+            {
+                graph.CreateTopLevelModules(State.ScriptAssembly, env, topLevelNamespace);
+            }
+
+            // Phase 2: Graph now has a linear list of modules; create a dependency graph
+            // NB: all those modules with 0 dependees are the top-level modules
+            // NB: default settings have already been defined here
+            var topLevelModules = graph.TopLevelModules;
+            Log.DebugMessage("Start: Top level modules");
+            foreach (var m in topLevelModules)
+            {
+                Log.DebugMessage(m.ToString());
+            }
+            Log.DebugMessage("End: Top level modules");
+            // not only does this generate the dependency graph, but also creates the default settings for each module, and completes them
+            graph.SortDependencies();
+            // TODO: make validation optional, if it starts showing on profiles
+            graph.Validate();
+
+            // Phase 3: (Create default settings, and ) apply patches (build + shared) to each module
+            // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
+            // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
+            // TODO: a parallel thread can be spawned here, that can check whether command lines have changed
+            // the Settings object can be inspected, and a hash generated. This hash can be written to disk, and compared.
+            // If a 'verbose' mode is enabled, then more work can be done to figure out what has changed. This would also require
+            // serializing the binary Settings object
+            graph.ApplySettingsPatches();
+
+            // expand paths after patching settings, because some of the patches may contain tokenized strings
+            // TODO: a thread can be spawned, to check for whether files were in date or not, which will
+            // be ready in time for graph execution
+            TokenizedString.ParseAll();
+
+            graph.Dump();
+
+            // Phase 4: Execute dependency graph
+            // N.B. all paths (including those with macros) have been delayed expansion until now
+            var executor = new Executor();
+            executor.Run();
+        }
+    }
+
     /// <summary>
     /// Extension functions
     /// </summary>

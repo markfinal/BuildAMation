@@ -46,6 +46,7 @@ namespace Bam
         {
             if (UseV2)
             {
+                // configure
                 Core.State.BuildRoot = "build";
                 Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
                 Core.State.CompileWithDebugSymbols = true;
@@ -54,20 +55,6 @@ namespace Bam
                 {
                     throw new Core.Exception("No builder specified");
                 }
-                //Core.State.BuilderName = "Native";
-                //Core.State.BuilderName = "MakeFile";
-                //Core.State.BuilderName = "VSSolution";
-                var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
-                if (!compiledSuccessfully)
-                {
-                    throw new Core.Exception("Package compilation failed");
-                }
-
-                Core.PackageUtilities.LoadPackageAssembly();
-                var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(Core.State.ScriptAssemblyPathname);
-
-                var graph = Core.V2.Graph.Instance;
-                graph.Mode = Core.State.BuilderName;
 
                 var debug = new Core.V2.Environment();
                 debug.Configuration = Core.EConfiguration.Debug;
@@ -75,47 +62,7 @@ namespace Bam
                 var optimized = new Core.V2.Environment();
                 optimized.Configuration = Core.EConfiguration.Optimized;
 
-                // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
-                foreach (var env in new[] { debug/*, optimized*/})
-                {
-                    graph.CreateTopLevelModules(Core.State.ScriptAssembly, env, topLevelNamespace);
-                }
-
-                // Phase 2: Graph now has a linear list of modules; create a dependency graph
-                // NB: all those modules with 0 dependees are the top-level modules
-                // NB: default settings have already been defined here
-                var topLevelModules = graph.TopLevelModules;
-                Core.Log.DebugMessage("Start: Top level modules");
-                foreach (var m in topLevelModules)
-                {
-                    Core.Log.DebugMessage(m.ToString());
-                }
-                Core.Log.DebugMessage("End: Top level modules");
-                // not only does this generate the dependency graph, but also creates the default settings for each module, and completes them
-                graph.SortDependencies();
-                // TODO: make validation optional, if it starts showing on profiles
-                graph.Validate();
-
-                // Phase 3: (Create default settings, and ) apply patches (build + shared) to each module
-                // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
-                // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
-                // TODO: a parallel thread can be spawned here, that can check whether command lines have changed
-                // the Settings object can be inspected, and a hash generated. This hash can be written to disk, and compared.
-                // If a 'verbose' mode is enabled, then more work can be done to figure out what has changed. This would also require
-                // serializing the binary Settings object
-                graph.ApplySettingsPatches();
-
-                // expand paths after patching settings, because some of the patches may contain tokenized strings
-                // TODO: a thread can be spawned, to check for whether files were in date or not, which will
-                // be ready in time for graph execution
-                Core.V2.TokenizedString.ParseAll();
-
-                graph.Dump();
-
-                // Phase 4: Execute dependency graph
-                // N.B. all paths (including those with macros) have been delayed expansion until now
-                var executor = new Core.V2.Executor();
-                executor.Run();
+                Core.V2.EntryPoint.Execute(new Core.Array<Core.V2.Environment>(debug/*, optimized*/));
             }
             else
             {
