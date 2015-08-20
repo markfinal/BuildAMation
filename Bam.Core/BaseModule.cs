@@ -144,6 +144,10 @@ namespace V2
                 return null;
             }
 
+            if (null == Graph.Instance.Mode)
+            {
+                throw new Exception("Building mode has not been set");
+            }
             var module = new T();
             module.Init(parent);
             module.GetExecutionPolicy(Graph.Instance.Mode);
