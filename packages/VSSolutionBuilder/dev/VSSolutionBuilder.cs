@@ -498,13 +498,16 @@ namespace V2
 
             // empty slot for Configuration definitions
 
-            // Sources
-            this.SourceGroup = this.CreateItemGroup(null);
-            this.Project.AppendChild(this.SourceGroup.Element);
+            if (this.ProjectType != Type.Utility)
+            {
+                // Sources
+                this.SourceGroup = this.CreateItemGroup(null);
+                this.Project.AppendChild(this.SourceGroup.Element);
 
-            // Project Dependencies
-            this.ProjectDependenciesGroup = this.CreateItemGroup(null);
-            this.Project.AppendChild(this.ProjectDependenciesGroup.Element);
+                // Project Dependencies
+                this.ProjectDependenciesGroup = this.CreateItemGroup(null);
+                this.Project.AppendChild(this.ProjectDependenciesGroup.Element);
+            }
 
             // Language targets
             this.LanguageTargets = this.CreateImport(@"$(VCTargetsPath)\Microsoft.Cpp.targets");
@@ -589,7 +592,14 @@ namespace V2
             if (null == this.HeaderGroup)
             {
                 this.HeaderGroup = this.CreateItemGroup(null);
-                this.Project.InsertAfter(this.HeaderGroup.Element, this.SourceGroup.Element);
+                if (null == this.SourceGroup)
+                {
+                    this.Project.InsertAfter(this.HeaderGroup.Element, this.LanguageImport.Element);
+                }
+                else
+                {
+                    this.Project.InsertAfter(this.HeaderGroup.Element, this.SourceGroup.Element);
+                }
             }
 
             // check whether this header file has been added before, for the actual project
@@ -759,6 +769,7 @@ namespace V2
             }
 
             // project definitions
+            if (this.ProjectType != Type.Utility)
             {
                 var configGroup = this.CreateItemDefinitionGroup(configuration);
                 var clCompile = this.CreateProjectElement("ClCompile");
