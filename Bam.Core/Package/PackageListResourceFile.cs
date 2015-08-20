@@ -45,6 +45,8 @@ namespace Bam.Core
 
             using (var writer = new System.Resources.ResourceWriter(resourceFilePathName))
             {
+                // TODO: are these necessary now?
+#if false
                 foreach (var package in State.PackageInfo)
                 {
                     var id = package.Identifier;
@@ -53,6 +55,7 @@ namespace Bam.Core
 
                     writer.AddResource(name, value);
                 }
+#endif
             }
 
             Log.DebugMessage("Written package resource file to '{0}'", resourceFilePathName);
@@ -120,10 +123,14 @@ namespace Bam.Core
 
             AddData(resourceFile, "BamInstallDir", State.ExecutableDirectory, root);
             AddData(resourceFile, "WorkingDir", mainPackage.Identifier.Path, root);
+
+            // TODO: are these necessary now?
+#if false
             foreach (var package in State.PackageInfo)
             {
                 AddData(resourceFile, package.Identifier.ToString("_"), package.Identifier.Root.AbsolutePath, root);
             }
+#endif
 
             var xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;
