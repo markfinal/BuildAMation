@@ -85,7 +85,8 @@ namespace V2
             Archive,
             Executable,
             DynamicLibrary,
-            WrapperFramework
+            WrapperFramework,
+            ApplicationBundle
         }
 
         public enum ESourceTree
@@ -202,6 +203,20 @@ namespace V2
             private set;
         }
 
+        public void
+        MakeApplicationBundle()
+        {
+            if (this.Type == EFileType.ApplicationBundle)
+            {
+                return;
+            }
+            if (this.Type != EFileType.Executable)
+            {
+                throw new Bam.Core.Exception("Can only make executables into application bundles");
+            }
+            this.Type = EFileType.ApplicationBundle;
+        }
+
         public override string GUID
         {
             get;
@@ -229,6 +244,9 @@ namespace V2
 
                 case EFileType.WrapperFramework:
                     return "wrapper.framework";
+
+                case EFileType.ApplicationBundle:
+                    return "wrapper.application";
             }
 
             throw new Bam.Core.Exception("Unrecognized file type {0}", this.Type.ToString());
@@ -1240,7 +1258,8 @@ namespace V2
         {
             StaticLibrary,
             Executable,
-            DynamicLibrary
+            DynamicLibrary,
+            ApplicationBundle
         }
 
         public Target(
@@ -1335,7 +1354,8 @@ namespace V2
             (settings as XcodeProjectProcessor.V2.IConvertToProject).Convert(module, configuration);
         }
 
-        private string ProductTypeToString()
+        private string
+        ProductTypeToString()
         {
             switch (this.Type)
             {
@@ -1347,9 +1367,27 @@ namespace V2
 
                 case EProductType.DynamicLibrary:
                     return "com.apple.product-type.library.dynamic";
+
+                case EProductType.ApplicationBundle:
+                    return "com.apple.product-type.application";
             }
 
             throw new Bam.Core.Exception("Unrecognized product type");
+        }
+
+        public void
+        MakeApplicationBundle()
+        {
+            if (this.Type == EProductType.ApplicationBundle)
+            {
+                return;
+            }
+            if (this.Type != EProductType.Executable)
+            {
+                throw new Bam.Core.Exception("Can only change an executable to an application bundle");
+            }
+            this.Type = EProductType.ApplicationBundle;
+            this.FileReference.MakeApplicationBundle();
         }
 
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
