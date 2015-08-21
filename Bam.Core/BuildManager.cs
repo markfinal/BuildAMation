@@ -236,6 +236,10 @@ namespace V2
 
                         var task = factory.StartNew(() =>
                             {
+                                if (cancellationToken.IsCancellationRequested)
+                                {
+                                    return;
+                                }
                                 var depTasks = new Array<System.Threading.Tasks.Task>();
                                 foreach (var dep in module.Dependents)
                                 {
@@ -254,20 +258,44 @@ namespace V2
                                     depTasks.Add(dep.ExecutionTask);
                                 }
                                 System.Threading.Tasks.Task.WaitAll(depTasks.ToArray());
-
-                                (module as IModuleExecution).Execute(context);
-
-                                Log.Full(context.OutputStringBuilder.ToString());
-                                if (context.ErrorStringBuilder.Length > 0)
+                                if (cancellationToken.IsCancellationRequested)
                                 {
-                                    Log.ErrorMessage(context.ErrorStringBuilder.ToString());
+                                    return;
+                                }
+
+                                try
+                                {
+                                    (module as IModuleExecution).Execute(context);
+                                }
+                                catch (Bam.Core.Exception ex)
+                                {
+                                    abortException = ex;
+                                    cancellationSource.Cancel();
+                                }
+                                finally
+                                {
+                                    Log.Full(context.OutputStringBuilder.ToString());
+                                    if (context.ErrorStringBuilder.Length > 0)
+                                    {
+                                        Log.ErrorMessage(context.ErrorStringBuilder.ToString());
+                                    }
                                 }
                             });
                         tasks.Add(task);
                         module.ExecutionTask = task;
                     }
                 }
-                System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+                try
+                {
+                    System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+                }
+                catch (System.AggregateException exception)
+                {
+                    if (!(exception.InnerException is System.Threading.Tasks.TaskCanceledException))
+                    {
+                        throw exception;
+                    }
+                }
             }
             else
             {
