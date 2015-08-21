@@ -278,7 +278,7 @@ namespace VisualC
             }
             foreach (var warning in options.DisableWarnings)
             {
-                commandLine.Add(warning);
+                commandLine.Add(System.String.Format("-wd{0}", warning));
             }
             foreach (var path in options.IncludePaths)
             {
