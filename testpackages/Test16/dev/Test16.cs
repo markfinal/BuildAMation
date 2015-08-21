@@ -54,7 +54,7 @@ namespace Test16
 
             this.PublicPatch((settings, appliedTo) => this.includePath(settings, this));
 
-            this.CompileAgainst<Test15.StaticLibrary1V2>(source);
+            this.CompileAgainstPublicly<Test15.StaticLibrary1V2>(source);
         }
     }
 

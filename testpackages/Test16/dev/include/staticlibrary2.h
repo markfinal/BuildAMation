@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef STATICLIBRARY2_H
 #define STATICLIBRARY2_H
 
+#include "staticlibrary1.h"
+
 extern int StaticLibrary2Function(char);
 
 #endif /* STATICLIBRARY1_H */
