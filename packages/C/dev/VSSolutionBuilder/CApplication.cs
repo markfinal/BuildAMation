@@ -92,6 +92,11 @@ namespace V2
                     // do nothing for SDKs
                     continue;
                 }
+                else if (input is C.V2.HeaderLibrary)
+                {
+                    // no library
+                    continue;
+                }
                 else if (input is ExternalFramework)
                 {
                     throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
@@ -183,6 +188,11 @@ namespace V2
                 else if (input is C.V2.CSDKModule)
                 {
                     // do nothing for SDKs
+                    continue;
+                }
+                else if (input is C.V2.CSDKModule)
+                {
+                    // no library
                     continue;
                 }
                 else

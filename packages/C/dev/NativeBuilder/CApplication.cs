@@ -58,6 +58,11 @@ namespace V2
                 // collection of libraries, none in particular
                 return null;
             }
+            else if (module is C.V2.HeaderLibrary)
+            {
+                // no library
+                return null;
+            }
             else if (module is ExternalFramework)
             {
                 // dealt with elsewhere

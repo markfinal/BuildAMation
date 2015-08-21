@@ -68,6 +68,10 @@ namespace C
                         // SDK modules are collections of libraries, not one in particular
                         // thus do nothing as they are undefined at this point, and may yet be pulled in automatically
                     }
+                    else if (library is C.V2.HeaderLibrary)
+                    {
+                        // no library
+                    }
                     else if (library is ExternalFramework)
                     {
                         // frameworks are dealt with elsewhere
@@ -176,9 +180,13 @@ namespace C
                     {
                         // do nothing, just an area for external
                     }
+                    else if (library is C.V2.HeaderLibrary)
+                    {
+                        // no library
+                    }
                     else if (library is ExternalFramework)
                     {
-                        // TODO: add framework
+                        // frameworks are dealt with elsewhere
                     }
                     else
                     {
