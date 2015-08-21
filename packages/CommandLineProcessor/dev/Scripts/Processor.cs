@@ -33,7 +33,7 @@ namespace V2
 {
     public static class Processor
     {
-        public static int
+        public static void
         Execute(
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.Tool tool,
@@ -110,7 +110,6 @@ namespace V2
             {
                 throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
             }
-            var exitCode = -1;
             if (null != process)
             {
                 process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.OutputDataReceived);
@@ -121,12 +120,21 @@ namespace V2
 
                 // TODO: need to poll for an external cancel op? this currently waits forever
                 process.WaitForExit();
-                exitCode = process.ExitCode;
-                //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
             }
 
+            var exitCode = process.ExitCode;
+            //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
             process.Close();
-            return exitCode;
+
+            if (exitCode != 0)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Command failed: {0} {1}", executablePath, processStartInfo.Arguments);
+                message.AppendLine();
+                message.AppendFormat("Command exit code: {0}", exitCode);
+                message.AppendLine();
+                throw new Bam.Core.Exception(message.ToString());
+            }
         }
     }
 }

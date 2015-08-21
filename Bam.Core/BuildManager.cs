@@ -202,6 +202,7 @@ namespace V2
                 threadCount = System.Environment.ProcessorCount;
             }
 
+            System.Exception abortException = null;
             if (threadCount > 1)
             {
                 var cancellationSource = new System.Threading.CancellationTokenSource();
@@ -272,6 +273,10 @@ namespace V2
             {
                 foreach (var rank in graph.Reverse())
                 {
+                    if (null != abortException)
+                    {
+                        break;
+                    }
                     foreach (IModuleExecution module in rank)
                     {
                         if (module.IsUpToDate)
@@ -282,15 +287,30 @@ namespace V2
                         Log.DebugMessage("Module {0} requires building", module.ToString());
 
                         var context = new ExecutionContext();
-                        module.Execute(context);
-
-                        Log.Full(context.OutputStringBuilder.ToString());
-                        if (context.ErrorStringBuilder.Length > 0)
+                        try
                         {
-                            Log.ErrorMessage(context.ErrorStringBuilder.ToString());
+                            module.Execute(context);
+                        }
+                        catch (Bam.Core.Exception ex)
+                        {
+                            abortException = ex;
+                            break;
+                        }
+                        finally
+                        {
+                            Log.Full(context.OutputStringBuilder.ToString());
+                            if (context.ErrorStringBuilder.Length > 0)
+                            {
+                                Log.ErrorMessage(context.ErrorStringBuilder.ToString());
+                            }
                         }
                     }
                 }
+            }
+
+            if (null != abortException)
+            {
+                throw abortException;
             }
 
             if (null != metaData)

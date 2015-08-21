@@ -107,7 +107,20 @@ namespace Bam
                 var optimized = new Core.V2.Environment();
                 optimized.Configuration = Core.EConfiguration.Optimized;
 
-                Core.V2.EntryPoint.Execute(new Core.Array<Core.V2.Environment>(debug/*, optimized*/));
+                try
+                {
+                    Core.V2.EntryPoint.Execute(new Core.Array<Core.V2.Environment>(debug/*, optimized*/));
+                }
+                catch (Bam.Core.Exception exception)
+                {
+                    Core.Log.ErrorMessage(exception.Message);
+                    System.Environment.ExitCode = -1;
+                }
+                finally
+                {
+                    Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
+                    Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
+                }
             }
             else
             {

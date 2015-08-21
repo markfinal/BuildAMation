@@ -221,7 +221,15 @@ namespace V2
                 writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
                 writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.V2.Environment>(debug);", indent(3));
                 writer.WriteLine("{0}// execute", indent(3));
-                writer.WriteLine("{0}Core.V2.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());", indent(3));
+                writer.WriteLine("{0}try", indent(3));
+                writer.WriteLine("{0}{{", indent(3));
+                writer.WriteLine("{0}Core.V2.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());", indent(4));
+                writer.WriteLine("{0}}}", indent(3));
+                writer.WriteLine("{0}catch (Bam.Core.Exception exception)", indent(3));
+                writer.WriteLine("{0}{{", indent(3));
+                writer.WriteLine("{0}Core.Log.ErrorMessage(exception.Message);", indent(4));
+                writer.WriteLine("{0}System.Environment.ExitCode = -1;", indent(4));
+                writer.WriteLine("{0}}}", indent(3));
                 writer.WriteLine("{0}}}", indent(2));
                 writer.WriteLine("{0}}}", indent(1));
                 writer.WriteLine("{0}}}", indent(0));
