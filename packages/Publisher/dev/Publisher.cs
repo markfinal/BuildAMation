@@ -750,6 +750,7 @@ namespace V2
             Bam.Core.V2.ExecutionContext context)
         {
             var volumeName = "My Volume";
+            var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
             var diskImagePathName = this.GeneratedPaths[Key].ToString();
 
             // create the disk image
@@ -765,7 +766,7 @@ namespace V2
                 args.Add("HFS+");
                 args.Add("-volname");
                 args.Add(System.String.Format("\"{0}\"", volumeName));
-                args.Add(diskImagePathName);
+                args.Add(tempDiskImagePathName);
                 CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
             }
 
@@ -774,7 +775,7 @@ namespace V2
                 var args = new Bam.Core.StringArray();
                 args.Add("attach");
                 args.Add("-quiet");
-                args.Add(diskImagePathName);
+                args.Add(tempDiskImagePathName);
                 CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
             }
 
@@ -795,7 +796,7 @@ namespace V2
                 var args = new Bam.Core.StringArray();
                 args.Add("convert");
                 args.Add("-quiet");
-                args.Add(diskImagePathName);
+                args.Add(tempDiskImagePathName);
                 args.Add("-format");
                 args.Add("UDZO");
                 args.Add("-o");
