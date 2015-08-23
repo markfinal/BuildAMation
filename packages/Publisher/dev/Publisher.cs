@@ -797,7 +797,7 @@ namespace V2
                 args.Add("-quiet");
                 args.Add(diskImagePathName);
                 args.Add("-format");
-                args.Add("UDZ0");
+                args.Add("UDZO");
                 args.Add("-o");
                 args.Add(diskImagePathName);
                 CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
