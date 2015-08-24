@@ -406,7 +406,7 @@ namespace V2
                 var metadata = module.MetaData as MakeFileMeta;
                 if (null == metadata)
                 {
-                    throw new Bam.Core.Exception("Top level module did not have any Make metadata");
+                    throw new Bam.Core.Exception("Top level module, {0}, did not have any Make metadata", module.ToString());
                 }
                 foreach (var rule in metadata.Rules)
                 {
