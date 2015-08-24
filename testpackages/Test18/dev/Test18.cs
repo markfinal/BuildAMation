@@ -36,9 +36,16 @@ namespace Test18
         {
             base.Init(parent);
 
-            this.LinkAgainst<XV2>();
-            this.LinkAgainst<YV2>();
-            this.LinkAgainst<ZV2>();
+            // NB: these are long handed code, normally hidden behind utility functions
+
+            var x = Bam.Core.V2.Graph.Instance.FindReferencedModule<XV2>();
+            this.DependsOn(x);
+
+            var y = Bam.Core.V2.Graph.Instance.FindReferencedModule<YV2>();
+            this.DependsOn(y);
+
+            var z = Bam.Core.V2.Graph.Instance.FindReferencedModule<ZV2>();
+            this.DependsOn(z);
         }
     }
 
@@ -47,7 +54,8 @@ namespace Test18
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {
-            this.CompileAgainst<YV2>();
+            var y = Bam.Core.V2.Graph.Instance.FindReferencedModule<YV2>();
+            this.DependsOn(y);
         }
     }
 
@@ -61,7 +69,8 @@ namespace Test18
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {
-            this.CompileAgainst<XV2>();
+            var x = Bam.Core.V2.Graph.Instance.FindReferencedModule<XV2>();
+            this.DependsOn(x);
         }
     }
 
