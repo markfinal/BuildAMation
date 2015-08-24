@@ -163,7 +163,7 @@ namespace V2
             var source = this.CreateCSourceContainer();
             source.AddFile("$(pkgroot)/source/testapp/main.c");
 
-            var generatedSourceTuple = source.GenerateSource();
+            /*var generatedSourceTuple = */source.GenerateSource();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
@@ -188,7 +188,7 @@ namespace V2
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            CodeGenOptionCollection options = module.Options as CodeGenOptionCollection;
+            //CodeGenOptionCollection options = module.Options as CodeGenOptionCollection;
         }
     }
 
