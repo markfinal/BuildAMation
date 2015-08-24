@@ -45,6 +45,7 @@ namespace V2
             }
             var destinationPath = System.IO.Path.Combine(destinationDir, System.IO.Path.GetFileName(sourcePath));
             System.IO.File.Copy(sourcePath, destinationPath, true);
+            Bam.Core.Log.DebugMessage("Copied {0} to {1}", sourcePath, destinationPath);
         }
 
         void
