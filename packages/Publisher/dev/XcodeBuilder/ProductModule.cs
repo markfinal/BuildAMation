@@ -55,7 +55,7 @@ namespace V2
                         var dir = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", module.Key).Parse();
                         path.Value.DestinationDir = dir;
 
-                        if (path.Value.SubDirectory.Contains(".app/"))
+                        if ((path.Value.SubDirectory != null) && path.Value.SubDirectory.Contains(".app/"))
                         {
                             var meta = module.Key.MetaData as XcodeBuilder.V2.XcodeMeta;
                             meta.Target.MakeApplicationBundle();
