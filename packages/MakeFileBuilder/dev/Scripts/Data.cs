@@ -136,6 +136,8 @@ namespace V2
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
             this.PrerequisitePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
             this.ShellCommands = new Bam.Core.StringArray();
+            this.OrderOnlyDependencies = new Bam.Core.StringArray();
+            this.OrderOnlyDependencies.Add("$(DIRS)");
         }
 
         public Target
@@ -210,6 +212,13 @@ namespace V2
         }
 
         public void
+        AddOrderOnlyDependency(
+            string ooDep)
+        {
+            this.OrderOnlyDependencies.AddUnique(ooDep);
+        }
+
+        public void
         WriteVariables(
             System.Text.StringBuilder variables)
         {
@@ -273,7 +282,10 @@ namespace V2
                         rules.AppendFormat("$({0}) ", preName);
                     }
                 }
-                rules.AppendFormat("| $(DIRS)");
+                if (this.OrderOnlyDependencies.Count > 0)
+                {
+                    rules.AppendFormat("| {0}", this.OrderOnlyDependencies.ToString(' '));
+                }
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)
                 {
@@ -322,6 +334,12 @@ namespace V2
         }
 
         private Bam.Core.StringArray ShellCommands
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.StringArray OrderOnlyDependencies
         {
             get;
             set;
