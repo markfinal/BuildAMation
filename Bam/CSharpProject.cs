@@ -230,6 +230,8 @@ namespace V2
                 writer.WriteLine("{0}Core.Log.ErrorMessage(exception.Message);", indent(4));
                 writer.WriteLine("{0}System.Environment.ExitCode = -1;", indent(4));
                 writer.WriteLine("{0}}}", indent(3));
+                writer.WriteLine(@"{0}Core.Log.Info((0 == System.Environment.ExitCode) ? ""\nBuild Succeeded"" : ""\nBuild Failed"");", indent(3));
+                writer.WriteLine(@"{0}Core.Log.DebugMessage(""Exit code {{0}}"", System.Environment.ExitCode);", indent(3));
                 writer.WriteLine("{0}}}", indent(2));
                 writer.WriteLine("{0}}}", indent(1));
                 writer.WriteLine("{0}}}", indent(0));
