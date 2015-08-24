@@ -102,10 +102,21 @@ namespace V2
         }
     }
 
+    public interface IGeneratedSourcePolicy
+    {
+        void
+        GenerateSource(
+            GeneratedSourceModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString generatedFilePath);
+    }
+
     public class GeneratedSourceModule :
         C.V2.SourceFile
     {
         private Bam.Core.V2.Tool Compiler;
+        private IGeneratedSourcePolicy Policy;
 
         public GeneratedSourceModule()
         {
@@ -124,10 +135,21 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var args = new Bam.Core.StringArray();
-            args.Add(Bam.Core.V2.TokenizedString.Create("$(buildroot)", this).Parse());
-            args.Add("Generated");
-            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
+            if (null == this.Policy)
+            {
+                return;
+            }
+
+            this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[Key]);
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            if (mode == "Native")
+            {
+                var className = "CodeGenTest.V2." + mode + "GenerateSource";
+                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
+            }
         }
     }
 }

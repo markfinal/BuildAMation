@@ -27,6 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace CodeGenTest
+{
+namespace V2
+{
+    public sealed class NativeGenerateSource :
+        IGeneratedSourcePolicy
+    {
+        void
+        IGeneratedSourcePolicy.GenerateSource(
+            GeneratedSourceModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString libraryPath)
+        {
+            var args = new Bam.Core.StringArray();
+            args.Add(Bam.Core.V2.TokenizedString.Create("$(buildroot)", sender).Parse());
+            args.Add("Generated");
+            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+        }
+    }
+}
+}
 namespace NativeBuilder
 {
     public sealed partial class NativeBuilder
