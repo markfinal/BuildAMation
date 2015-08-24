@@ -397,7 +397,7 @@ namespace V2
             text.AppendFormat("{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
                 indent, this.GUID, this.Source.GUID,
                 this.Name,
-                this.Parent.Name,
+                (null != this.Parent) ? this.Parent.Name : "Unknown",
                 this.IsA);
             if (this.Settings != null)
             {
