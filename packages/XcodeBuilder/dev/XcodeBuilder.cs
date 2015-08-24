@@ -2035,6 +2035,17 @@ namespace V2
         }
     }
 
+    public sealed class XcodeHeaderLibrary :
+        XcodeCommonProject
+    {
+        public XcodeHeaderLibrary(
+            Bam.Core.V2.Module module) :
+            base(module, null, Type.NA)
+        {
+            this.PullInProjectPreOrPostBuildSteps();
+        }
+    }
+
     public sealed class XcodeStaticLibrary :
         XcodeCommonProject
     {

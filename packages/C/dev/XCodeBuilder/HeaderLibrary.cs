@@ -27,6 +27,48 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace C
+{
+namespace V2
+{
+    public sealed class XcodeHeaderLibrary :
+        IHeaderLibraryPolicy
+    {
+        void
+        IHeaderLibraryPolicy.HeadersOnly(
+            HeaderLibrary sender,
+            Bam.Core.V2.ExecutionContext context,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+        {
+            var library = new XcodeBuilder.V2.XcodeHeaderLibrary(sender);
+            foreach (var header in headers)
+            {
+                if (header is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in header.Children)
+                    {
+                        var headerMod = child as HeaderFile;
+                        var headerFileRef = library.Project.FindOrCreateFileReference(
+                            headerMod.InputPath,
+                            XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
+                            sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                        library.AddHeader(headerFileRef);
+                    }
+                }
+                else
+                {
+                    var headerMod = header as HeaderFile;
+                    var headerFileRef = library.Project.FindOrCreateFileReference(
+                        headerMod.InputPath,
+                        XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
+                        sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                    library.AddHeader(headerFileRef);
+                }
+            }
+        }
+    }
+}
+}
 namespace XcodeBuilder
 {
     public sealed partial class XcodeBuilder

@@ -58,10 +58,15 @@ namespace V2
         GetExecutionPolicy(
             string mode)
         {
-            if (mode == "VSSolution")
+            switch (mode)
             {
-                var className = "C.V2." + mode + "HeaderLibrary";
-                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
+            case "VSSolution":
+            case "Xcode":
+                {
+                    var className = "C.V2." + mode + "HeaderLibrary";
+                    this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
+                }
+                break;
             }
         }
 
