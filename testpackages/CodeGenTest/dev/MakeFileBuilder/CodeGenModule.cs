@@ -27,6 +27,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace CodeGenTest
+{
+namespace V2
+{
+    public sealed class MakeFileGenerateSource :
+        IGeneratedSourcePolicy
+    {
+        void
+        IGeneratedSourcePolicy.GenerateSource(
+            GeneratedSourceModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString generatedFilePath)
+        {
+            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var rule = meta.AddRule();
+            rule.AddTarget(generatedFilePath);
+
+            var b = (compiler as GeneratedSourceTool).BuildOfTool.MetaData as MakeFileBuilder.V2.MakeFileMeta;
+            rule.AddOrderOnlyDependency(System.String.Format("$({0})", b.Rules[0].Targets[0].VariableName));
+
+            var commandLineArgs = new Bam.Core.StringArray();
+            // TODO: change this to a configuration directory really
+            commandLineArgs.Add(Bam.Core.V2.TokenizedString.Create("$(buildroot)", sender).Parse());
+            commandLineArgs.Add("Generated");
+
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat(compiler.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", compiler.Executable, commandLineArgs.ToString(' '));
+            rule.AddShellCommand(command.ToString());
+        }
+    }
+}
+}
 namespace MakeFileBuilder
 {
     public partial class MakeFileBuilder

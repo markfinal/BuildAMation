@@ -78,14 +78,18 @@ namespace V2
     public sealed class GeneratedSourceTool :
         Bam.Core.V2.Tool
     {
-        private C.V2.CModule buildTool;
+        public BuildCodeGenTool BuildOfTool
+        {
+            get;
+            private set;
+        }
 
         protected override void Init(Bam.Core.V2.Module parent)
         {
             base.Init(parent);
 
-            this.buildTool = Bam.Core.V2.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
-            this.Requires(this.buildTool);
+            this.BuildOfTool = Bam.Core.V2.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
+            this.Requires(this.BuildOfTool);
         }
 
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
@@ -97,7 +101,7 @@ namespace V2
         {
             get
             {
-                return this.buildTool.GeneratedPaths[C.V2.ConsoleApplication.Key];
+                return this.BuildOfTool.GeneratedPaths[C.V2.ConsoleApplication.Key];
             }
         }
     }
@@ -143,12 +147,19 @@ namespace V2
             this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[Key]);
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
-            if (mode == "Native")
+            switch (mode)
             {
-                var className = "CodeGenTest.V2." + mode + "GenerateSource";
-                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
+            case "Native":
+            case "MakeFile":
+                {
+                    var className = "CodeGenTest.V2." + mode + "GenerateSource";
+                    this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
+                }
+                break;
             }
         }
     }
