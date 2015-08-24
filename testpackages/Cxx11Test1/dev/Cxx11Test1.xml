@@ -9,6 +9,9 @@
     <Package Name="Gcc">
       <Version Id="4.8" Condition="'$(Platform)' == 'Windows' || '$(Platform)' == 'Unix'" />
     </Package>
+    <Package Name="MakeFileBuilder">
+      <Version Id="dev" />
+    </Package>
     <Package Name="Mingw">
       <Version Id="3.4.5" />
       <Version Id="4.5.0" />
