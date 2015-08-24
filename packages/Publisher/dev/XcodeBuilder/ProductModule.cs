@@ -66,6 +66,11 @@ namespace V2
                         var subdir = path.Value.SubDirectory;
                         foreach (var reference in path.Value.References)
                         {
+                            if (reference.Module.Package == module.Key.Package)
+                            {
+                                // same package has the same output folder, so don't bother copying
+                                continue;
+                            }
                             var commands = new Bam.Core.StringArray();
                             if (null != module.Key.MetaData)
                             {
