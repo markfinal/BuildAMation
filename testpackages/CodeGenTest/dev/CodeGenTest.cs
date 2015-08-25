@@ -155,6 +155,7 @@ namespace V2
             {
             case "Native":
             case "MakeFile":
+            case "VSSolution":
                 {
                     var className = "CodeGenTest.V2." + mode + "GenerateSource";
                     this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
