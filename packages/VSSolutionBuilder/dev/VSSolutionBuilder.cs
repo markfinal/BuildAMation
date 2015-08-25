@@ -1150,6 +1150,40 @@ namespace V2
             SixtyFour
         }
 
+        private static System.Collections.Generic.Dictionary<Bam.Core.V2.Module, VSSolutionMeta> InternalMap = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, VSSolutionMeta>();
+        private static System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.StringArray> StoredPreBuildCommands = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.StringArray>();
+        private static System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.StringArray> StoredPostBuildCommands = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.StringArray>();
+
+        public static void
+        AddPreBuildCommands(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commands)
+        {
+            if (InternalMap.ContainsKey(module))
+            {
+                InternalMap[module].Project.AddPreBuildCommands(commands, InternalMap[module].Configuration);
+            }
+            else
+            {
+                StoredPreBuildCommands.Add(module, commands);
+            }
+        }
+
+        public static void
+        AddPostBuildCommands(
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commands)
+        {
+            if (InternalMap.ContainsKey(module))
+            {
+                InternalMap[module].Project.AddPostBuildCommands(commands, InternalMap[module].Configuration);
+            }
+            else
+            {
+                StoredPostBuildCommands.Add(module, commands);
+            }
+        }
+
         protected VSSolutionMeta(
             Bam.Core.V2.Module module,
             VSProject.Type type,
@@ -1169,6 +1203,16 @@ namespace V2
                 this.Project = solution.FindOrCreateProject(module, type, "$(pkgbuilddir)/$(modulename).vcxproj");
                 this.Project.AddProjectConfiguration(this.Configuration, module, outPath);
                 this.ProjectModule = module;
+
+                InternalMap.Add(module, this);
+                if (StoredPreBuildCommands.ContainsKey(module))
+                {
+                    this.Project.AddPreBuildCommands(StoredPreBuildCommands[module], this.Configuration);
+                }
+                if (StoredPostBuildCommands.ContainsKey(module))
+                {
+                    this.Project.AddPostBuildCommands(StoredPostBuildCommands[module], this.Configuration);
+                }
             }
             else
             {
