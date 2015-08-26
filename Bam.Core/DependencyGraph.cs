@@ -106,6 +106,10 @@ namespace V2
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
             this.Macros.Add("buildroot", Core.State.BuildRoot);
+            if (Core.State.PackageInfo.Count > 0)
+            {
+                this.Macros.Add("mainpackagename", Core.State.PackageInfo[0].Name);
+            }
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
