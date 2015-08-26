@@ -187,7 +187,14 @@ namespace V2
                 var method = metaData.GetMethod("PreExecution");
                 if (null != method)
                 {
-                    method.Invoke(null, null);
+                    try
+                    {
+                        method.Invoke(null, null);
+                    }
+                    catch (System.Reflection.TargetInvocationException exception)
+                    {
+                        throw exception.InnerException;
+                    }
                 }
             }
 
@@ -346,7 +353,14 @@ namespace V2
                 var method = metaData.GetMethod("PostExecution");
                 if (null != method)
                 {
-                    method.Invoke(null, null);
+                    try
+                    {
+                        method.Invoke(null, null);
+                    }
+                    catch (System.Reflection.TargetInvocationException exception)
+                    {
+                        throw exception.InnerException;
+                    }
                 }
             }
         }
