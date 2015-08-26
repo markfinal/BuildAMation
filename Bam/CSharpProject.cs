@@ -219,7 +219,9 @@ namespace V2
                 writer.WriteLine("{0}Core.State.BuilderName = \"Native\";", indent(3));
                 writer.WriteLine("{0}var debug = new Core.V2.Environment();", indent(3));
                 writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
-                writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.V2.Environment>(debug);", indent(3));
+                writer.WriteLine("{0}var optimized = new Core.V2.Environment();", indent(3));
+                writer.WriteLine("{0}optimized.Configuration = Core.EConfiguration.Optimized;", indent(3));
+                writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.V2.Environment>(debug, optimized);", indent(3));
                 writer.WriteLine("{0}// execute", indent(3));
                 writer.WriteLine("{0}try", indent(3));
                 writer.WriteLine("{0}{{", indent(3));
