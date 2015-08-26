@@ -13,6 +13,10 @@ do
             echo "Deleting '$root/$package/$version/build' directory and all children"
             rm -fr $root/$package/$version/build
         fi
+        if [ -d "$root/$package/$version/debug_build" ]; then
+            echo "Deleting '$root/$package/$version/debug_build' directory and all children"
+            rm -fr $root/$package/$version/debug_build
+        fi
         if [ -d "$root/$package/$version/BamProject" ]; then
             echo "Deleting '$root/$package/$version/BamProject' directory and all children"
             rm -fr $root/$package/$version/BamProject

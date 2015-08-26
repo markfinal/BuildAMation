@@ -30,5 +30,9 @@ IF EXIST %1\build (
     ECHO Deleting '%1\build' directory and all children
     RMDIR /S /Q %1\build
 )
+IF EXIST %1\debug_build (
+    ECHO Deleting '%1\debug_build' directory and all children
+    RMDIR /S /Q %1\debug_build
+)
 
 ENDLOCAL
