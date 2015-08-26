@@ -40,6 +40,35 @@ namespace V2
             Bam.Core.V2.ExecutionContext context,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
+#if true
+            if (0 == headers.Count)
+            {
+                return;
+            }
+
+            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var project = solution.EnsureProjectExists(sender);
+            var config = project.GetConfiguration(sender);
+
+            config.SetType(VSSolutionBuilder.V2.VSProjectConfiguration.EType.Utility);
+            config.SetPlatformToolset(VSSolutionBuilder.V2.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
+            config.EnableIntermediatePath();
+
+            foreach (var header in headers)
+            {
+                if (header is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in header.Children)
+                    {
+                        config.AddHeaderFile(child as HeaderFile);
+                    }
+                }
+                else
+                {
+                    config.AddHeaderFile(header as HeaderFile);
+                }
+            }
+#else
             var library = new VSSolutionBuilder.V2.VSProjectHeaderLibrary(sender);
             foreach (var header in headers)
             {
@@ -55,6 +84,7 @@ namespace V2
                     library.AddHeaderFile(header as HeaderFile);
                 }
             }
+#endif
         }
     }
 }

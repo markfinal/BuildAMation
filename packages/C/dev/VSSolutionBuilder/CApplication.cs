@@ -45,6 +45,169 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+#if true
+            if (0 == objectFiles.Count)
+            {
+                return;
+            }
+
+            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var project = solution.EnsureProjectExists(sender);
+            var config = project.GetConfiguration(sender);
+
+            config.SetType((sender is DynamicLibrary) ? VSSolutionBuilder.V2.VSProjectConfiguration.EType.DynamicLibrary : VSSolutionBuilder.V2.VSProjectConfiguration.EType.Application);
+            config.SetPlatformToolset(VSSolutionBuilder.V2.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
+            config.SetOutputPath(executablePath);
+            config.EnableIntermediatePath();
+
+            foreach (var header in headers)
+            {
+                if (header is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in header.Children)
+                    {
+                        config.AddHeaderFile(child as HeaderFile);
+                    }
+                }
+                else
+                {
+                    config.AddHeaderFile(header as HeaderFile);
+                }
+            }
+
+            var commonObjectFile = (objectFiles[0] is Bam.Core.V2.IModuleGroup) ? objectFiles[0].Children[0] : objectFiles[0];
+            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
+            (commonObjectFile.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+
+            foreach (var input in objectFiles)
+            {
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in input.Children)
+                    {
+                        C.V2.SettingsBase deltaSettings = null;
+                        if (child != commonObjectFile)
+                        {
+                            deltaSettings = (child.Settings as C.V2.SettingsBase).Delta(commonObjectFile.Settings, child);
+                        }
+                        if (child.HasPatches)
+                        {
+                            C.V2.SettingsBase patchSettings = deltaSettings;
+                            if (null == patchSettings)
+                            {
+                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
+                            }
+                            else
+                            {
+                                patchSettings = deltaSettings.Clone(child);
+                            }
+                            child.ApplySettingsPatches(patchSettings, honourParents: false);
+                        }
+
+                        config.AddSourceFile(child, deltaSettings);
+                    }
+                }
+                else
+                {
+                    C.V2.SettingsBase deltaSettings = null;
+                    if (input != commonObjectFile)
+                    {
+                        deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObjectFile.Settings, input);
+                    }
+                    config.AddSourceFile(input, deltaSettings);
+                }
+            }
+
+            foreach (var input in libraries)
+            {
+                if (null != input.MetaData)
+                {
+                    if ((input is C.V2.StaticLibrary) || (input is C.V2.DynamicLibrary))
+                    {
+                        project.LinkAgainstProject(solution.EnsureProjectExists(input));
+                    }
+                    else if ((input is C.V2.CSDKModule) || (input is C.V2.HeaderLibrary))
+                    {
+                        continue;
+                    }
+                    else if (input is ExternalFramework)
+                    {
+                        throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this buildable library module, {0}", input.ToString());
+                    }
+                }
+                else
+                {
+                    if (input is C.V2.StaticLibrary)
+                    {
+                        // TODO: probably a simplification of the DLL codepath
+                        throw new System.NotImplementedException();
+                    }
+                    else if (input is C.V2.DynamicLibrary)
+                    {
+                        var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+                        if (sender.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            var libraryPath = input.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].Parse();
+                            var libraryDir = System.IO.Path.GetDirectoryName(libraryPath);
+                            var libraryName = System.IO.Path.GetFileName(libraryPath);
+                            linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(libraryDir, null));
+                            linker.Libraries.AddUnique(libraryName);
+                        }
+                        else
+                        {
+                            var libraryPath = input.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
+                            var libraryDir = System.IO.Path.GetDirectoryName(libraryPath);
+                            linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(libraryDir, null));
+                            if ((sender.Tool as C.V2.LinkerTool).UseLPrefixLibraryPaths)
+                            {
+                                var libName = System.IO.Path.GetFileNameWithoutExtension(libraryPath);
+                                libName = libName.Substring(3); // trim off lib prefix
+                                linker.Libraries.AddUnique(System.String.Format("-l{0}", libName));
+                            }
+                            else
+                            {
+                                var libraryName = System.IO.Path.GetFileName(libraryPath);
+                                linker.Libraries.AddUnique(libraryName);
+                            }
+                        }
+                    }
+                    else if ((input is C.V2.CSDKModule) || (input is C.V2.HeaderLibrary))
+                    {
+                        continue;
+                    }
+                    else if (input is ExternalFramework)
+                    {
+                        throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this prebuilt library module, {0}", input.ToString());
+                    }
+                }
+            }
+
+            var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Linker);
+            (sender.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, linkerGroup);
+
+            // order only dependencies
+            foreach (var required in sender.Requirements)
+            {
+                if (null == required.MetaData)
+                {
+                    continue;
+                }
+
+                var requiredProject = required.MetaData as VSSolutionBuilder.V2.VSProject;
+                if (null != requiredProject)
+                {
+                    project.RequiresProject(requiredProject);
+                }
+            }
+#else
             // inspect prebuilt library dependencies, which are added as part of the linker options
             foreach (var input in libraries)
             {
@@ -200,6 +363,7 @@ namespace V2
                     throw new Bam.Core.Exception("Don't know how to handle this library module, {0}", input.ToString());
                 }
             }
+#endif
         }
     }
 }

@@ -38,6 +38,19 @@ namespace V2
             public static void Defaults(this C.V2.ICOnlyCompilerOptions settings, Bam.Core.V2.Module module)
             {
             }
+            public static void
+            Delta(
+                this C.V2.ICOnlyCompilerOptions settings,
+                C.V2.ICOnlyCompilerOptions delta,
+                C.V2.ICOnlyCompilerOptions other)
+            {
+            }
+            public static void
+            Clone(
+                this C.V2.ICOnlyCompilerOptions settings,
+                C.V2.ICOnlyCompilerOptions other)
+            {
+            }
         }
     }
 
@@ -110,10 +123,10 @@ namespace V2
     }
 
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
-    public abstract class ToolRegistration :
+    public abstract class ToolRegistrationAttribute :
         System.Attribute
     {
-        protected ToolRegistration(
+        protected ToolRegistrationAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform,
             EBit bitDepth)
@@ -143,7 +156,7 @@ namespace V2
     }
 
     public sealed class RegisterCCompilerAttribute :
-        ToolRegistration
+        ToolRegistrationAttribute
     {
         public RegisterCCompilerAttribute(
             string toolsetName,
@@ -156,7 +169,7 @@ namespace V2
     }
 
     public sealed class RegisterCxxCompilerAttribute :
-        ToolRegistration
+        ToolRegistrationAttribute
     {
         public RegisterCxxCompilerAttribute(
             string toolsetName,
@@ -169,7 +182,7 @@ namespace V2
     }
 
     public sealed class RegisterArchiverAttribute :
-        ToolRegistration
+        ToolRegistrationAttribute
     {
         public RegisterArchiverAttribute(
             string toolsetName,
@@ -182,7 +195,7 @@ namespace V2
     }
 
     public sealed class RegisterCLinkerAttribute :
-        ToolRegistration
+        ToolRegistrationAttribute
     {
         public RegisterCLinkerAttribute(
             string toolsetName,
@@ -195,7 +208,7 @@ namespace V2
     }
 
     public sealed class RegisterCxxLinkerAttribute :
-        ToolRegistration
+        ToolRegistrationAttribute
     {
         public RegisterCxxLinkerAttribute(
             string toolsetName,
@@ -208,7 +221,7 @@ namespace V2
     }
 
     public sealed class RegisterObjectiveCCompilerAttribute :
-        ToolRegistration
+        ToolRegistrationAttribute
     {
         public RegisterObjectiveCCompilerAttribute(
             string toolsetName,
@@ -221,7 +234,7 @@ namespace V2
     }
 
     public sealed class RegisterObjectiveCxxCompilerAttribute :
-        ToolRegistration
+        ToolRegistrationAttribute
     {
         public RegisterObjectiveCxxCompilerAttribute(
             string toolsetName,
@@ -275,7 +288,7 @@ namespace V2
 
         private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
         GetToolsFromMetaData<T>()
-            where T : ToolRegistration
+            where T : ToolRegistrationAttribute
         {
             var allTypes = Bam.Core.State.ScriptAssembly.GetTypes();
             foreach (var type in allTypes)
@@ -299,7 +312,7 @@ namespace V2
         private static void
         FindTools<AttributeType, ToolType>(
             System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<ToolType>> collection)
-            where AttributeType : ToolRegistration
+            where AttributeType : ToolRegistrationAttribute
             where ToolType : Bam.Core.V2.Tool
         {
             var graph = Bam.Core.V2.Graph.Instance;
@@ -349,7 +362,7 @@ namespace V2
                     foreach (var tool in candidates)
                     {
                         var attr = tool.GetType().GetCustomAttributes(false);
-                        if ((attr[0] as ToolRegistration).ToolsetName == DefaultToolChain)
+                        if ((attr[0] as ToolRegistrationAttribute).ToolsetName == DefaultToolChain)
                         {
                             return tool;
                         }
@@ -366,7 +379,7 @@ namespace V2
                 throw new Bam.Core.Exception(tooManyInstance.ToString());
             }
             var toolToUse = candidates[0];
-            var toolToolSet = (toolToUse.GetType().GetCustomAttributes(false)[0] as ToolRegistration).ToolsetName;
+            var toolToolSet = (toolToUse.GetType().GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName;
             if ((null != DefaultToolChain) && (toolToolSet != DefaultToolChain))
             {
                 throw new Bam.Core.Exception("{0} is from toolchain {1}, not the toolchain requested {2}", toolDescription, toolToolSet, DefaultToolChain);

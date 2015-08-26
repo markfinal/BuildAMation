@@ -41,6 +41,15 @@ namespace V2
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
+#if true
+            var encapsulating = sender.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            sender.MetaData = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler, include: source.GeneratedPaths[C.V2.SourceFile.Key], uniqueToProject: true);
+#else
             if (!(sender is Bam.Core.V2.IChildModule) || (null == (sender as Bam.Core.V2.IChildModule).Parent))
             {
                 Bam.Core.Log.DebugMessage("Standalone source file {0} not converted into VS project", source.GeneratedPaths[C.V2.SourceFile.Key].Parse());
@@ -50,6 +59,7 @@ namespace V2
             var platform = (sender.Compiler is VisualC.Compiler64 || sender.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
             var objectFile = new VSSolutionBuilder.V2.VSProjectObjectFile(sender, objectFilePath, platform);
             objectFile.Source = source.GeneratedPaths[C.V2.SourceFile.Key];
+#endif
         }
     }
 }

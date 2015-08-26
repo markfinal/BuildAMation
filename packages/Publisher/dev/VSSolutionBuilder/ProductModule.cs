@@ -63,13 +63,25 @@ namespace V2
                                 var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, subdir));
                                 commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
                                 commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
+#if true
+                                var project = module.Key.MetaData as VSSolutionBuilder.V2.VSProject;
+                                var config = project.GetConfiguration(module.Key);
+                                config.AddPostBuildCommands(commands);
+#else
                                 (module.Key.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+#endif
                                 path.Value.DestinationDir = destinationDir;
                             }
                             else
                             {
                                 commands.Add(System.String.Format(@"copy /V /Y {0} $(OutDir)\{1}\{2}", sourcePath, subdir, System.IO.Path.GetFileName(sourcePath)));
+#if true
+                                var project = reference.Module.MetaData as VSSolutionBuilder.V2.VSProject;
+                                var config = project.GetConfiguration(reference.Module);
+                                config.AddPostBuildCommands(commands);
+#else
                                 (reference.Module.MetaData as VSSolutionBuilder.V2.VSCommonProject).AddPostBuildCommands(commands);
+#endif
                             }
                         }
                     }

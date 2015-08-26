@@ -44,11 +44,27 @@ namespace DefaultSettings
             settings.LanguageStandard = ELanguageStandard.Cxx98;
         }
         public static void
+        Delta(
+            this C.V2.ICxxOnlyCompilerOptions settings,
+            C.V2.ICxxOnlyCompilerOptions delta,
+            C.V2.ICxxOnlyCompilerOptions other)
+        {
+            if (settings.ExceptionHandler != other.ExceptionHandler)
+            {
+                delta.ExceptionHandler = settings.ExceptionHandler;
+            }
+            if (settings.LanguageStandard != other.LanguageStandard)
+            {
+                delta.LanguageStandard = settings.LanguageStandard;
+            }
+        }
+        public static void
         Clone(
             this C.V2.ICxxOnlyCompilerOptions settings,
             C.V2.ICxxOnlyCompilerOptions other)
         {
             settings.ExceptionHandler = other.ExceptionHandler;
+            settings.LanguageStandard = other.LanguageStandard;
         }
     }
 }

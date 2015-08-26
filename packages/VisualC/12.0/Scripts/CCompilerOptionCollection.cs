@@ -34,6 +34,111 @@ namespace VisualC
 {
     public static partial class VSSolutionImplementation
     {
+#if true
+        public static void
+        Convert(
+            this C.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            // write nothing for disabled debug symbols, otherwise the source files rebuild continually
+            // and reports a warning that the pdb file does not exist
+            // the IDE can write None into the .vcxproj, but this has the same behaviour
+            // https://connect.microsoft.com/VisualStudio/feedback/details/833494/project-with-debug-information-disabled-always-rebuilds
+            if (options.DebugSymbols.GetValueOrDefault(false))
+            {
+                settingsGroup.AddSetting("DebugInformationFormat", "OldStyle", condition);
+            }
+
+            if (options.DisableWarnings.Count > 0)
+            {
+                settingsGroup.AddSetting("DisableSpecificWarnings", options.DisableWarnings, condition, inheritExisting: true);
+            }
+
+            if (options.IncludePaths.Count > 0)
+            {
+                settingsGroup.AddSetting("AdditionalIncludeDirectories", options.IncludePaths, condition, inheritExisting: true);
+            }
+
+            if (options.OmitFramePointer.HasValue)
+            {
+                settingsGroup.AddSetting("OmitFramePointers", options.OmitFramePointer.Value, condition);
+            }
+
+            if (options.Optimization.HasValue)
+            {
+                System.Func<string> optimization = () =>
+                    {
+                        switch (options.Optimization.Value)
+                        {
+                            case C.EOptimization.Off:
+                                return "Disabled";
+
+                            case C.EOptimization.Size:
+                                return "MinSpace";
+
+                            case C.EOptimization.Speed:
+                                return "MaxSpeed";
+
+                            case C.EOptimization.Full:
+                                return "Full";
+
+                            default:
+                                throw new Bam.Core.Exception("Unknown optimization type, {0}", options.Optimization.Value.ToString());
+                        }
+                    };
+                settingsGroup.AddSetting("Optimization", optimization(), condition);
+            }
+
+            if (options.PreprocessorDefines.Count > 0)
+            {
+                settingsGroup.AddSetting("PreprocessorDefinitions", options.PreprocessorDefines, condition, inheritExisting: true);
+            }
+
+            if (options.PreprocessorUndefines.Count > 0)
+            {
+                settingsGroup.AddSetting("UndefinePreprocessorDefinitions", options.PreprocessorUndefines, condition, inheritExisting: true);
+            }
+
+            if (options.TargetLanguage.HasValue)
+            {
+                System.Func<string> targetLanguage = () =>
+                {
+                    switch (options.TargetLanguage.Value)
+                    {
+                        case C.ETargetLanguage.C:
+                            return "CompileAsC";
+
+                        case C.ETargetLanguage.Cxx:
+                            return "CompileAsCpp";
+
+                        case C.ETargetLanguage.Default:
+                            return "Default";
+
+                        default:
+                            throw new Bam.Core.Exception("Unknown target language, {0}", options.TargetLanguage.Value.ToString());
+                    }
+                };
+                settingsGroup.AddSetting("CompileAs", targetLanguage(), condition);
+            }
+
+            if (options.WarningsAsErrors.HasValue)
+            {
+                settingsGroup.AddSetting("TreatWarningAsError", options.WarningsAsErrors.Value, condition);
+            }
+
+            if (options.OutputType.HasValue)
+            {
+                settingsGroup.AddSetting("PreprocessToFile", options.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
+                if (module is C.V2.ObjectFile)
+                {
+                    settingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.V2.ObjectFile.Key], condition);
+                }
+            }
+
+        }
+#else
         public static void
         Convert(
             this C.V2.ICommonCompilerOptions options,
@@ -43,10 +148,6 @@ namespace VisualC
         {
             var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            // write nothing for disabled debug symbols, otherwise the source files rebuild continually
-            // and reports a warning that the pdb file does not exist
-            // the IDE can write None into the .vcxproj, but this has the same behaviour
-            // https://connect.microsoft.com/VisualStudio/feedback/details/833494/project-with-debug-information-disabled-always-rebuilds
             if (null != options.DebugSymbols && options.DebugSymbols == true)
             {
                 project.AddToolSetting(groupElement, "DebugInformationFormat", options.DebugSymbols, configuration,
@@ -198,7 +299,18 @@ namespace VisualC
                 }
             }
         }
+#endif
 
+#if true
+        public static void
+        Convert(
+            this C.V2.ICOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+        }
+#else
         public static void
         Convert(
             this C.V2.ICOnlyCompilerOptions options,
@@ -207,7 +319,42 @@ namespace VisualC
             VSSolutionBuilder.V2.VSProjectConfiguration configuration)
         {
         }
+#endif
 
+#if true
+        public static void
+        Convert(
+            this C.V2.ICxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            if (options.ExceptionHandler.HasValue)
+            {
+                System.Func<string> exceptionHandler = () =>
+                {
+                    switch (options.ExceptionHandler.Value)
+                    {
+                        case C.Cxx.EExceptionHandler.Disabled:
+                            return "false";
+
+                        case C.Cxx.EExceptionHandler.Asynchronous:
+                            return "Async";
+
+                        case C.Cxx.EExceptionHandler.Synchronous:
+                            return "Sync";
+
+                        case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
+                            return "SyncCThrow";
+
+                        default:
+                            throw new Bam.Core.Exception("Unknown exception handler, {0}", options.ExceptionHandler.Value.ToString());
+                    }
+                };
+                settingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);
+            }
+        }
+#else
         public static void
         Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
@@ -242,7 +389,22 @@ namespace VisualC
                     });
             }
         }
+#endif
 
+#if true
+        public static void
+        Convert(
+            this VisualCCommon.V2.ICommonCompilerOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            if (options.NoLogo.GetValueOrDefault(false))
+            {
+                settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
+            }
+        }
+#else
         public static void
         Convert(
             this VisualCCommon.V2.ICommonCompilerOptions options,
@@ -261,6 +423,7 @@ namespace VisualC
                     });
             }
         }
+#endif
     }
 
     public static partial class NativeImplementation
@@ -628,6 +791,18 @@ namespace V2
             //(this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
+#if true
+        void
+        VisualStudioProcessor.V2.IConvertToProject.Convert(
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            string condition)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, settings, condition);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module, settings, condition);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
+        }
+#else
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -638,6 +813,7 @@ namespace V2
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, groupElement, configuration);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
         }
+#endif
     }
 
     public sealed class CxxCompilerSettings :
@@ -687,6 +863,18 @@ namespace V2
 #endif
         }
 
+#if true
+        void
+        VisualStudioProcessor.V2.IConvertToProject.Convert(
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            string condition)
+        {
+            (this as C.V2.ICommonCompilerOptions).Convert(module, settings, condition);
+            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, settings, condition);
+            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
+        }
+#else
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -697,6 +885,7 @@ namespace V2
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, groupElement, configuration);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
         }
+#endif
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {

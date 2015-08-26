@@ -38,6 +38,14 @@ namespace V2
 
         public void Add(string name, string value)
         {
+            if (this.Defines.ContainsKey(name))
+            {
+                if (this.Defines[name] != value)
+                {
+                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with value {1}. Cannot change it to {2}", name, this.Defines[name], value);
+                }
+                return;
+            }
             this.Defines.Add(name, value);
         }
 
@@ -81,6 +89,23 @@ namespace V2
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            var content = new System.Text.StringBuilder();
+            foreach (var item in this.Defines)
+            {
+                if (System.String.IsNullOrEmpty(item.Value))
+                {
+                    content.AppendFormat("{0};", item.Key);
+                }
+                else
+                {
+                    content.AppendFormat("{0}={1};", item.Key, item.Value);
+                }
+            }
+            return content.ToString();
         }
     }
 }

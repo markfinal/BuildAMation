@@ -42,6 +42,97 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
+#if true
+            if (0 == inputs.Count)
+            {
+                return;
+            }
+
+            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var project = solution.EnsureProjectExists(sender);
+            var config = project.GetConfiguration(sender);
+
+            config.SetType(VSSolutionBuilder.V2.VSProjectConfiguration.EType.StaticLibrary);
+            config.SetPlatformToolset(VSSolutionBuilder.V2.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
+            config.SetOutputPath(libraryPath);
+            config.EnableIntermediatePath();
+
+            foreach (var header in headers)
+            {
+                if (header is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in header.Children)
+                    {
+                        config.AddHeaderFile(child as HeaderFile);
+                    }
+                }
+                else
+                {
+                    config.AddHeaderFile(header as HeaderFile);
+                }
+            }
+
+            var commonObjectFile = (inputs[0] is Bam.Core.V2.IModuleGroup) ? inputs[0].Children[0] : inputs[0];
+            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
+            (commonObjectFile.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+
+            foreach (var input in inputs)
+            {
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in input.Children)
+                    {
+                        C.V2.SettingsBase deltaSettings = null;
+                        if (child != commonObjectFile)
+                        {
+                            deltaSettings = (child.Settings as C.V2.SettingsBase).Delta(commonObjectFile.Settings, child);
+                        }
+                        if (child.HasPatches)
+                        {
+                            C.V2.SettingsBase patchSettings = deltaSettings;
+                            if (null == patchSettings)
+                            {
+                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
+                            }
+                            else
+                            {
+                                patchSettings = deltaSettings.Clone(child);
+                            }
+                            child.ApplySettingsPatches(patchSettings, honourParents: false);
+                        }
+
+                        config.AddSourceFile(child, deltaSettings);
+                    }
+                }
+                else
+                {
+                    C.V2.SettingsBase deltaSettings = null;
+                    if (input != commonObjectFile)
+                    {
+                        deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObjectFile.Settings, input);
+                    }
+                    config.AddSourceFile(input, deltaSettings);
+                }
+            }
+
+            var settingsGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Librarian);
+            (sender.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, settingsGroup);
+
+            // order only dependencies
+            foreach (var required in sender.Requirements)
+            {
+                if (null == required.MetaData)
+                {
+                    continue;
+                }
+
+                var requiredProject = required.MetaData as VSSolutionBuilder.V2.VSProject;
+                if (null != requiredProject)
+                {
+                    project.RequiresProject(requiredProject);
+                }
+            }
+#else
             // cannot tell the architecture from the Librarian tool, so look at all the inputs
             // these should be consistent
             VSSolutionBuilder.V2.VSSolutionMeta.EPlatform? platform = null;
@@ -130,6 +221,7 @@ namespace V2
                     library.AddHeaderFile(header as HeaderFile);
                 }
             }
+#endif
         }
     }
 }

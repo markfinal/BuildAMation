@@ -42,6 +42,25 @@ namespace V2
             Bam.Core.V2.TokenizedString generatedMocSource,
             C.V2.HeaderFile source)
         {
+#if true
+            var encapsulating = sender.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            var output = generatedMocSource.Parse();
+
+            var args = new Bam.Core.StringArray();
+            args.Add(mocCompiler.Executable.Parse());
+            args.Add(System.String.Format("-o{0}", output));
+            args.Add("%(FullPath)");
+
+            var customBuild = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.CustomBuild, include: source.InputPath, uniqueToProject: true);
+            customBuild.AddSetting("Command", args.ToString(' '), condition: config.ConditionText);
+            customBuild.AddSetting("Message", System.String.Format("Moccing {0}", System.IO.Path.GetFileName(source.InputPath.Parse())), condition: config.ConditionText);
+            customBuild.AddSetting("Outputs", output, condition: config.ConditionText);
+#else
             if (null != source.MetaData)
             {
                 throw new Bam.Core.Exception("Header file {0} already has VSSolution metadata", source.InputPath.Parse());
@@ -65,6 +84,7 @@ namespace V2
             var headerFile = new VSSolutionBuilder.V2.VSProjectHeaderFile(source, platform);
             headerFile.Source = source.GeneratedPaths[C.V2.HeaderFile.Key];
             headerFile.CustomBuild = customBuild;
+#endif
         }
     }
 }

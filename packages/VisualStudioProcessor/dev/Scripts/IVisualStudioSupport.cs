@@ -33,11 +33,19 @@ namespace V2
 {
     public interface IConvertToProject
     {
+#if true
+        void
+        Convert(
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            string condition = null);
+#else
         void
         Convert(
             Bam.Core.V2.Module module,
             System.Xml.XmlElement groupElement,
             VSSolutionBuilder.V2.VSProjectConfiguration configuration);
+#endif
     }
 }
     public interface IVisualStudioSupport

@@ -62,6 +62,28 @@ namespace VisualC
 
     public static partial class VSSolutionImplementation
     {
+#if true
+        public static void
+        Convert(
+            this C.V2.ICommonArchiverOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            switch (options.OutputType)
+            {
+                case C.EArchiverOutput.StaticLibrary:
+                    {
+                        var outPath = module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
+                    }
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unknown output type, {0}", options.OutputType.ToString());
+            }
+        }
+#else
         public static void
         Convert(
             this C.V2.ICommonArchiverOptions options,
@@ -85,7 +107,22 @@ namespace VisualC
                     }
                 });
         }
+#endif
 
+#if true
+        public static void
+        Convert(
+            this V2.ICommonArchiverOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            if (options.NoLogo.GetValueOrDefault(false))
+            {
+                settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
+            }
+        }
+#else
         public static void
         Convert(
             this V2.ICommonArchiverOptions options,
@@ -104,6 +141,7 @@ namespace VisualC
                     }
                 });
         }
+#endif
     }
 
 namespace V2
@@ -165,6 +203,16 @@ namespace DefaultSettings
             (this as ICommonArchiverOptions).Convert(module, commandLine);
         }
 
+#if true
+        void
+        VisualStudioProcessor.V2.IConvertToProject.Convert(
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            string condition)
+        {
+            (this as C.V2.ICommonArchiverOptions).Convert(module, settings, condition);
+        }
+#else
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -173,6 +221,7 @@ namespace DefaultSettings
         {
             (this as C.V2.ICommonArchiverOptions).Convert(module, groupElement, configuration);
         }
+#endif
     }
 
     [C.V2.RegisterArchiver("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]

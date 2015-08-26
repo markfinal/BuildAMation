@@ -81,6 +81,40 @@ namespace VisualC
 
     public static partial class VSSolutionImplementation
     {
+#if true
+        public static void
+        Convert(
+            this C.V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            switch (options.OutputType)
+            {
+                case C.ELinkerOutput.Executable:
+                    {
+                        var outPath = module.GeneratedPaths[C.V2.ConsoleApplication.Key].Parse();
+                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
+                    }
+                    break;
+
+                case C.ELinkerOutput.DynamicLibrary:
+                    {
+                        var outPath = module.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
+                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
+
+                        var importPath = module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                        settingsGroup.AddSetting("ImportLibrary", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(importPath)), condition);
+                    }
+                    break;
+            }
+
+            settingsGroup.AddSetting("AdditionalLibraryDirectories", options.LibraryPaths, condition);
+            settingsGroup.AddSetting("AdditionalDependencies", options.Libraries, condition);
+
+            settingsGroup.AddSetting("GenerateDebugInformation", options.DebugSymbols.GetValueOrDefault(false), condition);
+        }
+#else
         public static void
         Convert(
             this C.V2.ICommonLinkerOptions options,
@@ -148,7 +182,22 @@ namespace VisualC
                     builder.AppendFormat(setting.Value.ToString().ToLower());
                 });
         }
+#endif
 
+#if true
+        public static void
+        Convert(
+            this V2.ICommonLinkerOptions options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            if (options.NoLogo.GetValueOrDefault(false))
+            {
+                settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
+            }
+        }
+#else
         public static void
         Convert(
             this V2.ICommonLinkerOptions options,
@@ -167,6 +216,7 @@ namespace VisualC
                     }
                 });
         }
+#endif
     }
 
 namespace V2
@@ -248,6 +298,17 @@ namespace V2
             (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
 
+#if true
+        void
+        VisualStudioProcessor.V2.IConvertToProject.Convert(
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            string condition)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, settings, condition);
+            (this as ICommonLinkerOptions).Convert(module, settings, condition);
+        }
+#else
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -257,6 +318,7 @@ namespace V2
             (this as C.V2.ICommonLinkerOptions).Convert(module, groupElement, configuration);
             (this as ICommonLinkerOptions).Convert(module, groupElement, configuration);
         }
+#endif
     }
 
     public abstract class LinkerBase :
