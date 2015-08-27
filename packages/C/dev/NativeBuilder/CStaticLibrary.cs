@@ -29,44 +29,44 @@
 #endregion // License
 namespace C
 {
-    namespace V2
+namespace V2
+{
+    public sealed class NativeLibrarian :
+        ILibrarianPolicy
     {
-        public sealed class NativeLibrarian :
-            ILibrarianPolicy
+        void
+        ILibrarianPolicy.Archive(
+            StaticLibrary sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.TokenizedString libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
-            void
-            ILibrarianPolicy.Archive(
-                StaticLibrary sender,
-                Bam.Core.V2.ExecutionContext context,
-                Bam.Core.V2.TokenizedString libraryPath,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+            sender.MetaData = new Bam.Core.StringArray();
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
-                sender.MetaData = new Bam.Core.StringArray();
-                var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
-                if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
-                {
-                    var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                    map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
-                }
-
-                var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
-                if (!System.IO.Directory.Exists(libraryFileDir))
-                {
-                    System.IO.Directory.CreateDirectory(libraryFileDir);
-                }
-
-                var commandLine = sender.MetaData as Bam.Core.StringArray;
-
-                foreach (var input in objectFiles)
-                {
-                    commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
-                }
-
-                CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
             }
+
+            var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
+            if (!System.IO.Directory.Exists(libraryFileDir))
+            {
+                System.IO.Directory.CreateDirectory(libraryFileDir);
+            }
+
+            var commandLine = sender.MetaData as Bam.Core.StringArray;
+
+            foreach (var input in objectFiles)
+            {
+                commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+            }
+
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
         }
     }
+}
 }
 namespace NativeBuilder
 {

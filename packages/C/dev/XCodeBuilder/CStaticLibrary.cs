@@ -29,111 +29,111 @@
 #endregion // License
 namespace C
 {
-    namespace V2
+namespace V2
+{
+    public sealed class XcodeLibrarian :
+        ILibrarianPolicy
     {
-        public sealed class XcodeLibrarian :
-            ILibrarianPolicy
+        void
+        ILibrarianPolicy.Archive(
+            StaticLibrary sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.TokenizedString libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
-            void
-            ILibrarianPolicy.Archive(
-                StaticLibrary sender,
-                Bam.Core.V2.ExecutionContext context,
-                Bam.Core.V2.TokenizedString libraryPath,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
-            {
-                var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
+            var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
 
 #if true
-                if (objectFiles.Count > 1)
+            if (objectFiles.Count > 1)
+            {
+                var xcodeConvertParameterTypes = new Bam.Core.TypeArray
                 {
-                    var xcodeConvertParameterTypes = new Bam.Core.TypeArray
-                    {
-                        typeof(Bam.Core.V2.Module),
-                        typeof(XcodeBuilder.V2.Configuration)
-                    };
+                    typeof(Bam.Core.V2.Module),
+                    typeof(XcodeBuilder.V2.Configuration)
+                };
 
-                    var sharedSettings = C.V2.SettingsBase.SharedSettings(
-                        objectFiles,
-                        typeof(Clang.XcodeImplementation),
-                        typeof(XcodeProjectProcessor.V2.IConvertToProject),
-                        xcodeConvertParameterTypes);
-                    library.SetCommonCompilationOptions(null, sharedSettings);
+                var sharedSettings = C.V2.SettingsBase.SharedSettings(
+                    objectFiles,
+                    typeof(Clang.XcodeImplementation),
+                    typeof(XcodeProjectProcessor.V2.IConvertToProject),
+                    xcodeConvertParameterTypes);
+                library.SetCommonCompilationOptions(null, sharedSettings);
 
-                    foreach (var objFile in objectFiles)
+                foreach (var objFile in objectFiles)
+                {
+                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                    library.AddSource(objFile, meta.Source, meta.Output, deltaSettings);
+                    meta.Project = library.Project;
+                }
+            }
+            else
+            {
+                library.SetCommonCompilationOptions(null, objectFiles[0].Settings);
+                foreach (var objFile in objectFiles)
+                {
+                    var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                    library.AddSource(objFile, meta.Source, meta.Output, null);
+                    meta.Project = library.Project;
+                }
+            }
+#else
+            var commonObject = inputs[0];
+            library.SetCommonCompilationOptions(commonObject, commonObject.Settings);
+
+            foreach (var input in inputs)
+            {
+                C.V2.SettingsBase deltaSettings = null;
+                if (input != commonObject)
+                {
+                    deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObject.Settings, input);
+                }
+
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in input.Children)
                     {
-                        var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
-                        var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                        library.AddSource(objFile, meta.Source, meta.Output, deltaSettings);
+                        Bam.Core.V2.Settings patchSettings = deltaSettings;
+                        if (child.HasPatches)
+                        {
+                            if (null == patchSettings)
+                            {
+                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
+                            }
+                            else
+                            {
+                                patchSettings = deltaSettings.Clone(child);
+                            }
+                            child.ApplySettingsPatches(patchSettings, honourParents: false);
+                        }
+
+                        var meta = child.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                        library.AddSource(child, meta.Source, meta.Output, patchSettings);
                         meta.Project = library.Project;
                     }
                 }
                 else
                 {
-                    library.SetCommonCompilationOptions(null, objectFiles[0].Settings);
-                    foreach (var objFile in objectFiles)
-                    {
-                        var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                        library.AddSource(objFile, meta.Source, meta.Output, null);
-                        meta.Project = library.Project;
-                    }
+                    var meta = input.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                    library.AddSource(input, meta.Source, meta.Output, deltaSettings);
+                    meta.Project = library.Project;
                 }
-#else
-                var commonObject = inputs[0];
-                library.SetCommonCompilationOptions(commonObject, commonObject.Settings);
-
-                foreach (var input in inputs)
-                {
-                    C.V2.SettingsBase deltaSettings = null;
-                    if (input != commonObject)
-                    {
-                        deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObject.Settings, input);
-                    }
-
-                    if (input is Bam.Core.V2.IModuleGroup)
-                    {
-                        foreach (var child in input.Children)
-                        {
-                            Bam.Core.V2.Settings patchSettings = deltaSettings;
-                            if (child.HasPatches)
-                            {
-                                if (null == patchSettings)
-                                {
-                                    patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
-                                }
-                                else
-                                {
-                                    patchSettings = deltaSettings.Clone(child);
-                                }
-                                child.ApplySettingsPatches(patchSettings, honourParents: false);
-                            }
-
-                            var meta = child.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                            library.AddSource(child, meta.Source, meta.Output, patchSettings);
-                            meta.Project = library.Project;
-                        }
-                    }
-                    else
-                    {
-                        var meta = input.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                        library.AddSource(input, meta.Source, meta.Output, deltaSettings);
-                        meta.Project = library.Project;
-                    }
-                }
+            }
 #endif
 
-                foreach (var header in headers)
-                {
-                    var headerMod = header as HeaderFile;
-                    var headerFileRef = library.Project.FindOrCreateFileReference(
-                        headerMod.InputPath,
-                        XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
-                        sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
-                    library.AddHeader(headerFileRef);
-                }
+            foreach (var header in headers)
+            {
+                var headerMod = header as HeaderFile;
+                var headerFileRef = library.Project.FindOrCreateFileReference(
+                    headerMod.InputPath,
+                    XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
+                    sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                library.AddHeader(headerFileRef);
             }
         }
     }
+}
 }
 namespace XcodeBuilder
 {
