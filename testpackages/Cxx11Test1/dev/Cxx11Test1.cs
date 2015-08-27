@@ -57,6 +57,16 @@ namespace Cxx11Test1
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/main.cpp");
 
+            source.PrivatePatch(settings =>
+                {
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                        this.Linker is VisualC.V2.LinkerBase)
+                    {
+                        var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                        cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+                    }
+                });
+
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
