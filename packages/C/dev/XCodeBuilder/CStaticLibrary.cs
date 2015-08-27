@@ -44,7 +44,6 @@ namespace V2
         {
             var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
 
-#if true
             if (objectFiles.Count > 1)
             {
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
@@ -78,49 +77,6 @@ namespace V2
                     meta.Project = library.Project;
                 }
             }
-#else
-            var commonObject = inputs[0];
-            library.SetCommonCompilationOptions(commonObject, commonObject.Settings);
-
-            foreach (var input in inputs)
-            {
-                C.V2.SettingsBase deltaSettings = null;
-                if (input != commonObject)
-                {
-                    deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObject.Settings, input);
-                }
-
-                if (input is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in input.Children)
-                    {
-                        Bam.Core.V2.Settings patchSettings = deltaSettings;
-                        if (child.HasPatches)
-                        {
-                            if (null == patchSettings)
-                            {
-                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
-                            }
-                            else
-                            {
-                                patchSettings = deltaSettings.Clone(child);
-                            }
-                            child.ApplySettingsPatches(patchSettings, honourParents: false);
-                        }
-
-                        var meta = child.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                        library.AddSource(child, meta.Source, meta.Output, patchSettings);
-                        meta.Project = library.Project;
-                    }
-                }
-                else
-                {
-                    var meta = input.MetaData as XcodeBuilder.V2.XcodeObjectFile;
-                    library.AddSource(input, meta.Source, meta.Output, deltaSettings);
-                    meta.Project = library.Project;
-                }
-            }
-#endif
 
             foreach (var header in headers)
             {

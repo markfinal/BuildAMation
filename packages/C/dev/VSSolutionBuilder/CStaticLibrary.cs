@@ -62,7 +62,6 @@ namespace V2
                 config.AddHeaderFile(header as HeaderFile);
             }
 
-#if true
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
             if (objectFiles.Count > 1)
             {
@@ -94,50 +93,6 @@ namespace V2
                     config.AddSourceFile(objFile, null);
                 }
             }
-#else
-            var commonObjectFile = (inputs[0] is Bam.Core.V2.IModuleGroup) ? inputs[0].Children[0] : inputs[0];
-            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
-            (commonObjectFile.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
-
-            foreach (var input in inputs)
-            {
-                if (input is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in input.Children)
-                    {
-                        C.V2.SettingsBase deltaSettings = null;
-                        if (child != commonObjectFile)
-                        {
-                            deltaSettings = (child.Settings as C.V2.SettingsBase).Delta(commonObjectFile.Settings, child);
-                        }
-                        if (child.HasPatches)
-                        {
-                            C.V2.SettingsBase patchSettings = deltaSettings;
-                            if (null == patchSettings)
-                            {
-                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
-                            }
-                            else
-                            {
-                                patchSettings = deltaSettings.Clone(child);
-                            }
-                            child.ApplySettingsPatches(patchSettings, honourParents: false);
-                        }
-
-                        config.AddSourceFile(child, deltaSettings);
-                    }
-                }
-                else
-                {
-                    C.V2.SettingsBase deltaSettings = null;
-                    if (input != commonObjectFile)
-                    {
-                        deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObjectFile.Settings, input);
-                    }
-                    config.AddSourceFile(input, deltaSettings);
-                }
-            }
-#endif
 
             var settingsGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Librarian);
             (sender.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, settingsGroup);
