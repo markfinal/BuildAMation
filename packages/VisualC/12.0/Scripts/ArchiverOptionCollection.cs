@@ -62,7 +62,6 @@ namespace VisualC
 
     public static partial class VSSolutionImplementation
     {
-#if true
         public static void
         Convert(
             this C.V2.ICommonArchiverOptions options,
@@ -83,33 +82,7 @@ namespace VisualC
                     throw new Bam.Core.Exception("Unknown output type, {0}", options.OutputType.ToString());
             }
         }
-#else
-        public static void
-        Convert(
-            this C.V2.ICommonArchiverOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            project.AddToolSetting(groupElement, "OutputFile", options.OutputType, configuration,
-                (setting, attributeName, builder) =>
-                {
-                    switch (setting)
-                    {
-                        case C.EArchiverOutput.StaticLibrary:
-                            {
-                                var outPath = module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
-                                builder.Append(System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)));
-                            }
-                            break;
-                    }
-                });
-        }
-#endif
-
-#if true
         public static void
         Convert(
             this V2.ICommonArchiverOptions options,
@@ -122,26 +95,6 @@ namespace VisualC
                 settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
             }
         }
-#else
-        public static void
-        Convert(
-            this V2.ICommonArchiverOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
-
-            project.AddToolSetting(groupElement, "SuppressStartupBanner", options.NoLogo, configuration,
-                (setting, attributeName, builder) =>
-                {
-                    if (options.NoLogo.GetValueOrDefault())
-                    {
-                        builder.Append(options.NoLogo.ToString().ToLower());
-                    }
-                });
-        }
-#endif
     }
 
 namespace V2
@@ -203,7 +156,6 @@ namespace DefaultSettings
             (this as ICommonArchiverOptions).Convert(module, commandLine);
         }
 
-#if true
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -212,16 +164,6 @@ namespace DefaultSettings
         {
             (this as C.V2.ICommonArchiverOptions).Convert(module, settings, condition);
         }
-#else
-        void
-        VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            (this as C.V2.ICommonArchiverOptions).Convert(module, groupElement, configuration);
-        }
-#endif
     }
 
     [C.V2.RegisterArchiver("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]

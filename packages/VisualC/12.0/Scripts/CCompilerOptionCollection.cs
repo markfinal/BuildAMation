@@ -34,7 +34,6 @@ namespace VisualC
 {
     public static partial class VSSolutionImplementation
     {
-#if true
         public static void
         Convert(
             this C.V2.ICommonCompilerOptions options,
@@ -138,170 +137,7 @@ namespace VisualC
             }
 
         }
-#else
-        public static void
-        Convert(
-            this C.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            if (null != options.DebugSymbols && options.DebugSymbols == true)
-            {
-                project.AddToolSetting(groupElement, "DebugInformationFormat", options.DebugSymbols, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        builder.Append("OldStyle");
-                    });
-            }
-
-            if (options.DisableWarnings.Count > 0)
-            {
-                project.AddToolSetting(groupElement, "DisableSpecificWarnings", options.DisableWarnings, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        foreach (var warning in setting)
-                        {
-                            builder.AppendFormat("{0};", warning);
-                        }
-                        builder.AppendFormat("%({0})", attributeName);
-                    });
-            }
-
-            if (options.IncludePaths.Count > 0)
-            {
-                project.AddToolSetting(groupElement, "AdditionalIncludeDirectories", options.IncludePaths, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        foreach (var path in setting)
-                        {
-                            builder.AppendFormat("{0};", path);
-                        }
-                        builder.AppendFormat("%({0})", attributeName);
-                    });
-            }
-
-            if (null != options.OmitFramePointer)
-            {
-                project.AddToolSetting(groupElement, "OmitFramePointers", options.OmitFramePointer, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        builder.Append(true == setting ? "true" : "false");
-                    });
-            }
-
-            if (null != options.Optimization)
-            {
-                project.AddToolSetting(groupElement, "Optimization", options.Optimization, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        switch (setting)
-                        {
-                            case C.EOptimization.Off:
-                                builder.Append("Disabled");
-                                break;
-
-                            case C.EOptimization.Size:
-                                builder.Append("MinSpace");
-                                break;
-
-                            case C.EOptimization.Speed:
-                                builder.Append("MaxSpeed");
-                                break;
-
-                            case C.EOptimization.Full:
-                                builder.Append("Full");
-                                break;
-                        }
-                    });
-            }
-
-            if (options.PreprocessorDefines.Count > 0)
-            {
-                project.AddToolSetting(groupElement, "PreprocessorDefinitions", options.PreprocessorDefines, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        foreach (var define in setting)
-                        {
-                            if (System.String.IsNullOrEmpty(define.Value))
-                            {
-                                builder.AppendFormat("{0};", define.Key);
-                            }
-                            else
-                            {
-                                builder.AppendFormat("{0}={1};", define.Key, define.Value);
-                            }
-                        }
-                        builder.AppendFormat("%({0})", attributeName);
-                    });
-            }
-
-            if (options.PreprocessorUndefines.Count > 0)
-            {
-                project.AddToolSetting(groupElement, "UndefinePreprocessorDefinitions", options.PreprocessorUndefines, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        foreach (var define in setting)
-                        {
-                            builder.AppendFormat("{0};", define);
-                        }
-                        builder.AppendFormat("%({0})", attributeName);
-                    });
-            }
-
-            if (null != options.TargetLanguage)
-            {
-                project.AddToolSetting(groupElement, "CompileAs", options.TargetLanguage, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        switch (setting)
-                        {
-                            case C.ETargetLanguage.C:
-                                builder.Append("CompileAsC");
-                                break;
-
-                            case C.ETargetLanguage.Cxx:
-                                builder.Append("CompileAsCpp");
-                                break;
-
-                            case C.ETargetLanguage.Default:
-                                builder.Append("Default");
-                                break;
-                        }
-                    });
-            }
-
-            if (null != options.WarningsAsErrors)
-            {
-                project.AddToolSetting(groupElement, "TreatWarningAsError", options.WarningsAsErrors, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        builder.Append(true == setting ? "true" : "false");
-                    });
-            }
-
-            if (null != options.OutputType)
-            {
-                project.AddToolSetting(groupElement, "PreprocessToFile", options.OutputType, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        builder.Append(setting == C.ECompilerOutput.Preprocess ? "true" : "false");
-                    });
-                if (!(module is Bam.Core.V2.IModuleGroup))
-                {
-                    project.AddToolSetting(groupElement, "ObjectFileName", options.OutputType, configuration,
-                        (setting, attributeName, builder) =>
-                        {
-                            builder.Append(module.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
-                        });
-                }
-            }
-        }
-#endif
-
-#if true
         public static void
         Convert(
             this C.V2.ICOnlyCompilerOptions options,
@@ -310,18 +146,7 @@ namespace VisualC
             string condition)
         {
         }
-#else
-        public static void
-        Convert(
-            this C.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-        }
-#endif
 
-#if true
         public static void
         Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
@@ -354,44 +179,7 @@ namespace VisualC
                 settingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);
             }
         }
-#else
-        public static void
-        Convert(
-            this C.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            if (null != options.ExceptionHandler)
-            {
-                project.AddToolSetting(groupElement, "ExceptionHandling", options.ExceptionHandler, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        switch (options.ExceptionHandler)
-                        {
-                            case C.Cxx.EExceptionHandler.Disabled:
-                                builder.Append("false");
-                                break;
-                            case C.Cxx.EExceptionHandler.Asynchronous:
-                                builder.Append("Async");
-                                break;
-                            case C.Cxx.EExceptionHandler.Synchronous:
-                                builder.Append("Sync");
-                                break;
-                            case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
-                                builder.Append("SyncCThrow");
-                                break;
-                            default:
-                                throw new Bam.Core.Exception("Unrecognized exception handler option");
-                        }
-                    });
-            }
-        }
-#endif
-
-#if true
         public static void
         Convert(
             this VisualCCommon.V2.ICommonCompilerOptions options,
@@ -404,26 +192,6 @@ namespace VisualC
                 settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
             }
         }
-#else
-        public static void
-        Convert(
-            this VisualCCommon.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
-
-            if (null != options.NoLogo)
-            {
-                project.AddToolSetting(groupElement, "SuppressStartupBanner", options.NoLogo, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        builder.Append(options.NoLogo.ToString().ToLower());
-                    });
-            }
-        }
-#endif
     }
 
     public static partial class NativeImplementation
@@ -791,7 +559,6 @@ namespace V2
             //(this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
-#if true
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -802,18 +569,6 @@ namespace V2
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, settings, condition);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
         }
-#else
-        void
-        VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(module, groupElement, configuration);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
-        }
-#endif
     }
 
     public sealed class CxxCompilerSettings :
@@ -863,7 +618,6 @@ namespace V2
 #endif
         }
 
-#if true
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -874,18 +628,6 @@ namespace V2
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, settings, condition);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
         }
-#else
-        void
-        VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            (this as C.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
-            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, groupElement, configuration);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, groupElement, configuration);
-        }
-#endif
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
         {

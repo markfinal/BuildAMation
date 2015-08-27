@@ -81,7 +81,6 @@ namespace VisualC
 
     public static partial class VSSolutionImplementation
     {
-#if true
         public static void
         Convert(
             this C.V2.ICommonLinkerOptions options,
@@ -114,77 +113,7 @@ namespace VisualC
 
             settingsGroup.AddSetting("GenerateDebugInformation", options.DebugSymbols.GetValueOrDefault(false), condition);
         }
-#else
-        public static void
-        Convert(
-            this C.V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
 
-            project.AddToolSetting(groupElement, "OutputFile", options.OutputType, configuration,
-                (setting, attributeName, builder) =>
-                {
-                    switch (setting)
-                    {
-                        case C.ELinkerOutput.Executable:
-                            {
-                                var outPath = module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString();
-                                builder.Append(System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)));
-                            }
-                            break;
-
-                        case C.ELinkerOutput.DynamicLibrary:
-                            {
-                                var outPath = module.GeneratedPaths[C.V2.DynamicLibrary.Key].ToString();
-                                builder.Append(System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)));
-                            }
-                            break;
-                    }
-                });
-            if (C.ELinkerOutput.DynamicLibrary == options.OutputType)
-            {
-                project.AddToolSetting(groupElement, "ImportLibrary", options.OutputType, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        var outPath = module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
-                        builder.Append(System.String.Format("$(IntDir)\\{0}", System.IO.Path.GetFileName(outPath)));
-                    });
-            }
-
-            if (options.LibraryPaths.Count > 0)
-            {
-                project.AddToolSetting(groupElement, "AdditionalLibraryDirectories", options.LibraryPaths, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        foreach (var path in options.LibraryPaths)
-                        {
-                            builder.AppendFormat("{0};", path);
-                        }
-                    });
-            }
-            if (options.Libraries.Count > 0)
-            {
-                project.AddToolSetting(groupElement, "AdditionalDependencies", options.Libraries, configuration,
-                    (setting, attributeName, builder) =>
-                    {
-                        foreach (var path in options.Libraries)
-                        {
-                            builder.AppendFormat("{0};", path);
-                        }
-                    });
-            }
-            project.AddToolSetting(groupElement, "GenerateDebugInformation", options.DebugSymbols, configuration,
-                (setting, attributeName, builder) =>
-                {
-                    builder.AppendFormat(setting.Value.ToString().ToLower());
-                });
-        }
-#endif
-
-#if true
         public static void
         Convert(
             this V2.ICommonLinkerOptions options,
@@ -197,26 +126,6 @@ namespace VisualC
                 settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
             }
         }
-#else
-        public static void
-        Convert(
-            this V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            var project = groupElement.OwnerDocument as VSSolutionBuilder.V2.VSProject;
-
-            project.AddToolSetting(groupElement, "SuppressStartupBanner", options.NoLogo, configuration,
-                (setting, attributeName, builder) =>
-                {
-                    if (options.NoLogo.GetValueOrDefault())
-                    {
-                        builder.Append(options.NoLogo.ToString().ToLower());
-                    }
-                });
-        }
-#endif
     }
 
 namespace V2
@@ -298,7 +207,6 @@ namespace V2
             (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
 
-#if true
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
             Bam.Core.V2.Module module,
@@ -308,17 +216,6 @@ namespace V2
             (this as C.V2.ICommonLinkerOptions).Convert(module, settings, condition);
             (this as ICommonLinkerOptions).Convert(module, settings, condition);
         }
-#else
-        void
-        VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
-            System.Xml.XmlElement groupElement,
-            VSSolutionBuilder.V2.VSProjectConfiguration configuration)
-        {
-            (this as C.V2.ICommonLinkerOptions).Convert(module, groupElement, configuration);
-            (this as ICommonLinkerOptions).Convert(module, groupElement, configuration);
-        }
-#endif
     }
 
     public abstract class LinkerBase :
