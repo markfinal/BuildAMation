@@ -332,12 +332,22 @@ namespace V2
         }
     }
 
+    public interface IInnoSetupPolicy
+    {
+        void CreateInstaller(
+            InnoSetupInstaller sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString scriptPath);
+    }
+
     [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
     public abstract class InnoSetupInstaller :
         Bam.Core.V2.Module
     {
         private InnoSetupScript ScriptModule;
         private Bam.Core.V2.Tool Compiler;
+        private IInnoSetupPolicy Policy;
 
         public InnoSetupInstaller()
         {
@@ -376,14 +386,21 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var args = new Bam.Core.StringArray();
-            args.Add(this.ScriptModule.ScriptPath.Parse());
-            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
+            if (null != this.Policy)
+            {
+                this.Policy.CreateInstaller(this, context, this.Compiler, this.ScriptModule.ScriptPath);
+            }
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
-            // do nothing
+            if (mode == "Native")
+            {
+                var className = "Publisher.V2." + mode + "InnoSetup";
+                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IInnoSetupPolicy>.Create(className);
+            }
         }
     }
 }
@@ -489,12 +506,22 @@ namespace V2
         }
     }
 
+    public interface INSISPolicy
+    {
+        void CreateInstaller(
+            NSISInstaller sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString scriptPath);
+    }
+
     [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
     public abstract class NSISInstaller :
         Bam.Core.V2.Module
     {
         private NSISScript ScriptModule;
         private Bam.Core.V2.Tool Compiler;
+        private INSISPolicy Policy;
 
         public NSISInstaller()
         {
@@ -533,14 +560,21 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var args = new Bam.Core.StringArray();
-            args.Add(this.ScriptModule.ScriptPath.Parse());
-            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
+            if (null != this.Policy)
+            {
+                this.Policy.CreateInstaller(this, context, this.Compiler, this.ScriptModule.ScriptPath);
+            }
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
-            // do nothing
+            if (mode == "Native")
+            {
+                var className = "Publisher.V2." + mode + "NSIS";
+                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<INSISPolicy>.Create(className);
+            }
         }
     }
 }
@@ -635,6 +669,16 @@ namespace V2
         }
     }
 
+    public interface ITarPolicy
+    {
+        void CreateTarBall(
+            TarBall sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString scriptPath,
+            Bam.Core.V2.TokenizedString outputPath);
+    }
+
     [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Unix | Bam.Core.EPlatform.OSX)]
     public abstract class TarBall :
         Bam.Core.V2.Module
@@ -643,6 +687,7 @@ namespace V2
 
         private TarInputFiles InputFiles;
         private Bam.Core.V2.Tool Compiler;
+        private ITarPolicy Policy;
 
         public TarBall()
         {
@@ -675,18 +720,21 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var args = new Bam.Core.StringArray();
-            args.Add("-c");
-            args.Add("-T");
-            args.Add(this.InputFiles.ScriptPath.Parse());
-            args.Add("-f");
-            args.Add(this.GeneratedPaths[Key].ToString());
-            CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
+            if (null != this.Policy)
+            {
+                this.Policy.CreateTarBall(this, context, this.Compiler, this.InputFiles.ScriptPath, this.GeneratedPaths[Key]);
+            }
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
-            // do nothing
+            if (mode == "Native")
+            {
+                var className = "Publisher.V2." + mode + "TarBall";
+                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ITarPolicy>.Create(className);
+            }
         }
     }
 }
@@ -714,6 +762,16 @@ namespace V2
         }
     }
 
+    public interface IDiskImagePolicy
+    {
+        void CreateDMG(
+            DiskImage sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString scriptPath,
+            Bam.Core.V2.TokenizedString outputPath);
+    }
+
     [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.OSX)]
     public abstract class DiskImage :
         Bam.Core.V2.Module
@@ -722,6 +780,7 @@ namespace V2
 
         private Bam.Core.V2.TokenizedString SourceFolderPath;
         private Bam.Core.V2.Tool Compiler;
+        private IDiskImagePolicy Policy;
 
         public DiskImage()
         {
@@ -749,65 +808,21 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var volumeName = "My Volume";
-            var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
-            var diskImagePathName = this.GeneratedPaths[Key].ToString();
-
-            // create the disk image
+            if (null != this.Policy)
             {
-                var args = new Bam.Core.StringArray();
-                args.Add("create");
-                args.Add("-quiet");
-                args.Add("-srcfolder");
-                args.Add(System.String.Format("\"{0}\"", this.SourceFolderPath.ToString()));
-                args.Add("-size");
-                args.Add("32m");
-                args.Add("-fs");
-                args.Add("HFS+");
-                args.Add("-volname");
-                args.Add(System.String.Format("\"{0}\"", volumeName));
-                args.Add(tempDiskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
-            }
-
-            // mount disk image
-            {
-                var args = new Bam.Core.StringArray();
-                args.Add("attach");
-                args.Add("-quiet");
-                args.Add(tempDiskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
-            }
-
-                // TODO
-                /// do a copy
-
-            // unmount disk image
-            {
-                var args = new Bam.Core.StringArray();
-                args.Add("detach");
-                args.Add("-quiet");
-                args.Add(System.String.Format("\"/Volumes/{0}\"", volumeName));
-                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
-            }
-
-            // hdiutil convert myimg.dmg -format UDZO -o myoutputimg.dmg
-            {
-                var args = new Bam.Core.StringArray();
-                args.Add("convert");
-                args.Add("-quiet");
-                args.Add(tempDiskImagePathName);
-                args.Add("-format");
-                args.Add("UDZO");
-                args.Add("-o");
-                args.Add(diskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(context, this.Compiler, args);
+                this.Policy.CreateDMG(this, context, this.Compiler, this.SourceFolderPath, this.GeneratedPaths[Key]);
             }
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
-            // do nothing
+            if (mode == "Native")
+            {
+                var className = "Publisher.V2." + mode + "DMG";
+                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
+            }
         }
     }
 }

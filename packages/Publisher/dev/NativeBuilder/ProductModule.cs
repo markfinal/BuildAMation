@@ -85,6 +85,135 @@ namespace V2
         }
     }
 }
+namespace V2
+{
+    public sealed class NativeInnoSetup :
+        IInnoSetupPolicy
+    {
+        void
+        IInnoSetupPolicy.CreateInstaller(
+            InnoSetupInstaller sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString scriptPath)
+        {
+            var args = new Bam.Core.StringArray();
+            args.Add(scriptPath.Parse());
+            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+        }
+    }
+}
+namespace V2
+{
+    public sealed class NativeNSIS :
+        INSISPolicy
+    {
+        void
+        INSISPolicy.CreateInstaller(
+            NSISInstaller sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString scriptPath)
+        {
+            var args = new Bam.Core.StringArray();
+            args.Add(scriptPath.Parse());
+            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+        }
+    }
+}
+namespace V2
+{
+    public sealed class NativeTarBall :
+        ITarPolicy
+    {
+        void
+        ITarPolicy.CreateTarBall(
+            TarBall sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString scriptPath,
+            Bam.Core.V2.TokenizedString outputPath)
+        {
+            var args = new Bam.Core.StringArray();
+            args.Add("-c");
+            args.Add("-T");
+            args.Add(scriptPath.Parse());
+            args.Add("-f");
+            args.Add(outputPath.ToString());
+            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+        }
+    }
+}
+namespace V2
+{
+    public sealed class NativeDMG :
+        IDiskImagePolicy
+    {
+        void
+        IDiskImagePolicy.CreateDMG(
+            DiskImage sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.TokenizedString sourceFolderPath,
+            Bam.Core.V2.TokenizedString outputPath)
+        {
+            var volumeName = "My Volume";
+            var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
+            var diskImagePathName = outputPath.ToString();
+
+            // create the disk image
+            {
+                var args = new Bam.Core.StringArray();
+                args.Add("create");
+                args.Add("-quiet");
+                args.Add("-srcfolder");
+                args.Add(System.String.Format("\"{0}\"", sourceFolderPath.ToString()));
+                args.Add("-size");
+                args.Add("32m");
+                args.Add("-fs");
+                args.Add("HFS+");
+                args.Add("-volname");
+                args.Add(System.String.Format("\"{0}\"", volumeName));
+                args.Add(tempDiskImagePathName);
+                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            }
+
+            // mount disk image
+            {
+                var args = new Bam.Core.StringArray();
+                args.Add("attach");
+                args.Add("-quiet");
+                args.Add(tempDiskImagePathName);
+                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            }
+
+            // TODO
+            /// do a copy
+
+            // unmount disk image
+            {
+                var args = new Bam.Core.StringArray();
+                args.Add("detach");
+                args.Add("-quiet");
+                args.Add(System.String.Format("\"/Volumes/{0}\"", volumeName));
+                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            }
+
+            // hdiutil convert myimg.dmg -format UDZO -o myoutputimg.dmg
+            {
+                var args = new Bam.Core.StringArray();
+                args.Add("convert");
+                args.Add("-quiet");
+                args.Add(tempDiskImagePathName);
+                args.Add("-format");
+                args.Add("UDZO");
+                args.Add("-o");
+                args.Add(diskImagePathName);
+                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            }
+        }
+    }
+}
 }
 namespace NativeBuilder
 {
