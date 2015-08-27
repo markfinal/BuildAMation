@@ -40,5 +40,11 @@ namespace Bam.Core
         TypeArray(
             params System.Type[] itemsToAdd) : base(itemsToAdd)
         {}
+
+        public
+        TypeArray(
+            System.Collections.Generic.IEnumerable<System.Type> items) :
+            base(items)
+        {}
     }
 }

@@ -48,9 +48,9 @@ namespace Bam.Core
 
         public
         Array(
-            System.Collections.ICollection collection)
+            System.Collections.Generic.IEnumerable<T> items)
         {
-            this.list.AddRange(collection as System.Collections.Generic.IEnumerable<T>);
+            this.list.AddRange(items);
         }
 
         public virtual void

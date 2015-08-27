@@ -42,6 +42,7 @@ namespace Bam.Core
         StringArray(
             params string[] itemsToAdd)
         {
+            // specialization, to avoid empty strings from being added
             foreach (var item in itemsToAdd)
             {
                 if (!System.String.IsNullOrEmpty(item))
@@ -53,9 +54,10 @@ namespace Bam.Core
 
         public
         StringArray(
-            System.Collections.ICollection collection)
+            System.Collections.Generic.IEnumerable<string> items)
         {
-            foreach (string item in collection)
+            // specialization, to avoid empty strings from being added
+            foreach (string item in items)
             {
                 if (!System.String.IsNullOrEmpty(item))
                 {
@@ -68,6 +70,7 @@ namespace Bam.Core
         StringArray(
             StringArray array)
         {
+            // specialization, to avoid empty strings from being added
             foreach (var item in array)
             {
                 if (!System.String.IsNullOrEmpty(item))
@@ -81,6 +84,7 @@ namespace Bam.Core
         StringArray(
             Array<string> array)
         {
+            // specialization, to avoid empty strings from being added
             foreach (var item in array)
             {
                 if (!System.String.IsNullOrEmpty(item))
@@ -94,6 +98,7 @@ namespace Bam.Core
         Add(
             string item)
         {
+            // specialization, to avoid empty strings from being added
             if (System.String.IsNullOrEmpty(item))
             {
                 return;
