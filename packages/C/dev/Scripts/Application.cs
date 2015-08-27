@@ -62,11 +62,11 @@ namespace V2
         }
 
         protected static Bam.Core.Array<Bam.Core.V2.Module>
-        FlattenObjectFileList(
-            Bam.Core.Array<Bam.Core.V2.Module> objectFiles)
+        FlattenHierarchicalFileList(
+            Bam.Core.Array<Bam.Core.V2.Module> files)
         {
             var list = new Bam.Core.Array<Bam.Core.V2.Module>();
-            foreach (var input in objectFiles)
+            foreach (var input in files)
             {
                 if (input is Bam.Core.V2.IModuleGroup)
                 {
@@ -229,8 +229,8 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenObjectFileList(this.sourceModules).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.headerModules.ToArray());
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
             var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules.ToArray());
             var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, context, executable, source, headers, linked, null);

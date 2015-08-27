@@ -63,17 +63,7 @@ namespace V2
 
             foreach (var header in headers)
             {
-                if (header is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in header.Children)
-                    {
-                        config.AddHeaderFile(child as HeaderFile);
-                    }
-                }
-                else
-                {
-                    config.AddHeaderFile(header as HeaderFile);
-                }
+                config.AddHeaderFile(header as HeaderFile);
             }
 
 #if true

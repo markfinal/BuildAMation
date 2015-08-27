@@ -153,8 +153,8 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenObjectFileList(this.source).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.headers.ToArray());
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.source).ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headers).ToArray());
             var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, context, libraryFile, source, headers);
         }

@@ -50,7 +50,7 @@ namespace V2
                 return;
             }
 
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.headers.ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headers).ToArray());
             this.Policy.HeadersOnly(this, context, headers);
         }
 
