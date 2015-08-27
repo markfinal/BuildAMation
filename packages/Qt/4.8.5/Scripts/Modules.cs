@@ -39,6 +39,16 @@ namespace V2
         QtCommon.V2.Gui
     {}
 }
+namespace V2
+{
+    public sealed class CoreFramework :
+        QtCommon.V2.CoreFramework
+    {}
+
+    public sealed class GuiFramework :
+        QtCommon.V2.GuiFramework
+    {}
+}
     public sealed class Phonon :
         QtCommon.Phonon
     {}

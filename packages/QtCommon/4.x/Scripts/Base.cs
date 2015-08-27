@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace QtCommon
 {
 namespace V2
@@ -45,6 +46,57 @@ namespace V2
         }
     }
 
+    public abstract class CommonFramework :
+        C.V2.ExternalFramework
+    {
+        protected CommonFramework(
+            string moduleName) :
+            base()
+        {
+            this.Macros.Add("QtModuleName", System.String.Format("Qt{0}", moduleName));
+            this.Macros.Add("QtInstallPath", Configure.InstallPath);
+        }
+
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+            this.Macros.Add("QtFrameworkPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/lib", this));
+
+            this.PublicPatch((settings, appliedTo) =>
+            {
+                var osxCompiler = settings as C.V2.ICCompilerOptionsOSX;
+                if (null != osxCompiler)
+                {
+                    osxCompiler.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
+                }
+
+                var osxLinker = settings as C.V2.ILinkerOptionsOSX;
+                if (null != osxLinker)
+                {
+                    osxLinker.Frameworks.AddUnique(Bam.Core.V2.TokenizedString.Create("$(QtFrameworkPath)/$(QtModuleName).framework", this));
+                    osxLinker.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
+                }
+            });
+        }
+
+        public override void Evaluate()
+        {
+            // prebuilt - no evaluation
+        }
+
+        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        {
+            // prebuilt - no execution
+        }
+
+        protected override void GetExecutionPolicy(string mode)
+        {
+            // prebuilt - no execution policy
+        }
+    }
+
     public abstract class CommonModule :
         C.V2.DynamicLibrary
     {
@@ -52,7 +104,7 @@ namespace V2
             string moduleName) :
             base()
         {
-            this.Macros.Add("QtModuleName", moduleName);
+            this.Macros.Add("QtModuleName", System.String.Format("Qt" + moduleName));
             this.Macros.Add("QtInstallPath", Configure.InstallPath);
         }
 
@@ -66,10 +118,14 @@ namespace V2
             this.Macros.Add("QtBinaryPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/bin", this));
             this.Macros.Add("QtConfig", Bam.Core.V2.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
 
-            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtBinaryPath)/$(dynamicprefix)$(QtModuleName)$(QtConfig)4$(dynamicext)", this);
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.GeneratedPaths[ImportLibraryKey] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)$(QtModuleName)$(QtConfig)4$(libext)", this);
+                this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtBinaryPath)/$(dynamicprefix)Qt$(QtModuleName)$(QtConfig)4$(dynamicext)", this);
+                this.GeneratedPaths[ImportLibraryKey] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)Qt$(QtModuleName)$(QtConfig)4$(libext)", this);
+            }
+            else
+            {
+                this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(dynamicprefix)Qt$(QtModuleName)$(dynamicext)", this);
             }
 
             this.PublicPatch((settings, appliedTo) =>

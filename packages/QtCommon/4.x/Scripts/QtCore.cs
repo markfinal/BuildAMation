@@ -35,7 +35,15 @@ namespace V2
         CommonModule
     {
         public Core() :
-            base("QtCore")
+            base("Core")
+        {}
+    }
+
+    public abstract class CoreFramework :
+        CommonFramework
+    {
+        public CoreFramework() :
+            base("Core")
         {}
     }
 }

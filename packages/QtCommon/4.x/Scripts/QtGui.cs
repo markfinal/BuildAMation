@@ -35,8 +35,16 @@ namespace V2
         CommonModule
     {
         public Gui() :
-            base("QtGui")
-        { }
+            base("Gui")
+        {}
+    }
+
+    public abstract class GuiFramework :
+        CommonFramework
+    {
+        public GuiFramework() :
+            base("Gui")
+        {}
     }
 }
     public abstract class Gui :

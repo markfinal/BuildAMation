@@ -27,6 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+namespace QtCommon
+{
+namespace V2
+{
+    public sealed class XcodeMocGeneration :
+    IMocGenerationPolicy
+    {
+        void
+        IMocGenerationPolicy.Moc(
+            MocModule sender,
+            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.TokenizedString generatedMocSource,
+            C.V2.HeaderFile source)
+        {
+            var output = generatedMocSource.Parse();
+
+            var commands = new Bam.Core.StringArray();
+            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));
+
+            var mocInvoke = new System.Text.StringBuilder();
+            mocInvoke.AppendFormat("{0} -o{1} {2}", mocCompiler.Executable.Parse(), output, source.InputPath.Parse());
+            commands.Add(mocInvoke.ToString());
+
+            var header = new XcodeBuilder.V2.XcodeHeaderFile(sender);
+            header.Project.ProjectConfigurations[sender.BuildEnvironment.Configuration].PreBuildCommands.AddRange(commands);
+        }
+    }
+}
+}
 namespace XcodeBuilder
 {
     public partial class XcodeBuilder

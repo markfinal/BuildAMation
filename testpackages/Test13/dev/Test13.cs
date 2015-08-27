@@ -54,8 +54,8 @@ namespace Test13
             source.AddFile("$(pkgroot)/source/myobject.cpp");
             source.AddFile("$(pkgroot)/source/myobject2.cpp");
 
-            var myObjectMocTuple = source.MocHeader(myobjectHeader);
-            var myObject2MocTuple = source.MocHeader(myobject2Header);
+            /*var myObjectMocTuple = */source.MocHeader(myobjectHeader);
+            /*var myObject2MocTuple = */source.MocHeader(myobject2Header);
 
             this.PrivatePatch(settings =>
             {
@@ -67,8 +67,16 @@ namespace Test13
                 }
             });
 
-            this.CompileAndLinkAgainst<Qt.V2.Core>(source);
-            this.CompileAndLinkAgainst<Qt.V2.Gui>(source);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                this.CompileAndLinkAgainst<Qt.V2.CoreFramework>(source);
+                this.CompileAndLinkAgainst<Qt.V2.GuiFramework>(source);
+            }
+            else
+            {
+                this.CompileAndLinkAgainst<Qt.V2.Core>(source);
+                this.CompileAndLinkAgainst<Qt.V2.Gui>(source);
+            }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
@@ -88,8 +96,14 @@ namespace Test13
             base.Init(parent);
 
             var app = this.Include<QtApplicationV2>(C.V2.ConsoleApplication.Key, EPublishingType.WindowedApplication);
-            this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
-            this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+            }
+            else
+            {
+                this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
+            }
         }
     }
 
