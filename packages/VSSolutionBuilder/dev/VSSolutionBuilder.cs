@@ -632,7 +632,7 @@ namespace V2
             var settings = module.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-                (module.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, settings, condition: this.ConditionText);
+                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, settings, condition: this.ConditionText);
             }
             this.Sources.AddUnique(settings);
             this.Project.AddSource(settings);

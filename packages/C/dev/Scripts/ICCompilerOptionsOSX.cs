@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
 namespace V2
@@ -49,17 +50,11 @@ namespace DefaultSettings
         }
         public static void
         Delta(
-            this C.V2.ICCompilerOptionsOSX settings,
-            C.V2.ICCompilerOptionsOSX delta,
-            C.V2.ICCompilerOptionsOSX other)
+            this C.V2.ICCompilerOptionsOSX delta,
+            C.V2.ICCompilerOptionsOSX lhs,
+            C.V2.ICCompilerOptionsOSX rhs)
         {
-            foreach (var path in settings.FrameworkSearchDirectories)
-            {
-                if (!other.FrameworkSearchDirectories.Contains(path))
-                {
-                    delta.FrameworkSearchDirectories.AddUnique(path);
-                }
-            }
+            delta.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>(lhs.FrameworkSearchDirectories.Except(rhs.FrameworkSearchDirectories));
         }
         public static void
         Clone(

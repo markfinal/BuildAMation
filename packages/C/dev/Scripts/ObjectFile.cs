@@ -39,10 +39,17 @@ namespace V2
             {
             }
             public static void
+            SharedSettings(
+                this C.V2.ICOnlyCompilerOptions shared,
+                C.V2.ICOnlyCompilerOptions lhs,
+                C.V2.ICOnlyCompilerOptions rhs)
+            {
+            }
+            public static void
             Delta(
-                this C.V2.ICOnlyCompilerOptions settings,
-                C.V2.ICOnlyCompilerOptions delta,
-                C.V2.ICOnlyCompilerOptions other)
+                this C.V2.ICOnlyCompilerOptions delta,
+                C.V2.ICOnlyCompilerOptions lhs,
+                C.V2.ICOnlyCompilerOptions rhs)
             {
             }
             public static void

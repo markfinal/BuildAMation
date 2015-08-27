@@ -41,15 +41,21 @@ namespace DefaultSettings
         }
 
         public static void
-        Delta(
-            this VisualCCommon.V2.ICommonCompilerOptions settings,
-            VisualCCommon.V2.ICommonCompilerOptions delta,
-            VisualCCommon.V2.ICommonCompilerOptions other)
+        SharedSettings(
+            this VisualCCommon.V2.ICommonCompilerOptions shared,
+            VisualCCommon.V2.ICommonCompilerOptions lhs,
+            VisualCCommon.V2.ICommonCompilerOptions rhs)
         {
-            if (settings.NoLogo != other.NoLogo)
-            {
-                delta.NoLogo = settings.NoLogo;
-            }
+            shared.NoLogo = (lhs.NoLogo == rhs.NoLogo) ? lhs.NoLogo : null;
+        }
+
+        public static void
+        Delta(
+            this VisualCCommon.V2.ICommonCompilerOptions delta,
+            VisualCCommon.V2.ICommonCompilerOptions lhs,
+            VisualCCommon.V2.ICommonCompilerOptions rhs)
+        {
+            delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
         }
 
         public static void

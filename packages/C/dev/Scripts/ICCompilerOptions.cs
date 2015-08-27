@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using System.Linq;
 namespace C
 {
 namespace V2
@@ -72,75 +73,42 @@ namespace DefaultSettings
             settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
         }
         public static void
-        Delta(
-            this C.V2.ICommonCompilerOptions settings,
-            C.V2.ICommonCompilerOptions delta,
-            C.V2.ICommonCompilerOptions other)
+        SharedSettings(
+            this C.V2.ICommonCompilerOptions shared,
+            C.V2.ICommonCompilerOptions lhs,
+            C.V2.ICommonCompilerOptions rhs)
         {
-            if (settings.Bits != other.Bits)
-            {
-                delta.Bits = settings.Bits;
-            }
-            foreach (var define in settings.PreprocessorDefines)
-            {
-                if (!other.PreprocessorDefines.Contains(define.Key) ||
-                    define.Value != other.PreprocessorDefines[define.Key])
-                {
-                    delta.PreprocessorDefines.Add(define.Key, define.Value);
-                }
-            }
-            foreach (var path in settings.IncludePaths)
-            {
-                if (!other.IncludePaths.Contains(path))
-                {
-                    delta.IncludePaths.AddUnique(path);
-                }
-            }
-            foreach (var path in settings.SystemIncludePaths)
-            {
-                if (!other.SystemIncludePaths.Contains(path))
-                {
-                    delta.SystemIncludePaths.AddUnique(path);
-                }
-            }
-            if (settings.OutputType != other.OutputType)
-            {
-                delta.OutputType = settings.OutputType;
-            }
-            if (settings.DebugSymbols != other.DebugSymbols)
-            {
-                delta.DebugSymbols = settings.DebugSymbols;
-            }
-            if (settings.WarningsAsErrors != other.WarningsAsErrors)
-            {
-                delta.WarningsAsErrors = settings.WarningsAsErrors;
-            }
-            if (settings.Optimization != other.Optimization)
-            {
-                delta.Optimization = settings.Optimization;
-            }
-            if (settings.TargetLanguage != other.TargetLanguage)
-            {
-                delta.TargetLanguage = settings.TargetLanguage;
-            }
-            if (settings.OmitFramePointer != other.OmitFramePointer)
-            {
-                delta.OmitFramePointer = settings.OmitFramePointer;
-            }
-            foreach (var path in settings.DisableWarnings)
-            {
-                if (!other.DisableWarnings.Contains(path))
-                {
-                    delta.DisableWarnings.AddUnique(path);
-                }
-            }
-            foreach (var path in settings.PreprocessorUndefines)
-            {
-                if (!other.PreprocessorUndefines.Contains(path))
-                {
-                    delta.PreprocessorUndefines.AddUnique(path);
-                }
-            }
+            shared.Bits = (lhs.Bits == rhs.Bits) ? lhs.Bits : null;
+            shared.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Intersect(rhs.PreprocessorDefines));
+            shared.IncludePaths = lhs.IncludePaths.Intersect(rhs.IncludePaths);
+            shared.SystemIncludePaths = lhs.SystemIncludePaths.Intersect(rhs.SystemIncludePaths);
+            shared.OutputType = (lhs.OutputType == rhs.OutputType) ? lhs.OutputType : null;
+            shared.DebugSymbols = (lhs.DebugSymbols == rhs.DebugSymbols) ? lhs.DebugSymbols : null;
+            shared.WarningsAsErrors = (lhs.WarningsAsErrors == rhs.WarningsAsErrors) ? lhs.WarningsAsErrors : null;
+            shared.Optimization = (lhs.Optimization == rhs.Optimization) ? lhs.Optimization : null;
+            shared.TargetLanguage = (lhs.TargetLanguage == rhs.TargetLanguage) ? lhs.TargetLanguage : null;
+            shared.OmitFramePointer = (lhs.OmitFramePointer == rhs.OmitFramePointer) ? lhs.OmitFramePointer : null;
+            shared.DisableWarnings = new Bam.Core.StringArray(lhs.DisableWarnings.Intersect(rhs.DisableWarnings));
+            shared.PreprocessorUndefines = new Bam.Core.StringArray(lhs.PreprocessorUndefines.Intersect(rhs.PreprocessorUndefines));
+        }
+        public static void
+        Delta(
+            this C.V2.ICommonCompilerOptions delta,
+            C.V2.ICommonCompilerOptions lhs,
+            C.V2.ICommonCompilerOptions rhs)
+        {
+            delta.Bits = (lhs.Bits != rhs.Bits) ? lhs.Bits : null;
+            delta.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Except(rhs.PreprocessorDefines));
+            delta.IncludePaths = new Bam.Core.Array<TokenizedString>(lhs.IncludePaths.Except(rhs.IncludePaths));
+            delta.SystemIncludePaths = new Bam.Core.Array<TokenizedString>(lhs.SystemIncludePaths.Except(rhs.SystemIncludePaths));
+            delta.OutputType = (lhs.OutputType != rhs.OutputType) ? lhs.OutputType : null;
+            delta.DebugSymbols = (lhs.DebugSymbols != rhs.DebugSymbols) ? lhs.DebugSymbols : null;
+            delta.WarningsAsErrors = (lhs.WarningsAsErrors != rhs.WarningsAsErrors) ? lhs.WarningsAsErrors : null;
+            delta.Optimization = (lhs.Optimization != rhs.Optimization) ? lhs.Optimization : null;
+            delta.TargetLanguage = (lhs.TargetLanguage != rhs.TargetLanguage) ? lhs.TargetLanguage : null;
+            delta.OmitFramePointer = (lhs.OmitFramePointer != rhs.OmitFramePointer) ? lhs.OmitFramePointer : null;
+            delta.DisableWarnings = new Bam.Core.StringArray(lhs.DisableWarnings.Except(rhs.DisableWarnings));
+            delta.PreprocessorUndefines = new Bam.Core.StringArray(lhs.PreprocessorUndefines.Except(rhs.PreprocessorUndefines));
         }
         public static void
         Clone(
@@ -240,11 +208,59 @@ namespace DefaultSettings
         }
 
         public SettingsBase
-        Delta(
-            Bam.Core.V2.Settings other,
+        Delta2(
+            Bam.Core.V2.Settings sharedSettings,
             Module module)
         {
-            var settingsType = this.GetType();
+            var settingsType = module.Settings.GetType();
+            var deltaSettings = System.Activator.CreateInstance(settingsType, module, false) as SettingsBase;
+
+            var attributeType = typeof(SettingsExtensionsAttribute);
+
+            var interfaces = settingsType.GetInterfaces().Where(item => (item != typeof(ISettingsBase)) && typeof(ISettingsBase).IsAssignableFrom(item));
+            var sharedInterfaces = sharedSettings.GetType().GetInterfaces().Where(item => (item != typeof(ISettingsBase)) && typeof(ISettingsBase).IsAssignableFrom(item));
+            foreach (var i in interfaces)
+            {
+                var attributeArray = i.GetCustomAttributes(attributeType, false);
+                if (0 == attributeArray.Length)
+                {
+                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                }
+
+                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
+
+                if (sharedInterfaces.Any(item => item == i))
+                {
+                    var deltaMethod = attribute.GetMethod("Delta", new[] { i, i, i });
+                    if (null != deltaMethod)
+                    {
+                        Bam.Core.Log.DebugMessage("Executing {0}", deltaMethod.ToString());
+                        deltaMethod.Invoke(null, new[] { deltaSettings, this, sharedSettings });
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Unable to find method {0}.Delta({1}, {1}, {1})", attribute.ClassType.ToString(), i.ToString());
+                    }
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Requires a clone of settings interface");
+                }
+            }
+
+            return deltaSettings;
+        }
+
+        public SettingsBase
+        Delta(
+            Bam.Core.V2.Settings other,
+            Module module,
+            System.Type settingsType = null)
+        {
+            if (null == settingsType)
+            {
+                settingsType = module.Settings.GetType();
+            }
             var deltaSettings = System.Activator.CreateInstance(settingsType, module, false) as SettingsBase;
 
             var baseI = typeof(ISettingsBase);
@@ -280,7 +296,7 @@ namespace DefaultSettings
                 if (null != deltaMethod)
                 {
                     Bam.Core.Log.DebugMessage("Executing {0}", deltaMethod.ToString());
-                    deltaMethod.Invoke(null, new[] { this, deltaSettings, other });
+                    deltaMethod.Invoke(null, new[] { deltaSettings, this, other });
                 }
                 else
                 {
@@ -336,6 +352,45 @@ namespace DefaultSettings
             }
 
             return clonedSettings;
+        }
+
+        public static SettingsBase
+        SharedSettings(
+            Bam.Core.Array<Bam.Core.V2.Module> objectFiles,
+            Bam.Core.TypeArray commonInterfaces,
+            System.Type commonSettingsType)
+        {
+            var attributeType = typeof(SettingsExtensionsAttribute);
+            var methodName = "SharedSettings";
+
+            var commonSettings = System.Activator.CreateInstance(commonSettingsType) as SettingsBase;
+            foreach (var i in commonInterfaces)
+            {
+                var attributeArray = i.GetCustomAttributes(attributeType, false);
+                if (0 == attributeArray.Length)
+                {
+                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                }
+
+                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
+
+                var method = attribute.GetMethod(methodName, new[] { i, i, i });
+                if (null != method)
+                {
+                    Bam.Core.Log.DebugMessage("Executing {0}", method.ToString());
+
+                    var objectFileCount = objectFiles.Count;
+                    for (int objIndex = 0; objIndex < objectFileCount - 1; ++objIndex)
+                    {
+                        method.Invoke(null, new[] { commonSettings, objectFiles[objIndex].Settings, objectFiles[objIndex + 1].Settings });
+                    }
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Unable to find extension method {0}.{1}(this {2}, {2}, {2})", attribute.ClassType.ToString(), methodName, i.ToString());
+                }
+            }
+            return commonSettings;
         }
     }
 

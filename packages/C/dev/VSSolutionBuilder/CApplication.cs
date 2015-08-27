@@ -27,11 +27,76 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using C.V2.DefaultSettings;
 namespace C
 {
 namespace V2
 {
+    public static class ObjectFileExtensions
+    {
+        public static Bam.Core.Array<Bam.Core.V2.Module>
+        LinearObjectFileList(
+            this System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles)
+        {
+            var list = new Bam.Core.Array<Bam.Core.V2.Module>();
+            foreach (var input in objectFiles)
+            {
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in input.Children)
+                    {
+                        list.Add(child);
+                    }
+                }
+                else
+                {
+                    list.Add(input);
+                }
+            }
+            return list;
+        }
+
+        public static Bam.Core.TypeArray
+        SharedInterfaces(
+            this System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles)
+        {
+            var interfaces = new Bam.Core.TypeArray();
+            foreach (var input in objectFiles)
+            {
+                if (input is Bam.Core.V2.IModuleGroup)
+                {
+                    foreach (var child in input.Children)
+                    {
+                        var childInterfaces = child.Settings.GetType().GetInterfaces().Where(item => (item != typeof(ISettingsBase)) && typeof(ISettingsBase).IsAssignableFrom(item));
+                        if (interfaces.Count == 0)
+                        {
+                            interfaces.AddRangeUnique(new Bam.Core.TypeArray(childInterfaces));
+                        }
+                        else
+                        {
+                            interfaces.Complement(new Bam.Core.TypeArray(childInterfaces));
+                        }
+                    }
+                }
+                else
+                {
+                    var childInterfaces = input.Settings.GetType().GetInterfaces();
+                    if (interfaces.Count == 0)
+                    {
+                        interfaces.AddRangeUnique(new Bam.Core.TypeArray(childInterfaces));
+                    }
+                    else
+                    {
+                        interfaces.Complement(new Bam.Core.TypeArray(childInterfaces));
+                    }
+                }
+            }
+            return interfaces;
+        }
+    }
+
     public sealed partial class VSSolutionLinker :
         ILinkerPolicy
     {
@@ -75,9 +140,111 @@ namespace V2
                 }
             }
 
-            var commonObjectFile = (objectFiles[0] is Bam.Core.V2.IModuleGroup) ? objectFiles[0].Children[0] : objectFiles[0];
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
-            (commonObjectFile.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+            var list = objectFiles.LinearObjectFileList();
+            if (list.Count > 1)
+            {
+                // find the lowest common denominator across all compiled source
+                var sharedInterfaces = objectFiles.SharedInterfaces();
+                var implementedInterfaces = new Bam.Core.TypeArray(sharedInterfaces);
+                implementedInterfaces.Add(typeof(VisualStudioProcessor.V2.IConvertToProject));
+
+                var typeSignature = "MyDynamicType";
+                var an = new System.Reflection.AssemblyName(typeSignature);
+                var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(an, System.Reflection.Emit.AssemblyBuilderAccess.Run);
+                var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule", true);
+                var tb = moduleBuilder.DefineType(typeSignature,
+                    System.Reflection.TypeAttributes.Public |
+                    System.Reflection.TypeAttributes.Class |
+                    System.Reflection.TypeAttributes.AutoClass |
+                    System.Reflection.TypeAttributes.AnsiClass |
+                    System.Reflection.TypeAttributes.BeforeFieldInit |
+                    System.Reflection.TypeAttributes.AutoLayout,
+                    typeof(C.V2.SettingsBase),
+                    implementedInterfaces.ToArray());
+
+                var constructor = tb.DefineDefaultConstructor(System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.SpecialName | System.Reflection.MethodAttributes.RTSpecialName);
+
+                foreach (var commonInt in sharedInterfaces)
+                {
+                    var props = commonInt.GetProperties();
+                    foreach (var prop in props)
+                    {
+                        var dynamicProperty = tb.DefineProperty(prop.Name,
+                            System.Reflection.PropertyAttributes.None,
+                            prop.PropertyType,
+                            null);
+                        var field = tb.DefineField("m" + prop.Name,
+                            prop.PropertyType,
+                            System.Reflection.FieldAttributes.Private);
+                        var methodAttrs = System.Reflection.MethodAttributes.Public |
+                            System.Reflection.MethodAttributes.HideBySig |
+                            System.Reflection.MethodAttributes.Virtual;
+                        if (prop.IsSpecialName)
+                        {
+                            methodAttrs |= System.Reflection.MethodAttributes.SpecialName;
+                        }
+                        var getter = tb.DefineMethod("get_" + prop.Name,
+                            methodAttrs,
+                            prop.PropertyType,
+                            System.Type.EmptyTypes);
+                        var setter = tb.DefineMethod("set_" + prop.Name,
+                            methodAttrs,
+                            null,
+                            new[] { prop.PropertyType });
+                        var getIL = getter.GetILGenerator();
+                        getIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_0);
+                        getIL.Emit(System.Reflection.Emit.OpCodes.Ldfld, field);
+                        getIL.Emit(System.Reflection.Emit.OpCodes.Ret);
+                        dynamicProperty.SetGetMethod(getter);
+                        var setIL = setter.GetILGenerator();
+                        setIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_0);
+                        setIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_1);
+                        setIL.Emit(System.Reflection.Emit.OpCodes.Stfld, field);
+                        setIL.Emit(System.Reflection.Emit.OpCodes.Ret);
+                        dynamicProperty.SetSetMethod(setter);
+                    }
+                }
+
+                var convert = tb.DefineMethod("Convert",
+                    System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Final | System.Reflection.MethodAttributes.HideBySig | System.Reflection.MethodAttributes.NewSlot | System.Reflection.MethodAttributes.Virtual,
+                    null,
+                    new[] { typeof(Bam.Core.V2.Module), typeof(VSSolutionBuilder.V2.VSSettingsGroup), typeof(string) });
+                var convertIL = convert.GetILGenerator();
+                foreach (var i in sharedInterfaces)
+                {
+                    var meth = typeof(VisualC.VSSolutionImplementation).GetMethod("Convert", new[] { i, typeof(Bam.Core.V2.Module), typeof(VSSolutionBuilder.V2.VSSettingsGroup), typeof(string) });
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_0);
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_1);
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_2);
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_3);
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Call, meth);
+                }
+                convertIL.Emit(System.Reflection.Emit.OpCodes.Ret);
+
+                var type = tb.CreateType();
+
+                var sharedSettings = C.V2.SettingsBase.SharedSettings(list, sharedInterfaces, type);
+                (sharedSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+
+                foreach (var objFile in list)
+                {
+                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).Delta2(sharedSettings, objFile);
+                    config.AddSourceFile(objFile, deltaSettings);
+                }
+            }
+            else
+            {
+                (list[0].Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+                foreach (var objFile in list)
+                {
+                    config.AddSourceFile(objFile, null);
+                }
+            }
+
+#if true
+#else
+            var commonObjectFile = (objectFiles[0] is Bam.Core.V2.IModuleGroup) ? objectFiles[0].Children[0] : objectFiles[0];
 
             foreach (var input in objectFiles)
             {
@@ -117,6 +284,7 @@ namespace V2
                     config.AddSourceFile(input, deltaSettings);
                 }
             }
+#endif
 
             foreach (var input in libraries)
             {

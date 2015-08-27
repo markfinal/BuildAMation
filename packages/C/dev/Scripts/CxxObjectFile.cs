@@ -45,18 +45,12 @@ namespace DefaultSettings
         }
         public static void
         Delta(
-            this C.V2.ICxxOnlyCompilerOptions settings,
-            C.V2.ICxxOnlyCompilerOptions delta,
-            C.V2.ICxxOnlyCompilerOptions other)
+            this C.V2.ICxxOnlyCompilerOptions delta,
+            C.V2.ICxxOnlyCompilerOptions lhs,
+            C.V2.ICxxOnlyCompilerOptions rhs)
         {
-            if (settings.ExceptionHandler != other.ExceptionHandler)
-            {
-                delta.ExceptionHandler = settings.ExceptionHandler;
-            }
-            if (settings.LanguageStandard != other.LanguageStandard)
-            {
-                delta.LanguageStandard = settings.LanguageStandard;
-            }
+            delta.ExceptionHandler = (lhs.ExceptionHandler != rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
+            delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
         }
         public static void
         Clone(
