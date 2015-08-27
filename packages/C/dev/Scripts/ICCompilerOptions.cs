@@ -148,65 +148,6 @@ namespace DefaultSettings
     public abstract class SettingsBase :
         Bam.Core.V2.Settings
     {
-        protected void
-        InitializeAllInterfaces(
-            Bam.Core.V2.Module module,
-            bool emptyFirst,
-            bool useDefaults)
-        {
-            var attributeType = typeof(Bam.Core.V2.SettingsExtensionsAttribute);
-            var moduleType = typeof(Bam.Core.V2.Module);
-            var baseI = typeof(Bam.Core.V2.ISettingsBase);
-            foreach (var i in this.GetType().GetInterfaces())
-            {
-                // is it a true settings interface?
-                if (!baseI.IsAssignableFrom(i))
-                {
-                    Bam.Core.Log.DebugMessage("Ignored interface {0} on {1}", i.ToString(), this.GetType().ToString());
-                    continue;
-                }
-                if (i == baseI)
-                {
-                    continue;
-                }
-
-                var attributeArray = i.GetCustomAttributes(attributeType, false);
-                if (0 == attributeArray.Length)
-                {
-                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
-                }
-
-                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
-
-                // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
-                // although it won't then be a centralized definition, so the extension method as-is is probably better
-                if (emptyFirst)
-                {
-                    var emptyMethod = attribute.GetMethod("Empty", new[] { i });
-                    if (null != emptyMethod)
-                    {
-                        Bam.Core.Log.DebugMessage("Executing {0}", emptyMethod.ToString());
-                        emptyMethod.Invoke(null, new[] { this });
-                    }
-                    else
-                    {
-                        Bam.Core.Log.DebugMessage("Unable to find method {0}.Empty({1})", attribute.ClassType.ToString(), i.ToString());
-                    }
-                }
-
-                if (useDefaults)
-                {
-                    var defaultMethod = attribute.GetMethod("Defaults", new[] { i, moduleType });
-                    if (null == defaultMethod)
-                    {
-                        throw new Bam.Core.Exception("Unable to find method {0}.Defaults({1}, {2})", attribute.ClassType.ToString(), i.ToString(), moduleType.ToString());
-                    }
-                    Bam.Core.Log.DebugMessage("Executing {0}", defaultMethod.ToString());
-                    defaultMethod.Invoke(null, new object[] { this, module });
-                }
-            }
-        }
-
         public SettingsBase
         CreateDeltaSettings(
             Bam.Core.V2.Settings sharedSettings,
