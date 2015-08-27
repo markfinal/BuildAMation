@@ -36,6 +36,18 @@ namespace V2
     {
         private System.Collections.Generic.Dictionary<string, string> Defines = new System.Collections.Generic.Dictionary<string, string>();
 
+        public PreprocessorDefinitions()
+        {}
+
+        public PreprocessorDefinitions(
+            System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>> items)
+        {
+            foreach (var item in items)
+            {
+                this.Defines.Add(item.Key, item.Value);
+            }
+        }
+
         public void Add(string name, string value)
         {
             if (this.Defines.ContainsKey(name))
