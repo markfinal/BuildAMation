@@ -99,6 +99,8 @@ namespace C
                     map.InterfaceMethods[0].Invoke(sender.Settings, new object[] { sender, application.Configuration });
                 }
 
+#if true
+#else
                 var commonObject = objectFiles[0];
                 application.SetCommonCompilationOptions(commonObject, commonObject.Settings);
 
@@ -140,6 +142,7 @@ namespace C
                         meta.Project = application.Project;
                     }
                 }
+#endif
 
                 foreach (var header in headers)
                 {

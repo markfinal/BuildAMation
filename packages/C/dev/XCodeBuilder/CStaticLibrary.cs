@@ -44,6 +44,8 @@ namespace C
             {
                 var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
 
+#if true
+#else
                 var commonObject = inputs[0];
                 library.SetCommonCompilationOptions(commonObject, commonObject.Settings);
 
@@ -85,6 +87,7 @@ namespace C
                         meta.Project = library.Project;
                     }
                 }
+#endif
 
                 foreach (var header in headers)
                 {

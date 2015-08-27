@@ -72,6 +72,8 @@ namespace V2
                 }
             }
 
+#if true
+#else
             var commonObjectFile = (inputs[0] is Bam.Core.V2.IModuleGroup) ? inputs[0].Children[0] : inputs[0];
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
             (commonObjectFile.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
@@ -114,6 +116,7 @@ namespace V2
                     config.AddSourceFile(input, deltaSettings);
                 }
             }
+#endif
 
             var settingsGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Librarian);
             (sender.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, settingsGroup);
