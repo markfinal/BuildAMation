@@ -42,7 +42,6 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
-#if true
             if (0 == objectFiles.Count)
             {
                 return;
@@ -111,96 +110,6 @@ namespace V2
                     project.RequiresProject(requiredProject);
                 }
             }
-#else
-            // cannot tell the architecture from the Librarian tool, so look at all the inputs
-            // these should be consistent
-            VSSolutionBuilder.V2.VSSolutionMeta.EPlatform? platform = null;
-            foreach (var input in inputs)
-            {
-                if (input is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in input.Children)
-                    {
-                        var obj = child as C.V2.ObjectFile;
-                        var thisPlatform = (obj.Compiler is VisualC.Compiler64 || obj.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
-                        if (null == platform)
-                        {
-                            platform = thisPlatform;
-                        }
-                        else if (platform != thisPlatform)
-                        {
-                            throw new Bam.Core.Exception("Inconsistent object file architectures");
-                        }
-                    }
-                }
-                else
-                {
-                    var obj = input as C.V2.ObjectFile;
-                    var thisPlatform = (obj.Compiler is VisualC.Compiler64 || obj.Compiler is VisualC.CxxCompiler64) ? VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour : VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.ThirtyTwo;
-                    if (null == platform)
-                    {
-                        platform = thisPlatform;
-                    }
-                    else if (platform != thisPlatform)
-                    {
-                        throw new Bam.Core.Exception("Inconsistent object file architectures");
-                    }
-                }
-            }
-
-            var library = new VSSolutionBuilder.V2.VSProjectStaticLibrary(sender, libraryPath, platform.Value);
-            var commonObject = inputs[0];
-            library.SetCommonCompilationOptions(commonObject, commonObject.Settings);
-
-            foreach (var input in inputs)
-            {
-                C.V2.SettingsBase deltaSettings = null;
-                if (input != commonObject)
-                {
-                    deltaSettings = (input.Settings as C.V2.SettingsBase).Delta(commonObject.Settings, input);
-                }
-
-                if (input is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in input.Children)
-                    {
-                        C.V2.SettingsBase patchSettings = deltaSettings;
-                        if (child.HasPatches)
-                        {
-                            if (null == patchSettings)
-                            {
-                                patchSettings = System.Activator.CreateInstance(input.Settings.GetType(), child, false) as C.V2.SettingsBase;
-                            }
-                            else
-                            {
-                                patchSettings = deltaSettings.Clone(child);
-                            }
-                            child.ApplySettingsPatches(patchSettings, honourParents: false);
-                        }
-                        library.AddObjectFile(child, patchSettings);
-                    }
-                }
-                else
-                {
-                    library.AddObjectFile(input, deltaSettings);
-                }
-            }
-
-            foreach (var header in headers)
-            {
-                if (header is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in header.Children)
-                    {
-                        library.AddHeaderFile(child as HeaderFile);
-                    }
-                }
-                else
-                {
-                    library.AddHeaderFile(header as HeaderFile);
-                }
-            }
-#endif
         }
     }
 }

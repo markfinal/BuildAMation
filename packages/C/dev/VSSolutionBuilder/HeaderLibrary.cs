@@ -40,7 +40,6 @@ namespace V2
             Bam.Core.V2.ExecutionContext context,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
-#if true
             if (0 == headers.Count)
             {
                 return;
@@ -58,23 +57,6 @@ namespace V2
             {
                 config.AddHeaderFile(header as HeaderFile);
             }
-#else
-            var library = new VSSolutionBuilder.V2.VSProjectHeaderLibrary(sender);
-            foreach (var header in headers)
-            {
-                if (header is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in header.Children)
-                    {
-                        library.AddHeaderFile(child as HeaderFile);
-                    }
-                }
-                else
-                {
-                    library.AddHeaderFile(header as HeaderFile);
-                }
-            }
-#endif
         }
     }
 }
