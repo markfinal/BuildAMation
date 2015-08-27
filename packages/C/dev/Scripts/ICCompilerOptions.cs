@@ -208,7 +208,7 @@ namespace DefaultSettings
         }
 
         public SettingsBase
-        Delta(
+        CreateDeltaSettings(
             Bam.Core.V2.Settings sharedSettings,
             Module module)
         {

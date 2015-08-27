@@ -73,6 +73,27 @@ namespace V2
             }
 
 #if true
+            var objectFileList = C.V2.SettingsBase.LinearObjectFileList(inputs);
+            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
+            if (objectFileList.Count > 1)
+            {
+                var sharedSettings = C.V2.SettingsBase.SharedSettings(objectFileList);
+                (sharedSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+
+                foreach (var objFile in objectFileList)
+                {
+                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    config.AddSourceFile(objFile, deltaSettings);
+                }
+            }
+            else
+            {
+                (objectFileList[0].Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+                foreach (var objFile in objectFileList)
+                {
+                    config.AddSourceFile(objFile, null);
+                }
+            }
 #else
             var commonObjectFile = (inputs[0] is Bam.Core.V2.IModuleGroup) ? inputs[0].Children[0] : inputs[0];
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);

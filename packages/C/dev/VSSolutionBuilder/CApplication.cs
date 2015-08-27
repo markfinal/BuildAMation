@@ -76,6 +76,7 @@ namespace V2
                 }
             }
 
+#if true
             var objectFileList = C.V2.SettingsBase.LinearObjectFileList(objectFiles);
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
             if (objectFileList.Count > 1)
@@ -85,7 +86,7 @@ namespace V2
 
                 foreach (var objFile in objectFileList)
                 {
-                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).Delta(sharedSettings, objFile);
+                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
                 }
             }
@@ -97,8 +98,6 @@ namespace V2
                     config.AddSourceFile(objFile, null);
                 }
             }
-
-#if true
 #else
             var commonObjectFile = (objectFiles[0] is Bam.Core.V2.IModuleGroup) ? objectFiles[0].Children[0] : objectFiles[0];
 
