@@ -31,6 +31,22 @@ using Bam.Core.V2; // for EPlatform.PlatformExtensions
 [assembly: Bam.Core.GlobalOptionCollectionOverride(typeof(Cxx11Test1.GlobalSettings))]
 namespace Cxx11Test1
 {
+    public sealed class LocalPolicy :
+        Bam.Core.V2.ISitePolicy
+    {
+        void
+        ISitePolicy.DefineLocalSettings(
+            Settings settings,
+            Module module)
+        {
+            var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+            if (null != cxxCompiler)
+            {
+                cxxCompiler.LanguageStandard = C.Cxx.ELanguageStandard.Cxx11;
+            }
+        }
+    }
+
     public sealed class TestProgV2 :
         C.Cxx.V2.ConsoleApplication
     {
@@ -40,13 +56,6 @@ namespace Cxx11Test1
 
             var source = this.CreateCxxSourceContainer();
             source.AddFile("$(pkgroot)/source/main.cpp");
-
-            source.PrivatePatch(settings =>
-                {
-                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
-                    cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
-                    cxxCompiler.LanguageStandard = C.Cxx.ELanguageStandard.Cxx11;
-                });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
