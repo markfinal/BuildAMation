@@ -44,6 +44,15 @@ namespace DefaultSettings
             settings.LanguageStandard = ELanguageStandard.Cxx98;
         }
         public static void
+        SharedSettings(
+            this C.V2.ICxxOnlyCompilerOptions shared,
+            C.V2.ICxxOnlyCompilerOptions lhs,
+            C.V2.ICxxOnlyCompilerOptions rhs)
+        {
+            shared.ExceptionHandler = (lhs.ExceptionHandler == rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
+            shared.LanguageStandard = (lhs.LanguageStandard == rhs.LanguageStandard) ? lhs.LanguageStandard : null;
+        }
+        public static void
         Delta(
             this C.V2.ICxxOnlyCompilerOptions delta,
             C.V2.ICxxOnlyCompilerOptions lhs,
