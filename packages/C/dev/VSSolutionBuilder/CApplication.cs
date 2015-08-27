@@ -81,7 +81,18 @@ namespace V2
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
             if (objectFileList.Count > 1)
             {
-                var sharedSettings = C.V2.SettingsBase.SharedSettings(objectFileList);
+                var vsConvertParameterTypes = new Bam.Core.TypeArray
+                {
+                    typeof(Bam.Core.V2.Module),
+                    typeof(VSSolutionBuilder.V2.VSSettingsGroup),
+                    typeof(string)
+                };
+
+                var sharedSettings = C.V2.SettingsBase.SharedSettings(
+                    objectFileList,
+                    typeof(VisualC.VSSolutionImplementation),
+                    typeof(VisualStudioProcessor.V2.IConvertToProject),
+                    vsConvertParameterTypes);
                 (sharedSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
 
                 foreach (var objFile in objectFileList)

@@ -49,6 +49,14 @@ namespace DefaultSettings
             settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
         }
         public static void
+        SharedSettings(
+            this C.V2.ICCompilerOptionsOSX shared,
+            C.V2.ICCompilerOptionsOSX lhs,
+            C.V2.ICCompilerOptionsOSX rhs)
+        {
+            shared.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>(lhs.FrameworkSearchDirectories.Intersect(rhs.FrameworkSearchDirectories));
+        }
+        public static void
         Delta(
             this C.V2.ICCompilerOptionsOSX delta,
             C.V2.ICCompilerOptionsOSX lhs,

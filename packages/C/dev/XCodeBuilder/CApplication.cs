@@ -100,6 +100,40 @@ namespace C
                 }
 
 #if true
+                var objectFileList = C.V2.SettingsBase.LinearObjectFileList(objectFiles);
+                if (objectFileList.Count > 1)
+                {
+                    var xcodeConvertParameterTypes = new Bam.Core.TypeArray
+                    {
+                        typeof(Bam.Core.V2.Module),
+                        typeof(XcodeBuilder.V2.Configuration)
+                    };
+
+                    var sharedSettings = C.V2.SettingsBase.SharedSettings(
+                        objectFileList,
+                        typeof(Clang.XcodeImplementation),
+                        typeof(XcodeProjectProcessor.V2.IConvertToProject),
+                        xcodeConvertParameterTypes);
+                    application.SetCommonCompilationOptions(null, sharedSettings);
+
+                    foreach (var objFile in objectFileList)
+                    {
+                        var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                        var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                        application.AddSource(objFile, meta.Source, meta.Output, deltaSettings);
+                        meta.Project = application.Project;
+                    }
+                }
+                else
+                {
+                    application.SetCommonCompilationOptions(null, objectFileList[0].Settings);
+                    foreach (var objFile in objectFileList)
+                    {
+                        var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                        application.AddSource(objFile, meta.Source, meta.Output, null);
+                        meta.Project = application.Project;
+                    }
+                }
 #else
                 var commonObject = objectFiles[0];
                 application.SetCommonCompilationOptions(commonObject, commonObject.Settings);

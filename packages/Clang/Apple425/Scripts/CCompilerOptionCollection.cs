@@ -243,6 +243,23 @@ namespace Clang
                 }
             }
         }
+
+        public static void
+        Convert(
+            this C.V2.ICCompilerOptionsOSX options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+            if (null != options.FrameworkSearchDirectories)
+            {
+                var paths = new XcodeBuilder.V2.MultiConfigurationValue();
+                foreach (var path in options.FrameworkSearchDirectories)
+                {
+                    paths.Add(path.ToString());
+                }
+                configuration["FRAMEWORK_SEARCH_PATHS"] = paths;
+            }
+        }
     }
 
     public static partial class XcodeImplementation
@@ -732,11 +749,15 @@ namespace V2
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICCompilerOptionsOSX).Convert(module, commandLine);
         }
 
         void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, configuration);
+            (this as C.V2.ICOnlyCompilerOptions).Convert(module, configuration);
+            (this as C.V2.ICCompilerOptionsOSX).Convert(module, configuration);
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits

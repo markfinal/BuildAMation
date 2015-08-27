@@ -304,15 +304,18 @@ namespace DefaultSettings
 
         public static SettingsBase
         SharedSettings(
-            Bam.Core.Array<Bam.Core.V2.Module> objectFiles)
+            Bam.Core.Array<Bam.Core.V2.Module> objectFiles,
+            System.Type convertExtensionClassType,
+            System.Type conversionInterfaceType,
+            Bam.Core.TypeArray convertParameterTypes)
         {
             var sharedInterfaces = SharedInterfaces(objectFiles);
             var implementedInterfaces = new Bam.Core.TypeArray(sharedInterfaces);
-            implementedInterfaces.Add(typeof(VisualStudioProcessor.V2.IConvertToProject));
+            implementedInterfaces.Add(conversionInterfaceType);
 
             // define a new type, that contains just the shared interfaces between all object files
             // (any interface not shared, must be cloned later)
-            var typeSignature = "VSSolutionSharedSettings";
+            var typeSignature = "IDESharedSettings";
             var assemblyName = new System.Reflection.AssemblyName(typeSignature);
             var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, System.Reflection.Emit.AssemblyBuilderAccess.Run);
             var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule", true);
@@ -326,8 +329,11 @@ namespace DefaultSettings
                 typeof(C.V2.SettingsBase),
                 implementedInterfaces.ToArray());
 
-            var constructor = sharedSettingsTypeDefn.DefineDefaultConstructor(
+                // TODO: is this necessary?
+#if false
+            sharedSettingsTypeDefn.DefineDefaultConstructor(
                 System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.SpecialName | System.Reflection.MethodAttributes.RTSpecialName);
+#endif
 
             // implement 'automatic property' setter and getters for each property in each interface
             foreach (var i in sharedInterfaces)
@@ -374,16 +380,32 @@ namespace DefaultSettings
             var vsProjectSettingsConvertMethod = sharedSettingsTypeDefn.DefineMethod("Convert",
                 System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Final | System.Reflection.MethodAttributes.HideBySig | System.Reflection.MethodAttributes.NewSlot | System.Reflection.MethodAttributes.Virtual,
                 null,
-                new[] { typeof(Bam.Core.V2.Module), typeof(VSSolutionBuilder.V2.VSSettingsGroup), typeof(string) });
+                convertParameterTypes.ToArray());
             var convertIL = vsProjectSettingsConvertMethod.GetILGenerator();
             foreach (var i in sharedInterfaces)
             {
-                var meth = typeof(VisualC.VSSolutionImplementation).GetMethod("Convert", new[] { i, typeof(Bam.Core.V2.Module), typeof(VSSolutionBuilder.V2.VSSettingsGroup), typeof(string) });
+                var extConvertParameterTypes = new Bam.Core.TypeArray(i);
+                extConvertParameterTypes.AddRange(convertParameterTypes);
+                var methInfo = convertExtensionClassType.GetMethod("Convert", extConvertParameterTypes.ToArray());
+                if (null == methInfo)
+                {
+                        throw new Bam.Core.Exception("Unable to locate the function {0}.{1}(this {2})", convertExtensionClassType.FullName, "Convert", i.Name);
+                }
+                // TODO: can this be simplified, using the ldarg opcode? a simple loop would suffice
                 convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_0);
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_1);
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_2);
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_3);
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Call, meth);
+                if (extConvertParameterTypes.Count > 1)
+                {
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_1);
+                }
+                if (extConvertParameterTypes.Count > 2)
+                {
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_2);
+                }
+                if (extConvertParameterTypes.Count > 3)
+                {
+                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_3);
+                }
+                convertIL.Emit(System.Reflection.Emit.OpCodes.Call, methInfo);
             }
             convertIL.Emit(System.Reflection.Emit.OpCodes.Ret);
 
