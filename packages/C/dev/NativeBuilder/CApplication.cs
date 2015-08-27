@@ -121,17 +121,7 @@ namespace V2
             // first object files
             foreach (var input in objectFiles)
             {
-                if (input is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in input.Children)
-                    {
-                        commandLine.Add(child.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
-                    }
-                }
-                else
-                {
-                    commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
-                }
+                commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
             }
 
             // then dependent module libraries

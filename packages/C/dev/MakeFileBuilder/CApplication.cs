@@ -110,17 +110,7 @@ namespace V2
             rule.AddTarget(executablePath);
             foreach (var module in objectFiles)
             {
-                if (module is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in module.Children)
-                    {
-                        rule.AddPrerequisite(child, C.V2.ObjectFile.Key);
-                    }
-                }
-                else
-                {
-                    rule.AddPrerequisite(module, C.V2.ObjectFile.Key);
-                }
+                rule.AddPrerequisite(module, C.V2.ObjectFile.Key);
             }
             foreach (var module in libraries)
             {

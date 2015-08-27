@@ -39,11 +39,11 @@ namespace V2
             StaticLibrary sender,
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
 #if true
-            if (0 == inputs.Count)
+            if (0 == objectFiles.Count)
             {
                 return;
             }
@@ -73,9 +73,8 @@ namespace V2
             }
 
 #if true
-            var objectFileList = C.V2.SettingsBase.LinearObjectFileList(inputs);
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
-            if (objectFileList.Count > 1)
+            if (objectFiles.Count > 1)
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
@@ -85,13 +84,13 @@ namespace V2
                 };
 
                 var sharedSettings = C.V2.SettingsBase.SharedSettings(
-                    objectFileList,
+                    objectFiles,
                     typeof(VisualC.VSSolutionImplementation),
                     typeof(VisualStudioProcessor.V2.IConvertToProject),
                     vsConvertParameterTypes);
                 (sharedSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
 
-                foreach (var objFile in objectFileList)
+                foreach (var objFile in objectFiles)
                 {
                     var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
@@ -99,8 +98,8 @@ namespace V2
             }
             else
             {
-                (objectFileList[0].Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
-                foreach (var objFile in objectFileList)
+                (objectFiles[0].Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+                foreach (var objFile in objectFiles)
                 {
                     config.AddSourceFile(objFile, null);
                 }

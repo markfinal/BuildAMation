@@ -39,14 +39,13 @@ namespace C
                 StaticLibrary sender,
                 Bam.Core.V2.ExecutionContext context,
                 Bam.Core.V2.TokenizedString libraryPath,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
             {
                 var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
 
 #if true
-                var objectFileList = C.V2.SettingsBase.LinearObjectFileList(inputs);
-                if (objectFileList.Count > 1)
+                if (objectFiles.Count > 1)
                 {
                     var xcodeConvertParameterTypes = new Bam.Core.TypeArray
                     {
@@ -55,13 +54,13 @@ namespace C
                     };
 
                     var sharedSettings = C.V2.SettingsBase.SharedSettings(
-                        objectFileList,
+                        objectFiles,
                         typeof(Clang.XcodeImplementation),
                         typeof(XcodeProjectProcessor.V2.IConvertToProject),
                         xcodeConvertParameterTypes);
                     library.SetCommonCompilationOptions(null, sharedSettings);
 
-                    foreach (var objFile in objectFileList)
+                    foreach (var objFile in objectFiles)
                     {
                         var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                         var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
@@ -71,8 +70,8 @@ namespace C
                 }
                 else
                 {
-                    library.SetCommonCompilationOptions(null, objectFileList[0].Settings);
-                    foreach (var objFile in objectFileList)
+                    library.SetCommonCompilationOptions(null, objectFiles[0].Settings);
+                    foreach (var objFile in objectFiles)
                     {
                         var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
                         library.AddSource(objFile, meta.Source, meta.Output, null);

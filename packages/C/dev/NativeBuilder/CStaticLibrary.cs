@@ -39,7 +39,7 @@ namespace C
                 StaticLibrary sender,
                 Bam.Core.V2.ExecutionContext context,
                 Bam.Core.V2.TokenizedString libraryPath,
-                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
+                System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
                 System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
             {
                 sender.MetaData = new Bam.Core.StringArray();
@@ -58,19 +58,9 @@ namespace C
 
                 var commandLine = sender.MetaData as Bam.Core.StringArray;
 
-                foreach (var input in inputs)
+                foreach (var input in objectFiles)
                 {
-                    if (input is Bam.Core.V2.IModuleGroup)
-                    {
-                        foreach (var child in input.Children)
-                        {
-                            commandLine.Add(child.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
-                        }
-                    }
-                    else
-                    {
-                        commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
-                    }
+                    commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
                 }
 
                 CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);

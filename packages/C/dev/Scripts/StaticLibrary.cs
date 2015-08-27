@@ -50,6 +50,7 @@ namespace V2
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
         }
 
+        // TODO: what is this for?
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source
         {
             get
@@ -152,7 +153,7 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source.ToArray());
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenObjectFileList(this.source).ToArray());
             var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.headers.ToArray());
             var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, context, libraryFile, source, headers);

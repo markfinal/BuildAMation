@@ -262,7 +262,7 @@ namespace DefaultSettings
 
         private static Bam.Core.TypeArray
         SharedInterfaces(
-            Bam.Core.Array<Bam.Core.V2.Module> objectFiles)
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles)
         {
             Bam.Core.TypeArray sharedInterfaces = null;
             foreach (var input in objectFiles)
@@ -280,31 +280,9 @@ namespace DefaultSettings
             return sharedInterfaces;
         }
 
-        public static Bam.Core.Array<Bam.Core.V2.Module>
-        LinearObjectFileList(
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles)
-        {
-            var list = new Bam.Core.Array<Bam.Core.V2.Module>();
-            foreach (var input in objectFiles)
-            {
-                if (input is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in input.Children)
-                    {
-                        list.Add(child);
-                    }
-                }
-                else
-                {
-                    list.Add(input);
-                }
-            }
-            return list;
-        }
-
         public static SettingsBase
         SharedSettings(
-            Bam.Core.Array<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Type convertExtensionClassType,
             System.Type conversionInterfaceType,
             Bam.Core.TypeArray convertParameterTypes)

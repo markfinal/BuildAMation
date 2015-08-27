@@ -39,7 +39,7 @@ namespace V2
             StaticLibrary sender,
             Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> inputs,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
             var commandLineArgs = new Bam.Core.StringArray();
@@ -53,19 +53,9 @@ namespace V2
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(libraryPath);
-            foreach (var module in inputs)
+            foreach (var input in objectFiles)
             {
-                if (module is Bam.Core.V2.IModuleGroup)
-                {
-                    foreach (var child in module.Children)
-                    {
-                        rule.AddPrerequisite(child, C.V2.ObjectFile.Key);
-                    }
-                }
-                else
-                {
-                    rule.AddPrerequisite(module, C.V2.ObjectFile.Key);
-                }
+                rule.AddPrerequisite(input, C.V2.ObjectFile.Key);
             }
 
             var command = new System.Text.StringBuilder();

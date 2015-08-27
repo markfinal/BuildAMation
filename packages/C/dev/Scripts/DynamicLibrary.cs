@@ -66,6 +66,7 @@ namespace V2
             });
         }
 
+        // TODO: what is this used for?
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source
         {
             get
