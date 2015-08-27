@@ -87,6 +87,60 @@ namespace DefaultSettings
         }
     }
 }
+namespace V2
+{
+    namespace DefaultSettings
+    {
+        public static partial class DefaultSettingsExtensions
+        {
+            public static void
+            Defaults(
+                this C.V2.ICCompilerOptionsWin settings,
+                Bam.Core.V2.Module module)
+            {
+                settings.CharacterSet = ECharacterSet.NotSet;
+            }
+            public static void
+            Empty(
+                this C.V2.ICCompilerOptionsWin settings)
+            {
+            }
+            public static void
+            SharedSettings(
+                this C.V2.ICCompilerOptionsWin shared,
+                C.V2.ICCompilerOptionsWin lhs,
+                C.V2.ICCompilerOptionsWin rhs)
+            {
+                shared.CharacterSet = (lhs.CharacterSet == rhs.CharacterSet) ? lhs.CharacterSet : null;
+            }
+            public static void
+            Delta(
+                this C.V2.ICCompilerOptionsWin delta,
+                C.V2.ICCompilerOptionsWin lhs,
+                C.V2.ICCompilerOptionsWin rhs)
+            {
+                delta.CharacterSet = (lhs.CharacterSet != rhs.CharacterSet) ? lhs.CharacterSet : null;
+            }
+            public static void
+            Clone(
+                this C.V2.ICCompilerOptionsWin settings,
+                C.V2.ICCompilerOptionsWin other)
+            {
+                settings.CharacterSet = other.CharacterSet;
+            }
+        }
+    }
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICCompilerOptionsWin :
+        Bam.Core.V2.ISettingsBase
+    {
+        C.ECharacterSet? CharacterSet
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ICCompilerOptionsOSX
     {
         /// <summary>

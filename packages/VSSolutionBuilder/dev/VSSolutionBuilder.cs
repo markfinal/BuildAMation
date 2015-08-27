@@ -353,13 +353,6 @@ namespace V2
             v120
         }
 
-        public enum ECharacterSet
-        {
-            NotSet,
-            Unicode,
-            Multibyte
-        }
-
         public VSProjectConfiguration(
             VSProject project,
             Bam.Core.V2.Module module,
@@ -374,7 +367,7 @@ namespace V2
             this.Type = EType.NA;
             this.PlatformToolset = EPlatformToolset.NA;
             this.UseDebugLibraries = false;
-            this.CharacterSet = ECharacterSet.NotSet;
+            this.CharacterSet = C.ECharacterSet.NotSet;
             this.WholeProgramOptimization = (module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug);
 
             this.SettingGroups = new Bam.Core.Array<VSSettingsGroup>();
@@ -478,7 +471,7 @@ namespace V2
             set;
         }
 
-        private ECharacterSet CharacterSet
+        private C.ECharacterSet CharacterSet
         {
             get;
             set;
@@ -554,6 +547,13 @@ namespace V2
             }
 
             this.PlatformToolset = toolset;
+        }
+
+        public void
+        SetCharacterSet(
+            C.ECharacterSet charSet)
+        {
+            this.CharacterSet = charSet;
         }
 
         public void

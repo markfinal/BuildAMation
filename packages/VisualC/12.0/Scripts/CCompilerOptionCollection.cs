@@ -135,7 +135,6 @@ namespace VisualC
                     settingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.V2.ObjectFile.Key], condition);
                 }
             }
-
         }
 
         public static void
@@ -190,6 +189,21 @@ namespace VisualC
             if (options.NoLogo.GetValueOrDefault(false))
             {
                 settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
+            }
+        }
+
+        public static void
+        Convert(
+            this C.V2.ICCompilerOptionsWin options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            if (options.CharacterSet.HasValue)
+            {
+                var project = module.MetaData as VSSolutionBuilder.V2.VSProject;
+                var config = project.GetConfiguration(module);
+                config.SetCharacterSet(options.CharacterSet.Value);
             }
         }
     }
@@ -377,6 +391,37 @@ namespace VisualC
             Bam.Core.StringArray commandLine)
         {
         }
+
+        public static void
+        Convert(
+            this C.V2.ICCompilerOptionsWin options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (options.CharacterSet.HasValue)
+            {
+                switch (options.CharacterSet.Value)
+                {
+                    case C.ECharacterSet.NotSet:
+                        break;
+
+                    case C.ECharacterSet.Unicode:
+                        {
+                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            compiler.PreprocessorDefines.Add("UNICODE");
+                            compiler.PreprocessorDefines.Add("_UNICODE");
+                        }
+                        break;
+
+                    case C.ECharacterSet.MultiByte:
+                        {
+                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            compiler.PreprocessorDefines.Add("_MBCS");
+                        }
+                        break;
+                }
+            }
+        }
     }
 
 namespace V2
@@ -415,6 +460,7 @@ namespace V2
     // V2
     public class CompilerSettings :
         C.V2.SettingsBase,
+        C.V2.ICCompilerOptionsWin,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
         VisualCCommon.V2.ICommonCompilerOptions,
@@ -440,6 +486,12 @@ namespace V2
                 (this as C.V2.ICommonCompilerOptions).Defaults(module);
             }
 #endif
+        }
+
+        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        {
+            get;
+            set;
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
@@ -551,6 +603,7 @@ namespace V2
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
@@ -565,6 +618,7 @@ namespace V2
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition)
         {
+            (this as C.V2.ICCompilerOptionsWin).Convert(module, settings, condition);
             (this as C.V2.ICommonCompilerOptions).Convert(module, settings, condition);
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, settings, condition);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
@@ -575,6 +629,7 @@ namespace V2
         C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject,
+        C.V2.ICCompilerOptionsWin,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
         VisualCCommon.V2.ICommonCompilerOptions
@@ -608,6 +663,7 @@ namespace V2
             Bam.Core.StringArray commandLine)
         {
             // TODO: iterate in reflection, in a well defined static class
+            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
@@ -624,9 +680,16 @@ namespace V2
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition)
         {
+            (this as C.V2.ICCompilerOptionsWin).Convert(module, settings, condition);
             (this as C.V2.ICommonCompilerOptions).Convert(module, settings, condition);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, settings, condition);
             (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
+        }
+
+        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        {
+            get;
+            set;
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits

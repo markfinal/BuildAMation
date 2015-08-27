@@ -188,6 +188,36 @@ namespace Mingw
 
         public static void
         Convert(
+            this C.V2.ICCompilerOptionsWin options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (options.CharacterSet.HasValue)
+            {
+                switch (options.CharacterSet.Value)
+                {
+                    case C.ECharacterSet.NotSet:
+                        break;
+
+                    case C.ECharacterSet.Unicode:
+                        {
+                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            compiler.PreprocessorDefines.Add("_UNICODE");
+                        }
+                        break;
+
+                    case C.ECharacterSet.MultiByte:
+                        {
+                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            compiler.PreprocessorDefines.Add("_MBCS");
+                        }
+                        break;
+                }
+            }
+        }
+
+        public static void
+        Convert(
             this MingwCommon.V2.ICommonCompilerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
@@ -240,6 +270,7 @@ namespace V2
     public class CompilerSettings :
         C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
+        C.V2.ICCompilerOptionsWin,
         C.V2.ICommonCompilerOptions,
         C.V2.ICOnlyCompilerOptions,
         MingwCommon.V2.ICommonCompilerOptions,
@@ -270,12 +301,19 @@ namespace V2
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
             (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
             (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as Mingw.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+        }
+
+        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        {
+            get;
+            set;
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
@@ -384,6 +422,7 @@ namespace V2
     public sealed class CxxCompilerSettings :
         C.V2.SettingsBase,
         CommandLineProcessor.V2.IConvertToCommandLine,
+        C.V2.ICCompilerOptionsWin,
         C.V2.ICommonCompilerOptions,
         C.V2.ICxxOnlyCompilerOptions,
         MingwCommon.V2.ICommonCompilerOptions,
@@ -416,12 +455,19 @@ namespace V2
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
             (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as MingwCommon.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
             (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
             (this as Mingw.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+        }
+
+        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        {
+            get;
+            set;
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
