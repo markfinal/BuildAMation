@@ -151,17 +151,8 @@ namespace V2
         GetExecutionPolicy(
             string mode)
         {
-            switch (mode)
-            {
-            case "Native":
-            case "MakeFile":
-            case "VSSolution":
-                {
-                    var className = "CodeGenTest.V2." + mode + "GenerateSource";
-                    this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
-                }
-                break;
-            }
+            var className = "CodeGenTest.V2." + mode + "GenerateSource";
+            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
         }
     }
 }
