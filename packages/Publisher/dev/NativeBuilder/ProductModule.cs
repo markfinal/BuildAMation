@@ -136,6 +136,7 @@ namespace V2
         {
             var args = new Bam.Core.StringArray();
             args.Add("-c");
+            args.Add("-v");
             args.Add("-T");
             args.Add(scriptPath.Parse());
             args.Add("-f");
