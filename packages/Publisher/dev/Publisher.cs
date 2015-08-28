@@ -584,6 +584,7 @@ namespace V2
         Bam.Core.V2.Module
     {
         private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
 
         public TarInputFiles()
         {
@@ -603,6 +604,15 @@ namespace V2
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
+        }
+
+        public void
+        AddPath(
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.FileKey key)
+        {
+            this.DependsOn(module);
+            this.Paths.Add(module, key);
         }
 
         public override void Evaluate()
@@ -637,6 +647,20 @@ namespace V2
                         scriptWriter.WriteLine("-C {0}", fileDir);
                     }
                     scriptWriter.WriteLine(System.IO.Path.GetFileName(filePath));
+                }
+                foreach (var dep in this.Paths)
+                {
+                    var fileDir = dep.Key.GeneratedPaths[dep.Value].ToString();
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+                    {
+                        scriptWriter.WriteLine("-C");
+                        scriptWriter.WriteLine(fileDir);
+                    }
+                    else
+                    {
+                        scriptWriter.WriteLine("-C {0}", fileDir);
+                    }
+                    scriptWriter.WriteLine(".");
                 }
             }
         }
@@ -709,6 +733,14 @@ namespace V2
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.InputFiles.AddFile(dependent, key);
+        }
+
+        public void
+        SourceFolder<DependentModule>(
+            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.InputFiles.AddPath(dependent, key);
         }
 
         public override void Evaluate()
