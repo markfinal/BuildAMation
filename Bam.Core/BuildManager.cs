@@ -160,6 +160,44 @@ namespace V2
             }
         }
 
+        private static void
+        ExecutePreBuild(
+            System.Type metaType)
+        {
+            var method = metaType.GetMethod("PreExecution");
+            if (null == method)
+            {
+                return;
+            }
+            try
+            {
+                method.Invoke(null, null);
+            }
+            catch (System.Reflection.TargetInvocationException exception)
+            {
+                throw exception.InnerException;
+            }
+        }
+
+        private static void
+        ExecutePostBuild(
+            System.Type metaType)
+        {
+            var method = metaType.GetMethod("PostExecution");
+            if (null == method)
+            {
+                return;
+            }
+            try
+            {
+                method.Invoke(null, null);
+            }
+            catch (System.Reflection.TargetInvocationException exception)
+            {
+                throw exception.InnerException;
+            }
+        }
+
         public void Run()
         {
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
@@ -181,22 +219,13 @@ namespace V2
             }
 
             var metaName = System.String.Format("{0}Builder.V2.{0}Meta", Core.State.BuilderName);
-            var metaData = Core.State.ScriptAssembly.GetType(metaName);
-            if (null != metaData)
+            var metaDataType = Core.State.ScriptAssembly.GetType(metaName);
+            if (null == metaDataType)
             {
-                var method = metaData.GetMethod("PreExecution");
-                if (null != method)
-                {
-                    try
-                    {
-                        method.Invoke(null, null);
-                    }
-                    catch (System.Reflection.TargetInvocationException exception)
-                    {
-                        throw exception.InnerException;
-                    }
-                }
+                throw new Exception("Meta data type for builder {0} does not exist", metaName);
             }
+
+            ExecutePreBuild(metaDataType);
 
             if (!System.IO.Directory.Exists(Core.State.BuildRoot))
             {
@@ -348,21 +377,7 @@ namespace V2
                 throw abortException;
             }
 
-            if (null != metaData)
-            {
-                var method = metaData.GetMethod("PostExecution");
-                if (null != method)
-                {
-                    try
-                    {
-                        method.Invoke(null, null);
-                    }
-                    catch (System.Reflection.TargetInvocationException exception)
-                    {
-                        throw exception.InnerException;
-                    }
-                }
-            }
+            ExecutePostBuild(metaDataType);
         }
     }
 }
