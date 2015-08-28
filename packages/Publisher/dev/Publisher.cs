@@ -230,7 +230,14 @@ namespace V2
         protected override void Init(Module parent)
         {
             base.Init(parent);
-            this.Tool = Bam.Core.V2.Graph.Instance.FindReferencedModule<CopyFileWin>();
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.Tool = Bam.Core.V2.Graph.Instance.FindReferencedModule<CopyFileWin>();
+            }
+            else
+            {
+                this.Tool = Bam.Core.V2.Graph.Instance.FindReferencedModule<CopyFilePosix>();
+            }
         }
 
         public enum EPublishingType
