@@ -54,6 +54,7 @@ namespace V2
             return toString24Chars;
         }
 
+        // TODO: can this not be virtual?
         public abstract string GUID
         {
             get;
@@ -73,6 +74,138 @@ namespace V2
         }
 
         public abstract void Serialize(System.Text.StringBuilder text, int indentLevel);
+    }
+
+    public sealed class ContainerItemProxy :
+        Object
+    {
+        public ContainerItemProxy(
+            Project project,
+            Object reference)
+        {
+            this.IsA = "PBXContainerItemProxy";
+            this.Name = "PBXContainerItemProxy";
+            this.ContainerPortal = project;
+            this.ProxyType = 1; // TODO: what does this mean?
+            this.Remote = reference;
+
+            project.ContainerItemProxies.AddUnique(this);
+        }
+
+        private Object ContainerPortal
+        {
+            get;
+            set;
+        }
+
+        private int ProxyType
+        {
+            get;
+            set;
+        }
+
+        private Object Remote
+        {
+            get;
+            set;
+        }
+
+        public override string GUID
+        {
+            get;
+            protected set;
+        }
+
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
+        {
+            var indent = new string('\t', indentLevel);
+            var indent2 = new string('\t', indentLevel + 1);
+            if (null != this.Name)
+            {
+                text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
+            }
+            else
+            {
+                text.AppendFormat("{0}{1} = {{", indent, this.GUID);
+            }
+            text.AppendLine();
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
+            text.AppendLine();
+            var typeWithoutPBX = this.ContainerPortal.IsA.Substring(3);
+            text.AppendFormat("{0}containerPortal = {1} /* {2} object */;", indent2, this.ContainerPortal.GUID, typeWithoutPBX);
+            text.AppendLine();
+            text.AppendFormat("{0}proxyType = {1};", indent2, this.ProxyType);
+            text.AppendLine();
+            text.AppendFormat("{0}remoteGlobalIDString = {1};", indent2, this.Remote.GUID);
+            text.AppendLine();
+            text.AppendFormat("{0}remoteInfo = {1};", indent2, this.Remote.Name);
+            text.AppendLine();
+            text.AppendFormat("{0}}};", indent);
+            text.AppendLine();
+        }
+    }
+
+    public sealed class TargetDependency :
+        Object
+    {
+        public TargetDependency(
+            Target dependency,
+            ContainerItemProxy proxy)
+        {
+            this.IsA = "PBXTargetDependency";
+            this.Name = "PBXTargetDependency";
+            this.Dependency = dependency;
+            this.Proxy = proxy;
+
+            dependency.Project.TargetDependencies.AddUnique(this);
+        }
+
+        private Target Dependency
+        {
+            get;
+            set;
+        }
+
+        private ContainerItemProxy Proxy
+        {
+            get;
+            set;
+        }
+
+        public override string GUID
+        {
+            get;
+            protected set;
+        }
+
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
+        {
+            var indent = new string('\t', indentLevel);
+            var indent2 = new string('\t', indentLevel + 1);
+            if (null != this.Name)
+            {
+                text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
+            }
+            else
+            {
+                text.AppendFormat("{0}{1} = {{", indent, this.GUID);
+            }
+            text.AppendLine();
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
+            text.AppendLine();
+            text.AppendFormat("{0}target = {1} /* {2} */;", indent2, this.Dependency.GUID, this.Dependency.Name);
+            text.AppendLine();
+            text.AppendFormat("{0}targetProxy = {1} /* {2} */;", indent2, this.Proxy.GUID, this.Proxy.Name);
+            text.AppendLine();
+            text.AppendFormat("{0}}};", indent);
+            text.AppendLine();
+        }
     }
 
     public sealed class FileReference :
@@ -787,6 +920,8 @@ namespace V2
             this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
             this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
             this.ShellScriptsBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
+            this.ContainerItemProxies = new Bam.Core.Array<ContainerItemProxy>();
+            this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
 
             this.Groups.Add(new Group()); // main group
             this.Groups.Add(new Group("Products")); // product ref group
@@ -896,6 +1031,18 @@ namespace V2
         }
 
         public Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<ContainerItemProxy> ContainerItemProxies
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<TargetDependency> TargetDependencies
         {
             get;
             private set;
@@ -1151,6 +1298,18 @@ namespace V2
                 text.AppendFormat("/* End PBXBuildFile section */");
                 text.AppendLine();
             }
+            if (this.ContainerItemProxies.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXContainerItemProxy section */");
+                text.AppendLine();
+                foreach (var proxy in this.ContainerItemProxies.OrderBy(key => key.GUID))
+                {
+                    proxy.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXContainerItemProxy section */");
+                text.AppendLine();
+            }
             if (this.FileReferences.Count > 0)
             {
                 text.AppendLine();
@@ -1224,6 +1383,18 @@ namespace V2
                 text.AppendFormat("/* End PBXSourcesBuildPhase section */");
                 text.AppendLine();
             }
+            if (this.TargetDependencies.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXTargetDependency section */");
+                text.AppendLine();
+                foreach (var dependency in this.TargetDependencies.OrderBy(key => key.GUID))
+                {
+                    dependency.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXTargetDependency section */");
+                text.AppendLine();
+            }
             if (this.AllConfigurations.Count > 0)
             {
                 text.AppendLine();
@@ -1281,6 +1452,8 @@ namespace V2
             this.SourcesBuildPhase = new SourcesBuildPhase();
             this.BuildPhases.Add(this.SourcesBuildPhase);
 
+            this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
+
             this.Project = project;
             this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
         }
@@ -1334,6 +1507,12 @@ namespace V2
         }
 
         public System.Collections.Generic.List<BuildPhase> BuildPhases
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<TargetDependency> TargetDependencies
         {
             get;
             private set;
@@ -1431,6 +1610,11 @@ namespace V2
             text.AppendLine();
             text.AppendFormat("{0}dependencies = (", indent2);
             text.AppendLine();
+            foreach (var dependency in this.TargetDependencies)
+            {
+                text.AppendFormat("{0}{1} /* {2} */,", indent3, dependency.GUID, dependency.Name);
+                text.AppendLine();
+            }
             text.AppendFormat("{0});", indent2);
             text.AppendLine();
             text.AppendFormat("{0}name = {1};", indent2, this.Name);
@@ -2032,6 +2216,15 @@ namespace V2
         {
             get;
             protected set;
+        }
+
+        public void
+        RequiresProject(
+            XcodeCommonProject dependent)
+        {
+            var proxy = new ContainerItemProxy(this.Project, dependent.Target);
+            var dependency = new TargetDependency(dependent.Target, proxy);
+            this.Target.TargetDependencies.AddUnique(dependency);
         }
     }
 
