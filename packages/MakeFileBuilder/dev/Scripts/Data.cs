@@ -416,7 +416,7 @@ namespace V2
                 makeVariables.AppendLine();
             }
 
-            // prerequisites of target: all
+            // all rule
             makeRules.Append("all:");
             var allPrerequisites = new Bam.Core.StringArray();
             foreach (var module in graph.TopLevelModules)
@@ -438,6 +438,7 @@ namespace V2
             }
             makeRules.AppendLine(allPrerequisites.ToString(' '));
 
+            // directory direction rule
             makeRules.AppendLine("$(DIRS):");
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
@@ -447,6 +448,11 @@ namespace V2
             {
                 makeRules.AppendLine("\tmkdir -pv $@");
             }
+
+            // clean rule
+            makeRules.AppendLine(".PHONY: clean");
+            makeRules.AppendLine("clean:");
+            makeRules.AppendLine("\t@rm -frv $(DIRS)");
 
             foreach (var rank in graph.Reverse())
             {
