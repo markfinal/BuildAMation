@@ -857,6 +857,97 @@ namespace V2
         }
     }
 
+    public sealed class CopyFilesBuildPhase :
+        BuildPhase
+    {
+        public enum ESubFolderSpec
+        {
+            AbsolutePath = 0,
+            Wrapper = 1,
+            Executables = 6,
+            Resources = 7,
+            Frameworks = 10,
+            SharedFrameworks = 11,
+            SharedSupport = 12,
+            Plugins = 13,
+            JavaResources = 15,
+            ProductsDirectory = 16
+        }
+
+        public CopyFilesBuildPhase(
+            string name)
+        {
+            this.Name = name;
+            this.IsA = "PBXCopyFilesBuildPhase";
+            this.DestinationPath = string.Empty;
+            this.SubFolderSpec = ESubFolderSpec.AbsolutePath;
+        }
+
+        protected override string BuildActionMask
+        {
+            get
+            {
+                return "2147483647";
+            }
+        }
+
+        protected override bool RunOnlyForDeploymentPostprocessing
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public string DestinationPath
+        {
+            get;
+            private set;
+        }
+
+        public ESubFolderSpec SubFolderSpec
+        {
+            get;
+            set;
+        }
+
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
+        {
+            var indent = new string('\t', indentLevel);
+            var indent2 = new string('\t', indentLevel + 1);
+            var indent3 = new string('\t', indentLevel + 2);
+            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
+            text.AppendLine();
+            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
+            text.AppendLine();
+            text.AppendFormat("{0}buildActionMask = {1};", indent2, this.BuildActionMask);
+            text.AppendLine();
+            text.AppendFormat("{0}dstPath = \"{1}\";", indent2, this.DestinationPath);
+            text.AppendLine();
+            text.AppendFormat("{0}dstSubfolderSpec = \"{1}\";", indent2, (int)this.SubFolderSpec);
+            text.AppendLine();
+            if (this.BuildFiles.Count > 0)
+            {
+                text.AppendFormat("{0}files = (", indent2);
+                text.AppendLine();
+                foreach (var file in this.BuildFiles)
+                {
+                    text.AppendFormat("{0}{1} /* in {2} */,", indent3, file.GUID, this.Name);
+                    text.AppendLine();
+                }
+                text.AppendFormat("{0});", indent2);
+                text.AppendLine();
+            }
+            text.AppendFormat("{0}runOnlyForDeploymentPostprocessing = {1};", indent2, this.RunOnlyForDeploymentPostprocessing ? "1" : "0");
+            text.AppendLine();
+            text.AppendFormat("{0}}};", indent);
+            text.AppendLine();
+        }
+    }
+
     public sealed class Project :
         Object
     {
@@ -887,6 +978,7 @@ namespace V2
             this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
             this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
             this.ShellScriptsBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
+            this.CopyFilesBuildPhases = new Bam.Core.Array<CopyFilesBuildPhase>();
             this.ContainerItemProxies = new Bam.Core.Array<ContainerItemProxy>();
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
 
@@ -998,6 +1090,12 @@ namespace V2
         }
 
         public Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases
         {
             get;
             private set;
@@ -1269,6 +1367,18 @@ namespace V2
                     proxy.Serialize(text, indentLevel);
                 }
                 text.AppendFormat("/* End PBXContainerItemProxy section */");
+                text.AppendLine();
+            }
+            if (this.CopyFilesBuildPhases.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXCopyFilesBuildPhase section */");
+                text.AppendLine();
+                foreach (var phase in this.CopyFilesBuildPhases.OrderBy(key => key.GUID))
+                {
+                    phase.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXCopyFilesBuildPhase section */");
                 text.AppendLine();
             }
             if (this.FileReferences.Count > 0)
