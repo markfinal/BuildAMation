@@ -37,6 +37,7 @@ namespace V2
         void
         IPackagePolicy.Package(
             Package sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects)
         {

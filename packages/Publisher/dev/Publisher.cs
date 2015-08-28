@@ -85,6 +85,7 @@ namespace V2
         void
         Package(
             Package sender,
+            Bam.Core.V2.ExecutionContext context,
             Bam.Core.V2.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects);
     }
@@ -217,7 +218,7 @@ namespace V2
         {
             // TODO: the nested dictionary is not readonly - not sure how to construct this
             var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>>(this.dependents);
-            this.Policy.Package(this, this.GeneratedPaths[PackageRoot], packageObjects);
+            this.Policy.Package(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
         }
 
         protected override void GetExecutionPolicy(string mode)
