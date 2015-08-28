@@ -118,4 +118,17 @@ namespace Qt5Test1
             }
         }
     }
+
+    sealed class TarBallInstaller :
+        Publisher.V2.TarBall
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
+        }
+    }
 }
