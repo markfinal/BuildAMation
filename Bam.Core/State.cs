@@ -358,7 +358,7 @@ namespace V2
                     // is there a better error message that could be returned, other than this in those
                     // circumstances?
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat("Unrecognized token '{0}'", token);
+                    message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
                     message.AppendLine();
                     if (null != customMacros)
                     {
