@@ -43,7 +43,8 @@ namespace V2
             this.IsA = "Undefined Xcode Object Type";
         }
 
-        protected static string MakeGUID()
+        private static string
+        MakeGUID()
         {
             var guid = System.Guid.NewGuid();
             var toString = guid.ToString("N").ToUpper(); // this is 32 characters long
@@ -54,11 +55,10 @@ namespace V2
             return toString24Chars;
         }
 
-        // TODO: can this not be virtual?
-        public abstract string GUID
+        public string GUID
         {
             get;
-            protected set;
+            private set;
         }
 
         public string Name
@@ -73,7 +73,10 @@ namespace V2
             protected set;
         }
 
-        public abstract void Serialize(System.Text.StringBuilder text, int indentLevel);
+        public abstract void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel);
     }
 
     public sealed class ContainerItemProxy :
@@ -108,12 +111,6 @@ namespace V2
         {
             get;
             set;
-        }
-
-        public override string GUID
-        {
-            get;
-            protected set;
         }
 
         public override void
@@ -173,12 +170,6 @@ namespace V2
         {
             get;
             set;
-        }
-
-        public override string GUID
-        {
-            get;
-            protected set;
         }
 
         public override void
@@ -350,12 +341,6 @@ namespace V2
             this.Type = EFileType.ApplicationBundle;
         }
 
-        public override string GUID
-        {
-            get;
-            protected set;
-        }
-
         private string FileTypeAsString()
         {
             switch (this.Type)
@@ -518,12 +503,6 @@ namespace V2
             set;
         }
 
-        public override string GUID
-        {
-            get;
-            protected set;
-        }
-
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
@@ -582,12 +561,6 @@ namespace V2
                 }
             }
             this.Children.Add(other);
-        }
-
-        public override string GUID
-        {
-            get;
-            protected set;
         }
 
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
@@ -650,12 +623,6 @@ namespace V2
             }
             this.BuildFiles.Add(other);
             other.Parent = this;
-        }
-
-        public override string GUID
-        {
-            get;
-            protected set;
         }
 
         protected abstract string BuildActionMask
@@ -1078,12 +1045,6 @@ namespace V2
             {
                 return this.Groups[3];
             }
-        }
-
-        public override string GUID
-        {
-            get;
-            protected set;
         }
 
         public FileReference
@@ -1518,12 +1479,6 @@ namespace V2
             private set;
         }
 
-        public override string GUID
-        {
-            get;
-            protected set;
-        }
-
         public void
         SetCommonCompilationOptions(
             Bam.Core.V2.Module module,
@@ -1674,12 +1629,6 @@ namespace V2
             this.Configurations.Add(config);
         }
 
-        public override string GUID
-        {
-            get;
-            protected set;
-        }
-
         public override void Serialize(System.Text.StringBuilder text, int indentLevel)
         {
             var indent = new string('\t', indentLevel);
@@ -1814,12 +1763,6 @@ namespace V2
         {
             get;
             private set;
-        }
-
-        public override string GUID
-        {
-            get;
-            protected set;
         }
 
         public ConfigurationValue this[string key]
