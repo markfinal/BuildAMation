@@ -263,7 +263,7 @@ namespace DefaultSettings
                     var dynamicProperty = sharedSettingsTypeDefn.DefineProperty(prop.Name,
                         System.Reflection.PropertyAttributes.None,
                         prop.PropertyType,
-                        null);
+                        System.Type.EmptyTypes);
                     var field = sharedSettingsTypeDefn.DefineField("m" + prop.Name,
                         prop.PropertyType,
                         System.Reflection.FieldAttributes.Private);
