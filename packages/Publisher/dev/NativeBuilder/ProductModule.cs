@@ -36,17 +36,31 @@ namespace V2
     {
         static private void
         CopyFile(
+            Package sender,
             Bam.Core.V2.ExecutionContext context,
             string sourcePath,
             string destinationDir)
         {
+            // TODO: convert this to a command line tool as well
+            // but it would require a module to have more than one tool
             if (!System.IO.Directory.Exists(destinationDir))
             {
                 System.IO.Directory.CreateDirectory(destinationDir);
             }
             var destinationPath = System.IO.Path.Combine(destinationDir, System.IO.Path.GetFileName(sourcePath));
-            System.IO.File.Copy(sourcePath, destinationPath, true);
-            Bam.Core.Log.DebugMessage("Copied {0} to {1}", sourcePath, destinationPath);
+
+            var commandLine = new Bam.Core.StringArray();
+            sender.MetaData = commandLine;
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
+            }
+
+            commandLine.Add(sourcePath);
+            commandLine.Add(destinationPath);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, commandLine);
         }
 
         void
@@ -69,7 +83,7 @@ namespace V2
                         {
                             destinationDir = System.IO.Path.Combine(destinationDir, path.Value.SubDirectory);
                         }
-                        CopyFile(sourcePath, destinationDir);
+                        CopyFile(sender, context, sourcePath, destinationDir);
                         path.Value.DestinationDir = destinationDir;
                     }
                     else
@@ -78,7 +92,7 @@ namespace V2
                         foreach (var reference in path.Value.References)
                         {
                             var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, path.Value.SubDirectory));
-                            CopyFile(sourcePath, destinationDir);
+                            CopyFile(sender, context, sourcePath, destinationDir);
                             path.Value.DestinationDir = destinationDir;
                         }
                     }

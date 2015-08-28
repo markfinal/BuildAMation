@@ -35,6 +35,131 @@ namespace Publisher
 {
 namespace V2
 {
+    public static class DefaultExtensions
+    {
+        public static void
+        Defaults(
+            this ICopyFileSettings settings,
+            Bam.Core.V2.Module module)
+        {
+            settings.Force = true;
+        }
+    }
+
+    public static partial class NativeImplementation
+    {
+        public static void
+        Convert(
+            this ICopyFileSettings settings,
+            Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (settings.Force)
+            {
+                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    commandLine.Add("/Y");
+                }
+                else
+                {
+                    commandLine.Add("-f");
+                }
+            }
+        }
+    }
+
+    public abstract class CopyFileTool :
+        Bam.Core.V2.Tool
+    {
+    }
+
+    [Bam.Core.V2.SettingsExtensions(typeof(DefaultExtensions))]
+    public interface ICopyFileSettings :
+        ISettingsBase
+    {
+        bool Force
+        {
+            get;
+            set;
+        }
+    }
+
+    public sealed class CopyFileSettings :
+        Bam.Core.V2.Settings,
+        ICopyFileSettings,
+        CommandLineProcessor.V2.IConvertToCommandLine
+    {
+        public CopyFileSettings()
+        {}
+
+        public CopyFileSettings(
+            Bam.Core.V2.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        bool ICopyFileSettings.Force
+        {
+            get;
+            set;
+        }
+
+        void
+        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+            Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                commandLine.Add("/C");
+                commandLine.Add("copy");
+            }
+            else
+            {
+                commandLine.Add("-v");
+            }
+            (this as ICopyFileSettings).Convert(module, commandLine);
+        }
+    }
+
+    public sealed class CopyFilePosix :
+        CopyFileTool
+    {
+        public override Bam.Core.V2.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            return new CopyFileSettings(module);
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return Bam.Core.V2.TokenizedString.Create("cp", null, verbatim: true);
+            }
+        }
+    }
+
+    public sealed class CopyFileWin :
+        CopyFileTool
+    {
+        public override Bam.Core.V2.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            return new CopyFileSettings(module);
+        }
+
+        public override Bam.Core.V2.TokenizedString Executable
+        {
+            get
+            {
+                return Bam.Core.V2.TokenizedString.Create("cmd", null, verbatim: true);
+            }
+        }
+    }
+
     public sealed class PackageReference
     {
         public PackageReference(
@@ -100,6 +225,12 @@ namespace V2
         protected Package()
         {
             this.RegisterGeneratedFile(PackageRoot, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
+        }
+
+        protected override void Init(Module parent)
+        {
+            base.Init(parent);
+            this.Tool = Bam.Core.V2.Graph.Instance.FindReferencedModule<CopyFileWin>();
         }
 
         public enum EPublishingType
