@@ -131,7 +131,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key);
+            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
         }
     }
 
