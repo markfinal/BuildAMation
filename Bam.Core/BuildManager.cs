@@ -201,6 +201,12 @@ namespace V2
         public void Run()
         {
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
+            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", State.BuilderName);
+            var metaDataType = State.ScriptAssembly.GetType(metaName);
+            if (null == metaDataType)
+            {
+                throw new Exception("Meta data type {0} for builder {1} does not exist", metaName, State.BuilderName);
+            }
 
             var allUpToDate = true;
             var graph = Graph.Instance;
@@ -218,18 +224,11 @@ namespace V2
                 return;
             }
 
-            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", Core.State.BuilderName);
-            var metaDataType = Core.State.ScriptAssembly.GetType(metaName);
-            if (null == metaDataType)
-            {
-                throw new Exception("Meta data type for builder {0} does not exist", metaName);
-            }
-
             ExecutePreBuild(metaDataType);
 
-            if (!System.IO.Directory.Exists(Core.State.BuildRoot))
+            if (!System.IO.Directory.Exists(State.BuildRoot))
             {
-                System.IO.Directory.CreateDirectory(Core.State.BuildRoot);
+                System.IO.Directory.CreateDirectory(State.BuildRoot);
             }
 
             var threadCount = CommandLineProcessor.Evaluate(new MultiThreaded());
@@ -303,7 +302,7 @@ namespace V2
                                 {
                                     (module as IModuleExecution).Execute(context);
                                 }
-                                catch (Bam.Core.Exception ex)
+                                catch (Exception ex)
                                 {
                                     abortException = ex;
                                     cancellationSource.Cancel();
@@ -355,7 +354,7 @@ namespace V2
                         {
                             module.Execute(context);
                         }
-                        catch (Bam.Core.Exception ex)
+                        catch (Exception ex)
                         {
                             abortException = ex;
                             break;
