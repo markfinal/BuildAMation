@@ -83,13 +83,22 @@ namespace V2
             }
 
             XcodeBuilder.V2.XcodeCommonLinkable application;
-            if (sender is DynamicLibrary)
+            // TODO: this is a hack, so that modules earlier in the graph can add pre/post build commands
+            // to the project for this module
+            if (null == sender.MetaData)
             {
-                application = new XcodeBuilder.V2.XcodeDynamicLibrary(sender, executablePath);
+                if (sender is DynamicLibrary)
+                {
+                    application = new XcodeBuilder.V2.XcodeDynamicLibrary(sender, executablePath);
+                }
+                else
+                {
+                    application = new XcodeBuilder.V2.XcodeProgram(sender, executablePath);
+                }
             }
             else
             {
-                application = new XcodeBuilder.V2.XcodeProgram(sender, executablePath);
+                application = sender.MetaData as XcodeBuilder.V2.XcodeCommonLinkable;
             }
 
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("XcodeProjectProcessor.V2.IConvertToProject");
