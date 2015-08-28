@@ -41,7 +41,6 @@ namespace V2
             Bam.Core.V2.Tool compiler,
             Bam.Core.V2.TokenizedString generatedFilePath)
         {
-#if true
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
             var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
@@ -57,15 +56,6 @@ namespace V2
 
             var compilerProject = solution.EnsureProjectExists((compiler as GeneratedSourceTool).BuildOfTool);
             project.RequiresProject(compilerProject);
-#else
-            var encapsulating = sender.GetEncapsulatingReferencedModule();
-            var commands = new Bam.Core.StringArray();
-            commands.Add(command.ToString());
-
-            VSSolutionBuilder.V2.VSSolutionMeta.AddPreBuildCommands(encapsulating, commands);
-
-            // TODO: encapsulating.Project needs to be an order only dependent upon compiler.BuildTool.meta.Project
-#endif
         }
     }
 }
