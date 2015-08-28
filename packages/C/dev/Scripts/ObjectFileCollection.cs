@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
 namespace V2
@@ -55,7 +56,8 @@ namespace V2
         public Bam.Core.Array<Bam.Core.V2.Module>
         AddFiles(
             string path,
-            Bam.Core.V2.Module macroModuleOverride = null)
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
             var wildcardPath = Bam.Core.V2.TokenizedString.Create(path, macroModule).Parse();
@@ -63,6 +65,10 @@ namespace V2
             var dir = System.IO.Path.GetDirectoryName(wildcardPath);
             var leafname = System.IO.Path.GetFileName(wildcardPath);
             var files = System.IO.Directory.GetFiles(dir, leafname, System.IO.SearchOption.TopDirectoryOnly);
+            if (filter != null)
+            {
+                files = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
+            }
             if (0 == files.Length)
             {
                 throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
