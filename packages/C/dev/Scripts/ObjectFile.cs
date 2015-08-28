@@ -447,7 +447,6 @@ namespace V2
             Bam.Core.V2.ExecutionContext context)
         {
             // TODO: exception to this is generated source, but there ought to be an override for that
-            throw new Bam.Core.Exception("Source files should not require building");
         }
 
         protected override void GetExecutionPolicy(string mode)
@@ -486,7 +485,6 @@ namespace V2
             Bam.Core.V2.ExecutionContext context)
         {
             // TODO: exception to this is generated source, but there ought to be an override for that
-            throw new Bam.Core.Exception("Header files should not require building");
         }
 
         protected override void GetExecutionPolicy(string mode)

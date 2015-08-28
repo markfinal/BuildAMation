@@ -33,6 +33,23 @@ namespace V2
 {
     using System.Linq;
 
+    [System.AttributeUsage(System.AttributeTargets.Class)]
+    public sealed class EvaluationRequiredAttribute :
+        System.Attribute
+    {
+        public EvaluationRequiredAttribute(
+            bool enabled)
+        {
+            this.Enabled = enabled;
+        }
+
+        public bool Enabled
+        {
+            get;
+            private set;
+        }
+    }
+
     /// <summary>
     /// Management of the graph execution
     /// </summary>
@@ -164,6 +181,10 @@ namespace V2
         ExecutePreBuild(
             System.Type metaType)
         {
+            if (null == metaType)
+            {
+                return;
+            }
             var method = metaType.GetMethod("PreExecution");
             if (null == method)
             {
@@ -183,6 +204,10 @@ namespace V2
         ExecutePostBuild(
             System.Type metaType)
         {
+            if (null == metaType)
+            {
+                return;
+            }
             var method = metaType.GetMethod("PostExecution");
             if (null == method)
             {
@@ -198,16 +223,32 @@ namespace V2
             }
         }
 
-        public void Run()
+        private static bool
+        DoModulesRequireRebuilding(
+            System.Type metaType)
         {
-            // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
-            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", State.BuilderName);
-            var metaDataType = State.ScriptAssembly.GetType(metaName);
-            if (null == metaDataType)
+            if (null == metaType)
             {
-                throw new Exception("Meta data type {0} for builder {1} does not exist", metaName, State.BuilderName);
+                Log.DebugMessage("No build mode metadata, assume rebuilds necessary");
+                return true;
             }
 
+            // not all build modes need to determine if modules are up-to-date
+            var evaluationRequiredAttr =
+                metaType.GetCustomAttributes(typeof(EvaluationRequiredAttribute), false) as EvaluationRequiredAttribute[];
+            if (0 == evaluationRequiredAttr.Length)
+            {
+                Log.DebugMessage("No Bam.Core.EvaluationRequired attribute on build mode metadata, assume rebuilds necessary");
+                return true;
+            }
+
+            if (!evaluationRequiredAttr[0].Enabled)
+            {
+                Log.DebugMessage("Module evaluation disabled");
+                return true;
+            }
+
+            Log.DebugMessage("Module evaluation enabled");
             var allUpToDate = true;
             var graph = Graph.Instance;
             foreach (var rank in graph.Reverse())
@@ -218,7 +259,21 @@ namespace V2
                     allUpToDate &= module.IsUpToDate;
                 }
             }
-            if (allUpToDate)
+            return !allUpToDate;
+        }
+
+        public void
+        Run()
+        {
+            // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
+            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", State.BuilderName);
+            var metaDataType = State.ScriptAssembly.GetType(metaName);
+            if (null == metaDataType)
+            {
+                Log.DebugMessage("No build mode {0} meta data type {1}", State.BuilderName, metaName);
+            }
+
+            if (!DoModulesRequireRebuilding(metaDataType))
             {
                 Log.DebugMessage("Everything up to date");
                 return;
@@ -256,6 +311,7 @@ namespace V2
                         scheduler);
 
                 var tasks = new Array<System.Threading.Tasks.Task>();
+                var graph = Graph.Instance;
                 foreach (var rank in graph.Reverse())
                 {
                     foreach (var module in rank)
@@ -334,6 +390,7 @@ namespace V2
             }
             else
             {
+                var graph = Graph.Instance;
                 foreach (var rank in graph.Reverse())
                 {
                     if (null != abortException)

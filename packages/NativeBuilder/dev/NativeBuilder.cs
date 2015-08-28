@@ -31,4 +31,11 @@
 
 namespace NativeBuilder
 {
+namespace V2
+{
+    [Bam.Core.V2.EvaluationRequired(true)]
+    public sealed class NativeMeta
+    {
+    }
+}
 }
