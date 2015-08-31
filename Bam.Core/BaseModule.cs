@@ -428,18 +428,18 @@ namespace V2
             }
             if (this.DependeesList.Count > 1)
             {
-                throw new Exception("Too many dependees!");
+                throw new Exception("More than one dependee attached to {0}, to uniquely identify the encapsulating module", this.ToString());
             }
             if (this.RequiredDependeesList.Count > 1)
             {
-                throw new Exception("Too many requirees!");
+                throw new Exception("More than one requiree attached to {0}, to uniquely identify the encapsulating module", this.ToString());
             }
             Module encapsulating;
             if (0 == this.DependeesList.Count)
             {
                 if (0 == this.RequiredDependeesList.Count)
                 {
-                    throw new Exception("Too few dependees!");
+                    throw new Exception("No dependees or requirees attached to {0}. Cannot determine the encapsulating module", this.ToString());
                 }
                 encapsulating = this.RequiredDependeesList[0].GetEncapsulatingReferencedModule();
             }
