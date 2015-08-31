@@ -167,6 +167,11 @@ namespace V2
 
         public override void Evaluate()
         {
+            var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
+            if (!exists)
+            {
+                return;
+            }
             foreach (var source in this.source)
             {
                 if (!source.IsUpToDate)
