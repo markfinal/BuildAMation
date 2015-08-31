@@ -240,7 +240,10 @@ namespace V2
             this.PublicPatch((settings, appliedTo) =>
             {
                 var linking = settings as C.V2.ICommonLinkerOptions;
-                linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
+                if (null != linking)
+                {
+                    linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
+                }
             });
         }
 
