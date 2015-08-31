@@ -454,7 +454,7 @@ namespace V2
             // there is no execution policy
         }
 
-        public Bam.Core.V2.TokenizedString InputPath
+        public virtual Bam.Core.V2.TokenizedString InputPath
         {
             get
             {
