@@ -143,13 +143,14 @@ namespace V2
                 }
             }
 
+            var tool = sender.Tool as Bam.Core.V2.PreBuiltTool;
             var commands = new System.Text.StringBuilder();
-            commands.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" $^ {1}" : "{0} $^ {1}", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            commands.AppendFormat(tool.Executable.ContainsSpace ? "\"{0}\" $^ {1}" : "{0} $^ {1}", tool.Executable, commandLineArgs.ToString(' '));
             rule.AddShellCommand(commands.ToString());
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
             meta.CommonMetaData.Directories.AddUnique(executableDir);
-            meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
+            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }
 }

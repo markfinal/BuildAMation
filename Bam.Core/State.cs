@@ -653,39 +653,56 @@ namespace V2
         }
     }
 
+    public interface ITool
+    {
+        Settings
+        CreateDefaultSettings<T>(
+            T module) where T : Bam.Core.V2.Module;
+    }
+
+    public interface ICommandLineTool :
+        ITool
+    {
+        System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
+        {
+            get;
+        }
+
+        System.Collections.Generic.List<string> InheritedEnvironmentVariables
+        {
+            get;
+        }
+
+        TokenizedString Executable
+        {
+            get;
+        }
+    }
+
     /// <summary>
     /// A tool is a module in the usual sense, so that it can be added into the dependency tree
     /// </summary>
-    public abstract class Tool :
-        Module
+    public abstract class PreBuiltTool :
+        Module,
+        ICommandLineTool
     {
-        protected Tool()
+        protected PreBuiltTool()
             : base()
         {
             this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, TokenizedStringArray>();
             this.InheritedEnvironmentVariables = new System.Collections.Generic.List<string>();
         }
 
+            #if false
         // TODO: Might move the Name into the Module?
         public string Name
         {
             get;
             protected set;
         }
+            #endif
 
         public abstract Settings CreateDefaultSettings<T>(T module) where T : Bam.Core.V2.Module;
-
-        protected override void
-        ExecuteInternal(
-            ExecutionContext context)
-        {
-            // by default, a Tool's execution does nothing as it's on disk
-        }
-
-        protected override void GetExecutionPolicy(string mode)
-        {
-            // by default, the execution policy of a tool is to do nothing as it's on disk
-        }
 
         public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
         {
@@ -705,7 +722,22 @@ namespace V2
             get;
         }
 
-        public override void Evaluate()
+        protected override void
+        ExecuteInternal(
+            ExecutionContext context)
+        {
+            // by default, a PreBuiltTool's execution does nothing as it's on disk
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            // by default, the execution policy of a PreBuiltTool is to do nothing as it's on disk
+        }
+
+        public override void
+        Evaluate()
         {
             var exists = System.IO.File.Exists(this.Executable.ToString());
             this.IsUpToDate = exists;

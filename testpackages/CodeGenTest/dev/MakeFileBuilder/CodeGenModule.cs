@@ -38,15 +38,15 @@ namespace V2
         IGeneratedSourcePolicy.GenerateSource(
             GeneratedSourceModule sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString generatedFilePath)
         {
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(generatedFilePath);
 
-            var b = (compiler as GeneratedSourceTool).BuildOfTool.MetaData as MakeFileBuilder.V2.MakeFileMeta;
-            rule.AddOrderOnlyDependency(System.String.Format("$({0})", b.Rules[0].Targets[0].VariableName));
+            var buildTool = (compiler as Bam.Core.V2.Module).MetaData as MakeFileBuilder.V2.MakeFileMeta;
+            rule.AddOrderOnlyDependency(System.String.Format("$({0})", buildTool.Rules[0].Targets[0].VariableName));
 
             var commandLineArgs = new Bam.Core.StringArray();
             // TODO: change this to a configuration directory really

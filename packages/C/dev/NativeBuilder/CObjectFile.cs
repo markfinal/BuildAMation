@@ -55,7 +55,7 @@ namespace V2
                 System.IO.Directory.CreateDirectory(objectFileDir);
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, sender.MetaData as Bam.Core.StringArray);
         }
     }
 }

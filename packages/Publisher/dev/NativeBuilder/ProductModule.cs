@@ -60,7 +60,7 @@ namespace V2
 
             commandLine.Add(sourcePath);
             commandLine.Add(destinationPath);
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, commandLine);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, commandLine);
         }
 
         void
@@ -110,7 +110,7 @@ namespace V2
         IInnoSetupPolicy.CreateInstaller(
             InnoSetupInstaller sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString scriptPath)
         {
             var args = new Bam.Core.StringArray();
@@ -128,7 +128,7 @@ namespace V2
         INSISPolicy.CreateInstaller(
             NSISInstaller sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString scriptPath)
         {
             var args = new Bam.Core.StringArray();
@@ -146,7 +146,7 @@ namespace V2
         ITarPolicy.CreateTarBall(
             TarBall sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString scriptPath,
             Bam.Core.V2.TokenizedString outputPath)
         {
@@ -170,7 +170,7 @@ namespace V2
         IDiskImagePolicy.CreateDMG(
             DiskImage sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString sourceFolderPath,
             Bam.Core.V2.TokenizedString outputPath)
         {

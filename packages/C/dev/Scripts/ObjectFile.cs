@@ -107,7 +107,7 @@ namespace V2
     // TODO: register a tooltype, e.g. compiler, linker, archiver
 
     public abstract class CompilerTool :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
         // TODO: is this needed?
         public virtual void
@@ -117,11 +117,11 @@ namespace V2
     }
 
     public abstract class LibrarianTool :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     { }
 
     public abstract class LinkerTool :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
         public abstract bool UseLPrefixLibraryPaths
         {
@@ -320,7 +320,7 @@ namespace V2
         FindTools<AttributeType, ToolType>(
             System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<ToolType>> collection)
             where AttributeType : ToolRegistrationAttribute
-            where ToolType : Bam.Core.V2.Tool
+            where ToolType : Bam.Core.V2.PreBuiltTool
         {
             var graph = Bam.Core.V2.Graph.Instance;
             foreach (var toolData in GetToolsFromMetaData<AttributeType>())
@@ -355,7 +355,7 @@ namespace V2
             System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<ToolType>> collection,
             EBit bitDepth,
             string toolDescription)
-            where ToolType : Bam.Core.V2.Tool
+            where ToolType : Bam.Core.V2.PreBuiltTool
         {
             if (!collection.ContainsKey(bitDepth) || 0 == collection[bitDepth].Count)
             {
@@ -381,7 +381,7 @@ namespace V2
                 tooManyInstance.AppendLine();
                 foreach (var tool in candidates)
                 {
-                    tooManyInstance.AppendLine(tool.Name);
+                    tooManyInstance.AppendLine(tool.GetType().ToString());
                 }
                 throw new Bam.Core.Exception(tooManyInstance.ToString());
             }

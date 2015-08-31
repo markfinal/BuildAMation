@@ -63,7 +63,7 @@ namespace V2
                 commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, sender.MetaData as Bam.Core.StringArray);
         }
     }
 }

@@ -60,7 +60,7 @@ namespace V2
     }
 
     public sealed class MocTool :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
@@ -82,7 +82,7 @@ namespace V2
         Moc(
             MocModule sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.ICommandLineTool mocCompiler,
             Bam.Core.V2.TokenizedString generatedMocSource,
             C.V2.HeaderFile source);
     }
@@ -90,7 +90,7 @@ namespace V2
     public class MocModule :
         C.V2.SourceFile
     {
-        private Bam.Core.V2.Tool Compiler;
+        private Bam.Core.V2.PreBuiltTool Compiler;
         private C.V2.HeaderFile SourceHeaderModule;
         private IMocGenerationPolicy Policy = null;
 

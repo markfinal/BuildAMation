@@ -38,7 +38,7 @@ namespace V2
         IGeneratedSourcePolicy.GenerateSource(
             GeneratedSourceModule sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString generatedFilePath)
         {
             var args = new Bam.Core.StringArray();

@@ -38,7 +38,7 @@ namespace V2
         IGeneratedSourcePolicy.GenerateSource(
             GeneratedSourceModule sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString generatedFilePath)
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
@@ -61,7 +61,7 @@ namespace V2
             var application = new XcodeBuilder.V2.XcodeProgram(encapsulating, encapsulating.GeneratedPaths[C.V2.ConsoleApplication.Key]);
             application.AddPreBuildCommands(commands);
 
-            var compilerProject = (compiler as GeneratedSourceTool).BuildOfTool.MetaData as XcodeBuilder.V2.XcodeCommonProject;
+            var compilerProject = (compiler as Bam.Core.V2.Module).MetaData as XcodeBuilder.V2.XcodeCommonProject;
             application.RequiresProject(compilerProject);
         }
     }

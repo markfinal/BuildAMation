@@ -36,7 +36,7 @@ namespace V2
         public static void
         Execute(
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool tool,
+            Bam.Core.V2.ICommandLineTool tool,
             Bam.Core.StringArray commandLine,
             string hostApplication = null,
             string workingDirectory = null)
@@ -61,14 +61,17 @@ namespace V2
 
             var cachedEnvVars = new System.Collections.Generic.Dictionary<string, string>();
             // first get the inherited environment variables from the system environment
-            foreach (var envVar in tool.InheritedEnvironmentVariables)
+            if (null != tool.InheritedEnvironmentVariables)
             {
-                if (!processStartInfo.EnvironmentVariables.ContainsKey(envVar))
+                foreach (var envVar in tool.InheritedEnvironmentVariables)
                 {
-                    Bam.Core.Log.Info("Environment variable '{0}' does not exist", envVar);
-                    continue;
+                    if (!processStartInfo.EnvironmentVariables.ContainsKey(envVar))
+                    {
+                        Bam.Core.Log.Info("Environment variable '{0}' does not exist", envVar);
+                        continue;
+                    }
+                    cachedEnvVars.Add(envVar, processStartInfo.EnvironmentVariables[envVar]);
                 }
-                cachedEnvVars.Add(envVar, processStartInfo.EnvironmentVariables[envVar]);
             }
 
             processStartInfo.EnvironmentVariables.Clear();
@@ -77,9 +80,12 @@ namespace V2
             {
                 processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
             }
-            foreach (var envVar in tool.EnvironmentVariables)
+            if (null != tool.EnvironmentVariables)
             {
-                processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value.ToString(System.IO.Path.PathSeparator);
+                foreach (var envVar in tool.EnvironmentVariables)
+                {
+                    processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value.ToString(System.IO.Path.PathSeparator);
+                }
             }
 
             processStartInfo.UseShellExecute = false;

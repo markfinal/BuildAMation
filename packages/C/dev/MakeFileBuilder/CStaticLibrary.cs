@@ -58,13 +58,14 @@ namespace V2
                 rule.AddPrerequisite(input, C.V2.ObjectFile.Key);
             }
 
+            var tool = sender.Tool as Bam.Core.V2.PreBuiltTool;
             var command = new System.Text.StringBuilder();
-            command.AppendFormat(sender.Tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", sender.Tool.Executable, commandLineArgs.ToString(' '));
+            command.AppendFormat(tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", tool.Executable, commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
             meta.CommonMetaData.Directories.AddUnique(libraryFileDir);
-            meta.CommonMetaData.ExtendEnvironmentVariables(sender.Tool.EnvironmentVariables);
+            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }
 }

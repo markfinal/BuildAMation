@@ -69,7 +69,7 @@ namespace V2
     }
 
     public abstract class CopyFileTool :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
     }
 
@@ -455,7 +455,7 @@ namespace V2
     }
 
     public sealed class InnoSetupCompiler :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
@@ -476,7 +476,7 @@ namespace V2
         void CreateInstaller(
             InnoSetupInstaller sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString scriptPath);
     }
 
@@ -485,7 +485,7 @@ namespace V2
         Bam.Core.V2.Module
     {
         private InnoSetupScript ScriptModule;
-        private Bam.Core.V2.Tool Compiler;
+        private Bam.Core.V2.PreBuiltTool Compiler;
         private IInnoSetupPolicy Policy;
 
         public InnoSetupInstaller()
@@ -629,7 +629,7 @@ namespace V2
     }
 
     public sealed class NSISCompiler :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
@@ -650,7 +650,7 @@ namespace V2
         void CreateInstaller(
             NSISInstaller sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString scriptPath);
     }
 
@@ -659,7 +659,7 @@ namespace V2
         Bam.Core.V2.Module
     {
         private NSISScript ScriptModule;
-        private Bam.Core.V2.Tool Compiler;
+        private Bam.Core.V2.PreBuiltTool Compiler;
         private INSISPolicy Policy;
 
         public NSISInstaller()
@@ -816,7 +816,7 @@ namespace V2
     }
 
     public sealed class TarCompiler :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
@@ -837,7 +837,7 @@ namespace V2
         void CreateTarBall(
             TarBall sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString scriptPath,
             Bam.Core.V2.TokenizedString outputPath);
     }
@@ -849,7 +849,7 @@ namespace V2
         public static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Installer");
 
         private TarInputFiles InputFiles;
-        private Bam.Core.V2.Tool Compiler;
+        private Bam.Core.V2.PreBuiltTool Compiler;
         private ITarPolicy Policy;
 
         public TarBall()
@@ -917,7 +917,7 @@ namespace V2
     }
 
     public sealed class DiskImageCompiler :
-        Bam.Core.V2.Tool
+        Bam.Core.V2.PreBuiltTool
     {
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
@@ -938,7 +938,7 @@ namespace V2
         void CreateDMG(
             DiskImage sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString scriptPath,
             Bam.Core.V2.TokenizedString outputPath);
     }
@@ -950,7 +950,7 @@ namespace V2
         public static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Installer");
 
         private Bam.Core.V2.TokenizedString SourceFolderPath;
-        private Bam.Core.V2.Tool Compiler;
+        private Bam.Core.V2.PreBuiltTool Compiler;
         private IDiskImagePolicy Policy;
 
         public DiskImage()

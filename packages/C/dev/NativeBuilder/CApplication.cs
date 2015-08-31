@@ -138,7 +138,7 @@ namespace V2
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool, sender.MetaData as Bam.Core.StringArray);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, sender.MetaData as Bam.Core.StringArray);
         }
     }
 }

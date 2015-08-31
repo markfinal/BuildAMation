@@ -53,7 +53,8 @@ namespace V2
     }
 
     public sealed class BuildCodeGenTool :
-        C.V2.ConsoleApplication
+        C.V2.ConsoleApplication,
+        Bam.Core.V2.ICommandLineTool
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {
@@ -68,42 +69,38 @@ namespace V2
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
-    }
 
-    public sealed class GeneratedSourceSettings :
-        Bam.Core.V2.Settings
-    {
-    }
+        public Settings
+        CreateDefaultSettings<T>(
+            T module) where T : Module
+        {
+            return new GeneratedSourceSettings();
+        }
 
-    public sealed class GeneratedSourceTool :
-        Bam.Core.V2.Tool
-    {
-        public BuildCodeGenTool BuildOfTool
+        public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
         {
             get;
             private set;
         }
 
-        protected override void Init(Bam.Core.V2.Module parent)
+        public System.Collections.Generic.List<string> InheritedEnvironmentVariables
         {
-            base.Init(parent);
-
-            this.BuildOfTool = Bam.Core.V2.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
-            this.Requires(this.BuildOfTool);
+            get;
+            private set;
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
-        {
-            return new GeneratedSourceSettings();
-        }
-
-        public override Bam.Core.V2.TokenizedString Executable
+        public TokenizedString Executable
         {
             get
             {
-                return this.BuildOfTool.GeneratedPaths[C.V2.ConsoleApplication.Key];
+                return this.GeneratedPaths[C.V2.ConsoleApplication.Key];
             }
         }
+    }
+
+    public sealed class GeneratedSourceSettings :
+        Bam.Core.V2.Settings
+    {
     }
 
     public interface IGeneratedSourcePolicy
@@ -112,21 +109,21 @@ namespace V2
         GenerateSource(
             GeneratedSourceModule sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString generatedFilePath);
     }
 
     public class GeneratedSourceModule :
         C.V2.SourceFile
     {
-        private Bam.Core.V2.Tool Compiler;
+        private Bam.Core.V2.ICommandLineTool Compiler;
         private IGeneratedSourcePolicy Policy;
 
         public GeneratedSourceModule()
         {
             this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/Generated.c", this));
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<GeneratedSourceTool>();
-            this.Requires(this.Compiler);
+            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
+            this.Requires(this.Compiler as Bam.Core.V2.Module);
         }
 
         public override void

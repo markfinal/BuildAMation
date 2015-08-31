@@ -336,7 +336,7 @@ namespace V2
 
         protected abstract void GetExecutionPolicy(string mode);
 
-        public Tool Tool
+        public Module Tool
         {
             get;
             protected set;

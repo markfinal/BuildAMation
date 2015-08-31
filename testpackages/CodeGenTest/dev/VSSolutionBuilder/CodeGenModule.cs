@@ -38,7 +38,7 @@ namespace V2
         IGeneratedSourcePolicy.GenerateSource(
             GeneratedSourceModule sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool compiler,
+            Bam.Core.V2.ICommandLineTool compiler,
             Bam.Core.V2.TokenizedString generatedFilePath)
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
@@ -54,7 +54,7 @@ namespace V2
             command.AppendFormat(" {0}", "Generated");
             config.AddPreBuildCommand(command.ToString());
 
-            var compilerProject = solution.EnsureProjectExists((compiler as GeneratedSourceTool).BuildOfTool);
+            var compilerProject = solution.EnsureProjectExists(compiler as Bam.Core.V2.Module);
             project.RequiresProject(compilerProject);
         }
     }
