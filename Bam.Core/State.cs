@@ -204,19 +204,23 @@ namespace V2
             Module macroSource,
             bool verbatim = false)
         {
-            var search = Cache.Where((ts) =>
+            // strings can be created during the multithreaded phase
+            lock (Cache)
+            {
+                var search = Cache.Where((ts) =>
+                    {
+                        return ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource;
+                    });
+                if (search.Count() > 0)
                 {
-                    return ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource;
-                });
-            if (search.Count() > 0)
-            {
-                return search.ElementAt(0);
-            }
-            else
-            {
-                var ts = new TokenizedString(tokenizedString, macroSource, verbatim);
-                Cache.Add(ts);
-                return ts;
+                    return search.ElementAt(0);
+                }
+                else
+                {
+                    var ts = new TokenizedString(tokenizedString, macroSource, verbatim);
+                    Cache.Add(ts);
+                    return ts;
+                }
             }
         }
 
