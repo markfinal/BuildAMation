@@ -42,6 +42,10 @@ namespace V2
     public sealed class Widgets :
         QtCommon.V2.Widgets
     {}
+
+    public sealed class OpenGL :
+        QtCommon.V2.OpenGL
+    {}
 }
 namespace V2
 {
@@ -56,6 +60,10 @@ namespace V2
     public sealed class WidgetsFramework :
         QtCommon.V2.WidgetsFramework
     {}
+
+    public sealed class OpenGLFramework :
+        QtCommon.V2.OpenGLFramework
+    { }
 }
     public sealed class Phonon :
         QtCommon.Phonon

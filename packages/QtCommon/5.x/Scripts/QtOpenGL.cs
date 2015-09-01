@@ -29,6 +29,24 @@
 #endregion // License
 namespace QtCommon
 {
+namespace V2
+{
+    public abstract class OpenGL :
+        CommonModule
+    {
+        public OpenGL() :
+            base("OpenGL")
+        {}
+    }
+
+    public abstract class OpenGLFramework :
+        CommonFramework
+    {
+        public OpenGLFramework() :
+            base("OpenGL")
+        {}
+    }
+}
     public abstract class OpenGL :
         Base
     {
