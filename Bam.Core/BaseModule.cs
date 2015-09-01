@@ -135,9 +135,12 @@ namespace V2
             return false;
         }
 
+        public delegate void ModulePreInitDelegate(Module module);
+
         public static T
         Create<T>(
-            Module parent = null) where T : Module, new()
+            Module parent = null,
+            ModulePreInitDelegate preInitCallback = null) where T : Module, new()
         {
             if (!CanCreate(typeof(T)))
             {
@@ -149,6 +152,10 @@ namespace V2
                 throw new Exception("Building mode has not been set");
             }
             var module = new T();
+            if (preInitCallback != null)
+            {
+                preInitCallback(module);
+            }
             module.Init(parent);
             module.GetExecutionPolicy(Graph.Instance.Mode);
             AllModules.Add(module);

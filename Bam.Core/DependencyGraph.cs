@@ -138,12 +138,14 @@ namespace V2
                 return module;
             }
             this.CommonModuleType.Push(typeof(T));
-            var newModule = Module.Create<T>();
+            var newModule = Module.Create<T>(preInitCallback: module =>
+                {
+                    if (null != module)
+                    {
+                        referencedModules.Add(module);
+                    }
+                });
             this.CommonModuleType.Pop();
-            if (null != newModule)
-            {
-                referencedModules.Add(newModule);
-            }
             return newModule;
         }
 
