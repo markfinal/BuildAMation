@@ -171,7 +171,7 @@ namespace V2
             this.BuildEnvironment = env;
             var includeTests = CommandLineProcessor.Evaluate(new UseTests());
             var allTypes = assembly.GetTypes();
-            var allPackageTypes = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)));
+            var allPackageTypes = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)) && type.IsSealed);
             foreach (var moduleType in allPackageTypes)
             {
                 var newModule = MakeModuleOfType(moduleType);
