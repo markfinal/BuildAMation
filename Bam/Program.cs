@@ -114,6 +114,11 @@ namespace Bam
                 catch (Bam.Core.Exception exception)
                 {
                     Core.Log.ErrorMessage(exception.Message);
+                    if (null != exception.InnerException)
+                    {
+                        Core.Log.ErrorMessage("Additional details:");
+                        Core.Log.ErrorMessage(exception.InnerException.Message);
+                    }
                     System.Environment.ExitCode = -1;
                 }
                 finally
