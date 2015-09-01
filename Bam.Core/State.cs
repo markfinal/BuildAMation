@@ -322,6 +322,10 @@ namespace V2
                     if (!value.IsExpanded)
                     {
                         // recursive
+                        if (this == value)
+                        {
+                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
+                        }
                         value.Parse();
                     }
                     token = value.ToString();
@@ -332,6 +336,10 @@ namespace V2
                     if (!value.IsExpanded)
                     {
                         // recursive
+                        if (this == value)
+                        {
+                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
+                        }
                         value.Parse();
                     }
                     token = value.ToString();
@@ -342,6 +350,10 @@ namespace V2
                     if (!value.IsExpanded)
                     {
                         // recursive
+                        if (this == value)
+                        {
+                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
+                        }
                         value.Parse();
                     }
                     token = value.ToString();
@@ -352,6 +364,10 @@ namespace V2
                     if (!value.IsExpanded)
                     {
                         // recursive
+                        if (this == value)
+                        {
+                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
+                        }
                         value.Parse();
                     }
                     token = value.ToString();
