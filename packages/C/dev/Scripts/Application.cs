@@ -186,6 +186,12 @@ namespace V2
             this.UsePublicPatches(dependent);
         }
 
+        public void RequiredToExist<DependentModule>() where DependentModule : CModule, new()
+        {
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.Requires(dependent);
+        }
+
         public void
         CompileAndLinkAgainst<DependentModule>(
             params CModule[] affectedSources) where DependentModule : CModule, new()
