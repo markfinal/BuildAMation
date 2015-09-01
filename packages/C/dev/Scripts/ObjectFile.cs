@@ -518,7 +518,7 @@ namespace V2
     {
         private Bam.Core.V2.Module Parent = null;
         private ICompilationPolicy Policy = null;
-        private SourceFile Source = null;
+        public SourceFile Source = null;
 
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
 
