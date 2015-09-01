@@ -85,13 +85,13 @@ namespace V2
             return modulesCreated;
         }
 
-        public ChildModuleType AddFile(Bam.Core.V2.FileKey generatedFileKey, Bam.Core.V2.Module module)
+        public ChildModuleType AddFile(Bam.Core.V2.FileKey generatedFileKey, Bam.Core.V2.Module module, Bam.Core.V2.Module.ModulePreInitDelegate preInitDlg = null)
         {
             if (!module.GeneratedPaths.ContainsKey(generatedFileKey))
             {
                 throw new System.Exception(System.String.Format("No generated path found with key '{0}'", generatedFileKey.Id));
             }
-            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this);
+            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
             child.InputPath = module.GeneratedPaths[generatedFileKey];
             (child as Bam.Core.V2.IChildModule).Parent = this;
             this.children.Add(child);
