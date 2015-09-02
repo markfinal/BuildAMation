@@ -35,8 +35,7 @@ namespace V2
         CModule,
         IForwardedLibraries
     {
-        private Bam.Core.Array<Bam.Core.V2.Module> source = new Bam.Core.Array<Bam.Core.V2.Module>();
-        private Bam.Core.Array<Bam.Core.V2.Module> headers = new Bam.Core.Array<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.V2.Module> sourceModules = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
         private ILibrarianPolicy Policy = null;
 
@@ -56,7 +55,7 @@ namespace V2
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.source.ToArray());
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules.ToArray());
             }
         }
 
@@ -68,28 +67,33 @@ namespace V2
             }
         }
 
-        public HeaderFileCollection
-        CreateHeaderContainer()
-        {
-            var headers = Bam.Core.V2.Module.Create<HeaderFileCollection>();
-            this.headers.Add(headers);
-            this.Requires(headers);
-            return headers;
-        }
-
         public CObjectFileCollection CreateCSourceContainer()
         {
-            var source = Bam.Core.V2.Module.Create<CObjectFileCollection>(this);
-            this.source.Add(source);
-            this.DependsOn(source);
+            var source = this.CreateContainer<CObjectFileCollection>(false);
+            this.sourceModules.Add(source);
             return source;
         }
 
         public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer()
         {
-            var source = Bam.Core.V2.Module.Create<Cxx.V2.ObjectFileCollection>(this);
-            this.source.Add(source);
-            this.DependsOn(source);
+            var source = this.CreateContainer<Cxx.V2.ObjectFileCollection>(false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        public virtual C.ObjC.V2.ObjectFileCollection
+        CreateObjectiveCSourceContainer()
+        {
+            var source = this.CreateContainer<C.ObjC.V2.ObjectFileCollection>(false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        public virtual C.ObjCxx.V2.ObjectFileCollection
+        CreateObjectiveCxxSourceContainer()
+        {
+            var source = this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false);
+            this.sourceModules.Add(source);
             return source;
         }
 
@@ -144,8 +148,8 @@ namespace V2
         ExecuteInternal(
             Bam.Core.V2.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.source).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headers).ToArray());
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
             var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, context, libraryFile, source, headers);
         }
@@ -163,7 +167,7 @@ namespace V2
             {
                 return;
             }
-            foreach (var source in this.source)
+            foreach (var source in this.sourceModules)
             {
                 if (!source.IsUpToDate)
                 {

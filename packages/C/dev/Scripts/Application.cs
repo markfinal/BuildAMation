@@ -34,6 +34,8 @@ namespace V2
     public abstract class CModule :
         Bam.Core.V2.Module
     {
+        protected Bam.Core.Array<Bam.Core.V2.Module> headerModules = new Bam.Core.Array<Bam.Core.V2.Module>();
+
         public CModule()
         {
             this.Macros.Add("OutputName", this.Macros["modulename"]);
@@ -82,6 +84,37 @@ namespace V2
             }
             return list;
         }
+
+        protected T
+        CreateContainer<T>(
+            bool requires,
+            Bam.Core.V2.Module.PrivatePatchDelegate privatePatch = null)
+            where T : CModule, new()
+        {
+            var source = Bam.Core.V2.Module.Create<T>(this);
+            if (null != privatePatch)
+            {
+                source.PrivatePatch(privatePatch);
+            }
+
+            if (requires)
+            {
+                this.Requires(source);
+            }
+            else
+            {
+                this.DependsOn(source);
+            }
+            return source;
+        }
+
+        public HeaderFileCollection
+        CreateHeaderContainer()
+        {
+            var headers = this.CreateContainer<HeaderFileCollection>(true);
+            this.headerModules.Add(headers);
+            return headers;
+        }
     }
 
     public abstract class CSDKModule :
@@ -96,7 +129,6 @@ namespace V2
         CModule
     {
         protected Bam.Core.Array<Bam.Core.V2.Module> sourceModules = new Bam.Core.Array<Bam.Core.V2.Module>();
-        protected Bam.Core.Array<Bam.Core.V2.Module> headerModules = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> linkedModules = new Bam.Core.Array<Bam.Core.V2.Module>();
         private ILinkerPolicy Policy = null;
 
@@ -116,49 +148,42 @@ namespace V2
             });
         }
 
-        private Bam.Core.V2.Module.PublicPatchDelegate ConsolePreprocessor = (settings, appliedTo) =>
+        private Bam.Core.V2.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("_CONSOLE");
             };
 
-        public HeaderFileCollection
-        CreateHeaderContainer()
+        public virtual CObjectFileCollection
+        CreateCSourceContainer()
         {
-            var headers = Bam.Core.V2.Module.Create<HeaderFileCollection>();
-            this.headerModules.Add(headers);
-            this.Requires(headers);
-            return headers;
-        }
-
-        private T CreateContainer<T>() where T : CModule, new()
-        {
-            var source = Bam.Core.V2.Module.Create<T>(this);
-            source.PrivatePatch(settings => this.ConsolePreprocessor(settings, this));
-
+            var source = this.CreateContainer<CObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
             this.sourceModules.Add(source);
-            this.DependsOn(source);
             return source;
         }
 
-        public virtual CObjectFileCollection CreateCSourceContainer()
+        public virtual Cxx.V2.ObjectFileCollection
+        CreateCxxSourceContainer()
         {
-            return this.CreateContainer<CObjectFileCollection>();
+            var source = this.CreateContainer<Cxx.V2.ObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
+            this.sourceModules.Add(source);
+            return source;
         }
 
-        public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer()
+        public virtual C.ObjC.V2.ObjectFileCollection
+        CreateObjectiveCSourceContainer()
         {
-            return this.CreateContainer<Cxx.V2.ObjectFileCollection>();
+            var source = this.CreateContainer<C.ObjC.V2.ObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
+            this.sourceModules.Add(source);
+            return source;
         }
 
-        public virtual C.ObjC.V2.ObjectFileCollection CreateObjectiveCSourceContainer()
+        public virtual C.ObjCxx.V2.ObjectFileCollection
+        CreateObjectiveCxxSourceContainer()
         {
-            return this.CreateContainer<C.ObjC.V2.ObjectFileCollection>();
-        }
-
-        public virtual C.ObjCxx.V2.ObjectFileCollection CreateObjectiveCxxSourceContainer()
-        {
-            return this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>();
+            var source = this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
+            this.sourceModules.Add(source);
+            return source;
         }
 
         public void

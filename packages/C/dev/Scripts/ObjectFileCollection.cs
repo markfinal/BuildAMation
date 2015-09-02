@@ -33,7 +33,7 @@ namespace C
 namespace V2
 {
     public class HeaderFileCollection :
-        Bam.Core.V2.Module,
+        CModule,
         Bam.Core.V2.IModuleGroup
     {
         private Bam.Core.Array<HeaderFile> children = new Bam.Core.Array<HeaderFile>();

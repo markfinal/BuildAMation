@@ -43,7 +43,6 @@ namespace V2
         CModule,
         IForwardedLibraries
     {
-        private Bam.Core.Array<Bam.Core.V2.Module> headers = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
         private IHeaderLibraryPolicy Policy;
 
@@ -59,7 +58,7 @@ namespace V2
                 return;
             }
 
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headers).ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
             this.Policy.HeadersOnly(this, context, headers);
         }
 
@@ -85,15 +84,6 @@ namespace V2
             {
                 return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.forwardedDeps.ToArray());
             }
-        }
-
-        public HeaderFileCollection
-        CreateHeaderContainer()
-        {
-            var headers = Bam.Core.V2.Module.Create<HeaderFileCollection>();
-            this.headers.Add(headers);
-            this.Requires(headers);
-            return headers;
         }
 
         public void
