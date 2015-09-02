@@ -138,15 +138,18 @@ namespace Mingw
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
-            switch (options.LanguageStandard)
+            if (null != options.LanguageStandard)
             {
-                case C.ECLanguageStandard.C89:
-                    break;
-                case C.ECLanguageStandard.C99:
-                    commandLine.Add("-std=c99");
-                    break;
-                default:
-                    throw new Bam.Core.Exception("Invalid C language standard {0}", options.LanguageStandard.ToString());
+                switch (options.LanguageStandard)
+                {
+                    case C.ECLanguageStandard.C89:
+                        break;
+                    case C.ECLanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard {0}", options.LanguageStandard.ToString());
+                }
             }
         }
 
