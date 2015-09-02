@@ -32,7 +32,7 @@ using QtCommon.V2.MocExtension;
 namespace Qt5Test1
 {
     sealed class Qt5Application :
-        C.Cxx.V2.ConsoleApplication
+        C.Cxx.V2.GUIApplication
     {
         protected override void
         Init(
@@ -89,7 +89,7 @@ namespace Qt5Test1
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
         }
     }

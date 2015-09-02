@@ -31,7 +31,7 @@ using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace Test12
 {
     sealed class MyOpenGLApplicationV2 :
-        C.V2.ConsoleApplication // TODO: windowed application
+        C.Cxx.V2.GUIApplication
     {
         protected override void
         Init(

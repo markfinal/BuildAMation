@@ -31,7 +31,7 @@ namespace Direct3DTriangle
 {
     [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class D3D9TriangleTestV2 :
-        C.V2.ConsoleApplication
+        C.Cxx.V2.GUIApplication
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {

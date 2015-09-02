@@ -35,6 +35,27 @@ namespace VisualC
     {
         public static void
         Convert(
+            this C.V2.ILinkerOptionsWin options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            switch (options.SubSystem.Value)
+            {
+                case C.ESubsystem.Console:
+                    commandLine.Add("-SUBSYSTEM:CONSOLE");
+                    break;
+
+                case C.ESubsystem.Windows:
+                    commandLine.Add("-SUBSYSTEM:WINDOWS");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", options.SubSystem.Value.ToString());
+            }
+        }
+
+        public static void
+        Convert(
             this C.V2.ICommonLinkerOptions options,
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
@@ -81,6 +102,25 @@ namespace VisualC
 
     public static partial class VSSolutionImplementation
     {
+        public static void
+        Convert(
+            this C.V2.ILinkerOptionsWin options,
+            Bam.Core.V2.Module module,
+            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            string condition)
+        {
+            switch (options.SubSystem.Value)
+            {
+                case C.ESubsystem.Console:
+                case C.ESubsystem.Windows:
+                    settingsGroup.AddSetting("SubSystem", options.SubSystem.Value.ToString(), condition);
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", options.SubSystem.Value.ToString());
+            }
+        }
+
         public static void
         Convert(
             this C.V2.ICommonLinkerOptions options,
@@ -153,6 +193,7 @@ namespace V2
 
     public class LinkerSettings :
         C.V2.SettingsBase,
+        C.V2.ILinkerOptionsWin,
         C.V2.ICommonLinkerOptions,
         ICommonLinkerOptions,
         CommandLineProcessor.V2.IConvertToCommandLine,
@@ -166,6 +207,12 @@ namespace V2
             (this as C.V2.ICommonLinkerOptions).Defaults(module);
             (this as ICommonLinkerOptions).Defaults(module);
 #endif
+        }
+
+        C.ESubsystem? C.V2.ILinkerOptionsWin.SubSystem
+        {
+            get;
+            set;
         }
 
         C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
@@ -203,6 +250,7 @@ namespace V2
             Bam.Core.V2.Module module,
             Bam.Core.StringArray commandLine)
         {
+            (this as C.V2.ILinkerOptionsWin).Convert(module, commandLine);
             (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
             (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
@@ -213,6 +261,7 @@ namespace V2
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition)
         {
+            (this as C.V2.ILinkerOptionsWin).Convert(module, settings, condition);
             (this as C.V2.ICommonLinkerOptions).Convert(module, settings, condition);
             (this as ICommonLinkerOptions).Convert(module, settings, condition);
         }

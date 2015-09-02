@@ -64,6 +64,60 @@ namespace DefaultSettings
         }
     }
 }
+namespace V2
+{
+    namespace DefaultSettings
+    {
+        public static partial class DefaultSettingsExtensions
+        {
+            public static void
+            Defaults(
+                this C.V2.ILinkerOptionsWin settings,
+                Bam.Core.V2.Module module)
+            {
+                settings.SubSystem = ESubsystem.Console;
+            }
+            public static void
+            Empty(
+                this C.V2.ILinkerOptionsWin settings)
+            {
+            }
+            public static void
+            SharedSettings(
+                this C.V2.ILinkerOptionsWin shared,
+                C.V2.ILinkerOptionsWin lhs,
+                C.V2.ILinkerOptionsWin rhs)
+            {
+                shared.SubSystem = (lhs.SubSystem == rhs.SubSystem) ? lhs.SubSystem : null;
+            }
+            public static void
+            Delta(
+                this C.V2.ILinkerOptionsWin delta,
+                C.V2.ILinkerOptionsWin lhs,
+                C.V2.ILinkerOptionsWin rhs)
+            {
+                delta.SubSystem = (lhs.SubSystem != rhs.SubSystem) ? lhs.SubSystem : null;
+            }
+            public static void
+            Clone(
+                this C.V2.ILinkerOptionsWin settings,
+                C.V2.ILinkerOptionsWin other)
+            {
+                settings.SubSystem = other.SubSystem;
+            }
+        }
+    }
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ILinkerOptionsWin :
+        Bam.Core.V2.ISettingsBase
+    {
+        C.ESubsystem? SubSystem
+        {
+            get;
+            set;
+        }
+    }
+}
     public interface ILinkerOptionsOSX
     {
         /// <summary>

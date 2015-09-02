@@ -66,6 +66,16 @@ namespace V2
             this.Add(name, string.Empty);
         }
 
+        public void
+        Remove(
+            string name)
+        {
+            if (this.Defines.ContainsKey(name))
+            {
+                this.Defines.Remove(name);
+            }
+        }
+
         public int Count
         {
             get

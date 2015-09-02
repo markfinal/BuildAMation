@@ -31,7 +31,7 @@ using Bam.Core.V2; // for EPlatform.PlatformExtensions
 namespace OpenGLUniformBufferTest
 {
     sealed class GLUniformBufferTestV2 :
-        C.Cxx.V2.ConsoleApplication
+        C.Cxx.V2.GUIApplication
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {

@@ -44,7 +44,7 @@ namespace CocoaTest1
 
     [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.OSX)]
     sealed class CocoaTestV2 :
-        C.V2.ConsoleApplication
+        C.V2.GUIApplication
     {
         protected override void Init (Bam.Core.V2.Module parent)
         {

@@ -27,8 +27,69 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core.V2;
 namespace C
 {
+namespace V2
+{
+    public class GUIApplication :
+        ConsoleApplication
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.PrivatePatch(settings =>
+                {
+                    var linker = settings as C.V2.ILinkerOptionsWin;
+                    if (linker != null)
+                    {
+                        linker.SubSystem = ESubsystem.Windows;
+                    }
+                });
+        }
+
+        protected Bam.Core.V2.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.PreprocessorDefines.Remove("_CONSOLE");
+                compiler.PreprocessorDefines.Add("_WINDOWS");
+            };
+
+        public override CObjectFileCollection
+        CreateCSourceContainer()
+        {
+            var container = base.CreateCSourceContainer();
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                container.PrivatePatch(this.WindowsPreprocessor);
+            }
+            return container;
+        }
+    }
+}
+    namespace Cxx
+    {
+    namespace V2
+    {
+        public class GUIApplication :
+            C.V2.GUIApplication
+        {
+            public override Cxx.V2.ObjectFileCollection
+            CreateCxxSourceContainer(string wildcardPath = null)
+            {
+                var container = base.CreateCxxSourceContainer(wildcardPath);
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    container.PrivatePatch(this.WindowsPreprocessor);
+                }
+                return container;
+            }
+        }
+    }
+    }
     /// <summary>
     /// C/C++ Windows application
     /// </summary>
