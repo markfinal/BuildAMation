@@ -78,9 +78,9 @@ namespace V2
             C.V2.GUIApplication
         {
             public override Cxx.V2.ObjectFileCollection
-            CreateCxxSourceContainer(string wildcardPath = null)
+            CreateCxxSourceContainer()
             {
-                var container = base.CreateCxxSourceContainer(wildcardPath);
+                var container = base.CreateCxxSourceContainer();
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
                     container.PrivatePatch(this.WindowsPreprocessor);

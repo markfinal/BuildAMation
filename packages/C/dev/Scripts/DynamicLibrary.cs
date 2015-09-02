@@ -89,9 +89,9 @@ namespace V2
         }
 
         public override Cxx.V2.ObjectFileCollection
-        CreateCxxSourceContainer(string wildcardPath = null)
+        CreateCxxSourceContainer()
         {
-            var collection = base.CreateCxxSourceContainer(wildcardPath);
+            var collection = base.CreateCxxSourceContainer();
             collection.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;

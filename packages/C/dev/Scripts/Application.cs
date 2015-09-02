@@ -146,7 +146,7 @@ namespace V2
             return this.CreateContainer<CObjectFileCollection>();
         }
 
-        public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer(string wildcardPath = null)
+        public virtual Cxx.V2.ObjectFileCollection CreateCxxSourceContainer()
         {
             return this.CreateContainer<Cxx.V2.ObjectFileCollection>();
         }
