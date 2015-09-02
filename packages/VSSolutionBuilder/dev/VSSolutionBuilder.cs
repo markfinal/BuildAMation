@@ -591,28 +591,31 @@ namespace V2
             Bam.Core.V2.TokenizedString include = null,
             bool uniqueToProject = false)
         {
-            foreach (var settings in this.SettingGroups)
+            lock (this.SettingGroups)
             {
-                if (null == include)
+                foreach (var settings in this.SettingGroups)
                 {
-                    if ((null == settings.Include) && (settings.Group == group))
+                    if (null == include)
                     {
-                        return settings;
+                        if ((null == settings.Include) && (settings.Group == group))
+                        {
+                            return settings;
+                        }
+                    }
+                    else
+                    {
+                        // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
+                        if ((null != include) && (settings.Include.Parse() == include.Parse()))
+                        {
+                            return settings;
+                        }
                     }
                 }
-                else
-                {
-                    // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
-                    if ((null != include) && (settings.Include.Parse() == include.Parse()))
-                    {
-                        return settings;
-                    }
-                }
-            }
 
-            var newGroup = uniqueToProject ? this.Project.GetUniqueSettingsGroup(group, include) : new VSSettingsGroup(group, include);
-            this.SettingGroups.Add(newGroup);
-            return newGroup;
+                var newGroup = uniqueToProject ? this.Project.GetUniqueSettingsGroup(group, include) : new VSSettingsGroup(group, include);
+                this.SettingGroups.Add(newGroup);
+                return newGroup;
+            }
         }
 
         public void
@@ -791,27 +794,30 @@ namespace V2
             Bam.Core.V2.Module module)
         {
             var moduleType = module.GetType();
-            if (!this.ProjectMap.ContainsKey(moduleType))
+            lock (this.ProjectMap)
             {
-                var project = new VSProject(this, module);
-                this.ProjectMap.Add(moduleType, project);
-
-                var groups = module.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
-                if (groups.Length > 0)
+                if (!this.ProjectMap.ContainsKey(moduleType))
                 {
-                    var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
-                    if (!this.SolutionFolders.ContainsKey(solutionFolderName))
+                    var project = new VSProject(this, module);
+                    this.ProjectMap.Add(moduleType, project);
+
+                    var groups = module.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
+                    if (groups.Length > 0)
                     {
-                        this.SolutionFolders.Add(solutionFolderName, new VSSolutionFolder(solutionFolderName));
+                        var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
+                        if (!this.SolutionFolders.ContainsKey(solutionFolderName))
+                        {
+                            this.SolutionFolders.Add(solutionFolderName, new VSSolutionFolder(solutionFolderName));
+                        }
+                        this.SolutionFolders[solutionFolderName].Projects.AddUnique(project);
                     }
-                    this.SolutionFolders[solutionFolderName].Projects.AddUnique(project);
                 }
+                if (null == module.MetaData)
+                {
+                    module.MetaData = this.ProjectMap[moduleType];
+                }
+                return this.ProjectMap[moduleType];
             }
-            if (null == module.MetaData)
-            {
-                module.MetaData = this.ProjectMap[moduleType];
-            }
-            return this.ProjectMap[moduleType];
         }
 
         public System.Collections.Generic.IEnumerable<VSProject> Projects
@@ -916,11 +922,14 @@ namespace V2
         AddHeader(
             Bam.Core.V2.TokenizedString path)
         {
-            if (!this.Headers.Any(item => item.Include.Parse() == path.Parse()))
+            lock (this.Headers)
             {
-                var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Header, include: path);
-                group.AddSetting("Filter", HeaderGroupName);
-                this.Headers.AddUnique(group);
+                if (!this.Headers.Any(item => item.Include.Parse() == path.Parse()))
+                {
+                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Header, include: path);
+                    group.AddSetting("Filter", HeaderGroupName);
+                    this.Headers.AddUnique(group);
+                }
             }
         }
 
@@ -928,11 +937,14 @@ namespace V2
         AddSource(
             Bam.Core.V2.TokenizedString path)
         {
-            if (!this.Source.Any(item => item.Include.Parse() == path.Parse()))
+            lock (this.Source)
             {
-                var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Compiler, include: path);
-                group.AddSetting("Filter", SourceGroupName);
-                this.Source.AddUnique(group);
+                if (!this.Source.Any(item => item.Include.Parse() == path.Parse()))
+                {
+                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Compiler, include: path);
+                    group.AddSetting("Filter", SourceGroupName);
+                    this.Source.AddUnique(group);
+                }
             }
         }
 
@@ -940,11 +952,14 @@ namespace V2
         AddOther(
             Bam.Core.V2.TokenizedString path)
         {
-            if (!this.Others.Any(item => item.Include.Parse() == path.Parse()))
+            lock (this.Others)
             {
-                var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.CustomBuild, include: path);
-                group.AddSetting("Filter", OtherGroupName);
-                this.Others.AddUnique(group);
+                if (!this.Others.Any(item => item.Include.Parse() == path.Parse()))
+                {
+                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.CustomBuild, include: path);
+                    group.AddSetting("Filter", OtherGroupName);
+                    this.Others.AddUnique(group);
+                }
             }
         }
 
@@ -1025,31 +1040,34 @@ namespace V2
         GetConfiguration(
             Bam.Core.V2.Module module)
         {
-            var moduleConfig = module.BuildEnvironment.Configuration;
-            if (this.Configurations.ContainsKey(moduleConfig))
+            lock (this.Configurations)
             {
-                return this.Configurations[moduleConfig];
-            }
+                var moduleConfig = module.BuildEnvironment.Configuration;
+                if (this.Configurations.ContainsKey(moduleConfig))
+                {
+                    return this.Configurations[moduleConfig];
+                }
 
-            var platform = Bam.Core.EPlatform.Invalid;
-            var bitDepth = (module as C.V2.CModule).BitDepth;
-            switch (bitDepth)
-            {
-                case C.V2.EBit.ThirtyTwo:
-                    platform = Bam.Core.EPlatform.Win32;
-                    break;
+                var platform = Bam.Core.EPlatform.Invalid;
+                var bitDepth = (module as C.V2.CModule).BitDepth;
+                switch (bitDepth)
+                {
+                    case C.V2.EBit.ThirtyTwo:
+                        platform = Bam.Core.EPlatform.Win32;
+                        break;
 
-                case C.V2.EBit.SixtyFour:
-                    platform = Bam.Core.EPlatform.Win64;
-                    break;
+                    case C.V2.EBit.SixtyFour:
+                        platform = Bam.Core.EPlatform.Win64;
+                        break;
+                }
+                if (Bam.Core.EPlatform.Invalid == platform)
+                {
+                    throw new Bam.Core.Exception("Platform cannot be extracted from the tool {0} for project {1}", module.Tool.ToString(), this.ProjectPath);
+                }
+                var configuration = new VSProjectConfiguration(this, module, platform);
+                this.Configurations.Add(moduleConfig, configuration);
+                return configuration;
             }
-            if (Bam.Core.EPlatform.Invalid == platform)
-            {
-                throw new Bam.Core.Exception("Platform cannot be extracted from the tool {0} for project {1}", module.Tool.ToString(), this.ProjectPath);
-            }
-            var configuration = new VSProjectConfiguration(this, module, platform);
-            this.Configurations.Add(moduleConfig, configuration);
-            return configuration;
         }
 
         public  VSSettingsGroup
@@ -1057,28 +1075,31 @@ namespace V2
             VSSettingsGroup.ESettingsGroup group,
             Bam.Core.V2.TokenizedString include = null)
         {
-            foreach (var settings in this.ProjectSettings)
+            lock (this.ProjectSettings)
             {
-                if (null == include)
+                foreach (var settings in this.ProjectSettings)
                 {
-                    if ((null == settings.Include) && (settings.Group == group))
+                    if (null == include)
                     {
-                        return settings;
+                        if ((null == settings.Include) && (settings.Group == group))
+                        {
+                            return settings;
+                        }
+                    }
+                    else
+                    {
+                        // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
+                        if ((null != include) && (settings.Include.Parse() == include.Parse()))
+                        {
+                            return settings;
+                        }
                     }
                 }
-                else
-                {
-                    // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
-                    if ((null != include) && (settings.Include.Parse() == include.Parse()))
-                    {
-                        return settings;
-                    }
-                }
-            }
 
-            var newGroup = new VSSettingsGroup(group, include);
-            this.ProjectSettings.Add(newGroup);
-            return newGroup;
+                var newGroup = new VSSettingsGroup(group, include);
+                this.ProjectSettings.Add(newGroup);
+                return newGroup;
+            }
         }
 
         public void
