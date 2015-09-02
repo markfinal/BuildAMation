@@ -420,15 +420,15 @@ namespace Bam.Core
                 throw new Exception("Build root has not been specified");
             }
 
-            if (!System.IO.Directory.Exists(State.BuildRoot))
-            {
-                System.IO.Directory.CreateDirectory(State.BuildRoot);
-            }
-
             var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
             IdentifyMainAndDependentPackages(true, false);
+
+            if (!System.IO.Directory.Exists(State.BuildRoot))
+            {
+                System.IO.Directory.CreateDirectory(State.BuildRoot);
+            }
 
             var mainPackage = State.PackageInfo.MainPackage;
 
