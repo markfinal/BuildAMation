@@ -61,6 +61,22 @@ namespace DefaultSettings
             {
                 throw new Bam.Core.Exception("Unknown platform");
             }
+            {
+                var is64bit = Bam.Core.OSUtilities.Is64Bit(module.BuildEnvironment.Platform);
+                var bits = (is64bit) ? 64 : 32;
+                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_BITS", bits.ToString());
+            }
+            {
+                var isLittleEndian = Bam.Core.State.IsLittleEndian;
+                if (isLittleEndian)
+                {
+                    settings.PreprocessorDefines.Add("D_BAM_PLATFORM_LITTLEENDIAN");
+                }
+                else
+                {
+                    settings.PreprocessorDefines.Add("D_BAM_PLATFORM_BIGENDIAN");
+                }
+            }
             settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
         }
