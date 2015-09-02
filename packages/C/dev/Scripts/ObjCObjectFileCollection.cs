@@ -32,7 +32,7 @@ namespace C.ObjC
 namespace V2
 {
     public class ObjectFileCollection :
-        C.V2.BaseObjectFiles<ObjectFile>
+        C.V2.CModuleContainer<ObjectFile>
     {
         protected override void
         Init(

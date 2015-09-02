@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
 namespace V2
@@ -114,6 +115,107 @@ namespace V2
             var headers = this.CreateContainer<HeaderFileCollection>(true);
             this.headerModules.Add(headers);
             return headers;
+        }
+    }
+
+    public abstract class CModuleContainer<ChildModuleType> :
+        CModule,
+        Bam.Core.V2.IModuleGroup
+        where ChildModuleType : Bam.Core.V2.Module, Bam.Core.V2.IInputPath, Bam.Core.V2.IChildModule, new()
+    {
+        private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
+
+        public ChildModuleType
+        AddFile(
+            string path,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            bool verbatim = false)
+        {
+            // TODO: how can I distinguish between creating a child module that inherits it's parents settings
+            // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
+            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this);
+            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, macroModule, verbatim);
+            (child as Bam.Core.V2.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            return child;
+        }
+
+        public Bam.Core.Array<Bam.Core.V2.Module>
+        AddFiles(
+            string path,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+            var wildcardPath = Bam.Core.V2.TokenizedString.Create(path, macroModule).Parse();
+
+            var dir = System.IO.Path.GetDirectoryName(wildcardPath);
+            var leafname = System.IO.Path.GetFileName(wildcardPath);
+            var files = System.IO.Directory.GetFiles(dir, leafname, System.IO.SearchOption.TopDirectoryOnly);
+            if (filter != null)
+            {
+                files = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
+            }
+            if (0 == files.Length)
+            {
+                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
+            }
+            var modulesCreated = new Bam.Core.Array<Bam.Core.V2.Module>();
+            foreach (var filepath in files)
+            {
+                var fp = filepath;
+                modulesCreated.Add(this.AddFile(fp, verbatim: true));
+            }
+            return modulesCreated;
+        }
+
+        public ChildModuleType
+        AddFile(
+            Bam.Core.V2.FileKey generatedFileKey,
+            Bam.Core.V2.Module module,
+            Bam.Core.V2.Module.ModulePreInitDelegate preInitDlg = null)
+        {
+            if (!module.GeneratedPaths.ContainsKey(generatedFileKey))
+            {
+                throw new System.Exception(System.String.Format("No generated path found with key '{0}'", generatedFileKey.Id));
+            }
+            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
+            child.InputPath = module.GeneratedPaths[generatedFileKey];
+            (child as Bam.Core.V2.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            child.DependsOn(module);
+            return child;
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.V2.ExecutionContext context)
+        {
+            // do nothing
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            // do nothing
+            // TODO: might have to get the policy, for the sharing settings
+        }
+
+        public override void
+        Evaluate()
+        {
+            foreach (var child in this.children)
+            {
+                if (!child.IsUpToDate)
+                {
+                    return;
+                }
+            }
+            this.IsUpToDate = true;
         }
     }
 

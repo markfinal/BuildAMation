@@ -33,80 +33,12 @@ namespace C
 namespace V2
 {
     public class HeaderFileCollection :
-        CModule,
-        Bam.Core.V2.IModuleGroup
+        CModuleContainer<HeaderFile>
     {
-        private Bam.Core.Array<HeaderFile> children = new Bam.Core.Array<HeaderFile>();
-
-        public HeaderFile
-        AddFile(
-            string path,
-            Bam.Core.V2.Module macroModuleOverride = null,
-            bool verbatim = false)
-        {
-            var child = Bam.Core.V2.Module.Create<HeaderFile>(this);
-            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, macroModule, verbatim);
-            (child as Bam.Core.V2.IChildModule).Parent = this;
-            this.children.Add(child);
-            this.DependsOn(child);
-            return child;
-        }
-
-        public Bam.Core.Array<Bam.Core.V2.Module>
-        AddFiles(
-            string path,
-            Bam.Core.V2.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null)
-        {
-            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            var wildcardPath = Bam.Core.V2.TokenizedString.Create(path, macroModule).Parse();
-
-            var dir = System.IO.Path.GetDirectoryName(wildcardPath);
-            var leafname = System.IO.Path.GetFileName(wildcardPath);
-            var files = System.IO.Directory.GetFiles(dir, leafname, System.IO.SearchOption.TopDirectoryOnly);
-            if (filter != null)
-            {
-                files = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
-            }
-            if (0 == files.Length)
-            {
-                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
-            }
-            var modulesCreated = new Bam.Core.Array<Bam.Core.V2.Module>();
-            foreach (var filepath in files)
-            {
-                var fp = filepath;
-                modulesCreated.Add(this.AddFile(fp, verbatim: true));
-            }
-            return modulesCreated;
-        }
-
-        public override void Evaluate()
-        {
-            foreach (var child in this.children)
-            {
-                if (!child.IsUpToDate)
-                {
-                    return;
-                }
-            }
-            this.IsUpToDate = true;
-        }
-
-        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
-        {
-            // do nothing
-        }
-
-        protected override void GetExecutionPolicy(string mode)
-        {
-            // do nothing
-        }
     }
 
     public class CObjectFileCollection :
-        BaseObjectFiles<ObjectFile>
+        CModuleContainer<ObjectFile>
     {
         protected override void
         Init(
