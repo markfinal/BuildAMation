@@ -209,25 +209,25 @@ namespace V2
             {
                 source.UsePublicPatches(dependent);
             }
-            this.LinkAllForwardedDependenciesFromStaticLibraries(dependent);
+            this.LinkAllForwardedDependenciesFromLibraries(dependent);
         }
 
         private void
-        LinkAllForwardedDependenciesFromStaticLibraries(
+        LinkAllForwardedDependenciesFromLibraries(
             Bam.Core.V2.Module module)
         {
-            var staticLib = module as StaticLibrary;
-            if (null == staticLib)
+            var withForwarded = module as IForwardedLibraries;
+            if (null == withForwarded)
             {
                 return;
             }
 
             // recursive
-            foreach (var forwarded in staticLib.ForwardedStaticLibraries)
+            foreach (var forwarded in withForwarded.ForwardedLibraries)
             {
                 this.DependsOn(forwarded);
                 this.linkedModules.AddUnique(forwarded);
-                this.LinkAllForwardedDependenciesFromStaticLibraries(forwarded);
+                this.LinkAllForwardedDependenciesFromLibraries(forwarded);
             }
         }
 

@@ -32,7 +32,8 @@ namespace C
 namespace V2
 {
     public class StaticLibrary :
-        CModule
+        CModule,
+        IForwardedLibraries
     {
         private Bam.Core.Array<Bam.Core.V2.Module> source = new Bam.Core.Array<Bam.Core.V2.Module>();
         private Bam.Core.Array<Bam.Core.V2.Module> headers = new Bam.Core.Array<Bam.Core.V2.Module>();
@@ -59,7 +60,7 @@ namespace V2
             }
         }
 
-        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> ForwardedStaticLibraries
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> IForwardedLibraries.ForwardedLibraries
         {
             get
             {
