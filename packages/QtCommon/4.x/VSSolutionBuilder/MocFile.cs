@@ -38,7 +38,7 @@ namespace V2
         IMocGenerationPolicy.Moc(
             MocModule sender,
             Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.Tool mocCompiler,
+            Bam.Core.V2.ICommandLineTool mocCompiler,
             Bam.Core.V2.TokenizedString generatedMocSource,
             C.V2.HeaderFile source)
         {
