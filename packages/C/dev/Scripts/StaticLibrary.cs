@@ -107,6 +107,10 @@ namespace V2
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             foreach (var source in affectedSources)
             {
+                if (null == source)
+                {
+                    continue;
+                }
                 source.UsePublicPatches(dependent);
             }
             if (!(dependent is HeaderLibrary))

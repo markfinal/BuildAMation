@@ -114,6 +114,10 @@ namespace V2
             this.DependsOn(dependent);
             foreach (var source in affectedSources)
             {
+                if (null == source)
+                {
+                    continue;
+                }
                 source.UsePublicPatches(dependent);
                 this.UsePublicPatches(dependent);
             }

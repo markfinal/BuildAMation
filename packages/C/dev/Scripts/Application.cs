@@ -174,6 +174,10 @@ namespace V2
             this.DependsOn(dependent);
             foreach (var source in affectedSources)
             {
+                if (null == source)
+                {
+                    continue;
+                }
                 source.UsePublicPatches(dependent);
             }
         }
@@ -206,6 +210,10 @@ namespace V2
             this.linkedModules.Add(dependent);
             foreach (var source in affectedSources)
             {
+                if (null == source)
+                {
+                    continue;
+                }
                 source.UsePublicPatches(dependent);
             }
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
