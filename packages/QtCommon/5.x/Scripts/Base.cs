@@ -68,7 +68,7 @@ namespace V2
             string moduleName) :
             base()
         {
-            this.Macros.Add("QtModuleName", System.String.Format("Qt{0}", moduleName));
+            this.Macros.Add("QtModuleName", moduleName);
             this.Macros.Add("QtInstallPath", Configure.InstallPath);
         }
 
@@ -90,7 +90,7 @@ namespace V2
                 var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                 if (null != osxLinker)
                 {
-                    osxLinker.Frameworks.AddUnique(Bam.Core.V2.TokenizedString.Create("$(QtFrameworkPath)/$(QtModuleName).framework", this));
+                    osxLinker.Frameworks.AddUnique(Bam.Core.V2.TokenizedString.Create("$(QtFrameworkPath)/Qt$(QtModuleName).framework", this));
                     osxLinker.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
                 }
             });
