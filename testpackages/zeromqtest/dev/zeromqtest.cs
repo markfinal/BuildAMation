@@ -45,7 +45,7 @@ namespace zeromqtest
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
             {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
 
             this.PrivatePatch(settings =>
