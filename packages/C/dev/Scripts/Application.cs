@@ -204,12 +204,20 @@ namespace V2
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.linkedModules.Add(dependent);
-            this.UsePublicPatches(dependent);
             foreach (var source in affectedSources)
             {
                 source.UsePublicPatches(dependent);
             }
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
+        }
+
+        public void
+        CompilePubliclyAndLinkAgainst<DependentModule>(
+            params CModule[] affectedSources) where DependentModule : CModule, new()
+        {
+            this.CompileAndLinkAgainst<DependentModule>(affectedSources);
+            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.UsePublicPatches(dependent);
         }
 
         private void

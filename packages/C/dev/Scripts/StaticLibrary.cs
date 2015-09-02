@@ -119,23 +119,9 @@ namespace V2
         CompileAgainstPublicly<DependentModule>(
             params CModule[] affectedSources) where DependentModule : CModule, new()
         {
-            if (0 == affectedSources.Length)
-            {
-                throw new Bam.Core.Exception("At least one source module argument must be passed to {0} in {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, this.ToString());
-            }
-
-            // no graph dependency, as it's just using patches
-            // note that this won't add the module into the graph, unless a link dependency is made
+            this.CompileAgainst<DependentModule>(affectedSources);
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
-            foreach (var source in affectedSources)
-            {
-                source.UsePublicPatches(dependent);
-                this.UsePublicPatches(dependent);
-            }
-            if (!(dependent is HeaderLibrary))
-            {
-                this.forwardedDeps.AddUnique(dependent);
-            }
+            this.UsePublicPatches(dependent);
         }
 
         public LibrarianTool Librarian
