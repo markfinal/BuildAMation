@@ -637,6 +637,14 @@ namespace V2
             this.Project.AddSource(settings);
         }
 
+        public void
+        AddOtherFile(
+            Bam.Core.V2.IInputPath other)
+        {
+            var otherGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.CustomBuild, other.InputPath);
+            this.Project.AddOtherFile(otherGroup);
+        }
+
         public bool
         ContainsSource(
             VSSettingsGroup sourceGroup)
@@ -899,8 +907,10 @@ namespace V2
     {
         private static readonly string SourceGroupName = "Source Files";
         private static readonly string HeaderGroupName = "Header Files";
+        private static readonly string OtherGroupName = "Other Files";
         private Bam.Core.Array<VSSettingsGroup> Source = new Bam.Core.Array<VSSettingsGroup>();
         private Bam.Core.Array<VSSettingsGroup> Headers = new Bam.Core.Array<VSSettingsGroup>();
+        private Bam.Core.Array<VSSettingsGroup> Others = new Bam.Core.Array<VSSettingsGroup>();
 
         public void
         AddHeader(
@@ -923,6 +933,18 @@ namespace V2
                 var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Compiler, include: path);
                 group.AddSetting("Filter", SourceGroupName);
                 this.Source.AddUnique(group);
+            }
+        }
+
+        public void
+        AddOther(
+            Bam.Core.V2.TokenizedString path)
+        {
+            if (!this.Others.Any(item => item.Include.Parse() == path.Parse()))
+            {
+                var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.CustomBuild, include: path);
+                group.AddSetting("Filter", OtherGroupName);
+                this.Others.AddUnique(group);
             }
         }
 
@@ -958,10 +980,13 @@ namespace V2
             {
                 createXML(containerEl, SourceGroupName, this.Source);
             }
-
             if (this.Headers.Count > 0)
             {
                 createXML(containerEl, HeaderGroupName, this.Headers);
+            }
+            if (this.Others.Count > 0)
+            {
+                createXML(containerEl, OtherGroupName, this.Others);
             }
 
             return document;
@@ -990,6 +1015,7 @@ namespace V2
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
             this.Headers = new Bam.Core.Array<VSSettingsGroup>();
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
+            this.Others = new Bam.Core.Array<VSSettingsGroup>();
             this.Filter = new VSProjectFilter();
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
@@ -1072,6 +1098,14 @@ namespace V2
         }
 
         public void
+        AddOtherFile(
+            VSSettingsGroup other)
+        {
+            this.Others.AddUnique(other);
+            this.Filter.AddOther(other.Include);
+        }
+
+        public void
         RequiresProject(
             VSProject dependentProject)
         {
@@ -1137,6 +1171,12 @@ namespace V2
         }
 
         private Bam.Core.Array<VSSettingsGroup> Sources
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<VSSettingsGroup> Others
         {
             get;
             set;
@@ -1252,6 +1292,14 @@ namespace V2
                 foreach (var group in this.Headers)
                 {
                     group.Serialize(document, headersGroup);
+                }
+            }
+            if (this.Others.Count > 0)
+            {
+                var otherGroup = document.CreateVSItemGroup(parentEl: projectEl);
+                foreach (var group in this.Others)
+                {
+                    group.Serialize(document, otherGroup);
                 }
             }
 
