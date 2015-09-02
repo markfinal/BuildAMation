@@ -52,8 +52,8 @@ namespace WindowsSDK
                 var compilation = settings as C.V2.ICommonCompilerOptions;
                 if (null != compilation)
                 {
-                    compilation.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Include\um", this));
-                    compilation.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Include\shared", this));
+                    compilation.IncludePaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Include\um", this));
+                    compilation.IncludePaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Include\shared", this));
                 }
 
                 var linking = settings as C.V2.ICommonLinkerOptions;
@@ -61,11 +61,11 @@ namespace WindowsSDK
                 {
                     if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
                     {
-                        linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x86", this));
+                        linking.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x86", this));
                     }
                     else
                     {
-                        linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x64", this));
+                        linking.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x64", this));
                     }
                 }
             });

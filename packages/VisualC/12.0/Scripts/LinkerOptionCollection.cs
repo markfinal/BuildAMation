@@ -291,7 +291,7 @@ namespace V2
                 var linking = settings as C.V2.ICommonLinkerOptions;
                 if (null != linking)
                 {
-                    linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
+                    linking.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
                 }
             });
         }

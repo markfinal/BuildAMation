@@ -836,7 +836,7 @@ namespace V2
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compilation = settings as C.V2.ICommonCompilerOptions;
-                    compilation.SystemIncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
+                    compilation.SystemIncludePaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
                 });
         }
 
