@@ -217,6 +217,10 @@ namespace Gcc
                         commandLine.Add("-std=c++98");
                         break;
 
+                    case C.Cxx.ELanguageStandard.GnuCxx98:
+                        commandLine.Add("-std=gnu++98");
+                        break;
+
                     case C.Cxx.ELanguageStandard.Cxx11:
                         commandLine.Add("-std=c++11");
                         break;

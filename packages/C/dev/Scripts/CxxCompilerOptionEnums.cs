@@ -42,6 +42,7 @@ namespace C.Cxx
     {
         NotSet,
         Cxx98,
-        Cxx11
+        GnuCxx98,
+        Cxx11,
     }
 }
