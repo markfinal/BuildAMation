@@ -42,6 +42,7 @@ namespace Test8
 
             var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
 
+            // TODO: required to exist?
             var dynamicLib = Bam.Core.V2.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibraryV2>();
             this.Requires(dynamicLib);
             source.UsePublicPatches(dynamicLib);

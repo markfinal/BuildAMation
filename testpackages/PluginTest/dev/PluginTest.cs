@@ -39,6 +39,7 @@ namespace PluginTest
 
             this.CreateCxxSourceContainer("$(pkgroot)/source/application/main.cpp");
 
+            // TODO: required to exist
             var plugin = Bam.Core.V2.Graph.Instance.FindReferencedModule<PluginV2>();
             this.Requires(plugin);
 
