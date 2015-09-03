@@ -64,8 +64,8 @@ namespace Test13
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                this.CompileAndLinkAgainst<Qt.V2.CoreFramework>(source);
-                this.CompileAndLinkAgainst<Qt.V2.GuiFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.V2.CoreFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.V2.GuiFramework>(source);
             }
             else
             {

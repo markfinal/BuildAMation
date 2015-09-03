@@ -68,8 +68,8 @@ namespace Qt5Test1
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                this.CompileAndLinkAgainst<Qt.V2.CoreFramework>(source);
-                this.CompileAndLinkAgainst<Qt.V2.WidgetsFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.V2.CoreFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.V2.WidgetsFramework>(source);
             }
             else
             {
