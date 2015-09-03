@@ -80,6 +80,14 @@ namespace V2
         public class GUIApplication :
             C.V2.GUIApplication
         {
+            protected override void
+            Init(
+                Module parent)
+            {
+                base.Init(parent);
+                this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);
+            }
+
             public override Cxx.V2.ObjectFileCollection
             CreateCxxSourceContainer(
                 string wildcardPath = null,
