@@ -403,7 +403,13 @@ namespace V2
             foreach (var forwarded in withForwarded.ForwardedLibraries)
             {
                 this.DependsOn(forwarded);
-                this.linkedModules.AddUnique(forwarded);
+                // some linkers require a specific order of libraries in order to resolve symbols
+                // so that if an existing library is later referenced, it needs to be moved later
+                if (this.linkedModules.Contains(forwarded))
+                {
+                    this.linkedModules.Remove(forwarded);
+                }
+                this.linkedModules.Add(forwarded);
                 this.LinkAllForwardedDependenciesFromLibraries(forwarded);
             }
         }
