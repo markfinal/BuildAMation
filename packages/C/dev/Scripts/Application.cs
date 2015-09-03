@@ -354,6 +354,10 @@ namespace V2
         public void RequiredToExist<DependentModule>() where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.Requires(dependent);
         }
 

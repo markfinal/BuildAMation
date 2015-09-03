@@ -278,6 +278,10 @@ namespace V2
             string subdir = null) where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
@@ -313,6 +317,10 @@ namespace V2
             params PackageReference[] additionalReferences) where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
@@ -332,6 +340,10 @@ namespace V2
             params PackageReference[] additionalReferences) where DependentModule : Bam.Core.V2.Module, new()
         {
             var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
