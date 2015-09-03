@@ -45,10 +45,17 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+            // any libraries added prior to here, need to be moved to the end
+            // they are external dependencies, and thus all built modules (to be added now) may have
+            // a dependency on them (and not vice versa)
+            var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+            var externalLibs = linker.Libraries;
+            linker.Libraries = new Bam.Core.StringArray();
             foreach (var library in libraries)
             {
                 (sender.Tool as C.V2.LinkerTool).ProcessLibraryDependency(sender as CModule, library as CModule);
             }
+            linker.Libraries.AddRange(externalLibs);
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
             if (!System.IO.Directory.Exists(executableDir))
