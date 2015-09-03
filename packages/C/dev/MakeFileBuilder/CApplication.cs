@@ -84,6 +84,7 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
+            // TODO: modify to use ProcessLibraryDependency
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
