@@ -221,20 +221,20 @@ namespace DefaultSettings
         SharedInterfaces(
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles)
         {
-            Bam.Core.TypeArray sharedInterfaces = null;
+            System.Collections.Generic.IEnumerable<System.Type> sharedInterfaces = null;
             foreach (var input in objectFiles)
             {
                 var interfaces = input.Settings.GetType().GetInterfaces().Where(item => (item != typeof(ISettingsBase)) && typeof(ISettingsBase).IsAssignableFrom(item));;
                 if (null == sharedInterfaces)
                 {
-                    sharedInterfaces = new Bam.Core.TypeArray(interfaces);
+                    sharedInterfaces = interfaces;
                 }
                 else
                 {
-                    sharedInterfaces.Except(interfaces);
+                    sharedInterfaces = sharedInterfaces.Intersect(interfaces);
                 }
             }
-            return sharedInterfaces;
+            return new Bam.Core.TypeArray(sharedInterfaces);
         }
 
         public static SettingsBase
