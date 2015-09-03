@@ -127,32 +127,8 @@ namespace V2
                     }
                     else if (input is C.V2.DynamicLibrary)
                     {
-                        var linker = sender.Settings as C.V2.ICommonLinkerOptions;
-                        if (sender.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                        {
-                            var libraryPath = input.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].Parse();
-                            var libraryDir = System.IO.Path.GetDirectoryName(libraryPath);
-                            var libraryName = System.IO.Path.GetFileName(libraryPath);
-                            linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(libraryDir, null));
-                            linker.Libraries.AddUnique(libraryName);
-                        }
-                        else
-                        {
-                            var libraryPath = input.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
-                            var libraryDir = System.IO.Path.GetDirectoryName(libraryPath);
-                            linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(libraryDir, null));
-                            if ((sender.Tool as C.V2.LinkerTool).UseLPrefixLibraryPaths)
-                            {
-                                var libName = System.IO.Path.GetFileNameWithoutExtension(libraryPath);
-                                libName = libName.Substring(3); // trim off lib prefix
-                                linker.Libraries.AddUnique(System.String.Format("-l{0}", libName));
-                            }
-                            else
-                            {
-                                var libraryName = System.IO.Path.GetFileName(libraryPath);
-                                linker.Libraries.AddUnique(libraryName);
-                            }
-                        }
+                        // TODO: this might be able to shift out of the conditional
+                        (sender.Tool as C.V2.LinkerTool).ProcessLibraryDependency(sender as CModule, input as CModule);
                     }
                     else if ((input is C.V2.CSDKModule) || (input is C.V2.HeaderLibrary))
                     {

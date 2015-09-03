@@ -1430,6 +1430,38 @@ namespace V2
             }
         }
 
+        private static string
+        GetLPrefixLibraryName(
+            string fullLibraryPath)
+        {
+            var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
+            libName = libName.Substring(3); // trim off lib prefix
+            return System.String.Format("-l{0}", libName);
+        }
+
+        public override void ProcessLibraryDependency(
+            C.V2.CModule executable,
+            C.V2.CModule library)
+        {
+            var linker = executable.Settings as C.V2.ICommonLinkerOptions;
+            if (library is C.V2.StaticLibrary)
+            {
+                var libraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].Parse();
+                linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
+
+                var libraryDir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
+                linker.LibraryPaths.AddUnique(libraryDir);
+            }
+            else if (library is C.V2.DynamicLibrary)
+            {
+                var libraryPath = library.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
+                linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
+
+                var libraryDir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
+                linker.LibraryPaths.AddUnique(libraryDir);
+            }
+        }
+
         public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
         {
             var settings = new LinkerSettings(module);

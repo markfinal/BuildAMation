@@ -46,6 +46,7 @@ namespace V2
             {
                 settings.CanUseOrigin = false;
                 settings.RPath = new Bam.Core.StringArray();
+                settings.RPathLink = new Bam.Core.StringArray();
             }
         }
     }
@@ -83,6 +84,10 @@ namespace V2
             foreach (var rpath in options.RPath)
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
+            }
+            foreach (var rpath in options.RPathLink)
+            {
+                commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath));
             }
         }
     }

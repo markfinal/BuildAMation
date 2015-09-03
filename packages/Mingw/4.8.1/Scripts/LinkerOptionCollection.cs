@@ -182,6 +182,55 @@ namespace DefaultSettings
                 return true;
             }
         }
+
+        private static string
+        GetLibraryPath(
+            Bam.Core.V2.Module module)
+        {
+            if (module is C.V2.StaticLibrary)
+            {
+                return module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+            }
+            else if (module is C.V2.DynamicLibrary)
+            {
+                return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+            }
+            else if (module is C.V2.CSDKModule)
+            {
+                // collection of libraries, none in particular
+                return null;
+            }
+            else if (module is C.V2.HeaderLibrary)
+            {
+                // no library
+                return null;
+            }
+            else if (module is C.V2.ExternalFramework)
+            {
+                // dealt with elsewhere
+                return null;
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
+            }
+        }
+
+        public override void ProcessLibraryDependency(
+            C.V2.CModule executable,
+            C.V2.CModule library)
+        {
+            var fullLibraryPath = GetLibraryPath(library);
+            if (null == fullLibraryPath)
+            {
+                return;
+            }
+            var dir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
+            var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
+            var linker = executable.Settings as C.V2.ICommonLinkerOptions;
+            linker.Libraries.AddUnique(libFilename);
+            linker.LibraryPaths.AddUnique(dir);
+        }
     }
 
     [C.V2.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]

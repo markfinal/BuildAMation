@@ -35,45 +35,6 @@ namespace V2
     public sealed class NativeLinker :
         ILinkerPolicy
     {
-        private static string
-        GetLibraryPath(Bam.Core.V2.Module module)
-        {
-            if (module is C.V2.StaticLibrary)
-            {
-                return module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
-            }
-            else if (module is C.V2.DynamicLibrary)
-            {
-                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
-                }
-                else
-                {
-                    return module.GeneratedPaths[C.V2.DynamicLibrary.Key].ToString();
-                }
-            }
-            else if (module is C.V2.CSDKModule)
-            {
-                // collection of libraries, none in particular
-                return null;
-            }
-            else if (module is C.V2.HeaderLibrary)
-            {
-                // no library
-                return null;
-            }
-            else if (module is ExternalFramework)
-            {
-                // dealt with elsewhere
-                return null;
-            }
-            else
-            {
-                throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
-            }
-        }
-
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
@@ -84,29 +45,9 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
         {
-            var linker = sender.Settings as C.V2.ICommonLinkerOptions;
-            var libraryNames = new Bam.Core.StringArray();
-            // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {
-                var fullLibraryPath = GetLibraryPath(library);
-                if (null == fullLibraryPath)
-                {
-                    continue;
-                }
-                var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(dir, null));
-                if ((sender.Tool as C.V2.LinkerTool).UseLPrefixLibraryPaths)
-                {
-                    var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
-                    libName = libName.Substring(3); // trim off lib prefix
-                    libraryNames.AddUnique(System.String.Format("-l{0}", libName));
-                }
-                else
-                {
-                    var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
-                    libraryNames.AddUnique(libFilename);
-                }
+                (sender.Tool as C.V2.LinkerTool).ProcessLibraryDependency(sender as CModule, library as CModule);
             }
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
@@ -122,12 +63,6 @@ namespace V2
             foreach (var input in objectFiles)
             {
                 commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
-            }
-
-            // then dependent module libraries
-            foreach (var lib in libraryNames)
-            {
-                linker.Libraries.AddUnique(lib);
             }
 
             // then all options

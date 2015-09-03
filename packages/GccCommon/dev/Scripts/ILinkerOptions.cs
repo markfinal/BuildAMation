@@ -45,6 +45,12 @@ namespace V2
             get;
             set;
         }
+
+        Bam.Core.StringArray RPathLink
+        {
+            get;
+            set;
+        }
     }
 }
     public interface ILinkerOptions

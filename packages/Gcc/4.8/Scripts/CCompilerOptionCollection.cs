@@ -1009,6 +1009,12 @@ namespace V2
             get;
             set;
         }
+
+        Bam.Core.StringArray ICommonLinkerOptions.RPathLink
+        {
+            get;
+            set;
+        }
     }
 
     public static class Configure
@@ -1073,6 +1079,82 @@ namespace V2
             get
             {
                 return true;
+            }
+        }
+
+        private static string
+        GetLPrefixLibraryName(
+            string fullLibraryPath)
+        {
+            var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
+            libName = libName.Substring(3); // trim off lib prefix
+            return System.String.Format("-l{0}", libName);
+        }
+
+        private static Bam.Core.Array<C.V2.CModule>
+        FindAllDynamicDependents(
+            C.V2.DynamicLibrary dynamicModule)
+        {
+            var dynamicDeps = new Bam.Core.Array<C.V2.CModule>();
+            if (0 == dynamicModule.Dependents.Count)
+            {
+                return dynamicDeps;
+            }
+
+            foreach (var dep in dynamicModule.Dependents)
+            {
+                if (!(dep is C.V2.DynamicLibrary))
+                {
+                    continue;
+                }
+                var dynDep = dep as C.V2.DynamicLibrary;
+                dynamicDeps.AddUnique(dynDep);
+                dynamicDeps.AddRangeUnique(FindAllDynamicDependents(dynDep));
+            }
+            return dynamicDeps;
+        }
+
+        public override void ProcessLibraryDependency(
+            C.V2.CModule executable,
+            C.V2.CModule library)
+        {
+            var linker = executable.Settings as C.V2.ICommonLinkerOptions;
+            if (library is C.V2.StaticLibrary)
+            {
+                var libraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].Parse();
+                // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
+                var libraryName = GetLPrefixLibraryName(libraryPath);
+                if (linker.Libraries.Contains(libraryName))
+                {
+                    linker.Libraries.Remove(libraryName);
+                }
+                linker.Libraries.Add(libraryName);
+
+                var libraryDir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
+                linker.LibraryPaths.AddUnique(libraryDir);
+            }
+            else if (library is C.V2.DynamicLibrary)
+            {
+                var libraryPath = library.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
+                // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
+                var libraryName = GetLPrefixLibraryName(libraryPath);
+                if (linker.Libraries.Contains(libraryName))
+                {
+                    linker.Libraries.Remove(libraryName);
+                }
+                linker.Libraries.Add(libraryName);
+
+                var libraryDir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
+                linker.LibraryPaths.AddUnique(libraryDir);
+
+                var gccLinker = executable.Settings as GccCommon.V2.ICommonLinkerOptions;
+                var allDynamicDependents = FindAllDynamicDependents(library as C.V2.DynamicLibrary);
+                foreach (var dep in allDynamicDependents)
+                {
+                    var depLibraryPath = dep.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
+                    var depLibraryDir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(depLibraryPath), null);
+                    gccLinker.RPathLink.AddUnique(depLibraryDir.Parse());
+                }
             }
         }
 

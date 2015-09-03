@@ -127,6 +127,10 @@ namespace V2
         {
             get;
         }
+
+        public abstract void ProcessLibraryDependency(
+            CModule executable,
+            CModule library);
     }
 
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
