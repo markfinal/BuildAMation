@@ -47,11 +47,9 @@ namespace Test3
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/library2.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/library2.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/library2.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/library2.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));

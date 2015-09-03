@@ -67,32 +67,46 @@ namespace V2
             }
         }
 
-        public CObjectFileCollection CreateCSourceContainer()
+        public CObjectFileCollection
+        CreateCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<CObjectFileCollection>(false);
+            var source = this.CreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }
 
-        public Cxx.V2.ObjectFileCollection CreateCxxSourceContainer()
+        public Cxx.V2.ObjectFileCollection
+        CreateCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<Cxx.V2.ObjectFileCollection>(false);
+            var source = this.CreateContainer<Cxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }
 
         public virtual C.ObjC.V2.ObjectFileCollection
-        CreateObjectiveCSourceContainer()
+        CreateObjectiveCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<C.ObjC.V2.ObjectFileCollection>(false);
+            var source = this.CreateContainer<C.ObjC.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }
 
         public virtual C.ObjCxx.V2.ObjectFileCollection
-        CreateObjectiveCxxSourceContainer()
+        CreateObjectiveCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false);
+            var source = this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }

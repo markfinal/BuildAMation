@@ -54,8 +54,7 @@ namespace Cxx11Test1
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.cpp");
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/main.cpp");
 
             source.PrivatePatch(settings =>
                 {

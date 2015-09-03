@@ -48,11 +48,9 @@ namespace Test14
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/dynamicLibraryA.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/dynamicLibraryA.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/dynamicLibraryA.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamicLibraryA.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
@@ -83,11 +81,9 @@ namespace Test14
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/dynamicLibraryB.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/dynamicLibraryB.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/dynamicLibraryB.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamicLibraryB.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
@@ -111,8 +107,7 @@ namespace Test14
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
 
             this.PrivatePatch(settings =>
                 {

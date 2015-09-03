@@ -50,11 +50,9 @@ namespace Test4
 
             this.LinkAgainst<MyStaticLibV2>();
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/dynamiclibrary.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/dynamiclibrary.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamiclibrary.c");
 
             source.PrivatePatch(settings => this.includePaths(settings, this));
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
@@ -79,11 +77,9 @@ namespace Test4
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/staticlibrary.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/staticlibrary.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/staticlibrary.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/staticlibrary.c");
 
             source.PublicPatch((settings, appliedTo) =>
             {

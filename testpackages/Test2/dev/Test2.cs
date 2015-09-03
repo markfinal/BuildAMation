@@ -48,11 +48,9 @@ namespace Test2
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/library.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/library.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/library.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/library.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
@@ -68,8 +66,7 @@ namespace Test2
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/application.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/application.c");
 
             this.CompileAndLinkAgainst<LibraryV2>(source);
             this.CompileAndLinkAgainst<Test3.Library2V2>(source);

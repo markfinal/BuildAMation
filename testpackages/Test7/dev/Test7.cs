@@ -53,11 +53,9 @@ namespace Test7
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/dynamiclibrary.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/dynamiclibrary.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/dynamiclibrary.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamiclibrary.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

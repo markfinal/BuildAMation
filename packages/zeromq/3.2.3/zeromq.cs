@@ -104,8 +104,7 @@ namespace zeromq
 
             this.Macros.Add("zmqsrcdir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src", this));
 
-            var source = this.CreateCxxSourceContainer();
-            var allSource = source.AddFiles("$(zmqsrcdir)/*.cpp", macroModuleOverride: this);
+            var source = this.CreateCxxSourceContainer("$(zmqsrcdir)/*.cpp", macroModuleOverride: this);
 
             source.PrivatePatch(settings =>
                 {
@@ -136,7 +135,7 @@ namespace zeromq
 
                 if (this.Linker is Clang.V2.LinkerBase)
                 {
-                    var ipc_listener = allSource.Where(item => (item as C.V2.ObjectFile).InputPath.Parse().EndsWith("ipc_listener.cpp"));
+                    var ipc_listener = source.Children.Where(item => (item as C.V2.ObjectFile).InputPath.Parse().EndsWith("ipc_listener.cpp"));
                     ipc_listener.ElementAt(0).PrivatePatch(settings => {
                         var compiler = settings as C.V2.ICommonCompilerOptions;
                         compiler.DisableWarnings.Add("deprecated-declarations");

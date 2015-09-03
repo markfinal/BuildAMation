@@ -84,12 +84,9 @@ namespace Test9
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/library_c.h");
-            headers.AddFile("$(pkgroot)/include/library_cpp.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/*.h");
 
-            var cSource = this.CreateCSourceContainer();
-            cSource.AddFile("$(pkgroot)/source/library_c.c");
+            var cSource = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
             cSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
@@ -124,11 +121,9 @@ namespace Test9
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/library_c.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/library_c.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/library_c.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
@@ -146,11 +141,9 @@ namespace Test9
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/library_cpp.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/library_cpp.h");
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/library_cpp.c");
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
@@ -171,11 +164,9 @@ namespace Test9
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/library_c.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/library_c.h");
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/library_c.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
@@ -199,11 +190,9 @@ namespace Test9
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/library_cpp.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/library_cpp.h");
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/library_cpp.c");
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;

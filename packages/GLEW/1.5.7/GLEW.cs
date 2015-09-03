@@ -52,16 +52,14 @@ namespace GLEW
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(GLEWRootDir)/include/GL/glew.h", macroModuleOverride: this);
+            var headers = this.CreateHeaderContainer("$(GLEWRootDir)/include/GL/glew.h", macroModuleOverride: this);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 headers.AddFile("$(GLEWRootDir)/include/GL/wglew.h", macroModuleOverride: this);
             }
             // TODO: glxew.h
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(GLEWRootDir)/src/glew.c", macroModuleOverride:this);
+            var source = this.CreateCSourceContainer("$(GLEWRootDir)/src/glew.c", macroModuleOverride: this);
             source.PrivatePatch(settings => this.exported(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.exported(settings, this));

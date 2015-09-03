@@ -39,8 +39,7 @@ namespace Test11
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 source.AddFile("$(pkgroot)/source/win/win.c");

@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using System.Linq;
 namespace OpenGLUniformBufferTest
 {
     sealed class GLUniformBufferTestV2 :
@@ -37,18 +38,9 @@ namespace OpenGLUniformBufferTest
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/source/application.h");
-            headers.AddFile("$(pkgroot)/source/common.h");
-            headers.AddFile("$(pkgroot)/source/errorhandler.h");
-            headers.AddFile("$(pkgroot)/source/renderer.h");
+            this.CreateHeaderContainer("$(pkgroot)/source/*.h");
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/application.cpp");
-            source.AddFile("$(pkgroot)/source/errorhandler.cpp");
-            source.AddFile("$(pkgroot)/source/main.cpp");
-            var rendererObj = source.AddFile("$(pkgroot)/source/renderer.cpp");
-
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
             source.PrivatePatch(settings =>
                 {
                     var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
@@ -56,6 +48,8 @@ namespace OpenGLUniformBufferTest
                 });
 
             this.LinkAgainst<OpenGLSDK.OpenGLV2>();
+
+            var rendererObj = source.Children.Where(item => (item as C.Cxx.V2.ObjectFile).InputPath.Parse().Contains("renderer")).ElementAt(0) as C.Cxx.V2.ObjectFile;
             this.CompileAndLinkAgainst<GLEW.GLEWStaticV2>(rendererObj);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

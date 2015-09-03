@@ -37,8 +37,7 @@ namespace zeromqtest
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.cpp");
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/main.cpp");
 
             this.CompileAndLinkAgainst<zeromq.ZMQSharedLibraryV2>(source);
 

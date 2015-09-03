@@ -76,9 +76,12 @@ namespace V2
         }
 
         public override CObjectFileCollection
-        CreateCSourceContainer()
+        CreateCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var collection = base.CreateCSourceContainer();
+            var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
@@ -89,9 +92,12 @@ namespace V2
         }
 
         public override Cxx.V2.ObjectFileCollection
-        CreateCxxSourceContainer()
+        CreateCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var collection = base.CreateCxxSourceContainer();
+            var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;

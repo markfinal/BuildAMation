@@ -49,8 +49,7 @@ namespace Test5
                     }
                 });
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/dynamicmain.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamicmain.c");
 
             this.LinkAgainst<Test4.MyStaticLibV2>();
             this.CompileAndLinkAgainst<Test4.MyDynamicLibV2>(source);

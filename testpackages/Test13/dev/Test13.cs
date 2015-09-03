@@ -45,17 +45,12 @@ namespace Test13
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            var myobjectHeader = headers.AddFile("$(pkgroot)/source/myobject.h");
-            var myobject2Header = headers.AddFile("$(pkgroot)/source/myobject2.h");
-
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.cpp");
-            source.AddFile("$(pkgroot)/source/myobject.cpp");
-            source.AddFile("$(pkgroot)/source/myobject2.cpp");
-
-            /*var myObjectMocTuple = */source.MocHeader(myobjectHeader);
-            /*var myObject2MocTuple = */source.MocHeader(myobject2Header);
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
+            var mocHeaders = this.CreateHeaderContainer("$(pkgroot)/source/myobject*.h");
+            foreach (var mocHeader in mocHeaders.Children)
+            {
+                /*var myobjectMocTuple = */ source.MocHeader(mocHeader as C.V2.HeaderFile);
+            }
 
             this.PrivatePatch(settings =>
             {

@@ -89,6 +89,9 @@ namespace V2
         protected T
         CreateContainer<T>(
             bool requires,
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null,
             Bam.Core.V2.Module.PrivatePatchDelegate privatePatch = null)
             where T : CModule, new()
         {
@@ -106,21 +109,40 @@ namespace V2
             {
                 this.DependsOn(source);
             }
+
+            if (null != wildcardPath)
+            {
+                (source as IAddFiles).AddFiles(wildcardPath, macroModuleOverride: macroModuleOverride, filter: filter);
+            }
+
             return source;
         }
 
         public HeaderFileCollection
-        CreateHeaderContainer()
+        CreateHeaderContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var headers = this.CreateContainer<HeaderFileCollection>(true);
+            var headers = this.CreateContainer<HeaderFileCollection>(true, wildcardPath, macroModuleOverride, filter);
             this.headerModules.Add(headers);
             return headers;
         }
     }
 
+    interface IAddFiles
+    {
+        Bam.Core.Array<Bam.Core.V2.Module>
+        AddFiles(
+            string path,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null);
+    }
+
     public abstract class CModuleContainer<ChildModuleType> :
         CModule,
-        Bam.Core.V2.IModuleGroup
+        Bam.Core.V2.IModuleGroup,
+        IAddFiles
         where ChildModuleType : Bam.Core.V2.Module, Bam.Core.V2.IInputPath, Bam.Core.V2.IChildModule, new()
     {
         private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
@@ -257,33 +279,45 @@ namespace V2
             };
 
         public virtual CObjectFileCollection
-        CreateCSourceContainer()
+        CreateCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<CObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
+            var source = this.CreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
         public virtual Cxx.V2.ObjectFileCollection
-        CreateCxxSourceContainer()
+        CreateCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<Cxx.V2.ObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
+            var source = this.CreateContainer<Cxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
         public virtual C.ObjC.V2.ObjectFileCollection
-        CreateObjectiveCSourceContainer()
+        CreateObjectiveCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<C.ObjC.V2.ObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
+            var source = this.CreateContainer<C.ObjC.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
         public virtual C.ObjCxx.V2.ObjectFileCollection
-        CreateObjectiveCxxSourceContainer()
+        CreateObjectiveCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, privatePatch: this.ConsolePreprocessor);
+            var source = this.CreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }

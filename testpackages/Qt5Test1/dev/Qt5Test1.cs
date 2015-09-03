@@ -40,17 +40,12 @@ namespace Qt5Test1
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            var myobjectHeader = headers.AddFile("$(pkgroot)/source/myobject.h");
-            var myobject2Header = headers.AddFile("$(pkgroot)/source/myobject2.h");
-
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.cpp");
-            source.AddFile("$(pkgroot)/source/myobject.cpp");
-            source.AddFile("$(pkgroot)/source/myobject2.cpp");
-
-            /*var myObjectMocTuple = */source.MocHeader(myobjectHeader);
-            /*var myObject2MocTuple = */source.MocHeader(myobject2Header);
+            var mocHeaders = this.CreateHeaderContainer("$(pkgroot)/source/*.h");
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
+            foreach (var mocHeader in mocHeaders.Children)
+            {
+                /*var myObjectMocTuple = */ source.MocHeader(mocHeader as C.V2.HeaderFile);
+            }
 
             source.PrivatePatch(settings =>
                 {

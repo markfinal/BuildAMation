@@ -37,8 +37,7 @@ namespace HeaderLibraryTest
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/include/unusedmacros.h");
+            this.CreateHeaderContainer("$(pkgroot)/include/unusedmacros.h");
 
             this.PublicPatch((settings, appliedTo) =>
                 {
@@ -58,8 +57,7 @@ namespace HeaderLibraryTest
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.c");
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/main.c");
 
             this.CompileAgainst<HeaderLibraryV2>(source);
 

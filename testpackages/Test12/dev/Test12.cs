@@ -39,8 +39,7 @@ namespace Test12
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.cpp");
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/main.cpp");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 source.AddFile("$(pkgroot)/source/win/win.cpp");

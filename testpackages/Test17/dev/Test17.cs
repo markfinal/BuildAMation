@@ -39,10 +39,8 @@ namespace Test17
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
 
-            // TODO: this is missing the automatic link dependency on StaticLibrary1V2
             this.CompileAndLinkAgainst<Test16.StaticLibrary2V2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

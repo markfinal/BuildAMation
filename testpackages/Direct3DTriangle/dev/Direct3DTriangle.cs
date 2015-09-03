@@ -37,18 +37,9 @@ namespace Direct3DTriangle
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer();
-            headers.AddFile("$(pkgroot)/source/application.h");
-            headers.AddFile("$(pkgroot)/source/common.h");
-            headers.AddFile("$(pkgroot)/source/errorhandler.h");
-            headers.AddFile("$(pkgroot)/source/renderer.h");
+            this.CreateHeaderContainer("$(pkgroot)/source/*.h");
 
-            var source = this.CreateCxxSourceContainer();
-            source.AddFile("$(pkgroot)/source/application.cpp");
-            source.AddFile("$(pkgroot)/source/errorhandler.cpp");
-            source.AddFile("$(pkgroot)/source/main.cpp");
-            source.AddFile("$(pkgroot)/source/renderer.cpp");
-
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
             source.PrivatePatch(settings =>
                 {
                     var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;

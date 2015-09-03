@@ -59,9 +59,12 @@ namespace V2
             };
 
         public override CObjectFileCollection
-        CreateCSourceContainer()
+        CreateCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.V2.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
-            var container = base.CreateCSourceContainer();
+            var container = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 container.PrivatePatch(this.WindowsPreprocessor);
@@ -78,9 +81,12 @@ namespace V2
             C.V2.GUIApplication
         {
             public override Cxx.V2.ObjectFileCollection
-            CreateCxxSourceContainer()
+            CreateCxxSourceContainer(
+                string wildcardPath = null,
+                Bam.Core.V2.Module macroModuleOverride = null,
+                System.Text.RegularExpressions.Regex filter = null)
             {
-                var container = base.CreateCxxSourceContainer();
+                var container = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
                     container.PrivatePatch(this.WindowsPreprocessor);

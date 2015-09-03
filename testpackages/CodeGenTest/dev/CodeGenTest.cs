@@ -60,8 +60,7 @@ namespace V2
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/codegentool/main.c");
+            this.CreateCSourceContainer("$(pkgroot)/source/codegentool/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
@@ -160,8 +159,7 @@ namespace V2
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer();
-            source.AddFile("$(pkgroot)/source/testapp/main.c");
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/testapp/main.c");
 
             /*var generatedSourceTuple = */source.GenerateSource();
 
