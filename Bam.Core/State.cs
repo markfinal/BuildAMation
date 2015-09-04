@@ -310,6 +310,10 @@ namespace V2
             {
                 return this.ParsedString;
             }
+            if (null == this.MacroIndices)
+            {
+                throw new Exception("Tokenized string '{0}', does not appear to contain any {1}...{2} tokens", this.OriginalString, TokenPrefix, TokenSuffix);
+            }
             // take a copy of the macro indices
             var macroIndices = new System.Collections.Generic.List<int>(this.MacroIndices);
             var tokens = new System.Collections.Generic.List<string>(this.Tokens); // could just be a reserved list of strings
