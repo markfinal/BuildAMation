@@ -43,6 +43,13 @@ namespace Cxx11Test1
             if (null != cxxCompiler)
             {
                 cxxCompiler.LanguageStandard = C.Cxx.ELanguageStandard.Cxx11;
+                cxxCompiler.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
+            }
+
+            var cxxLinker = settings as C.V2.ICxxOnlyLinkerOptions;
+            if (null != cxxLinker)
+            {
+                cxxLinker.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
             }
         }
     }

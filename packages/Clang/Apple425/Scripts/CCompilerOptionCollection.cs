@@ -230,16 +230,33 @@ namespace Clang
                 {
                     case C.Cxx.ELanguageStandard.Cxx98:
                         configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++98");
-                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libstdc++");
                         break;
 
                     case C.Cxx.ELanguageStandard.Cxx11:
                         configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++11");
-                        configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libc++");
                         break;
 
                     default:
                         throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
+                }
+            }
+            if (options.StandardLibrary.HasValue)
+            {
+                switch (options.StandardLibrary.Value)
+                {
+                case C.Cxx.EStandardLibrary.NotSet:
+                    break;
+
+                case C.Cxx.EStandardLibrary.libstdcxx:
+                    configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libstdc++");
+                    break;
+
+                case C.Cxx.EStandardLibrary.libcxx:
+                    configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libc++");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Invalid C++ standard library {0}", options.StandardLibrary.Value.ToString());
                 }
             }
         }
@@ -309,6 +326,30 @@ namespace Clang
                 var option = new XcodeBuilder.V2.MultiConfigurationValue();
                 option.Add("-g");
                 configuration["OTHER_LDFLAGS"] = option;
+            }
+        }
+
+        public static void
+        Convert(
+            this C.V2.ICxxOnlyLinkerOptions options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+            switch (options.StandardLibrary.Value)
+            {
+            case C.Cxx.EStandardLibrary.NotSet:
+                break;
+
+            case C.Cxx.EStandardLibrary.libstdcxx:
+                configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libstdc++");
+                break;
+
+            case C.Cxx.EStandardLibrary.libcxx:
+                configuration["CLANG_CXX_LIBRARY"] = new XcodeBuilder.V2.UniqueConfigurationValue("libc++");
+                break;
+
+            default:
+                throw new Bam.Core.Exception("Invalid C++ standard library {0}", options.StandardLibrary.Value.ToString());
             }
         }
 
@@ -546,6 +587,25 @@ namespace Clang
                         throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
                 }
             }
+            if (options.StandardLibrary.HasValue)
+            {
+                switch (options.StandardLibrary.Value)
+                {
+                case C.Cxx.EStandardLibrary.NotSet:
+                    break;
+
+                case C.Cxx.EStandardLibrary.libstdcxx:
+                    commandLine.Add("-stdlib=libstdc++");
+                    break;
+
+                case C.Cxx.EStandardLibrary.libcxx:
+                    commandLine.Add("-stdlib=libc++");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Invalid C++ standard library {0}", options.StandardLibrary.Value.ToString());
+                }
+            }
         }
 
         public static void
@@ -657,6 +717,33 @@ namespace Clang
             if (options.DebugSymbols.GetValueOrDefault())
             {
                 commandLine.Add("-g");
+            }
+        }
+
+        public static void
+        Convert(
+            this C.V2.ICxxOnlyLinkerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            if (options.StandardLibrary.HasValue)
+            {
+                switch (options.StandardLibrary.Value)
+                {
+                case C.Cxx.EStandardLibrary.NotSet:
+                    break;
+
+                case C.Cxx.EStandardLibrary.libstdcxx:
+                    commandLine.Add("-stdlib=libstdc++");
+                    break;
+
+                case C.Cxx.EStandardLibrary.libcxx:
+                    commandLine.Add("-stdlib=libc++");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Invalid C++ standard library {0}", options.StandardLibrary.Value.ToString());
+                }
             }
         }
 
@@ -969,6 +1056,12 @@ namespace V2
             set;
         }
 
+        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyCompilerOptions.StandardLibrary
+        {
+            get;
+            set;
+        }
+
         Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICCompilerOptionsOSX.FrameworkSearchDirectories
         {
             get;
@@ -1240,6 +1333,12 @@ namespace V2
             set;
         }
 
+        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyCompilerOptions.StandardLibrary
+        {
+            get;
+            set;
+        }
+
         Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICCompilerOptionsOSX.FrameworkSearchDirectories
         {
             get;
@@ -1367,6 +1466,87 @@ namespace V2
         }
     }
 
+    public class CxxLinkerSettings :
+        C.V2.SettingsBase,
+        CommandLineProcessor.V2.IConvertToCommandLine,
+        XcodeProjectProcessor.V2.IConvertToProject,
+        C.V2.ICommonLinkerOptions,
+        C.V2.ICxxOnlyLinkerOptions,
+        C.V2.ILinkerOptionsOSX
+    {
+        public CxxLinkerSettings(Bam.Core.V2.Module module)
+        {
+            #if true
+            this.InitializeAllInterfaces(module, false, true);
+            #else
+            (this as C.V2.ICommonLinkerOptions).Defaults(module);
+            (this as C.V2.ILinkerOptionsOSX).Defaults(module);
+            #endif
+        }
+
+        void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as C.V2.ICxxOnlyLinkerOptions).Convert(module, commandLine);
+            (this as C.V2.ILinkerOptionsOSX).Convert(module, commandLine);
+        }
+
+        void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
+        {
+            (this as C.V2.ICommonLinkerOptions).Convert(module, configuration);
+            (this as C.V2.ICxxOnlyLinkerOptions).Convert(module, configuration);
+            (this as C.V2.ILinkerOptionsOSX).Convert(module, configuration);
+        }
+
+        C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? C.V2.ICommonLinkerOptions.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyLinkerOptions.StandardLibrary
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ILinkerOptionsOSX.Frameworks
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ILinkerOptionsOSX.FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.V2.TokenizedString C.V2.ILinkerOptionsOSX.InstallName
+        {
+            get;
+            set;
+        }
+    }
+
     public static class Configure
     {
         static Configure()
@@ -1462,12 +1642,6 @@ namespace V2
             }
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
-        {
-            var settings = new LinkerSettings(module);
-            return settings;
-        }
-
         public override Bam.Core.V2.TokenizedString Executable
         {
             get
@@ -1485,6 +1659,12 @@ namespace V2
         public Linker() :
             base("clang")
         {}
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            var settings = new LinkerSettings(module);
+            return settings;
+        }
     }
 
     [C.V2.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.V2.EBit.ThirtyTwo)]
@@ -1495,6 +1675,12 @@ namespace V2
         public LinkerCxx() :
             base("clang++")
         {}
+
+        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        {
+            var settings = new CxxLinkerSettings(module);
+            return settings;
+        }
     }
 
     public abstract class CompilerBase :

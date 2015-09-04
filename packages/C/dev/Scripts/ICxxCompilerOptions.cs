@@ -45,6 +45,12 @@ namespace V2
             get;
             set;
         }
+
+        C.Cxx.EStandardLibrary? StandardLibrary
+        {
+            get;
+            set;
+        }
     }
 }
     public interface ICxxCompilerOptions

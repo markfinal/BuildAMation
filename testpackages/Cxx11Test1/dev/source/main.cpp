@@ -26,6 +26,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
+#include <vector>
+#include <initializer_list>
+#include <memory>
+
+template <class T>
+struct S
+{
+    std::vector<T> v;
+    S(std::initializer_list<T> l) :
+        v(l)
+    {
+         std::cout << "constructed vector with a " << l.size() << "-element initializer list\n";
+    }
+};
 
 int main()
 {
@@ -50,6 +64,9 @@ int main()
     }
 
     std::cout << "C++ " << __cplusplus << std::endl;
+
+    auto vector = std::make_shared<S<int>>(std::initializer_list<int>{1, 2, 3, 4});
+    vector.reset();
 
     return 0;
 }

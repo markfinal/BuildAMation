@@ -45,4 +45,11 @@ namespace C.Cxx
         GnuCxx98,
         Cxx11,
     }
+
+    public enum EStandardLibrary
+    {
+        NotSet,
+        libstdcxx,
+        libcxx
+    }
 }

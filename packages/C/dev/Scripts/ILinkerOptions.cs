@@ -43,6 +43,13 @@ namespace DefaultSettings
             settings.Libraries = new Bam.Core.StringArray();
             settings.DebugSymbols = (module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug || module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Profile);
         }
+        public static void
+        Defaults(
+            this C.V2.ICxxOnlyLinkerOptions settings,
+            Bam.Core.V2.Module module)
+        {
+            settings.StandardLibrary = C.Cxx.EStandardLibrary.NotSet;
+        }
     }
 }
 
@@ -68,6 +75,17 @@ namespace DefaultSettings
         }
 
         bool? DebugSymbols
+        {
+            get;
+            set;
+        }
+    }
+
+    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICxxOnlyLinkerOptions :
+        Bam.Core.V2.ISettingsBase
+    {
+        C.Cxx.EStandardLibrary? StandardLibrary
         {
             get;
             set;

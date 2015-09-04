@@ -619,6 +619,12 @@ namespace V2
             set;
         }
 
+        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyCompilerOptions.StandardLibrary
+        {
+            get;
+            set;
+        }
+
         bool? GccCommon.V2.ICommonCompilerOptions.PositionIndependentCode
         {
             get;
@@ -892,6 +898,12 @@ namespace V2
         }
 
         C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyCompilerOptions.StandardLibrary
         {
             get;
             set;

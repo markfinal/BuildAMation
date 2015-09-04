@@ -42,6 +42,7 @@ namespace DefaultSettings
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
             settings.LanguageStandard = ELanguageStandard.Cxx98;
+            settings.StandardLibrary = EStandardLibrary.NotSet;
         }
         public static void
         SharedSettings(
@@ -51,6 +52,7 @@ namespace DefaultSettings
         {
             shared.ExceptionHandler = (lhs.ExceptionHandler == rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
             shared.LanguageStandard = (lhs.LanguageStandard == rhs.LanguageStandard) ? lhs.LanguageStandard : null;
+            shared.StandardLibrary = (lhs.StandardLibrary == rhs.StandardLibrary) ? lhs.StandardLibrary : null;
         }
         public static void
         Delta(
@@ -60,6 +62,7 @@ namespace DefaultSettings
         {
             delta.ExceptionHandler = (lhs.ExceptionHandler != rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
             delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
+            delta.StandardLibrary = (lhs.StandardLibrary != rhs.StandardLibrary) ? lhs.StandardLibrary : null;
         }
         public static void
         Clone(
@@ -68,6 +71,7 @@ namespace DefaultSettings
         {
             settings.ExceptionHandler = other.ExceptionHandler;
             settings.LanguageStandard = other.LanguageStandard;
+            settings.StandardLibrary = other.StandardLibrary;
         }
     }
 }

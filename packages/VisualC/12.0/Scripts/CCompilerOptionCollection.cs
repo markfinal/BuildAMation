@@ -776,6 +776,12 @@ namespace V2
             set;
         }
 
+        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyCompilerOptions.StandardLibrary
+        {
+            get;
+            set;
+        }
+
         bool? VisualCCommon.V2.ICommonCompilerOptions.NoLogo
         {
             get;
