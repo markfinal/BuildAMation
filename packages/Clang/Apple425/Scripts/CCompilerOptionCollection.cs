@@ -232,6 +232,10 @@ namespace Clang
                         configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++98");
                         break;
 
+                    case C.Cxx.ELanguageStandard.GnuCxx98:
+                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("gnu++98");
+                        break;
+
                     case C.Cxx.ELanguageStandard.Cxx11:
                         configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.V2.UniqueConfigurationValue("c++11");
                         break;
@@ -580,6 +584,11 @@ namespace Clang
                     case C.Cxx.ELanguageStandard.Cxx98:
                         commandLine.Add("-std=c++98");
                         break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx98:
+                        commandLine.Add("-std=gnu++98");
+                        break;
+
                     case C.Cxx.ELanguageStandard.Cxx11:
                         commandLine.Add("-std=c++11");
                         break;
