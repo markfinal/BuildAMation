@@ -42,7 +42,17 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
-            var library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
+            XcodeBuilder.V2.XcodeCommonProject library;
+            // TODO: this is a hack, so that modules earlier in the graph can add pre/post build commands
+            // to the project for this module
+            if (null == sender.MetaData)
+            {
+                library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
+            }
+            else
+            {
+                library = sender.MetaData as XcodeBuilder.V2.XcodeCommonProject;
+            }
 
             if (objectFiles.Count > 1)
             {
