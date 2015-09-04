@@ -63,9 +63,10 @@ namespace OpenGLSDK
                 });
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
-            this.IsUpToDate = true;
+            this.ReasonToExecute = null;
         }
 
         protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)

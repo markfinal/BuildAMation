@@ -34,27 +34,45 @@ namespace zeromq
     public sealed class ZMQPlatformHeader :
         C.V2.CModule
     {
-        public override void Evaluate()
+        private static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("ZeroMQ platform header");
+
+        protected override void
+        Init(Module parent)
         {
-            this.IsUpToDate = false;
+            base.Init(parent);
+            this.GeneratedPaths.Add(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)/platform.hpp", this));
         }
 
-        protected override void ExecuteInternal(ExecutionContext context)
+        public override void
+        Evaluate()
+        {
+            this.ReasonToExecute = null;
+            var outputPath = this.GeneratedPaths[Key].Parse();
+            if (!System.IO.File.Exists(outputPath))
+            {
+                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                return;
+            }
+
+            // platform.hpp.in should never change, so don't check it
+        }
+
+        protected override void
+        ExecuteInternal(ExecutionContext context)
         {
             var source = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src/platform.hpp.in", this);
-            var dest = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)/platform.hpp", this);
 
             // parse the input header, and modify it while writing it out
             // modifications are platform specific
             using (System.IO.TextReader readFile = new System.IO.StreamReader(source.Parse()))
             {
-                var destPath = dest.Parse();
+                var destPath = this.GeneratedPaths[Key].Parse();
                 var destDir = System.IO.Path.GetDirectoryName(destPath);
                 if (!System.IO.Directory.Exists(destDir))
                 {
                     System.IO.Directory.CreateDirectory(destDir);
                 }
-                using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(dest.Parse()))
+                using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(destPath))
                 {
                     string line;
                     while ((line = readFile.ReadLine()) != null)
@@ -89,7 +107,9 @@ namespace zeromq
             }
         }
 
-        protected override void GetExecutionPolicy (string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // TODO: do nothing
         }
