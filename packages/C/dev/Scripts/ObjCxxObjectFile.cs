@@ -41,6 +41,12 @@ namespace DefaultSettings
             Bam.Core.V2.Module module)
         {
         }
+        public static void
+        Clone(
+            this C.V2.IObjectiveCxxOnlyCompilerOptions settings,
+            C.V2.IObjectiveCxxOnlyCompilerOptions other)
+        {
+        }
     }
 }
     public class ObjectFile :
