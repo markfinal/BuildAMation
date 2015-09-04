@@ -50,12 +50,11 @@ namespace V2
             var destinationPath = System.IO.Path.Combine(destinationDir, System.IO.Path.GetFileName(sourcePath));
 
             var commandLine = new Bam.Core.StringArray();
-            sender.MetaData = commandLine;
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLine as object });
             }
 
             commandLine.Add(sourcePath);

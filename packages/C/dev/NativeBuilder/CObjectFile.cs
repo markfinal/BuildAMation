@@ -41,12 +41,12 @@ namespace V2
             Bam.Core.V2.TokenizedString objectFilePath,
             Bam.Core.V2.Module source)
         {
-            sender.MetaData = new Bam.Core.StringArray();
+            var commandLine = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLine as object });
             }
 
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
@@ -55,7 +55,7 @@ namespace V2
                 System.IO.Directory.CreateDirectory(objectFileDir);
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, sender.MetaData as Bam.Core.StringArray);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, commandLine);
         }
     }
 }

@@ -42,12 +42,12 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
         {
-            sender.MetaData = new Bam.Core.StringArray();
+            var commandLine = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, sender.MetaData });
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLine as object });
             }
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
@@ -56,14 +56,12 @@ namespace V2
                 System.IO.Directory.CreateDirectory(libraryFileDir);
             }
 
-            var commandLine = sender.MetaData as Bam.Core.StringArray;
-
             foreach (var input in objectFiles)
             {
                 commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, sender.MetaData as Bam.Core.StringArray);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, commandLine);
         }
     }
 }
