@@ -482,7 +482,7 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.V2.SettingsExtensions(typeof(C.ObjCxx.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface IObjectiveCxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
     {
     }

@@ -35,7 +35,10 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.IObjectiveCxxOnlyCompilerOptions settings, Bam.Core.V2.Module module)
+        public static void
+        Defaults(
+            this C.V2.IObjectiveCxxOnlyCompilerOptions settings,
+            Bam.Core.V2.Module module)
         {
         }
     }

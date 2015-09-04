@@ -267,6 +267,26 @@ namespace Clang
 
         public static void
         Convert(
+            this C.V2.IObjectiveCOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+            if (null != options.ConstantStringClass)
+            {
+                // TODO
+            }
+        }
+
+        public static void
+        Convert(
+            this C.V2.IObjectiveCxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            XcodeBuilder.V2.Configuration configuration)
+        {
+        }
+
+        public static void
+        Convert(
             this C.V2.ICCompilerOptionsOSX options,
             Bam.Core.V2.Module module,
             XcodeBuilder.V2.Configuration configuration)
@@ -627,6 +647,14 @@ namespace Clang
             {
                 commandLine.Add(System.String.Format("-fconstant-string-class={0}", options.ConstantStringClass));
             }
+        }
+
+        public static void
+        Convert(
+            this C.V2.IObjectiveCxxOnlyCompilerOptions options,
+            Bam.Core.V2.Module module,
+            Bam.Core.StringArray commandLine)
+        {
         }
 
         public static void
@@ -1247,15 +1275,17 @@ namespace V2
         void CommandLineProcessor.V2.IConvertToCommandLine.Convert(Bam.Core.V2.Module module, Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            //(this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            //(this as C.V2.IObjectiveCxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.IObjectiveCxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.V2.ICCompilerOptionsOSX).Convert(module, commandLine);
         }
 
         void XcodeProjectProcessor.V2.IConvertToProject.Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration)
         {
             (this as C.V2.ICommonCompilerOptions).Convert(module, configuration);
-            //(this as C.V2.ICxxOnlyCompilerOptions).Convert(module, configuration);
-            //(this as C.V2.IObjectiveCxxOnlyCompilerOptions).Convert(module, configuration);
+            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, configuration);
+            (this as C.V2.IObjectiveCxxOnlyCompilerOptions).Convert(module, configuration);
+            (this as C.V2.ICCompilerOptionsOSX).Convert(module, configuration);
         }
 
         C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
