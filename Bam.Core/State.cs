@@ -784,10 +784,18 @@ namespace V2
 
     public class ExecutionContext
     {
-        public ExecutionContext()
+        public ExecutionContext(
+            bool useEvaluation)
         {
+            this.Evaluate = useEvaluation;
             this.OutputStringBuilder = new System.Text.StringBuilder();
             this.ErrorStringBuilder = new System.Text.StringBuilder();
+        }
+
+        public bool Evaluate
+        {
+            get;
+            private set;
         }
 
         public System.Text.StringBuilder OutputStringBuilder

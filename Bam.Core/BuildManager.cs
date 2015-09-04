@@ -223,14 +223,14 @@ namespace V2
             }
         }
 
-        private static void
+        private static bool
         CheckIfModulesNeedRebuilding(
             System.Type metaType)
         {
             if (null == metaType)
             {
                 Log.DebugMessage("No build mode metadata, assume rebuilds necessary");
-                return;
+                return false;
             }
 
             // not all build modes need to determine if modules are up-to-date
@@ -239,13 +239,13 @@ namespace V2
             if (0 == evaluationRequiredAttr.Length)
             {
                 Log.DebugMessage("No Bam.Core.EvaluationRequired attribute on build mode metadata, assume rebuilds necessary");
-                return;
+                return false;
             }
 
             if (!evaluationRequiredAttr[0].Enabled)
             {
                 Log.DebugMessage("Module evaluation disabled");
-                return;
+                return false;
             }
 
             Log.DebugMessage("Module evaluation enabled");
@@ -269,7 +269,6 @@ namespace V2
             var graph = Graph.Instance;
             graph.MetaData = factory;
 
-            Log.DebugMessage("Begin scheduling evaluation");
             foreach (var rank in graph.Reverse())
             {
                 foreach (Module module in rank)
@@ -277,7 +276,8 @@ namespace V2
                     module.Evaluate();
                 }
             }
-            Log.DebugMessage("End scheduling evaluation");
+
+            return true;
         }
 
         public void
@@ -291,7 +291,7 @@ namespace V2
                 Log.DebugMessage("No build mode {0} meta data type {1}", State.BuilderName, metaName);
             }
 
-            CheckIfModulesNeedRebuilding(metaDataType);
+            var useEvaluation = CheckIfModulesNeedRebuilding(metaDataType);
 
             ExecutePreBuild(metaDataType);
 
@@ -330,7 +330,7 @@ namespace V2
                 {
                     foreach (var module in rank)
                     {
-                        var context = new ExecutionContext();
+                        var context = new ExecutionContext(useEvaluation);
                         var task = factory.StartNew(() =>
                             {
                                 if (cancellationToken.IsCancellationRequested)
@@ -405,7 +405,7 @@ namespace V2
                     }
                     foreach (IModuleExecution module in rank)
                     {
-                        var context = new ExecutionContext();
+                        var context = new ExecutionContext(useEvaluation);
                         try
                         {
                             module.Execute(context);

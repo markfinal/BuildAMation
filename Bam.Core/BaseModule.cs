@@ -407,16 +407,19 @@ namespace V2
         IModuleExecution.Execute(
             ExecutionContext context)
         {
-            if (null != this.EvaluationTask)
+            if (context.Evaluate)
             {
-                this.EvaluationTask.Wait();
+                if (null != this.EvaluationTask)
+                {
+                    this.EvaluationTask.Wait();
+                }
+                if (null == this.ReasonToExecute)
+                {
+                    Log.DebugMessage("Module {0} is up-to-date", this.ToString());
+                    return;
+                }
+                Log.DebugMessage("Module {0} will change because {1}.", this.ToString(), this.ReasonToExecute.ToString());
             }
-            if (null == this.ReasonToExecute)
-            {
-                Log.DebugMessage("Module {0} is up-to-date", this.ToString());
-                return;
-            }
-            Log.DebugMessage("Module {0} will change because {1}.", this.ToString(), this.ReasonToExecute.ToString());
             this.ExecuteInternal(context);
         }
 
