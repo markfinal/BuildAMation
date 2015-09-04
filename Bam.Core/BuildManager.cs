@@ -223,14 +223,14 @@ namespace V2
             }
         }
 
-        private static bool
-        DoModulesRequireRebuilding(
+        private static void
+        CheckIfModulesNeedRebuilding(
             System.Type metaType)
         {
             if (null == metaType)
             {
                 Log.DebugMessage("No build mode metadata, assume rebuilds necessary");
-                return true;
+                return;
             }
 
             // not all build modes need to determine if modules are up-to-date
@@ -239,27 +239,45 @@ namespace V2
             if (0 == evaluationRequiredAttr.Length)
             {
                 Log.DebugMessage("No Bam.Core.EvaluationRequired attribute on build mode metadata, assume rebuilds necessary");
-                return true;
+                return;
             }
 
             if (!evaluationRequiredAttr[0].Enabled)
             {
                 Log.DebugMessage("Module evaluation disabled");
-                return true;
+                return;
             }
 
             Log.DebugMessage("Module evaluation enabled");
-            var allUpToDate = true;
+
+            var cancellationSource = new System.Threading.CancellationTokenSource();
+            var cancellationToken = cancellationSource.Token;
+
+            // LongRunning is absolutely necessary in order to achieve paralleism
+            var creationOpts = System.Threading.Tasks.TaskCreationOptions.LongRunning;
+            var continuationOpts = System.Threading.Tasks.TaskContinuationOptions.LongRunning;
+
+            var threadCount = 1;
+            var scheduler = new LimitedConcurrencyLevelTaskScheduler(threadCount);
+
+            var factory = new System.Threading.Tasks.TaskFactory(
+                    cancellationToken,
+                    creationOpts,
+                    continuationOpts,
+                    scheduler);
+
             var graph = Graph.Instance;
+            graph.MetaData = factory;
+
+            Log.DebugMessage("Begin scheduling evaluation");
             foreach (var rank in graph.Reverse())
             {
                 foreach (Module module in rank)
                 {
                     module.Evaluate();
-                    allUpToDate &= module.IsUpToDate;
                 }
             }
-            return !allUpToDate;
+            Log.DebugMessage("End scheduling evaluation");
         }
 
         public void
@@ -273,11 +291,7 @@ namespace V2
                 Log.DebugMessage("No build mode {0} meta data type {1}", State.BuilderName, metaName);
             }
 
-            if (!DoModulesRequireRebuilding(metaDataType))
-            {
-                Log.DebugMessage("Everything up to date");
-                return;
-            }
+            CheckIfModulesNeedRebuilding(metaDataType);
 
             ExecutePreBuild(metaDataType);
 
@@ -316,15 +330,7 @@ namespace V2
                 {
                     foreach (var module in rank)
                     {
-                        if (module.IsUpToDate)
-                        {
-                            Log.DebugMessage("Module {0} is up-to-date", module.ToString());
-                            continue;
-                        }
-
-                        Log.DebugMessage("Module {0} requires building", module.ToString());
                         var context = new ExecutionContext();
-
                         var task = factory.StartNew(() =>
                             {
                                 if (cancellationToken.IsCancellationRequested)
@@ -399,13 +405,6 @@ namespace V2
                     }
                     foreach (IModuleExecution module in rank)
                     {
-                        if (module.IsUpToDate)
-                        {
-                            Log.DebugMessage("Module {0} is up-to-date", module.ToString());
-                            continue;
-                        }
-                        Log.DebugMessage("Module {0} requires building", module.ToString());
-
                         var context = new ExecutionContext();
                         try
                         {

@@ -71,6 +71,11 @@ namespace V2
     public abstract class CopyFileTool :
         Bam.Core.V2.PreBuiltTool
     {
+        public override void
+        Evaluate()
+        {
+            this.ReasonToExecute = null;
+        }
     }
 
     [Bam.Core.V2.SettingsExtensions(typeof(DefaultExtensions))]
@@ -356,10 +361,10 @@ namespace V2
             this.dependents[dependent].Add(tokenString, packaging);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
-            // TODO: should this do at least a timestamp check?
-            // do nothing
+            // TODO
         }
 
         protected override void

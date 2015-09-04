@@ -71,10 +71,10 @@ namespace WindowsSDK
             });
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
-            // do nothing
-            this.IsUpToDate = true;
+            this.ReasonToExecute = null;
         }
 
         protected override void

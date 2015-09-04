@@ -230,14 +230,19 @@ namespace V2
         public override void
         Evaluate()
         {
+            this.ReasonToExecute = null;
             foreach (var child in this.children)
             {
-                if (!child.IsUpToDate)
+                if (null != child.EvaluationTask)
                 {
+                    child.EvaluationTask.Wait();
+                }
+                if (null != child.ReasonToExecute)
+                {
+                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
                     return;
                 }
             }
-            this.IsUpToDate = true;
         }
     }
 
@@ -447,28 +452,40 @@ namespace V2
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ILinkerPolicy>.Create(className);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
+            this.ReasonToExecute = null;
             var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
             if (!exists)
             {
+                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
-            }
-            foreach (var source in this.sourceModules)
-            {
-                if (!source.IsUpToDate)
-                {
-                    return;
-                }
             }
             foreach (var source in this.linkedModules)
             {
-                if (!source.IsUpToDate)
+                if (null != source.EvaluationTask)
                 {
+                    source.EvaluationTask.Wait();
+                }
+                if (null != source.ReasonToExecute)
+                {
+                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
                     return;
                 }
             }
-            this.IsUpToDate = true;
+            foreach (var source in this.sourceModules)
+            {
+                if (null != source.EvaluationTask)
+                {
+                    source.EvaluationTask.Wait();
+                }
+                if (null != source.ReasonToExecute)
+                {
+                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                    return;
+                }
+            }
         }
     }
 }

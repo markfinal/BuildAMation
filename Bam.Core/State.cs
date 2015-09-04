@@ -763,8 +763,12 @@ namespace V2
         public override void
         Evaluate()
         {
+            this.ReasonToExecute = null;
             var exists = System.IO.File.Exists(this.Executable.ToString());
-            this.IsUpToDate = exists;
+            if (!exists)
+            {
+                this.ReasonToExecute = ExecuteReasoning.FileDoesNotExist(this.Executable);
+            }
         }
     }
 

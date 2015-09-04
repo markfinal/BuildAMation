@@ -33,13 +33,103 @@ namespace V2
 {
     using System.Linq;
 
+    public class ExecuteReasoning
+    {
+        public enum EReason
+        {
+            Undefined,
+            FileDoesNotExist,
+            InputFileIsNewer
+        }
+
+        private ExecuteReasoning(
+            EReason reason,
+            TokenizedString outputFilePath = null,
+            TokenizedString inputFilePath = null)
+        {
+            this.Reason = reason;
+            this.OutputFilePath = outputFilePath;
+            this.InputFilePath = inputFilePath;
+        }
+
+        public static ExecuteReasoning
+        Undefined()
+        {
+            return new ExecuteReasoning(EReason.Undefined);
+        }
+
+        public static ExecuteReasoning
+        FileDoesNotExist(
+            TokenizedString path)
+        {
+            return new ExecuteReasoning(EReason.FileDoesNotExist, path);
+        }
+
+        public static ExecuteReasoning
+        InputFileNewer(
+            TokenizedString outputPath,
+            TokenizedString inputPath)
+        {
+            return new ExecuteReasoning(EReason.InputFileIsNewer, outputPath, inputPath);
+        }
+
+        public override string
+        ToString()
+        {
+            switch (this.Reason)
+            {
+                case EReason.Undefined:
+                    return "of undefined reasons - therefore executing the module to err on the side of caution";
+
+                case EReason.FileDoesNotExist:
+                    return System.String.Format("{0} does not exist", this.OutputFilePath.Parse());
+
+                case EReason.InputFileIsNewer:
+                    {
+                        if (this.InputFilePath == this.OutputFilePath)
+                        {
+                            return "member(s) of the module collection were updated";
+                        }
+                        return System.String.Format("{0} is newer than {1}", this.InputFilePath.Parse(), this.OutputFilePath.Parse());
+                    }
+
+                default:
+                    throw new Exception("Unknown execute reasoning, {0}", this.Reason.ToString());
+            }
+        }
+
+        public EReason Reason
+        {
+            get;
+            private set;
+        }
+
+        public TokenizedString OutputFilePath
+        {
+            get;
+            private set;
+        }
+
+        public TokenizedString InputFilePath
+        {
+            get;
+            private set;
+        }
+
+        public TokenizedString ModuleFilePath
+        {
+            get;
+            private set;
+        }
+    }
+
     public interface IModuleExecution
     {
         void
         Execute(
             ExecutionContext context);
 
-        bool IsUpToDate
+        ExecuteReasoning ReasonToExecute
         {
             get;
         }
@@ -104,10 +194,10 @@ namespace V2
 
             this.OwningRank = null;
             this.Tool = null;
-            this.IsUpToDate = false;
             this.MetaData = null;
             this.BuildEnvironment = graph.BuildEnvironment;
             this.Macros.Add("config", this.BuildEnvironment.Configuration.ToString());
+            this.ReasonToExecute = ExecuteReasoning.Undefined();
         }
 
         // TODO: is this virtual or abstract?
@@ -317,6 +407,16 @@ namespace V2
         IModuleExecution.Execute(
             ExecutionContext context)
         {
+            if (null != this.EvaluationTask)
+            {
+                this.EvaluationTask.Wait();
+            }
+            if (null == this.ReasonToExecute)
+            {
+                Log.DebugMessage("Module {0} is up-to-date", this.ToString());
+                return;
+            }
+            Log.DebugMessage("Module {0} will change because {1}.", this.ToString(), this.ReasonToExecute.ToString());
             this.ExecuteInternal(context);
         }
 
@@ -407,7 +507,7 @@ namespace V2
             }
         }
 
-        public bool IsUpToDate
+        public ExecuteReasoning ReasonToExecute
         {
             get;
             protected set;
@@ -419,7 +519,15 @@ namespace V2
             set;
         }
 
-        public abstract void Evaluate();
+        public System.Threading.Tasks.Task
+        EvaluationTask
+        {
+            get;
+            protected set;
+        }
+
+        public abstract void
+        Evaluate();
 
         public Environment BuildEnvironment
         {

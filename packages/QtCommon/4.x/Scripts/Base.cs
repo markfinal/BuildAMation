@@ -83,7 +83,7 @@ namespace V2
 
         public override void Evaluate()
         {
-            // prebuilt - no evaluation
+            this.ReasonToExecute = null;
         }
 
         protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
@@ -146,7 +146,7 @@ namespace V2
 
         public override void Evaluate()
         {
-            // prebuilt - no evaluation
+            this.ReasonToExecute = null;
         }
 
         protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)

@@ -440,10 +440,11 @@ namespace V2
     {
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Source File");
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
+            this.ReasonToExecute = null;
             // TODO: could do a hash check of the contents?
-            this.IsUpToDate = true;
         }
 
         protected override void
@@ -478,10 +479,11 @@ namespace V2
     {
         static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Header File");
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
+            this.ReasonToExecute = null;
             // TODO: could do a hash check of the contents?
-            this.IsUpToDate = true;
         }
 
         protected override void
@@ -596,20 +598,108 @@ namespace V2
             this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
-            var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
-            if (!exists)
+            this.ReasonToExecute = null;
+            var graph = Bam.Core.V2.Graph.Instance;
+            var factory = graph.MetaData as System.Threading.Tasks.TaskFactory;
+            this.EvaluationTask = factory.StartNew(() =>
             {
+                var objectFilePath = this.GeneratedPaths[Key].Parse();
+                if (!System.IO.File.Exists(objectFilePath))
+                {
+                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                    return;
+                }
+                var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
+
+                var sourcePath = this.InputPath.Parse();
+                var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
+                if (sourceWriteTime > objectFileWriteTime)
+                {
+                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
+                    return;
+                }
+
+                var includeSearchPaths = (this.Dependees[0].Settings as C.V2.ICommonCompilerOptions).IncludePaths;
+
+                var filesToSearch = new System.Collections.Generic.Queue<string>();
+                filesToSearch.Enqueue(sourcePath);
+
+                var headerPathsFound = new Bam.Core.StringArray();
+                while (filesToSearch.Count > 0)
+                {
+                    var fileToSearch = filesToSearch.Dequeue();
+
+                    string fileContents = null;
+                    using (System.IO.TextReader reader = new System.IO.StreamReader(fileToSearch))
+                    {
+                        fileContents = reader.ReadToEnd();
+                    }
+
+                    var matches = System.Text.RegularExpressions.Regex.Matches(
+                        fileContents,
+                        "^\\s*#include \"(.*)\"",
+                        System.Text.RegularExpressions.RegexOptions.Multiline);
+                    if (0 == matches.Count)
+                    {
+                        // no #includes
+                        return;
+                    }
+
+                    foreach (System.Text.RegularExpressions.Match match in matches)
+                    {
+                        bool exists = false;
+                        // search for the file on the include paths the compiler uses
+                        foreach (var includePath in includeSearchPaths)
+                        {
+                            try
+                            {
+                                var potentialPath = System.IO.Path.Combine(includePath.Parse(), match.Groups[1].Value);
+                                if (!System.IO.File.Exists(potentialPath))
+                                {
+                                    continue;
+                                }
+                                potentialPath = System.IO.Path.GetFullPath(potentialPath);
+                                var headerWriteTime = System.IO.File.GetLastWriteTime(potentialPath);
+
+                                // early out - header is newer than generated object file
+                                if (headerWriteTime > objectFileWriteTime)
+                                {
+                                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], Bam.Core.V2.TokenizedString.Create(potentialPath, null, verbatim:true));
+                                    return;
+                                }
+
+                                if (!headerPathsFound.Contains(potentialPath))
+                                {
+                                    headerPathsFound.Add(potentialPath);
+                                    filesToSearch.Enqueue(potentialPath);
+                                }
+
+                                exists = true;
+                                break;
+                            }
+                            catch (System.Exception ex)
+                            {
+                                Bam.Core.Log.MessageAll("IncludeDependency Exception: Cannot locate '{0}' on '{1}' due to {2}", match.Groups[1].Value, includePath, ex.Message);
+                            }
+                        }
+
+                        if (!exists)
+                        {
+#if false
+                                Bam.Core.Log.DebugMessage("***** Could not locate '{0}' on any include search path, included from {1}:\n{2}",
+                                                          match.Groups[1],
+                                                          fileToSearch,
+                                                          entry.includePaths.ToString('\n'));
+#endif
+                        }
+                    }
+                }
+
                 return;
-            }
-            var sourceWriteTime = System.IO.File.GetLastWriteTime(this.InputPath.ToString());
-            var outputWriteTime = System.IO.File.GetLastWriteTime(this.GeneratedPaths[Key].ToString());
-            if (outputWriteTime < sourceWriteTime)
-            {
-                return;
-            }
-            this.IsUpToDate = true;
+            });
         }
     }
 }

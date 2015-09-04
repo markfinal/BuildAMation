@@ -74,6 +74,12 @@ namespace V2
                 return Bam.Core.V2.TokenizedString.Create(System.IO.Path.Combine(new[] { QtCommon.V2.Configure.InstallPath.Parse(), "bin", "moc" }), null);
             }
         }
+
+        public override void Evaluate()
+        {
+            // TODO: should be able to check the executable if it used a proper TokenizedString
+            this.ReasonToExecute = null;
+        }
     }
 
     public interface IMocGenerationPolicy
@@ -120,7 +126,20 @@ namespace V2
         public override void
         Evaluate()
         {
-            this.IsUpToDate = false;
+            this.ReasonToExecute = null;
+            var generatedPath = this.GeneratedPaths[Key].Parse();
+            if (!System.IO.File.Exists(generatedPath))
+            {
+                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                return;
+            }
+            var sourceFileWriteTime = System.IO.File.GetLastWriteTime(generatedPath);
+            var headerFileWriteTime = System.IO.File.GetLastWriteTime(this.SourceHeaderModule.InputPath.Parse());
+            if (headerFileWriteTime > sourceFileWriteTime)
+            {
+                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourceHeaderModule.InputPath);
+                return;
+            }
         }
 
         protected override void
