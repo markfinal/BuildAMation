@@ -29,6 +29,8 @@
 #endregion // License
 namespace Bam.Core
 {
+#if true
+#else
     public sealed class PackageInformationCollection :
         System.Collections.Generic.ICollection<PackageInformation>
     {
@@ -232,4 +234,5 @@ namespace Bam.Core
             return this.ToString(null, " ");
         }
     }
+#endif
 }

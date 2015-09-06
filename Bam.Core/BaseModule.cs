@@ -170,6 +170,8 @@ namespace V2
             {
                 packageNameSpace = packageNameSpace.Replace(".V2", string.Empty);
             }
+#if true
+#else
             var packageInfo = Core.State.PackageInfo[packageNameSpace];
             if (null == packageInfo)
             {
@@ -191,6 +193,7 @@ namespace V2
             this.Macros.Add("modulename", this.GetType().Name);
             this.Macros.Add("packagename", packageInfo.Name);
             this.Macros.Add("pkgbuilddir", packageInfo.BuildDirectory);
+#endif
 
             this.OwningRank = null;
             this.Tool = null;
@@ -311,11 +314,14 @@ namespace V2
             set;
         }
 
+#if true
+#else
         public PackageInformation Package
         {
             get;
             private set;
         }
+#endif
 
         public delegate void PrivatePatchDelegate(Settings settings);
         public void PrivatePatch(PrivatePatchDelegate dlg)
@@ -637,12 +643,15 @@ namespace V2
             this.StubOutputLocations(moduleType);
 
             var packageName = moduleType.Namespace;
+#if true
+#else
             var package = State.PackageInfo[packageName];
             if (null != package)
             {
                 var root = new ScaffoldLocation(package.Identifier.Location, this.ProxyPath, ScaffoldLocation.ETypeHint.Directory, Location.EExists.Exists);
                 this.PackageLocation = root;
             }
+#endif
         }
 
         /// <summary>

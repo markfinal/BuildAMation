@@ -874,6 +874,7 @@ namespace V2
         {
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
             var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
+            // TODO: would be nice to check in advance if any exist
             try
             {
                 return rm.GetString("BamInstallDir");
@@ -890,6 +891,7 @@ namespace V2
         {
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
             var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
+            // TODO: would be nice to check in advance if any exist
             try
             {
                 return rm.GetString("WorkingDir");
@@ -971,11 +973,14 @@ namespace V2
             packageRoots.Add(DirectoryLocation.Get(primaryPackageRoot));
             Add<Array<DirectoryLocation>>("System", "PackageRoots", packageRoots);
 
+#if true
+#else
             var packageInfoCollection = new PackageInformationCollection();
             Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
 
             var dependentPackageList = new UniqueList<PackageIdentifier>();
             Add<UniqueList<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
+#endif
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
@@ -998,7 +1003,10 @@ namespace V2
 
             AddCategory("Build");
             Add<IBuilder>("Build", "BuilderInstance", null);
+#if true
+#else
             Add<PackageInformation>("Build", "BuilderPackage", null);
+#endif
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
             Add<System.Collections.Generic.Dictionary<string, string>>("Build", "LazyArguments", new System.Collections.Generic.Dictionary<string, string>());
@@ -1262,6 +1270,8 @@ namespace V2
             }
         }
 
+#if true
+#else
         public static PackageInformationCollection PackageInfo
         {
            set
@@ -1273,7 +1283,10 @@ namespace V2
                return Get("System", "Packages") as PackageInformationCollection;
            }
         }
+#endif
 
+#if true
+#else
         public static UniqueList<PackageIdentifier> DependentPackageList
         {
             set
@@ -1285,6 +1298,7 @@ namespace V2
                 return Get("System", "DependentPackageList") as UniqueList<PackageIdentifier>;
             }
         }
+#endif
 
         public static string ScriptAssemblyPathname
         {
@@ -1370,6 +1384,8 @@ namespace V2
             }
         }
 
+#if true
+#else
         public static PackageInformation BuilderPackage
         {
             set
@@ -1382,6 +1398,7 @@ namespace V2
                 return Get("Build", "BuilderPackage") as PackageInformation;
             }
         }
+#endif
 
         public static int JobCount
         {

@@ -29,22 +29,22 @@
     </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="required-bam-assemblies-type">
+<xs:complexType name="bam-assemblies-type">
     <xs:sequence>
         <xs:element name="BamAssembly" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
-                <xs:attribute name="Name" type="xs:string" use="required" />
+                <xs:attribute name="name" type="xs:string" use="required" />
             </xs:complexType>
         </xs:element>
     </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="required-dotnet-assemblies-type">
+<xs:complexType name="dotnet-assemblies-type">
     <xs:sequence>
         <xs:element name="DotNetAssembly" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
-                <xs:attribute name="Name" type="xs:string" use="required" />
-                <xs:attribute name="RequiredTargetFramework" type="xs:string" use="optional" />
+                <xs:attribute name="name" type="xs:string" use="required" />
+                <xs:attribute name="requiredTargetFramework" type="xs:string" use="optional" />
             </xs:complexType>
         </xs:element>
     </xs:sequence>
@@ -54,44 +54,71 @@
     <xs:sequence>
         <xs:element name="Definition" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
-                <xs:attribute name="Name" type="xs:string" use="required" />
+                <xs:attribute name="name" type="xs:string" use="required" />
             </xs:complexType>
         </xs:element>
     </xs:sequence>
 </xs:complexType>
+
+<xs:simpleType name="platform-type">
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="Windows" />
+    <xs:enumeration value="Linux" />
+    <xs:enumeration value="OSX" />
+  </xs:restriction>
+</xs:simpleType>
 
 <xs:complexType name="supported-platforms-type">
     <xs:sequence>
         <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
-                <xs:attribute name="Name" type="xs:string" use="required" />
+                <xs:attribute name="name" type="platform-type" use="required" />
             </xs:complexType>
         </xs:element>
     </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="package-roots-type">
+<xs:complexType name="package-repository-type">
     <xs:sequence>
-        <xs:element name="RootDirectory" minOccurs="1" maxOccurs="unbounded">
+        <xs:element name="Repo" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
-                <xs:attribute name="Path" type="xs:string" use="required" />
+                <xs:attribute name="dir" type="xs:string" use="required" />
             </xs:complexType>
         </xs:element>
     </xs:sequence>
+</xs:complexType>
+
+<xs:attributeGroup name="fpackage-attributes">
+  <xs:attribute name="name" type="xs:string" use="required" />
+  <xs:attribute name="version" type="xs:string" use="optional" />
+  <xs:attribute name="default" type="xs:boolean" use="optional" />
+</xs:attributeGroup>
+
+<xs:complexType name="fpackage-package-type">
+  <xs:attributeGroup ref="fpackage-attributes" />
+</xs:complexType>
+
+<xs:complexType name="dependents-type">
+  <xs:sequence>
+    <xs:element name="FPackage" minOccurs="1" maxOccurs="unbounded" type="fpackage-package-type" />
+  </xs:sequence>
 </xs:complexType>
 
 <!-- root node -->
 <xs:element name="PackageDefinition">
     <xs:complexType>
         <xs:all>
-            <xs:element name="PackageRoots" type="package-roots-type" minOccurs="0" maxOccurs="1" />
-            <xs:element name="RequiredPackages" type="required-package-type" minOccurs="0" maxOccurs="1" />
-            <xs:element name="RequiredBamAssemblies" type="required-bam-assemblies-type" minOccurs="0" maxOccurs="1" />
-            <xs:element name="RequiredDotNetAssemblies" type="required-dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
-            <xs:element name="Definitions" type="definitions-type" minOccurs="0" maxOccurs="1" />
-            <xs:element name="SupportedPlatforms" type="supported-platforms-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Dependents" type="dependents-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PackageRepositories" type="package-repository-type" minOccurs="0" maxOccurs="1" />
+            <!--<xs:element name="RequiredPackages" type="required-package-type" minOccurs="0" maxOccurs="1" />-->
+            <xs:element name="BamAssemblies" type="bam-assemblies-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="DotNetAssemblies" type="dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="SupportedPlatforms" type="supported-platforms-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Definitions" type="definitions-type" minOccurs="0" maxOccurs="1" />
         </xs:all>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="version" type="xs:string" use="optional" />
     </xs:complexType>
 </xs:element>
 </xs:schema>

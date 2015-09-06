@@ -29,6 +29,8 @@
 #endregion // License
 namespace Bam.Core
 {
+#if true
+#else
     public sealed class PackageIdentifierCollection :
         Array<PackageIdentifier>
     {
@@ -65,4 +67,5 @@ namespace Bam.Core
             return false;
         }
     }
+#endif
 }

@@ -65,18 +65,24 @@ namespace Bam
             // but there are namespace clashes if you do
             Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
 
+#if true
+#else
             if (0 == Core.State.PackageInfo.Count)
             {
                 throw new Core.Exception("Package has not been specified. Re-run from the package directory.");
             }
+#endif
 
             var fatal = false;
             Core.PackageUtilities.ProcessLazyArguments(fatal);
             Core.PackageUtilities.HandleUnprocessedArguments(fatal);
 
+#if true
+#else
             var mainPackage = Core.State.PackageInfo.MainPackage;
 
             Core.Log.DebugMessage("Package is '{0}' in '{1}'", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root.GetSingleRawPath());
+#endif
 
             // this is now optional - if you pass -builder=<name> then the generated package will be limited to that
             // otherwise, all packages with names ending in 'Builder' will have their scripts added
@@ -85,6 +91,8 @@ namespace Bam
             // Create resource file containing package information
             var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile();
 
+#if true
+#else
             // Project to debug the script
             CSharpProject.Create(mainPackage, VisualStudioVersion.VS2008, new string[] { resourceFilePathName });
 
@@ -92,6 +100,7 @@ namespace Bam
                           mainPackage.Identifier.ToString("-"));
             Core.Log.Info("\t{0}",
                           mainPackage.DebugProjectFilename);
+#endif
 
             return true;
         }

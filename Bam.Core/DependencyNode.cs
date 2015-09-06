@@ -259,6 +259,8 @@ namespace Bam.Core
                 var packageName = moduleType.Namespace;
                 // always take the first part of the namespace
                 packageName = packageName.Split('.')[0];
+#if true
+#else
                 var packages = State.PackageInfo;
                 var package = packages[packageName];
                 if (null == package)
@@ -266,13 +268,17 @@ namespace Bam.Core
                     throw new Exception("No package found for '{0}'", packageName);
                 }
                 this.Package = package;
+#endif
                 this.EncapsulatingNode = this;
                 this.ModuleName = moduleType.Name;
                 this.UniqueModuleName = moduleType.FullName;
             }
             else
             {
+#if true
+#else
                 this.Package = parent.Package;
+#endif
                 this.EncapsulatingNode = parent.EncapsulatingNode;
                 this.ModuleName = parent.ModuleName;
                 this.UniqueModuleName = parent.GetChildModuleName(moduleType, childIndex);
@@ -347,11 +353,14 @@ namespace Bam.Core
             private set;
         }
 
+#if true
+#else
         public PackageInformation Package
         {
             get;
             private set;
         }
+#endif
 
         public DependencyNode EncapsulatingNode
         {
@@ -571,9 +580,13 @@ namespace Bam.Core
         public Location
         GetModuleBuildDirectoryLocation()
         {
+#if true
+            return null;
+#else
             var packageBuildDirectory = this.Package.BuildDirectoryLocation;
             var moduleBuildDirectory = packageBuildDirectory.SubDirectory(this.ModuleName);
             return moduleBuildDirectory;
+#endif
         }
 
         private Location

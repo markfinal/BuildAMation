@@ -68,6 +68,9 @@ namespace Bam
         public bool
         Execute()
         {
+#if true
+            return false;
+#else
             bool isWellDefined;
             var id = Core.PackageUtilities.IsPackageDirectory(this.PackagePath, out isWellDefined);
             if ((null != id) || isWellDefined)
@@ -142,6 +145,7 @@ namespace Bam
             Core.Log.Info("Successfully created package '{0}' in '{1}'", id.ToString("-"), id.Root.AbsolutePath);
 
             return true;
+#endif
         }
 
         #region ICloneable Members

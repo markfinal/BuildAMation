@@ -67,11 +67,20 @@ namespace Bam.Core
             version = directories[directories.Length - 1];
         }
 
-        public static PackageIdentifier
+        public static bool
         IsPackageDirectory(
-            string path,
-            out bool isWellDefined)
+            string packagePath)
         {
+#if true
+            var bamDataFolderName = "bam";
+            var bamDir = System.IO.Path.Combine(packagePath, bamDataFolderName);
+            if (!System.IO.Directory.Exists(bamDir))
+            {
+                throw new Exception("Path {0} does not form a BAM! package: missing '{1}' subdirectory", packagePath, bamDataFolderName);
+            }
+
+            return true;
+#else
             string packageName;
             string packageVersion;
             GetPackageDetailsFromPath(path, out packageName, out packageVersion);
@@ -116,8 +125,36 @@ namespace Bam.Core
 
             var id = new PackageIdentifier(packageName, packageVersion);
             return id;
+#endif
         }
 
+        public static string
+        GetPackageDefinitionPathname(
+            string packagePath)
+        {
+            var bamDataFolderName = "bam";
+            var bamDir = System.IO.Path.Combine(packagePath, bamDataFolderName);
+            var xmlFiles = System.IO.Directory.GetFiles(bamDir, "*.xml", System.IO.SearchOption.AllDirectories);
+            if (0 == xmlFiles.Length)
+            {
+                throw new Exception("No package definition .xml files found under {0}", bamDir);
+            }
+            if (xmlFiles.Length > 1)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Too many .xml files found under {0}", bamDir);
+                message.AppendLine();
+                foreach (var file in xmlFiles)
+                {
+                    message.AppendFormat("\t{0}", file);
+                    message.AppendLine();
+                }
+                throw new Exception(message.ToString());
+            }
+            return xmlFiles[0];
+        }
+
+#if false
         public static string
         PackageDefinitionPathName(
             PackageIdentifier id)
@@ -134,11 +171,14 @@ namespace Bam.Core
                 return null;
             }
         }
+#endif
 
         public static void
         IdentifyMainPackageOnly()
         {
             // find the working directory package
+#if true
+#else
             bool isWorkingPackageWellDefined;
             var id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
             if (null == id)
@@ -170,6 +210,7 @@ namespace Bam.Core
 
             var info = new PackageInformation(id);
             State.PackageInfo.Add(info);
+#endif
         }
 
         public static void
@@ -177,12 +218,45 @@ namespace Bam.Core
             bool resolveToSinglePackageVersion,
             bool allowUndefinedPackages)
         {
+#if true
+            var packageRepos = new System.Collections.Generic.Queue<string>();
+            foreach (var repo in State.PackageRoots)
+            {
+                if (packageRepos.Contains(repo.AbsolutePath))
+                {
+                    continue;
+                }
+                packageRepos.Enqueue(repo.AbsolutePath);
+            }
+#else
             var buildList = new PackageBuildList();
+#endif
 
+#if true
+            var workingDir = State.WorkingDirectory;
+            var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
+            if (!isWorkingPackageWellDefined)
+            {
+                throw new Exception("Working directory package is not well defined");
+            }
+
+            var masterDefinitionFile = new PackageDefinitionFile(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
+            masterDefinitionFile.Read(true);
+
+            foreach (var repo in masterDefinitionFile.PackageRepositories)
+            {
+                if (packageRepos.Contains(repo))
+                {
+                    continue;
+                }
+                packageRepos.Enqueue(repo);
+            }
+#else
             // find the working directory package
             {
+                var workingDir = State.WorkingDirectory;
                 bool isWorkingPackageWellDefined;
-                var id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
+                var id = IsPackageDirectory(workingDir, out isWorkingPackageWellDefined);
                 if (null == id)
                 {
                     throw new Exception("No valid package found in the working directory");
@@ -196,7 +270,52 @@ namespace Bam.Core
                 State.DependentPackageList.Add(id);
                 buildList.Add(new PackageBuild(id));
             }
+#endif
 
+#if true
+            // read the definition files of any package found in the package roots
+            var candidatePackageDefinitions = new Array<PackageDefinitionFile>();
+            while (packageRepos.Count > 0)
+            {
+                var repo = packageRepos.Dequeue();
+                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, "bam", System.IO.SearchOption.AllDirectories);
+
+                // TODO: when DirectoryLocations are removed, remove this
+                var tempDirLoc = DirectoryLocation.Get(repo, Location.EExists.Exists);
+
+                foreach (var bamDir in candidatePackageDirs)
+                {
+                    var packageDir = System.IO.Path.GetDirectoryName(bamDir);
+                    var packageDefinitionPath = GetPackageDefinitionPathname(packageDir);
+
+                    // ignore the master package definition already found
+                    if (packageDefinitionPath == masterDefinitionFile.XMLFilename)
+                    {
+                        continue;
+                    }
+
+                    var definitionFile = new PackageDefinitionFile(packageDefinitionPath, !State.ForceDefinitionFileUpdate);
+                    definitionFile.Read(true);
+                    candidatePackageDefinitions.Add(definitionFile);
+
+                    foreach (var newRepo in definitionFile.PackageRepositories)
+                    {
+                        if ((repo == newRepo) || packageRepos.Contains(newRepo) || State.PackageRoots.Contains(tempDirLoc))
+                        {
+                            continue;
+                        }
+                        packageRepos.Enqueue(newRepo);
+                    }
+                }
+
+                State.PackageRoots.Add(tempDirLoc);
+            }
+
+            var packageDefinitions = new Array<PackageDefinitionFile>();
+            PackageDefinitionFile.ResolveDependencies(masterDefinitionFile, packageDefinitions, candidatePackageDefinitions);
+
+            V2.Graph.Instance.SetPackageDefinitions(packageDefinitions);
+#else
             // TODO: check for inconsistent circular dependencies
             // i.e. package A depends on B, and B depends on A, but a different version of A
 
@@ -384,6 +503,7 @@ namespace Bam.Core
             }
 
             Log.DebugMessage("Packages identified are:\n{0}", State.PackageInfo.ToString("\t", "\n"));
+#endif
         }
 
         private static string
@@ -430,9 +550,12 @@ namespace Bam.Core
                 System.IO.Directory.CreateDirectory(State.BuildRoot);
             }
 
+#if true
+#else
             var mainPackage = State.PackageInfo.MainPackage;
 
             Log.DebugMessage("Package is '{0}' in '{1}", mainPackage.Identifier.ToString("-"), mainPackage.Identifier.Root.GetSingleRawPath());
+#endif
 
             BuilderUtilities.SetBuilderPackage();
 
@@ -443,6 +566,43 @@ namespace Bam.Core
 
             // gather source files
             var sourceCode = new StringArray();
+#if true
+            int packageIndex = 0;
+            foreach (var package in V2.Graph.Instance.Packages)
+            {
+                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, package.Version, package.PackageRepositories[0]);
+
+                // to compile with debug information, you must compile the files
+                // to compile without, we need to file contents to hash the source
+                if (State.CompileWithDebugSymbols)
+                {
+                    var scripts = package.GetScriptFiles();
+                    sourceCode.AddRange(scripts);
+                    Log.DebugMessage(scripts.ToString("\n\t"));
+                }
+                else
+                {
+                    foreach (var scriptFile in package.GetScriptFiles())
+                    {
+                        using (var reader = new System.IO.StreamReader(scriptFile))
+                        {
+                            sourceCode.Add(reader.ReadToEnd());
+                        }
+                        Log.DebugMessage("\t'{0}'", scriptFile);
+                    }
+                }
+
+                foreach (var define in package.Definitions)
+                {
+                    if (!definitions.Contains(define))
+                    {
+                        definitions.Add(define);
+                    }
+                }
+
+                ++packageIndex;
+            }
+#else
             int packageIndex = 0;
             foreach (var package in State.PackageInfo)
             {
@@ -522,6 +682,7 @@ namespace Bam.Core
 
                 ++packageIndex;
             }
+#endif
 
             // add/remove other definitions
             definitions.Add(VersionDefineForCompiler);
@@ -538,13 +699,44 @@ namespace Bam.Core
 
             // assembly is written to the build root
             var cachedAssemblyPathname = System.IO.Path.Combine(State.BuildRoot, "CachedPackageAssembly");
+#if true
+            cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, V2.Graph.Instance.MasterPackage.Name) + ".dll";
+#else
             cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, mainPackage.Name) + ".dll";
+#endif
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
             string thisHashCode = null;
 
             if (!State.CompileWithDebugSymbols)
             {
                 // can an existing assembly be reused?
+#if true
+                thisHashCode = GetPackageHash(sourceCode, definitions, V2.Graph.Instance.MasterPackage.BamAssemblies);
+                if (State.CacheAssembly)
+                {
+                    if (System.IO.File.Exists(hashPathName))
+                    {
+                        using (var reader = new System.IO.StreamReader(hashPathName))
+                        {
+                            var diskHashCode = reader.ReadLine();
+                            if (diskHashCode.Equals(thisHashCode))
+                            {
+                                Log.DebugMessage("Cached assembly used '{0}', with hash {1}", cachedAssemblyPathname, diskHashCode);
+                                Log.Detail("Re-using existing package assembly");
+                                State.ScriptAssemblyPathname = cachedAssemblyPathname;
+
+                                assemblyCompileProfile.StopProfile();
+
+                                return true;
+                            }
+                            else
+                            {
+                                Log.DebugMessage("Assembly hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
+                            }
+                        }
+                    }
+                }
+#else
                 thisHashCode = GetPackageHash(sourceCode, definitions, mainPackage.Identifier.Definition.BamAssemblies);
                 if (State.CacheAssembly)
                 {
@@ -570,6 +762,7 @@ namespace Bam.Core
                         }
                     }
                 }
+#endif
             }
 
             // use the compiler in the current runtime version to build the assembly of packages
@@ -604,7 +797,11 @@ namespace Bam.Core
 
                 if (State.CompileWithDebugSymbols)
                 {
+#if true
+                    compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), V2.Graph.Instance.MasterPackage.Name) + ".dll";
+#else
                     compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), mainPackage.Name) + ".dll";
+#endif
                 }
                 else
                 {
@@ -640,6 +837,22 @@ namespace Bam.Core
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
                     // Bam assembly
+#if true
+                    // TODO: Q: why is it only for the master package? Why not all of them, which may have additional dependencies?
+                    foreach (var assembly in V2.Graph.Instance.MasterPackage.BamAssemblies)
+                    {
+                        var assemblyFileName = System.String.Format("{0}.dll", assembly);
+                        var assemblyPathName = System.IO.Path.Combine(State.ExecutableDirectory, assemblyFileName);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
+                    }
+
+                    // DotNet assembly
+                    foreach (var desc in V2.Graph.Instance.MasterPackage.DotNetAssemblies)
+                    {
+                        var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
+                        compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
+                    }
+#else
                     foreach (var assembly in mainPackage.Identifier.Definition.BamAssemblies)
                     {
                         var assemblyFileName = System.String.Format("{0}.dll", assembly);
@@ -653,6 +866,7 @@ namespace Bam.Core
                         var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
                         compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
                     }
+#endif
 
                     if (State.RunningMono)
                     {
@@ -672,11 +886,19 @@ namespace Bam.Core
 
                 if (results.Errors.HasErrors || results.Errors.HasWarnings)
                 {
+#if true
+                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", V2.Graph.Instance.MasterPackage.FullName, results.Errors.Count);
+                    foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
+                    {
+                        Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
+                    }
+#else
                     Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", mainPackage.FullName, results.Errors.Count);
                     foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
                     {
                         Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
                     }
+#endif
                     return false;
                 }
 
@@ -767,6 +989,8 @@ namespace Bam.Core
             return success;
         }
 
+#if true
+#else
         public static PackageInformation
         GetOwningPackage(
             object obj)
@@ -778,6 +1002,7 @@ namespace Bam.Core
             var package = State.PackageInfo[packageName];
             return package;
         }
+#endif
 
         public static void
         LoadPackageAssembly()

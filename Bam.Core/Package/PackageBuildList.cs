@@ -29,6 +29,8 @@
 #endregion // License
 namespace Bam.Core
 {
+#if true
+#else
     public class PackageBuildList :
         UniqueList<PackageBuild>
     {
@@ -47,4 +49,5 @@ namespace Bam.Core
             return null;
         }
     }
+#endif
 }

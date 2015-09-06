@@ -69,6 +69,9 @@ namespace Bam
         public bool
         Execute()
         {
+#if true
+            return false;
+#else
             bool isWellDefined;
             var mainPackageId = Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory, out isWellDefined);
             if (null == mainPackageId)
@@ -134,6 +137,7 @@ namespace Bam
             xmlFile.Write();
 
             return true;
+#endif
         }
 
         #region ICloneable Members

@@ -34,6 +34,10 @@ namespace Bam.Core
         public static string
         WriteResourceFile()
         {
+#if true
+            var tempDirectory = System.IO.Path.GetTempPath();
+            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", "Bob", "PackageInfoResources.resources"));
+#else
             if (0 == State.PackageInfo.Count)
             {
                 throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
@@ -42,6 +46,7 @@ namespace Bam.Core
             var mainPackage = State.PackageInfo.MainPackage;
             var tempDirectory = System.IO.Path.GetTempPath();
             var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", mainPackage.Name, "PackageInfoResources.resources"));
+#endif
 
             using (var writer = new System.Resources.ResourceWriter(resourceFilePathName))
             {
@@ -96,6 +101,8 @@ namespace Bam.Core
         public static string
         WriteResXFile()
         {
+#if true
+#else
             if (0 == State.PackageInfo.Count)
             {
                 throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
@@ -143,6 +150,8 @@ namespace Bam.Core
             }
 
             return resourceFilePathName;
+#endif
+            return null;
         }
     }
 }

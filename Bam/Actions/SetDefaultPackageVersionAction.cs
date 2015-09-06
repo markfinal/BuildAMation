@@ -79,6 +79,9 @@ namespace Bam
         public bool
         Execute()
         {
+#if true
+            return false;
+#else
             var setDependentActionArray = Core.ActionManager.FindInvokedActionsByType(typeof(SetDependentAction));
             if (0 == setDependentActionArray.Count)
             {
@@ -169,6 +172,7 @@ namespace Bam
             Core.Log.MessageAll("Updated dependent package '{0}' so that version '{1}' {2} the default version", foundId.Name, foundId.Version, this.IsDefaultVersion ? "is" : "is not");
 
             return true;
+#endif
         }
 
         #region ICloneable Members

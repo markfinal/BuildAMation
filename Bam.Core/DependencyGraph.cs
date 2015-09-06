@@ -105,11 +105,17 @@ namespace V2
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
-            this.Macros.Add("buildroot", Core.State.BuildRoot);
+            if (null != State.BuilderName)
+            {
+                this.Macros.Add("buildroot", State.BuildRoot);
+            }
+#if true
+#else
             if (Core.State.PackageInfo.Count > 0)
             {
                 this.Macros.Add("mainpackagename", Core.State.PackageInfo[0].Name);
             }
+#endif
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
@@ -455,6 +461,39 @@ namespace V2
             get
             {
                 return this.Modules.Keys.ToList();
+            }
+        }
+
+        private Array<PackageDefinitionFile> PackageDefinitions
+        {
+            get;
+            set;
+        }
+
+        public PackageDefinitionFile MasterPackage
+        {
+            get
+            {
+                return this.PackageDefinitions[0];
+            }
+        }
+
+        public void
+        SetPackageDefinitions(
+            Array<PackageDefinitionFile> packages)
+        {
+            this.PackageDefinitions = packages;
+            this.Macros.Add("mainpackagename", this.PackageDefinitions[0].Name);
+        }
+
+        public System.Collections.Generic.IEnumerable<PackageDefinitionFile> Packages
+        {
+            get
+            {
+                foreach (var package in this.PackageDefinitions)
+                {
+                    yield return package;
+                }
             }
         }
     }

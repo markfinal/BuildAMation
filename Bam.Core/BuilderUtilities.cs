@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
     public static class BuilderUtilities
@@ -47,6 +48,13 @@ namespace Bam.Core
             }
 
             var builderPackageName = System.String.Format("{0}Builder", State.BuilderName);
+#if true
+            var builderPackage = V2.Graph.Instance.Packages.Where(item => item.Name == builderPackageName).FirstOrDefault();
+            if (null != builderPackage)
+            {
+                return;
+            }
+#else
             foreach (var package in State.PackageInfo)
             {
                 if (builderPackageName == package.Name)
@@ -56,6 +64,7 @@ namespace Bam.Core
                     return;
                 }
             }
+#endif
 
             throw new Exception("Builder package '{0}' was not specified as a dependency", builderPackageName);
         }

@@ -29,6 +29,8 @@
 #endregion // License
 namespace Bam.Core
 {
+#if true
+#else
     public class PackageBuild
     {
         public
@@ -67,4 +69,5 @@ namespace Bam.Core
             return builder.ToString();
         }
     }
+#endif
 }

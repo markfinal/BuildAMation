@@ -57,6 +57,8 @@ namespace Bam
             Core.PackageDefinitionFile definition,
             int depth)
         {
+#if true
+#else
             foreach (var id in definition.PackageIdentifiers)
             {
                 var platformFilter = Core.Platform.ToString(id.PlatformFilter, '|');
@@ -68,11 +70,15 @@ namespace Bam
                     DisplayDependencies(id.Definition, depth + 1);
                 }
             }
+#endif
         }
 
         public bool
         Execute()
         {
+#if true
+            return false;
+#else
             // there may be multiple versions of packages - so show them all
             Core.PackageUtilities.IdentifyMainAndDependentPackages(false, true);
 
@@ -137,6 +143,7 @@ namespace Bam
             }
 
             return true;
+#endif
         }
 
         #region ICloneable Members

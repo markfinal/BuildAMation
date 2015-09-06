@@ -29,6 +29,8 @@
 #endregion // License
 namespace Bam.Core
 {
+#if true
+#else
     public class PackageIdentifier :
         System.IComparable
     {
@@ -267,4 +269,5 @@ namespace Bam.Core
             get;
         }
     }
+#endif
 }

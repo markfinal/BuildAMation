@@ -69,6 +69,9 @@ namespace Bam
         public bool
         Execute()
         {
+#if true
+            return false;
+#else
             var setDependentActionArray = Core.ActionManager.FindInvokedActionsByType(typeof(SetDependentAction));
             if (0 == setDependentActionArray.Count)
             {
@@ -134,6 +137,7 @@ namespace Bam
             mainPackageId.Definition.Write();
 
             return true;
+#endif
         }
 
         #region ICloneable Members
