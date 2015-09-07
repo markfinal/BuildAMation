@@ -134,6 +134,21 @@ namespace V2
         }
 
 #if true
+        private static void
+        CreateCompilableSourceFile(
+            string include,
+            Core.PackageDefinitionFile packageDefinition,
+            System.Xml.XmlElement parent)
+        {
+            var source = CreateElement("Compile", parent: parent);
+            CreateAttribute("Include", Core.RelativePathUtilities.GetPath(include, RootUri), source);
+            if (null != packageDefinition)
+            {
+                var linkPath = include.Replace(packageDefinition.GetPackageDirectory(), packageDefinition.FullName);
+                linkPath = linkPath.Replace("bam", string.Empty);
+                CreateElement("Link", parent: source, value: linkPath);
+            }
+        }
 #else
         private static void
         CreateCompilableSourceFile(
@@ -152,6 +167,18 @@ namespace V2
 #endif
 
 #if true
+        private static void
+        CreateOtherSourceFile(
+            string include,
+            Core.PackageDefinitionFile packageDefinition,
+            System.Xml.XmlElement parent)
+        {
+            var source = CreateElement("None", parent: parent);
+            CreateAttribute("Include", Core.RelativePathUtilities.GetPath(include, RootUri), source);
+            var linkPath = include.Replace(packageDefinition.GetPackageDirectory(), packageDefinition.FullName);
+            linkPath = linkPath.Replace("bam", string.Empty);
+            CreateElement("Link", parent: source, value: linkPath);
+        }
 #else
         private static void
         CreateOtherSourceFile(
@@ -348,6 +375,18 @@ namespace V2
 
             var mainSource = CreateItemGroup(parent: project);
 #if true
+            CreateCompilableSourceFile(mainSourceFile, null, mainSource);
+            foreach (var package in Core.V2.Graph.Instance.Packages)
+            {
+                var packageSource = CreateItemGroup(parent: project);
+
+                CreateOtherSourceFile(package.XMLFilename, package, packageSource);
+
+                foreach (var script in package.GetScriptFiles(allBuilders: true))
+                {
+                    CreateCompilableSourceFile(script, package, packageSource);
+                }
+            }
 #else
             CreateCompilableSourceFile(mainSourceFile, null, mainSource);
             foreach (var package in Core.State.PackageInfo)
@@ -375,13 +414,24 @@ namespace V2
             }
 #endif
 
-            var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile();
+            var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile(projectPathname);
             var resources = CreateItemGroup(parent: project);
             CreateEmbeddedResourceFile(resourceFilePathName, resources);
 
             CreateImport(@"$(MSBuildBinPath)\Microsoft.CSharp.Targets", false, project);
 
 #if true
+            var xmlWriterSettings = new System.Xml.XmlWriterSettings();
+            xmlWriterSettings.Indent = true;
+            xmlWriterSettings.CloseOutput = true;
+            xmlWriterSettings.OmitXmlDeclaration = false;
+            using (var writer = System.Xml.XmlWriter.Create(projectPathname, xmlWriterSettings))
+            {
+                Document.WriteTo(writer);
+            }
+
+            Core.Log.Info("Successfully created debug project for package '{0}'", masterPackage.FullName);
+            Core.Log.Info("\t{0}", projectPathname);
 #else
             var xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;

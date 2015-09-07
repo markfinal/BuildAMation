@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
     public static class PackageUtilities
@@ -278,7 +279,7 @@ namespace Bam.Core
             while (packageRepos.Count > 0)
             {
                 var repo = packageRepos.Dequeue();
-                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, "bam", System.IO.SearchOption.AllDirectories);
+                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, "bam", System.IO.SearchOption.AllDirectories).Where(dir => !dir.Contains("BamProject"));
 
                 // TODO: when DirectoryLocations are removed, remove this
                 var tempDirLoc = DirectoryLocation.Get(repo, Location.EExists.Exists);

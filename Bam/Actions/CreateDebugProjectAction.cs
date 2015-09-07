@@ -89,7 +89,7 @@ namespace Bam
             Core.BuilderUtilities.SetBuilderPackage();
 
             // Create resource file containing package information
-            var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile();
+            var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile(null);
 
 #if true
 #else

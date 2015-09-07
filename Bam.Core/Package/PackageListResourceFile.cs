@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
     public static class PackageListResourceFile
@@ -35,8 +36,13 @@ namespace Bam.Core
         WriteResourceFile()
         {
 #if true
+            if (0 == V2.Graph.Instance.Packages.Count())
+            {
+                throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
+            }
+
             var tempDirectory = System.IO.Path.GetTempPath();
-            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", "Bob", "PackageInfoResources.resources"));
+            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", V2.Graph.Instance.MasterPackage.Name, "PackageInfoResources.resources"));
 #else
             if (0 == State.PackageInfo.Count)
             {
@@ -99,9 +105,57 @@ namespace Bam.Core
         }
 
         public static string
-        WriteResXFile()
+        WriteResXFile(
+            string projectPath)
         {
 #if true
+            if (0 == V2.Graph.Instance.Packages.Count())
+            {
+                throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
+            }
+
+            var masterPackage = V2.Graph.Instance.MasterPackage;
+
+            var projectDirectory = System.IO.Path.GetDirectoryName(projectPath);
+            if (!System.IO.Directory.Exists(projectDirectory))
+            {
+                System.IO.Directory.CreateDirectory(projectDirectory);
+            }
+
+            var resourceFilePathName = System.IO.Path.Combine(projectDirectory, "PackageInfoResources.resx");
+
+            var resourceFile = new System.Xml.XmlDocument();
+            var root = resourceFile.CreateElement("root");
+            resourceFile.AppendChild(root);
+
+            AddResHeader(resourceFile, "resmimetype", "text/microsoft-resx", root);
+            AddResHeader(resourceFile, "version", "2.0", root);
+            // TODO: this looks like the System.Windows.Forms.dll assembly
+            AddResHeader(resourceFile, "reader", "System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
+            AddResHeader(resourceFile, "writer", "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
+
+            AddData(resourceFile, "BamInstallDir", State.ExecutableDirectory, root);
+            AddData(resourceFile, "WorkingDir", masterPackage.GetPackageDirectory(), root);
+
+            // TODO: are these necessary now?
+#if false
+            foreach (var package in State.PackageInfo)
+            {
+                AddData(resourceFile, package.Identifier.ToString("_"), package.Identifier.Root.AbsolutePath, root);
+            }
+#endif
+
+            var xmlWriterSettings = new System.Xml.XmlWriterSettings();
+            xmlWriterSettings.Indent = true;
+            xmlWriterSettings.CloseOutput = true;
+            xmlWriterSettings.OmitXmlDeclaration = true;
+            using (var xmlWriter = System.Xml.XmlWriter.Create(resourceFilePathName, xmlWriterSettings))
+            {
+                resourceFile.WriteTo(xmlWriter);
+                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
+            }
+
+            return resourceFilePathName;
 #else
             if (0 == State.PackageInfo.Count)
             {
@@ -151,7 +205,6 @@ namespace Bam.Core
 
             return resourceFilePathName;
 #endif
-            return null;
         }
     }
 }

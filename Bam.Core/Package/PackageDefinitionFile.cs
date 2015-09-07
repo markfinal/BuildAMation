@@ -1872,7 +1872,14 @@ namespace Bam.Core
                 var candidateCount = candidates.Count();
                 if (0 == candidateCount)
                 {
-                    throw new Exception("Unable to find a candidate package with name '{0}'", depName);
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("Unable to find a candidate package with name '{0}'", depName);
+                    message.AppendLine();
+                    var packageRepos = new StringArray();
+                    State.PackageRoots.ToList().ForEach(item => packageRepos.AddUnique(item.AbsolutePath));
+                    message.AppendLine("Searched in the package repositories:");
+                    message.AppendLine(packageRepos.ToString("\n"));
+                    throw new Exception(message.ToString());
                 }
                 if (candidateCount > 1)
                 {
@@ -1899,16 +1906,36 @@ namespace Bam.Core
         }
 
         public StringArray
-        GetScriptFiles()
+        GetScriptFiles(
+            bool allBuilders = false)
         {
-            var packageDir = System.IO.Path.GetDirectoryName(this.XMLFilename);
-            var scriptDir = System.IO.Path.Combine(packageDir, "Scripts");
+            var bamDir = System.IO.Path.GetDirectoryName(this.XMLFilename);
+            var scriptDir = System.IO.Path.Combine(bamDir, "Scripts");
             var scripts = new StringArray(System.IO.Directory.GetFiles(scriptDir, "*.cs", System.IO.SearchOption.AllDirectories));
-            var builderPackageName = System.String.Format("{0}Builder", State.BuilderName);
-            var builderScriptDir = System.IO.Path.Combine(packageDir, builderPackageName);
-            if (System.IO.Directory.Exists(builderScriptDir))
+
+            var builderNames = new StringArray();
+            if (allBuilders)
             {
-                scripts.AddRange(System.IO.Directory.GetFiles(builderScriptDir, "*.cs", System.IO.SearchOption.AllDirectories));
+                foreach (var package in V2.Graph.Instance.Packages)
+                {
+                    if (!BuilderUtilities.IsBuilderPackage(package.Name))
+                    {
+                        continue;
+                    }
+                    builderNames.Add(package.Name);
+                }
+            }
+            else
+            {
+                builderNames.AddUnique(System.String.Format("{0}Builder", State.BuilderName));
+            }
+            foreach (var builderName in builderNames)
+            {
+                var builderScriptDir = System.IO.Path.Combine(bamDir, builderName);
+                if (System.IO.Directory.Exists(builderScriptDir))
+                {
+                    scripts.AddRange(System.IO.Directory.GetFiles(builderScriptDir, "*.cs", System.IO.SearchOption.AllDirectories));
+                }
             }
             return scripts;
         }
@@ -1916,10 +1943,16 @@ namespace Bam.Core
         public string
         GetDebugPackageProjectPathname()
         {
-            var packageDir = System.IO.Path.GetDirectoryName(this.XMLFilename);
-            var projectDir = System.IO.Path.Combine(packageDir, "BamProject");
+            var projectDir = System.IO.Path.Combine(this.GetPackageDirectory(), "BamProject");
             var projectPathname = System.IO.Path.Combine(projectDir, this.FullName) + ".csproj";
             return projectPathname;
+        }
+
+        public string
+        GetPackageDirectory()
+        {
+            var packageDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.XMLFilename));
+            return packageDir;
         }
     }
 }

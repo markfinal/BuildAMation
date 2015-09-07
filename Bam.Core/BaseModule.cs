@@ -171,6 +171,27 @@ namespace V2
                 packageNameSpace = packageNameSpace.Replace(".V2", string.Empty);
             }
 #if true
+            var packageDefinition = graph.Packages.Where(item => item.Name == packageNameSpace).FirstOrDefault();
+            if (null == packageDefinition)
+            {
+                var includeTests = CommandLineProcessor.Evaluate(new UseTests());
+                if (includeTests && packageNameSpace.EndsWith(".tests"))
+                {
+                    packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
+                    packageDefinition = graph.Packages.Where(item => item.Name == packageNameSpace).FirstOrDefault();
+                }
+
+                if (null == packageDefinition)
+                {
+                    throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
+                }
+            }
+            // TODO
+            //this.Package = packageDefinition;
+            this.Macros.Add("pkgroot", packageDefinition.GetPackageDirectory());
+            this.Macros.Add("modulename", this.GetType().Name);
+            this.Macros.Add("packagename", packageDefinition.Name);
+            this.Macros.Add("pkgbuilddir", System.IO.Path.Combine(State.BuildRoot, packageDefinition.FullName));
 #else
             var packageInfo = Core.State.PackageInfo[packageNameSpace];
             if (null == packageInfo)
