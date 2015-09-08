@@ -57,6 +57,10 @@ namespace V2
     {
     }
 
+    public interface IRegExCommandLineArgument : ICommandLineArgument
+    {
+    }
+
     public interface IIntegerCommandLineArgument : ICommandLineArgument
     {
         int Default

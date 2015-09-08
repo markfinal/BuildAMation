@@ -109,6 +109,38 @@ namespace V2
             }
             return realArg.Default;
         }
+
+        public static Array<StringArray>
+        Evaluate(
+            IRegExCommandLineArgument realArg)
+        {
+            if (null != realArg.ShortName)
+            {
+                throw new Exception("The command line argument '{0}' does not support short names", realArg.GetType().ToString());
+            }
+            var reg = new System.Text.RegularExpressions.Regex(realArg.LongName);
+            var results = new Array<StringArray>();
+            foreach (var arg in Arguments)
+            {
+                var matches = reg.Match(arg);
+                if (!matches.Success)
+                {
+                    continue;
+                }
+
+                var thisResult = new StringArray();
+                foreach (var group in matches.Groups)
+                {
+                    if (group.ToString() == arg)
+                    {
+                        continue;
+                    }
+                    thisResult.Add(group.ToString());
+                }
+                results.Add(thisResult);
+            }
+            return results;
+        }
     }
 }
     public static class ActionManager
