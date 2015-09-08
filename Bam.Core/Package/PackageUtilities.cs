@@ -312,6 +312,10 @@ namespace Bam.Core
                 State.PackageRoots.Add(tempDirLoc);
             }
 
+            // defaults come from
+            // - the master definition file
+            // - command line args (these trump the mdf)
+            // and only requires resolving when referenced
             var packageDefinitions = new Array<PackageDefinitionFile>();
             PackageDefinitionFile.ResolveDependencies(masterDefinitionFile, packageDefinitions, candidatePackageDefinitions);
 

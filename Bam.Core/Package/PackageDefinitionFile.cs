@@ -1869,6 +1869,10 @@ namespace Bam.Core
             {
                 var depName = dependent.Item1;
                 var candidates = candidatePackageDefinitions.Where(item => item.Name == depName);
+                if (dependent.Item2 != null)
+                {
+                    candidates = candidates.Where(item => item.Version == dependent.Item2);
+                }
                 var candidateCount = candidates.Count();
                 if (0 == candidateCount)
                 {
@@ -1883,7 +1887,19 @@ namespace Bam.Core
                 }
                 if (candidateCount > 1)
                 {
-                    throw new Exception("There are {0} candidate packages with name '{1}'", candidateCount, depName);
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("There are {0} candidate packages with name '{1}'", candidateCount, depName);
+                    message.AppendLine();
+                    foreach (var candidate in candidates)
+                    {
+                        message.AppendFormat(candidate.FullName);
+                        message.AppendLine();
+                    }
+                    var packageRepos = new StringArray();
+                    State.PackageRoots.ToList().ForEach(item => packageRepos.AddUnique(item.AbsolutePath));
+                    message.AppendLine("Found in the package repositories:");
+                    message.AppendLine(packageRepos.ToString("\n"));
+                    throw new Exception(message.ToString());
                 }
 
                 ResolveDependencies(candidates.ElementAt(0), authenticated, candidatePackageDefinitions);
