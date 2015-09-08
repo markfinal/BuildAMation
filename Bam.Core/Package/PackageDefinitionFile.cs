@@ -97,7 +97,7 @@ namespace Bam.Core
             this.validate = validate;
             this.XMLFilename = xmlFilename;
 #if true
-            this.Dependents = new Array<System.Tuple<string, string, string>>();
+            this.Dependents = new Array<System.Tuple<string, string, bool?>>();
 #else
             this.PackageIdentifiers = new PackageIdentifierCollection();
 #endif
@@ -623,7 +623,16 @@ namespace Bam.Core
                 var version = xmlReader.GetAttribute("version");
                 var isDefault = xmlReader.GetAttribute("default");
 
-                this.Dependents.Add(new System.Tuple<string, string, string>(name, version, isDefault));
+                this.Dependents.Add(new System.Tuple<string, string, bool?>(name, version, (isDefault != null) ? System.Xml.XmlConvert.ToBoolean(isDefault) as bool? : null));
+            }
+
+            foreach (var duplicateDepName in this.Dependents.GroupBy(item => item.Item1).Where(item => item.Count() > 1).Select(item => item.Key))
+            {
+                var numDefaults = this.Dependents.Where(item => item.Item1 == duplicateDepName).Where(item => item.Item3.HasValue && item.Item3.Value).Count();
+                if (numDefaults > 1)
+                {
+                    throw new Exception("Package definition {0} has defined dependency {1} multiple times as default", this.XMLFilename, duplicateDepName);
+                }
             }
 
             return true;
@@ -1797,7 +1806,7 @@ namespace Bam.Core
         }
 
 #if true
-        public Array<System.Tuple<string, string, string>> Dependents
+        public Array<System.Tuple<string, string, bool?>> Dependents
         {
             get;
             private set;
@@ -1858,8 +1867,12 @@ namespace Bam.Core
             Array<PackageDefinitionFile> authenticated,
             Array<PackageDefinitionFile> candidatePackageDefinitions)
         {
-            var exists = authenticated.Where(item => item.Name == current.Name).FirstOrDefault();
-            if (null != exists)
+            var matchingPackages = authenticated.Where(item => item.Name == current.Name);
+            if (null != current.Version)
+            {
+                matchingPackages = matchingPackages.Where(item => item.Version == current.Version);
+            }
+            if (matchingPackages.FirstOrDefault() != null)
             {
                 return;
             }
@@ -1868,16 +1881,21 @@ namespace Bam.Core
             foreach (var dependent in current.Dependents)
             {
                 var depName = dependent.Item1;
+                var depVersion = dependent.Item2;
                 var candidates = candidatePackageDefinitions.Where(item => item.Name == depName);
-                if (dependent.Item2 != null)
+                if (depVersion != null)
                 {
-                    candidates = candidates.Where(item => item.Version == dependent.Item2);
+                    candidates = candidates.Where(item => item.Version == depVersion);
                 }
                 var candidateCount = candidates.Count();
                 if (0 == candidateCount)
                 {
                     var message = new System.Text.StringBuilder();
                     message.AppendFormat("Unable to find a candidate package with name '{0}'", depName);
+                    if (null != depVersion)
+                    {
+                        message.AppendFormat(" and version {0}", depVersion);
+                    }
                     message.AppendLine();
                     var packageRepos = new StringArray();
                     State.PackageRoots.ToList().ForEach(item => packageRepos.AddUnique(item.AbsolutePath));
@@ -1888,7 +1906,11 @@ namespace Bam.Core
                 if (candidateCount > 1)
                 {
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat("There are {0} candidate packages with name '{1}'", candidateCount, depName);
+                    message.AppendFormat("There are {0} identical candidate packages with name '{1}'", candidateCount, depName);
+                    if (null != depVersion)
+                    {
+                        message.AppendFormat(" and version {0}", depVersion);
+                    }
                     message.AppendLine();
                     foreach (var candidate in candidates)
                     {
