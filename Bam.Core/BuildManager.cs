@@ -283,6 +283,13 @@ namespace V2
         public void
         Run()
         {
+            var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
+            if (cleanFirst && System.IO.Directory.Exists(State.BuildRoot))
+            {
+                Log.DebugMessage("Deleting build root '{0}'", State.BuildRoot);
+                System.IO.Directory.Delete(State.BuildRoot, true);
+            }
+
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
             var metaName = System.String.Format("{0}Builder.V2.{0}Meta", State.BuilderName);
             var metaDataType = State.ScriptAssembly.GetType(metaName);

@@ -273,6 +273,33 @@ namespace V2
         }
     }
 
+    public sealed class CleanFirst :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-c";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--clean";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Delete the build root directory before building";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable
