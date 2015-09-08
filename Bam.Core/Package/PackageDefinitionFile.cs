@@ -687,6 +687,8 @@ namespace Bam.Core
                                 }
                                 var packageVersion = xmlReader.Value;
 
+#if true
+#else
                                 var platformFilter = EPlatform.All;
                                 var packageConditionAttribute = "Condition";
                                 if (xmlReader.MoveToAttribute(packageConditionAttribute))
@@ -703,8 +705,6 @@ namespace Bam.Core
                                     isDefaultVersion = isDefault;
                                 }
 
-#if true
-#else
                                 var id = new PackageIdentifier(packageName, packageVersion, validatePackageLocations);
                                 id.PlatformFilter = platformFilter;
                                 id.IsDefaultVersion = isDefaultVersion;
@@ -1282,6 +1282,8 @@ namespace Bam.Core
                                 }
                                 var packageVersion = xmlReader.Value;
 
+#if true
+#else
                                 var platformFilter = EPlatform.All;
                                 var packageConditionAttribute = "Condition";
                                 if (xmlReader.MoveToAttribute(packageConditionAttribute))
@@ -1298,8 +1300,6 @@ namespace Bam.Core
                                     isDefaultVersion = isDefault;
                                 }
 
-#if true
-#else
                                 var id = new PackageIdentifier(packageName, packageVersion, validatePackageLocations);
                                 id.PlatformFilter = platformFilter;
                                 id.IsDefaultVersion = isDefaultVersion;

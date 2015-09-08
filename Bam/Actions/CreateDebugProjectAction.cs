@@ -88,11 +88,11 @@ namespace Bam
             // otherwise, all packages with names ending in 'Builder' will have their scripts added
             Core.BuilderUtilities.SetBuilderPackage();
 
+#if true
+#else
             // Create resource file containing package information
             var resourceFilePathName = Core.PackageListResourceFile.WriteResXFile(null);
 
-#if true
-#else
             // Project to debug the script
             CSharpProject.Create(mainPackage, VisualStudioVersion.VS2008, new string[] { resourceFilePathName });
 
