@@ -244,6 +244,35 @@ namespace V2
             }
         }
     }
+
+    public sealed class PackageDefaultVersion :
+        IRegExCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return @"--([A-Za-z0-9]+)\.version=([A-Za-z0-9\.]+)";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Define the default version of a package";
+            }
+        }
+    }
+
 }
     public interface IAction :
         System.ICloneable
