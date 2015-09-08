@@ -40,6 +40,16 @@ namespace V2
             Arguments = new StringArray(System.Environment.GetCommandLineArgs());
         }
 
+        private static bool
+        UsesName(
+            ICommandLineArgument arg,
+            string[] splitArgs)
+        {
+            var uses = ((splitArgs[0].StartsWith("--") && splitArgs[0].EndsWith(arg.LongName)) ||
+                ((arg.ShortName != null) && (splitArgs[0].StartsWith("-") && splitArgs[0].EndsWith(arg.ShortName))));
+            return uses;
+        }
+
         public static bool
         Evaluate(
             IBooleanCommandLineArgument realArg)
@@ -52,8 +62,7 @@ namespace V2
                     continue;
                 }
 
-                if ((splitArg[0].StartsWith("--") && splitArg[0].EndsWith(realArg.LongName)) ||
-                    ((realArg.ShortName != null) && (splitArg[0].StartsWith("-") && splitArg[0].EndsWith(realArg.ShortName))))
+                if (UsesName(realArg, splitArg))
                 {
                     return true;
                 }
@@ -73,8 +82,7 @@ namespace V2
                     continue;
                 }
 
-                if ((splitArg[0].StartsWith("--") && splitArg[0].EndsWith(realArg.LongName)) ||
-                    ((realArg.ShortName != null) && (splitArg[0].StartsWith("-") && splitArg[0].EndsWith(realArg.ShortName))))
+                if (UsesName(realArg, splitArg))
                 {
                     return splitArg[1];
                 }
@@ -94,8 +102,7 @@ namespace V2
                     continue;
                 }
 
-                if ((splitArg[0].StartsWith("--") && splitArg[0].EndsWith(realArg.LongName)) ||
-                    ((realArg.ShortName != null) && (splitArg[0].StartsWith("-") && splitArg[0].EndsWith(realArg.ShortName))))
+                if (UsesName(realArg, splitArg))
                 {
                     return System.Convert.ToInt32(splitArg[1]);
                 }
