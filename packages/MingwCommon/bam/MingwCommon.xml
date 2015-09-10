@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
-  <RequiredPackages>
-    <Package Name="C">
-      <Version Id="dev" />
-    </Package>
-  </RequiredPackages>
-  <RequiredBamAssemblies>
-    <BamAssembly Name="Bam.Core" />
-  </RequiredBamAssemblies>
-  <RequiredDotNetAssemblies>
-    <DotNetAssembly Name="System" RequiredTargetFramework="2.0.50727" />
-    <DotNetAssembly Name="System.Xml" RequiredTargetFramework="2.0.50727" />
-  </RequiredDotNetAssemblies>
+<PackageDefinition name="MingwCommon" xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Dependents>
+    <Package name="C" />
+  </Dependents>
+  <BamAssemblies>
+    <BamAssembly name="Bam.Core" />
+  </BamAssemblies>
+  <DotNetAssemblies>
+    <DotNetAssembly name="System" requiredTargetFramework="4.0.30319" />
+    <DotNetAssembly name="System.Xml" requiredTargetFramework="4.0.30319" />
+    <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
+  </DotNetAssemblies>
   <SupportedPlatforms>
-    <Platform Name="Windows" />
-    <Platform Name="Unix" />
-    <Platform Name="OSX" />
+    <Platform name="Windows" />
+    <Platform name="Linux" />
+    <Platform name="OSX" />
   </SupportedPlatforms>
 </PackageDefinition>
