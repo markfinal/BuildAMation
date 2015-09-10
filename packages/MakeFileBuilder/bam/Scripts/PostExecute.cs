@@ -204,7 +204,9 @@ namespace MakeFileBuilder
                 }
             }
 
+#if false
             Bam.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, this.topLevelMakeFilePath);
+#endif
         }
 
         #endregion
