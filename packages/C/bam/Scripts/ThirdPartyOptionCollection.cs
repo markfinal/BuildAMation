@@ -52,6 +52,7 @@ namespace C
         FinalizeOptions(
             Bam.Core.DependencyNode node)
         {
+#if false
             var thirdPartyModule = node.Module as C.ThirdPartyModule;
             if (null != thirdPartyModule)
             {
@@ -66,6 +67,7 @@ namespace C
             }
 
             base.FinalizeOptions(node);
+#endif
         }
     }
 }

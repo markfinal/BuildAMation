@@ -39,11 +39,13 @@ namespace VSSolutionBuilder
         {
             Bam.Core.Log.DebugMessage("PreExecute for VSSolutionBuilder");
 
+#if false
             var mainPackage = Bam.Core.State.PackageInfo[0];
             var solutionPathName = System.IO.Path.Combine(mainPackage.BuildDirectory, mainPackage.FullName + ".sln");
             Bam.Core.Log.DebugMessage("Solution pathname is '{0}'", solutionPathName);
 
             this.solutionFile = new SolutionFile(solutionPathName);
+#endif
         }
 
         #endregion

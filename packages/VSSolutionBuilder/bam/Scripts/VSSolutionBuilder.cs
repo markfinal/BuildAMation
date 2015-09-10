@@ -1411,7 +1411,6 @@ namespace V2
                 Bam.Core.Log.DebugMessage(PrettyPrintXMLDoc(projectFilterXML));
             }
 
-            var mainPackage = Bam.Core.State.PackageInfo[0];
             var solutionPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(mainpackagename).sln", null).Parse();
             var solutionContents = solution.Serialize();
             using (var writer = new System.IO.StreamWriter(solutionPath))
@@ -1420,7 +1419,7 @@ namespace V2
             }
             Bam.Core.Log.DebugMessage(solutionContents.ToString());
 
-            Bam.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, solutionPath);
+            Bam.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", graph.MasterPackage.Name, solutionPath);
         }
     }
 }
@@ -1430,6 +1429,9 @@ namespace V2
         private static System.Type
         GetProjectClassType()
         {
+#if true
+            return null;
+#else
             var toolchainPackage = Bam.Core.State.PackageInfo["VisualC"];
             if (null != toolchainPackage)
             {
@@ -1468,6 +1470,7 @@ namespace V2
                     throw new Bam.Core.Exception("Unable to locate a suitable toolchain package");
                 }
             }
+#endif
         }
 
         private static string
@@ -1675,6 +1678,6 @@ namespace V2
             return RefactorPathForVCProj(path, outputDirectoryPath, projectName, projectUri);
         }
 
-        private SolutionFile solutionFile;
+        private SolutionFile solutionFile = null;
     }
 }

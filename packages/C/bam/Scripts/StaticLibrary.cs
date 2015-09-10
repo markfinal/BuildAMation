@@ -224,6 +224,7 @@ namespace V2
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
+#if false
             if (null == this.PreprocessorDefine)
             {
                 var packageName = this.OwningNode.Package.Name.ToUpper();
@@ -235,6 +236,7 @@ namespace V2
 
             var compilerOptions = module.Options as ICCompilerOptions;
             compilerOptions.Defines.Add(this.PreprocessorDefine);
+#endif
         }
 
         Bam.Core.ModuleCollection

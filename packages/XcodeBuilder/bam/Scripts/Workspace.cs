@@ -35,11 +35,13 @@ namespace XcodeBuilder
         public
         Workspace()
         {
+#if false
             var mainPackage = Bam.Core.State.PackageInfo[0];
             var workspaceBundle = mainPackage.Name + ".xcworkspace";
             this.BundlePath = System.IO.Path.Combine(Bam.Core.State.BuildRoot, workspaceBundle);
             this.WorkspaceDataPath = System.IO.Path.Combine(this.BundlePath, "contents.xcworkspacedata");
             this.Projects = new Bam.Core.Array<PBXProject>();
+#endif
         }
 
         public string BundlePath

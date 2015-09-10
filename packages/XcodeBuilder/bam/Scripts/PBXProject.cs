@@ -37,6 +37,7 @@ namespace XcodeBuilder
         PBXProject(
             Bam.Core.DependencyNode node) : base(node.ModuleName)
         {
+#if false
             var package = node.Package;
             var projectFilename = "project.pbxproj";
             var rootDirectory = System.IO.Path.Combine(Bam.Core.State.BuildRoot, package.FullName);
@@ -69,6 +70,7 @@ namespace XcodeBuilder
             this.ShellScriptBuildPhases = new PBXShellScriptBuildPhaseSection();
 
             this.InitializeGroups();
+#endif
         }
 
         private void

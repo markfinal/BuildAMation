@@ -35,7 +35,7 @@ namespace VSSolutionBuilder
         private string ProjectName = null;
         private string PathName = null;
         private System.Uri PackageUri = null;
-        private System.Guid ProjectGuid;
+        private System.Guid ProjectGuid = System.Guid.NewGuid();
         private System.Collections.Generic.List<string> PlatformList = new System.Collections.Generic.List<string>();
         private ProjectConfigurationCollection ProjectConfigurations = new ProjectConfigurationCollection();
         private ProjectFileCollection SourceFileCollection = new ProjectFileCollection();
@@ -44,6 +44,8 @@ namespace VSSolutionBuilder
         private System.Collections.Generic.List<IProject> DependentProjectList = new System.Collections.Generic.List<IProject>();
         private Bam.Core.UniqueList<string> ReferencesList = new Bam.Core.UniqueList<string>();
 
+#if true
+#else
         public
         VCXBuildProject(
             string moduleName,
@@ -73,6 +75,7 @@ namespace VSSolutionBuilder
 
             this.ProjectGuid = new DeterministicGuid(this.PathName).Guid;
         }
+#endif
 
         string IProject.Name
         {

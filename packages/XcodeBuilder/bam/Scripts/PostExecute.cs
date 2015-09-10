@@ -106,7 +106,9 @@ namespace XcodeBuilder
             var workspaceSettings = new WorkspaceSettings(this.Workspace);
             workspaceSettings.Serialize();
 
+#if false
             Bam.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, this.Workspace.BundlePath);
+#endif
         }
 
 #endregion

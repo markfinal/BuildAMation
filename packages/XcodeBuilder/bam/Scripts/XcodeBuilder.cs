@@ -1025,7 +1025,7 @@ namespace V2
         {
             get
             {
-                return this.Module.Package.BuildDirectory;
+                return this.Module.PackageDefinition.GetBuildDirectory();
             }
         }
 
@@ -1927,10 +1927,10 @@ namespace V2
     {
         public WorkspaceMeta()
         {
-            this.Projects = new System.Collections.Generic.Dictionary<Bam.Core.PackageInformation, Project>();
+            this.Projects = new System.Collections.Generic.Dictionary<Bam.Core.PackageDefinitionFile, Project>();
         }
 
-        private System.Collections.Generic.Dictionary<Bam.Core.PackageInformation, Project> Projects
+        private System.Collections.Generic.Dictionary<Bam.Core.PackageDefinitionFile, Project> Projects
         {
             get;
             set;
@@ -1945,7 +1945,7 @@ namespace V2
             {
                 // Note: if you want a Xcode project per module, change this from keying off of the package
                 // to the module type
-                var package = module.Package;
+                var package = module.PackageDefinition;
                 if (this.Projects.ContainsKey(package))
                 {
                     var project = this.Projects[package];
@@ -1954,7 +1954,7 @@ namespace V2
                 }
                 else
                 {
-                    var project = new Project(module, module.Package.Name);
+                    var project = new Project(module, package.Name);
                     this.Projects[package] = project;
                     return project;
                 }

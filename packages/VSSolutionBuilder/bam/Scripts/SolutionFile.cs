@@ -227,7 +227,9 @@ namespace VSSolutionBuilder
 
             SolutionInstance = null;
 
+#if false
             Bam.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, this.PathName);
+#endif
         }
     }
 }
