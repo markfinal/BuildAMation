@@ -1992,5 +1992,11 @@ namespace Bam.Core
             var packageDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.XMLFilename));
             return packageDir;
         }
+
+        public string
+        GetBuildDirectory()
+        {
+            return System.IO.Path.Combine(State.BuildRoot, this.FullName);
+        }
     }
 }

@@ -186,12 +186,11 @@ namespace V2
                     throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
                 }
             }
-            // TODO
-            //this.Package = packageDefinition;
+            this.PackageDefinition = packageDefinition;
             this.Macros.Add("pkgroot", packageDefinition.GetPackageDirectory());
             this.Macros.Add("modulename", this.GetType().Name);
             this.Macros.Add("packagename", packageDefinition.Name);
-            this.Macros.Add("pkgbuilddir", System.IO.Path.Combine(State.BuildRoot, packageDefinition.FullName));
+            this.Macros.Add("pkgbuilddir", packageDefinition.GetBuildDirectory());
 #else
             var packageInfo = Core.State.PackageInfo[packageNameSpace];
             if (null == packageInfo)
@@ -336,6 +335,11 @@ namespace V2
         }
 
 #if true
+        public PackageDefinitionFile PackageDefinition
+        {
+            get;
+            private set;
+        }
 #else
         public PackageInformation Package
         {
