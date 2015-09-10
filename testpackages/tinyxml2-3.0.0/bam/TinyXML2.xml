@@ -5,6 +5,7 @@
     <Package name="C" />
     <Package name="Clang" version="Apple425" />
     <Package name="Gcc" version="4.8" />
+    <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="12.0" default="true" />
     <Package name="VSSolutionBuilder" />
