@@ -72,6 +72,7 @@ namespace QMakeBuilder
                 QMakeData.Write(keyPair.Value);
             }
 
+#if false
             var mainPackage = Bam.Core.State.PackageInfo[0];
             var proFileName = mainPackage + ".pro";
             var rootDirectory = Bam.Core.State.BuildRoot;
@@ -101,6 +102,7 @@ namespace QMakeBuilder
             }
 
             Bam.Core.Log.Info("Successfully created QMake .pro file for package '{0}'\n\t{1}", Bam.Core.State.PackageInfo[0].Name, proFilePath);
+#endif
         }
 
         #endregion

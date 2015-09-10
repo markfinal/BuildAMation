@@ -37,6 +37,8 @@ namespace QMakeBuilder
         void
         Bam.Core.IBuilderPreExecute.PreExecute()
         {
+#if true
+#else
             Bam.Core.Log.DebugMessage("PreExecute for QMakeBuilder");
 
             var mainPackage = Bam.Core.State.PackageInfo[0];
@@ -100,6 +102,7 @@ namespace QMakeBuilder
             }
 
             this.EmptyConfigPriPath = priFilePath;
+#endif
         }
 
         #endregion
