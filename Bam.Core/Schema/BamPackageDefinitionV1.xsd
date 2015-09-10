@@ -100,7 +100,7 @@
 
 <xs:complexType name="dependents-type">
   <xs:sequence>
-    <xs:element name="FPackage" minOccurs="1" maxOccurs="unbounded" type="fpackage-package-type" />
+    <xs:element name="Package" minOccurs="1" maxOccurs="unbounded" type="fpackage-package-type" />
   </xs:sequence>
 </xs:complexType>
 

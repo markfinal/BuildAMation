@@ -605,7 +605,7 @@ namespace Bam.Core
                 return false;
             }
 
-            var elName = "FPackage";
+            var elName = "Package";
             while (xmlReader.Read())
             {
                 if ((xmlReader.Name == rootName) &&
