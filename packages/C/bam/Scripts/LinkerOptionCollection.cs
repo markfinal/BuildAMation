@@ -98,7 +98,7 @@ namespace C
             var importLibraryDir = this.GetModuleLocationSafe(C.DynamicLibrary.ImportLibraryDir);
             if ((null != importLibraryDir) && !importLibraryDir.IsValid)
             {
-                if (linkerTool is IWinImportLibrary && (Bam.Core.State.BuilderName != "QMake"))
+                if (linkerTool is IWinImportLibrary && (Bam.Core.State.BuildMode != "QMake"))
                 {
                     var moduleDir = moduleBuildDir.SubDirectory((linkerTool as IWinImportLibrary).ImportLibrarySubDirectory);
                     (importLibraryDir as Bam.Core.ScaffoldLocation).SetReference(moduleDir);

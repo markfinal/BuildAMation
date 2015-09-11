@@ -252,7 +252,7 @@ namespace V2
                 writer.WriteLine("{0}Core.State.BuildRoot = \"debug_build\";", indent(3));
                 writer.WriteLine("{0}Core.State.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
                 writer.WriteLine("{0}Core.State.CompileWithDebugSymbols = true;", indent(3));
-                writer.WriteLine("{0}Core.State.BuilderName = \"Native\";", indent(3));
+                writer.WriteLine("{0}Core.State.BuildMode = \"Native\";", indent(3));
                 writer.WriteLine("{0}var debug = new Core.V2.Environment();", indent(3));
                 writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
                 writer.WriteLine("{0}var optimized = new Core.V2.Environment();", indent(3));

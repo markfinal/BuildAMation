@@ -82,7 +82,7 @@ namespace QtCommon
 
             bool Bam.Core.IIsGeneratedSource.AutomaticallyHandledByBuilder(Bam.Core.Target target)
             {
-                var isUsingQMake = (Bam.Core.State.BuilderName == "QMake");
+                var isUsingQMake = (Bam.Core.State.BuildMode == "QMake");
                 return isUsingQMake;
             }
 
