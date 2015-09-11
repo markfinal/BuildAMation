@@ -356,6 +356,43 @@ namespace V2
             }
         }
     }
+
+    public sealed class BuildRoot :
+        IStringCommandLineArgument,
+        ICommandLineArgumentDefault<string>
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-o";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--output";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Set the output directory (build root) for all build artifacts.";
+            }
+        }
+
+        string ICommandLineArgumentDefault<string>.Default
+        {
+            get
+            {
+                return "build";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

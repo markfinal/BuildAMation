@@ -117,7 +117,7 @@ namespace Bam
                 }
 
                 // configure
-                Core.State.BuildRoot = "build";
+                Core.State.BuildRoot = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildRoot());
                 Core.State.CompileWithDebugSymbols = true;
                 Core.State.BuildMode = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildMode());
                 if (null == Core.State.BuildMode)
