@@ -28,23 +28,18 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
-namespace GLEW
+namespace glew
 {
     sealed class GLEWStaticV2 :
         C.V2.StaticLibrary
     {
-        public GLEWStaticV2()
-        {
-            this.Macros.Add("GLEWRootDir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/glew-1.5.7", this));
-        }
-
         private Bam.Core.V2.Module.PublicPatchDelegate exported = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null != compiler)
                 {
                     compiler.PreprocessorDefines.Add("GLEW_STATIC");
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(GLEWRootDir)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
                 }
             };
 
@@ -52,14 +47,17 @@ namespace GLEW
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer("$(GLEWRootDir)/include/GL/glew.h", macroModuleOverride: this);
+            var headers = this.CreateHeaderContainer("$(pkgroot)/include/GL/glew.h");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                headers.AddFile("$(GLEWRootDir)/include/GL/wglew.h", macroModuleOverride: this);
+                headers.AddFile("$(pkgroot)/include/GL/wglew.h");
             }
-            // TODO: glxew.h
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            {
+                headers.AddFile("$(pkgroot)/include/GL/glxew.h");
+            }
 
-            var source = this.CreateCSourceContainer("$(GLEWRootDir)/src/glew.c", macroModuleOverride: this);
+            var source = this.CreateCSourceContainer("$(pkgroot)/src/glew.c");
             source.PrivatePatch(settings => this.exported(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.exported(settings, this));
