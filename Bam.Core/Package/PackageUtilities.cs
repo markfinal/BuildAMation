@@ -280,7 +280,7 @@ namespace Bam.Core
             while (packageRepos.Count > 0)
             {
                 var repo = packageRepos.Dequeue();
-                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, "bam", System.IO.SearchOption.AllDirectories).Where(dir => !dir.Contains("BamProject"));
+                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, "bam", System.IO.SearchOption.AllDirectories);
 
                 // TODO: when DirectoryLocations are removed, remove this
                 var tempDirLoc = DirectoryLocation.Get(repo, Location.EExists.Exists);

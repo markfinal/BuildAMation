@@ -1981,7 +1981,7 @@ namespace Bam.Core
         public string
         GetDebugPackageProjectPathname()
         {
-            var projectDir = System.IO.Path.Combine(this.GetPackageDirectory(), "BamProject");
+            var projectDir = System.IO.Path.Combine(this.GetPackageDirectory(), "PackageDebug");
             var projectPathname = System.IO.Path.Combine(projectDir, this.FullName) + ".csproj";
             return projectPathname;
         }
