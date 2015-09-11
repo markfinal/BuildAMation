@@ -60,7 +60,7 @@ namespace zeromq
         protected override void
         ExecuteInternal(ExecutionContext context)
         {
-            var source = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src/platform.hpp.in", this);
+            var source = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/src/platform.hpp.in", this);
 
             // parse the input header, and modify it while writing it out
             // modifications are platform specific
@@ -122,7 +122,7 @@ namespace zeromq
         {
             base.Init(parent);
 
-            this.Macros.Add("zmqsrcdir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/src", this));
+            this.Macros.Add("zmqsrcdir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/src", this));
 
             var source = this.CreateCxxSourceContainer("$(zmqsrcdir)/*.cpp", macroModuleOverride: this);
 
@@ -136,7 +136,7 @@ namespace zeromq
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/builds/msvc", this));
+                        compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/builds/msvc", this));
                     }
                 });
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX | Bam.Core.EPlatform.Unix))
@@ -174,7 +174,7 @@ namespace zeromq
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     if (null != compiler)
                     {
-                        compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/zeromq-3.2.3/include", this));
+                        compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/include", this));
                     }
                 });
 
