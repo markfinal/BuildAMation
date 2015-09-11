@@ -54,6 +54,8 @@ namespace Test18
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var y = Bam.Core.V2.Graph.Instance.FindReferencedModule<YV2>();
             this.DependsOn(y);
         }
@@ -69,6 +71,8 @@ namespace Test18
     {
         protected override void Init(Bam.Core.V2.Module parent)
         {
+            base.Init(parent);
+
             var x = Bam.Core.V2.Graph.Instance.FindReferencedModule<XV2>();
             this.DependsOn(x);
         }
