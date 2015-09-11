@@ -29,6 +29,91 @@
 #endregion // License
 namespace RenderTextureAndProcessor
 {
+    sealed class RenderTextureV2 :
+        C.Cxx.V2.GUIApplication
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var headers = this.CreateHeaderContainer("$(pkgroot)/source/common/*.h");
+            headers.AddFiles("$(pkgroot)/source/rendertexture/*.h");
+
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/common/*.cpp");
+            source.AddFiles("$(pkgroot)/source/rendertexture/*.cpp");
+            source.PrivatePatch(settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/common", this));
+
+                var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+            });
+
+            this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            this.LinkAgainst<OpenGLSDK.OpenGLV2>();
+
+            this.PrivatePatch(settings =>
+            {
+                var linker = settings as C.V2.ICommonLinkerOptions;
+                linker.Libraries.Add("WS2_32.lib");
+                linker.Libraries.Add("GDI32.lib");
+                linker.Libraries.Add("USER32.lib");
+                linker.Libraries.Add("SHELL32.lib"); // for DragQueryFile
+            });
+
+            this.RequiredToExist<TextureProcessorV2>();
+        }
+    }
+
+    sealed class TextureProcessorV2 :
+        C.Cxx.V2.ConsoleApplication
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(pkgroot)/source/common/*.h");
+
+            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/common/*.cpp");
+            source.AddFiles("$(pkgroot)/source/textureprocessor/*.cpp");
+            source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/common", this));
+
+                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
+                });
+
+            this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+
+            this.PrivatePatch(settings =>
+                {
+                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    linker.Libraries.Add("WS2_32.lib");
+                });
+        }
+    }
+
+    sealed class RuntimePackage :
+        Publisher.V2.Package
+    {
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
+        {
+            base.Init(parent);
+
+            var app = this.Include<RenderTextureV2>(C.V2.GUIApplication.Key, EPublishingType.WindowedApplication);
+            this.Include<TextureProcessorV2>(C.V2.ConsoleApplication.Key, ".", app);
+        }
+    }
+
     // Define module classes here
     class RenderTexture :
         C.WindowsApplication
