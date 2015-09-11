@@ -283,6 +283,7 @@ namespace Bam.Core
 
                 // TODO: when DirectoryLocations are removed, remove this
                 var tempDirLoc = DirectoryLocation.Get(repo, Location.EExists.Exists);
+                State.PackageRoots.Add(tempDirLoc);
 
                 foreach (var bamDir in candidatePackageDirs)
                 {
@@ -308,8 +309,6 @@ namespace Bam.Core
                         packageRepos.Enqueue(newRepo);
                     }
                 }
-
-                State.PackageRoots.Add(tempDirLoc);
             }
 
             // defaults come from
