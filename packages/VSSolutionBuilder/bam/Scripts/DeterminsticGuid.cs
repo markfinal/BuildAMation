@@ -29,6 +29,34 @@
 #endregion // License
 namespace VSSolutionBuilder
 {
+namespace V2
+{
+    public class DeterministicGuid
+    {
+        public
+        DeterministicGuid(
+            string input)
+        {
+            // ref: http://geekswithblogs.net/EltonStoneman/archive/2008/06/26/generating-deterministic-guids.aspx
+
+            // use MD5 hash to get a 16-byte hash of the string
+            var provider = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            var inputBytes = System.Text.Encoding.Default.GetBytes(input);
+            var hashBytes = provider.ComputeHash(inputBytes);
+
+            // generate a guid from the hash
+            var hashGuid = new System.Guid(hashBytes);
+
+            this.Guid = hashGuid;
+        }
+
+        public System.Guid Guid
+        {
+            get;
+            private set;
+        }
+    }
+}
     public class DeterministicGuid
     {
         public

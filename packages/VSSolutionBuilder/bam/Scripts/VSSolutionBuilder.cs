@@ -767,7 +767,7 @@ namespace V2
         public VSSolutionFolder(
             string name)
         {
-            this.Guid = System.Guid.NewGuid().ToString("B").ToUpper();
+            this.Guid = new DeterministicGuid("SolutionFolder" + name).Guid.ToString("B").ToUpper();
             this.Projects = new Bam.Core.Array<VSProject>();
         }
 
@@ -977,7 +977,7 @@ namespace V2
 
                     var idEl = document.CreateVSElement("Filter", parentEl: parentEl);
                     idEl.SetAttribute("Include", groupName);
-                    document.CreateVSElement("UniqueIdentifier", System.Guid.NewGuid().ToString("B").ToUpper(), parentEl: idEl);
+                    document.CreateVSElement("UniqueIdentifier", new DeterministicGuid("VSFilter" + groupName).Guid.ToString("B").ToUpper(), parentEl: idEl);
                     var extensions = new Bam.Core.StringArray();
                     foreach (var setting in list)
                     {
@@ -1024,9 +1024,9 @@ namespace V2
             Bam.Core.V2.Module module)
         {
             this.Solution = solution;
-            this.Guid = System.Guid.NewGuid(); // TODO: make this deterministic - can these be re-read upon regenerating the solution? so that the same project gets the same GUID each time Bam is run
-            this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectPath = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module).Parse();
+            this.Guid = new DeterministicGuid(this.ProjectPath).Guid;
+            this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
             this.Headers = new Bam.Core.Array<VSSettingsGroup>();
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
