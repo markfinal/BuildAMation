@@ -55,13 +55,20 @@ namespace Bam
                 foreach (var argType in argumentTypes)
                 {
                     var arg = System.Activator.CreateInstance(argType) as Core.V2.ICommandLineArgument;
-                    if (null == arg.ShortName)
+                    if (arg is Core.V2.ICustomHelpText)
                     {
-                        Core.Log.Info("{0}: {1}", arg.LongName, arg.ContextHelp);
+                        Core.Log.Info("{0}: {1}", (arg as Core.V2.ICustomHelpText).OptionHelp, arg.ContextHelp);
                     }
                     else
                     {
-                        Core.Log.Info("{0} (or {1}): {2}", arg.LongName, arg.ShortName, arg.ContextHelp);
+                        if (null == arg.ShortName)
+                        {
+                            Core.Log.Info("{0}: {1}", arg.LongName, arg.ContextHelp);
+                        }
+                        else
+                        {
+                            Core.Log.Info("{0} (or {1}): {2}", arg.LongName, arg.ShortName, arg.ContextHelp);
+                        }
                     }
                 }
             }

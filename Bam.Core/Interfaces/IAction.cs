@@ -57,13 +57,21 @@ namespace V2
     {
     }
 
-    public interface IRegExCommandLineArgument : ICommandLineArgument
+    public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
     {
     }
 
     public interface IIntegerCommandLineArgument : ICommandLineArgument
     {
         int Default
+        {
+            get;
+        }
+    }
+
+    public interface ICustomHelpText
+    {
+        string OptionHelp
         {
             get;
         }
@@ -269,6 +277,14 @@ namespace V2
             get
             {
                 return "Define the default version of a package";
+            }
+        }
+
+        string ICustomHelpText.OptionHelp
+        {
+            get
+            {
+                return "--<packagename>.version=<packageversion>";
             }
         }
     }
