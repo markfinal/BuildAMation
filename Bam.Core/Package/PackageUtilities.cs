@@ -371,11 +371,11 @@ namespace Bam.Core
                     else
                     {
                         var message = new System.Text.StringBuilder();
-                        message.AppendLine("Unable resolve to a single package version of");
+                        message.AppendFormat("Unable resolve to a single version of package {0}", duplicates.ElementAt(0).Name);
+                        message.AppendLine();
                         foreach (var dup in duplicates)
                         {
-                            message.AppendFormat("{0}", dup.FullName);
-                            message.AppendLine();
+                            message.AppendLine(dup.FullName);
                         }
                         throw new Exception(message.ToString());
                     }
