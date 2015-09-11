@@ -129,6 +129,10 @@ namespace V2
             var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
 
             var qtInstallDir = Bam.Core.V2.CommandLineProcessor.Evaluate(new QtInstallPath());
+            if (!System.IO.Directory.Exists(qtInstallDir))
+            {
+                throw new Bam.Core.Exception("Qt install dir, {0}, does not exist", qtInstallDir);
+            }
             InstallPath = Bam.Core.V2.TokenizedString.Create(qtInstallDir, null);
         }
 
