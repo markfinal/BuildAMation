@@ -42,7 +42,7 @@ namespace V2
         {
             this.Directories = new Bam.Core.StringArray();
             this.Environment = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
-            if (Bam.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 // for system utilities, e.g. mkdir, cp, echo
                 this.Environment.Add("PATH", new Bam.Core.StringArray("/bin"));

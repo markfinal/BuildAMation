@@ -160,7 +160,7 @@ namespace C
             string filename = null;
             if (linkerOptions.OutputType == ELinkerOutput.DynamicLibrary)
             {
-                if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+                if (target.HasPlatform(Bam.Core.EPlatform.Linux))
                 {
                     // version number postfixes the filename
                     var versionNumber = new System.Text.StringBuilder();

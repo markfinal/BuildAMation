@@ -89,7 +89,7 @@ namespace zeromq
                                 continue;
                             }
                         }
-                        else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                        else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                         {
                             // change #undefs to #defines
                             // some need to have a non-zero value, rather than just be defined
@@ -139,7 +139,7 @@ namespace zeromq
                         compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/builds/msvc", this));
                     }
                 });
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX | Bam.Core.EPlatform.Unix))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX | Bam.Core.EPlatform.Linux))
             {
                 // TODO: is there a call for a CompileWith function?
                 var platformHeader = Bam.Core.V2.Graph.Instance.FindReferencedModule<ZMQPlatformHeader>();
@@ -194,7 +194,7 @@ namespace zeromq
                             linker.Libraries.Add("-ladvapi32");
                         }
                     }
-                    else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                    else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
                         linker.Libraries.Add("-lpthread");
                     }
@@ -215,7 +215,7 @@ namespace zeromq
 
 #if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.publish.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publish.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));

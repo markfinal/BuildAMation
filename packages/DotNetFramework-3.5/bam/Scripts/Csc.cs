@@ -55,7 +55,7 @@ namespace DotNetFramework
             {
                 CscPath = System.IO.Path.Combine(installPath, "Csc.exe");
             }
-            else if (Bam.Core.OSUtilities.IsUnixHosting)
+            else if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 CscPath = System.IO.Path.Combine(installPath, "mono-csc");
             }

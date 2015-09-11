@@ -75,7 +75,7 @@ namespace V2
                         case Bam.Core.EPlatform.Windows:
                             return GetWindowsInstallPath(qtVersion);
 
-                        case Bam.Core.EPlatform.Unix:
+                        case Bam.Core.EPlatform.Linux:
                             return GetLinuxInstallPath(qtVersion);
 
                         case Bam.Core.EPlatform.OSX:
@@ -267,7 +267,7 @@ namespace V2
 
 #if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (Bam.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));
@@ -329,7 +329,7 @@ namespace V2
                     options.Libraries.Add(System.String.Format("{0}4.lib", moduleName));
                 }
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 options.Libraries.Add(System.String.Format("-l{0}", moduleName));
             }
@@ -365,7 +365,7 @@ namespace V2
                 var dynamicLibraryPath = System.IO.Path.Combine(binPath, dynamicLibraryName);
                 this.Locations[C.DynamicLibrary.OutputFile] = Bam.Core.FileLocation.Get(dynamicLibraryPath);
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var libPath = this.QtToolset.GetLibraryPath((Bam.Core.BaseTarget)target);
                 var version = (this.QtToolset as Bam.Core.IToolset).Version((Bam.Core.BaseTarget)target);

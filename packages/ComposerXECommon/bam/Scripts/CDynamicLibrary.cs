@@ -37,7 +37,7 @@ namespace C
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            if (Bam.Core.OSUtilities.IsUnix(target))
+            if (Bam.Core.OSUtilities.IsLinux(target))
             {
                 var compilerOptions = module.Options as ComposerXECommon.ICCompilerOptions;
                 if (null != compilerOptions)

@@ -49,7 +49,7 @@ namespace zeromqtest
 
             this.PrivatePatch(settings =>
                 {
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
                         var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
                         if (null != gccLinker)

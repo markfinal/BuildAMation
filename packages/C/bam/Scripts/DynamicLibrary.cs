@@ -161,7 +161,7 @@ namespace V2
         DynamicLibrary()
         {
             this.PostActionModuleTypes = new Bam.Core.TypeArray();
-            if (Bam.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 this.PostActionModuleTypes.Add(typeof(PosixSharedLibrarySymlinks));
             }

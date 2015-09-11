@@ -65,7 +65,7 @@ namespace Bam.Core
             {
                 Windows,
                 OSX,
-                Unix,
+                Linux,
                 unknown
             };
 
@@ -84,7 +84,7 @@ namespace Bam.Core
 
                 if (!mIsMac && System.Environment.OSVersion.Platform == System.PlatformID.Unix)
                 {
-                    return OS.Unix;
+                    return OS.Linux;
                 }
 
                 return OS.unknown;
@@ -142,15 +142,15 @@ namespace Bam.Core
                     }
                     break;
 
-                case Platform.OS.Unix:
+                case Platform.OS.Linux:
                     {
                         if (CheckFor64BitOS)
                         {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Unix64);
+                            State.Add<EPlatform>("System", "Platform", EPlatform.Linux64);
                         }
                         else
                         {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Unix32);
+                            State.Add<EPlatform>("System", "Platform", EPlatform.Linux32);
                         }
                     }
                     break;
@@ -209,34 +209,34 @@ namespace Bam.Core
         }
 
         public static bool
-        IsUnix(
+        IsLinux(
             EPlatform platform)
         {
-            var isUnix = (EPlatform.Unix32 == platform || EPlatform.Unix64 == platform);
-            return isUnix;
+            var isLinux = (EPlatform.Linux32 == platform || EPlatform.Linux64 == platform);
+            return isLinux;
         }
 
         public static bool
-        IsUnix(
+        IsLinux(
             BaseTarget baseTarget)
         {
-            var isUnix = baseTarget.HasPlatform(EPlatform.Unix);
-            return isUnix;
+            var isLinux = baseTarget.HasPlatform(EPlatform.Linux);
+            return isLinux;
         }
 
         public static bool
-        IsUnix(
+        IsLinux(
             Target target)
         {
-            return IsUnix((BaseTarget)target);
+            return IsLinux((BaseTarget)target);
         }
 
-        public static bool IsUnixHosting
+        public static bool IsLinuxHosting
         {
             get
             {
                 var platform = State.Platform;
-                return IsUnix(platform);
+                return IsLinux(platform);
             }
         }
 
@@ -276,7 +276,7 @@ namespace Bam.Core
         Is64Bit(
             EPlatform platform)
         {
-            var is64Bit = (EPlatform.Win64 == platform || EPlatform.Unix64 == platform || EPlatform.OSX64 == platform);
+            var is64Bit = (EPlatform.Win64 == platform || EPlatform.Linux64 == platform || EPlatform.OSX64 == platform);
             return is64Bit;
         }
 
@@ -284,7 +284,7 @@ namespace Bam.Core
         Is64Bit(
             BaseTarget baseTarget)
         {
-            var is64Bit = baseTarget.HasPlatform(EPlatform.Win64 | EPlatform.Unix64 | EPlatform.OSX64);
+            var is64Bit = baseTarget.HasPlatform(EPlatform.Win64 | EPlatform.Linux64 | EPlatform.OSX64);
             return is64Bit;
         }
 
@@ -323,8 +323,8 @@ namespace Bam.Core
                 {
                     case Platform.OS.Windows:
                         return EPlatform.Windows;
-                    case Platform.OS.Unix:
-                        return EPlatform.Unix;
+                    case Platform.OS.Linux:
+                        return EPlatform.Linux;
                     case Platform.OS.OSX:
                         return EPlatform.OSX;
                     default:

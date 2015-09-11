@@ -35,22 +35,22 @@ namespace Bam.Core
         Invalid = 0,
         Win32   = (1 << 0),
         Win64   = (1 << 1),
-        Unix32  = (1 << 2),
-        Unix64  = (1 << 3),
+        Linux32 = (1 << 2),
+        Linux64 = (1 << 3),
         OSX32   = (1 << 4),
         OSX64   = (1 << 5),
 
         Windows = Win32 | Win64,
-        Unix    = Unix32 | Unix64,
+        Linux   = Linux32 | Linux64,
         OSX     = OSX32 | OSX64,
-        Posix   = Unix | OSX,
+        Posix   = Linux | OSX,
 
         NotWindows = ~Windows,
-        NotUnix    = ~Unix,
+        NotLinux   = ~Linux,
         NotOSX     = ~OSX,
         NotPosix   = ~Posix,
 
-        All        = Windows | Unix | OSX
+        All        = Windows | Linux | OSX
     }
 
 namespace V2

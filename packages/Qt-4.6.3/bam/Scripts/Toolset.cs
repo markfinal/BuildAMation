@@ -68,7 +68,7 @@ namespace Qt
                     Bam.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
                 }
             }
-            else if (Bam.Core.OSUtilities.IsUnixHosting)
+            else if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 installPath = @"/usr/local/Trolltech/Qt-4.6.3"; // default installation directory
             }

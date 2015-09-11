@@ -42,7 +42,7 @@ namespace V2
             {
                 this.Macros.Add("ICUInstallPath", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/bin/win64-msvc10/bin64", this));
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 this.Macros.Add("ICUInstallPath", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/bin/linux64-gcc44/usr/local/lib", this));
             }
@@ -76,7 +76,7 @@ namespace V2
             {
                 this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icuin52", null, verbatim:true);
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icui18n", null, verbatim:true);
                 this.Macros["dynamicext"] = Bam.Core.V2.TokenizedString.Create(".so.52", null, verbatim:true);
@@ -96,7 +96,7 @@ namespace V2
             {
                 this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icuuc52", null, verbatim:true);
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icuuc", null, verbatim:true);
                 this.Macros["dynamicext"] = Bam.Core.V2.TokenizedString.Create(".so.52", null, verbatim:true);
@@ -116,7 +116,7 @@ namespace V2
             {
                 this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icudt52", null, verbatim:true);
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("icudata", null, verbatim:true);
                 this.Macros["dynamicext"] = Bam.Core.V2.TokenizedString.Create(".so.52", null, verbatim:true);
@@ -133,7 +133,7 @@ namespace V2
         {
 #if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (Bam.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.LinkerSymlink));
@@ -206,7 +206,7 @@ namespace V2
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var options = module.Options as C.ILinkerOptions;
                 if (null != options)
@@ -227,7 +227,7 @@ namespace V2
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetWindowsDLLPath("ICUIN52.dll", target);
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetLinuxSOPath("libicui18n.so.52.1", false);
                 this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = this.GetLinuxSOPath("libicui18n.so.52", true);
@@ -253,7 +253,7 @@ namespace V2
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var options = module.Options as C.ILinkerOptions;
                 if (null != options)
@@ -274,7 +274,7 @@ namespace V2
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetWindowsDLLPath("ICUUC52.dll", target);
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetLinuxSOPath("libicuuc.so.52.1", false);
                 this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = this.GetLinuxSOPath("libicuuc.so.52", true);
@@ -300,7 +300,7 @@ namespace V2
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var options = module.Options as C.ILinkerOptions;
                 if (null != options)
@@ -321,7 +321,7 @@ namespace V2
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetWindowsDLLPath("ICUDT52.dll", target);
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetLinuxSOPath("libicudata.so.52.1", false);
                 this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = this.GetLinuxSOPath("libicudata.so.52", true);

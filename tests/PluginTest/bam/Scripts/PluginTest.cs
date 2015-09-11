@@ -113,7 +113,7 @@ namespace PluginTest
         {
 #if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (Bam.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));

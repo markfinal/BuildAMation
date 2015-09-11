@@ -52,7 +52,7 @@ namespace glew
             {
                 headers.AddFile("$(pkgroot)/include/GL/wglew.h");
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 headers.AddFile("$(pkgroot)/include/GL/glxew.h");
             }

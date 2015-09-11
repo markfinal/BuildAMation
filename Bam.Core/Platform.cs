@@ -48,17 +48,17 @@ namespace Bam.Core
             {
                 platform = EPlatform.Win64;
             }
-            else if (0 == System.String.Compare(platformName, "Unix", true))
+            else if (0 == System.String.Compare(platformName, "Linux", true))
             {
-                platform = EPlatform.Unix;
+                platform = EPlatform.Linux;
             }
-            else if (0 == System.String.Compare(platformName, "Unix32", true))
+            else if (0 == System.String.Compare(platformName, "Linux32", true))
             {
-                platform = EPlatform.Unix32;
+                platform = EPlatform.Linux32;
             }
-            else if (0 == System.String.Compare(platformName, "Unix64", true))
+            else if (0 == System.String.Compare(platformName, "Linux64", true))
             {
-                platform = EPlatform.Unix64;
+                platform = EPlatform.Linux64;
             }
             else if (0 == System.String.Compare(platformName, "OSX", true))
             {
@@ -163,19 +163,19 @@ namespace Bam.Core
             }
 
             // check unix and sub-derivatives
-            if (Contains(platformFlags, EPlatform.Unix))
+            if (Contains(platformFlags, EPlatform.Linux))
             {
-                AddPlatformName(ref platformString, "Unix", separator, prefix, toUpper);
+                AddPlatformName(ref platformString, "Linux", separator, prefix, toUpper);
             }
             else
             {
-                if (Contains(platformFlags, EPlatform.Unix32))
+                if (Contains(platformFlags, EPlatform.Linux32))
                 {
-                    AddPlatformName(ref platformString, "Unix32", separator, prefix, toUpper);
+                    AddPlatformName(ref platformString, "Linux32", separator, prefix, toUpper);
                 }
-                else if (Contains(platformFlags, EPlatform.Unix64))
+                else if (Contains(platformFlags, EPlatform.Linux64))
                 {
-                    AddPlatformName(ref platformString, "Unix64", separator, prefix, toUpper);
+                    AddPlatformName(ref platformString, "Linux64", separator, prefix, toUpper);
                 }
             }
 

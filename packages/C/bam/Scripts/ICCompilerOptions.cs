@@ -49,7 +49,7 @@ namespace DefaultSettings
             {
                 settings.PreprocessorDefines.Add("D_BAM_PLATFORM_WINDOWS");
             }
-            else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 settings.PreprocessorDefines.Add("D_BAM_PLATFORM_UNIX");
             }

@@ -40,7 +40,7 @@ namespace ObjectiveCTest1
             var source = this.CreateObjectiveCSourceContainer();
             source.AddFile("$(pkgroot)/source/main.m");
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 source.PrivatePatch(settings =>
                     {
@@ -60,7 +60,7 @@ namespace ObjectiveCTest1
                         osxLinker.Frameworks.Add(Bam.Core.V2.TokenizedString.Create("Cocoa", null, verbatim:true));
                     }
 
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
                         var linker = settings as C.V2.ICommonLinkerOptions;
                         linker.Libraries.Add("-lobjc");
@@ -97,7 +97,7 @@ namespace ObjectiveCTest1
                     var compileOptions = module.Options as C.ICCompilerOptions;
                     if (null != compileOptions)
                     {
-                        if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+                        if (target.HasPlatform(Bam.Core.EPlatform.Linux))
                         {
                             compileOptions.IncludePaths.Add("/usr/include/GNUstep");
                         }

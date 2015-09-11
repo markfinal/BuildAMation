@@ -75,7 +75,7 @@ namespace Qt5Test1
             {
                 this.CompileAndLinkAgainst<Qt.V2.Core>(source);
                 this.CompileAndLinkAgainst<Qt.V2.Widgets>(source);
-                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                 {
                     this.LinkAgainst<Qt.V2.Gui>();
                 }

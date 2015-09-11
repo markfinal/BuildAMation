@@ -44,7 +44,7 @@ namespace Test11
             {
                 source.AddFile("$(pkgroot)/source/win/win.c");
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 source.AddFile("$(pkgroot)/source/unix/unix.c");
             }
@@ -84,7 +84,7 @@ namespace Test11
         [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Windows)]
         C.ObjectFile winSourceFile = new C.ObjectFile();
 
-        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Unix)]
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Linux)]
         C.ObjectFile unixSourceFile = new C.ObjectFile();
 
         [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.OSX)]

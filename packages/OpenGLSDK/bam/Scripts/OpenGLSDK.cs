@@ -104,7 +104,7 @@ namespace OpenGLSDK
             winMingwTarget.ToolsetTypes = new[] { typeof(Mingw.Toolset) };
 
             unixTarget = new TargetFilter();
-            unixTarget.Platform = Bam.Core.EPlatform.Unix;
+            unixTarget.Platform = Bam.Core.EPlatform.Linux;
 
             osxTarget = new TargetFilter();
             osxTarget.Platform = Bam.Core.EPlatform.OSX;

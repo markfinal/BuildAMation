@@ -71,7 +71,7 @@ namespace QMakeBuilder
                 var libraryKeysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey
                 );
-                if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+                if (target.HasPlatform(Bam.Core.EPlatform.Linux))
                 {
                     libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);
                 }

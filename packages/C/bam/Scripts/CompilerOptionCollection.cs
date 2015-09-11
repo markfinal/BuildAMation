@@ -78,7 +78,7 @@ namespace C
             {
                 compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_WINDOWS"));
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_UNIX"));
             }

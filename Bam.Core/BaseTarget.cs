@@ -75,9 +75,9 @@ namespace Bam.Core
             {
                 return GetInstance(EPlatform.Win32, source.Configuration);
             }
-            else if (OSUtilities.IsUnix(source))
+            else if (OSUtilities.IsLinux(source))
             {
-                return GetInstance(EPlatform.Unix32, source.Configuration);
+                return GetInstance(EPlatform.Linux32, source.Configuration);
             }
             else if (OSUtilities.IsOSX(source))
             {
@@ -102,9 +102,9 @@ namespace Bam.Core
             {
                 return GetInstance(EPlatform.Win64, source.Configuration);
             }
-            else if (OSUtilities.IsUnix(source))
+            else if (OSUtilities.IsLinux(source))
             {
-                return GetInstance(EPlatform.Unix64, source.Configuration);
+                return GetInstance(EPlatform.Linux64, source.Configuration);
             }
             else if (OSUtilities.IsOSX(source))
             {

@@ -73,7 +73,7 @@ namespace C
             C.ILinkerOptions linkerOptions)
         {
             var splitName = realSharedLibraryLeafname.Split('.');
-            // On Unix
+            // On Linux
             // 0 = filename
             // 1 = 'so'
             // 2 = major version
@@ -85,7 +85,7 @@ namespace C
             // 2 = minor version
             // 3 = patch version
             // 4 = 'dylib'
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}", splitName[0], splitName[1], linkerOptions.MajorVersion);
                 return majorSymlinkLeafname;
@@ -106,7 +106,7 @@ namespace C
             C.ILinkerOptions linkerOptions)
         {
             var splitName = realSharedLibraryLeafname.Split('.');
-            // On Unix
+            // On Linux
             // 0 = filename
             // 1 = 'so'
             // 2 = major version
@@ -118,7 +118,7 @@ namespace C
             // 2 = minor version
             // 3 = patch version
             // 4 = 'dylib'
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}.{2}.{3}", splitName[0], splitName[1], linkerOptions.MajorVersion, linkerOptions.MinorVersion);
                 return majorSymlinkLeafname;
@@ -139,7 +139,7 @@ namespace C
             C.ILinkerOptions linkerOptions)
         {
             var splitName = realSharedLibraryLeafname.Split('.');
-            // On Unix
+            // On Linux
             // 0 = filename
             // 1 = 'so'
             // 2 = major version
@@ -151,7 +151,7 @@ namespace C
             // 2 = minor version
             // 3 = patch version
             // 4 = 'dylib'
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var majorSymlinkLeafname = System.String.Format("{0}.{1}", splitName[0], splitName[1]);
                 return majorSymlinkLeafname;

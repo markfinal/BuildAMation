@@ -82,7 +82,7 @@ namespace DotNetFramework
 
                 return toolsPath;
             }
-            else if (Bam.Core.OSUtilities.IsUnixHosting || Bam.Core.OSUtilities.IsOSXHosting)
+            else if (Bam.Core.OSUtilities.IsLinuxHosting || Bam.Core.OSUtilities.IsOSXHosting)
             {
                 return "/usr/bin";
             }

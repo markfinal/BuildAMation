@@ -103,7 +103,7 @@ namespace Test4
 
 #if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (Bam.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 this.publish.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publish.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));

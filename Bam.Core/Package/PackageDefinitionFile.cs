@@ -277,10 +277,10 @@ namespace Bam.Core
                     platformElement.SetAttribute("Name", "Windows");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
-                if (EPlatform.Unix == (this.SupportedPlatforms & EPlatform.Unix))
+                if (EPlatform.Linux == (this.SupportedPlatforms & EPlatform.Linux))
                 {
                     var platformElement = document.CreateElement("Platform", namespaceURI);
-                    platformElement.SetAttribute("Name", "Unix");
+                    platformElement.SetAttribute("Name", "Linux");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
                 if (EPlatform.OSX == (this.SupportedPlatforms & EPlatform.OSX))
@@ -927,7 +927,7 @@ namespace Bam.Core
                         break;
 
                     case "Linux":
-                        this.SupportedPlatforms |= EPlatform.Unix;
+                        this.SupportedPlatforms |= EPlatform.Linux;
                         break;
 
                     case "OSX":
@@ -977,9 +977,9 @@ namespace Bam.Core
                         {
                             this.SupportedPlatforms |= EPlatform.Windows;
                         }
-                        if ("Unix" == platformName)
+                        if ("Linux" == platformName)
                         {
-                            this.SupportedPlatforms |= EPlatform.Unix;
+                            this.SupportedPlatforms |= EPlatform.Linux;
                         }
                         if ("OSX" == platformName)
                         {
@@ -1454,9 +1454,9 @@ namespace Bam.Core
                         {
                             this.SupportedPlatforms |= EPlatform.Windows;
                         }
-                        if ("Unix" == platformName)
+                        if ("Linux" == platformName)
                         {
-                            this.SupportedPlatforms |= EPlatform.Unix;
+                            this.SupportedPlatforms |= EPlatform.Linux;
                         }
                         if ("OSX" == platformName)
                         {

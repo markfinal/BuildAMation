@@ -79,7 +79,7 @@ namespace Qt
                     Bam.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
                 }
             }
-            else if (Bam.Core.OSUtilities.IsUnixHosting)
+            else if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 var homeDir = System.Environment.GetEnvironmentVariable("HOME");
                 if (null != homeDir)

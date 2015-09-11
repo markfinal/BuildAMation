@@ -193,7 +193,7 @@ namespace MakeFileBuilder
             {
                 var libraryKeysToFilter = new Bam.Core.Array<Bam.Core.LocationKey>(
                     C.StaticLibrary.OutputFileLocKey);
-                if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+                if (target.HasPlatform(Bam.Core.EPlatform.Linux))
                 {
                     // TODO: why is the symlink not present?
                     //libraryKeysToFilter.Add(C.PosixSharedLibrarySymlinks.LinkerSymlink);

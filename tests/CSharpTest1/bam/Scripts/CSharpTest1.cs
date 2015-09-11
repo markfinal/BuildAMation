@@ -78,9 +78,9 @@ namespace CSharpTest1
         Bam.Core.Location source;
     }
 
-    // disabled on Unix builds, as it fails: CS0016
+    // disabled on Linux builds, as it fails: CS0016
     // Could not write to file `SimpleModule', cause: fileName '<blah>' must not include a path.
-    [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.NotUnix)]
+    [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.NotLinux)]
     class SimpleModule :
         CSharp.Module
     {

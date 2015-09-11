@@ -859,7 +859,7 @@ namespace V2
             Bam.Core.V2.TokenizedString outputPath);
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Unix | Bam.Core.EPlatform.OSX)]
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Linux | Bam.Core.EPlatform.OSX)]
     public abstract class TarBall :
         Bam.Core.V2.Module
     {

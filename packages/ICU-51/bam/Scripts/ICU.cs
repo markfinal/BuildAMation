@@ -37,7 +37,7 @@ namespace ICU
         {
 #if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (Bam.Core.OSUtilities.IsUnixHosting)
+            if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.AddUnique(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.LinkerSymlink));
@@ -108,7 +108,7 @@ namespace ICU
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var options = module.Options as C.ILinkerOptions;
                 if (null != options)
@@ -129,7 +129,7 @@ namespace ICU
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetWindowsDLLPath("ICUIN51.dll");
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetLinuxSOPath("libicui18n.so.51.2", false);
                 this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = this.GetLinuxSOPath("libicui18n.so.51", true);
@@ -155,7 +155,7 @@ namespace ICU
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var options = module.Options as C.ILinkerOptions;
                 if (null != options)
@@ -176,7 +176,7 @@ namespace ICU
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetWindowsDLLPath("ICUUC51.dll");
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetLinuxSOPath("libicuuc.so.51.2", false);
                 this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = this.GetLinuxSOPath("libicuuc.so.51", true);
@@ -202,7 +202,7 @@ namespace ICU
             Bam.Core.IModule module,
             Bam.Core.Target target)
         {
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 var options = module.Options as C.ILinkerOptions;
                 if (null != options)
@@ -223,7 +223,7 @@ namespace ICU
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetWindowsDLLPath("ICUDT51.dll");
             }
-            else if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.Locations[C.DynamicLibrary.OutputFile] = this.GetLinuxSOPath("libicudata.so.51.2", false);
                 this.Locations[C.PosixSharedLibrarySymlinks.MajorVersionSymlink] = this.GetLinuxSOPath("libicudata.so.51", true);

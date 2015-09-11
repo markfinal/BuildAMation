@@ -73,7 +73,7 @@ namespace GccCommon
                         // see http://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html
                         // see http://www.adp-gmbh.ch/cpp/gcc/create_lib.html
                         // see http://lists.apple.com/archives/unix-porting/2003/Oct/msg00032.html
-                        if (Bam.Core.OSUtilities.IsUnixHosting)
+                        if (Bam.Core.OSUtilities.IsLinuxHosting)
                         {
                             commandLineBuilder.Add("-shared");
                             var leafname = System.IO.Path.GetFileName(outputPath);
@@ -333,7 +333,7 @@ namespace GccCommon
             {
                 //var options = sender as LinkerOptionCollection;
                 var mapFileLoc = (sender as LinkerOptionCollection).GetModuleLocation(C.Application.MapFile);
-                if (Bam.Core.OSUtilities.IsUnixHosting)
+                if (Bam.Core.OSUtilities.IsLinuxHosting)
                 {
                     commandLineBuilder.Add(System.String.Format("-Wl,-Map,{0}", mapFileLoc.GetSinglePath()));
                 }

@@ -44,7 +44,7 @@ namespace Test12
             {
                 source.AddFile("$(pkgroot)/source/win/win.cpp");
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 source.AddFile("$(pkgroot)/source/unix/unix.cpp");
             }
@@ -64,7 +64,7 @@ namespace Test12
                         linker.Libraries.Add("USER32.lib");
                     });
             }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Unix))
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 this.PrivatePatch(settings =>
                     {
@@ -102,11 +102,11 @@ namespace Test12
             }
         }
 
-        class UnixSourceFiles :
+        class LinuxSourceFiles :
             C.Cxx.ObjectFileCollection
         {
             public
-            UnixSourceFiles()
+            LinuxSourceFiles()
             {
                 var sourceDir = this.PackageLocation.SubDirectory("source");
                 var unixSourceDir = sourceDir.SubDirectory("unix");
@@ -130,8 +130,8 @@ namespace Test12
         CommonSourceFiles commonSourceFiles = new CommonSourceFiles();
         [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Windows)]
         WindowsSourceFiles windowsSourceFiles = new WindowsSourceFiles();
-        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Unix)]
-        UnixSourceFiles unixSourceFiles = new UnixSourceFiles();
+        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Linux)]
+        LinuxSourceFiles unixSourceFiles = new LinuxSourceFiles();
         [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.OSX)]
         OSXSourceFiles osxSourceFiles = new OSXSourceFiles();
 
@@ -144,7 +144,7 @@ namespace Test12
             "USER32.lib"
         );
 
-        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Unix)]
+        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Linux)]
         Bam.Core.StringArray unixLibraries = new Bam.Core.StringArray(
             "-lX11"
         );

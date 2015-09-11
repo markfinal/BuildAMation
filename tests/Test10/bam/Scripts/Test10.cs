@@ -161,7 +161,7 @@ namespace Test10
 
 #if D_PACKAGE_PUBLISHER_DEV
             // TODO: can this be automated?
-            if (target.HasPlatform(Bam.Core.EPlatform.Unix))
+            if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MajorVersionSymlink));
                 this.publishKeys.Add(new Publisher.PublishDependency(C.PosixSharedLibrarySymlinks.MinorVersionSymlink));

@@ -71,7 +71,7 @@ namespace GccCommon
         {
             get
             {
-                if (Bam.Core.OSUtilities.IsUnixHosting)
+                if (Bam.Core.OSUtilities.IsLinuxHosting)
                 {
                     return "-Wl,--start-group";
                 }
@@ -86,7 +86,7 @@ namespace GccCommon
         {
             get
             {
-                if (Bam.Core.OSUtilities.IsUnixHosting)
+                if (Bam.Core.OSUtilities.IsLinuxHosting)
                 {
                     return "-Wl,--end-group";
                 }
@@ -109,7 +109,7 @@ namespace GccCommon
         {
             get
             {
-                if (Bam.Core.OSUtilities.IsUnixHosting)
+                if (Bam.Core.OSUtilities.IsLinuxHosting)
                 {
                     return ".so";
                 }
