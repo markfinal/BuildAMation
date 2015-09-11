@@ -34,7 +34,7 @@ namespace ProxyTest
     {
         public ProxiedObjectFileV2()
         {
-            this.Macros["proxypkgroot"] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/../../FakePackage", this);
+            this.Macros["proxypkgroot"] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/../FakePackage", this);
         }
 
         protected override void Init(Bam.Core.V2.Module parent)
@@ -50,7 +50,7 @@ namespace ProxyTest
     {
         public ProxiedObjectFileCollectionV2()
         {
-            this.Macros["proxypkgroot"] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/../../FakePackage", this);
+            this.Macros["proxypkgroot"] = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/../FakePackage", this);
         }
 
         protected override void Init(Bam.Core.V2.Module parent)
