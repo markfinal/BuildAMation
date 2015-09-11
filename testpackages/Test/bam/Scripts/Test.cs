@@ -65,12 +65,13 @@ namespace Test
     sealed class CompileSingleCFileV2 :
         C.V2.ObjectFile
     {
-        public CompileSingleCFileV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            // TODO: can override the generated paths
-            //this.RegisterGeneratedFile(C.V2.ObjectFile.Key, new Bam.Core.V2.TokenizedString("$(buildroot)/hello.obj", null));
-            this.InputPath = new Bam.Core.V2.TokenizedString("$(pkgroot)/source/main.c", null);
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.Compiler32>();
+            base.Init(parent);
+            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main.c", this);
+            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
         }
     }
 
@@ -88,25 +89,17 @@ namespace Test
     sealed class CompileSingleCFileWithCustomOptionsV2 :
         C.V2.ObjectFile
     {
-        public
-        CompileSingleCFileWithCustomOptionsV2()
+        protected override void
+        Init(
+            Bam.Core.V2.Module parent)
         {
-            this.InputPath = new Bam.Core.V2.TokenizedString("$(pkgroot)/source/main.c", null);
-            this.PatchSettings(settings =>
-                {
-                    // TODO: perform cast to appropriate type (would be nice to get this from the base class)
-                    // TODO: should cast as an interface
-                    var vcSettings = settings as VisualC.CompilerSettings;
-                    if (vcSettings != null)
-                    {
-                        vcSettings.Bits = C.V2.EBit.ThirtyTwo;
-                    }
-                    var mingwSettings = settings as Mingw.CompilerSettings;
-                    if (mingwSettings != null)
-                    {
-                        mingwSettings.Bits = C.V2.EBit.ThirtyTwo;
-                    }
-                });
+            base.Init(parent);
+            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main.c", this);
+            this.PrivatePatch(settings =>
+            {
+                var compiler = settings as C.V2.ICommonCompilerOptions;
+                compiler.DebugSymbols = false;
+            });
         }
     }
 
