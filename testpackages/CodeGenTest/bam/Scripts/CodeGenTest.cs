@@ -128,7 +128,7 @@ namespace V2
         public override void
         Evaluate()
         {
-            this.IsUpToDate = false;
+            this.ReasonToExecute = ExecuteReasoning.Undefined();
         }
 
         protected override void
