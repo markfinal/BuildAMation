@@ -1911,10 +1911,10 @@ namespace Bam.Core
                     {
                         message.AppendFormat(" and version {0}", depVersion);
                     }
-                    message.AppendLine();
+                    message.AppendLine(" from the following package definition files:");
                     foreach (var candidate in candidates)
                     {
-                        message.AppendFormat(candidate.FullName);
+                        message.AppendFormat(candidate.XMLFilename);
                         message.AppendLine();
                     }
                     var packageRepos = new StringArray();
