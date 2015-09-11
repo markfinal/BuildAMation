@@ -295,6 +295,11 @@ namespace Bam.Core
                     {
                         continue;
                     }
+                    // ignore any duplicates (can be found due to nested repositories)
+                    if (null != candidatePackageDefinitions.Where(item => item.XMLFilename == packageDefinitionPath).FirstOrDefault())
+                    {
+                        continue;
+                    }
 
                     var definitionFile = new PackageDefinitionFile(packageDefinitionPath, !State.ForceDefinitionFileUpdate);
                     definitionFile.Read(true);
@@ -302,7 +307,7 @@ namespace Bam.Core
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
-                        if ((repo == newRepo) || packageRepos.Contains(newRepo) || State.PackageRoots.Contains(tempDirLoc))
+                        if (State.PackageRoots.Contains(tempDirLoc))
                         {
                             continue;
                         }
