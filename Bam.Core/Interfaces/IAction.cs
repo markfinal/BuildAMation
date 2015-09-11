@@ -316,6 +316,42 @@ namespace V2
             }
         }
     }
+
+    public sealed class VerbosityLevel :
+        IIntegerCommandLineArgument
+    {
+        int IIntegerCommandLineArgument.Default
+        {
+            get
+            {
+                return (int)EVerboseLevel.Detail;
+            }
+        }
+
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-v";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--verbosity";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Change the logging level of detail (0 for least, 3 for maximum).";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

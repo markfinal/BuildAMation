@@ -102,9 +102,22 @@ namespace Bam
                     return;
                 }
 
+                var verbosityLevel = (Core.EVerboseLevel)Core.V2.CommandLineProcessor.Evaluate(new Core.V2.VerbosityLevel());
+                switch (verbosityLevel)
+                {
+                    case Core.EVerboseLevel.None:
+                    case Core.EVerboseLevel.Info:
+                    case Core.EVerboseLevel.Detail:
+                    case Core.EVerboseLevel.Full:
+                        Core.State.VerbosityLevel = verbosityLevel;
+                        break;
+
+                    default:
+                        throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
+                }
+
                 // configure
                 Core.State.BuildRoot = "build";
-                Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
                 Core.State.CompileWithDebugSymbols = true;
                 Core.State.BuildMode = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildMode());
                 if (null == Core.State.BuildMode)
