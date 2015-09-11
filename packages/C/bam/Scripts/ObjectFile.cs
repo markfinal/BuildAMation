@@ -622,7 +622,7 @@ namespace V2
                     return;
                 }
 
-                var includeSearchPaths = (this.Dependees[0].Settings as C.V2.ICommonCompilerOptions).IncludePaths;
+                var includeSearchPaths = (this.Settings as C.V2.ICommonCompilerOptions).IncludePaths;
 
                 var filesToSearch = new System.Collections.Generic.Queue<string>();
                 filesToSearch.Enqueue(sourcePath);
