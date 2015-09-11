@@ -68,7 +68,7 @@ namespace Bam
         public bool
         Execute()
         {
-            Core.State.BuilderName = this.BuilderName;
+            Core.State.BuildMode = this.BuilderName;
 
             return true;
         }

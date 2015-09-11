@@ -55,7 +55,7 @@ namespace Bam
         public bool
         Execute()
         {
-            Core.Log.DebugMessage("Builder is {0}", Core.State.BuilderName);
+            Core.Log.DebugMessage("Builder is {0}", Core.State.BuildMode);
             var compiledSuccessfully = Core.PackageUtilities.CompilePackageAssembly();
             if (compiledSuccessfully)
             {

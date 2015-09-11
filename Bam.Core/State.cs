@@ -59,7 +59,7 @@ namespace V2
             var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
 
             var graph = Graph.Instance;
-            graph.Mode = State.BuilderName;
+            graph.Mode = State.BuildMode;
 
             // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
             foreach (var env in environments)
@@ -1324,7 +1324,7 @@ namespace V2
             }
         }
 
-        public static string BuilderName
+        public static string BuildMode
         {
             set
             {

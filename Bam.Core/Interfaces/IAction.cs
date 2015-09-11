@@ -69,7 +69,7 @@ namespace V2
         }
     }
 
-    public sealed class BuilderName :
+    public sealed class BuildMode :
         IStringCommandLineArgument
     {
         string ICommandLineArgument.ShortName
@@ -84,7 +84,7 @@ namespace V2
         {
             get
             {
-                return "--builder";
+                return "--buildmode";
             }
         }
 
@@ -92,7 +92,7 @@ namespace V2
         {
             get
             {
-                return "Define the name of the builder to use";
+                return "Specify the build mode to use";
             }
         }
     }

@@ -1965,7 +1965,7 @@ namespace Bam.Core
             }
             else
             {
-                builderNames.AddUnique(System.String.Format("{0}Builder", State.BuilderName));
+                builderNames.AddUnique(System.String.Format("{0}Builder", State.BuildMode));
             }
             foreach (var builderName in builderNames)
             {

@@ -291,11 +291,11 @@ namespace V2
             }
 
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
-            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", State.BuilderName);
+            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", State.BuildMode);
             var metaDataType = State.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)
             {
-                Log.DebugMessage("No build mode {0} meta data type {1}", State.BuilderName, metaName);
+                Log.DebugMessage("No build mode {0} meta data type {1}", State.BuildMode, metaName);
             }
 
             var useEvaluation = CheckIfModulesNeedRebuilding(metaDataType);

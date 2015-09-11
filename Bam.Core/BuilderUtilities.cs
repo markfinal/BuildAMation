@@ -42,12 +42,12 @@ namespace Bam.Core
         public static void
         SetBuilderPackage()
         {
-            if (null == State.BuilderName)
+            if (null == State.BuildMode)
             {
                 return;
             }
 
-            var builderPackageName = System.String.Format("{0}Builder", State.BuilderName);
+            var builderPackageName = System.String.Format("{0}Builder", State.BuildMode);
 #if true
             var builderPackage = V2.Graph.Instance.Packages.Where(item => item.Name == builderPackageName).FirstOrDefault();
             if (null != builderPackage)
@@ -72,7 +72,7 @@ namespace Bam.Core
         public static void
         CreateBuilderInstance()
         {
-            if (null == State.BuilderName)
+            if (null == State.BuildMode)
             {
                 throw new Exception("Name of the Builder has not been specified");
             }
@@ -86,7 +86,7 @@ namespace Bam.Core
             var attributes = State.ScriptAssembly.GetCustomAttributes(typeof(DeclareBuilderAttribute), false) as DeclareBuilderAttribute[];
             foreach (var attribute in attributes)
             {
-                if (attribute.Name == State.BuilderName)
+                if (attribute.Name == State.BuildMode)
                 {
                     builderInstance = BuilderFactory.CreateBuilder(attribute.Type);
                     break;
@@ -94,7 +94,7 @@ namespace Bam.Core
             }
             if (null == builderInstance)
             {
-                throw new Exception("Unsupported builder '{0}'. Please double check the spelling as the name is case sensitive", State.BuilderName);
+                throw new Exception("Unsupported builder '{0}'. Please double check the spelling as the name is case sensitive", State.BuildMode);
             }
 
             State.BuilderInstance = builderInstance;

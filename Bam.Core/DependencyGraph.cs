@@ -105,7 +105,7 @@ namespace V2
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
-            if (null != State.BuilderName)
+            if (null != State.BuildMode)
             {
                 this.Macros.Add("buildroot", State.BuildRoot);
             }

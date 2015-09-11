@@ -99,8 +99,8 @@ namespace Bam
                 Core.State.BuildRoot = "build";
                 Core.State.VerbosityLevel = Core.EVerboseLevel.Full;
                 Core.State.CompileWithDebugSymbols = true;
-                Core.State.BuilderName = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuilderName());
-                if (null == Core.State.BuilderName)
+                Core.State.BuildMode = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildMode());
+                if (null == Core.State.BuildMode)
                 {
                     throw new Core.Exception("No builder specified");
                 }
