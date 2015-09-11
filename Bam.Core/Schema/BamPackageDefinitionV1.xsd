@@ -5,30 +5,6 @@
     xmlns="http://www.buildamation.com"
     elementFormDefault="qualified">
 
-<xs:attributeGroup name="required-package-attributes">
-    <xs:attribute name="Name" type="xs:string" use="required" />
-</xs:attributeGroup>
-
-<xs:complexType name="required-package-version-type">
-    <xs:sequence>
-        <xs:element name="Version" minOccurs="1" maxOccurs="unbounded">
-            <xs:complexType>
-                <xs:attribute name="Id" type="xs:string" use="required" />
-                <xs:attribute name="Condition" type="xs:string" use="optional" />
-                <xs:attribute name="Default" type="xs:boolean" use="optional" />
-            </xs:complexType>
-        </xs:element>
-    </xs:sequence>
-    <xs:attributeGroup ref="required-package-attributes" />
-</xs:complexType>
-
-<xs:complexType name="required-package-type">
-    <xs:sequence>
-        <xs:element name="Package" minOccurs="1" maxOccurs="unbounded" type="required-package-version-type">
-        </xs:element>
-    </xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="bam-assemblies-type">
     <xs:sequence>
         <xs:element name="BamAssembly" minOccurs="1" maxOccurs="unbounded">
@@ -88,19 +64,19 @@
     </xs:sequence>
 </xs:complexType>
 
-<xs:attributeGroup name="fpackage-attributes">
+<xs:attributeGroup name="package-attributes">
   <xs:attribute name="name" type="xs:string" use="required" />
   <xs:attribute name="version" type="xs:string" use="optional" />
   <xs:attribute name="default" type="xs:boolean" use="optional" />
 </xs:attributeGroup>
 
-<xs:complexType name="fpackage-package-type">
-  <xs:attributeGroup ref="fpackage-attributes" />
+<xs:complexType name="package-package-type">
+  <xs:attributeGroup ref="package-attributes" />
 </xs:complexType>
 
 <xs:complexType name="dependents-type">
   <xs:sequence>
-    <xs:element name="Package" minOccurs="1" maxOccurs="unbounded" type="fpackage-package-type" />
+    <xs:element name="Package" minOccurs="1" maxOccurs="unbounded" type="package-package-type" />
   </xs:sequence>
 </xs:complexType>
 
@@ -111,7 +87,6 @@
             <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="Dependents" type="dependents-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="PackageRepositories" type="package-repository-type" minOccurs="0" maxOccurs="1" />
-            <!--<xs:element name="RequiredPackages" type="required-package-type" minOccurs="0" maxOccurs="1" />-->
             <xs:element name="BamAssemblies" type="bam-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="DotNetAssemblies" type="dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="SupportedPlatforms" type="supported-platforms-type" minOccurs="0" maxOccurs="1" />
