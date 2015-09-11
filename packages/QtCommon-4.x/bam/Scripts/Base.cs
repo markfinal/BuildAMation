@@ -28,15 +28,110 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using System.Linq;
 namespace QtCommon
 {
 namespace V2
 {
     public static class Configure
     {
+        class QtInstallPath :
+            Bam.Core.V2.IStringCommandLineArgument,
+            Bam.Core.V2.ICommandLineArgumentDefault<string>
+        {
+            string ICommandLineArgument.ContextHelp
+            {
+                get
+                {
+                    return "Define the Qt install location";
+                }
+            }
+
+            string ICommandLineArgument.LongName
+            {
+                get
+                {
+                    return "--Qt.installPath";
+                }
+            }
+
+            string ICommandLineArgument.ShortName
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            string ICommandLineArgumentDefault<string>.Default
+            {
+                get
+                {
+                    var graph = Bam.Core.V2.Graph.Instance;
+                    var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
+
+                    switch (Bam.Core.OSUtilities.CurrentOS)
+                    {
+                        case Bam.Core.EPlatform.Windows:
+                            return GetWindowsInstallPath(qtVersion);
+
+                        case Bam.Core.EPlatform.Unix:
+                            return GetLinuxInstallPath(qtVersion);
+
+                        case Bam.Core.EPlatform.OSX:
+                            return GetOSXInstallPath(qtVersion);
+                    }
+
+                    throw new Bam.Core.Exception("Unable to determine default Qt {0} installation", qtVersion);
+                }
+            }
+
+            private static string
+            GetWindowsInstallPath(
+                string qtVersion)
+            {
+                using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(System.String.Format(@"Trolltech\Versions\{0}", qtVersion)))
+                {
+                    if (null == key)
+                    {
+                        throw new Bam.Core.Exception("Qt libraries for {0} were not installed", qtVersion);
+                    }
+
+                    var installPath = key.GetValue("InstallDir") as string;
+                    if (null == installPath)
+                    {
+                        throw new Bam.Core.Exception("Unable to locate InstallDir registry key for Qt {0}", qtVersion);
+                    }
+                    Bam.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
+                    return installPath;
+                }
+
+                throw new Bam.Core.Exception("Unable to find Qt installation path");
+            }
+
+            private static string
+            GetLinuxInstallPath(
+                string qtVersion)
+            {
+                var installPath = System.String.Format("/usr/local/Trolltech/Qt-{0}", qtVersion);
+                return installPath;
+            }
+
+            private static string
+            GetOSXInstallPath(
+                string qtVersion)
+            {
+                return @"/Developer/Tools/Qt";
+            }
+        }
+
         static Configure()
         {
-            InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\Thirdparty\Qt\Qt4.8.5", null);
+            var graph = Bam.Core.V2.Graph.Instance;
+            var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
+
+            var qtInstallDir = Bam.Core.V2.CommandLineProcessor.Evaluate(new QtInstallPath());
+            InstallPath = Bam.Core.V2.TokenizedString.Create(qtInstallDir, null);
         }
 
         public static Bam.Core.V2.TokenizedString InstallPath

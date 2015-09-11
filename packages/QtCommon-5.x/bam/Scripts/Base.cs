@@ -28,30 +28,131 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using System.Linq;
 namespace QtCommon
 {
 namespace V2
 {
     public static class Configure
     {
+        class QtInstallPath :
+            Bam.Core.V2.IStringCommandLineArgument,
+            Bam.Core.V2.ICommandLineArgumentDefault<string>
+        {
+            string ICommandLineArgument.ContextHelp
+            {
+                get
+                {
+                    return "Define the Qt install location";
+                }
+            }
+
+            string ICommandLineArgument.LongName
+            {
+                get
+                {
+                    return "--Qt.installPath";
+                }
+            }
+
+            string ICommandLineArgument.ShortName
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            string ICommandLineArgumentDefault<string>.Default
+            {
+                get
+                {
+                    var graph = Bam.Core.V2.Graph.Instance;
+                    var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
+
+                    switch (Bam.Core.OSUtilities.CurrentOS)
+                    {
+                        case Bam.Core.EPlatform.Windows:
+                            return GetWindowsInstallPath(qtVersion);
+
+                        case Bam.Core.EPlatform.Unix:
+                            return GetLinuxInstallPath(qtVersion);
+
+                        case Bam.Core.EPlatform.OSX:
+                            return GetOSXInstallPath(qtVersion);
+                    }
+
+                    throw new Bam.Core.Exception("Unable to determine default Qt {0} installation", qtVersion);
+                }
+            }
+
+            private static string
+            GetWindowsInstallPath(
+                string qtVersion)
+            {
+                using (var key = Bam.Core.Win32RegistryUtilities.OpenCUSoftwareKey(System.String.Format(@"Microsoft\Windows\CurrentVersion\Uninstall\Qt {0}", qtVersion)))
+                {
+                    if (null == key)
+                    {
+                        throw new Bam.Core.Exception("Qt libraries for {0} were not installed", qtVersion);
+                    }
+
+                    var installPath = key.GetValue("InstallLocation") as string;
+                    if (null == installPath)
+                    {
+                        throw new Bam.Core.Exception("Unable to locate InstallLocation registry key for Qt {0}", qtVersion);
+                    }
+
+                    // precompiled binaries now have a subdirectory indicating their flavour
+                    installPath += @"\5.3\msvc2013_64_opengl";
+
+                    Bam.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
+                    return installPath;
+                }
+
+                throw new Bam.Core.Exception("Unable to find Qt installation path");
+            }
+
+            private static string
+            GetLinuxInstallPath(
+                string qtVersion)
+            {
+                var homeDir = System.Environment.GetEnvironmentVariable("HOME");
+                if (null == homeDir)
+                {
+                    throw new Bam.Core.Exception("Unable to determine home directory");
+                }
+
+                var qtVersionSplit = qtVersion.Split('.');
+
+                var installPath = System.String.Format("{0}/Qt{1}/{2}.{3}/gcc_64", homeDir, qtVersion, qtVersionSplit[0], qtVersionSplit[1]);
+                return installPath;
+            }
+
+            private static string
+            GetOSXInstallPath(
+                string qtVersion)
+            {
+                var homeDir = System.Environment.GetEnvironmentVariable("HOME");
+                if (null == homeDir)
+                {
+                    throw new Bam.Core.Exception("Unable to determine home directory");
+                }
+
+                var qtVersionSplit = qtVersion.Split('.');
+
+                var installPath = System.String.Format("{0}/Qt{1}/{2}.{3}/clang_64", homeDir, qtVersion, qtVersionSplit[0], qtVersionSplit[1]);
+                return installPath;
+            }
+        }
+
         static Configure()
         {
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                InstallPath = Bam.Core.V2.TokenizedString.Create(@"D:\Qt\Qt5.3.2\5.3\msvc2013_64_opengl", null);
-            }
-            else if (Bam.Core.OSUtilities.IsOSXHosting)
-            {
-                InstallPath = Bam.Core.V2.TokenizedString.Create("/Users/mark/Qt5.3.2/5.3/clang_64/", null);
-            }
-            else if (Bam.Core.OSUtilities.IsUnixHosting)
-            {
-                InstallPath = Bam.Core.V2.TokenizedString.Create("/home/mark/Qt5.3.2/5.3/gcc_64", null);
-            }
-            else
-            {
-                throw new Bam.Core.Exception("Qt installation not found");
-            }
+            var graph = Bam.Core.V2.Graph.Instance;
+            var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
+
+            var qtInstallDir = Bam.Core.V2.CommandLineProcessor.Evaluate(new QtInstallPath());
+            InstallPath = Bam.Core.V2.TokenizedString.Create(qtInstallDir, null);
         }
 
         public static Bam.Core.V2.TokenizedString InstallPath
