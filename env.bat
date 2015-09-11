@@ -19,7 +19,7 @@ IF NOT EXIST %ExecutablePath% (
   ECHO *** ERROR: BuildAMation directory '%ExecutablePath%' does not exist ***
 ) ELSE (
   SET NewPath=%ExecutablePath%;!NewPath!
-  bam -version
+  bam --help
 )
 
 REM Pass the local variable out to the global

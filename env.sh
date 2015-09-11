@@ -10,5 +10,5 @@ then
   echo "*** ERROR: BuildAMation directory '$ExecutablePath' does not exist ***"
 else
   export PATH=$ExecutablePath:$PATH
-  bam -version
+  bam --help
 fi
