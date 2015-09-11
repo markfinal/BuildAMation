@@ -105,8 +105,6 @@ namespace V2
                     Bam.Core.Log.DebugMessage("Qt installation folder is {0}", installPath);
                     return installPath;
                 }
-
-                throw new Bam.Core.Exception("Unable to find Qt installation path");
             }
 
             private static string
