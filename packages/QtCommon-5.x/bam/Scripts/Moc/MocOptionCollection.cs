@@ -179,11 +179,14 @@ namespace V2
             options.DoNotDisplayWarnings = false;
             options.PathPrefix = null;
 
+#if true
+#else
             // version number of the current Qt package
             var QtVersion = Bam.Core.State.PackageInfo["Qt"].Version;
             var QtVersionFormatted = QtVersion.Replace(".", "0");
             var VersionDefine = "QT_VERSION=0x0" + QtVersionFormatted;
             options.Defines.Add(VersionDefine);
+#endif
         }
 
         public string OutputDirectoryPath

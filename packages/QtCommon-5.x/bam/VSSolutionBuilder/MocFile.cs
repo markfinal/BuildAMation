@@ -42,7 +42,6 @@ namespace V2
             Bam.Core.V2.TokenizedString generatedMocSource,
             C.V2.HeaderFile source)
         {
-#if true
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
             var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
@@ -60,31 +59,6 @@ namespace V2
             customBuild.AddSetting("Command", args.ToString(' '), condition: config.ConditionText);
             customBuild.AddSetting("Message", System.String.Format("Moccing {0}", System.IO.Path.GetFileName(source.InputPath.Parse())), condition: config.ConditionText);
             customBuild.AddSetting("Outputs", output, condition: config.ConditionText);
-#else
-            if (null != source.MetaData)
-            {
-                throw new Bam.Core.Exception("Header file {0} already has VSSolution metadata", source.InputPath.Parse());
-            }
-
-            // TODO: this is hardcoded - needed a better way to figure this out
-            var platform = VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour;
-
-            var output = generatedMocSource.Parse();
-
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            args.Add(System.String.Format("-o{0}", output));
-            args.Add("%(FullPath)");
-
-            var customBuild = new VSSolutionBuilder.V2.VSProjectCustomBuild(source, platform);
-            customBuild.Message = "Moccing";
-            customBuild.Command = args.ToString(' ');
-            customBuild.Outputs.AddUnique(generatedMocSource.Parse());
-
-            var headerFile = new VSSolutionBuilder.V2.VSProjectHeaderFile(source, platform);
-            headerFile.Source = source.GeneratedPaths[C.V2.HeaderFile.Key];
-            headerFile.CustomBuild = customBuild;
-#endif
         }
     }
 }
@@ -125,6 +99,8 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
+#if true
+#else
                     var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
@@ -138,6 +114,7 @@ namespace VSSolutionBuilder
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, mocFileModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
+#endif
                 }
             }
 
