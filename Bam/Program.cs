@@ -118,11 +118,11 @@ namespace Bam
 
                 // configure
                 Core.State.BuildRoot = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildRoot());
-                Core.State.CompileWithDebugSymbols = true;
+                Core.State.CompileWithDebugSymbols = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.UseDebugSymbols());
                 Core.State.BuildMode = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildMode());
                 if (null == Core.State.BuildMode)
                 {
-                    throw new Core.Exception("No builder specified");
+                    throw new Core.Exception("No build mode specified");
                 }
 
                 var debug = new Core.V2.Environment();

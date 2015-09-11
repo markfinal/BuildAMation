@@ -393,6 +393,34 @@ namespace V2
             }
         }
     }
+
+    public sealed class UseDebugSymbols :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-d";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--debug";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Enable debug symbols for the compiled package assembly (may help with exception stack traces).";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable
