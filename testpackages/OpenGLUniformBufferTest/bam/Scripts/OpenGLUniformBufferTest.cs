@@ -50,7 +50,7 @@ namespace OpenGLUniformBufferTest
             this.LinkAgainst<OpenGLSDK.OpenGLV2>();
 
             var rendererObj = source.Children.Where(item => (item as C.Cxx.V2.ObjectFile).InputPath.Parse().Contains("renderer")).ElementAt(0) as C.Cxx.V2.ObjectFile;
-            this.CompileAndLinkAgainst<GLEW.GLEWStaticV2>(rendererObj);
+            this.CompileAndLinkAgainst<glew.GLEWStaticV2>(rendererObj);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.V2.LinkerBase)
@@ -131,7 +131,7 @@ namespace OpenGLUniformBufferTest
         [Bam.Core.DependentModules]
         Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
             typeof(OpenGLSDK.OpenGL),
-            typeof(GLEW.GLEWStatic)
+            typeof(glew.GLEWStatic)
         );
 
         [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
