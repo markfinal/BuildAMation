@@ -42,9 +42,13 @@ namespace Bam
             public static void
             PrintHelp()
             {
-                Core.Log.Info("Bam");
+                Core.Log.Info("BuildAMation (Bam) v{0}", Core.State.VersionString);
+                Core.Log.Info("© Mark Final, 2010-2015");
+                Core.Log.Info("Licensed under BSD 3-clause. See License file.");
+                Core.Log.Info("");
                 Core.Log.Info("Syntax:");
                 Core.Log.Info("    bam [[option[=value]]...]");
+                Core.Log.Info("");
                 // TODO: this does not cover any arguments in the package assembly
                 var argumentTypes = System.AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => typeof(Core.V2.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
                 Core.Log.Info("Options");
