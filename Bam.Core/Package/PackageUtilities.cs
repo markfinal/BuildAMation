@@ -276,6 +276,7 @@ namespace Bam.Core
 #if true
             // read the definition files of any package found in the package roots
             var candidatePackageDefinitions = new Array<PackageDefinitionFile>();
+            candidatePackageDefinitions.Add(masterDefinitionFile);
             while (packageRepos.Count > 0)
             {
                 var repo = packageRepos.Dequeue();
@@ -290,11 +291,6 @@ namespace Bam.Core
                     var packageDir = System.IO.Path.GetDirectoryName(bamDir);
                     var packageDefinitionPath = GetPackageDefinitionPathname(packageDir);
 
-                    // ignore the master package definition already found
-                    if (packageDefinitionPath == masterDefinitionFile.XMLFilename)
-                    {
-                        continue;
-                    }
                     // ignore any duplicates (can be found due to nested repositories)
                     if (null != candidatePackageDefinitions.Where(item => item.XMLFilename == packageDefinitionPath).FirstOrDefault())
                     {
