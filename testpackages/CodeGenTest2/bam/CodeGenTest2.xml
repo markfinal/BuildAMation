@@ -11,7 +11,7 @@
     <Package name="Mingw" version="4.8.1" />
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="12.0" />
-    <Package name="WindowsSDK" verison="8.1" />
+    <Package name="WindowsSDK" version="8.1" />
     <Package name="XcodeBuilder" />
   </Dependents>
   <BamAssemblies>
