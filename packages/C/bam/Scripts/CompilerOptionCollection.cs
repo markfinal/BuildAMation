@@ -80,7 +80,7 @@ namespace C
             }
             else if (target.HasPlatform(Bam.Core.EPlatform.Linux))
             {
-                compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_UNIX"));
+                compilerOptions.Defines.Add(System.String.Format("D_BAM_PLATFORM_LINUX"));
             }
             else if (target.HasPlatform(Bam.Core.EPlatform.OSX))
             {

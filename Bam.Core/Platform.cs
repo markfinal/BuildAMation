@@ -162,7 +162,7 @@ namespace Bam.Core
                 }
             }
 
-            // check unix and sub-derivatives
+            // check linux and sub-derivatives
             if (Contains(platformFlags, EPlatform.Linux))
             {
                 AddPlatformName(ref platformString, "Linux", separator, prefix, toUpper);

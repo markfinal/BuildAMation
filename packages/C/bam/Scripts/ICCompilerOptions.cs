@@ -51,7 +51,7 @@ namespace DefaultSettings
             }
             else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_UNIX");
+                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_LINUX");
             }
             else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
