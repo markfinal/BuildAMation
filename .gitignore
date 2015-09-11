@@ -5,9 +5,9 @@
 *.pidb
 *.suo
 /bin
-/testpackages/*/dev/BamProject
-/testpackages/*/dev/build
-/testpackages/Logs
+/tests/*/PackageDebug
+/tests/*/build
+/tests/Logs
 .DS_Store
 /Bam/obj
 /Bam.Core/obj
