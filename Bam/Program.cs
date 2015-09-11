@@ -125,15 +125,60 @@ namespace Bam
                     throw new Core.Exception("No build mode specified");
                 }
 
-                var debug = new Core.V2.Environment();
-                debug.Configuration = Core.EConfiguration.Debug;
+                var configs = new Core.Array<Core.V2.Environment>();
+                var requestedConfigs = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildConfigurations());
+                if (0 == requestedConfigs.Count)
+                {
+                    // default
+                    requestedConfigs.Add(new Core.StringArray("debug"));
+                }
+                foreach (var configOption in requestedConfigs)
+                {
+                    foreach (var config in configOption)
+                    {
+                        switch (config)
+                        {
+                            case "debug":
+                                {
+                                    var env = new Core.V2.Environment();
+                                    env.Configuration = Core.EConfiguration.Debug;
+                                    configs.Add(env);
+                                }
+                                break;
 
-                var optimized = new Core.V2.Environment();
-                optimized.Configuration = Core.EConfiguration.Optimized;
+                            case "optimized":
+                                {
+                                    var env = new Core.V2.Environment();
+                                    env.Configuration = Core.EConfiguration.Optimized;
+                                    configs.Add(env);
+                                }
+                                break;
+
+                            case "profile":
+                                {
+                                    var env = new Core.V2.Environment();
+                                    env.Configuration = Core.EConfiguration.Profile;
+                                    configs.Add(env);
+                                }
+                                break;
+
+                            case "final":
+                                {
+                                    var env = new Core.V2.Environment();
+                                    env.Configuration = Core.EConfiguration.Final;
+                                    configs.Add(env);
+                                }
+                                break;
+
+                            default:
+                                throw new Core.Exception("Unrecognized configuration, {0}", config);
+                        }
+                    }
+                }
 
                 try
                 {
-                    Core.V2.EntryPoint.Execute(new Core.Array<Core.V2.Environment>(debug/*, optimized*/));
+                    Core.V2.EntryPoint.Execute(configs);
                 }
                 catch (Bam.Core.Exception exception)
                 {

@@ -421,6 +421,42 @@ namespace V2
             }
         }
     }
+
+    public sealed class BuildConfigurations :
+        IRegExCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return @"--config=([a-z]+)";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Specify each configuration to build (can be specified multiple times).";
+            }
+        }
+
+        string ICustomHelpText.OptionHelp
+        {
+            get
+            {
+                return "--config=<configuration>";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

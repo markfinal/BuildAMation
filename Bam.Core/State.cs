@@ -40,6 +40,11 @@ namespace V2
             Array<Environment> environments,
             System.Reflection.Assembly packageAssembly = null)
         {
+            if (0 == environments.Count)
+            {
+                throw new Exception("No build configurations were specified");
+            }
+
             if (null != packageAssembly)
             {
                 PackageUtilities.IdentifyMainAndDependentPackages(true, false);
