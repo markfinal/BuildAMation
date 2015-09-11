@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageDefinition name="Test11" xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Dependents>
+    <Package name="C" />
+    <Package name="Clang" version="Apple425" />
+    <Package name="ComposerXE" version="12" />
+    <Package name="Gcc" version="4.8" />
+    <Package name="LLVMGcc" version="4.2" />
+    <Package name="MakeFileBuilder" />
+    <Package name="Mingw" version="4.8.1" />
+    <Package name="NativeBuilder" />
+    <Package name="QMakeBuilder" />
+    <Package name="VisualC" version="12.0" />
+    <Package name="VSSolutionBuilder" />
+    <Package name="WindowsSDK" version="8.1" />
+    <Package name="XcodeBuilder" />
+  </Dependents>
+  <BamAssemblies>
+    <BamAssembly name="Bam.Core" />
+  </BamAssemblies>
+  <DotNetAssemblies>
+    <DotNetAssembly name="System" requiredTargetFramework="4.0.30319" />
+    <DotNetAssembly name="System.Xml" requiredTargetFramework="4.0.30319" />
+    <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
+  </DotNetAssemblies>
+  <SupportedPlatforms>
+    <Platform name="Windows" />
+    <Platform name="Linux" />
+    <Platform name="OSX" />
+  </SupportedPlatforms>
+</PackageDefinition>
