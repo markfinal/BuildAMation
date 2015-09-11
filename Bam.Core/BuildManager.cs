@@ -299,6 +299,7 @@ namespace V2
             }
 
             var useEvaluation = CheckIfModulesNeedRebuilding(metaDataType);
+            var explainRebuild = CommandLineProcessor.Evaluate(new ExplainBuildReason());
 
             ExecutePreBuild(metaDataType);
 
@@ -337,7 +338,7 @@ namespace V2
                 {
                     foreach (var module in rank)
                     {
-                        var context = new ExecutionContext(useEvaluation);
+                        var context = new ExecutionContext(useEvaluation, explainRebuild);
                         var task = factory.StartNew(() =>
                             {
                                 if (cancellationToken.IsCancellationRequested)
@@ -412,7 +413,7 @@ namespace V2
                     }
                     foreach (IModuleExecution module in rank)
                     {
-                        var context = new ExecutionContext(useEvaluation);
+                        var context = new ExecutionContext(useEvaluation, explainRebuild);
                         try
                         {
                             module.Execute(context);

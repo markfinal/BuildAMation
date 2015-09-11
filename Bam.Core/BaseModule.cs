@@ -446,10 +446,10 @@ namespace V2
                 }
                 if (null == this.ReasonToExecute)
                 {
-                    Log.DebugMessage("Module {0} is up-to-date", this.ToString());
+                    Log.Message(context.ExplainLoggingLevel, "Module {0} is up-to-date", this.ToString());
                     return;
                 }
-                Log.DebugMessage("Module {0} will change because {1}.", this.ToString(), this.ReasonToExecute.ToString());
+                Log.Message(context.ExplainLoggingLevel, "Module {0} will change because {1}.", this.ToString(), this.ReasonToExecute.ToString());
             }
             this.ExecuteInternal(context);
         }

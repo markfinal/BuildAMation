@@ -457,6 +457,34 @@ namespace V2
             }
         }
     }
+
+    public sealed class ExplainBuildReason :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--explain";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "For build modes that evaluate, explain why modules are building";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

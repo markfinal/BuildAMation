@@ -790,14 +790,22 @@ namespace V2
     public class ExecutionContext
     {
         public ExecutionContext(
-            bool useEvaluation)
+            bool useEvaluation,
+            bool explainRebuild)
         {
             this.Evaluate = useEvaluation;
+            this.ExplainLoggingLevel = explainRebuild ? State.VerbosityLevel : EVerboseLevel.Full;
             this.OutputStringBuilder = new System.Text.StringBuilder();
             this.ErrorStringBuilder = new System.Text.StringBuilder();
         }
 
         public bool Evaluate
+        {
+            get;
+            private set;
+        }
+
+        public EVerboseLevel ExplainLoggingLevel
         {
             get;
             private set;
