@@ -49,6 +49,14 @@ namespace V2
         }
     }
 
+    public interface ICommandLineArgumentDefault<T>
+    {
+        T Default
+        {
+            get;
+        }
+    }
+
     public interface IBooleanCommandLineArgument : ICommandLineArgument
     {
     }
@@ -61,12 +69,8 @@ namespace V2
     {
     }
 
-    public interface IIntegerCommandLineArgument : ICommandLineArgument
+    public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
     {
-        int Default
-        {
-            get;
-        }
     }
 
     public interface ICustomHelpText
@@ -132,7 +136,7 @@ namespace V2
             }
         }
 
-        int IIntegerCommandLineArgument.Default
+        int ICommandLineArgumentDefault<int>.Default
         {
             get
             {
@@ -320,7 +324,7 @@ namespace V2
     public sealed class VerbosityLevel :
         IIntegerCommandLineArgument
     {
-        int IIntegerCommandLineArgument.Default
+        int ICommandLineArgumentDefault<int>.Default
         {
             get
             {

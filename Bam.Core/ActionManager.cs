@@ -67,7 +67,7 @@ namespace V2
                     return true;
                 }
             }
-            return false;
+            return (realArg is ICommandLineArgumentDefault<bool>) ? (realArg as ICommandLineArgumentDefault<bool>).Default : false;
         }
 
         public static string
@@ -87,7 +87,7 @@ namespace V2
                     return splitArg[1];
                 }
             }
-            return null;
+            return (realArg is ICommandLineArgumentDefault<string>) ? (realArg as ICommandLineArgumentDefault<string>).Default : null;
         }
 
         public static int
