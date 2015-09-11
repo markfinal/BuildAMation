@@ -125,6 +125,8 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
+#if true
+#else
                     var solutionType = Bam.Core.State.Get("VSSolutionBuilder", "SolutionType") as System.Type;
                     var SolutionInstance = System.Activator.CreateInstance(solutionType);
                     var ProjectExtensionProperty = solutionType.GetProperty("ProjectExtension");
@@ -138,6 +140,7 @@ namespace VSSolutionBuilder
                     projectData = System.Activator.CreateInstance(projectType, new object[] { moduleName, projectPathName, targetNode.Package.Identifier, mocFileModule.ProxyPath }) as IProject;
 
                     this.solutionFile.ProjectDictionary.Add(moduleName, projectData);
+#endif
                 }
             }
 

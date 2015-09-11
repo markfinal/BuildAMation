@@ -67,7 +67,7 @@ namespace V2
                         var subdir = path.Value.SubDirectory;
                         foreach (var reference in path.Value.References)
                         {
-                            if (reference.Module.Package == module.Key.Package)
+                            if (reference.Module.PackageDefinition == module.Key.PackageDefinition)
                             {
                                 // same package has the same output folder, so don't bother copying
                                 continue;
