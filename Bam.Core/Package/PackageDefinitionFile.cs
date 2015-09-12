@@ -137,6 +137,22 @@ namespace Bam.Core
             {
                 this.Description = System.String.Format("A new package called {0}", name);
             }
+
+            // add required BuildAMation assemblies
+            this.BamAssemblies.Add("Bam.Core");
+
+            // add required DotNet assemblies
+            {
+                var systemDesc = new DotNetAssemblyDescription("System");
+                var systemXmlDesc = new DotNetAssemblyDescription("System.Xml");
+                var systemCoreDesc = new DotNetAssemblyDescription("System.Core");
+
+                systemDesc.RequiredTargetFramework = "4.0.30319";
+                systemXmlDesc.RequiredTargetFramework = "4.0.30319";
+                systemCoreDesc.RequiredTargetFramework = "4.0.30319";
+
+                this.DotNetAssemblies.AddRange(new[] { systemDesc, systemXmlDesc, systemCoreDesc });
+            }
         }
 
         /// <summary>
