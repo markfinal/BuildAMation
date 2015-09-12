@@ -2039,7 +2039,7 @@ namespace Bam.Core
             bool allBuilders = false)
         {
             var bamDir = this.GetBamDirectory();
-            var scriptDir = System.IO.Path.Combine(bamDir, "Scripts");
+            var scriptDir = System.IO.Path.Combine(bamDir, PackageUtilities.ScriptsSubFolder);
             var scripts = new StringArray(System.IO.Directory.GetFiles(scriptDir, "*.cs", System.IO.SearchOption.AllDirectories));
 
             var builderNames = new StringArray();

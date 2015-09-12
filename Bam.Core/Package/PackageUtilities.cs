@@ -33,6 +33,7 @@ namespace Bam.Core
     public static class PackageUtilities
     {
         public static readonly string BamSubFolder = "bam";
+        public static readonly string ScriptsSubFolder = "Scripts";
 
         public static void
         MakePackage()
