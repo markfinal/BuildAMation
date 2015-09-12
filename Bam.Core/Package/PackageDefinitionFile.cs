@@ -446,7 +446,7 @@ namespace Bam.Core
             {
                 packageDefinition = System.String.Format("D_PACKAGE_{0}", this.Name).ToUpper();
             }
-            this.Definitions.Add(packageDefinition);
+            this.Definitions.AddUnique(packageDefinition);
         }
 
         public void
