@@ -57,6 +57,19 @@ namespace Bam.Core
 
             System.IO.Directory.CreateDirectory(bamDir);
             definition.Write();
+
+            var scriptsDir = System.IO.Path.Combine(bamDir, ScriptsSubFolder);
+            System.IO.Directory.CreateDirectory(scriptsDir);
+
+            var initialScriptFile = System.IO.Path.Combine(scriptsDir, packageName) + ".cs";
+            using (System.IO.TextWriter writer = new System.IO.StreamWriter(initialScriptFile))
+            {
+                writer.WriteLine("using Bam.Core;");
+                writer.WriteLine("namespace {0}", packageName);
+                writer.WriteLine("{");
+                writer.WriteLine("    // write modules here ...");
+                writer.WriteLine("}");
+            }
         }
 
         public static string VersionDefineForCompiler
