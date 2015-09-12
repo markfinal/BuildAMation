@@ -106,8 +106,7 @@ namespace Bam.Core
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
             this.PackageRepositories = new StringArray();
-            // package repo/package name/bam/<definition file>.xml
-            this.PackageRepositories.Add(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(xmlFilename))));
+            this.PackageRepositories.Add(this.GetPackageRepository());
             this.Description = string.Empty;
         }
 
@@ -188,15 +187,17 @@ namespace Bam.Core
                 packageDefinition.AppendChild(descriptionElement);
             }
 
-            // package repositories
-            if (this.PackageRepositories.Count > 0)
+            // package repositories - don't write out the repo that this package resides in
+            var packageRepos = new StringArray(this.PackageRepositories);
+            packageRepos.Remove(this.GetPackageRepository());
+            if (packageRepos.Count > 0)
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
 
-                foreach (string rootPath in this.PackageRepositories)
+                foreach (string repo in packageRepos)
                 {
                     var rootElement = document.CreateElement("Repo", namespaceURI);
-                    rootElement.SetAttribute("dir", rootPath);
+                    rootElement.SetAttribute("dir", repo);
                     packageRootsElement.AppendChild(rootElement);
                 }
 
@@ -2067,6 +2068,14 @@ namespace Bam.Core
         {
             var packageDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.XMLFilename));
             return packageDir;
+        }
+
+        private string
+        GetPackageRepository()
+        {
+            // package repo/package name/bam/<definition file>.xml
+            var repo = System.IO.Path.GetDirectoryName(this.GetPackageDirectory());
+            return repo;
         }
 
         public string
