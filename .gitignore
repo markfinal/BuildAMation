@@ -5,7 +5,7 @@
 *.pidb
 *.suo
 /bin
-/tests/*/PackageDebug
+PackageDebug
 /tests/*/build
 /tests/Logs
 .DS_Store
