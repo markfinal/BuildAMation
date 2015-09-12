@@ -32,6 +32,42 @@ namespace C
 {
 namespace V2
 {
+    public sealed class DefaultBitDepth :
+        Bam.Core.V2.IIntegerCommandLineArgument
+    {
+        string Bam.Core.V2.ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Change the default bit depth of the builds. Default is 64.";
+            }
+        }
+
+        string Bam.Core.V2.ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--C.bitdepth";
+            }
+        }
+
+        string Bam.Core.V2.ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        int Bam.Core.V2.ICommandLineArgumentDefault<int>.Default
+        {
+            get
+            {
+                return 64;
+            }
+        }
+    }
+
     public abstract class CModule :
         Bam.Core.V2.Module
     {
@@ -41,8 +77,7 @@ namespace V2
         {
             this.Macros.Add("OutputName", this.Macros["modulename"]);
             // default bit depth
-            // TODO: override on command line
-            this.BitDepth = EBit.SixtyFour;
+            this.BitDepth = (EBit)Bam.Core.V2.CommandLineProcessor.Evaluate(new DefaultBitDepth());
         }
 
         protected override void
