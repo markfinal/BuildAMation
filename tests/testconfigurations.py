@@ -12,7 +12,7 @@ class TestSetup:
         self._linux = linux
         self._osx = osx
 
-    def GetBuilders(self):
+    def GetBuildModes(self):
         platform = sys.platform
         if platform.startswith("win"):
             return self._win.keys()
@@ -78,11 +78,15 @@ class TestSetup:
     def GetResponseNames(self, builder, excludedResponseFiles):
         responseFiles = []
         for i in self._GetListOfResponseNames(builder):
+            """
             if not i:
                 responseFiles.append(i)
             else:
                 if not excludedResponseFiles or i not in excludedResponseFiles:
                     responseFiles.append(i)
+            """
+            responseFiles.append(translation[i])
+        print responseFiles
         return responseFiles
 
 def GetResponsePath(responseName):
@@ -108,14 +112,19 @@ def TestOptionSetup(optParser):
       # TODO: what sort of data is this? is it a single value, or can multiple versions be specified?
       optParser.add_option(longName, dest=dest, action="append", default=None, help="Versions to test for '%s'" % response)
 
+translation = {}
+translation["visualc64"] = ["--C.toolchain=VisualC", "--C.bitdepth=64"]
+translation["visualc32"] = ["--C.toolchain=VisualC", "--C.bitdepth=32"]
+translation["mingw"] = ["--C.toolchain=Mingw", "--C.bitdepth=32"]
+
 # TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of a Bam command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
 configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
+configs["Test2"] = TestSetup(win={"Native":["visualc64","visualc32","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
+                             linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
+                             osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})

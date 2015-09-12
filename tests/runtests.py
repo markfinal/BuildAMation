@@ -1,34 +1,46 @@
 #!/usr/bin/python
 
-import sys
-import os
-import subprocess
-import StringIO
-import time
-from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath
 from builderactions import GetBuilderDetails
+import glob
 from optparse import OptionParser
+import os
+import StringIO
+import subprocess
+import sys
+from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath
+import time
+import xml.etree.ElementTree as ET
 
 # ----------
 
 class Package:
-    root = None
-    name = None
-    version = None
-
     def __init__(self, root, name, version):
         self.root = root
         self.name = name
         self.version = version
 
+    def __init__(self, xmlFilename):
+        document = ET.parse(xmlFilename)
+        root = document.getroot()
+        self.name = root.attrib["name"]
+        self.version = root.attrib.get("version", None)
+        self.packageDir = os.path.normpath(os.path.join(xmlFilename, os.pardir, os.pardir))
+        self.repo = os.path.normpath(os.path.join(self.packageDir, os.pardir))
+
     def GetDescription(self):
-        return "%s-%s in %s" % (self.name, self.version, self.root)
+        if self.version:
+            return "%s-%s in %s" % (self.name, self.version, self.repo)
+        else:
+            return "%s in %s" % (self.name, self.repo)
 
     def GetPath(self):
-        return os.path.join(self.root, self.name, self.version)
+        return self.packageDir
 
     def GetId(self):
-        return "-".join([self.name, self.version])
+        if self.version:
+            return "-".join([self.name, self.version])
+        else:
+            return self.name
 
     def GetName(self):
         return self.name
@@ -46,16 +58,20 @@ def FindAllPackagesToTest(root, options):
         if packageName.startswith("."):
             continue
         packageDir = os.path.join(root, packageName)
-        if os.path.isdir(packageDir):
-            for packageVersion in os.listdir(packageDir):
-                if packageVersion.startswith("."):
-                    continue
-                versionDir = os.path.join(packageDir, packageVersion)
-                if os.path.isdir(versionDir):
-                    package = Package(root, packageName, packageVersion)
-                    if options.verbose:
-                        print "\t%s" % package.GetId()
-                    tests.append(package)
+        if not os.path.isdir(packageDir):
+            continue
+        bamDir = os.path.join(packageDir, 'bam')
+        if not os.path.isdir(bamDir):
+            continue
+        xmlFiles = glob.glob(os.path.join(bamDir, "*.xml"))
+        if len(xmlFiles) == 0:
+          continue
+        if len(xmlFiles) > 1:
+          raise RuntimeError("Too many XML files found in %s to identify a package definition file" % bamDir)
+        package = Package(xmlFiles[0])
+        if options.verbose:
+            print "\t%s" % package.GetId()
+        tests.append(package)
     return tests
 
 def _preExecute(builder, options):
@@ -67,23 +83,21 @@ def _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, 
     argList.append("bam")
     if responseFile:
         argList.append("@" + os.path.join(os.getcwd(), responseFile))
-    argList.append("-buildroot=" + options.buildRoot)
-    argList.append("-builder=" + options.builder)
-    if sys.platform.startswith("win"):
-        argList.append("-platforms=" + ";".join(options.platforms))
-        argList.append("-configurations=" + ";".join(options.configurations))
-    else:
-        argList.append("-platforms=" + ":".join(options.platforms))
-        argList.append("-configurations=" + ":".join(options.configurations))
+    argList.append("-o=%s" % options.buildRoot)
+    argList.append("-b=%s" % options.builder)
+    for config in options.configurations:
+        argList.append("--config=%s" % config);
     argList.append("-j=" + str(options.numJobs))
     if options.debugSymbols:
-        argList.append("-debugsymbols")
+        argList.append("-d")
     if options.verbose:
-        argList.append("-verbosity=2")
+        argList.append("-v=2")
     else:
-        argList.append("-verbosity=0")
+        argList.append("-v=0")
     if options.forceDefinitionUpdate:
-        argList.append("-forcedefinitionupdate")
+        argList.append("--forceupdates")
+    if not options.noInitialClean:
+        argList.append("--clean")
     if extraArgs:
         argList.extend(extraArgs)
     print " ".join(argList)
@@ -104,19 +118,19 @@ def _postExecute(builder, options, package, outputMessages, errorMessages):
 def ExecuteTests(package, configuration, options, args, outputBuffer):
     print "Package           : ", package.GetId()
     if options.verbose:
-        print "Description       : ", package.GetDescription()
-        print "Available builders:", configuration.GetBuilders()
-    if not options.builder in configuration.GetBuilders():
+        print "Description          : ", package.GetDescription()
+        print "Available build modes:", configuration.GetBuildModes()
+    if not options.builder in configuration.GetBuildModes():
         outputBuffer.write("IGNORED: Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
         print "\tIgnored"
         return 0
-    responseNames = configuration.GetResponseNames(options.builder, options.excludeResponseFiles)
-    if len(responseNames) == 0:
+    variationArgs = configuration.GetResponseNames(options.builder, options.excludeResponseFiles)
+    if len(variationArgs) == 0:
         outputBuffer.write("IGNORED: Package '%s' has no response file with the current options\n" % package.GetDescription())
         print "\tIgnored"
         return 0
     if options.verbose:
-        print "Response filenames: ", responseNames
+        print "Response filenames: ", variationArgs
         if options.excludeResponseFiles:
           print " (excluding", options.excludeResponseFiles, ")"
     nonKWArgs = []
@@ -127,9 +141,10 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
                 nonKWArgs.append("-%s" % arg)
     theBuilder = GetBuilderDetails(options.builder)
     exitCode = 0
-    for responseName in responseNames:
+    for variation in variationArgs:
         currentDir = os.getcwd()
         iterations = 1
+        """
         if responseName:
             responseFile = GetResponsePath(responseName)
             versionName = "%s_version" % responseName
@@ -141,11 +156,15 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
         else:
             responseFile = None
             versionArgs = None
+        """
+        responseFile = None
+        versionArgs = None
 
         for it in range(0,iterations):
             extraArgs = nonKWArgs[:]
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
+            extraArgs.extend(variation)
             try:
               outputMessages = StringIO.StringIO()
               errorMessages = StringIO.StringIO()
@@ -199,7 +218,7 @@ def CleanUp(options):
 
 if __name__ == "__main__":
     optParser = OptionParser(description="BuildAMation unittests")
-    optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
+    #optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
     optParser.add_option("--configuration", "-c", dest="configurations", action="append", default=None, help="Configurations to test")
     optParser.add_option("--test", "-t", dest="tests", action="append", default=None, help="Tests to run")
     optParser.add_option("--buildroot", "-o", dest="buildRoot", action="store", default="build", help="BuildAMation build root")
@@ -218,14 +237,14 @@ if __name__ == "__main__":
         print "Options are ", options
         print "Args    are ", args
 
-    if not options.platforms:
-        raise RuntimeError("No platforms were specified")
+    #if not options.platforms:
+    #    raise RuntimeError("No platforms were specified")
 
     if not options.configurations:
         raise RuntimeError("No configurations were specified")
 
-    if not options.noInitialClean:
-        CleanUp(options)
+    #if not options.noInitialClean:
+    #    CleanUp(options)
 
     tests = FindAllPackagesToTest(os.getcwd(), options)
     if not options.tests:
