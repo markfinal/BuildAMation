@@ -7,9 +7,9 @@
     <Package name="Gcc" version="4.8" />
     <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
-    <Package name="VisualC" version="12.0" default="True" />
+    <Package name="VisualC" version="12.0" default="true" />
     <Package name="VSSolutionBuilder" />
-    <Package name="WindowsSDK" version="8.1" default="True" />
+    <Package name="WindowsSDK" version="8.1" default="true" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" />
