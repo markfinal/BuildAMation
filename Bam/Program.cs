@@ -124,6 +124,12 @@ namespace Bam
                     return;
                 }
 
+                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.AddDependentPackage()))
+                {
+                    Core.PackageUtilities.AddDependentPackage();
+                    return;
+                }
+
                 // configure
                 Core.State.BuildRoot = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildRoot());
                 Core.State.CompileWithDebugSymbols = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.UseDebugSymbols());

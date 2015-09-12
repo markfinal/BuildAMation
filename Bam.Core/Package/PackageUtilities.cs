@@ -72,6 +72,37 @@ namespace Bam.Core
             }
         }
 
+        public static void
+        AddDependentPackage()
+        {
+            var packageNameArgument = new V2.PackageName();
+            var packageName = V2.CommandLineProcessor.Evaluate(packageNameArgument);
+            if (null == packageName)
+            {
+                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as V2.ICommandLineArgument).LongName);
+            }
+
+            var packageVersion = V2.CommandLineProcessor.Evaluate(new V2.PackageVersion());
+
+            var masterPackage = GetMasterPackage();
+            // TODO: no checking if this package exists
+            // TODO: is this dependent already present?
+            if (null != masterPackage.Dependents.Where(item => item.Item1 == packageName && item.Item2 == packageVersion).FirstOrDefault())
+            {
+                if (null != packageVersion)
+                {
+                    throw new Exception("Dependency {0}, version {1}, already exists", packageName, packageVersion);
+                }
+                else
+                {
+                    throw new Exception("Dependency {0} already exists", packageName);
+                }
+            }
+
+            masterPackage.Dependents.Add(new System.Tuple<string, string, bool?>(packageName, packageVersion, null));
+            masterPackage.Write();
+        }
+
         public static string VersionDefineForCompiler
         {
             get
@@ -212,12 +243,26 @@ namespace Bam.Core
         }
 #endif
 
+#if true
+        public static PackageDefinitionFile
+        GetMasterPackage()
+        {
+            var workingDir = State.WorkingDirectory;
+            var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
+            if (!isWorkingPackageWellDefined)
+            {
+                throw new Exception("Working directory package is not well defined");
+            }
+
+            var masterDefinitionFile = new PackageDefinitionFile(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
+            masterDefinitionFile.Read(true);
+            return masterDefinitionFile;
+        }
+#else
         public static void
         IdentifyMainPackageOnly()
         {
             // find the working directory package
-#if true
-#else
             bool isWorkingPackageWellDefined;
             var id = IsPackageDirectory(State.WorkingDirectory, out isWorkingPackageWellDefined);
             if (null == id)
@@ -249,8 +294,8 @@ namespace Bam.Core
 
             var info = new PackageInformation(id);
             State.PackageInfo.Add(info);
-#endif
         }
+#endif
 
         public static void
         IdentifyMainAndDependentPackages(
@@ -272,6 +317,9 @@ namespace Bam.Core
 #endif
 
 #if true
+#if true
+            var masterDefinitionFile = GetMasterPackage();
+#else
             var workingDir = State.WorkingDirectory;
             var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
             if (!isWorkingPackageWellDefined)
@@ -281,6 +329,7 @@ namespace Bam.Core
 
             var masterDefinitionFile = new PackageDefinitionFile(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
             masterDefinitionFile.Read(true);
+#endif
 
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
