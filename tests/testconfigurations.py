@@ -75,8 +75,8 @@ class TestSetup:
             raise RuntimeError("Unknown platform " + platform)
         return responseNames
 
-    def GetResponseNames(self, builder, excludedResponseFiles):
-        responseFiles = []
+    def GetVariations(self, builder, excludedVariations):
+        variations = []
         for i in self._GetListOfResponseNames(builder):
             """
             if not i:
@@ -85,9 +85,9 @@ class TestSetup:
                 if not excludedResponseFiles or i not in excludedResponseFiles:
                     responseFiles.append(i)
             """
-            responseFiles.append(translation[i])
-        print responseFiles
-        return responseFiles
+            if translation.has_key(i):
+                variations.append(translation[i])
+        return variations
 
 def GetResponsePath(responseName):
   return "%s.rsp" % responseName
@@ -122,9 +122,9 @@ configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test2"] = TestSetup(win={"Native":["visualc64","visualc32","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                             linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                             osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
+configs["Test2"] = TestSetup(win={"Native":["visualc64","visualc32","mingw"],"VSSolution":["visualc64"],"MakeFile":["visualc64","mingw"]},
+                             linux={"Native":["gcc"],"MakeFile":["gcc"]},
+                             osx={"Native":["clang"],"MakeFile":["clang"],"Xcode":["clang"]})
 configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})

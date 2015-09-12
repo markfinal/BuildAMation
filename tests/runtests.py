@@ -84,7 +84,7 @@ def _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, 
     if responseFile:
         argList.append("@" + os.path.join(os.getcwd(), responseFile))
     argList.append("-o=%s" % options.buildRoot)
-    argList.append("-b=%s" % options.builder)
+    argList.append("-b=%s" % options.buildmode)
     for config in options.configurations:
         argList.append("--config=%s" % config);
     argList.append("-j=" + str(options.numJobs))
@@ -120,11 +120,11 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
     if options.verbose:
         print "Description          : ", package.GetDescription()
         print "Available build modes:", configuration.GetBuildModes()
-    if not options.builder in configuration.GetBuildModes():
-        outputBuffer.write("IGNORED: Package '%s' does not support the builder '%s' in the test configuration\n" % (package.GetDescription(),options.builder))
+    if not options.buildmode in configuration.GetBuildModes():
+        outputBuffer.write("IGNORED: Package '%s' does not support build mode '%s' in the test configuration\n" % (package.GetDescription(),options.buildmode))
         print "\tIgnored"
         return 0
-    variationArgs = configuration.GetResponseNames(options.builder, options.excludeResponseFiles)
+    variationArgs = configuration.GetVariations(options.buildmode, options.excludeResponseFiles)
     if len(variationArgs) == 0:
         outputBuffer.write("IGNORED: Package '%s' has no response file with the current options\n" % package.GetDescription())
         print "\tIgnored"
@@ -139,7 +139,7 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
             argSplit = arg.split('=')
             if argSplit[0].endswith('.version'):
                 nonKWArgs.append("-%s" % arg)
-    theBuilder = GetBuilderDetails(options.builder)
+    theBuilder = GetBuilderDetails(options.buildmode)
     exitCode = 0
     for variation in variationArgs:
         currentDir = os.getcwd()
@@ -222,7 +222,7 @@ if __name__ == "__main__":
     optParser.add_option("--configuration", "-c", dest="configurations", action="append", default=None, help="Configurations to test")
     optParser.add_option("--test", "-t", dest="tests", action="append", default=None, help="Tests to run")
     optParser.add_option("--buildroot", "-o", dest="buildRoot", action="store", default="build", help="BuildAMation build root")
-    optParser.add_option("--builder", "-b", dest="builder", action="store", default="Native", help="BuildAMation builder to test")
+    optParser.add_option("--buildmode", "-b", dest="buildmode", action="store", default="Native", help="BuildAMation build mode to test")
     optParser.add_option("--keepfiles", "-k", dest="keepFiles", action="store_true", default=False, help="Keep the BuildAMation build files around")
     optParser.add_option("--jobs", "-j", dest="numJobs", action="store", type="int", default=1, help="Number of jobs to use with BuildAMation builds")
     optParser.add_option("--verbose", "-v", dest="verbose", action="store_true", default=False, help="Verbose output")

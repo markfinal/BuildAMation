@@ -25,10 +25,10 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
     """Post action for testing the VSSolution builder"""
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
-    slnPath = os.path.join(buildRoot, package.GetId(), package.GetId() + ".sln")
+    slnPath = os.path.join(buildRoot, package.GetId() + ".sln")
     if not os.path.exists(slnPath):
         # TODO: really need something different here - an invalid test result, rather than a failure
-        outputMessages.write("ViisualStudio solution expected at %s did not exist" % slnPath)
+        outputMessages.write("VisualStudio solution expected at %s did not exist" % slnPath)
         return 0
     try:
         vcVersion = options.visualc_version
