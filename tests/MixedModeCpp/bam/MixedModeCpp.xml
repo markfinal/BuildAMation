@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PackageDefinition name="MixedModeCpp" xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="MixedModeCpp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
   <Dependents>
     <Package name="C" />
     <Package name="Clang" version="3.1" />
