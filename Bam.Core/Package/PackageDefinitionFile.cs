@@ -158,6 +158,7 @@ namespace Bam.Core
             }
 
 #if true
+            this.Dependents.Sort();
 #else
             this.PackageIdentifiers.Sort();
 #endif
