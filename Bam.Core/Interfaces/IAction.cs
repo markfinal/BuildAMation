@@ -569,6 +569,34 @@ namespace V2
             }
         }
     }
+
+    public sealed class ForceDefinitionFileUpdate :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--forceupdates";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Force an update of all package definition files read";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable
