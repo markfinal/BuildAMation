@@ -193,11 +193,13 @@ namespace Bam.Core
             if (packageRepos.Count > 0)
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
-
+                var bamDir = this.GetBamDirectory();
                 foreach (string repo in packageRepos)
                 {
+                    var relativePackageRepo = Core.RelativePathUtilities.GetPath(repo, bamDir);
+
                     var rootElement = document.CreateElement("Repo", namespaceURI);
-                    rootElement.SetAttribute("dir", repo);
+                    rootElement.SetAttribute("dir", relativePackageRepo);
                     packageRootsElement.AppendChild(rootElement);
                 }
 
