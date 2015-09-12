@@ -249,7 +249,7 @@ namespace Bam.Core
                         }
                         if (packageIsDefault.HasValue)
                         {
-                            packageElement.SetAttribute("default", packageIsDefault.Value.ToString());
+                            packageElement.SetAttribute("default", packageIsDefault.Value.ToString().ToLower());
                         }
                         dependentsEl.AppendChild(packageElement);
                     }
