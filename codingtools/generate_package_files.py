@@ -44,4 +44,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         processPath([sys.argv[1]])
     else:
-        processPath(['packages', 'testpackages'])
+        processPath(['packages', 'tests'])

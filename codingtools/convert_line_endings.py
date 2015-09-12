@@ -25,4 +25,4 @@ if __name__ == "__main__":
         convert_line_endings(sys.argv[1])
     else:
         processPath('.', ['.cs'])
-        processPath('testpackages', ['.h', '.c', '.cpp', '.m', '.mm'])
+        processPath('tests', ['.h', '.c', '.cpp', '.m', '.mm', '.py'])

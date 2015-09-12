@@ -42,4 +42,4 @@ if __name__ == "__main__":
         remove_bom(sys.argv[1])
     else:
         processPath('.', ['.cs'])
-        processPath('testpackages', ['.h', '.c', '.cpp', '.m', '.mm'])
+        processPath('tests', ['.h', '.c', '.cpp', '.m', '.mm'])

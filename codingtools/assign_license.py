@@ -97,4 +97,4 @@ if __name__ == "__main__":
         assign_license(sys.argv[1])
     else:
         processPath('.', ['.cs'])
-        processPath('testpackages', ['.h', '.c', '.cpp', '.m', '.mm'])
+        processPath('tests', ['.h', '.c', '.cpp', '.m', '.mm'])
