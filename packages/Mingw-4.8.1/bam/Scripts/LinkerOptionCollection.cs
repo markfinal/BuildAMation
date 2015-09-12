@@ -216,6 +216,15 @@ namespace DefaultSettings
             }
         }
 
+        private static string
+        GetLPrefixLibraryName(
+            string fullLibraryPath)
+        {
+            var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
+            libName = libName.Substring(3); // trim off lib prefix
+            return System.String.Format("-l{0}", libName);
+        }
+
         public override void ProcessLibraryDependency(
             C.V2.CModule executable,
             C.V2.CModule library)
@@ -226,7 +235,7 @@ namespace DefaultSettings
                 return;
             }
             var dir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
-            var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
+            var libFilename = GetLPrefixLibraryName(fullLibraryPath);
             var linker = executable.Settings as C.V2.ICommonLinkerOptions;
             linker.Libraries.AddUnique(libFilename);
             linker.LibraryPaths.AddUnique(dir);
