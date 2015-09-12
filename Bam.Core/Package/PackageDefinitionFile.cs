@@ -1263,6 +1263,12 @@ namespace Bam.Core
             }
             catch (Exception ex)
             {
+                // something in Bam went wrong
+                throw ex;
+            }
+            catch (System.FormatException ex)
+            {
+                // format of the XML is wrong
                 throw ex;
             }
             catch (System.Exception)
