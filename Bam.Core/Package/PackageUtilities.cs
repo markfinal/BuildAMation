@@ -32,6 +32,8 @@ namespace Bam.Core
 {
     public static class PackageUtilities
     {
+        public static readonly string BamSubFolder = "bam";
+
         public static string VersionDefineForCompiler
         {
             get
@@ -73,11 +75,10 @@ namespace Bam.Core
             string packagePath)
         {
 #if true
-            var bamDataFolderName = "bam";
-            var bamDir = System.IO.Path.Combine(packagePath, bamDataFolderName);
+            var bamDir = System.IO.Path.Combine(packagePath, BamSubFolder);
             if (!System.IO.Directory.Exists(bamDir))
             {
-                throw new Exception("Path {0} does not form a BAM! package: missing '{1}' subdirectory", packagePath, bamDataFolderName);
+                throw new Exception("Path {0} does not form a BAM! package: missing '{1}' subdirectory", packagePath, BamSubFolder);
             }
 
             return true;
@@ -133,8 +134,7 @@ namespace Bam.Core
         GetPackageDefinitionPathname(
             string packagePath)
         {
-            var bamDataFolderName = "bam";
-            var bamDir = System.IO.Path.Combine(packagePath, bamDataFolderName);
+            var bamDir = System.IO.Path.Combine(packagePath, BamSubFolder);
             var xmlFiles = System.IO.Directory.GetFiles(bamDir, "*.xml", System.IO.SearchOption.AllDirectories);
             if (0 == xmlFiles.Length)
             {
@@ -280,7 +280,7 @@ namespace Bam.Core
             while (packageRepos.Count > 0)
             {
                 var repo = packageRepos.Dequeue();
-                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, "bam", System.IO.SearchOption.AllDirectories);
+                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
 
                 // TODO: when DirectoryLocations are removed, remove this
                 var tempDirLoc = DirectoryLocation.Get(repo, Location.EExists.Exists);

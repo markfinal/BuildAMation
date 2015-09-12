@@ -145,7 +145,7 @@ namespace V2
             if (null != packageDefinition)
             {
                 var linkPath = include.Replace(packageDefinition.GetPackageDirectory(), packageDefinition.FullName);
-                linkPath = linkPath.Replace("bam", string.Empty);
+                linkPath = linkPath.Replace(Core.PackageUtilities.BamSubFolder, string.Empty);
                 CreateElement("Link", parent: source, value: linkPath);
             }
         }
@@ -176,7 +176,7 @@ namespace V2
             var source = CreateElement("None", parent: parent);
             CreateAttribute("Include", Core.RelativePathUtilities.GetPath(include, RootUri), source);
             var linkPath = include.Replace(packageDefinition.GetPackageDirectory(), packageDefinition.FullName);
-            linkPath = linkPath.Replace("bam", string.Empty);
+            linkPath = linkPath.Replace(Core.PackageUtilities.BamSubFolder, string.Empty);
             CreateElement("Link", parent: source, value: linkPath);
         }
 #else
