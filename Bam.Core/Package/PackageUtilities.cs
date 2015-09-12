@@ -34,6 +34,30 @@ namespace Bam.Core
     {
         public static readonly string BamSubFolder = "bam";
 
+        public static void
+        MakePackage()
+        {
+            var packageDir = Core.State.WorkingDirectory;
+            var bamDir = System.IO.Path.Combine(packageDir, BamSubFolder);
+            if (System.IO.Directory.Exists(bamDir))
+            {
+                throw new Exception("A Bam package already exists at {0}", packageDir);
+            }
+
+            var packageNameArgument = new V2.PackageName();
+            var packageName = V2.CommandLineProcessor.Evaluate(packageNameArgument);
+            if (null == packageName)
+            {
+                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as V2.ICommandLineArgument).LongName);
+            }
+
+            var packageVersion = V2.CommandLineProcessor.Evaluate(new V2.PackageVersion());
+            var definition = new PackageDefinitionFile(bamDir, packageName, packageVersion);
+
+            System.IO.Directory.CreateDirectory(bamDir);
+            definition.Write();
+        }
+
         public static string VersionDefineForCompiler
         {
             get

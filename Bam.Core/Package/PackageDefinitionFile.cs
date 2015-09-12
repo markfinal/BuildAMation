@@ -89,8 +89,8 @@ namespace Bam.Core
             }
         }
 
-        public
-        PackageDefinitionFile(
+        private void
+        Initialize(
             string xmlFilename,
             bool validate)
         {
@@ -109,6 +109,35 @@ namespace Bam.Core
             // package repo/package name/bam/<definition file>.xml
             this.PackageRepositories.Add(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(xmlFilename))));
             this.Description = string.Empty;
+        }
+
+        public
+        PackageDefinitionFile(
+            string xmlFilename,
+            bool validate)
+        {
+            this.Initialize(xmlFilename, validate);
+        }
+
+        public
+        PackageDefinitionFile(
+            string bamDirectory,
+            string name,
+            string version)
+        {
+            var definitionName = (null != version) ? System.String.Format("{0}-{1}.xml", name, version) : name + ".xml";
+            var xmlFilename = System.IO.Path.Combine(bamDirectory, definitionName);
+            this.Initialize(xmlFilename, validate);
+            this.Name = name;
+            this.Version = version;
+            if (null != version)
+            {
+                this.Description = System.String.Format("A new package called {0} with version {1}", name, version);
+            }
+            else
+            {
+                this.Description = System.String.Format("A new package called {0}", name);
+            }
         }
 
         /// <summary>
@@ -143,6 +172,11 @@ namespace Bam.Core
                 var mostRecentSchemaRelativePath = State.PackageDefinitionSchemaRelativePathNameV3;
                 schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, mostRecentSchemaRelativePath);
                 packageDefinition.Attributes.Append(schemaAttribute);
+                packageDefinition.SetAttribute("name", this.Name);
+                if (null != this.Version)
+                {
+                    packageDefinition.SetAttribute("version", this.Version);
+                }
             }
             document.AppendChild(packageDefinition);
 
@@ -157,12 +191,12 @@ namespace Bam.Core
             // package repositories
             if (this.PackageRepositories.Count > 0)
             {
-                var packageRootsElement = document.CreateElement("PackageRoots", namespaceURI);
+                var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
 
                 foreach (string rootPath in this.PackageRepositories)
                 {
-                    var rootElement = document.CreateElement("RootDirectory", namespaceURI);
-                    rootElement.SetAttribute("Path", rootPath);
+                    var rootElement = document.CreateElement("Repo", namespaceURI);
+                    rootElement.SetAttribute("dir", rootPath);
                     packageRootsElement.AppendChild(rootElement);
                 }
 
@@ -170,6 +204,49 @@ namespace Bam.Core
             }
 
 #if true
+            if (this.Dependents.Count > 0)
+            {
+                var dependentsEl = document.CreateElement("Dependents", namespaceURI);
+                foreach (var package in this.Dependents)
+                {
+                    var packageName = package.Item1;
+                    var packageVersion = package.Item2;
+                    var packageIsDefault = package.Item3;
+                    System.Xml.XmlElement packageElement = null;
+
+                    {
+                        var node = dependentsEl.FirstChild;
+                        while (node != null)
+                        {
+                            var attributes = node.Attributes;
+                            var nameAttribute = attributes["Name"];
+                            if ((null != nameAttribute) && (nameAttribute.Value == packageName))
+                            {
+                                packageElement = node as System.Xml.XmlElement;
+                                break;
+                            }
+
+                            node = node.NextSibling;
+                        }
+                    }
+
+                    if (null == packageElement)
+                    {
+                        packageElement = document.CreateElement("Package", namespaceURI);
+                        packageElement.SetAttribute("name", packageName);
+                        if (null != packageVersion)
+                        {
+                            packageElement.SetAttribute("version", packageVersion);
+                        }
+                        if (packageIsDefault.HasValue)
+                        {
+                            packageElement.SetAttribute("default", packageIsDefault.Value.ToString());
+                        }
+                        dependentsEl.AppendChild(packageElement);
+                    }
+                }
+                packageDefinition.AppendChild(dependentsEl);
+            }
 #else
             if (this.PackageIdentifiers.Count > 0)
             {
@@ -241,11 +318,11 @@ namespace Bam.Core
 
             if (this.BamAssemblies.Count > 0)
             {
-                var requiredAssemblies = document.CreateElement("RequiredBamAssemblies", namespaceURI);
+                var requiredAssemblies = document.CreateElement("BamAssemblies", namespaceURI);
                 foreach (var assemblyName in this.BamAssemblies)
                 {
                     var assemblyElement = document.CreateElement("BamAssembly", namespaceURI);
-                    assemblyElement.SetAttribute("Name", assemblyName);
+                    assemblyElement.SetAttribute("name", assemblyName);
                     requiredAssemblies.AppendChild(assemblyElement);
                 }
                 packageDefinition.AppendChild(requiredAssemblies);
@@ -253,14 +330,14 @@ namespace Bam.Core
 
             if (this.DotNetAssemblies.Count > 0)
             {
-                var requiredDotNetAssemblies = document.CreateElement("RequiredDotNetAssemblies", namespaceURI);
+                var requiredDotNetAssemblies = document.CreateElement("DotNetAssemblies", namespaceURI);
                 foreach (var desc in this.DotNetAssemblies)
                 {
                     var assemblyElement = document.CreateElement("DotNetAssembly", namespaceURI);
-                    assemblyElement.SetAttribute("Name", desc.Name);
+                    assemblyElement.SetAttribute("name", desc.Name);
                     if (null != desc.RequiredTargetFramework)
                     {
-                        assemblyElement.SetAttribute("RequiredTargetFramework", desc.RequiredTargetFramework);
+                        assemblyElement.SetAttribute("requiredTargetFramework", desc.RequiredTargetFramework);
                     }
                     requiredDotNetAssemblies.AppendChild(assemblyElement);
                 }
@@ -274,19 +351,19 @@ namespace Bam.Core
                 if (EPlatform.Windows == (this.SupportedPlatforms & EPlatform.Windows))
                 {
                     var platformElement = document.CreateElement("Platform", namespaceURI);
-                    platformElement.SetAttribute("Name", "Windows");
+                    platformElement.SetAttribute("name", "Windows");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
                 if (EPlatform.Linux == (this.SupportedPlatforms & EPlatform.Linux))
                 {
                     var platformElement = document.CreateElement("Platform", namespaceURI);
-                    platformElement.SetAttribute("Name", "Linux");
+                    platformElement.SetAttribute("name", "Linux");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
                 if (EPlatform.OSX == (this.SupportedPlatforms & EPlatform.OSX))
                 {
                     var platformElement = document.CreateElement("Platform", namespaceURI);
-                    platformElement.SetAttribute("Name", "OSX");
+                    platformElement.SetAttribute("name", "OSX");
                     supportedPlatformsElement.AppendChild(platformElement);
                 }
 
@@ -301,7 +378,7 @@ namespace Bam.Core
                 foreach (string define in this.Definitions)
                 {
                     var defineElement = document.CreateElement("Definition", namespaceURI);
-                    defineElement.SetAttribute("Name", define);
+                    defineElement.SetAttribute("name", define);
                     definitionsElement.AppendChild(defineElement);
                 }
 

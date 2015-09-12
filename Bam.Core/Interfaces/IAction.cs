@@ -485,6 +485,90 @@ namespace V2
             }
         }
     }
+
+    public sealed class MakePackage :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--makepackage";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Make the current working directory into a Bam package.";
+            }
+        }
+    }
+
+    public sealed class PackageName :
+        IStringCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--name";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Define the package name to use in other operations";
+            }
+        }
+    }
+
+    public sealed class PackageVersion :
+        IStringCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--version";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Define the package version to use in other operations";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable

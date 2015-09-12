@@ -84,6 +84,20 @@ namespace Bam
         {
             if (UseV2)
             {
+                var verbosityLevel = (Core.EVerboseLevel)Core.V2.CommandLineProcessor.Evaluate(new Core.V2.VerbosityLevel());
+                switch (verbosityLevel)
+                {
+                    case Core.EVerboseLevel.None:
+                    case Core.EVerboseLevel.Info:
+                    case Core.EVerboseLevel.Detail:
+                    case Core.EVerboseLevel.Full:
+                        Core.State.VerbosityLevel = verbosityLevel;
+                        break;
+
+                    default:
+                        throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
+                }
+
                 if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.PrintHelp()))
                 {
                     CommandLineArgumentHelper.PrintHelp();
@@ -102,18 +116,10 @@ namespace Bam
                     return;
                 }
 
-                var verbosityLevel = (Core.EVerboseLevel)Core.V2.CommandLineProcessor.Evaluate(new Core.V2.VerbosityLevel());
-                switch (verbosityLevel)
+                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.MakePackage()))
                 {
-                    case Core.EVerboseLevel.None:
-                    case Core.EVerboseLevel.Info:
-                    case Core.EVerboseLevel.Detail:
-                    case Core.EVerboseLevel.Full:
-                        Core.State.VerbosityLevel = verbosityLevel;
-                        break;
-
-                    default:
-                        throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
+                    Core.PackageUtilities.MakePackage();
+                    return;
                 }
 
                 // configure
