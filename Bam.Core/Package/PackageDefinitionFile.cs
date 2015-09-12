@@ -617,8 +617,8 @@ namespace Bam.Core
                 }
 
                 var dir = xmlReader.GetAttribute("dir");
-                var packageDirectory = System.IO.Path.GetDirectoryName(this.XMLFilename);
-                var absolutePackageRepoDir = Core.RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, packageDirectory);
+                var bamDir = this.GetBamDirectory();
+                var absolutePackageRepoDir = Core.RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
                 this.PackageRepositories.Add(absolutePackageRepoDir);
             }
 
@@ -2024,7 +2024,7 @@ namespace Bam.Core
         GetScriptFiles(
             bool allBuilders = false)
         {
-            var bamDir = System.IO.Path.GetDirectoryName(this.XMLFilename);
+            var bamDir = this.GetBamDirectory();
             var scriptDir = System.IO.Path.Combine(bamDir, "Scripts");
             var scripts = new StringArray(System.IO.Directory.GetFiles(scriptDir, "*.cs", System.IO.SearchOption.AllDirectories));
 
@@ -2063,10 +2063,19 @@ namespace Bam.Core
             return projectPathname;
         }
 
+        private string
+        GetBamDirectory()
+        {
+            // package repo/package name/bam/<definition file>.xml
+            var bamDir = System.IO.Path.GetDirectoryName(this.XMLFilename);
+            return bamDir;
+        }
+
         public string
         GetPackageDirectory()
         {
-            var packageDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.XMLFilename));
+            // package repo/package name/bam/<definition file>.xml
+            var packageDir = System.IO.Path.GetDirectoryName(this.GetBamDirectory());
             return packageDir;
         }
 
