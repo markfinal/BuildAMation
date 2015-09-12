@@ -194,10 +194,15 @@ namespace Bam.Core
             if (packageRepos.Count > 0)
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
-                var bamDir = this.GetBamDirectory();
+                var bamDir = this.GetBamDirectory() + System.IO.Path.DirectorySeparatorChar; // slash added to make it look like a directory
                 foreach (string repo in packageRepos)
                 {
                     var relativePackageRepo = Core.RelativePathUtilities.GetPath(repo, bamDir);
+                    if (OSUtilities.IsWindowsHosting)
+                    {
+                        // standardize on non-Windows directory separators
+                        relativePackageRepo = relativePackageRepo.Replace(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar);
+                    }
 
                     var rootElement = document.CreateElement("Repo", namespaceURI);
                     rootElement.SetAttribute("dir", relativePackageRepo);
