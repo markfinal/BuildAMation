@@ -286,7 +286,7 @@ namespace V2
             var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
             if (cleanFirst && System.IO.Directory.Exists(State.BuildRoot))
             {
-                Log.DebugMessage("Deleting build root '{0}'", State.BuildRoot);
+                Log.Info("Deleting build root '{0}'", State.BuildRoot);
                 System.IO.Directory.Delete(State.BuildRoot, true);
             }
 
