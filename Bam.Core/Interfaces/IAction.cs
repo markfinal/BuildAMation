@@ -437,7 +437,7 @@ namespace V2
         {
             get
             {
-                return @"--config=([a-z]+)";
+                return @"--config=([A-Za-z0-9]+)";
             }
         }
 
