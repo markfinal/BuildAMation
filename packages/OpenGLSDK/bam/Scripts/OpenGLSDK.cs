@@ -48,12 +48,10 @@ namespace OpenGLSDK
                         {
                             linker.Libraries.Add("OPENGL32.lib");
                         }
-                            /*
-                        else if (linker is Mingw.V2.LinkerBase)
+                        else if (linker is Mingw.V2.LinkerSettings)
                         {
                             linker.Libraries.Add("-lopengl32");
                         }
-                             */
                     }
                     var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                     if (null != osxLinker)
