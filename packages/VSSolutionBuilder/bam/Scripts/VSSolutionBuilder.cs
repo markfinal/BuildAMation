@@ -1411,7 +1411,7 @@ namespace V2
                 Bam.Core.Log.DebugMessage(PrettyPrintXMLDoc(projectFilterXML));
             }
 
-            var solutionPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(mainpackagename).sln", null).Parse();
+            var solutionPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(masterpackagename).sln", null).Parse();
             var solutionContents = solution.Serialize();
             using (var writer = new System.IO.StreamWriter(solutionPath))
             {

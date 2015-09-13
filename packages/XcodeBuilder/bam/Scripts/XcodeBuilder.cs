@@ -2132,7 +2132,7 @@ namespace V2
                 workspace.AppendChild(workspaceFileRef);
             }
 
-            var workspacePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(mainpackagename).xcworkspace/contents.xcworkspacedata", null);
+            var workspacePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
             workspacePath.Parse();
 
             var workspaceDir = System.IO.Path.GetDirectoryName(workspacePath.ToString());

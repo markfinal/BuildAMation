@@ -492,7 +492,7 @@ namespace V2
             Array<PackageDefinitionFile> packages)
         {
             this.PackageDefinitions = packages;
-            this.Macros.Add("mainpackagename", this.PackageDefinitions[0].Name);
+            this.Macros.Add("masterpackagename", this.MasterPackage.Name);
         }
 
         public System.Collections.Generic.IEnumerable<PackageDefinitionFile> Packages
