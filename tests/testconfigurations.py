@@ -270,3 +270,15 @@ configs["ProxyTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[v
 configs["HeaderLibraryTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
                                          linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                          osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Cxx11Test1"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                  linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                  osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["PluginTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                  linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                  osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Qt5Test1"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["zeromqtest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                  linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                  osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
