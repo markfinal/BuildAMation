@@ -159,10 +159,17 @@ namespace V2
         MakeModuleOfType(
             System.Type moduleType)
         {
-            var m = typeof(Graph).GetMethod("FindReferencedModule");
-            var gm = m.MakeGenericMethod(moduleType);
-            var module = gm.Invoke(Graph.Instance, null) as Module;
-            return module;
+            try
+            {
+                var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule");
+                var genericVersionForModuleType = findReferencedModuleMethod.MakeGenericMethod(moduleType);
+                var newModule = genericVersionForModuleType.Invoke(Graph.Instance, null) as Module;
+                return newModule;
+            }
+            catch (System.Reflection.TargetInvocationException ex)
+            {
+                throw new Exception(ex.InnerException, "Failed to create module of type {0}", moduleType.ToString());
+            }
         }
 
         public ModuleType
