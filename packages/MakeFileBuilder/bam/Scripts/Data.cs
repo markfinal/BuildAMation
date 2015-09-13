@@ -487,6 +487,8 @@ namespace V2
                 writer.Write(makeVariables.ToString());
                 writer.Write(makeRules.ToString());
             }
+
+            Bam.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", graph.MasterPackage.Name, makeFilePath);
         }
     }
 }
