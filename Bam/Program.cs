@@ -84,6 +84,11 @@ namespace Bam
         Main(
             string[] args)
         {
+#if false
+            // take control of Ctrl+C
+            System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
+#endif
+
             if (UseV2)
             {
                 var verbosityLevel = (Core.EVerboseLevel)Core.V2.CommandLineProcessor.Evaluate(new Core.V2.VerbosityLevel());
@@ -219,56 +224,9 @@ namespace Bam
                     Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
                 }
             }
-            else
-            {
-                // take control of Ctrl+C
-                System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
-
-                try
-                {
-                    var profile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
-                    profile.StartProfile();
-
-                    var application = new Application(args);
-                    application.Run();
-
-                    profile.StopProfile();
-
-                    if (Core.State.ShowTimingStatistics)
-                    {
-                        Core.TimingProfileUtilities.DumpProfiles();
-                    }
-                }
-                catch (Core.Exception exception)
-                {
-                    Core.Exception.DisplayException(exception);
-                    System.Environment.ExitCode = -1;
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    Core.Exception.DisplayException(exception);
-                    System.Environment.ExitCode = -2;
-                }
-                catch (System.Exception exception)
-                {
-                    Core.Exception.DisplayException(exception);
-                    System.Environment.ExitCode = -3;
-                }
-                finally
-                {
-                    if (0 == System.Environment.ExitCode)
-                    {
-                        Core.Log.Info("\nSucceeded");
-                    }
-                    else
-                    {
-                        Core.Log.Info("\nFailed");
-                    }
-                    Core.Log.DebugMessage("Exit code is {0}", System.Environment.ExitCode);
-                }
-            }
         }
 
+#if false
         private static void
         HandleCancellation(
             object sender,
@@ -282,5 +240,6 @@ namespace Bam
                 e.Cancel = true;
             }
         }
+#endif
     }
 }
