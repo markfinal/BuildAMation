@@ -28,6 +28,10 @@
 #include "application.h"
 #include "common.h"
 
+#ifdef __MINGW32__
+#undef __STRICT_ANSI__ // allows __argc and __argc to be define
+#include <stdlib.h>
+#endif
 #include <Windows.h>
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE UNUSEDARG(hPrevInstance), LPSTR UNUSEDARG(lpCmdLine), int UNUSEDARG(nShowCmd))

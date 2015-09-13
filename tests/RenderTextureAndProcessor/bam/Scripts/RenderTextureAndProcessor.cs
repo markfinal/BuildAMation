@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core.V2;
 namespace RenderTextureAndProcessor
 {
     sealed class RenderTextureV2 :
@@ -52,16 +53,28 @@ namespace RenderTextureAndProcessor
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             });
 
-            this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            }
             this.LinkAgainst<OpenGLSDK.OpenGLV2>();
 
             this.PrivatePatch(settings =>
             {
                 var linker = settings as C.V2.ICommonLinkerOptions;
-                linker.Libraries.Add("WS2_32.lib");
-                linker.Libraries.Add("GDI32.lib");
-                linker.Libraries.Add("USER32.lib");
-                linker.Libraries.Add("SHELL32.lib"); // for DragQueryFile
+                if (this.Linker is VisualC.V2.LinkerBase)
+                {
+                    linker.Libraries.Add("WS2_32.lib");
+                    linker.Libraries.Add("GDI32.lib");
+                    linker.Libraries.Add("USER32.lib");
+                    linker.Libraries.Add("SHELL32.lib"); // for DragQueryFile
+                }
+                else
+                {
+                    linker.Libraries.Add("-lWS2_32");
+                    linker.Libraries.Add("-lGDI32");
+                }
             });
 
             this.RequiredToExist<TextureProcessorV2>();
@@ -90,12 +103,23 @@ namespace RenderTextureAndProcessor
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
-            this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+            }
 
             this.PrivatePatch(settings =>
                 {
                     var linker = settings as C.V2.ICommonLinkerOptions;
-                    linker.Libraries.Add("WS2_32.lib");
+                    if (this.Linker is VisualC.V2.LinkerBase)
+                    {
+                        linker.Libraries.Add("WS2_32.lib");
+                    }
+                    else
+                    {
+                        linker.Libraries.Add("-lWS2_32");
+                    }
                 });
         }
     }
