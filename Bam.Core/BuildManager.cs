@@ -288,7 +288,14 @@ namespace V2
             if (cleanFirst && System.IO.Directory.Exists(State.BuildRoot))
             {
                 Log.Info("Deleting build root '{0}'", State.BuildRoot);
-                System.IO.Directory.Delete(State.BuildRoot, true);
+                try
+                {
+                    System.IO.Directory.Delete(State.BuildRoot, true);
+                }
+                catch (System.IO.IOException ex)
+                {
+                    Log.Info("Failed to delete build root, because {0}. Continuing", ex.Message);
+                }
             }
 
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
