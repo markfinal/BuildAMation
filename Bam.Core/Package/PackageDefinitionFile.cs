@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
+using Bam.Core.V2;
 namespace Bam.Core
 {
     public class PackageDefinitionFile
@@ -1982,6 +1983,11 @@ namespace Bam.Core
             if (matchingPackages.FirstOrDefault() != null)
             {
                 return;
+            }
+
+            if (!current.SupportedPlatforms.Includes(OSUtilities.CurrentOS))
+            {
+                throw new Exception("Package {0} is not supported on {1}", current.FullName, OSUtilities.CurrentOS.ToString());
             }
 
             authenticated.Add(current);
