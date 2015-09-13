@@ -29,6 +29,10 @@
 #include "common.h"
 
 #if defined(_WIN32)
+#ifdef __MINGW32__
+#undef __STRICT_ANSI__ // allows __argc and __argc to be define
+#include <stdlib.h>
+#endif
 #include <Windows.h>
 #endif // defined(_WIN32)
 
