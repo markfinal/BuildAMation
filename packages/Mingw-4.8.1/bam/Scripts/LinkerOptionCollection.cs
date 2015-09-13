@@ -175,14 +175,6 @@ namespace DefaultSettings
             return settings;
         }
 
-        public override bool UseLPrefixLibraryPaths
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         private static string
         GetLibraryPath(
             Bam.Core.V2.Module module)

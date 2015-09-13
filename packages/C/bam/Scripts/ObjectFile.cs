@@ -123,11 +123,6 @@ namespace V2
     public abstract class LinkerTool :
         Bam.Core.V2.PreBuiltTool
     {
-        public abstract bool UseLPrefixLibraryPaths
-        {
-            get;
-        }
-
         public abstract void ProcessLibraryDependency(
             CModule executable,
             CModule library);

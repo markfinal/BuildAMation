@@ -310,14 +310,6 @@ namespace V2
             }
         }
 
-        public override bool UseLPrefixLibraryPaths
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         private static string
         GetLibraryPath(
             Bam.Core.V2.Module module)

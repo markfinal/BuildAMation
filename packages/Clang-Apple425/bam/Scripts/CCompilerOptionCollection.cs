@@ -1641,14 +1641,6 @@ namespace V2
             this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/" + executablePath, this));
         }
 
-        public override bool UseLPrefixLibraryPaths
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         private static string
         GetLPrefixLibraryName(
             string fullLibraryPath)
