@@ -27,8 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-[assembly:Bam.Core.GlobalOptionCollectionOverride(typeof(Test.OptionOverride))]
 using Bam.Core.V2;
+[assembly: Bam.Core.GlobalOptionCollectionOverride(typeof(Test.OptionOverride))]
 namespace Test
 {
     class OptionOverride :
