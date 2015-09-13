@@ -1,6 +1,6 @@
 @ECHO OFF
 
-SETLOCAL 
+SETLOCAL
 
 IF "%1" == "-nopause" (
     SET NOPAUSE=1
@@ -15,14 +15,14 @@ IF %NOPAUSE%==0 (
 GOTO :EOF
 
 :FIND_PACKAGE_VERSIONS
-FOR /D %%B IN (%1\*) DO CALL :DELETE_BAM_DIRECTORY %%B
-FOR /D %%B IN (%1\*) DO CALL :DELETE_BUILD_DIRECTORY %%B
+CALL :DELETE_DEBUG_PROJECT_DIRECTORY %%1
+CALL :DELETE_BUILD_DIRECTORY %%1
 GOTO :EOF
 
-:DELETE_BAM_DIRECTORY
-IF EXIST %1\BamProject (
-    ECHO Deleting '%1\BamProject' directory and all children
-    RMDIR /S /Q %1\BamProject
+:DELETE_DEBUG_PROJECT_DIRECTORY
+IF EXIST %1\PackageDebug (
+    ECHO Deleting '%1\PackageDebug' directory and all children
+    RMDIR /S /Q %1\PackageDebug
 )
 
 :DELETE_BUILD_DIRECTORY
