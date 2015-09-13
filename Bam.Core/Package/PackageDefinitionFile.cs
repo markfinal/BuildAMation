@@ -2128,5 +2128,94 @@ namespace Bam.Core
         {
             return System.IO.Path.Combine(State.BuildRoot, this.FullName);
         }
+
+        private void
+        ShowDependencies(
+            int depth,
+            Array<PackageDefinitionFile> visitedPackages)
+        {
+            visitedPackages.Add(this);
+            foreach (var dependent in this.Dependents)
+            {
+                var dep = V2.Graph.Instance.Packages.Where(item => item.Name == dependent.Item1 && item.Version == dependent.Item2).ElementAt(0);
+                if (visitedPackages.Contains(dep))
+                {
+                    continue;
+                }
+
+                Log.MessageAll("{0}{1}{2} (repo: '{3}')",
+                    new string('\t', depth),
+                    dep.FullName,
+                    dependent.Item3.GetValueOrDefault(false) ? "*" : System.String.Empty,
+                    dep.PackageRepositories[0]);
+
+                if (dep.Dependents.Count > 0)
+                {
+                    dep.ShowDependencies(depth + 1, visitedPackages);
+                }
+            }
+        }
+
+        public void
+        Show()
+        {
+            var packageName = this.FullName;
+            var formatString = "Definition of package '{0}'";
+            int dashLength = formatString.Length - 3 + packageName.Length;
+            Core.Log.MessageAll("Definition of package '{0}'", packageName);
+            Core.Log.MessageAll(new string('-', dashLength));
+            if (!string.IsNullOrEmpty(this.Description))
+            {
+                Core.Log.MessageAll("Description: {0}", this.Description);
+            }
+            Core.Log.MessageAll("\nSupported on: {0}", Core.Platform.ToString(this.SupportedPlatforms, ' '));
+            Core.Log.MessageAll("\nBuildAMation assemblies:");
+            foreach (var assembly in this.BamAssemblies)
+            {
+                Core.Log.MessageAll("\t{0}", assembly);
+            }
+            Core.Log.MessageAll("\nDotNet assemblies:");
+            foreach (var desc in this.DotNetAssemblies)
+            {
+                if (null == desc.RequiredTargetFramework)
+                {
+                    Core.Log.MessageAll("\t{0}", desc.Name);
+                }
+                else
+                {
+                    Core.Log.MessageAll("\t{0} (version {1})", desc.Name, desc.RequiredTargetFramework);
+                }
+            }
+            if (this.Definitions.Count > 0)
+            {
+                Core.Log.MessageAll("\n#defines:");
+                foreach (var definition in this.Definitions)
+                {
+                    Core.Log.MessageAll("\t{0}", definition);
+                }
+            }
+
+            if (this.PackageRepositories.Count > 0)
+            {
+                Core.Log.MessageAll("\nExtra package repositories to search:");
+                foreach (var repo in this.PackageRepositories)
+                {
+                    var absoluteRepo = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(repo);
+
+                    Core.Log.MessageAll("\t'{0}'\t(absolute path '{1}')", repo, absoluteRepo);
+                }
+            }
+
+            if (this.Dependents.Count > 0)
+            {
+                Core.Log.MessageAll("\nDependent packages (* = default version):", packageName);
+                var visitedPackages = new Array<PackageDefinitionFile>();
+                this.ShowDependencies(1, visitedPackages);
+            }
+            else
+            {
+                Core.Log.MessageAll("\nNo dependent packages", packageName);
+            }
+        }
     }
 }

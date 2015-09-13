@@ -625,6 +625,34 @@ namespace V2
             }
         }
     }
+
+    public sealed class ShowDefinitionFile :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--showdefinition";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Show the package definition contents of the current package.";
+            }
+        }
+    }
 }
     public interface IAction :
         System.ICloneable
