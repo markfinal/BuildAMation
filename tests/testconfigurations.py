@@ -107,7 +107,7 @@ def TestOptionSetup(optParser):
         allResponseNames.update(results)
     allOptions = set()
     for response in allResponseNames:
-        if isinstance(response, str):
+        if isinstance(response, str):# TODO: only here during the transition
             continue
         for opt in response.GetOptions():
             allOptions.add(opt)
@@ -156,10 +156,22 @@ class Mingw32(ConfigOptions):
         self._options.append(("Mingw.version", "Set the Mingw version"))
 
 
-class Gcc64(ConfigOptions):
+class GccCommon(ConfigOptions):
+    def __init__(self):
+        super(GccCommon, self).__init__()
+        self._options.append(("GCC.version", "Set the GCC version"))
+
+
+class Gcc64(GccCommon):
     def __init__(self):
         super(Gcc64, self).__init__()
-        self._options.append(("GCC.version", "Set the GCC version"))
+        self._argList.append("--C.bitdepth=64")
+
+
+class Gcc32(GccCommon):
+    def __init__(self):
+        super(Gcc32, self).__init__()
+        self._argList.append("--C.bitdepth=32")
 
 
 class Clang64(ConfigOptions):
@@ -172,6 +184,7 @@ class Clang64(ConfigOptions):
 visualc64 = VisualC64()
 visualc32 = VisualC32()
 mingw32 = Mingw32()
+gcc32 = Gcc32()
 gcc64 = Gcc64()
 clang64 = Clang64()
 
@@ -182,7 +195,7 @@ configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":[
                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
 configs["Test2"] = TestSetup(win={"Native":[visualc64,visualc32,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
-                             linux={"Native":[Gcc64],"MakeFile":[Gcc64]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
