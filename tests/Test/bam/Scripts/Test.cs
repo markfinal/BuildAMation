@@ -28,7 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 [assembly:Bam.Core.GlobalOptionCollectionOverride(typeof(Test.OptionOverride))]
-
+using Bam.Core.V2;
 namespace Test
 {
     class OptionOverride :
@@ -71,7 +71,11 @@ namespace Test
         {
             base.Init(parent);
             this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main.c", this);
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                // example of switching out the tool within a module
+                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
+            }
         }
     }
 
