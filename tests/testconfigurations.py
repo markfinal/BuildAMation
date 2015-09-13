@@ -76,7 +76,7 @@ class TestSetup:
         return responseNames
 
     def GetVariations(self, builder, excludedVariations):
-        variations = []
+        variations = set()
         for i in self._GetListOfResponseNames(builder):
             """
             if not i:
@@ -85,8 +85,7 @@ class TestSetup:
                 if not excludedResponseFiles or i not in excludedResponseFiles:
                     responseFiles.append(i)
             """
-            if translation.has_key(i):
-                variations.append(translation[i])
+            variations.add(i)
         return variations
 
 def GetResponsePath(responseName):
@@ -106,25 +105,84 @@ def TestOptionSetup(optParser):
     for config in configs.values():
         results = config._GetSetOfAllResponseNames()
         allResponseNames.update(results)
+    allOptions = set()
     for response in allResponseNames:
-      longName = "--%s.version" % response
-      dest = "%s_version" % response
-      # TODO: what sort of data is this? is it a single value, or can multiple versions be specified?
-      optParser.add_option(longName, dest=dest, action="append", default=None, help="Versions to test for '%s'" % response)
+        if isinstance(response, str):
+            continue
+        for opt in response.GetOptions():
+            allOptions.add(opt)
+    for opt,help in allOptions:
+        optName = "--%s" % opt
+        optParser.add_option(optName, dest=opt, action="append", default=None, help=help)
 
-translation = {}
-translation["visualc64"] = ["--C.toolchain=VisualC", "--C.bitdepth=64"]
-translation["visualc32"] = ["--C.toolchain=VisualC", "--C.bitdepth=32"]
-translation["mingw"] = ["--C.toolchain=Mingw", "--C.bitdepth=32"]
+
+class ConfigOptions(object):
+    def __init__(self):
+        self._argList = []
+        self._options = []
+
+    def GetArguments(self):
+        return self._argList
+
+    def GetOptions(self):
+        return self._options
+
+
+class VisualCCommon(ConfigOptions):
+    def __init__(self):
+        super(VisualCCommon, self).__init__()
+        self._argList.append("--C.toolchain=VisualC")
+        self._options.append(("VisualC.version", "Set the VisualC version"))
+        self._options.append(("WindowsSDK.version", "Set the WindowsSDK version"))
+
+
+class VisualC64(VisualCCommon):
+    def __init__(self):
+        super(VisualC64, self).__init__()
+        self._argList.append("--C.bitdepth=64")
+
+
+class VisualC32(VisualCCommon):
+    def __init__(self):
+        super(VisualC32, self).__init__()
+        self._argList.append("--C.bitdepth=32")
+
+
+class Mingw32(ConfigOptions):
+    def __init__(self):
+        super(Mingw32, self).__init__()
+        self._argList.append("--C.bitdepth=32")
+        self._argList.append("--C.toolchain=Mingw")
+        self._options.append(("Mingw.version", "Set the Mingw version"))
+
+
+class Gcc64(ConfigOptions):
+    def __init__(self):
+        super(Gcc64, self).__init__()
+        self._options.append(("GCC.version", "Set the GCC version"))
+
+
+class Clang64(ConfigOptions):
+    def __init__(self):
+        super(Clang64, self).__init__()
+        self._options.append(("Clang.version", "Set the Clang version"))
+
+
+visualc64 = VisualC64()
+visualc32 = VisualC32()
+mingw32 = Mingw32()
+gcc64 = Gcc64()
+clang64 = Clang64()
+
 
 # TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of a Bam command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
 configs = {}
 configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test2"] = TestSetup(win={"Native":["visualc64","visualc32","mingw"],"VSSolution":["visualc64"],"MakeFile":["visualc64","mingw"]},
-                             linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                             osx={"Native":["clang"],"MakeFile":["clang"],"Xcode":["clang"]})
+configs["Test2"] = TestSetup(win={"Native":[visualc64,visualc32,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[Gcc64],"MakeFile":[Gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
