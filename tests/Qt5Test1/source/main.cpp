@@ -25,6 +25,13 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#ifdef __MINGW32__
+// Note: doesn't link against VisualC Qt libraries
+#undef __STRICT_ANSI__ // allows __argc and __argc to be define
+#include <stdlib.h>
+#endif
+
 #include "myobject.h"
 #include "myobject2.h"
 
