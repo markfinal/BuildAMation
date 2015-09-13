@@ -164,7 +164,8 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
             extraArgs = nonKWArgs[:]
             if versionArgs:
                 extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
-            extraArgs.extend(variation.GetArguments())
+            if variation:
+                extraArgs.extend(variation.GetArguments())
             try:
               outputMessages = StringIO.StringIO()
               errorMessages = StringIO.StringIO()

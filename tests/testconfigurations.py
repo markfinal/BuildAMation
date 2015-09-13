@@ -107,8 +107,6 @@ def TestOptionSetup(optParser):
         allResponseNames.update(results)
     allOptions = set()
     for response in allResponseNames:
-        if isinstance(response, str):# TODO: only here during the transition
-            continue
         for opt in response.GetOptions():
             allOptions.add(opt)
     for opt,help in allOptions:
@@ -191,78 +189,88 @@ clang64 = Clang64()
 
 # TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of a Bam command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
 configs = {}
-configs["Test-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test2"] = TestSetup(win={"Native":[visualc64,visualc32,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+configs["Test"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                            linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                            osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test2"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
-configs["Test3-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test4-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test5-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test6-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test7-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test8-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test9-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                 linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                 osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test10-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test11-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test12-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test13-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["clang"]})
-configs["Test14-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test15-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test16-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["Test17-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"],"QMake":["visualc"]},
-                                  linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["gcc"]},
-                                  osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["CodeGenTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
-                                       linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                       osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"]})
-configs["CodeGenTest2-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
-                                        linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                        osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"]})
-configs["CSharpTest1-dev"] = TestSetup(win={"Native":None,"MakeFile":None,"VSSolution":None},
-                                       linux={"Native":None,"MakeFile":None},
-                                       osx={"Native":None,"MakeFile":None})
-configs["Direct3DTriangle-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["MixedModeCpp-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["MixedTest-dev"] = TestSetup(win={"Native":["visualc"],"MakeFile":["visualc"]})
-configs["OpenCLTest1-dev"] = TestSetup(win={"Native":["visualc"],"VSSolution":["visualc"],"MakeFile":["visualc"]})
-configs["OpenGLUniformBufferTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
-configs["RenderTextureAndProcessor-dev"] = TestSetup(win={"Native":["visualc","mingw"],"VSSolution":["visualc"],"MakeFile":["visualc","mingw"]})
-configs["WPFTest-dev"] = TestSetup(win={"VSSolution":None})
-configs["CocoaTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["ObjectiveCTest1-dev"] = TestSetup(osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"Xcode":["llvm-gcc", "clang"]})
-configs["ProxyTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
-                                     linux={"Native":["gcc"],"MakeFile":["gcc"]},
-                                     osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"]})
-configs["HeaderLibraryTest-dev"] = TestSetup(win={"Native":["visualc","mingw"],"MakeFile":["visualc","mingw"]},
-                                             linux={"Native":["gcc"],"MakeFile":["gcc"],"QMake":["clang"]},
-                                             osx={"Native":["llvm-gcc", "clang"],"MakeFile":["llvm-gcc", "clang"],"QMake":["clang"],"Xcode":["llvm-gcc", "clang"]})
+configs["Test3"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test4"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test5"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test6"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test7"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test8"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test9"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test10"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test11"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test12"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test13"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test14"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test15"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test16"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["Test17"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["CodeGenTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                   osx={"Native":[clang64],"MakeFile":[clang64]})
+"""
+configs["CodeGenTest2"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                    linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                    osx={"Native":[clang64],"MakeFile":[clang64]})
+"""
+"""
+configs["CSharpTest1"] = TestSetup(win={"Native":None,"MakeFile":None,"VSSolution":None},
+                                   linux={"Native":None,"MakeFile":None},
+                                   osx={"Native":None,"MakeFile":None})
+"""
+configs["Direct3DTriangle"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]})
+"""
+configs["MixedModeCpp"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]})
+"""
+"""
+configs["MixedTest"] = TestSetup(win={"Native":[visualc64],"MakeFile":[visualc64]})
+"""
+"""
+configs["OpenCLTest1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]})
+"""
+configs["OpenGLUniformBufferTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]})
+configs["RenderTextureAndProcessor"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]})
+configs["WPFTest"] = TestSetup(win={"VSSolution":None})
+configs["CocoaTest1"] = TestSetup(osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["ObjectiveCTest1"] = TestSetup(osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+configs["ProxyTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                 linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                 osx={"Native":[clang64],"MakeFile":[clang64]})
+configs["HeaderLibraryTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+                                         linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                         osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
