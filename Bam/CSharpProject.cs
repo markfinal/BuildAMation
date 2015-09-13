@@ -211,6 +211,10 @@ namespace V2
             allDefines.Add(Core.PackageUtilities.VersionDefineForCompiler);
             allDefines.Add(Core.PackageUtilities.HostPlatformDefineForCompiler);
 #if true
+            foreach (var package in Core.V2.Graph.Instance.Packages)
+            {
+                allDefines.AddRange(package.Definitions);
+            }
 #else
             // custom definitions from all the packages in the compilation
             foreach (var info in Core.State.PackageInfo)
