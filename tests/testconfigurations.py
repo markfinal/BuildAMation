@@ -276,7 +276,7 @@ configs["Cxx11Test1"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[
 configs["PluginTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
-configs["Qt5Test1"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
+configs["Qt5Test1"] = TestSetup(win={"Native":[visualc64],"MakeFile":[visualc64]},
                                 linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                 osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["zeromqtest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
