@@ -283,6 +283,7 @@ namespace V2
         public void
         Run()
         {
+            Log.Detail("Executing graph");
             var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
             if (cleanFirst && System.IO.Directory.Exists(State.BuildRoot))
             {

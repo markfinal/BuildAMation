@@ -210,6 +210,7 @@ namespace V2
 
         public void ApplySettingsPatches()
         {
+            Log.Detail("Applying settings patches");
             foreach (var rank in this.DependencyGraph.Reverse())
             {
                 foreach (var module in rank.Value)
@@ -370,6 +371,7 @@ namespace V2
 
         public void SortDependencies()
         {
+            Log.Detail("Constructing dependency graph");
             var currentRank = this.DependencyGraph[0];
             foreach (var m in this.TopLevelModules)
             {

@@ -67,6 +67,7 @@ namespace V2
             graph.Mode = State.BuildMode;
 
             // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
+            Log.Detail("Creating modules");
             foreach (var env in environments)
             {
                 graph.CreateTopLevelModules(State.ScriptAssembly, env, topLevelNamespace);
@@ -76,12 +77,6 @@ namespace V2
             // NB: all those modules with 0 dependees are the top-level modules
             // NB: default settings have already been defined here
             var topLevelModules = graph.TopLevelModules;
-            Log.DebugMessage("Start: Top level modules");
-            foreach (var m in topLevelModules)
-            {
-                Log.DebugMessage(m.ToString());
-            }
-            Log.DebugMessage("End: Top level modules");
             // not only does this generate the dependency graph, but also creates the default settings for each module, and completes them
             graph.SortDependencies();
             // TODO: make validation optional, if it starts showing on profiles
@@ -298,6 +293,7 @@ namespace V2
 
         public static void ParseAll()
         {
+            Log.Detail("Parsing tokenized strings");
             foreach (var t in Cache)
             {
                 t.ParsedString = t.Parse();
