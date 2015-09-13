@@ -363,7 +363,7 @@ namespace V2
         {
             if (!collection.ContainsKey(bitDepth) || 0 == collection[bitDepth].Count)
             {
-                throw new Bam.Core.Exception("No default {0}s for this platform in {1} bits", toolDescription, (int)bitDepth);
+                throw new Bam.Core.Exception("No default {0}s for this platform in {1}-bits", toolDescription, (int)bitDepth);
             }
             var candidates = collection[bitDepth];
             if (candidates.Count > 1)
@@ -381,11 +381,12 @@ namespace V2
                 }
 
                 var tooManyInstance = new System.Text.StringBuilder();
-                tooManyInstance.AppendFormat("There are {0} possible {1}s for this platform in {2} bits", candidates.Count, toolDescription, bitDepth);
+                tooManyInstance.AppendFormat("There are {0} {1}s available for this platform in {2}-bits:", candidates.Count, toolDescription, (int)bitDepth);
                 tooManyInstance.AppendLine();
                 foreach (var tool in candidates)
                 {
-                    tooManyInstance.AppendLine(tool.GetType().ToString());
+                    tooManyInstance.AppendFormat("\t{0}", tool.GetType().ToString());
+                    tooManyInstance.AppendLine();
                 }
                 throw new Bam.Core.Exception(tooManyInstance.ToString());
             }
