@@ -2119,6 +2119,8 @@ namespace V2
 
             var workspaceSettings = new WorkspaceSettings(workspaceDir);
             workspaceSettings.Serialize();
+
+            Bam.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Bam.Core.V2.Graph.Instance.MasterPackage.Name, workspaceDir);
         }
     }
 
