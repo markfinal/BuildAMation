@@ -211,8 +211,8 @@ configs["Test7"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[vis
                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["Test8"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
-                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
-                             osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+                             linux={"Native":None,"MakeFile":None},
+                             osx={"Native":None,"MakeFile":None,"Xcode":None})
 configs["Test9"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
@@ -226,8 +226,8 @@ configs["Test12"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[vi
                               linux={"Native":[gcc64],"MakeFile":[gcc64]},
                               osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["Test13"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
-                              linux={"Native":[gcc64],"MakeFile":[gcc64]},
-                              osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+                              linux={"Native":None,"MakeFile":None},
+                              osx={"Native":None,"MakeFile":None,"Xcode":None})
 configs["Test14"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                               linux={"Native":[gcc64],"MakeFile":[gcc64]},
                               osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
