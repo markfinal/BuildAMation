@@ -124,7 +124,7 @@ def XcodePost(package, options, outputMessages, errorMessages):
         # parse the output to get the schemes
         lines = outputStream.split('\n')
         if len(lines) < 3:
-            raise RuntimeError("Unable to parse workspace for schemes. Has the project scheme cache been warmed?")
+            raise RuntimeError("Unable to parse workspace for schemes. Was --Xcode.generateSchemes passed to the Bam build?")
         schemes = []
         hasSchemes = False
         for line in lines:

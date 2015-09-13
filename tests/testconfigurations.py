@@ -165,6 +165,7 @@ class Gcc64(ConfigOptions):
 class Clang64(ConfigOptions):
     def __init__(self):
         super(Clang64, self).__init__()
+        self._argList.append("--Xcode.generateSchemes"); # TODO: this is only for the Xcode build mode
         self._options.append(("Clang.version", "Set the Clang version"))
 
 
