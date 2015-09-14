@@ -28,7 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2; // for EPlatform.PlatformExtensions
-[assembly: Bam.Core.GlobalOptionCollectionOverride(typeof(Cxx11Test1.GlobalSettings))]
 namespace Cxx11Test1
 {
     public sealed class LocalPolicy :
@@ -79,52 +78,5 @@ namespace Cxx11Test1
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
         }
-    }
-
-    class GlobalSettings : Bam.Core.IGlobalOptionCollectionOverride
-    {
-        #region IGlobalOptionCollectionOverride implementation
-        void
-        Bam.Core.IGlobalOptionCollectionOverride.OverrideOptions(
-            Bam.Core.BaseOptionCollection optionCollection,
-            Bam.Core.Target target)
-        {
-            var cOptions = optionCollection as C.ICCompilerOptions;
-            if (null != cOptions)
-            {
-                var cxxOptions = optionCollection as C.ICxxCompilerOptions;
-                if (null != cxxOptions)
-                {
-                    // enable exceptions (some flavours of STL need it)
-                    cxxOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
-
-                    // default C++ mode to C++11
-                    // note this is on the C compiler options, but only enabled when C++
-                    // options are in use
-                    cOptions.LanguageStandard = C.ELanguageStandard.Cxx11;
-                }
-            }
-        }
-        #endregion
-    }
-
-    class TestProg : C.Application
-    {
-        class Source : C.Cxx.ObjectFileCollection
-        {
-            public Source()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "*.cpp");
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        Source source = new Source();
-
-        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows)]
-        Bam.Core.TypeArray windowsDeps = new Bam.Core.TypeArray() {
-            typeof(WindowsSDK.WindowsSDK)
-        };
     }
 }

@@ -3,8 +3,6 @@
   <Dependents>
     <Package name="AMDAPPSDK" version="2.9" />
     <Package name="C" />
-    <Package name="Clang" version="3.1" />
-    <Package name="LLVMGcc" version="4.2" />
     <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
     <Package name="Publisher" />

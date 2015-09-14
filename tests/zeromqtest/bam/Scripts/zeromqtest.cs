@@ -73,43 +73,4 @@ namespace zeromqtest
             this.Include<zeromq.ZMQSharedLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
         }
     }
-
-    class Test :
-        C.Application
-    {
-        class SourceFiles :
-            C.Cxx.ObjectFileCollection
-        {
-            public
-            SourceFiles()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "*.cpp");
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        SourceFiles source = new SourceFiles();
-
-        [Bam.Core.DependentModules]
-        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
-            typeof(zeromq.ZMQSharedLibrary)
-            );
-
-#if D_PACKAGE_PUBLISHER_DEV
-        [Publisher.CopyFileLocations]
-        Bam.Core.Array<Publisher.PublishDependency> publish = new Bam.Core.Array<Publisher.PublishDependency>(
-            new Publisher.PublishDependency(C.Application.OutputFile)
-            );
-#endif
-    }
-
-#if D_PACKAGE_PUBLISHER_DEV
-    class Publish :
-        Publisher.ProductModule
-    {
-        [Publisher.PrimaryTarget]
-        System.Type primary = typeof(Test);
-    }
-#endif
 }

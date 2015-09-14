@@ -3,20 +3,16 @@
   <Dependents>
     <Package name="C" />
     <Package name="Clang" version="Apple425" />
-    <Package name="ComposerXE" version="12" />
     <Package name="Gcc" version="4.8" />
-    <Package name="LLVMGcc" version="4.2" />
     <Package name="MakeFileBuilder" />
     <Package name="Mingw" version="4.8.1" />
     <Package name="NativeBuilder" />
     <Package name="Publisher" />
-    <Package name="QMakeBuilder" />
     <Package name="Qt" version="5.3.2" />
     <Package name="VisualC" version="12.0" />
     <Package name="VSSolutionBuilder" />
     <Package name="WindowsSDK" version="8.1" />
     <Package name="XcodeBuilder" />
-    <Package name="XmlUtilities" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" />

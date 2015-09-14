@@ -69,44 +69,4 @@ namespace ObjectiveCTest1
                 });
         }
     }
-
-    class Program :
-        C.Application
-    {
-        public
-        Program()
-        {
-            this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target) {
-                var link = module.Options as C.ILinkerOptionsOSX;
-                if (null != link)
-                {
-                    link.Frameworks.Add("Cocoa");
-                }
-            };
-        }
-
-        class Source :
-            C.ObjC.ObjectFileCollection
-        {
-            public
-            Source()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "*.m");
-                this.UpdateOptions += delegate(Bam.Core.IModule module, Bam.Core.Target target) {
-                    var compileOptions = module.Options as C.ICCompilerOptions;
-                    if (null != compileOptions)
-                    {
-                        if (target.HasPlatform(Bam.Core.EPlatform.Linux))
-                        {
-                            compileOptions.IncludePaths.Add("/usr/include/GNUstep");
-                        }
-                    }
-                };
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        Source source = new Source();
-    }
 }

@@ -101,11 +101,4 @@ namespace V2
         }
     }
 }
-    /// <summary>
-    /// C/C++ header only library
-    /// </summary>
-    [Bam.Core.ModuleToolAssignment(typeof(INullOpTool))]
-    public class HeaderLibrary :
-        Bam.Core.BaseModule
-    {}
 }

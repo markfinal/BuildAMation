@@ -948,13 +948,4 @@ namespace V2
         }
     }
     // -V2
-    // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection :
-        VisualCCommon.CCompilerOptionCollection
-    {
-        public
-        CCompilerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
-    }
 }

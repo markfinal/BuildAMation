@@ -53,12 +53,4 @@ namespace V2
     {
     }
 }
-    public interface ICCompilerOptions
-    {
-        Mingw.EVisibility Visibility
-        {
-            get;
-            set;
-        }
-    }
 }

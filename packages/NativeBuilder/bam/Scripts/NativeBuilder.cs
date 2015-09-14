@@ -27,8 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-[assembly: Bam.Core.DeclareBuilder("Native", typeof(NativeBuilder.NativeBuilder))]
-
 namespace NativeBuilder
 {
 namespace V2

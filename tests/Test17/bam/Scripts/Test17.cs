@@ -50,32 +50,4 @@ namespace Test17
             }
         }
     }
-
-    public class Application :
-        C.Application
-    {
-        public class SourceFiles :
-            C.ObjectFileCollection
-        {
-            public
-            SourceFiles()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "*.c");
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        SourceFiles source = new SourceFiles();
-
-        [Bam.Core.DependentModules]
-        Bam.Core.TypeArray dependents = new Bam.Core.TypeArray(
-            typeof(Test16.StaticLibrary2)
-            );
-
-        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows)]
-        Bam.Core.TypeArray winDependents = new Bam.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-            );
-    }
 }

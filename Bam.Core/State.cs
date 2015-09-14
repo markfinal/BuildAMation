@@ -996,22 +996,18 @@ namespace V2
             Add<string>("System", "BuilderName", null);
             Add<string>("System", "BuildRoot", null);
             Add<DirectoryLocation>("System", "BuildRootLocation", null);
-            Add<DependencyGraph>("System", "Graph", null);
-            Add<BuildManager>("System", "BuildManager", null);
             Add<System.Threading.ManualResetEvent>("System", "BuildStartedEvent", new System.Threading.ManualResetEvent(false));
             Add<bool>("System", "ShowTimingStatistics", false);
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
             Add<bool>("System", "CacheAssembly", true);
             Add<string>("System", "SchedulerType", "Bam.Core.DefaultScheduler");
-            Add<Array<BuildSchedulerProgressUpdatedDelegate>>("System", "SchedulerProgressDelegates", new Array<BuildSchedulerProgressUpdatedDelegate>());
 
             AddCategory("PackageCreation");
             Add<StringArray>("PackageCreation", "DependentPackages", null);
             Add<StringArray>("PackageCreation", "Builders", null);
 
             AddCategory("Build");
-            Add<IBuilder>("Build", "BuilderInstance", null);
 #if true
 #else
             Add<PackageInformation>("Build", "BuilderPackage", null);
@@ -1019,7 +1015,6 @@ namespace V2
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
             Add<System.Collections.Generic.Dictionary<string, string>>("Build", "LazyArguments", new System.Collections.Generic.Dictionary<string, string>());
-            Add<System.Collections.Generic.List<IAction>>("Build", "InvokedActions", new System.Collections.Generic.List<IAction>());
             Add<StringArray>("Build", "Platforms", null);
             Add<Array<EConfiguration>>("Build", "Configurations", null);
             Add<StringArray>("Build", "Modules", null);
@@ -1380,19 +1375,6 @@ namespace V2
             }
         }
 
-        public static IBuilder BuilderInstance
-        {
-            set
-            {
-                Set("Build", "BuilderInstance", value);
-            }
-
-            get
-            {
-                return Get("Build", "BuilderInstance") as IBuilder;
-            }
-        }
-
 #if true
 #else
         public static PackageInformation BuilderPackage
@@ -1469,19 +1451,6 @@ namespace V2
             }
         }
 
-        public static System.Collections.Generic.List<IAction> InvokedActions
-        {
-            set
-            {
-                Set("Build", "InvokedActions", value);
-            }
-
-            get
-            {
-                return Get("Build", "InvokedActions") as System.Collections.Generic.List<IAction>;
-            }
-        }
-
         public static Array<EPlatform> BuildPlatforms
         {
             set
@@ -1518,19 +1487,6 @@ namespace V2
             get
             {
                 return Get("Build", "Modules") as StringArray;
-            }
-        }
-
-        public static BuildManager BuildManager
-        {
-            set
-            {
-                Set("System", "BuildManager", value);
-            }
-
-            get
-            {
-                return Get("System", "BuildManager") as BuildManager;
             }
         }
 
@@ -1609,19 +1565,6 @@ namespace V2
             get
             {
                 return Get("System", "SchedulerType") as string;
-            }
-        }
-
-        public static Array<BuildSchedulerProgressUpdatedDelegate> SchedulerProgressUpdates
-        {
-            set
-            {
-                Set("System", "SchedulerProgressDelegates", value);
-            }
-
-            get
-            {
-                return Get("System", "SchedulerProgressDelegates") as Array<BuildSchedulerProgressUpdatedDelegate>;
             }
         }
 

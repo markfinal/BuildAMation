@@ -48,8 +48,4 @@ namespace V2
         }
     }
 }
-    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
-    public sealed class ModuleTargetsAttribute :
-        BaseTargetFilteredAttribute
-    {}
 }

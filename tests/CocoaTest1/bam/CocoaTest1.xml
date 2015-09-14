@@ -3,13 +3,10 @@
   <Dependents>
     <Package name="C" />
     <Package name="Clang" version="Apple425" />
-    <Package name="LLVMGcc" version="4.2" />
     <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
     <Package name="Publisher" />
-    <Package name="QMakeBuilder" />
     <Package name="XcodeBuilder" />
-    <Package name="XmlUtilities" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" />

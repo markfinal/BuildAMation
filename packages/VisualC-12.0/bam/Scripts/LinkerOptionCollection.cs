@@ -383,13 +383,4 @@ namespace V2
         }
     }
 }
-
-    public sealed partial class LinkerOptionCollection :
-        VisualCCommon.LinkerOptionCollection
-    {
-        public
-        LinkerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
-    }
 }

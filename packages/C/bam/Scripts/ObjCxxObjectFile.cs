@@ -61,11 +61,4 @@ namespace DefaultSettings
         }
     }
 }
-    /// <summary>
-    /// ObjectiveC++ object file
-    /// </summary>
-    [Bam.Core.ModuleToolAssignment(typeof(IObjCxxCompilerTool))]
-    public class ObjectFile :
-        C.ObjectFile
-    {}
 }

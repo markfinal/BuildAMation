@@ -2,7 +2,6 @@
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="C" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
   <Dependents>
     <Package name="CommandLineProcessor" />
-    <Package name="DependencyGenerator" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" />

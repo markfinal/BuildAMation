@@ -654,20 +654,4 @@ namespace V2
         }
     }
 }
-    public interface IAction :
-        System.ICloneable
-    {
-        string CommandLineSwitch
-        {
-            get;
-        }
-
-        string Description
-        {
-            get;
-        }
-
-        bool
-        Execute();
-    }
 }

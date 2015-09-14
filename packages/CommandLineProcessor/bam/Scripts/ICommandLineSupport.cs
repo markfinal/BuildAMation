@@ -39,12 +39,4 @@ namespace V2
             Bam.Core.StringArray commandLine);
     }
 }
-    public interface ICommandLineSupport
-    {
-        void
-        ToCommandLineArguments(
-            Bam.Core.StringArray commandLineBuilder,
-            Bam.Core.Target target,
-            Bam.Core.StringArray excludedOptionNames);
-    }
 }

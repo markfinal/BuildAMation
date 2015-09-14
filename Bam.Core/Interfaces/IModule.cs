@@ -50,19 +50,4 @@ namespace V2
         }
     }
 }
-    public delegate void
-    UpdateOptionCollectionDelegate(
-        IModule module,
-        Target target);
-
-    public interface IModule
-    {
-        event UpdateOptionCollectionDelegate UpdateOptions;
-
-        BaseOptionCollection Options
-        {
-            get;
-            set;
-        }
-    }
 }

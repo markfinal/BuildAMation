@@ -35,21 +35,4 @@ namespace V2
     {
     }
 }
-
-    public interface IModuleCollection :
-        INestedDependents
-    {
-        void
-        RegisterUpdateOptions(
-            UpdateOptionCollectionDelegateArray delegateArray,
-            Location root,
-            string pattern);
-
-        void
-        RegisterUpdateOptions(
-            UpdateOptionCollectionDelegateArray delegateArray,
-            Location root,
-            string pattern,
-            Location.EExists exists);
-    }
 }

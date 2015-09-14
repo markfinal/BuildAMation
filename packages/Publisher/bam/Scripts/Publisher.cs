@@ -28,9 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2;
-
-[assembly: Bam.Core.RegisterToolset("Publish", typeof(Publisher.Toolset))]
-
 namespace Publisher
 {
 namespace V2
@@ -1014,5 +1011,4 @@ namespace V2
         }
     }
 }
-    // Add modules here
 }

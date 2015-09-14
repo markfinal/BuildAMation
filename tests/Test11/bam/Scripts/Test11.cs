@@ -60,40 +60,4 @@ namespace Test11
             }
         }
     }
-
-    // Define module classes here
-    class CrossPlatformApplication :
-        C.Application
-    {
-        public
-        CrossPlatformApplication()
-        {
-            var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.commonSourceFile.Include(sourceDir, "main.c");
-            var winDir = sourceDir.SubDirectory("win");
-            var unixDir = sourceDir.SubDirectory("unix");
-            var osxDir = sourceDir.SubDirectory("osx");
-            this.winSourceFile.Include(winDir, "win.c");
-            this.unixSourceFile.Include(unixDir, "unix.c");
-            this.osxSourceFile.Include(osxDir, "osx.c");
-        }
-
-        [Bam.Core.SourceFiles]
-        C.ObjectFile commonSourceFile = new C.ObjectFile();
-
-        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Windows)]
-        C.ObjectFile winSourceFile = new C.ObjectFile();
-
-        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.Linux)]
-        C.ObjectFile unixSourceFile = new C.ObjectFile();
-
-        [Bam.Core.SourceFiles(Platform=Bam.Core.EPlatform.OSX)]
-        C.ObjectFile osxSourceFile = new C.ObjectFile();
-
-        [Bam.Core.DependentModules(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Bam.Core.TypeArray WinVCDependents = new Bam.Core.TypeArray(typeof(WindowsSDK.WindowsSDK));
-
-        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes = new[] { typeof(VisualC.Toolset) })]
-        Bam.Core.StringArray WinVCLibraries = new Bam.Core.StringArray("KERNEL32.lib");
-    }
 }

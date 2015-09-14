@@ -252,12 +252,4 @@ namespace DefaultSettings
         { }
     }
 }
-    public class LinkerOptionCollection :
-        MingwCommon.LinkerOptionCollection
-    {
-        public
-        LinkerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
-    }
 }

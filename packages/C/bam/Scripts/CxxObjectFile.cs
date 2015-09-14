@@ -88,11 +88,4 @@ namespace DefaultSettings
         }
     }
 }
-    /// <summary>
-    /// C++ object file
-    /// </summary>
-    [Bam.Core.ModuleToolAssignment(typeof(ICxxCompilerTool))]
-    public class ObjectFile :
-        C.ObjectFile
-    {}
 }

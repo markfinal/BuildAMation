@@ -184,21 +184,6 @@ namespace Bam.Core
             return isWindows;
         }
 
-        public static bool
-        IsWindows(
-            BaseTarget baseTarget)
-        {
-            var isWindows = baseTarget.HasPlatform(EPlatform.Windows);
-            return isWindows;
-        }
-
-        public static bool
-        IsWindows(
-            Target target)
-        {
-            return IsWindows((BaseTarget)target);
-        }
-
         public static bool IsWindowsHosting
         {
             get
@@ -214,21 +199,6 @@ namespace Bam.Core
         {
             var isLinux = (EPlatform.Linux32 == platform || EPlatform.Linux64 == platform);
             return isLinux;
-        }
-
-        public static bool
-        IsLinux(
-            BaseTarget baseTarget)
-        {
-            var isLinux = baseTarget.HasPlatform(EPlatform.Linux);
-            return isLinux;
-        }
-
-        public static bool
-        IsLinux(
-            Target target)
-        {
-            return IsLinux((BaseTarget)target);
         }
 
         public static bool IsLinuxHosting
@@ -248,21 +218,6 @@ namespace Bam.Core
             return isOSX;
         }
 
-        public static bool
-        IsOSX(
-            BaseTarget baseTarget)
-        {
-            var isOSX = baseTarget.HasPlatform(EPlatform.OSX);
-            return isOSX;
-        }
-
-        public static bool
-        IsOSX(
-            Target target)
-        {
-            return IsOSX((BaseTarget)target);
-        }
-
         public static bool IsOSXHosting
         {
             get
@@ -278,21 +233,6 @@ namespace Bam.Core
         {
             var is64Bit = (EPlatform.Win64 == platform || EPlatform.Linux64 == platform || EPlatform.OSX64 == platform);
             return is64Bit;
-        }
-
-        public static bool
-        Is64Bit(
-            BaseTarget baseTarget)
-        {
-            var is64Bit = baseTarget.HasPlatform(EPlatform.Win64 | EPlatform.Linux64 | EPlatform.OSX64);
-            return is64Bit;
-        }
-
-        public static bool
-        Is64Bit(
-            Target target)
-        {
-            return Is64Bit((BaseTarget)target);
         }
 
         public static bool Is64BitHosting

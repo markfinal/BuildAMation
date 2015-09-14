@@ -40,10 +40,4 @@ namespace V2
             string condition = null);
     }
 }
-    public interface IVisualStudioSupport
-    {
-        ToolAttributeDictionary
-        ToVisualStudioProjectAttributes(
-            Bam.Core.Target target);
-    }
 }

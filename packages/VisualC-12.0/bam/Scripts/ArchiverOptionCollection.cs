@@ -194,13 +194,4 @@ namespace DefaultSettings
         }
     }
 }
-
-    public sealed partial class ArchiverOptionCollection :
-        VisualCCommon.ArchiverOptionCollection
-    {
-        public
-        ArchiverOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
-    }
 }

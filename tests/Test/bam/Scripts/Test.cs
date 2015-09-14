@@ -28,37 +28,27 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core.V2;
-[assembly: Bam.Core.GlobalOptionCollectionOverride(typeof(Test.OptionOverride))]
 namespace Test
 {
-    class OptionOverride :
-        Bam.Core.IGlobalOptionCollectionOverride
+    public sealed class LocalPolicy :
+        Bam.Core.V2.ISitePolicy
     {
-        public void
-        OverrideOptions(
-            Bam.Core.BaseOptionCollection optionCollection,
-            Bam.Core.Target target)
+        void
+        ISitePolicy.DefineLocalSettings(
+            Settings settings,
+            Module module)
         {
-            if (optionCollection is C.ICCompilerOptions)
+            var compiler = settings as C.V2.ICommonCompilerOptions;
+            if (null != compiler)
             {
-                var compilerOptions = optionCollection as C.ICCompilerOptions;
-                compilerOptions.Defines.Add("GLOBALOVERRIDE");
+                compiler.PreprocessorDefines.Add("GLOBALOVERRIDE");
             }
 
-            if (optionCollection is C.ICxxCompilerOptions)
+            var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+            if (null != cxxCompiler)
             {
-                var compilerOptions = optionCollection as C.ICxxCompilerOptions;
-                compilerOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
+                cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }
-
-            // TODO: pdb support
-#if false
-            if (optionCollection is VisualCCommon.LinkerOptionCollection)
-            {
-                var linkerOptions = optionCollection as VisualCCommon.LinkerOptionCollection;
-                linkerOptions.ProgamDatabaseDirectoryPath = System.IO.Path.Combine(Bam.Core.State.BuildRoot, "symbols");
-            }
-#endif
         }
     }
 
@@ -79,17 +69,6 @@ namespace Test
         }
     }
 
-    sealed class CompileSingleCFile :
-        C.ObjectFile
-    {
-        public
-        CompileSingleCFile()
-        {
-            var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.Include(sourceDir, "main.c");
-        }
-    }
-
     sealed class CompileSingleCFileWithCustomOptionsV2 :
         C.V2.ObjectFile
     {
@@ -107,305 +86,64 @@ namespace Test
         }
     }
 
-    sealed class CompileSingleCFileWithCustomOptions :
-        C.ObjectFile
+    sealed class BuildTerminalApplicationFromCV2 :
+        C.V2.ConsoleApplication
     {
-        public
-        CompileSingleCFileWithCustomOptions()
+        protected override void
+        Init(
+            Module parent)
         {
-            var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.Include(sourceDir, "main.c");
-            this.UpdateOptions += UpdateCompilerOptions;
-        }
+            base.Init(parent);
 
-        private static void
-        UpdateCompilerOptions(
-            Bam.Core.IModule module,
-            Bam.Core.Target target)
-        {
-            var compilerOptions = module.Options as C.ICCompilerOptions;
+            this.CreateCSourceContainer("$(pkgroot)/source/main.c");
 
-            compilerOptions.ShowIncludes = true;
-
-            if (target.HasToolsetType(typeof(Mingw.Toolset)))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
             {
-                Bam.Core.Log.MessageAll("Toolset for mingw in use");
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+            }
+        }
+    }
 
-                if (target.HasConfiguration(Bam.Core.EConfiguration.Debug))
+    sealed class BuildTerminalApplicationFromCxxV2 :
+        C.Cxx.V2.ConsoleApplication
+    {
+        protected override void Init(Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateCxxSourceContainer("$(pkgroot)/source/main.c");
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+            }
+        }
+    }
+
+    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    sealed class BuildWindowsApplicationV2 :
+        C.V2.GUIApplication
+    {
+        protected override void
+        Init(
+            Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
+            source.PrivatePatch(settings =>
                 {
-                    compilerOptions.Optimization = C.EOptimization.Custom;
-                }
+                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    compiler.WarningsAsErrors = false;
+                });
 
-                compilerOptions.AdditionalOptions = "-Wall";
-
-                var mingwCompilerOptions = compilerOptions as MingwCommon.ICCompilerOptions;
-                mingwCompilerOptions.InlineFunctions = true;
-            }
-            else if (target.HasToolsetType(typeof(VisualC.Toolset)))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualC.V2.LinkerBase)
             {
-                Bam.Core.Log.MessageAll("Toolset for visualc in use");
-
-                compilerOptions.Optimization = C.EOptimization.Custom;
-                compilerOptions.CustomOptimization = "-Ox";
-                compilerOptions.AdditionalOptions = "-openmp";
-
-                compilerOptions.DebugSymbols = true;
-                var vcCompilerOptions = compilerOptions as VisualCCommon.ICCompilerOptions;
-                vcCompilerOptions.DebugType = VisualCCommon.EDebugType.Embedded;
-                vcCompilerOptions.BasicRuntimeChecks = VisualCCommon.EBasicRuntimeChecks.None;
-                vcCompilerOptions.SmallerTypeConversionRuntimeCheck = false;
-            }
-            else if (target.HasToolsetType(typeof(Gcc.Toolset)))
-            {
-                Bam.Core.Log.MessageAll("Toolset for gcc in use");
-
-                compilerOptions.AdditionalOptions = "-Wall";
-
-                var gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
-                gccCompilerOptions.PositionIndependentCode = true;
-            }
-            else if (target.HasToolsetType(typeof(LLVMGcc.Toolset)))
-            {
-                Bam.Core.Log.MessageAll("Toolset for llvm-gcc in use");
-
-                compilerOptions.AdditionalOptions = "-Wall";
-
-                GccCommon.ICCompilerOptions gccCompilerOptions = compilerOptions as GccCommon.ICCompilerOptions;
-                gccCompilerOptions.PositionIndependentCode = true;
-            }
-            else if (target.HasToolsetType(typeof(Clang.Toolset)))
-            {
-                Bam.Core.Log.MessageAll("Toolset for clang in use");
-
-                compilerOptions.AdditionalOptions = "-Wall";
-
-                var clangCompilerOptions = compilerOptions as ClangCommon.ICCompilerOptions;
-                clangCompilerOptions.PositionIndependentCode = true;
-            }
-            else
-            {
-                Bam.Core.Log.MessageAll("Unrecognized toolset, '{0}'", target.ToolsetName('='));
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
         }
-    }
-
-    sealed class CompileCSourceCollection :
-        C.ObjectFileCollection
-    {
-        public
-        CompileCSourceCollection()
-        {
-            var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.Include(sourceDir, "*.c");
-        }
-    }
-
-    sealed class CompileSingleCppFile :
-        C.Cxx.ObjectFile
-    {
-        public
-        CompileSingleCppFile()
-        {
-            var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.Include(sourceDir, "main.c");
-        }
-    }
-
-    sealed class CompileCppSourceCollection :
-        C.Cxx.ObjectFileCollection
-    {
-        public
-        CompileCppSourceCollection()
-        {
-            var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.Include(sourceDir, "*.c");
-        }
-    }
-
-    sealed class CompileCSourceCollectionWithCustomOptions :
-        C.ObjectFileCollection
-    {
-        public
-        CompileCSourceCollectionWithCustomOptions()
-        {
-            var sourceDir = this.PackageLocation.SubDirectory("source");
-            this.Include(sourceDir, "*.c");
-
-            this.UpdateOptions += OverrideOptionCollection;
-
-            // override the options on one specific file
-            this.RegisterUpdateOptions(new Bam.Core.UpdateOptionCollectionDelegateArray(mainObjFile_UpdateOptions),
-                                       sourceDir, "main.c");
-        }
-
-        void
-        mainObjFile_UpdateOptions(
-            Bam.Core.IModule module,
-            Bam.Core.Target target)
-        {
-            var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.Defines.Add("DEFINE_FOR_MAIN_ONLY");
-        }
-
-        public void
-        OverrideOptionCollection(
-            Bam.Core.IModule module,
-            Bam.Core.Target target)
-        {
-            var compilerOptions = module.Options as C.ICCompilerOptions;
-            compilerOptions.ShowIncludes = true;
-            compilerOptions.Defines.Add("DEFINE_FOR_ALL_SOURCE");
-        }
-    }
-
-    sealed class BuildTerminalApplicationFromC :
-        C.Application
-    {
-        sealed class SourceFiles :
-            C.ObjectFileCollection
-        {
-            public
-            SourceFiles()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "main.c");
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        SourceFiles sourceFiles = new SourceFiles();
-
-        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows, ToolsetTypes=new [] {typeof(VisualC.Toolset)})]
-        Bam.Core.Array<System.Type> dependents = new Bam.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
-
-        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes=new[] { typeof(VisualC.Toolset)})]
-        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
-    }
-
-    sealed class BuildTerminalApplicationFromCxx :
-        C.Application
-    {
-        sealed class SourceFiles :
-            C.Cxx.ObjectFileCollection
-        {
-            public
-            SourceFiles()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "main.c");
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        SourceFiles sourceFiles = new SourceFiles();
-
-        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows, ToolsetTypes=new[] {typeof(VisualC.Toolset)})]
-        Bam.Core.Array<System.Type> dependents = new Bam.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
-
-        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
-    }
-
-    sealed class BuildTerminalApplicationWithUpdatedOptions :
-        C.Application
-    {
-        sealed class SourceFiles :
-            C.ObjectFileCollection
-        {
-            public
-            SourceFiles()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "main.c");
-
-                this.UpdateOptions += OverrideOptionCollection;
-            }
-
-            private static void
-            OverrideOptionCollection(
-                Bam.Core.IModule module,
-                Bam.Core.Target target)
-            {
-                var compilerOptions = module.Options as C.ICCompilerOptions;
-                compilerOptions.ShowIncludes = true;
-                compilerOptions.CharacterSet = C.ECharacterSet.NotSet;
-
-                var vcOptions = compilerOptions as VisualC.CCompilerOptionCollection;
-                if (null != vcOptions)
-                {
-                    //vcOptions.DebugType = VisualC.EDebugType.Embedded;
-                }
-                var mingwOptions = compilerOptions as Mingw.CCompilerOptionCollection;
-                if (null != mingwOptions)
-                {
-                }
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        SourceFiles sourceFiles = new SourceFiles();
-
-        [Bam.Core.DependentModules(Platform=Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Bam.Core.Array<System.Type> dependents = new Bam.Core.Array<System.Type>(typeof(WindowsSDK.WindowsSDK));
-
-        [C.RequiredLibraries(Platform = Bam.Core.EPlatform.Windows, ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
-    }
-
-    [Bam.Core.ModuleTargets(Platform=Bam.Core.EPlatform.Windows)]
-    sealed class BuildWindowsApplication :
-        C.WindowsApplication
-    {
-        sealed class SourceFiles :
-            C.ObjectFileCollection
-        {
-            public
-            SourceFiles()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("source");
-                this.Include(sourceDir, "main.c");
-                this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(Clang_CompilerOptions);
-            }
-
-            void
-            Clang_CompilerOptions(
-                Bam.Core.IModule module,
-                Bam.Core.Target target)
-            {
-                if (target.HasToolsetType(typeof(Clang.Toolset)))
-                {
-                    var cOptions = module.Options as C.ICCompilerOptions;
-                    // Microsoft headers do not compile warning free with Clang
-                    cOptions.WarningsAsErrors = false;
-                }
-            }
-        }
-
-        sealed class Win32ResourceFile :
-            C.Win32Resource
-        {
-            public
-            Win32ResourceFile()
-            {
-                var resourcesDir = this.PackageLocation.SubDirectory("resources");
-                this.Include(resourcesDir, "win32.rc");
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        SourceFiles sourceFiles = new SourceFiles();
-
-        [Bam.Core.DependentModules(ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Bam.Core.TypeArray vcDependents = new Bam.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-            );
-
-        [Bam.Core.DependentModules]
-        Bam.Core.TypeArray mingwDependents = new Bam.Core.TypeArray(
-            typeof(Win32ResourceFile)
-            );
-
-        [C.RequiredLibraries(ToolsetTypes=new[]{typeof(VisualC.Toolset)})]
-        Bam.Core.StringArray libraries = new Bam.Core.StringArray("KERNEL32.lib");
     }
 }

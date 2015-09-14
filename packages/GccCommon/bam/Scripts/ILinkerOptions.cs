@@ -53,30 +53,4 @@ namespace V2
         }
     }
 }
-    public interface ILinkerOptions
-    {
-        bool CanUseOrigin
-        {
-            get;
-            set;
-        }
-
-        bool AllowUndefinedSymbols
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray RPath
-        {
-            get;
-            set;
-        }
-
-        bool SixtyFourBit
-        {
-            get;
-            set;
-        }
-    }
 }

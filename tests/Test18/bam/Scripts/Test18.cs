@@ -77,34 +77,4 @@ namespace Test18
             this.DependsOn(x);
         }
     }
-
-    class Control : C.Application
-    {
-        [Bam.Core.DependentModules]
-        Bam.Core.TypeArray deps = new Bam.Core.TypeArray(
-            typeof(X),
-            typeof(Y),
-            typeof(Z)
-            );
-    }
-
-    class X : C.StaticLibrary
-    {
-        [Bam.Core.DependentModules]
-        Bam.Core.TypeArray deps = new Bam.Core.TypeArray(
-            typeof(Y)
-            );
-    }
-
-    class Y : C.DynamicLibrary
-    {
-    }
-
-    class Z : C.StaticLibrary
-    {
-        [Bam.Core.DependentModules]
-        Bam.Core.TypeArray deps = new Bam.Core.TypeArray(
-            typeof(X)
-            );
-    }
 }

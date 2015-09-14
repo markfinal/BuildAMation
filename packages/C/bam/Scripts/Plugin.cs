@@ -46,11 +46,4 @@ namespace V2
         }
     }
     }
-/// <summary>
-    /// C/C++ plugin, a dynamic library that is not linked against, but loaded at runtime
-    /// </summary>
-    public partial class Plugin :
-        DynamicLibrary
-    {
-    }
 }

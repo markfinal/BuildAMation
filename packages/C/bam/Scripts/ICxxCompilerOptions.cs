@@ -53,15 +53,4 @@ namespace V2
         }
     }
 }
-    public interface ICxxCompilerOptions
-    {
-        /// <summary>
-        /// Specify the type of exception handling used by the compiler
-        /// </summary>
-        C.Cxx.EExceptionHandler ExceptionHandler
-        {
-            get;
-            set;
-        }
-    }
 }

@@ -68,36 +68,5 @@ namespace Bam.Core
 
             throw new Exception("Builder package '{0}' was not specified as a dependency", builderPackageName);
         }
-
-        public static void
-        CreateBuilderInstance()
-        {
-            if (null == State.BuildMode)
-            {
-                throw new Exception("Name of the Builder has not been specified");
-            }
-
-            if (null == State.ScriptAssembly)
-            {
-                throw new Exception("Script assembly has not been set");
-            }
-
-            IBuilder builderInstance = null;
-            var attributes = State.ScriptAssembly.GetCustomAttributes(typeof(DeclareBuilderAttribute), false) as DeclareBuilderAttribute[];
-            foreach (var attribute in attributes)
-            {
-                if (attribute.Name == State.BuildMode)
-                {
-                    builderInstance = BuilderFactory.CreateBuilder(attribute.Type);
-                    break;
-                }
-            }
-            if (null == builderInstance)
-            {
-                throw new Exception("Unsupported builder '{0}'. Please double check the spelling as the name is case sensitive", State.BuildMode);
-            }
-
-            State.BuilderInstance = builderInstance;
-        }
     }
 }

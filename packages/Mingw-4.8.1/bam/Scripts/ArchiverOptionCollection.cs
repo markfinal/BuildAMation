@@ -193,12 +193,4 @@ namespace DefaultSettings
         }
     }
 }
-    public class ArchiverOptionCollection :
-        MingwCommon.ArchiverOptionCollection
-    {
-        public
-        ArchiverOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
-    }
 }

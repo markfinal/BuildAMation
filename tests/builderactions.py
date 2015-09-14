@@ -31,7 +31,7 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
         outputMessages.write("VisualStudio solution expected at %s did not exist" % slnPath)
         return 0
     try:
-        vcVersion = options.visualc_version
+        vcVersion = options.VisualC_version
         if vcVersion:
             vcVersion = vcVersion[0]
         else:

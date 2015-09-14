@@ -54,18 +54,3 @@ namespace V2
     }
 }
 }
-namespace XcodeBuilder
-{
-    public sealed partial class XcodeBuilder
-    {
-        [Bam.Core.EmptyBuildFunction]
-        public object
-        Build(
-            C.HeaderLibrary moduleToBuild,
-            out bool success)
-        {
-            success = true;
-            return null;
-        }
-    }
-}
