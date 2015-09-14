@@ -153,7 +153,7 @@ namespace Bam.Core
             var graph = Graph.Instance;
             if (null == graph.BuildEnvironment)
             {
-                throw new Bam.Core.Exception("No build environment for module {0}", this.GetType().ToString());
+                throw new Exception("No build environment for module {0}", this.GetType().ToString());
             }
 
             graph.AddModule(this);
@@ -277,7 +277,7 @@ namespace Bam.Core
         {
             if (this.GeneratedPaths.ContainsKey(key))
             {
-                Core.Log.DebugMessage("Key '{0}' already exists", key);
+                Log.DebugMessage("Key '{0}' already exists", key);
                 return;
             }
             this.GeneratedPaths.Add(key, path);

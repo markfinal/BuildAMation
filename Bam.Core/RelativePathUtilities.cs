@@ -131,7 +131,7 @@ namespace Bam.Core
         MakeRelativePathAbsoluteToWorkingDir(
             string relativePath)
         {
-            return MakeRelativePathAbsoluteTo(relativePath, Core.State.WorkingDirectory);
+            return MakeRelativePathAbsoluteTo(relativePath, State.WorkingDirectory);
         }
 
         public static string
@@ -148,7 +148,7 @@ namespace Bam.Core
             var absolutePath = relativePathUri.AbsolutePath;
             absolutePath = System.IO.Path.GetFullPath(absolutePath);
             absolutePath = System.Uri.UnescapeDataString(absolutePath);
-            if (Core.OSUtilities.IsWindowsHosting)
+            if (OSUtilities.IsWindowsHosting)
             {
                 absolutePath = absolutePath.Replace('/', '\\');
             }

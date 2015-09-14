@@ -467,7 +467,7 @@ namespace Bam.Core
             {
                 this.ParsedString = joined;
             }
-            Core.Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
+            Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
             return joined;
         }
 
@@ -662,20 +662,20 @@ namespace Bam.Core
                 (typename) =>
                 {
                     // TODO: this does not seem to be used
-                    return Core.State.ScriptAssembly;
+                    return State.ScriptAssembly;
                 },
                 (assembly, name, checkcase) =>
                 {
-                    return Core.State.ScriptAssembly.GetType(name);
+                    return State.ScriptAssembly.GetType(name);
                 });
             if (null == type)
             {
-                throw new Bam.Core.Exception("Unable to locate class '{0}'", classname);
+                throw new Exception("Unable to locate class '{0}'", classname);
             }
             var policy = System.Activator.CreateInstance(type) as T;
             if (null == policy)
             {
-                throw new Bam.Core.Exception("Unable to create instance of class '{0}'", classname);
+                throw new Exception("Unable to create instance of class '{0}'", classname);
             }
             return policy;
         }
@@ -815,7 +815,7 @@ namespace Bam.Core
     }
 
     public sealed class TokenizedStringArray :
-        Bam.Core.Array<TokenizedString>
+        Array<TokenizedString>
     {
         public TokenizedStringArray(TokenizedString input)
             :

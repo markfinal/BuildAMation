@@ -38,7 +38,7 @@ namespace Bam.Core
         public static void
         MakePackage()
         {
-            var packageDir = Core.State.WorkingDirectory;
+            var packageDir = State.WorkingDirectory;
             var bamDir = System.IO.Path.Combine(packageDir, BamSubFolder);
             if (System.IO.Directory.Exists(bamDir))
             {

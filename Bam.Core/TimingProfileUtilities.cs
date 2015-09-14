@@ -97,9 +97,9 @@ namespace Bam.Core
                                      new string(' ', maxTimeLength - stopTimeHeader.Length),
                                      stopTimeHeader);
             var horizontalRule = new string('-', header.Length);
-            Core.Log.Info(horizontalRule);
-            Core.Log.Info(header);
-            Core.Log.Info(horizontalRule);
+            Log.Info(horizontalRule);
+            Log.Info(header);
+            Log.Info(horizontalRule);
             var cumulativeTime = new System.TimeSpan();
             foreach (ETimingProfiles profile in profiles)
             {

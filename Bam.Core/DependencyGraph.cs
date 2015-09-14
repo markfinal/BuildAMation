@@ -398,7 +398,7 @@ namespace Bam.Core
                         text.AppendFormat("\t{0} : {1}{2}", s.Key, s.Value, System.Environment.NewLine);
                     }
                 }
-                Core.Log.DebugMessage(text.ToString());
+                Log.DebugMessage(text.ToString());
             }
         }
 

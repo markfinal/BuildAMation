@@ -192,7 +192,7 @@ namespace Bam.Core
                 var bamDir = this.GetBamDirectory() + System.IO.Path.DirectorySeparatorChar; // slash added to make it look like a directory
                 foreach (string repo in packageRepos)
                 {
-                    var relativePackageRepo = Core.RelativePathUtilities.GetPath(repo, bamDir);
+                    var relativePackageRepo = RelativePathUtilities.GetPath(repo, bamDir);
                     if (OSUtilities.IsWindowsHosting)
                     {
                         // standardize on non-Windows directory separators
@@ -437,7 +437,7 @@ namespace Bam.Core
 
                 var dir = xmlReader.GetAttribute("dir");
                 var bamDir = this.GetBamDirectory();
-                var absolutePackageRepoDir = Core.RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
+                var absolutePackageRepoDir = RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
                 this.PackageRepositories.Add(absolutePackageRepoDir);
             }
 
@@ -995,59 +995,59 @@ namespace Bam.Core
             var packageName = this.FullName;
             var formatString = "Definition of package '{0}'";
             int dashLength = formatString.Length - 3 + packageName.Length;
-            Core.Log.MessageAll("Definition of package '{0}'", packageName);
-            Core.Log.MessageAll(new string('-', dashLength));
+            Log.MessageAll("Definition of package '{0}'", packageName);
+            Log.MessageAll(new string('-', dashLength));
             if (!string.IsNullOrEmpty(this.Description))
             {
-                Core.Log.MessageAll("Description: {0}", this.Description);
+                Log.MessageAll("Description: {0}", this.Description);
             }
-            Core.Log.MessageAll("\nSupported on: {0}", Core.Platform.ToString(this.SupportedPlatforms, ' '));
-            Core.Log.MessageAll("\nBuildAMation assemblies:");
+            Log.MessageAll("\nSupported on: {0}", Platform.ToString(this.SupportedPlatforms, ' '));
+            Log.MessageAll("\nBuildAMation assemblies:");
             foreach (var assembly in this.BamAssemblies)
             {
-                Core.Log.MessageAll("\t{0}", assembly);
+                Log.MessageAll("\t{0}", assembly);
             }
-            Core.Log.MessageAll("\nDotNet assemblies:");
+            Log.MessageAll("\nDotNet assemblies:");
             foreach (var desc in this.DotNetAssemblies)
             {
                 if (null == desc.RequiredTargetFramework)
                 {
-                    Core.Log.MessageAll("\t{0}", desc.Name);
+                    Log.MessageAll("\t{0}", desc.Name);
                 }
                 else
                 {
-                    Core.Log.MessageAll("\t{0} (version {1})", desc.Name, desc.RequiredTargetFramework);
+                    Log.MessageAll("\t{0} (version {1})", desc.Name, desc.RequiredTargetFramework);
                 }
             }
             if (this.Definitions.Count > 0)
             {
-                Core.Log.MessageAll("\n#defines:");
+                Log.MessageAll("\n#defines:");
                 foreach (var definition in this.Definitions)
                 {
-                    Core.Log.MessageAll("\t{0}", definition);
+                    Log.MessageAll("\t{0}", definition);
                 }
             }
 
             if (this.PackageRepositories.Count > 0)
             {
-                Core.Log.MessageAll("\nExtra package repositories to search:");
+                Log.MessageAll("\nExtra package repositories to search:");
                 foreach (var repo in this.PackageRepositories)
                 {
-                    var absoluteRepo = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(repo);
+                    var absoluteRepo = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(repo);
 
-                    Core.Log.MessageAll("\t'{0}'\t(absolute path '{1}')", repo, absoluteRepo);
+                    Log.MessageAll("\t'{0}'\t(absolute path '{1}')", repo, absoluteRepo);
                 }
             }
 
             if (this.Dependents.Count > 0)
             {
-                Core.Log.MessageAll("\nDependent packages (* = default version):", packageName);
+                Log.MessageAll("\nDependent packages (* = default version):", packageName);
                 var visitedPackages = new Array<PackageDefinitionFile>();
                 this.ShowDependencies(1, visitedPackages);
             }
             else
             {
-                Core.Log.MessageAll("\nNo dependent packages", packageName);
+                Log.MessageAll("\nNo dependent packages", packageName);
             }
         }
     }
