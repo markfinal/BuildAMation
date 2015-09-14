@@ -84,7 +84,7 @@ namespace Qt5Test1
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
         }
     }

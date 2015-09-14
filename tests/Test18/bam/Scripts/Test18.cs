@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test18
 {
-    public sealed class ControlV2 :
+    public sealed class Control :
         C.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
@@ -38,42 +38,42 @@ namespace Test18
 
             // NB: these are long handed code, normally hidden behind utility functions
 
-            var x = Bam.Core.Graph.Instance.FindReferencedModule<XV2>();
+            var x = Bam.Core.Graph.Instance.FindReferencedModule<X>();
             this.DependsOn(x);
 
-            var y = Bam.Core.Graph.Instance.FindReferencedModule<YV2>();
+            var y = Bam.Core.Graph.Instance.FindReferencedModule<Y>();
             this.DependsOn(y);
 
-            var z = Bam.Core.Graph.Instance.FindReferencedModule<ZV2>();
+            var z = Bam.Core.Graph.Instance.FindReferencedModule<Z>();
             this.DependsOn(z);
         }
     }
 
-    public sealed class XV2 :
+    public sealed class X :
         C.StaticLibrary
     {
         protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            var y = Bam.Core.Graph.Instance.FindReferencedModule<YV2>();
+            var y = Bam.Core.Graph.Instance.FindReferencedModule<Y>();
             this.DependsOn(y);
         }
     }
 
-    public sealed class YV2 :
+    public sealed class Y :
         C.DynamicLibrary
     {
     }
 
-    public sealed class ZV2 :
+    public sealed class Z :
         C.StaticLibrary
     {
         protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            var x = Bam.Core.Graph.Instance.FindReferencedModule<XV2>();
+            var x = Bam.Core.Graph.Instance.FindReferencedModule<X>();
             this.DependsOn(x);
         }
     }

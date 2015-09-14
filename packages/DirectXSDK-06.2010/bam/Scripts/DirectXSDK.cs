@@ -57,10 +57,10 @@ namespace DirectXSDK
         }
     }
 
-    sealed class Direct3D9V2 :
+    sealed class Direct3D9 :
         C.CSDKModule
     {
-        public Direct3D9V2()
+        public Direct3D9()
         {
             var installPath = Direct3D9Location.InstallPath;
 

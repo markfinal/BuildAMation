@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test12
 {
-    sealed class MyOpenGLApplicationV2 :
+    sealed class MyOpenGLApplication :
         C.Cxx.GUIApplication
     {
         protected override void
@@ -56,7 +56,7 @@ namespace Test12
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
 
                 this.PrivatePatch(settings =>
                     {

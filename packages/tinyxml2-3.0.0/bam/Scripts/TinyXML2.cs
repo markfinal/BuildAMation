@@ -30,7 +30,7 @@
 namespace TinyXML2
 {
     [Bam.Core.ModuleGroup("Thirdparty")]
-    sealed class TinyXML2StaticV2 :
+    sealed class TinyXML2Static :
         C.StaticLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>

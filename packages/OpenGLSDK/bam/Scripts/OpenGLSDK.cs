@@ -30,7 +30,7 @@
 namespace OpenGLSDK
 {
     // TODO: this is pretty pointless at the moment
-    public sealed class OpenGLV2 :
+    public sealed class OpenGL :
         C.CSDKModule
     {
         protected override void

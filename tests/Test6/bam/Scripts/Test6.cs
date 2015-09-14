@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test6
 {
-    sealed class ConditionApplicationV2 :
+    sealed class ConditionApplication :
         C.ConsoleApplication
     {
         protected override void
@@ -65,7 +65,7 @@ namespace Test6
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }

@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test10
 {
-    sealed class MyStaticLibraryV2 :
+    sealed class MyStaticLibrary :
         C.StaticLibrary
     {
         protected override void
@@ -43,7 +43,7 @@ namespace Test10
         }
     }
 
-    sealed class MyDynamicLibraryV2 :
+    sealed class MyDynamicLibrary :
         C.DynamicLibrary
     {
         protected override void
@@ -57,12 +57,12 @@ namespace Test10
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
-    class MyStandaloneAppV2 :
+    class MyStandaloneApp :
         C.ConsoleApplication
     {
         protected override void
@@ -73,20 +73,20 @@ namespace Test10
 
             this.CreateCSourceContainer("$(pkgroot)/source/standaloneapp.c");
 
-            this.LinkAgainst<MyStaticLibraryV2>();
+            this.LinkAgainst<MyStaticLibrary>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
                 // TODO: simplify
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
                 this.Requires(windowsSDK);
                 this.UsePublicPatches(windowsSDK); // linking
             }
         }
     }
 
-    class DllDependentAppV2 :
+    class DllDependentApp :
         C.ConsoleApplication
     {
         protected override void
@@ -107,13 +107,13 @@ namespace Test10
                     }
                 });
 
-            this.LinkAgainst<MyDynamicLibraryV2>();
+            this.LinkAgainst<MyDynamicLibrary>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
                 // TODO: simplify
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
                 this.Requires(windowsSDK);
                 this.UsePublicPatches(windowsSDK); // linking
             }
@@ -129,9 +129,9 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.Include<MyStandaloneAppV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Standalone");
-            var app = this.Include<DllDependentAppV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Dynamic");
-            this.Include<MyDynamicLibraryV2>(C.DynamicLibrary.Key, ".", app);
+            this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Standalone");
+            var app = this.Include<DllDependentApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Dynamic");
+            this.Include<MyDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test4
 {
-    sealed class MyDynamicLibV2 :
+    sealed class MyDynamicLib :
         C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
@@ -48,7 +48,7 @@ namespace Test4
         {
             base.Init(parent);
 
-            this.LinkAgainst<MyStaticLibV2>();
+            this.LinkAgainst<MyStaticLib>();
 
             this.CreateHeaderContainer("$(pkgroot)/include/dynamiclibrary.h");
 
@@ -61,7 +61,7 @@ namespace Test4
                 this.Linker is VisualC.LinkerBase)
             {
                 // TODO: simplify
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
                 this.Requires(windowsSDK);
                 source.UsePublicPatches(windowsSDK); // compiling
                 this.UsePublicPatches(windowsSDK); // linking
@@ -69,7 +69,7 @@ namespace Test4
         }
     }
 
-    sealed class MyStaticLibV2 :
+    sealed class MyStaticLib :
         C.StaticLibrary
     {
         protected override void

@@ -29,10 +29,10 @@
 #endregion // License
 namespace ProxyTest
 {
-    public sealed class ProxiedObjectFileV2 :
+    public sealed class ProxiedObjectFile :
         C.ObjectFile
     {
-        public ProxiedObjectFileV2()
+        public ProxiedObjectFile()
         {
             this.Macros["proxypkgroot"] = Bam.Core.TokenizedString.Create("$(pkgroot)/../FakePackage", this);
         }
@@ -45,10 +45,10 @@ namespace ProxyTest
         }
     }
 
-    public sealed class ProxiedObjectFileCollectionV2 :
+    public sealed class ProxiedObjectFileCollection :
         C.CObjectFileCollection
     {
-        public ProxiedObjectFileCollectionV2()
+        public ProxiedObjectFileCollection()
         {
             this.Macros["proxypkgroot"] = Bam.Core.TokenizedString.Create("$(pkgroot)/../FakePackage", this);
         }

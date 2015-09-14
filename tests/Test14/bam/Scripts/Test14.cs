@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test14
 {
-    public sealed class DynamicLibraryAV2 :
+    public sealed class DynamicLibraryA :
         C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
@@ -58,12 +58,12 @@ namespace Test14
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
-    public sealed class DynamicLibraryBV2 :
+    public sealed class DynamicLibraryB :
         C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
@@ -88,17 +88,17 @@ namespace Test14
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
 
-            this.LinkAgainst<DynamicLibraryAV2>();
+            this.LinkAgainst<DynamicLibraryA>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
-    public sealed class ApplicationV2 :
+    public sealed class Application :
         C.ConsoleApplication
     {
         protected override void
@@ -119,13 +119,13 @@ namespace Test14
                     }
                 });
 
-            this.CompileAndLinkAgainst<DynamicLibraryAV2>(source);
-            this.CompileAndLinkAgainst<DynamicLibraryBV2>(source);
+            this.CompileAndLinkAgainst<DynamicLibraryA>(source);
+            this.CompileAndLinkAgainst<DynamicLibraryB>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
@@ -139,9 +139,9 @@ namespace Test14
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<DynamicLibraryAV2>(C.DynamicLibrary.Key, ".", app);
-            this.Include<DynamicLibraryBV2>(C.DynamicLibrary.Key, ".", app);
+            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<DynamicLibraryA>(C.DynamicLibrary.Key, ".", app);
+            this.Include<DynamicLibraryB>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

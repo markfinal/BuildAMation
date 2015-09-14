@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test11
 {
-    sealed class CrossPlatformApplicationV2 :
+    sealed class CrossPlatformApplication :
         C.ConsoleApplication
     {
         protected override void
@@ -56,7 +56,7 @@ namespace Test11
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }

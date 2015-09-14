@@ -31,7 +31,7 @@ using Bam.Core;
 using System.Linq;
 namespace OpenGLUniformBufferTest
 {
-    sealed class GLUniformBufferTestV2 :
+    sealed class GLUniformBufferTest :
         C.Cxx.GUIApplication
     {
         protected override void Init(Bam.Core.Module parent)
@@ -47,15 +47,15 @@ namespace OpenGLUniformBufferTest
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
-            this.LinkAgainst<OpenGLSDK.OpenGLV2>();
+            this.LinkAgainst<OpenGLSDK.OpenGL>();
 
             var rendererObj = source.Children.Where(item => (item as C.Cxx.ObjectFile).InputPath.Parse().Contains("renderer")).ElementAt(0) as C.Cxx.ObjectFile;
-            this.CompileAndLinkAgainst<glew.GLEWStaticV2>(rendererObj);
+            this.CompileAndLinkAgainst<glew.GLEWStatic>(rendererObj);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
 
             this.PrivatePatch(settings =>

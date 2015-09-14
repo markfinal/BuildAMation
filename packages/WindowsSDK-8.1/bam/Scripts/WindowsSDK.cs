@@ -29,10 +29,10 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class WindowsSDKV2 :
+    public sealed class WindowsSDK :
         C.CSDKModule
     {
-        public WindowsSDKV2()
+        public WindowsSDK()
         {
             string installPath;
             using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Windows Kits\Installed Roots"))

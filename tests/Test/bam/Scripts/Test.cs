@@ -52,7 +52,7 @@ namespace Test
         }
     }
 
-    sealed class CompileSingleCFileV2 :
+    sealed class CompileSingleCFile :
         C.ObjectFile
     {
         protected override void
@@ -69,7 +69,7 @@ namespace Test
         }
     }
 
-    sealed class CompileSingleCFileWithCustomOptionsV2 :
+    sealed class CompileSingleCFileWithCustomOptions :
         C.ObjectFile
     {
         protected override void
@@ -86,7 +86,7 @@ namespace Test
         }
     }
 
-    sealed class BuildTerminalApplicationFromCV2 :
+    sealed class BuildTerminalApplicationFromC :
         C.ConsoleApplication
     {
         protected override void
@@ -100,12 +100,12 @@ namespace Test
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
-    sealed class BuildTerminalApplicationFromCxxV2 :
+    sealed class BuildTerminalApplicationFromCxx :
         C.Cxx.ConsoleApplication
     {
         protected override void Init(Module parent)
@@ -117,13 +117,13 @@ namespace Test
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
-    sealed class BuildWindowsApplicationV2 :
+    sealed class BuildWindowsApplication :
         C.GUIApplication
     {
         protected override void
@@ -142,7 +142,7 @@ namespace Test
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
         }
     }

@@ -29,10 +29,10 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class WindowsSDKV2 :
+    public sealed class WindowsSDK :
         C.CSDKModule
     {
-        public WindowsSDKV2()
+        public WindowsSDK()
         {
             this.Macros.Add("InstallPath", @"C:\Program Files\Microsoft SDKs\Windows\v6.0A");
             this.PublicPatch((settings, appliedTo) =>

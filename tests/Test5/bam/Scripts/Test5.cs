@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test5
 {
-    sealed class MyDynamicLibTestAppV2 :
+    sealed class MyDynamicLibTestApp :
         C.ConsoleApplication
     {
         protected override void
@@ -51,13 +51,13 @@ namespace Test5
 
             var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamicmain.c");
 
-            this.LinkAgainst<Test4.MyStaticLibV2>();
-            this.CompileAndLinkAgainst<Test4.MyDynamicLibV2>(source);
+            this.LinkAgainst<Test4.MyStaticLib>();
+            this.CompileAndLinkAgainst<Test4.MyDynamicLib>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
@@ -71,8 +71,8 @@ namespace Test5
         {
             base.Init(parent);
 
-            var app = this.Include<MyDynamicLibTestAppV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test4.MyDynamicLibV2>(C.DynamicLibrary.Key, ".", app);
+            var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);
         }
     }
 
@@ -85,13 +85,13 @@ namespace Test5
         {
             base.Init(parent);
 
-            var dll = this.Include<Test4.MyDynamicLibV2>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
+            var dll = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Include<Test4.MyDynamicLibV2>(C.DynamicLibrary.ImportLibraryKey, "../lib", dll);
+                this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey, "../lib", dll);
             }
 
-            this.IncludeFiles<Test4.MyDynamicLibV2>("$(pkgroot)/include/dynamiclibrary.h", "../include", dll);
+            this.IncludeFiles<Test4.MyDynamicLib>("$(pkgroot)/include/dynamiclibrary.h", "../include", dll);
         }
     }
 

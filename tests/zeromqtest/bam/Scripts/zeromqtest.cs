@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace zeromqtest
 {
-    public sealed class TestV2 :
+    public sealed class Test :
         C.Cxx.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
@@ -39,12 +39,12 @@ namespace zeromqtest
 
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/main.cpp");
 
-            this.CompileAndLinkAgainst<zeromq.ZMQSharedLibraryV2>(source);
+            this.CompileAndLinkAgainst<zeromq.ZMQSharedLibrary>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
 
             this.PrivatePatch(settings =>
@@ -69,8 +69,8 @@ namespace zeromqtest
         {
             base.Init(parent);
 
-            var app = this.Include<TestV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<zeromq.ZMQSharedLibraryV2>(C.DynamicLibrary.Key, ".", app);
+            var app = this.Include<Test>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<zeromq.ZMQSharedLibrary>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

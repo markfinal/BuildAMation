@@ -115,7 +115,7 @@ namespace zeromq
         }
     }
 
-    public sealed class ZMQSharedLibraryV2 :
+    public sealed class ZMQSharedLibrary :
         C.Cxx.DynamicLibrary
     {
         protected override void Init(Bam.Core.Module parent)
@@ -166,7 +166,7 @@ namespace zeromq
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
 
             this.PublicPatch((settings, appliedTo) =>

@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace RenderTextureAndProcessor
 {
-    sealed class RenderTextureV2 :
+    sealed class RenderTexture :
         C.Cxx.GUIApplication
     {
         protected override void
@@ -56,9 +56,9 @@ namespace RenderTextureAndProcessor
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
-            this.LinkAgainst<OpenGLSDK.OpenGLV2>();
+            this.LinkAgainst<OpenGLSDK.OpenGL>();
 
             this.PrivatePatch(settings =>
             {
@@ -77,11 +77,11 @@ namespace RenderTextureAndProcessor
                 }
             });
 
-            this.RequiredToExist<TextureProcessorV2>();
+            this.RequiredToExist<TextureProcessor>();
         }
     }
 
-    sealed class TextureProcessorV2 :
+    sealed class TextureProcessor :
         C.Cxx.ConsoleApplication
     {
         protected override void
@@ -106,7 +106,7 @@ namespace RenderTextureAndProcessor
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
 
             this.PrivatePatch(settings =>
@@ -133,8 +133,8 @@ namespace RenderTextureAndProcessor
         {
             base.Init(parent);
 
-            var app = this.Include<RenderTextureV2>(C.GUIApplication.Key, EPublishingType.WindowedApplication);
-            this.Include<TextureProcessorV2>(C.ConsoleApplication.Key, ".", app);
+            var app = this.Include<RenderTexture>(C.GUIApplication.Key, EPublishingType.WindowedApplication);
+            this.Include<TextureProcessor>(C.ConsoleApplication.Key, ".", app);
         }
     }
 }

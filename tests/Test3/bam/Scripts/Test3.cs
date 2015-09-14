@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test3
 {
-    sealed class Library2V2 :
+    sealed class Library2 :
         C.StaticLibrary
     {
         public Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>

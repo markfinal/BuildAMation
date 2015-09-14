@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test16
 {
-    public sealed class StaticLibrary2V2 :
+    public sealed class StaticLibrary2 :
         C.StaticLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePath = (settings, appliedTo) =>
@@ -52,7 +52,7 @@ namespace Test16
 
             this.PublicPatch((settings, appliedTo) => this.includePath(settings, this));
 
-            this.CompileAgainstPublicly<Test15.StaticLibrary1V2>(source);
+            this.CompileAgainstPublicly<Test15.StaticLibrary1>(source);
         }
     }
 }

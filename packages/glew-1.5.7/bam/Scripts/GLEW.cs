@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace glew
 {
-    sealed class GLEWStaticV2 :
+    sealed class GLEWStatic :
         C.StaticLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate exported = (settings, appliedTo) =>
@@ -62,10 +62,10 @@ namespace glew
 
             this.PublicPatch((settings, appliedTo) => this.exported(settings, this));
 
-            this.CompileAgainst<OpenGLSDK.OpenGLV2>(source);
+            this.CompileAgainst<OpenGLSDK.OpenGL>(source);
             if (this.Librarian is VisualC.Librarian)
             {
-                this.CompileAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompileAgainst<WindowsSDK.WindowsSDK>(source);
             }
         }
     }

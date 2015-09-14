@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace HeaderLibraryTest
 {
-    public sealed class HeaderLibraryV2 :
+    public sealed class HeaderLibrary :
         C.HeaderLibrary
     {
         protected override void Init(Bam.Core.Module parent)
@@ -50,7 +50,7 @@ namespace HeaderLibraryTest
         }
     }
 
-    public sealed class ApplicationV2 :
+    public sealed class Application :
         C.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
@@ -59,12 +59,12 @@ namespace HeaderLibraryTest
 
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/main.c");
 
-            this.CompileAgainst<HeaderLibraryV2>(source);
+            this.CompileAgainst<HeaderLibrary>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }

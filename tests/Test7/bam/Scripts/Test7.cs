@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test7
 {
-    sealed class ExplicitDynamicLibraryV2 :
+    sealed class ExplicitDynamicLibrary :
         C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
@@ -61,7 +61,7 @@ namespace Test7
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }

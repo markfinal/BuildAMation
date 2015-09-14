@@ -30,7 +30,7 @@
 namespace Direct3DTriangle
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
-    sealed class D3D9TriangleTestV2 :
+    sealed class D3D9TriangleTest :
         C.Cxx.GUIApplication
     {
         protected override void Init(Bam.Core.Module parent)
@@ -48,8 +48,8 @@ namespace Direct3DTriangle
 
             if (this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<DirectXSDK.Direct3D9V2>(source);
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<DirectXSDK.Direct3D9>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
 
             this.PrivatePatch(settings =>

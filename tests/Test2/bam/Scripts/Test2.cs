@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test2
 {
-    sealed class LibraryV2 :
+    sealed class Library :
         C.StaticLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
@@ -57,7 +57,7 @@ namespace Test2
         }
     }
 
-    sealed class ApplicationV2 :
+    sealed class Application :
         C.ConsoleApplication
     {
         protected override void
@@ -68,13 +68,13 @@ namespace Test2
 
             var source = this.CreateCSourceContainer("$(pkgroot)/source/application.c");
 
-            this.CompileAndLinkAgainst<LibraryV2>(source);
-            this.CompileAndLinkAgainst<Test3.Library2V2>(source);
+            this.CompileAndLinkAgainst<Library>(source);
+            this.CompileAndLinkAgainst<Test3.Library2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }

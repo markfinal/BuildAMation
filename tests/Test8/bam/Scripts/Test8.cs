@@ -31,7 +31,7 @@ using Bam.Core;
 namespace Test8
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
-    sealed class ApplicationTestV2 :
+    sealed class ApplicationTest :
         C.ConsoleApplication
     {
         protected override void
@@ -43,13 +43,13 @@ namespace Test8
             var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
 
             // TODO: required to exist?
-            var dynamicLib = Bam.Core.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibraryV2>();
+            var dynamicLib = Bam.Core.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibrary>();
             this.Requires(dynamicLib);
             source.UsePublicPatches(dynamicLib);
 
             if (this.Linker is VisualC.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
 
                 this.PrivatePatch(settings =>
                     {
@@ -70,8 +70,8 @@ namespace Test8
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationTestV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test7.ExplicitDynamicLibraryV2>(C.DynamicLibrary.Key, ".", app);
+            var app = this.Include<ApplicationTest>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Test7.ExplicitDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

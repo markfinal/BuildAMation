@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace PluginTest
 {
-    public sealed class ApplicationV2 :
+    public sealed class Application :
         C.Cxx.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
@@ -40,18 +40,18 @@ namespace PluginTest
             this.CreateCxxSourceContainer("$(pkgroot)/source/application/main.cpp");
 
             // TODO: required to exist
-            var plugin = Bam.Core.Graph.Instance.FindReferencedModule<PluginV2>();
+            var plugin = Bam.Core.Graph.Instance.FindReferencedModule<Plugin>();
             this.Requires(plugin);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
-    public sealed class PluginV2 :
+    public sealed class Plugin :
         C.Cxx.DynamicLibrary
     {
         protected override void Init(Bam.Core.Module parent)
@@ -63,7 +63,7 @@ namespace PluginTest
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
@@ -75,8 +75,8 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<PluginV2>(C.DynamicLibrary.Key, ".", app);
+            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Plugin>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

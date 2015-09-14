@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test9
 {
-    sealed class CFileV2 :
+    sealed class CFile :
         C.ObjectFile
     {
         protected override void
@@ -43,7 +43,7 @@ namespace Test9
         }
     }
 
-    sealed class CFileCollectionV2 :
+    sealed class CFileCollection :
         C.CObjectFileCollection
     {
         protected override void
@@ -56,7 +56,7 @@ namespace Test9
         }
     }
 
-    sealed class CppFileV2 :
+    sealed class CppFile :
         C.Cxx.ObjectFile
     {
         protected override void
@@ -75,7 +75,7 @@ namespace Test9
     }
 
     // Note: Uses the C++ application module, in order to use the C++ linker, in order to link in C++ runtimes
-    sealed class MixedLanguageApplicationV2 :
+    sealed class MixedLanguageApplication :
         C.Cxx.ConsoleApplication
     {
         protected override void
@@ -107,12 +107,12 @@ namespace Test9
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
-    sealed class CStaticLibraryFromCollectionV2 :
+    sealed class CStaticLibraryFromCollection :
         C.StaticLibrary
     {
         protected override void
@@ -132,7 +132,7 @@ namespace Test9
         }
     }
 
-    sealed class CppStaticLibaryFromCollectionV2 :
+    sealed class CppStaticLibaryFromCollection :
         C.StaticLibrary
     {
         protected override void
@@ -155,7 +155,7 @@ namespace Test9
         }
     }
 
-    sealed class CDynamicLibraryFromCollectionV2 :
+    sealed class CDynamicLibraryFromCollection :
         C.DynamicLibrary
     {
         protected override void
@@ -176,12 +176,12 @@ namespace Test9
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
 
-    sealed class CppDynamicLibaryFromCollectionV2 :
+    sealed class CppDynamicLibaryFromCollection :
         C.DynamicLibrary
     {
         protected override void
@@ -205,7 +205,7 @@ namespace Test9
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }

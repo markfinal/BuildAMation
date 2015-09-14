@@ -31,10 +31,10 @@ using Bam.Core;
 using QtCommon.MocExtension;
 namespace Test13
 {
-    sealed class QtApplicationV2 :
+    sealed class QtApplication :
         C.ConsoleApplication
     {
-        public QtApplicationV2()
+        public QtApplication()
         {
             this.BitDepth = C.EBit.ThirtyTwo;
         }
@@ -76,7 +76,7 @@ namespace Test13
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
@@ -90,7 +90,7 @@ namespace Test13
         {
             base.Init(parent);
 
-            var app = this.Include<QtApplicationV2>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
+            var app = this.Include<QtApplication>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
             }

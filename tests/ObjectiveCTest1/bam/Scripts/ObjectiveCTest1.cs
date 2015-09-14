@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace ObjectiveCTest1
 {
-    sealed class ProgramV2 :
+    sealed class Program :
         C.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)

@@ -30,7 +30,7 @@
 namespace CocoaTest1
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
-    sealed class CLibraryV2 :
+    sealed class CLibrary :
         C.StaticLibrary
     {
         protected override void Init (Bam.Core.Module parent)
@@ -42,7 +42,7 @@ namespace CocoaTest1
     }
 
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
-    sealed class CocoaTestV2 :
+    sealed class CocoaTest :
         C.GUIApplication
     {
         protected override void Init (Bam.Core.Module parent)
@@ -51,7 +51,7 @@ namespace CocoaTest1
 
             this.CreateObjectiveCSourceContainer("$(pkgroot)/source/main.m");
 
-            this.LinkAgainst<CLibraryV2>();
+            this.LinkAgainst<CLibrary>();
 
             this.PrivatePatch(settings =>
                 {
@@ -73,7 +73,7 @@ namespace CocoaTest1
         {
             base.Init(parent);
 
-            this.Include<CocoaTestV2>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
+            this.Include<CocoaTest>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
         }
     }
 }
