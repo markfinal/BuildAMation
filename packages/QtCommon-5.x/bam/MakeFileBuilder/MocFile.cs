@@ -29,8 +29,6 @@
 #endregion // License
 namespace QtCommon
 {
-namespace V2
-{
     public sealed class MakeFileMocGeneration :
         IMocGenerationPolicy
     {
@@ -40,12 +38,12 @@ namespace V2
             Bam.Core.ExecutionContext context,
             Bam.Core.ICommandLineTool mocCompiler,
             Bam.Core.TokenizedString generatedMocSource,
-            C.V2.HeaderFile source)
+            C.HeaderFile source)
         {
-            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.V2.HeaderFile.Key);
+            rule.AddPrerequisite(source, C.HeaderFile.Key);
 
             var mocOutputPath = generatedMocSource.Parse();
             var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
@@ -56,5 +54,4 @@ namespace V2
             meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
         }
     }
-}
 }

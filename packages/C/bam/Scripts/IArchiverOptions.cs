@@ -29,20 +29,18 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonArchiverOptions settings, Bam.Core.Module module)
+        public static void Defaults(this C.ICommonArchiverOptions settings, Bam.Core.Module module)
         {
             settings.OutputType = EArchiverOutput.StaticLibrary;
         }
     }
 }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
     {
         C.EArchiverOutput OutputType
@@ -51,5 +49,4 @@ namespace DefaultSettings
             set;
         }
     }
-}
 }

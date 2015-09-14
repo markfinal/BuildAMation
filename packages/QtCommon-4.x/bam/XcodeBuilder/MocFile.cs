@@ -29,8 +29,6 @@
 #endregion // License
 namespace QtCommon
 {
-namespace V2
-{
     public sealed class XcodeMocGeneration :
     IMocGenerationPolicy
     {
@@ -40,7 +38,7 @@ namespace V2
             Bam.Core.ExecutionContext context,
             Bam.Core.ICommandLineTool mocCompiler,
             Bam.Core.TokenizedString generatedMocSource,
-            C.V2.HeaderFile source)
+            C.HeaderFile source)
         {
             var output = generatedMocSource.Parse();
 
@@ -51,9 +49,8 @@ namespace V2
             mocInvoke.AppendFormat("{0} -o{1} {2}", mocCompiler.Executable.Parse(), output, source.InputPath.Parse());
             commands.Add(mocInvoke.ToString());
 
-            var header = new XcodeBuilder.V2.XcodeHeaderFile(sender);
+            var header = new XcodeBuilder.XcodeHeaderFile(sender);
             header.Project.ProjectConfigurations[sender.BuildEnvironment.Configuration].PreBuildCommands.AddRange(commands);
         }
     }
-}
 }

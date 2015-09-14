@@ -29,15 +29,13 @@
 #endregion // License
 namespace C.Cxx
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(
-            this C.V2.ICxxOnlyCompilerOptions settings,
+            this C.ICxxOnlyCompilerOptions settings,
             Bam.Core.Module module)
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
@@ -46,9 +44,9 @@ namespace DefaultSettings
         }
         public static void
         SharedSettings(
-            this C.V2.ICxxOnlyCompilerOptions shared,
-            C.V2.ICxxOnlyCompilerOptions lhs,
-            C.V2.ICxxOnlyCompilerOptions rhs)
+            this C.ICxxOnlyCompilerOptions shared,
+            C.ICxxOnlyCompilerOptions lhs,
+            C.ICxxOnlyCompilerOptions rhs)
         {
             shared.ExceptionHandler = (lhs.ExceptionHandler == rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
             shared.LanguageStandard = (lhs.LanguageStandard == rhs.LanguageStandard) ? lhs.LanguageStandard : null;
@@ -56,9 +54,9 @@ namespace DefaultSettings
         }
         public static void
         Delta(
-            this C.V2.ICxxOnlyCompilerOptions delta,
-            C.V2.ICxxOnlyCompilerOptions lhs,
-            C.V2.ICxxOnlyCompilerOptions rhs)
+            this C.ICxxOnlyCompilerOptions delta,
+            C.ICxxOnlyCompilerOptions lhs,
+            C.ICxxOnlyCompilerOptions rhs)
         {
             delta.ExceptionHandler = (lhs.ExceptionHandler != rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
             delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
@@ -66,8 +64,8 @@ namespace DefaultSettings
         }
         public static void
         Clone(
-            this C.V2.ICxxOnlyCompilerOptions settings,
-            C.V2.ICxxOnlyCompilerOptions other)
+            this C.ICxxOnlyCompilerOptions settings,
+            C.ICxxOnlyCompilerOptions other)
         {
             settings.ExceptionHandler = other.ExceptionHandler;
             settings.LanguageStandard = other.LanguageStandard;
@@ -76,7 +74,7 @@ namespace DefaultSettings
     }
 }
     public class ObjectFile :
-        C.V2.ObjectFile
+        C.ObjectFile
     {
         protected override void
         Init(
@@ -84,8 +82,7 @@ namespace DefaultSettings
         {
             base.Init(parent);
             // TODO: shouldn't attempt to find the default C compiler if only C++ is of interest
-            this.Compiler = C.V2.DefaultToolchain.Cxx_Compiler(this.BitDepth);
+            this.Compiler = C.DefaultToolchain.Cxx_Compiler(this.BitDepth);
         }
     }
-}
 }

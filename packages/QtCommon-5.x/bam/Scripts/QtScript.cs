@@ -29,8 +29,6 @@
 #endregion // License
 namespace QtCommon
 {
-namespace V2
-{
     public abstract class Script :
         CommonModule
     {
@@ -46,5 +44,4 @@ namespace V2
             base("Script")
         { }
     }
-}
 }

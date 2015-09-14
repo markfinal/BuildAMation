@@ -28,15 +28,15 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using QtCommon.V2.MocExtension;
+using QtCommon.MocExtension;
 namespace Test13
 {
     sealed class QtApplicationV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         public QtApplicationV2()
         {
-            this.BitDepth = C.V2.EBit.ThirtyTwo;
+            this.BitDepth = C.EBit.ThirtyTwo;
         }
 
         protected override void
@@ -49,12 +49,12 @@ namespace Test13
             var mocHeaders = this.CreateHeaderContainer("$(pkgroot)/source/myobject*.h");
             foreach (var mocHeader in mocHeaders.Children)
             {
-                /*var myobjectMocTuple = */ source.MocHeader(mocHeader as C.V2.HeaderFile);
+                /*var myobjectMocTuple = */ source.MocHeader(mocHeader as C.HeaderFile);
             }
 
             this.PrivatePatch(settings =>
             {
-                var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                var gccLinker = settings as GccCommon.ICommonLinkerOptions;
                 if (gccLinker != null)
                 {
                     gccLinker.CanUseOrigin = true;
@@ -64,17 +64,17 @@ namespace Test13
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                this.CompilePubliclyAndLinkAgainst<Qt.V2.CoreFramework>(source);
-                this.CompilePubliclyAndLinkAgainst<Qt.V2.GuiFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.CoreFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.GuiFramework>(source);
             }
             else
             {
-                this.CompileAndLinkAgainst<Qt.V2.Core>(source);
-                this.CompileAndLinkAgainst<Qt.V2.Gui>(source);
+                this.CompileAndLinkAgainst<Qt.Core>(source);
+                this.CompileAndLinkAgainst<Qt.Gui>(source);
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -82,7 +82,7 @@ namespace Test13
     }
 
     sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -90,14 +90,14 @@ namespace Test13
         {
             base.Init(parent);
 
-            var app = this.Include<QtApplicationV2>(C.V2.ConsoleApplication.Key, EPublishingType.WindowedApplication);
+            var app = this.Include<QtApplicationV2>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
             }
             else
             {
-                this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
-                this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.Core>(C.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.Gui>(C.DynamicLibrary.Key, ".", app);
             }
         }
     }

@@ -31,11 +31,11 @@ using Bam.Core;
 namespace Test7
 {
     sealed class ExplicitDynamicLibraryV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 if (null == compiler)
                 {
                     return;
@@ -59,7 +59,7 @@ namespace Test7
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }

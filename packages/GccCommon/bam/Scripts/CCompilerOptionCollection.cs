@@ -29,20 +29,18 @@
 #endregion // License
 namespace GccCommon
 {
-namespace V2
-{
     namespace DefaultSettings
     {
         public static partial class DefaultSettingsExtensions
         {
             public static void
-            Defaults(this GccCommon.V2.ICommonCompilerOptions settings, Bam.Core.Module module)
+            Defaults(this GccCommon.ICommonCompilerOptions settings, Bam.Core.Module module)
             {
                 settings.PositionIndependentCode = false;
             }
 
             public static void
-            Defaults(this GccCommon.V2.ICommonLinkerOptions settings, Bam.Core.Module module)
+            Defaults(this GccCommon.ICommonLinkerOptions settings, Bam.Core.Module module)
             {
                 settings.CanUseOrigin = false;
                 settings.RPath = new Bam.Core.StringArray();
@@ -55,7 +53,7 @@ namespace V2
     {
         public static void
         Convert(
-            this GccCommon.V2.ICommonCompilerOptions options,
+            this GccCommon.ICommonCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -70,7 +68,7 @@ namespace V2
 
         public static void
         Convert(
-            this GccCommon.V2.ICommonLinkerOptions options,
+            this GccCommon.ICommonLinkerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -91,5 +89,4 @@ namespace V2
             }
         }
     }
-}
 }

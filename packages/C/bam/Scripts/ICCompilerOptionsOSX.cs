@@ -30,44 +30,42 @@
 using System.Linq;
 namespace C
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(
-            this C.V2.ICCompilerOptionsOSX settings,
+            this C.ICCompilerOptionsOSX settings,
             Bam.Core.Module module)
         {
         }
         public static void
         Empty(
-            this C.V2.ICCompilerOptionsOSX settings)
+            this C.ICCompilerOptionsOSX settings)
         {
             settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
         public static void
         SharedSettings(
-            this C.V2.ICCompilerOptionsOSX shared,
-            C.V2.ICCompilerOptionsOSX lhs,
-            C.V2.ICCompilerOptionsOSX rhs)
+            this C.ICCompilerOptionsOSX shared,
+            C.ICCompilerOptionsOSX lhs,
+            C.ICCompilerOptionsOSX rhs)
         {
             shared.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Intersect(rhs.FrameworkSearchDirectories));
         }
         public static void
         Delta(
-            this C.V2.ICCompilerOptionsOSX delta,
-            C.V2.ICCompilerOptionsOSX lhs,
-            C.V2.ICCompilerOptionsOSX rhs)
+            this C.ICCompilerOptionsOSX delta,
+            C.ICCompilerOptionsOSX lhs,
+            C.ICCompilerOptionsOSX rhs)
         {
             delta.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Except(rhs.FrameworkSearchDirectories));
         }
         public static void
         Clone(
-            this C.V2.ICCompilerOptionsOSX settings,
-            C.V2.ICCompilerOptionsOSX other)
+            this C.ICCompilerOptionsOSX settings,
+            C.ICCompilerOptionsOSX other)
         {
             foreach (var path in other.FrameworkSearchDirectories)
             {
@@ -76,7 +74,7 @@ namespace DefaultSettings
         }
     }
 }
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICCompilerOptionsOSX :
         Bam.Core.ISettingsBase
     {
@@ -86,51 +84,49 @@ namespace DefaultSettings
             set;
         }
     }
-}
-namespace V2
-{
+
     namespace DefaultSettings
     {
         public static partial class DefaultSettingsExtensions
         {
             public static void
             Defaults(
-                this C.V2.ICCompilerOptionsWin settings,
+                this C.ICCompilerOptionsWin settings,
                 Bam.Core.Module module)
             {
                 settings.CharacterSet = ECharacterSet.NotSet;
             }
             public static void
             Empty(
-                this C.V2.ICCompilerOptionsWin settings)
+                this C.ICCompilerOptionsWin settings)
             {
             }
             public static void
             SharedSettings(
-                this C.V2.ICCompilerOptionsWin shared,
-                C.V2.ICCompilerOptionsWin lhs,
-                C.V2.ICCompilerOptionsWin rhs)
+                this C.ICCompilerOptionsWin shared,
+                C.ICCompilerOptionsWin lhs,
+                C.ICCompilerOptionsWin rhs)
             {
                 shared.CharacterSet = (lhs.CharacterSet == rhs.CharacterSet) ? lhs.CharacterSet : null;
             }
             public static void
             Delta(
-                this C.V2.ICCompilerOptionsWin delta,
-                C.V2.ICCompilerOptionsWin lhs,
-                C.V2.ICCompilerOptionsWin rhs)
+                this C.ICCompilerOptionsWin delta,
+                C.ICCompilerOptionsWin lhs,
+                C.ICCompilerOptionsWin rhs)
             {
                 delta.CharacterSet = (lhs.CharacterSet != rhs.CharacterSet) ? lhs.CharacterSet : null;
             }
             public static void
             Clone(
-                this C.V2.ICCompilerOptionsWin settings,
-                C.V2.ICCompilerOptionsWin other)
+                this C.ICCompilerOptionsWin settings,
+                C.ICCompilerOptionsWin other)
             {
                 settings.CharacterSet = other.CharacterSet;
             }
         }
     }
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICCompilerOptionsWin :
         Bam.Core.ISettingsBase
     {
@@ -140,5 +136,4 @@ namespace V2
             set;
         }
     }
-}
 }

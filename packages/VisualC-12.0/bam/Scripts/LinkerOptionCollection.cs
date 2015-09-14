@@ -27,15 +27,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using C.V2.DefaultSettings;
-using VisualC.V2.DefaultSettings;
+using C.DefaultSettings;
+using VisualC.DefaultSettings;
 namespace VisualC
 {
     public static partial class NativeImplementation
     {
         public static void
         Convert(
-            this C.V2.ILinkerOptionsWin options,
+            this C.ILinkerOptionsWin options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -56,20 +56,20 @@ namespace VisualC
 
         public static void
         Convert(
-            this C.V2.ICommonLinkerOptions options,
+            this C.ICommonLinkerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            //var applicationFile = module as C.V2.ConsoleApplication;
+            //var applicationFile = module as C.ConsoleApplication;
             switch (options.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     commandLine.Add("-DLL");
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
                     break;
             }
             foreach (var path in options.LibraryPaths)
@@ -89,7 +89,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this V2.ICommonLinkerOptions options,
+            this ICommonLinkerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -104,9 +104,9 @@ namespace VisualC
     {
         public static void
         Convert(
-            this C.V2.ILinkerOptionsWin options,
+            this C.ILinkerOptionsWin options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
             switch (options.SubSystem.Value)
@@ -123,26 +123,26 @@ namespace VisualC
 
         public static void
         Convert(
-            this C.V2.ICommonLinkerOptions options,
+            this C.ICommonLinkerOptions options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
             switch (options.OutputType)
             {
                 case C.ELinkerOutput.Executable:
                     {
-                        var outPath = module.GeneratedPaths[C.V2.ConsoleApplication.Key].Parse();
+                        var outPath = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
                         settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
                     }
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     {
-                        var outPath = module.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse();
+                        var outPath = module.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                         settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
 
-                        var importPath = module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                        var importPath = module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
                         settingsGroup.AddSetting("ImportLibrary", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(importPath)), condition);
                     }
                     break;
@@ -156,9 +156,9 @@ namespace VisualC
 
         public static void
         Convert(
-            this V2.ICommonLinkerOptions options,
+            this ICommonLinkerOptions options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
             if (options.NoLogo.GetValueOrDefault(false))
@@ -168,20 +168,18 @@ namespace VisualC
         }
     }
 
-namespace V2
-{
     namespace DefaultSettings
     {
         public static partial class DefaultSettingsExtensions
         {
-            public static void Defaults(this VisualC.V2.ICommonLinkerOptions settings, Bam.Core.Module module)
+            public static void Defaults(this VisualC.ICommonLinkerOptions settings, Bam.Core.Module module)
             {
                 settings.NoLogo = true;
             }
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(VisualC.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(VisualC.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
     {
         bool? NoLogo
@@ -192,48 +190,48 @@ namespace V2
     }
 
     public class LinkerSettings :
-        C.V2.SettingsBase,
-        C.V2.ILinkerOptionsWin,
-        C.V2.ICommonLinkerOptions,
+        C.SettingsBase,
+        C.ILinkerOptionsWin,
+        C.ICommonLinkerOptions,
         ICommonLinkerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine,
-        VisualStudioProcessor.V2.IConvertToProject
+        CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject
     {
         public LinkerSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
-            (this as C.V2.ICommonLinkerOptions).Defaults(module);
+            (this as C.ICommonLinkerOptions).Defaults(module);
             (this as ICommonLinkerOptions).Defaults(module);
 #endif
         }
 
-        C.ESubsystem? C.V2.ILinkerOptionsWin.SubSystem
+        C.ESubsystem? C.ILinkerOptionsWin.SubSystem
         {
             get;
             set;
         }
 
-        C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
+        C.ELinkerOutput C.ICommonLinkerOptions.OutputType
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerOptions.LibraryPaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        Bam.Core.StringArray C.ICommonLinkerOptions.Libraries
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonLinkerOptions.DebugSymbols
+        bool? C.ICommonLinkerOptions.DebugSymbols
         {
             get;
             set;
@@ -246,29 +244,29 @@ namespace V2
         }
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.V2.ILinkerOptionsWin).Convert(module, commandLine);
-            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as C.ILinkerOptionsWin).Convert(module, commandLine);
+            (this as C.ICommonLinkerOptions).Convert(module, commandLine);
             (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
 
         void
-        VisualStudioProcessor.V2.IConvertToProject.Convert(
+        VisualStudioProcessor.IConvertToProject.Convert(
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.V2.ILinkerOptionsWin).Convert(module, settings, condition);
-            (this as C.V2.ICommonLinkerOptions).Convert(module, settings, condition);
+            (this as C.ILinkerOptionsWin).Convert(module, settings, condition);
+            (this as C.ICommonLinkerOptions).Convert(module, settings, condition);
             (this as ICommonLinkerOptions).Convert(module, settings, condition);
         }
     }
 
     public abstract class LinkerBase :
-        C.V2.LinkerTool
+        C.LinkerTool
     {
         public LinkerBase(
             string toolPath,
@@ -288,7 +286,7 @@ namespace V2
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var linking = settings as C.V2.ICommonLinkerOptions;
+                var linking = settings as C.ICommonLinkerOptions;
                 if (null != linking)
                 {
                     linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
@@ -314,25 +312,25 @@ namespace V2
         GetLibraryPath(
             Bam.Core.Module module)
         {
-            if (module is C.V2.StaticLibrary)
+            if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
             }
-            else if (module is C.V2.DynamicLibrary)
+            else if (module is C.DynamicLibrary)
             {
-                return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
             }
-            else if (module is C.V2.CSDKModule)
+            else if (module is C.CSDKModule)
             {
                 // collection of libraries, none in particular
                 return null;
             }
-            else if (module is C.V2.HeaderLibrary)
+            else if (module is C.HeaderLibrary)
             {
                 // no library
                 return null;
             }
-            else if (module is C.V2.ExternalFramework)
+            else if (module is C.ExternalFramework)
             {
                 // dealt with elsewhere
                 return null;
@@ -344,8 +342,8 @@ namespace V2
         }
 
         public override void ProcessLibraryDependency(
-            C.V2.CModule executable,
-            C.V2.CModule library)
+            C.CModule executable,
+            C.CModule library)
         {
             var fullLibraryPath = GetLibraryPath(library);
             if (null == fullLibraryPath)
@@ -354,14 +352,14 @@ namespace V2
             }
             var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
-            var linker = executable.Settings as C.V2.ICommonLinkerOptions;
+            var linker = executable.Settings as C.ICommonLinkerOptions;
             linker.Libraries.AddUnique(libFilename);
             linker.LibraryPaths.AddUnique(dir);
         }
     }
 
-    [C.V2.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
-    [C.V2.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    [C.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Linker32 :
         LinkerBase
     {
@@ -370,8 +368,8 @@ namespace V2
         {}
     }
 
-    [C.V2.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
-    [C.V2.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
+    [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
+    [C.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public sealed class Linker64 :
         LinkerBase
     {
@@ -382,5 +380,4 @@ namespace V2
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
     }
-}
 }

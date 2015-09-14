@@ -32,7 +32,7 @@ using System.Linq;
 namespace OpenGLUniformBufferTest
 {
     sealed class GLUniformBufferTestV2 :
-        C.Cxx.V2.GUIApplication
+        C.Cxx.GUIApplication
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -43,31 +43,31 @@ namespace OpenGLUniformBufferTest
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
             source.PrivatePatch(settings =>
                 {
-                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
             this.LinkAgainst<OpenGLSDK.OpenGLV2>();
 
-            var rendererObj = source.Children.Where(item => (item as C.Cxx.V2.ObjectFile).InputPath.Parse().Contains("renderer")).ElementAt(0) as C.Cxx.V2.ObjectFile;
+            var rendererObj = source.Children.Where(item => (item as C.Cxx.ObjectFile).InputPath.Parse().Contains("renderer")).ElementAt(0) as C.Cxx.ObjectFile;
             this.CompileAndLinkAgainst<glew.GLEWStaticV2>(rendererObj);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.V2.ICommonLinkerOptions;
-                    if (this.Linker is VisualC.V2.LinkerBase)
+                    var linker = settings as C.ICommonLinkerOptions;
+                    if (this.Linker is VisualC.LinkerBase)
                     {
                         linker.Libraries.Add("OPENGL32.lib");
                         linker.Libraries.Add("USER32.lib");
                         linker.Libraries.Add("GDI32.lib");
                     }
-                    else if (this.Linker is Mingw.V2.LinkerBase)
+                    else if (this.Linker is Mingw.LinkerBase)
                     {
                         linker.Libraries.Add("-lopengl32");
                         linker.Libraries.Add("-lgdi32");

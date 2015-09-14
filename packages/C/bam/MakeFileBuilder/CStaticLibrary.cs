@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class MakeFileLibrarian :
         ILibrarianPolicy
     {
@@ -43,19 +41,19 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             var commandLineArgs = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLineArgs as object });
             }
 
-            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(libraryPath);
             foreach (var input in objectFiles)
             {
-                rule.AddPrerequisite(input, C.V2.ObjectFile.Key);
+                rule.AddPrerequisite(input, C.ObjectFile.Key);
             }
 
             var tool = sender.Tool as Bam.Core.PreBuiltTool;
@@ -68,5 +66,4 @@ namespace V2
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }
-}
 }

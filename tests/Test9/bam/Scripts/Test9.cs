@@ -31,7 +31,7 @@ using Bam.Core;
 namespace Test9
 {
     sealed class CFileV2 :
-        C.V2.ObjectFile
+        C.ObjectFile
     {
         protected override void
         Init(
@@ -44,7 +44,7 @@ namespace Test9
     }
 
     sealed class CFileCollectionV2 :
-        C.V2.CObjectFileCollection
+        C.CObjectFileCollection
     {
         protected override void
         Init(
@@ -57,7 +57,7 @@ namespace Test9
     }
 
     sealed class CppFileV2 :
-        C.Cxx.V2.ObjectFile
+        C.Cxx.ObjectFile
     {
         protected override void
         Init(
@@ -68,7 +68,7 @@ namespace Test9
             this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main_cpp.c", this);
             this.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    var compiler = settings as C.ICxxOnlyCompilerOptions;
                     compiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
         }
@@ -76,7 +76,7 @@ namespace Test9
 
     // Note: Uses the C++ application module, in order to use the C++ linker, in order to link in C++ runtimes
     sealed class MixedLanguageApplicationV2 :
-        C.Cxx.V2.ConsoleApplication
+        C.Cxx.ConsoleApplication
     {
         protected override void
         Init(
@@ -89,7 +89,7 @@ namespace Test9
             var cSource = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
             cSource.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
@@ -98,14 +98,14 @@ namespace Test9
             cxxSource.AddFile("$(pkgroot)/source/appmain_cpp.c");
             cxxSource.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
-                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -113,7 +113,7 @@ namespace Test9
     }
 
     sealed class CStaticLibraryFromCollectionV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         protected override void
         Init(
@@ -126,14 +126,14 @@ namespace Test9
             var source = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
         }
     }
 
     sealed class CppStaticLibaryFromCollectionV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         protected override void
         Init(
@@ -146,17 +146,17 @@ namespace Test9
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
 
-                var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             });
         }
     }
 
     sealed class CDynamicLibraryFromCollectionV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         protected override void
         Init(
@@ -169,12 +169,12 @@ namespace Test9
             var source = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -182,7 +182,7 @@ namespace Test9
     }
 
     sealed class CppDynamicLibaryFromCollectionV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         protected override void
         Init(
@@ -195,15 +195,15 @@ namespace Test9
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
 
-                var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }

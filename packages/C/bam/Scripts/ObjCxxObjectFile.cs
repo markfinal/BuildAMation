@@ -29,36 +29,33 @@
 #endregion // License
 namespace C.ObjCxx
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(
-            this C.V2.IObjectiveCxxOnlyCompilerOptions settings,
+            this C.IObjectiveCxxOnlyCompilerOptions settings,
             Bam.Core.Module module)
         {
         }
         public static void
         Clone(
-            this C.V2.IObjectiveCxxOnlyCompilerOptions settings,
-            C.V2.IObjectiveCxxOnlyCompilerOptions other)
+            this C.IObjectiveCxxOnlyCompilerOptions settings,
+            C.IObjectiveCxxOnlyCompilerOptions other)
         {
         }
     }
 }
     public class ObjectFile :
-        C.V2.ObjectFile
+        C.ObjectFile
     {
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Compiler = C.V2.DefaultToolchain.ObjectiveCxx_Compiler(this.BitDepth);
+            this.Compiler = C.DefaultToolchain.ObjectiveCxx_Compiler(this.BitDepth);
         }
     }
-}
 }

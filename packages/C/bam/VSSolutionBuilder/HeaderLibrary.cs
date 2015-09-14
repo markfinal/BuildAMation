@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class VSSolutionHeaderLibrary :
         IHeaderLibraryPolicy
     {
@@ -45,12 +43,12 @@ namespace V2
                 return;
             }
 
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(sender);
             var config = project.GetConfiguration(sender);
 
-            config.SetType(VSSolutionBuilder.V2.VSProjectConfiguration.EType.Utility);
-            config.SetPlatformToolset(VSSolutionBuilder.V2.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
+            config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+            config.SetPlatformToolset(VSSolutionBuilder.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
             config.EnableIntermediatePath();
 
             foreach (var header in headers)
@@ -59,5 +57,4 @@ namespace V2
             }
         }
     }
-}
 }

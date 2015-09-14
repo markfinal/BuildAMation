@@ -29,8 +29,6 @@
 #endregion // License
 namespace CodeGenTest
 {
-namespace V2
-{
     public sealed class NativeGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -45,8 +43,7 @@ namespace V2
             // TODO: change this to a configuration directory really
             args.Add(Bam.Core.TokenizedString.Create("$(buildroot)", sender).Parse());
             args.Add("Generated");
-            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }
-}
 }

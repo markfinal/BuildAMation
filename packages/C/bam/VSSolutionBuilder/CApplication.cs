@@ -28,10 +28,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using C.V2.DefaultSettings;
+using C.DefaultSettings;
 namespace C
-{
-namespace V2
 {
     public sealed partial class VSSolutionLinker :
         ILinkerPolicy
@@ -51,12 +49,12 @@ namespace V2
                 return;
             }
 
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(sender);
             var config = project.GetConfiguration(sender);
 
-            config.SetType((sender is DynamicLibrary) ? VSSolutionBuilder.V2.VSProjectConfiguration.EType.DynamicLibrary : VSSolutionBuilder.V2.VSProjectConfiguration.EType.Application);
-            config.SetPlatformToolset(VSSolutionBuilder.V2.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
+            config.SetType((sender is DynamicLibrary) ? VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary : VSSolutionBuilder.VSProjectConfiguration.EType.Application);
+            config.SetPlatformToolset(VSSolutionBuilder.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
             config.SetOutputPath(executablePath);
             config.EnableIntermediatePath();
 
@@ -65,32 +63,32 @@ namespace V2
                 config.AddHeaderFile(header as HeaderFile);
             }
 
-            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
+            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
             if (objectFiles.Count > 1)
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
                     typeof(Bam.Core.Module),
-                    typeof(VSSolutionBuilder.V2.VSSettingsGroup),
+                    typeof(VSSolutionBuilder.VSSettingsGroup),
                     typeof(string)
                 };
 
-                var sharedSettings = C.V2.SettingsBase.SharedSettings(
+                var sharedSettings = C.SettingsBase.SharedSettings(
                     objectFiles,
                     typeof(VisualC.VSSolutionImplementation),
-                    typeof(VisualStudioProcessor.V2.IConvertToProject),
+                    typeof(VisualStudioProcessor.IConvertToProject),
                     vsConvertParameterTypes);
-                (sharedSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+                (sharedSettings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
 
                 foreach (var objFile in objectFiles)
                 {
-                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
                 }
             }
             else
             {
-                (objectFiles[0].Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+                (objectFiles[0].Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
                 foreach (var objFile in objectFiles)
                 {
                     config.AddSourceFile(objFile, null);
@@ -101,11 +99,11 @@ namespace V2
             {
                 if (null != input.MetaData)
                 {
-                    if ((input is C.V2.StaticLibrary) || (input is C.V2.DynamicLibrary))
+                    if ((input is C.StaticLibrary) || (input is C.DynamicLibrary))
                     {
                         project.LinkAgainstProject(solution.EnsureProjectExists(input));
                     }
-                    else if ((input is C.V2.CSDKModule) || (input is C.V2.HeaderLibrary))
+                    else if ((input is C.CSDKModule) || (input is C.HeaderLibrary))
                     {
                         continue;
                     }
@@ -120,17 +118,17 @@ namespace V2
                 }
                 else
                 {
-                    if (input is C.V2.StaticLibrary)
+                    if (input is C.StaticLibrary)
                     {
                         // TODO: probably a simplification of the DLL codepath
                         throw new System.NotImplementedException();
                     }
-                    else if (input is C.V2.DynamicLibrary)
+                    else if (input is C.DynamicLibrary)
                     {
                         // TODO: this might be able to shift out of the conditional
-                        (sender.Tool as C.V2.LinkerTool).ProcessLibraryDependency(sender as CModule, input as CModule);
+                        (sender.Tool as C.LinkerTool).ProcessLibraryDependency(sender as CModule, input as CModule);
                     }
-                    else if ((input is C.V2.CSDKModule) || (input is C.V2.HeaderLibrary))
+                    else if ((input is C.CSDKModule) || (input is C.HeaderLibrary))
                     {
                         continue;
                     }
@@ -145,8 +143,8 @@ namespace V2
                 }
             }
 
-            var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Linker);
-            (sender.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, linkerGroup);
+            var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker);
+            (sender.Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, linkerGroup);
 
             // order only dependencies
             foreach (var required in sender.Requirements)
@@ -156,7 +154,7 @@ namespace V2
                     continue;
                 }
 
-                var requiredProject = required.MetaData as VSSolutionBuilder.V2.VSProject;
+                var requiredProject = required.MetaData as VSSolutionBuilder.VSProject;
                 if (null != requiredProject)
                 {
                     project.RequiresProject(requiredProject);
@@ -164,5 +162,4 @@ namespace V2
             }
         }
     }
-}
 }

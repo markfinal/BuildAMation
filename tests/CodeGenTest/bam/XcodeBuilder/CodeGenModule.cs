@@ -29,8 +29,6 @@
 #endregion // License
 namespace CodeGenTest
 {
-namespace V2
-{
     public sealed class XcodeGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -58,12 +56,11 @@ namespace V2
             // the reason this happens is that this policy is being executed prior to the encapsulating
             // module, and thus, the Xcode meta data doesn't exist for it
             // since I know it's an application, I can do this
-            var application = new XcodeBuilder.V2.XcodeProgram(encapsulating, encapsulating.GeneratedPaths[C.V2.ConsoleApplication.Key]);
+            var application = new XcodeBuilder.XcodeProgram(encapsulating, encapsulating.GeneratedPaths[C.ConsoleApplication.Key]);
             application.AddPreBuildCommands(commands);
 
-            var compilerProject = (compiler as Bam.Core.Module).MetaData as XcodeBuilder.V2.XcodeCommonProject;
+            var compilerProject = (compiler as Bam.Core.Module).MetaData as XcodeBuilder.XcodeCommonProject;
             application.RequiresProject(compilerProject);
         }
     }
-}
 }

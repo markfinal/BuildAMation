@@ -29,8 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-namespace V2
-{
     public sealed class NativePackager :
         IPackagePolicy
     {
@@ -50,7 +48,7 @@ namespace V2
             var destinationPath = System.IO.Path.Combine(destinationDir, System.IO.Path.GetFileName(sourcePath));
 
             var commandLine = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
@@ -59,7 +57,7 @@ namespace V2
 
             commandLine.Add(sourcePath);
             commandLine.Add(destinationPath);
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
 
         void
@@ -99,9 +97,7 @@ namespace V2
             }
         }
     }
-}
-namespace V2
-{
+
     public sealed class NativeInnoSetup :
         IInnoSetupPolicy
     {
@@ -114,12 +110,10 @@ namespace V2
         {
             var args = new Bam.Core.StringArray();
             args.Add(scriptPath.Parse());
-            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }
-}
-namespace V2
-{
+
     public sealed class NativeNSIS :
         INSISPolicy
     {
@@ -132,12 +126,10 @@ namespace V2
         {
             var args = new Bam.Core.StringArray();
             args.Add(scriptPath.Parse());
-            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }
-}
-namespace V2
-{
+
     public sealed class NativeTarBall :
         ITarPolicy
     {
@@ -156,12 +148,10 @@ namespace V2
             args.Add(scriptPath.Parse());
             args.Add("-f");
             args.Add(outputPath.ToString());
-            CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+            CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }
-}
-namespace V2
-{
+
     public sealed class NativeDMG :
         IDiskImagePolicy
     {
@@ -191,7 +181,7 @@ namespace V2
                 args.Add("-volname");
                 args.Add(System.String.Format("\"{0}\"", volumeName));
                 args.Add(tempDiskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+                CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
 
             // mount disk image
@@ -200,7 +190,7 @@ namespace V2
                 args.Add("attach");
                 args.Add("-quiet");
                 args.Add(tempDiskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+                CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
 
             // TODO
@@ -212,7 +202,7 @@ namespace V2
                 args.Add("detach");
                 args.Add("-quiet");
                 args.Add(System.String.Format("\"/Volumes/{0}\"", volumeName));
-                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+                CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
 
             // hdiutil convert myimg.dmg -format UDZO -o myoutputimg.dmg
@@ -225,9 +215,8 @@ namespace V2
                 args.Add("UDZO");
                 args.Add("-o");
                 args.Add(diskImagePathName);
-                CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
+                CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
         }
     }
-}
 }

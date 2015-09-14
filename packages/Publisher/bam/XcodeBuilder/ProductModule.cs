@@ -29,8 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-namespace V2
-{
     public sealed class XcodePackager :
         IPackagePolicy
     {
@@ -58,7 +56,7 @@ namespace V2
 
                         if ((path.Value.SubDirectory != null) && path.Value.SubDirectory.Contains(".app/"))
                         {
-                            var meta = module.Key.MetaData as XcodeBuilder.V2.XcodeMeta;
+                            var meta = module.Key.MetaData as XcodeBuilder.XcodeMeta;
                             meta.Target.MakeApplicationBundle();
                         }
                     }
@@ -78,13 +76,13 @@ namespace V2
                                 var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, subdir));
                                 commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
                                 commands.Add(System.String.Format("cp -v $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {0}/$EXECUTABLE_NAME", destinationDir));
-                                (module.Key.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
+                                (module.Key.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
                                 path.Value.DestinationDir = destinationDir;
                             }
                             else
                             {
                                 commands.Add(System.String.Format("cp -v {0} $CONFIGURATION_BUILD_DIR/{1}/{2}", sourcePath, subdir, System.IO.Path.GetFileName(sourcePath)));
-                                (reference.Module.MetaData as XcodeBuilder.V2.XcodeCommonProject).AddPostBuildCommands(commands);
+                                (reference.Module.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
                             }
                         }
                     }
@@ -92,5 +90,4 @@ namespace V2
             }
         }
     }
-}
 }

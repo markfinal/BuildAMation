@@ -29,8 +29,6 @@
 #endregion // License
 namespace CodeGenTest
 {
-namespace V2
-{
     public sealed class VSSolutionGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -43,7 +41,7 @@ namespace V2
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
@@ -58,5 +56,4 @@ namespace V2
             project.RequiresProject(compilerProject);
         }
     }
-}
 }

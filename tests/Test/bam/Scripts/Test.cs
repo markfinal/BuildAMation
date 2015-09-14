@@ -38,13 +38,13 @@ namespace Test
             Settings settings,
             Module module)
         {
-            var compiler = settings as C.V2.ICommonCompilerOptions;
+            var compiler = settings as C.ICommonCompilerOptions;
             if (null != compiler)
             {
                 compiler.PreprocessorDefines.Add("GLOBALOVERRIDE");
             }
 
-            var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+            var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
             if (null != cxxCompiler)
             {
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -53,7 +53,7 @@ namespace Test
     }
 
     sealed class CompileSingleCFileV2 :
-        C.V2.ObjectFile
+        C.ObjectFile
     {
         protected override void
         Init(
@@ -64,13 +64,13 @@ namespace Test
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 // example of switching out the tool within a module
-                this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
+                this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<Mingw.Compiler32>();
             }
         }
     }
 
     sealed class CompileSingleCFileWithCustomOptionsV2 :
-        C.V2.ObjectFile
+        C.ObjectFile
     {
         protected override void
         Init(
@@ -80,14 +80,14 @@ namespace Test
             this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main.c", this);
             this.PrivatePatch(settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.DebugSymbols = false;
             });
         }
     }
 
     sealed class BuildTerminalApplicationFromCV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -98,7 +98,7 @@ namespace Test
             this.CreateCSourceContainer("$(pkgroot)/source/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -106,7 +106,7 @@ namespace Test
     }
 
     sealed class BuildTerminalApplicationFromCxxV2 :
-        C.Cxx.V2.ConsoleApplication
+        C.Cxx.ConsoleApplication
     {
         protected override void Init(Module parent)
         {
@@ -115,7 +115,7 @@ namespace Test
             this.CreateCxxSourceContainer("$(pkgroot)/source/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -124,7 +124,7 @@ namespace Test
 
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class BuildWindowsApplicationV2 :
-        C.V2.GUIApplication
+        C.GUIApplication
     {
         protected override void
         Init(
@@ -135,12 +135,12 @@ namespace Test
             var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.WarningsAsErrors = false;
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }

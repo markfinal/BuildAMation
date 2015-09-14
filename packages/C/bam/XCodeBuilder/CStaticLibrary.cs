@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class XcodeLibrarian :
         ILibrarianPolicy
     {
@@ -42,16 +40,16 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
-            XcodeBuilder.V2.XcodeCommonProject library;
+            XcodeBuilder.XcodeCommonProject library;
             // TODO: this is a hack, so that modules earlier in the graph can add pre/post build commands
             // to the project for this module
             if (null == sender.MetaData)
             {
-                library = new XcodeBuilder.V2.XcodeStaticLibrary(sender, libraryPath);
+                library = new XcodeBuilder.XcodeStaticLibrary(sender, libraryPath);
             }
             else
             {
-                library = sender.MetaData as XcodeBuilder.V2.XcodeCommonProject;
+                library = sender.MetaData as XcodeBuilder.XcodeCommonProject;
             }
 
             if (objectFiles.Count > 1)
@@ -59,20 +57,20 @@ namespace V2
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
                 {
                     typeof(Bam.Core.Module),
-                    typeof(XcodeBuilder.V2.Configuration)
+                    typeof(XcodeBuilder.Configuration)
                 };
 
-                var sharedSettings = C.V2.SettingsBase.SharedSettings(
+                var sharedSettings = C.SettingsBase.SharedSettings(
                     objectFiles,
                     typeof(Clang.XcodeImplementation),
-                    typeof(XcodeProjectProcessor.V2.IConvertToProject),
+                    typeof(XcodeProjectProcessor.IConvertToProject),
                     xcodeConvertParameterTypes);
                 library.SetCommonCompilationOptions(null, sharedSettings);
 
                 foreach (var objFile in objectFiles)
                 {
-                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
-                    var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
                     library.AddSource(objFile, meta.Source, meta.Output, deltaSettings);
                     meta.Project = library.Project;
                 }
@@ -82,7 +80,7 @@ namespace V2
                 library.SetCommonCompilationOptions(null, objectFiles[0].Settings);
                 foreach (var objFile in objectFiles)
                 {
-                    var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
                     library.AddSource(objFile, meta.Source, meta.Output, null);
                     meta.Project = library.Project;
                 }
@@ -93,11 +91,10 @@ namespace V2
                 var headerMod = header as HeaderFile;
                 var headerFileRef = library.Project.FindOrCreateFileReference(
                     headerMod.InputPath,
-                    XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
-                    sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                    XcodeBuilder.FileReference.EFileType.HeaderFile,
+                    sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
                 library.AddHeader(headerFileRef);
             }
         }
     }
-}
 }

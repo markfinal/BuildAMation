@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class XcodeHeaderLibrary :
         IHeaderLibraryPolicy
     {
@@ -40,17 +38,16 @@ namespace V2
             Bam.Core.ExecutionContext context,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
-            var library = new XcodeBuilder.V2.XcodeHeaderLibrary(sender);
+            var library = new XcodeBuilder.XcodeHeaderLibrary(sender);
             foreach (var header in headers)
             {
                 var headerMod = header as HeaderFile;
                 var headerFileRef = library.Project.FindOrCreateFileReference(
                     headerMod.InputPath,
-                    XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
-                    sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                    XcodeBuilder.FileReference.EFileType.HeaderFile,
+                    sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
                 library.AddHeader(headerFileRef);
             }
         }
     }
-}
 }

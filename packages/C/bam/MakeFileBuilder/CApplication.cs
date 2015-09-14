@@ -30,35 +30,33 @@
 using Bam.Core;
 namespace C
 {
-namespace V2
-{
     public sealed class MakeFileLinker :
         ILinkerPolicy
     {
         private static string
         GetLibraryPath(Bam.Core.Module module)
         {
-            if (module is C.V2.StaticLibrary)
+            if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
             }
-            else if (module is C.V2.DynamicLibrary)
+            else if (module is C.DynamicLibrary)
             {
                 if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
-                    return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                    return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
                 }
                 else
                 {
-                    return module.GeneratedPaths[C.V2.DynamicLibrary.Key].ToString();
+                    return module.GeneratedPaths[C.DynamicLibrary.Key].ToString();
                 }
             }
-            else if (module is C.V2.CSDKModule)
+            else if (module is C.CSDKModule)
             {
                 // collection of libraries, none in particular
                 return null;
             }
-            else if (module is C.V2.HeaderLibrary)
+            else if (module is C.HeaderLibrary)
             {
                 // no library
                 return null;
@@ -85,7 +83,7 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             // TODO: modify to use ProcessLibraryDependency
-            var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+            var linker = sender.Settings as C.ICommonLinkerOptions;
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {
@@ -99,35 +97,35 @@ namespace V2
             }
 
             var commandLineArgs = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLineArgs as object });
             }
 
-            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(executablePath);
             foreach (var module in objectFiles)
             {
-                rule.AddPrerequisite(module, C.V2.ObjectFile.Key);
+                rule.AddPrerequisite(module, C.ObjectFile.Key);
             }
             foreach (var module in libraries)
             {
                 if (module is StaticLibrary)
                 {
-                    rule.AddPrerequisite(module, C.V2.StaticLibrary.Key);
+                    rule.AddPrerequisite(module, C.StaticLibrary.Key);
                 }
                 else if (module is DynamicLibrary)
                 {
                     if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        rule.AddPrerequisite(module, C.V2.DynamicLibrary.ImportLibraryKey);
+                        rule.AddPrerequisite(module, C.DynamicLibrary.ImportLibraryKey);
                     }
                     else
                     {
-                        rule.AddPrerequisite(module, C.V2.DynamicLibrary.Key);
+                        rule.AddPrerequisite(module, C.DynamicLibrary.Key);
                     }
                 }
                 else if (module is CSDKModule)
@@ -154,5 +152,4 @@ namespace V2
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }
-}
 }

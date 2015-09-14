@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class VSSolutionLibrarian :
         ILibrarianPolicy
     {
@@ -47,12 +45,12 @@ namespace V2
                 return;
             }
 
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(sender);
             var config = project.GetConfiguration(sender);
 
-            config.SetType(VSSolutionBuilder.V2.VSProjectConfiguration.EType.StaticLibrary);
-            config.SetPlatformToolset(VSSolutionBuilder.V2.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
+            config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary);
+            config.SetPlatformToolset(VSSolutionBuilder.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
             config.SetOutputPath(libraryPath);
             config.EnableIntermediatePath();
 
@@ -61,40 +59,40 @@ namespace V2
                 config.AddHeaderFile(header as HeaderFile);
             }
 
-            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler);
+            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
             if (objectFiles.Count > 1)
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
                     typeof(Bam.Core.Module),
-                    typeof(VSSolutionBuilder.V2.VSSettingsGroup),
+                    typeof(VSSolutionBuilder.VSSettingsGroup),
                     typeof(string)
                 };
 
-                var sharedSettings = C.V2.SettingsBase.SharedSettings(
+                var sharedSettings = C.SettingsBase.SharedSettings(
                     objectFiles,
                     typeof(VisualC.VSSolutionImplementation),
-                    typeof(VisualStudioProcessor.V2.IConvertToProject),
+                    typeof(VisualStudioProcessor.IConvertToProject),
                     vsConvertParameterTypes);
-                (sharedSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+                (sharedSettings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
 
                 foreach (var objFile in objectFiles)
                 {
-                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
                 }
             }
             else
             {
-                (objectFiles[0].Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, compilerGroup);
+                (objectFiles[0].Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
                 foreach (var objFile in objectFiles)
                 {
                     config.AddSourceFile(objFile, null);
                 }
             }
 
-            var settingsGroup = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Librarian);
-            (sender.Settings as VisualStudioProcessor.V2.IConvertToProject).Convert(sender, settingsGroup);
+            var settingsGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian);
+            (sender.Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, settingsGroup);
 
             // order only dependencies
             foreach (var required in sender.Requirements)
@@ -104,7 +102,7 @@ namespace V2
                     continue;
                 }
 
-                var requiredProject = required.MetaData as VSSolutionBuilder.V2.VSProject;
+                var requiredProject = required.MetaData as VSSolutionBuilder.VSProject;
                 if (null != requiredProject)
                 {
                     project.RequiresProject(requiredProject);
@@ -112,5 +110,4 @@ namespace V2
             }
         }
     }
-}
 }

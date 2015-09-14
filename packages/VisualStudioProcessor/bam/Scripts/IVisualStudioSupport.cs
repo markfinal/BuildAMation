@@ -29,15 +29,12 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
-namespace V2
-{
     public interface IConvertToProject
     {
         void
         Convert(
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup settings,
             string condition = null);
     }
-}
 }

@@ -30,8 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-namespace V2
-{
     public static class DefaultExtensions
     {
         public static void
@@ -89,7 +87,7 @@ namespace V2
     public sealed class CopyFileSettings :
         Bam.Core.Settings,
         ICopyFileSettings,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        CommandLineProcessor.IConvertToCommandLine
     {
         public CopyFileSettings()
         {}
@@ -107,7 +105,7 @@ namespace V2
         }
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -375,13 +373,11 @@ namespace V2
 
         protected override void GetExecutionPolicy(string mode)
         {
-            var className = "Publisher.V2." + mode + "Packager";
+            var className = "Publisher." + mode + "Packager";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IPackagePolicy>.Create(className);
         }
     }
-}
-namespace V2
-{
+
     class InnoSetupScript :
         Bam.Core.Module
     {
@@ -551,14 +547,12 @@ namespace V2
         {
             if (mode == "Native")
             {
-                var className = "Publisher.V2." + mode + "InnoSetup";
+                var className = "Publisher." + mode + "InnoSetup";
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<IInnoSetupPolicy>.Create(className);
             }
         }
     }
-}
-namespace V2
-{
+
     class NSISScript :
         Bam.Core.Module
     {
@@ -725,14 +719,12 @@ namespace V2
         {
             if (mode == "Native")
             {
-                var className = "Publisher.V2." + mode + "NSIS";
+                var className = "Publisher." + mode + "NSIS";
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<INSISPolicy>.Create(className);
             }
         }
     }
-}
-namespace V2
-{
+
     class TarInputFiles :
         Bam.Core.Module
     {
@@ -917,14 +909,12 @@ namespace V2
         {
             if (mode == "Native")
             {
-                var className = "Publisher.V2." + mode + "TarBall";
+                var className = "Publisher." + mode + "TarBall";
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<ITarPolicy>.Create(className);
             }
         }
     }
-}
-namespace V2
-{
+
     public sealed class DiskImageSettings :
         Bam.Core.Settings
     {
@@ -1005,10 +995,9 @@ namespace V2
         {
             if (mode == "Native")
             {
-                var className = "Publisher.V2." + mode + "DMG";
+                var className = "Publisher." + mode + "DMG";
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
             }
         }
     }
-}
 }

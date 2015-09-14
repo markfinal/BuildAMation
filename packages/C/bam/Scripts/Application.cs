@@ -30,8 +30,6 @@
 using System.Linq;
 namespace C
 {
-namespace V2
-{
     public sealed class DefaultBitDepth :
         Bam.Core.IIntegerCommandLineArgument
     {
@@ -283,11 +281,11 @@ namespace V2
 
     public abstract class CSDKModule :
         CModule
-    {}
+    { }
 
     public abstract class ExternalFramework :
         CModule
-    {}
+    { }
 
     public class ConsoleApplication :
         CModule
@@ -307,14 +305,14 @@ namespace V2
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.V2.ICommonLinkerOptions;
+                var linker = settings as C.ICommonLinkerOptions;
                 linker.OutputType = ELinkerOutput.Executable;
             });
         }
 
         private Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("_CONSOLE");
             };
 
@@ -329,35 +327,35 @@ namespace V2
             return source;
         }
 
-        public virtual Cxx.V2.ObjectFileCollection
+        public virtual Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<Cxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
+            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
-        public virtual C.ObjC.V2.ObjectFileCollection
+        public virtual C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<C.ObjC.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
+            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
-        public virtual C.ObjCxx.V2.ObjectFileCollection
+        public virtual C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
+            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
@@ -483,7 +481,7 @@ namespace V2
 
         protected override void GetExecutionPolicy(string mode)
         {
-            var className = "C.V2." + mode + "Linker";
+            var className = "C." + mode + "Linker";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkerPolicy>.Create(className);
         }
 
@@ -523,22 +521,18 @@ namespace V2
             }
         }
     }
-}
-namespace Cxx
-{
-namespace V2
-{
-    public class ConsoleApplication :
-        C.V2.ConsoleApplication
+    namespace Cxx
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        public class ConsoleApplication :
+            C.ConsoleApplication
         {
-            base.Init(parent);
-            this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);
+            protected override void
+            Init(
+                Bam.Core.Module parent)
+            {
+                base.Init(parent);
+                this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
+            }
         }
     }
-}
-}
 }

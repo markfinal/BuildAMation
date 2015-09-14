@@ -58,7 +58,7 @@ namespace DirectXSDK
     }
 
     sealed class Direct3D9V2 :
-        C.V2.CSDKModule
+        C.CSDKModule
     {
         public Direct3D9V2()
         {
@@ -75,16 +75,16 @@ namespace DirectXSDK
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     if (null != compiler)
                     {
                         compiler.IncludePaths.Add(this.Macros["IncludePath"]);
                     }
 
-                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerOptions;
                     if (null != linker)
                     {
-                        if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
+                        if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
                         {
                             linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create("$(LibraryPath)/x86", this));
                         }

@@ -30,8 +30,6 @@
 using System.Linq;
 namespace C
 {
-namespace V2
-{
     public class HeaderFileCollection :
         CModuleContainer<HeaderFile>
     {
@@ -48,5 +46,4 @@ namespace V2
             this.Tool = DefaultToolchain.C_Compiler(this.BitDepth);
         }
     }
-}
 }

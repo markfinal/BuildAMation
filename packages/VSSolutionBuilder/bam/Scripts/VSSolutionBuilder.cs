@@ -30,8 +30,6 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
-namespace V2
-{
     static class XmlDocumentExtensions
     {
         public static System.Xml.XmlElement
@@ -268,7 +266,7 @@ namespace V2
         public void
         AddSetting(
             string name,
-            C.V2.PreprocessorDefinitions definitions,
+            C.PreprocessorDefinitions definitions,
             string condition = null,
             bool inheritExisting = false)
         {
@@ -618,7 +616,7 @@ namespace V2
 
         public void
         AddHeaderFile(
-            C.V2.HeaderFile header)
+            C.HeaderFile header)
         {
             var headerGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.Header, header.InputPath);
             this.Project.AddHeader(headerGroup);
@@ -632,7 +630,7 @@ namespace V2
             var settings = module.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-                (patchSettings as VisualStudioProcessor.V2.IConvertToProject).Convert(module, settings, condition: this.ConditionText);
+                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(module, settings, condition: this.ConditionText);
             }
             this.Sources.AddUnique(settings);
             this.Project.AddSource(settings);
@@ -1047,14 +1045,14 @@ namespace V2
                 }
 
                 var platform = Bam.Core.EPlatform.Invalid;
-                var bitDepth = (module as C.V2.CModule).BitDepth;
+                var bitDepth = (module as C.CModule).BitDepth;
                 switch (bitDepth)
                 {
-                    case C.V2.EBit.ThirtyTwo:
+                    case C.EBit.ThirtyTwo:
                         platform = Bam.Core.EPlatform.Win32;
                         break;
 
-                    case C.V2.EBit.SixtyFour:
+                    case C.EBit.SixtyFour:
                         platform = Bam.Core.EPlatform.Win64;
                         break;
                 }
@@ -1420,5 +1418,4 @@ namespace V2
             Bam.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", graph.MasterPackage.Name, solutionPath);
         }
     }
-}
 }

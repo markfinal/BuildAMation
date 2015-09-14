@@ -31,11 +31,11 @@ using Bam.Core;
 namespace Test14
 {
     public sealed class DynamicLibraryAV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
@@ -56,7 +56,7 @@ namespace Test14
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -64,11 +64,11 @@ namespace Test14
     }
 
     public sealed class DynamicLibraryBV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
         {
-            var compiler = settings as C.V2.ICommonCompilerOptions;
+            var compiler = settings as C.ICommonCompilerOptions;
             if (null != compiler)
             {
                 compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
@@ -91,7 +91,7 @@ namespace Test14
             this.LinkAgainst<DynamicLibraryAV2>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -99,7 +99,7 @@ namespace Test14
     }
 
     public sealed class ApplicationV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -111,7 +111,7 @@ namespace Test14
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                    var gccLinker = settings as GccCommon.ICommonLinkerOptions;
                     if (null != gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
@@ -123,7 +123,7 @@ namespace Test14
             this.CompileAndLinkAgainst<DynamicLibraryBV2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -131,7 +131,7 @@ namespace Test14
     }
 
     public sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -139,9 +139,9 @@ namespace Test14
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<DynamicLibraryAV2>(C.V2.DynamicLibrary.Key, ".", app);
-            this.Include<DynamicLibraryBV2>(C.V2.DynamicLibrary.Key, ".", app);
+            var app = this.Include<ApplicationV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<DynamicLibraryAV2>(C.DynamicLibrary.Key, ".", app);
+            this.Include<DynamicLibraryBV2>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

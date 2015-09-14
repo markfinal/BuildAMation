@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class NativeCompilation :
         ICompilationPolicy
     {
@@ -42,7 +40,7 @@ namespace V2
             Bam.Core.Module source)
         {
             var commandLine = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
@@ -55,8 +53,7 @@ namespace V2
                 System.IO.Directory.CreateDirectory(objectFileDir);
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
-}
 }

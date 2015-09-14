@@ -30,7 +30,7 @@
 namespace Test18
 {
     public sealed class ControlV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -50,7 +50,7 @@ namespace Test18
     }
 
     public sealed class XV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -62,12 +62,12 @@ namespace Test18
     }
 
     public sealed class YV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
     }
 
     public sealed class ZV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         protected override void Init(Bam.Core.Module parent)
         {

@@ -29,8 +29,6 @@
 #endregion // License
 namespace VSSolutionBuilder
 {
-namespace V2
-{
     public class DeterministicGuid
     {
         public
@@ -56,5 +54,4 @@ namespace V2
             private set;
         }
     }
-}
 }

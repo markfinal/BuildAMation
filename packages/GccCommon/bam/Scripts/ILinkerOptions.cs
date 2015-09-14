@@ -29,9 +29,7 @@
 #endregion // License
 namespace GccCommon
 {
-namespace V2
-{
-    [Bam.Core.SettingsExtensions(typeof(GccCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(GccCommon.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
     {
         bool? CanUseOrigin
@@ -52,5 +50,4 @@ namespace V2
             set;
         }
     }
-}
 }

@@ -38,14 +38,14 @@ namespace Cxx11Test1
             Settings settings,
             Module module)
         {
-            var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+            var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
             if (null != cxxCompiler)
             {
                 cxxCompiler.LanguageStandard = C.Cxx.ELanguageStandard.Cxx11;
                 cxxCompiler.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
             }
 
-            var cxxLinker = settings as C.V2.ICxxOnlyLinkerOptions;
+            var cxxLinker = settings as C.ICxxOnlyLinkerOptions;
             if (null != cxxLinker)
             {
                 cxxLinker.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
@@ -54,7 +54,7 @@ namespace Cxx11Test1
     }
 
     public sealed class TestProgV2 :
-        C.Cxx.V2.ConsoleApplication
+        C.Cxx.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -65,15 +65,15 @@ namespace Cxx11Test1
             source.PrivatePatch(settings =>
                 {
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                        this.Linker is VisualC.V2.LinkerBase)
+                        this.Linker is VisualC.LinkerBase)
                     {
-                        var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                        var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                         cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                     }
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }

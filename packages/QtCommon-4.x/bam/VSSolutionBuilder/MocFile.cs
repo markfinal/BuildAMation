@@ -29,8 +29,6 @@
 #endregion // License
 namespace QtCommon
 {
-namespace V2
-{
     public sealed class VSSolutionMocGeneration :
         IMocGenerationPolicy
     {
@@ -40,12 +38,12 @@ namespace V2
             Bam.Core.ExecutionContext context,
             Bam.Core.ICommandLineTool mocCompiler,
             Bam.Core.TokenizedString generatedMocSource,
-            C.V2.HeaderFile source)
+            C.HeaderFile source)
         {
 #if true
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
@@ -56,7 +54,7 @@ namespace V2
             args.Add(System.String.Format("-o{0}", output));
             args.Add("%(FullPath)");
 
-            var customBuild = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.CustomBuild, include: source.InputPath, uniqueToProject: true);
+            var customBuild = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild, include: source.InputPath, uniqueToProject: true);
             customBuild.AddSetting("Command", args.ToString(' '), condition: config.ConditionText);
             customBuild.AddSetting("Message", System.String.Format("Moccing {0}", System.IO.Path.GetFileName(source.InputPath.Parse())), condition: config.ConditionText);
             customBuild.AddSetting("Outputs", output, condition: config.ConditionText);
@@ -67,7 +65,7 @@ namespace V2
             }
 
             // TODO: this is hardcoded - needed a better way to figure this out
-            var platform = VSSolutionBuilder.V2.VSSolutionMeta.EPlatform.SixtyFour;
+            var platform = VSSolutionBuilder.VSSolutionMeta.EPlatform.SixtyFour;
 
             var output = generatedMocSource.Parse();
 
@@ -76,16 +74,15 @@ namespace V2
             args.Add(System.String.Format("-o{0}", output));
             args.Add("%(FullPath)");
 
-            var customBuild = new VSSolutionBuilder.V2.VSProjectCustomBuild(source, platform);
+            var customBuild = new VSSolutionBuilder.VSProjectCustomBuild(source, platform);
             customBuild.Message = "Moccing";
             customBuild.Command = args.ToString(' ');
             customBuild.Outputs.AddUnique(generatedMocSource.Parse());
 
-            var headerFile = new VSSolutionBuilder.V2.VSProjectHeaderFile(source, platform);
-            headerFile.Source = source.GeneratedPaths[C.V2.HeaderFile.Key];
+            var headerFile = new VSSolutionBuilder.VSProjectHeaderFile(source, platform);
+            headerFile.Source = source.GeneratedPaths[C.HeaderFile.Key];
             headerFile.CustomBuild = customBuild;
 #endif
         }
     }
-}
 }

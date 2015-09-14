@@ -29,18 +29,15 @@
 #endregion // License
 namespace C.ObjC
 {
-namespace V2
-{
     public class ObjectFileCollection :
-        C.V2.CModuleContainer<ObjectFile>
+        C.CModuleContainer<ObjectFile>
     {
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Tool = C.V2.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);
+            this.Tool = C.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);
         }
     }
-}
 }

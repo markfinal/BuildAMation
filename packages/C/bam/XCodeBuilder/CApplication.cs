@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class XcodeLinker :
         ILinkerPolicy
     {
@@ -44,31 +42,31 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
-            var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+            var linker = sender.Settings as C.ICommonLinkerOptions;
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             var configName = sender.BuildEnvironment.Configuration.ToString();
             var macros = new Bam.Core.MacroList();
             macros.Add("moduleoutputdir", Bam.Core.TokenizedString.Create(configName, null));
             foreach (var library in libraries)
             {
-                if (library is C.V2.StaticLibrary)
+                if (library is C.StaticLibrary)
                 {
-                    var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].Parse(macros);
+                    var fullLibraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                     linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
                 }
-                else if (library is C.V2.DynamicLibrary)
+                else if (library is C.DynamicLibrary)
                 {
-                    var fullLibraryPath = library.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse(macros);
+                    var fullLibraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                     linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
                 }
-                else if (library is C.V2.CSDKModule)
+                else if (library is C.CSDKModule)
                 {
                     // SDK modules are collections of libraries, not one in particular
                     // thus do nothing as they are undefined at this point, and may yet be pulled in automatically
                 }
-                else if (library is C.V2.HeaderLibrary)
+                else if (library is C.HeaderLibrary)
                 {
                     // no library
                 }
@@ -82,26 +80,26 @@ namespace V2
                 }
             }
 
-            XcodeBuilder.V2.XcodeCommonLinkable application;
+            XcodeBuilder.XcodeCommonLinkable application;
             // TODO: this is a hack, so that modules earlier in the graph can add pre/post build commands
             // to the project for this module
             if (null == sender.MetaData)
             {
                 if (sender is DynamicLibrary)
                 {
-                    application = new XcodeBuilder.V2.XcodeDynamicLibrary(sender, executablePath);
+                    application = new XcodeBuilder.XcodeDynamicLibrary(sender, executablePath);
                 }
                 else
                 {
-                    application = new XcodeBuilder.V2.XcodeProgram(sender, executablePath);
+                    application = new XcodeBuilder.XcodeProgram(sender, executablePath);
                 }
             }
             else
             {
-                application = sender.MetaData as XcodeBuilder.V2.XcodeCommonLinkable;
+                application = sender.MetaData as XcodeBuilder.XcodeCommonLinkable;
             }
 
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("XcodeProjectProcessor.V2.IConvertToProject");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("XcodeProjectProcessor.IConvertToProject");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
@@ -113,20 +111,20 @@ namespace V2
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
                 {
                     typeof(Bam.Core.Module),
-                    typeof(XcodeBuilder.V2.Configuration)
+                    typeof(XcodeBuilder.Configuration)
                 };
 
-                var sharedSettings = C.V2.SettingsBase.SharedSettings(
+                var sharedSettings = C.SettingsBase.SharedSettings(
                     objectFiles,
                     typeof(Clang.XcodeImplementation),
-                    typeof(XcodeProjectProcessor.V2.IConvertToProject),
+                    typeof(XcodeProjectProcessor.IConvertToProject),
                     xcodeConvertParameterTypes);
                 application.SetCommonCompilationOptions(null, sharedSettings);
 
                 foreach (var objFile in objectFiles)
                 {
-                    var deltaSettings = (objFile.Settings as C.V2.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
-                    var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
                     application.AddSource(objFile, meta.Source, meta.Output, deltaSettings);
                     meta.Project = application.Project;
                 }
@@ -136,7 +134,7 @@ namespace V2
                 application.SetCommonCompilationOptions(null, objectFiles[0].Settings);
                 foreach (var objFile in objectFiles)
                 {
-                    var meta = objFile.MetaData as XcodeBuilder.V2.XcodeObjectFile;
+                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
                     application.AddSource(objFile, meta.Source, meta.Output, null);
                     meta.Project = application.Project;
                 }
@@ -147,26 +145,26 @@ namespace V2
                 var headerMod = header as HeaderFile;
                 var headerFileRef = application.Project.FindOrCreateFileReference(
                     headerMod.InputPath,
-                    XcodeBuilder.V2.FileReference.EFileType.HeaderFile,
-                    sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                    XcodeBuilder.FileReference.EFileType.HeaderFile,
+                    sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
                 application.AddHeader(headerFileRef);
             }
 
             foreach (var library in libraries)
             {
-                if (library is C.V2.StaticLibrary)
+                if (library is C.StaticLibrary)
                 {
-                    application.AddStaticLibrary(library.MetaData as XcodeBuilder.V2.XcodeStaticLibrary);
+                    application.AddStaticLibrary(library.MetaData as XcodeBuilder.XcodeStaticLibrary);
                 }
-                else if (library is C.V2.DynamicLibrary)
+                else if (library is C.DynamicLibrary)
                 {
-                    application.AddDynamicLibrary(library.MetaData as XcodeBuilder.V2.XcodeDynamicLibrary);
+                    application.AddDynamicLibrary(library.MetaData as XcodeBuilder.XcodeDynamicLibrary);
                 }
-                else if (library is C.V2.CSDKModule)
+                else if (library is C.CSDKModule)
                 {
                     // do nothing, just an area for external
                 }
-                else if (library is C.V2.HeaderLibrary)
+                else if (library is C.HeaderLibrary)
                 {
                     // no library
                 }
@@ -181,5 +179,4 @@ namespace V2
             }
         }
     }
-}
 }

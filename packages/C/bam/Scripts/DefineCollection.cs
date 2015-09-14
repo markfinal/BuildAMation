@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class PreprocessorDefinitions :
         System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
     {
@@ -130,5 +128,4 @@ namespace V2
             return content.ToString();
         }
     }
-}
 }

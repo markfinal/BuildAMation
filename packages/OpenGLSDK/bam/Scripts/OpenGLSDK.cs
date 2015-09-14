@@ -31,7 +31,7 @@ namespace OpenGLSDK
 {
     // TODO: this is pretty pointless at the moment
     public sealed class OpenGLV2 :
-        C.V2.CSDKModule
+        C.CSDKModule
     {
         protected override void
         Init(
@@ -41,19 +41,19 @@ namespace OpenGLSDK
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerOptions;
                     if (null != linker)
                     {
-                        if (linker is VisualC.V2.LinkerSettings)
+                        if (linker is VisualC.LinkerSettings)
                         {
                             linker.Libraries.Add("OPENGL32.lib");
                         }
-                        else if (linker is Mingw.V2.LinkerSettings)
+                        else if (linker is Mingw.LinkerSettings)
                         {
                             linker.Libraries.Add("-lopengl32");
                         }
                     }
-                    var osxLinker = settings as C.V2.ILinkerOptionsOSX;
+                    var osxLinker = settings as C.ILinkerOptionsOSX;
                     if (null != osxLinker)
                     {
                         osxLinker.Frameworks.AddUnique(Bam.Core.TokenizedString.Create("OpenGL", null, verbatim: true));

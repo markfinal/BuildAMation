@@ -30,11 +30,11 @@
 namespace Test3
 {
     sealed class Library2V2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         public Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));

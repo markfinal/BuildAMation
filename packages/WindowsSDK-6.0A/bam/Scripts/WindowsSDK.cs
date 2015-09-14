@@ -30,23 +30,23 @@
 namespace WindowsSDK
 {
     public sealed class WindowsSDKV2 :
-        C.V2.CSDKModule
+        C.CSDKModule
     {
         public WindowsSDKV2()
         {
             this.Macros.Add("InstallPath", @"C:\Program Files\Microsoft SDKs\Windows\v6.0A");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compilation = settings as C.V2.ICommonCompilerOptions;
+                    var compilation = settings as C.ICommonCompilerOptions;
                     if (null != compilation)
                     {
                         compilation.IncludePaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Include", this));
                     }
 
-                    var linking = settings as C.V2.ICommonLinkerOptions;
+                    var linking = settings as C.ICommonLinkerOptions;
                     if (null != linking)
                     {
-                        if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
+                        if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
                         {
                             linking.LibraryPaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Lib", this));
                         }

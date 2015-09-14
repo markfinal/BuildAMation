@@ -29,8 +29,6 @@
 #endregion // License
 namespace MingwCommon
 {
-namespace V2
-{
     public interface ICommonCompilerOptions
     {
         bool MCommonCommon
@@ -57,5 +55,4 @@ namespace V2
             set;
         }
     }
-}
 }

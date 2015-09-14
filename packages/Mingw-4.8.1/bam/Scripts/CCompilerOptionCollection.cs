@@ -27,20 +27,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using C.V2.DefaultSettings;
-using C.Cxx.V2.DefaultSettings;
+using C.DefaultSettings;
+using C.Cxx.DefaultSettings;
 namespace Mingw
 {
     public static partial class NativeImplementation
     {
         public static void
         Convert(
-            this C.V2.ICommonCompilerOptions options,
+            this C.ICommonCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var objectFile = module as C.V2.ObjectFile;
-            if (options.Bits == C.V2.EBit.ThirtyTwo)
+            var objectFile = module as C.ObjectFile;
+            if (options.Bits == C.EBit.ThirtyTwo)
             {
                 commandLine.Add("-m32");
             }
@@ -123,18 +123,18 @@ namespace Mingw
             {
                 case C.ECompilerOutput.CompileOnly:
                     commandLine.Add(System.String.Format("-c {0}", objectFile.InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                     break;
                 case C.ECompilerOutput.Preprocess:
                     commandLine.Add(System.String.Format("-E {0}", objectFile.InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                     break;
             }
         }
 
         public static void
         Convert(
-            this C.V2.ICOnlyCompilerOptions options,
+            this C.ICOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -155,7 +155,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this C.V2.ICxxOnlyCompilerOptions options,
+            this C.ICxxOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -191,7 +191,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this C.V2.ICCompilerOptionsWin options,
+            this C.ICCompilerOptionsWin options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -204,14 +204,14 @@ namespace Mingw
 
                     case C.ECharacterSet.Unicode:
                         {
-                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerOptions;
                             compiler.PreprocessorDefines.Add("_UNICODE");
                         }
                         break;
 
                     case C.ECharacterSet.MultiByte:
                         {
-                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerOptions;
                             compiler.PreprocessorDefines.Add("_MBCS");
                         }
                         break;
@@ -221,7 +221,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this MingwCommon.V2.ICommonCompilerOptions options,
+            this MingwCommon.ICommonCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -229,7 +229,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this MingwCommon.V2.ICOnlyCompilerOptions options,
+            this MingwCommon.ICOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -237,7 +237,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this MingwCommon.V2.ICxxOnlyCompilerOptions options,
+            this MingwCommon.ICxxOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -245,7 +245,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this Mingw.V2.ICommonCompilerOptions options,
+            this Mingw.ICommonCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -253,7 +253,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this Mingw.V2.ICOnlyCompilerOptions options,
+            this Mingw.ICOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -261,25 +261,23 @@ namespace Mingw
 
         public static void
         Convert(
-            this Mingw.V2.ICxxOnlyCompilerOptions options,
+            this Mingw.ICxxOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
     }
 
-namespace V2
-{
     public class CompilerSettings :
-        C.V2.SettingsBase,
-        CommandLineProcessor.V2.IConvertToCommandLine,
-        C.V2.ICCompilerOptionsWin,
-        C.V2.ICommonCompilerOptions,
-        C.V2.ICOnlyCompilerOptions,
-        MingwCommon.V2.ICommonCompilerOptions,
-        MingwCommon.V2.ICOnlyCompilerOptions,
-        Mingw.V2.ICommonCompilerOptions,
-        Mingw.V2.ICOnlyCompilerOptions
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICCompilerOptionsWin,
+        C.ICommonCompilerOptions,
+        C.ICOnlyCompilerOptions,
+        MingwCommon.ICommonCompilerOptions,
+        MingwCommon.ICOnlyCompilerOptions,
+        Mingw.ICommonCompilerOptions,
+        Mingw.ICOnlyCompilerOptions
     {
         public CompilerSettings(Bam.Core.Module module)
             : this(module, useDefaults:true)
@@ -291,119 +289,119 @@ namespace V2
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            (this as C.V2.ICommonCompilerOptions).Empty();
+            (this as C.ICommonCompilerOptions).Empty();
             if (useDefaults)
             {
-                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+                (this as C.ICommonCompilerOptions).Defaults(module);
             }
 #endif
         }
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
-            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.ICCompilerOptionsWin).Convert(module, commandLine);
+            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
-        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        C.ECharacterSet? C.ICCompilerOptionsWin.CharacterSet
         {
             get;
             set;
         }
 
-        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerOptions.Bits
         {
             get;
             set;
         }
 
-        C.V2.PreprocessorDefinitions C.V2.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
+        C.ECLanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        bool MingwCommon.V2.ICommonCompilerOptions.MCommonCommon
+        bool MingwCommon.ICommonCompilerOptions.MCommonCommon
         {
             get;
             set;
         }
 
-        bool MingwCommon.V2.ICOnlyCompilerOptions.MCommonCOnly
+        bool MingwCommon.ICOnlyCompilerOptions.MCommonCOnly
         {
             get;
             set;
@@ -423,15 +421,15 @@ namespace V2
     }
 
     public sealed class CxxCompilerSettings :
-        C.V2.SettingsBase,
-        CommandLineProcessor.V2.IConvertToCommandLine,
-        C.V2.ICCompilerOptionsWin,
-        C.V2.ICommonCompilerOptions,
-        C.V2.ICxxOnlyCompilerOptions,
-        MingwCommon.V2.ICommonCompilerOptions,
-        MingwCommon.V2.ICxxOnlyCompilerOptions,
-        Mingw.V2.ICommonCompilerOptions,
-        Mingw.V2.ICxxOnlyCompilerOptions
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICCompilerOptionsWin,
+        C.ICommonCompilerOptions,
+        C.ICxxOnlyCompilerOptions,
+        MingwCommon.ICommonCompilerOptions,
+        MingwCommon.ICxxOnlyCompilerOptions,
+        Mingw.ICommonCompilerOptions,
+        Mingw.ICxxOnlyCompilerOptions
     {
         public CxxCompilerSettings(Bam.Core.Module module)
             : this(module, useDefaults:true)
@@ -443,133 +441,133 @@ namespace V2
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            (this as C.V2.ICommonCompilerOptions).Empty();
-            (this as C.V2.ICxxOnlyCompilerOptions).Empty();
+            (this as C.ICommonCompilerOptions).Empty();
+            (this as C.ICxxOnlyCompilerOptions).Empty();
             if (useDefaults)
             {
-                (this as C.V2.ICommonCompilerOptions).Defaults(module);
-                (this as C.V2.ICxxOnlyCompilerOptions).Defaults(module);
+                (this as C.ICommonCompilerOptions).Defaults(module);
+                (this as C.ICxxOnlyCompilerOptions).Defaults(module);
             }
 #endif
         }
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
-            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.ICCompilerOptionsWin).Convert(module, commandLine);
+            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as MingwCommon.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as Mingw.ICxxOnlyCompilerOptions).Convert(module, commandLine);
         }
 
-        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        C.ECharacterSet? C.ICCompilerOptionsWin.CharacterSet
         {
             get;
             set;
         }
 
-        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerOptions.Bits
         {
             get;
             set;
         }
 
-        C.V2.PreprocessorDefinitions C.V2.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerOptions.ExceptionHandler
         {
             get;
             set;
         }
 
-        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyCompilerOptions.StandardLibrary
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerOptions.StandardLibrary
         {
             get;
             set;
         }
 
-        bool MingwCommon.V2.ICommonCompilerOptions.MCommonCommon
+        bool MingwCommon.ICommonCompilerOptions.MCommonCommon
         {
             get;
             set;
         }
 
-        bool MingwCommon.V2.ICxxOnlyCompilerOptions.MCommonCxxOnly
+        bool MingwCommon.ICxxOnlyCompilerOptions.MCommonCxxOnly
         {
             get;
             set;
@@ -597,7 +595,7 @@ namespace V2
     }
 
     public abstract class CompilerBase :
-        C.V2.CompilerTool
+        C.CompilerTool
     {
         public CompilerBase()
         {
@@ -621,15 +619,15 @@ namespace V2
 
         public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
-            if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
-                typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
+            if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
+                typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new CxxCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
-            else if (typeof(C.V2.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.V2.CObjectFileCollection).IsInstanceOfType(module))
+            else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
+                     typeof(C.CObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new CompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
@@ -644,18 +642,18 @@ namespace V2
         protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
     }
 
-    [C.V2.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Compiler32 :
         CompilerBase
     {
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
-            cSettings.Bits = C.V2.EBit.ThirtyTwo;
+            var cSettings = settings as C.ICommonCompilerOptions;
+            cSettings.Bits = C.EBit.ThirtyTwo;
         }
     }
 
-    [C.V2.RegisterCxxCompiler("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterCxxCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Compiler32Cxx :
         Compiler32
     {
@@ -667,7 +665,7 @@ namespace V2
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerOptions;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
@@ -678,10 +676,9 @@ namespace V2
     {
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
-            cSettings.Bits = C.V2.EBit.SixtyFour;
+            var cSettings = settings as C.ICommonCompilerOptions;
+            cSettings.Bits = C.EBit.SixtyFour;
         }
     }
      */
-}
 }

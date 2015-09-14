@@ -31,11 +31,11 @@ using Bam.Core;
 namespace Test2
 {
     sealed class LibraryV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
@@ -58,7 +58,7 @@ namespace Test2
     }
 
     sealed class ApplicationV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -72,7 +72,7 @@ namespace Test2
             this.CompileAndLinkAgainst<Test3.Library2V2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }

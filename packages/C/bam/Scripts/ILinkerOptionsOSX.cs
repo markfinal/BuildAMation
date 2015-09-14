@@ -29,20 +29,18 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ILinkerOptionsOSX settings, Bam.Core.Module module)
+        public static void Defaults(this C.ILinkerOptionsOSX settings, Bam.Core.Module module)
         {
             settings.Frameworks = new Bam.Core.Array<Bam.Core.TokenizedString>();
             settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
     }
 }
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ILinkerOptionsOSX : Bam.Core.ISettingsBase
     {
         Bam.Core.Array<Bam.Core.TokenizedString> Frameworks
@@ -63,51 +61,49 @@ namespace DefaultSettings
             set;
         }
     }
-}
-namespace V2
-{
+
     namespace DefaultSettings
     {
         public static partial class DefaultSettingsExtensions
         {
             public static void
             Defaults(
-                this C.V2.ILinkerOptionsWin settings,
+                this C.ILinkerOptionsWin settings,
                 Bam.Core.Module module)
             {
                 settings.SubSystem = ESubsystem.Console;
             }
             public static void
             Empty(
-                this C.V2.ILinkerOptionsWin settings)
+                this C.ILinkerOptionsWin settings)
             {
             }
             public static void
             SharedSettings(
-                this C.V2.ILinkerOptionsWin shared,
-                C.V2.ILinkerOptionsWin lhs,
-                C.V2.ILinkerOptionsWin rhs)
+                this C.ILinkerOptionsWin shared,
+                C.ILinkerOptionsWin lhs,
+                C.ILinkerOptionsWin rhs)
             {
                 shared.SubSystem = (lhs.SubSystem == rhs.SubSystem) ? lhs.SubSystem : null;
             }
             public static void
             Delta(
-                this C.V2.ILinkerOptionsWin delta,
-                C.V2.ILinkerOptionsWin lhs,
-                C.V2.ILinkerOptionsWin rhs)
+                this C.ILinkerOptionsWin delta,
+                C.ILinkerOptionsWin lhs,
+                C.ILinkerOptionsWin rhs)
             {
                 delta.SubSystem = (lhs.SubSystem != rhs.SubSystem) ? lhs.SubSystem : null;
             }
             public static void
             Clone(
-                this C.V2.ILinkerOptionsWin settings,
-                C.V2.ILinkerOptionsWin other)
+                this C.ILinkerOptionsWin settings,
+                C.ILinkerOptionsWin other)
             {
                 settings.SubSystem = other.SubSystem;
             }
         }
     }
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ILinkerOptionsWin :
         Bam.Core.ISettingsBase
     {
@@ -117,5 +113,4 @@ namespace V2
             set;
         }
     }
-}
 }

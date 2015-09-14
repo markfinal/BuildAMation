@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public class StaticLibrary :
         CModule,
         IForwardedLibraries
@@ -78,35 +76,35 @@ namespace V2
             return source;
         }
 
-        public Cxx.V2.ObjectFileCollection
+        public Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<Cxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }
 
-        public virtual C.ObjC.V2.ObjectFileCollection
+        public virtual C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<C.ObjC.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }
 
-        public virtual C.ObjCxx.V2.ObjectFileCollection
+        public virtual C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }
@@ -170,7 +168,7 @@ namespace V2
 
         protected override void GetExecutionPolicy(string mode)
         {
-            var className = "C.V2." + mode + "Librarian";
+            var className = "C." + mode + "Librarian";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILibrarianPolicy>.Create(className);
         }
 
@@ -198,5 +196,4 @@ namespace V2
             }
         }
     }
-}
 }

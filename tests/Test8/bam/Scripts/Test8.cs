@@ -32,7 +32,7 @@ namespace Test8
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class ApplicationTestV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -47,13 +47,13 @@ namespace Test8
             this.Requires(dynamicLib);
             source.UsePublicPatches(dynamicLib);
 
-            if (this.Linker is VisualC.V2.LinkerBase)
+            if (this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
 
                 this.PrivatePatch(settings =>
                     {
-                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        var linker = settings as C.ICommonLinkerOptions;
                         linker.Libraries.Add("dbghelp.lib");
                     });
             }
@@ -62,7 +62,7 @@ namespace Test8
 
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -70,8 +70,8 @@ namespace Test8
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationTestV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test7.ExplicitDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
+            var app = this.Include<ApplicationTestV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Test7.ExplicitDynamicLibraryV2>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

@@ -30,7 +30,7 @@
 namespace WindowsSDK
 {
     public sealed class WindowsSDKV2 :
-        C.V2.CSDKModule
+        C.CSDKModule
     {
         public WindowsSDKV2()
         {
@@ -49,17 +49,17 @@ namespace WindowsSDK
             this.Macros.Add("InstallPath", installPath);
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compilation = settings as C.V2.ICommonCompilerOptions;
+                var compilation = settings as C.ICommonCompilerOptions;
                 if (null != compilation)
                 {
                     compilation.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Include\um", this));
                     compilation.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Include\shared", this));
                 }
 
-                var linking = settings as C.V2.ICommonLinkerOptions;
+                var linking = settings as C.ICommonLinkerOptions;
                 if (null != linking)
                 {
-                    if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
+                    if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
                     {
                         linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x86", this));
                     }

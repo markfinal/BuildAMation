@@ -31,8 +31,6 @@ using Bam.Core;
 using System.Linq;
 namespace QtCommon
 {
-namespace V2
-{
     public static class Configure
     {
         class QtInstallPath :
@@ -144,7 +142,7 @@ namespace V2
     }
 
     public abstract class CommonFramework :
-        C.V2.ExternalFramework
+        C.ExternalFramework
     {
         protected CommonFramework(
             string moduleName) :
@@ -163,13 +161,13 @@ namespace V2
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var osxCompiler = settings as C.V2.ICCompilerOptionsOSX;
+                var osxCompiler = settings as C.ICCompilerOptionsOSX;
                 if (null != osxCompiler)
                 {
                     osxCompiler.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
                 }
 
-                var osxLinker = settings as C.V2.ILinkerOptionsOSX;
+                var osxLinker = settings as C.ILinkerOptionsOSX;
                 if (null != osxLinker)
                 {
                     osxLinker.Frameworks.AddUnique(Bam.Core.TokenizedString.Create("$(QtFrameworkPath)/Qt$(QtModuleName).framework", this));
@@ -195,7 +193,7 @@ namespace V2
     }
 
     public abstract class CommonModule :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         protected CommonModule(
             string moduleName) :
@@ -227,13 +225,13 @@ namespace V2
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
                     compiler.IncludePaths.AddUnique(this.Macros["QtIncludePath"]);
                 }
 
-                var linker = settings as C.V2.ICommonLinkerOptions;
+                var linker = settings as C.ICommonLinkerOptions;
                 if (null != linker)
                 {
                     linker.LibraryPaths.AddUnique(this.Macros["QtLibraryPath"]);
@@ -256,5 +254,4 @@ namespace V2
             // prebuilt - no execution policy
         }
     }
-}
 }

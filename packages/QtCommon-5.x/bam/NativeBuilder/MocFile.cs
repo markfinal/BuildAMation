@@ -29,8 +29,6 @@
 #endregion // License
 namespace QtCommon
 {
-namespace V2
-{
     public sealed class NativeMocGeneration :
         IMocGenerationPolicy
     {
@@ -40,7 +38,7 @@ namespace V2
             Bam.Core.ExecutionContext context,
             Bam.Core.ICommandLineTool mocCompiler,
             Bam.Core.TokenizedString generatedMocSource,
-            C.V2.HeaderFile source)
+            C.HeaderFile source)
         {
             var mocOutputPath = generatedMocSource.Parse();
             var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
@@ -52,8 +50,7 @@ namespace V2
             var args = new Bam.Core.StringArray();
             args.Add(System.String.Format("-o{0}", mocOutputPath));
             args.Add(source.InputPath.Parse());
-            CommandLineProcessor.V2.Processor.Execute(context, mocCompiler, args);
+            CommandLineProcessor.Processor.Execute(context, mocCompiler, args);
         }
     }
-}
 }

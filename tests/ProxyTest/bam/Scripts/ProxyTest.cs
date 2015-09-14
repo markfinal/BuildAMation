@@ -30,7 +30,7 @@
 namespace ProxyTest
 {
     public sealed class ProxiedObjectFileV2 :
-        C.V2.ObjectFile
+        C.ObjectFile
     {
         public ProxiedObjectFileV2()
         {
@@ -46,7 +46,7 @@ namespace ProxyTest
     }
 
     public sealed class ProxiedObjectFileCollectionV2 :
-        C.V2.CObjectFileCollection
+        C.CObjectFileCollection
     {
         public ProxiedObjectFileCollectionV2()
         {

@@ -29,27 +29,24 @@
 #endregion // License
 namespace C.ObjC
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.IObjectiveCOnlyCompilerOptions settings, Bam.Core.Module module)
+        public static void Defaults(this C.IObjectiveCOnlyCompilerOptions settings, Bam.Core.Module module)
         {
         }
     }
 }
     public class ObjectFile :
-        C.V2.ObjectFile
+        C.ObjectFile
     {
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Compiler = C.V2.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);
+            this.Compiler = C.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);
         }
     }
-}
 }

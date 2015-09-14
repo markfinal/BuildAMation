@@ -27,11 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using C.V2.DefaultSettings;
-using Mingw.V2.DefaultSettings;
+using C.DefaultSettings;
+using Mingw.DefaultSettings;
 namespace Mingw
-{
-namespace V2
 {
 namespace DefaultSettings
 {
@@ -42,7 +40,7 @@ namespace DefaultSettings
         }
     }
 }
-    [Bam.Core.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(Mingw.DefaultSettings.DefaultSettingsExtensions))]
     public interface ILinkerOptions : Bam.Core.ISettingsBase
     {
     }
@@ -51,21 +49,21 @@ namespace DefaultSettings
     {
         public static void
         Convert(
-            this C.V2.ICommonLinkerOptions options,
+            this C.ICommonLinkerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            //var applicationFile = module as C.V2.ConsoleApplication;
+            //var applicationFile = module as C.ConsoleApplication;
             switch (options.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     commandLine.Add("-shared");
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.V2.ConsoleApplication.Key].ToString()));
-                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString()));
                     break;
             }
             foreach (var path in options.LibraryPaths)
@@ -93,9 +91,9 @@ namespace DefaultSettings
     }
 
     public sealed class LinkerSettings :
-        C.V2.SettingsBase,
-        CommandLineProcessor.V2.IConvertToCommandLine,
-        C.V2.ICommonLinkerOptions,
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonLinkerOptions,
         ILinkerOptions
     {
         public LinkerSettings(Bam.Core.Module module)
@@ -103,39 +101,39 @@ namespace DefaultSettings
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
-            (this as C.V2.ICommonLinkerOptions).Defaults(module);
+            (this as C.ICommonLinkerOptions).Defaults(module);
             (this as ILinkerOptions).Defaults(module);
 #endif
         }
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as C.ICommonLinkerOptions).Convert(module, commandLine);
             (this as ILinkerOptions).Convert(module, commandLine);
         }
 
-        C.ELinkerOutput C.V2.ICommonLinkerOptions.OutputType
+        C.ELinkerOutput C.ICommonLinkerOptions.OutputType
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerOptions.LibraryPaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonLinkerOptions.Libraries
+        Bam.Core.StringArray C.ICommonLinkerOptions.Libraries
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonLinkerOptions.DebugSymbols
+        bool? C.ICommonLinkerOptions.DebugSymbols
         {
             get;
             set;
@@ -143,7 +141,7 @@ namespace DefaultSettings
     }
 
     public abstract class LinkerBase :
-        C.V2.LinkerTool
+        C.LinkerTool
     {
         public LinkerBase(
             string executable)
@@ -179,25 +177,25 @@ namespace DefaultSettings
         GetLibraryPath(
             Bam.Core.Module module)
         {
-            if (module is C.V2.StaticLibrary)
+            if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
             }
-            else if (module is C.V2.DynamicLibrary)
+            else if (module is C.DynamicLibrary)
             {
-                return module.GeneratedPaths[C.V2.DynamicLibrary.ImportLibraryKey].ToString();
+                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
             }
-            else if (module is C.V2.CSDKModule)
+            else if (module is C.CSDKModule)
             {
                 // collection of libraries, none in particular
                 return null;
             }
-            else if (module is C.V2.HeaderLibrary)
+            else if (module is C.HeaderLibrary)
             {
                 // no library
                 return null;
             }
-            else if (module is C.V2.ExternalFramework)
+            else if (module is C.ExternalFramework)
             {
                 // dealt with elsewhere
                 return null;
@@ -218,8 +216,8 @@ namespace DefaultSettings
         }
 
         public override void ProcessLibraryDependency(
-            C.V2.CModule executable,
-            C.V2.CModule library)
+            C.CModule executable,
+            C.CModule library)
         {
             var fullLibraryPath = GetLibraryPath(library);
             if (null == fullLibraryPath)
@@ -228,13 +226,13 @@ namespace DefaultSettings
             }
             var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = GetLPrefixLibraryName(fullLibraryPath);
-            var linker = executable.Settings as C.V2.ICommonLinkerOptions;
+            var linker = executable.Settings as C.ICommonLinkerOptions;
             linker.Libraries.AddUnique(libFilename);
             linker.LibraryPaths.AddUnique(dir);
         }
     }
 
-    [C.V2.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Linker :
         LinkerBase
     {
@@ -243,7 +241,7 @@ namespace DefaultSettings
         {}
     }
 
-    [C.V2.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class LinkerCxx :
         LinkerBase
     {
@@ -251,5 +249,4 @@ namespace DefaultSettings
             : base("mingw32-g++.exe")
         { }
     }
-}
 }

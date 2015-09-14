@@ -163,11 +163,6 @@ namespace Bam.Core
 
             // add the package root
             var packageNameSpace = graph.CommonModuleType.Peek().Namespace;
-            // TODO: temporarily check whether a V2 has been used in the namespace- trim if so
-            if (packageNameSpace.EndsWith(".V2"))
-            {
-                packageNameSpace = packageNameSpace.Replace(".V2", string.Empty);
-            }
 #if true
             var packageDefinition = graph.Packages.Where(item => item.Name == packageNameSpace).FirstOrDefault();
             if (null == packageDefinition)

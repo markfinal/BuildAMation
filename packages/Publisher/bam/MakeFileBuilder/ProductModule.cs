@@ -29,16 +29,14 @@
 #endregion // License
 namespace Publisher
 {
-namespace V2
-{
     public sealed class MakeFilePackager :
         IPackagePolicy
     {
         private static void
         CopyFileRule(
-            MakeFileBuilder.V2.MakeFileMeta meta,
-            MakeFileBuilder.V2.MakeFileMeta sourceMeta,
-            MakeFileBuilder.V2.Rule parentRule,
+            MakeFileBuilder.MakeFileMeta meta,
+            MakeFileBuilder.MakeFileMeta sourceMeta,
+            MakeFileBuilder.Rule parentRule,
             string outputDirectory,
             Bam.Core.TokenizedString sourcePath)
         {
@@ -66,13 +64,13 @@ namespace V2
             System.Collections.Generic.Dictionary<Bam.Core.TokenizedString,
             PackageReference>> packageObjects)
         {
-            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(Bam.Core.TokenizedString.Create("publish", null, verbatim:true), isPhony:true);
 
             foreach (var module in packageObjects)
             {
-                var moduleMeta = module.Key.MetaData as MakeFileBuilder.V2.MakeFileMeta;
+                var moduleMeta = module.Key.MetaData as MakeFileBuilder.MakeFileMeta;
                 foreach (var path in module.Value)
                 {
                     if (path.Value.IsMarker)
@@ -100,5 +98,4 @@ namespace V2
             }
         }
     }
-}
 }

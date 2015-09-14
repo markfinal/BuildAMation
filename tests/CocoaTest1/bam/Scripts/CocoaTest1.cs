@@ -31,7 +31,7 @@ namespace CocoaTest1
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
     sealed class CLibraryV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         protected override void Init (Bam.Core.Module parent)
         {
@@ -43,7 +43,7 @@ namespace CocoaTest1
 
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
     sealed class CocoaTestV2 :
-        C.V2.GUIApplication
+        C.GUIApplication
     {
         protected override void Init (Bam.Core.Module parent)
         {
@@ -55,7 +55,7 @@ namespace CocoaTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.V2.ILinkerOptionsOSX;
+                    var linker = settings as C.ILinkerOptionsOSX;
                     if (null != linker)
                     {
                         linker.Frameworks.Add(Bam.Core.TokenizedString.Create("Cocoa", null, verbatim:true));
@@ -65,7 +65,7 @@ namespace CocoaTest1
     }
 
     public sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -73,7 +73,7 @@ namespace CocoaTest1
         {
             base.Init(parent);
 
-            this.Include<CocoaTestV2>(C.V2.ConsoleApplication.Key, EPublishingType.WindowedApplication);
+            this.Include<CocoaTestV2>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
         }
     }
 }

@@ -31,11 +31,11 @@ namespace TinyXML2
 {
     [Bam.Core.ModuleGroup("Thirdparty")]
     sealed class TinyXML2StaticV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
         {
-            var compiler = settings as C.V2.ICommonCompilerOptions;
+            var compiler = settings as C.ICommonCompilerOptions;
             if (null != compiler)
             {
                 compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(pkgroot)", appliedTo));

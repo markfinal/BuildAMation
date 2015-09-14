@@ -31,7 +31,7 @@ using Bam.Core;
 namespace zeromqtest
 {
     public sealed class TestV2 :
-        C.Cxx.V2.ConsoleApplication
+        C.Cxx.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -42,7 +42,7 @@ namespace zeromqtest
             this.CompileAndLinkAgainst<zeromq.ZMQSharedLibraryV2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
@@ -51,7 +51,7 @@ namespace zeromqtest
                 {
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
-                        var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                        var gccLinker = settings as GccCommon.ICommonLinkerOptions;
                         if (null != gccLinker)
                         {
                             gccLinker.CanUseOrigin = true;
@@ -63,14 +63,14 @@ namespace zeromqtest
     }
 
     public sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            var app = this.Include<TestV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<zeromq.ZMQSharedLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
+            var app = this.Include<TestV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<zeromq.ZMQSharedLibraryV2>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

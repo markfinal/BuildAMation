@@ -29,33 +29,31 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     namespace DefaultSettings
     {
         public static partial class DefaultSettingsExtensions
         {
-            public static void Defaults(this C.V2.ICOnlyCompilerOptions settings, Bam.Core.Module module)
+            public static void Defaults(this C.ICOnlyCompilerOptions settings, Bam.Core.Module module)
             {
             }
             public static void
             SharedSettings(
-                this C.V2.ICOnlyCompilerOptions shared,
-                C.V2.ICOnlyCompilerOptions lhs,
-                C.V2.ICOnlyCompilerOptions rhs)
+                this C.ICOnlyCompilerOptions shared,
+                C.ICOnlyCompilerOptions lhs,
+                C.ICOnlyCompilerOptions rhs)
             {
             }
             public static void
             Delta(
-                this C.V2.ICOnlyCompilerOptions delta,
-                C.V2.ICOnlyCompilerOptions lhs,
-                C.V2.ICOnlyCompilerOptions rhs)
+                this C.ICOnlyCompilerOptions delta,
+                C.ICOnlyCompilerOptions lhs,
+                C.ICOnlyCompilerOptions rhs)
             {
             }
             public static void
             Clone(
-                this C.V2.ICOnlyCompilerOptions settings,
-                C.V2.ICOnlyCompilerOptions other)
+                this C.ICOnlyCompilerOptions settings,
+                C.ICOnlyCompilerOptions other)
             {
             }
         }
@@ -590,7 +588,7 @@ namespace V2
 
         protected override void GetExecutionPolicy(string mode)
         {
-            var className = "C.V2." + mode + "Compilation";
+            var className = "C." + mode + "Compilation";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
 
@@ -618,7 +616,7 @@ namespace V2
                     return;
                 }
 
-                var includeSearchPaths = (this.Settings as C.V2.ICommonCompilerOptions).IncludePaths;
+                var includeSearchPaths = (this.Settings as C.ICommonCompilerOptions).IncludePaths;
 
                 var filesToSearch = new System.Collections.Generic.Queue<string>();
                 filesToSearch.Enqueue(sourcePath);
@@ -698,5 +696,4 @@ namespace V2
             });
         }
     }
-}
 }

@@ -27,11 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using C.V2.DefaultSettings;
-using Mingw.V2.DefaultSettings;
+using C.DefaultSettings;
+using Mingw.DefaultSettings;
 namespace Mingw
-{
-namespace V2
 {
 namespace DefaultSettings
 {
@@ -45,7 +43,7 @@ namespace DefaultSettings
         }
     }
 }
-    [Bam.Core.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(Mingw.DefaultSettings.DefaultSettingsExtensions))]
     public interface IArchiverOptions : Bam.Core.ISettingsBase
     {
         bool Ranlib
@@ -71,15 +69,15 @@ namespace DefaultSettings
     {
         public static void
         Convert(
-            this C.V2.ICommonArchiverOptions options,
+            this C.ICommonArchiverOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            //var staticLibrary = module as C.V2.StaticLibrary;
+            //var staticLibrary = module as C.StaticLibrary;
             switch (options.OutputType)
             {
                 case C.EArchiverOutput.StaticLibrary:
-                    commandLine.Add(module.GeneratedPaths[C.V2.StaticLibrary.Key].ToString());
+                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
                     break;
 
                 default:
@@ -114,22 +112,22 @@ namespace DefaultSettings
     }
 
     public class LibrarianSettings :
-        C.V2.SettingsBase,
-        C.V2.ICommonArchiverOptions,
+        C.SettingsBase,
+        C.ICommonArchiverOptions,
         IArchiverOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine
+        CommandLineProcessor.IConvertToCommandLine
     {
         public LibrarianSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
-            (this as C.V2.ICommonArchiverOptions).Defaults(module);
+            (this as C.ICommonArchiverOptions).Defaults(module);
             (this as IArchiverOptions).Defaults(module);
 #endif
         }
 
-        C.EArchiverOutput C.V2.ICommonArchiverOptions.OutputType
+        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
         {
             get;
             set;
@@ -154,19 +152,19 @@ namespace DefaultSettings
         }
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as IArchiverOptions).Convert(module, commandLine);
             // output file comes last, before inputs
-            (this as C.V2.ICommonArchiverOptions).Convert(module, commandLine);
+            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
         }
     }
 
-    [C.V2.RegisterArchiver("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterArchiver("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Librarian :
-        C.V2.LibrarianTool
+        C.LibrarianTool
     {
         public Librarian()
         {
@@ -192,5 +190,4 @@ namespace DefaultSettings
             return settings;
         }
     }
-}
 }

@@ -29,8 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-namespace V2
-{
     public static class Processor
     {
         public static void
@@ -143,5 +141,4 @@ namespace V2
             }
         }
     }
-}
 }

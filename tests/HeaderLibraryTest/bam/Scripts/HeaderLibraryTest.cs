@@ -31,7 +31,7 @@ using Bam.Core;
 namespace HeaderLibraryTest
 {
     public sealed class HeaderLibraryV2 :
-        C.V2.HeaderLibrary
+        C.HeaderLibrary
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -41,7 +41,7 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     if (null != compiler)
                     {
                         compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
@@ -51,7 +51,7 @@ namespace HeaderLibraryTest
     }
 
     public sealed class ApplicationV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -62,7 +62,7 @@ namespace HeaderLibraryTest
             this.CompileAgainst<HeaderLibraryV2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }

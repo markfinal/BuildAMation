@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public interface IForwardedLibraries
     {
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> ForwardedLibraries
@@ -72,7 +70,7 @@ namespace V2
             case "VSSolution":
             case "Xcode":
                 {
-                    var className = "C.V2." + mode + "HeaderLibrary";
+                    var className = "C." + mode + "HeaderLibrary";
                     this.Policy = Bam.Core.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
                 }
                 break;
@@ -100,5 +98,4 @@ namespace V2
             }
         }
     }
-}
 }

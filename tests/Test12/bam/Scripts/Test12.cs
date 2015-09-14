@@ -31,7 +31,7 @@ using Bam.Core;
 namespace Test12
 {
     sealed class MyOpenGLApplicationV2 :
-        C.Cxx.V2.GUIApplication
+        C.Cxx.GUIApplication
     {
         protected override void
         Init(
@@ -54,13 +54,13 @@ namespace Test12
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
 
                 this.PrivatePatch(settings =>
                     {
-                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        var linker = settings as C.ICommonLinkerOptions;
                         linker.Libraries.Add("USER32.lib");
                     });
             }
@@ -68,7 +68,7 @@ namespace Test12
             {
                 this.PrivatePatch(settings =>
                     {
-                        var linker = settings as C.V2.ICommonLinkerOptions;
+                        var linker = settings as C.ICommonLinkerOptions;
                         linker.Libraries.Add("-lX11");
                     });
             }

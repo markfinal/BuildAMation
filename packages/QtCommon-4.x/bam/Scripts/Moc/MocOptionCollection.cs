@@ -29,16 +29,14 @@
 #endregion // License
 namespace QtCommon
 {
-namespace V2
-{
     namespace MocExtension
     {
         public static class MocExtension
         {
             public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
             MocHeader(
-                this C.Cxx.V2.ObjectFileCollection module,
-                C.V2.HeaderFile header)
+                this C.Cxx.ObjectFileCollection module,
+                C.HeaderFile header)
             {
                 // moc file
                 var mocFile = Bam.Core.Module.Create<MocModule>(module);
@@ -71,7 +69,7 @@ namespace V2
         {
             get
             {
-                return Bam.Core.TokenizedString.Create(System.IO.Path.Combine(new [] {QtCommon.V2.Configure.InstallPath.Parse(), "bin", "moc"}), null);
+                return Bam.Core.TokenizedString.Create(System.IO.Path.Combine(new [] {QtCommon.Configure.InstallPath.Parse(), "bin", "moc"}), null);
             }
         }
 
@@ -90,14 +88,14 @@ namespace V2
             Bam.Core.ExecutionContext context,
             Bam.Core.ICommandLineTool mocCompiler,
             Bam.Core.TokenizedString generatedMocSource,
-            C.V2.HeaderFile source);
+            C.HeaderFile source);
     }
 
     public class MocModule :
-        C.V2.SourceFile
+        C.SourceFile
     {
         private Bam.Core.PreBuiltTool Compiler;
-        private C.V2.HeaderFile SourceHeaderModule;
+        private C.HeaderFile SourceHeaderModule;
         private IMocGenerationPolicy Policy = null;
 
         protected override void
@@ -110,7 +108,7 @@ namespace V2
             this.Requires(this.Compiler);
         }
 
-        public C.V2.HeaderFile SourceHeader
+        public C.HeaderFile SourceHeader
         {
             get
             {
@@ -153,9 +151,8 @@ namespace V2
         GetExecutionPolicy(
             string mode)
         {
-            var className = "QtCommon.V2." + mode + "MocGeneration";
+            var className = "QtCommon." + mode + "MocGeneration";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IMocGenerationPolicy>.Create(className);
         }
     }
-}
 }

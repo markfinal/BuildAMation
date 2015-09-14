@@ -31,13 +31,11 @@ using Bam.Core;
 using System.Linq;
 namespace C
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonCompilerOptions settings, Bam.Core.Module module)
+        public static void Defaults(this C.ICommonCompilerOptions settings, Bam.Core.Module module)
         {
             settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug;
@@ -80,7 +78,7 @@ namespace DefaultSettings
             settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
         }
-        public static void Empty(this C.V2.ICommonCompilerOptions settings)
+        public static void Empty(this C.ICommonCompilerOptions settings)
         {
             settings.DisableWarnings = new Bam.Core.StringArray();
             settings.IncludePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
@@ -90,9 +88,9 @@ namespace DefaultSettings
         }
         public static void
         SharedSettings(
-            this C.V2.ICommonCompilerOptions shared,
-            C.V2.ICommonCompilerOptions lhs,
-            C.V2.ICommonCompilerOptions rhs)
+            this C.ICommonCompilerOptions shared,
+            C.ICommonCompilerOptions lhs,
+            C.ICommonCompilerOptions rhs)
         {
             shared.Bits = (lhs.Bits == rhs.Bits) ? lhs.Bits : null;
             shared.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Intersect(rhs.PreprocessorDefines));
@@ -109,9 +107,9 @@ namespace DefaultSettings
         }
         public static void
         Delta(
-            this C.V2.ICommonCompilerOptions delta,
-            C.V2.ICommonCompilerOptions lhs,
-            C.V2.ICommonCompilerOptions rhs)
+            this C.ICommonCompilerOptions delta,
+            C.ICommonCompilerOptions lhs,
+            C.ICommonCompilerOptions rhs)
         {
             delta.Bits = (lhs.Bits != rhs.Bits) ? lhs.Bits : null;
             delta.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Except(rhs.PreprocessorDefines));
@@ -128,8 +126,8 @@ namespace DefaultSettings
         }
         public static void
         Clone(
-            this C.V2.ICommonCompilerOptions settings,
-            C.V2.ICommonCompilerOptions other)
+            this C.ICommonCompilerOptions settings,
+            C.ICommonCompilerOptions other)
         {
             settings.Bits = other.Bits;
             foreach (var define in other.PreprocessorDefines)
@@ -261,7 +259,7 @@ namespace DefaultSettings
                 System.Reflection.TypeAttributes.AnsiClass |
                 System.Reflection.TypeAttributes.BeforeFieldInit |
                 System.Reflection.TypeAttributes.AutoLayout,
-                typeof(C.V2.SettingsBase),
+                typeof(C.SettingsBase),
                 implementedInterfaces.ToArray());
 
                 // TODO: is this necessary?
@@ -386,7 +384,7 @@ namespace DefaultSettings
         SixtyFour = 64
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
     {
         EBit? Bits
@@ -395,7 +393,7 @@ namespace DefaultSettings
             set;
         }
 
-        C.V2.PreprocessorDefinitions PreprocessorDefines
+        C.PreprocessorDefinitions PreprocessorDefines
         {
             get;
             set;
@@ -462,7 +460,7 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         C.ECLanguageStandard? LanguageStandard
@@ -472,7 +470,7 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.ObjC.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.ObjC.DefaultSettings.DefaultSettingsExtensions))]
     public interface IObjectiveCOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         string ConstantStringClass
@@ -482,9 +480,8 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.ObjCxx.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.ObjCxx.DefaultSettings.DefaultSettingsExtensions))]
     public interface IObjectiveCxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
     }
-}
 }

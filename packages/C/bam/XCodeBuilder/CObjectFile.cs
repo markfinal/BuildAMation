@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class XcodeCompilation :
         ICompilationPolicy
     {
@@ -41,13 +39,12 @@ namespace V2
             Bam.Core.TokenizedString objectFilePath,
             Bam.Core.Module source)
         {
-            var objectFile = new XcodeBuilder.V2.XcodeObjectFile(sender);
+            var objectFile = new XcodeBuilder.XcodeObjectFile(sender);
             objectFile.Source = objectFile.Project.FindOrCreateFileReference(
-                source.GeneratedPaths[C.V2.SourceFile.Key],
-                XcodeBuilder.V2.FileReference.EFileType.SourceCodeC,
-                sourceTree:XcodeBuilder.V2.FileReference.ESourceTree.Absolute);
+                source.GeneratedPaths[C.SourceFile.Key],
+                XcodeBuilder.FileReference.EFileType.SourceCodeC,
+                sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
             objectFile.Output = objectFile.Project.FindOrCreateBuildFile(objectFilePath, objectFile.Source);
         }
     }
-}
 }

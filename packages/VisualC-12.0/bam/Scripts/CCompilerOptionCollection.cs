@@ -28,17 +28,17 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
-using C.V2.DefaultSettings;
-using C.Cxx.V2.DefaultSettings;
+using C.DefaultSettings;
+using C.Cxx.DefaultSettings;
 namespace VisualC
 {
     public static partial class VSSolutionImplementation
     {
         public static void
         Convert(
-            this C.V2.ICommonCompilerOptions options,
+            this C.ICommonCompilerOptions options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
             // write nothing for disabled debug symbols, otherwise the source files rebuild continually
@@ -130,27 +130,27 @@ namespace VisualC
             if (options.OutputType.HasValue)
             {
                 settingsGroup.AddSetting("PreprocessToFile", options.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
-                if (module is C.V2.ObjectFile)
+                if (module is C.ObjectFile)
                 {
-                    settingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.V2.ObjectFile.Key], condition);
+                    settingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);
                 }
             }
         }
 
         public static void
         Convert(
-            this C.V2.ICOnlyCompilerOptions options,
+            this C.ICOnlyCompilerOptions options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
         }
 
         public static void
         Convert(
-            this C.V2.ICxxOnlyCompilerOptions options,
+            this C.ICxxOnlyCompilerOptions options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
             if (options.ExceptionHandler.HasValue)
@@ -181,9 +181,9 @@ namespace VisualC
 
         public static void
         Convert(
-            this VisualCCommon.V2.ICommonCompilerOptions options,
+            this VisualCCommon.ICommonCompilerOptions options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
             if (options.NoLogo.GetValueOrDefault(false))
@@ -194,14 +194,14 @@ namespace VisualC
 
         public static void
         Convert(
-            this C.V2.ICCompilerOptionsWin options,
+            this C.ICCompilerOptionsWin options,
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
             if (options.CharacterSet.HasValue)
             {
-                var project = module.MetaData as VSSolutionBuilder.V2.VSProject;
+                var project = module.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(module);
                 config.SetCharacterSet(options.CharacterSet.Value);
             }
@@ -212,11 +212,11 @@ namespace VisualC
     {
         public static void
         Convert(
-            this C.V2.ICommonCompilerOptions options,
+            this C.ICommonCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var objectFile = module as C.V2.ObjectFile;
+            var objectFile = module as C.ObjectFile;
             if (true == options.DebugSymbols)
             {
                 commandLine.Add("-Z7");
@@ -292,18 +292,18 @@ namespace VisualC
             {
                 case C.ECompilerOutput.CompileOnly:
                     commandLine.Add("-c");
-                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                     break;
                 case C.ECompilerOutput.Preprocess:
                     commandLine.Add("-E");
-                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.V2.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                     break;
             }
         }
 
         public static void
         Convert(
-            this C.V2.ICOnlyCompilerOptions options,
+            this C.ICOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -311,7 +311,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this C.V2.ICxxOnlyCompilerOptions options,
+            this C.ICxxOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -339,7 +339,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this VisualCCommon.V2.ICommonCompilerOptions options,
+            this VisualCCommon.ICommonCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -354,7 +354,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this VisualCCommon.V2.ICOnlyCompilerOptions options,
+            this VisualCCommon.ICOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -362,7 +362,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this VisualCCommon.V2.ICxxOnlyCompilerOptions options,
+            this VisualCCommon.ICxxOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -370,7 +370,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this VisualC.V2.ICommonCompilerOptions options,
+            this VisualC.ICommonCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -378,7 +378,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this VisualC.V2.ICOnlyCompilerOptions options,
+            this VisualC.ICOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -386,7 +386,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this VisualC.V2.ICxxOnlyCompilerOptions options,
+            this VisualC.ICxxOnlyCompilerOptions options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -394,7 +394,7 @@ namespace VisualC
 
         public static void
         Convert(
-            this C.V2.ICCompilerOptionsWin options,
+            this C.ICCompilerOptionsWin options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -407,7 +407,7 @@ namespace VisualC
 
                     case C.ECharacterSet.Unicode:
                         {
-                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerOptions;
                             compiler.PreprocessorDefines.Add("UNICODE");
                             compiler.PreprocessorDefines.Add("_UNICODE");
                         }
@@ -415,7 +415,7 @@ namespace VisualC
 
                     case C.ECharacterSet.MultiByte:
                         {
-                            var compiler = options as C.V2.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerOptions;
                             compiler.PreprocessorDefines.Add("_MBCS");
                         }
                         break;
@@ -424,9 +424,7 @@ namespace VisualC
         }
     }
 
-namespace V2
-{
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
     {
         bool VC12Common
@@ -436,7 +434,7 @@ namespace V2
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         int VC12COnly
@@ -446,7 +444,7 @@ namespace V2
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         Bam.Core.EPlatform VC12CxxOnly
@@ -455,20 +453,19 @@ namespace V2
             set;
         }
     }
-}
 
     // V2
     public class CompilerSettings :
-        C.V2.SettingsBase,
-        C.V2.ICCompilerOptionsWin,
-        C.V2.ICommonCompilerOptions,
-        C.V2.ICOnlyCompilerOptions,
-        VisualCCommon.V2.ICommonCompilerOptions,
-        //VisualCCommon.V2.ICOnlyCompilerOptions,
-        //VisualC.V2.ICommonCompilerOptions,
-        //VisualC.V2.ICOnlyCompilerOptions,
-        CommandLineProcessor.V2.IConvertToCommandLine,
-        VisualStudioProcessor.V2.IConvertToProject
+        C.SettingsBase,
+        C.ICCompilerOptionsWin,
+        C.ICommonCompilerOptions,
+        C.ICOnlyCompilerOptions,
+        VisualCCommon.ICommonCompilerOptions,
+        //VisualCCommon.ICOnlyCompilerOptions,
+        //VisualC.ICommonCompilerOptions,
+        //VisualC.ICOnlyCompilerOptions,
+        CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject
     {
         public CompilerSettings(Bam.Core.Module module)
             : this(module, true)
@@ -480,118 +477,118 @@ namespace V2
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            (this as C.V2.ICommonCompilerOptions).Empty();
+            (this as C.ICommonCompilerOptions).Empty();
             if (useDefaults)
             {
-                (this as C.V2.ICommonCompilerOptions).Defaults(module);
+                (this as C.ICommonCompilerOptions).Defaults(module);
             }
 #endif
         }
 
-        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        C.ECharacterSet? C.ICCompilerOptionsWin.CharacterSet
         {
             get;
             set;
         }
 
-        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerOptions.Bits
         {
             get;
             set;
         }
 
-        C.V2.PreprocessorDefinitions C.V2.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.ECLanguageStandard? C.V2.ICOnlyCompilerOptions.LanguageStandard
+        C.ECLanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        bool? VisualCCommon.V2.ICommonCompilerOptions.NoLogo
+        bool? VisualCCommon.ICommonCompilerOptions.NoLogo
         {
             get;
             set;
         }
 
 #if false
-        int VisualCCommon.V2.ICOnlyCompilerOptions.VCCommonCOnly
+        int VisualCCommon.ICOnlyCompilerOptions.VCCommonCOnly
         {
             get;
             set;
         }
 
-        bool V2.ICommonCompilerOptions.VC12Common
+        bool ICommonCompilerOptions.VC12Common
         {
             get;
             set;
         }
 
-        int V2.ICOnlyCompilerOptions.VC12COnly
+        int ICOnlyCompilerOptions.VC12COnly
         {
             get;
             set;
@@ -599,43 +596,43 @@ namespace V2
 #endif
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
-            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            //(this as VisualCCommon.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
-            //(this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            //(this as VisualC.V2.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.ICCompilerOptionsWin).Convert(module, commandLine);
+            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            //(this as VisualCCommon.ICOnlyCompilerOptions).Convert(module, commandLine);
+            //(this as VisualC.ICommonCompilerOptions).Convert(module, commandLine);
+            //(this as VisualC.ICOnlyCompilerOptions).Convert(module, commandLine);
         }
 
         void
-        VisualStudioProcessor.V2.IConvertToProject.Convert(
+        VisualStudioProcessor.IConvertToProject.Convert(
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.V2.ICCompilerOptionsWin).Convert(module, settings, condition);
-            (this as C.V2.ICommonCompilerOptions).Convert(module, settings, condition);
-            (this as C.V2.ICOnlyCompilerOptions).Convert(module, settings, condition);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
+            (this as C.ICCompilerOptionsWin).Convert(module, settings, condition);
+            (this as C.ICommonCompilerOptions).Convert(module, settings, condition);
+            (this as C.ICOnlyCompilerOptions).Convert(module, settings, condition);
+            (this as VisualCCommon.ICommonCompilerOptions).Convert(module, settings, condition);
         }
     }
 
     public sealed class CxxCompilerSettings :
-        C.V2.SettingsBase,
-        CommandLineProcessor.V2.IConvertToCommandLine,
-        VisualStudioProcessor.V2.IConvertToProject,
-        C.V2.ICCompilerOptionsWin,
-        C.V2.ICommonCompilerOptions,
-        C.V2.ICxxOnlyCompilerOptions,
-        VisualCCommon.V2.ICommonCompilerOptions
-        //VisualCCommon.V2.ICxxOnlyCompilerOptions,
-        //VisualC.V2.ICommonCompilerOptions,
-        //VisualC.V2.ICxxOnlyCompilerOptions
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject,
+        C.ICCompilerOptionsWin,
+        C.ICommonCompilerOptions,
+        C.ICxxOnlyCompilerOptions,
+        VisualCCommon.ICommonCompilerOptions
+        //VisualCCommon.ICxxOnlyCompilerOptions,
+        //VisualC.ICommonCompilerOptions,
+        //VisualC.ICxxOnlyCompilerOptions
     {
         public CxxCompilerSettings(Bam.Core.Module module)
             : this(module, true)
@@ -647,161 +644,161 @@ namespace V2
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            (this as C.V2.ICommonCompilerOptions).Empty();
-            (this as C.V2.ICxxOnlyCompilerOptions).Empty();
+            (this as C.ICommonCompilerOptions).Empty();
+            (this as C.ICxxOnlyCompilerOptions).Empty();
             if (useDefaults)
             {
-                (this as C.V2.ICommonCompilerOptions).Defaults(module);
-                (this as C.V2.ICxxOnlyCompilerOptions).Defaults(module);
+                (this as C.ICommonCompilerOptions).Defaults(module);
+                (this as C.ICxxOnlyCompilerOptions).Defaults(module);
             }
 #endif
         }
 
         void
-        CommandLineProcessor.V2.IConvertToCommandLine.Convert(
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             // TODO: iterate in reflection, in a well defined static class
-            (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
-            (this as C.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICCompilerOptionsWin).Convert(module, commandLine);
+            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.ICommonCompilerOptions).Convert(module, commandLine);
 #if false
-            (this as VisualCCommon.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as VisualC.V2.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as VisualC.V2.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualCCommon.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as VisualC.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as VisualC.ICxxOnlyCompilerOptions).Convert(module, commandLine);
 #endif
         }
 
         void
-        VisualStudioProcessor.V2.IConvertToProject.Convert(
+        VisualStudioProcessor.IConvertToProject.Convert(
             Bam.Core.Module module,
-            VSSolutionBuilder.V2.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.V2.ICCompilerOptionsWin).Convert(module, settings, condition);
-            (this as C.V2.ICommonCompilerOptions).Convert(module, settings, condition);
-            (this as C.V2.ICxxOnlyCompilerOptions).Convert(module, settings, condition);
-            (this as VisualCCommon.V2.ICommonCompilerOptions).Convert(module, settings, condition);
+            (this as C.ICCompilerOptionsWin).Convert(module, settings, condition);
+            (this as C.ICommonCompilerOptions).Convert(module, settings, condition);
+            (this as C.ICxxOnlyCompilerOptions).Convert(module, settings, condition);
+            (this as VisualCCommon.ICommonCompilerOptions).Convert(module, settings, condition);
         }
 
-        C.ECharacterSet? C.V2.ICCompilerOptionsWin.CharacterSet
+        C.ECharacterSet? C.ICCompilerOptionsWin.CharacterSet
         {
             get;
             set;
         }
 
-        C.V2.EBit? C.V2.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerOptions.Bits
         {
             get;
             set;
         }
 
-        C.V2.PreprocessorDefinitions C.V2.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.V2.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerOptions.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerOptions.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.V2.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerOptions.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.V2.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.V2.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerOptions.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.V2.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.V2.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerOptions.ExceptionHandler
         {
             get;
             set;
         }
 
-        C.Cxx.ELanguageStandard? C.V2.ICxxOnlyCompilerOptions.LanguageStandard
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
         }
 
-        C.Cxx.EStandardLibrary? C.V2.ICxxOnlyCompilerOptions.StandardLibrary
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerOptions.StandardLibrary
         {
             get;
             set;
         }
 
-        bool? VisualCCommon.V2.ICommonCompilerOptions.NoLogo
+        bool? VisualCCommon.ICommonCompilerOptions.NoLogo
         {
             get;
             set;
         }
 
 #if false
-        string VisualCCommon.V2.ICxxOnlyCompilerOptions.VCCommonCxxOnly
+        string VisualCCommon.ICxxOnlyCompilerOptions.VCCommonCxxOnly
         {
             get;
             set;
         }
 
-        bool V2.ICommonCompilerOptions.VC12Common
+        bool ICommonCompilerOptions.VC12Common
         {
             get;
             set;
         }
 
-        Bam.Core.EPlatform V2.ICxxOnlyCompilerOptions.VC12CxxOnly
+        Bam.Core.EPlatform ICxxOnlyCompilerOptions.VC12CxxOnly
         {
             get;
             set;
@@ -824,7 +821,7 @@ namespace V2
     }
 
     public abstract class CompilerBase :
-        C.V2.CompilerTool
+        C.CompilerTool
     {
         protected CompilerBase()
         {
@@ -841,7 +838,7 @@ namespace V2
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compilation = settings as C.V2.ICommonCompilerOptions;
+                    var compilation = settings as C.ICommonCompilerOptions;
                     compilation.SystemIncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
                 });
         }
@@ -856,15 +853,15 @@ namespace V2
 
         public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
-            if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
-                typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
+            if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
+                typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new CxxCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
-            else if (typeof(C.V2.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.V2.CObjectFileCollection).IsInstanceOfType(module))
+            else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
+                     typeof(C.CObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new CompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
@@ -879,7 +876,7 @@ namespace V2
         protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
     }
 
-    [C.V2.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Compiler32 :
         CompilerBase
     {
@@ -890,12 +887,12 @@ namespace V2
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
-            cSettings.Bits = C.V2.EBit.ThirtyTwo;
+            var cSettings = settings as C.ICommonCompilerOptions;
+            cSettings.Bits = C.EBit.ThirtyTwo;
         }
     }
 
-    [C.V2.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
+    [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class CxxCompiler32 :
         Compiler32
     {
@@ -907,12 +904,12 @@ namespace V2
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerOptions;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
 
-    [C.V2.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
+    [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public class Compiler64 :
         CompilerBase
     {
@@ -926,12 +923,12 @@ namespace V2
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
-            cSettings.Bits = C.V2.EBit.SixtyFour;
+            var cSettings = settings as C.ICommonCompilerOptions;
+            cSettings.Bits = C.EBit.SixtyFour;
         }
     }
 
-    [C.V2.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.SixtyFour)]
+    [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public sealed class CxxCompiler64 :
         Compiler64
     {
@@ -943,7 +940,7 @@ namespace V2
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.V2.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerOptions;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }

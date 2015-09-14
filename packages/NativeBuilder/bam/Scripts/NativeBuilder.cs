@@ -29,11 +29,8 @@
 #endregion // License
 namespace NativeBuilder
 {
-namespace V2
-{
     [Bam.Core.EvaluationRequired(true)]
     public sealed class NativeMeta
     {
     }
-}
 }

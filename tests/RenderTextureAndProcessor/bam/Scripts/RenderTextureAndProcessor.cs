@@ -31,7 +31,7 @@ using Bam.Core;
 namespace RenderTextureAndProcessor
 {
     sealed class RenderTextureV2 :
-        C.Cxx.V2.GUIApplication
+        C.Cxx.GUIApplication
     {
         protected override void
         Init(
@@ -46,15 +46,15 @@ namespace RenderTextureAndProcessor
             source.AddFiles("$(pkgroot)/source/rendertexture/*.cpp");
             source.PrivatePatch(settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/source/common", this));
 
-                var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
@@ -62,8 +62,8 @@ namespace RenderTextureAndProcessor
 
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.V2.ICommonLinkerOptions;
-                if (this.Linker is VisualC.V2.LinkerBase)
+                var linker = settings as C.ICommonLinkerOptions;
+                if (this.Linker is VisualC.LinkerBase)
                 {
                     linker.Libraries.Add("WS2_32.lib");
                     linker.Libraries.Add("GDI32.lib");
@@ -82,7 +82,7 @@ namespace RenderTextureAndProcessor
     }
 
     sealed class TextureProcessorV2 :
-        C.Cxx.V2.ConsoleApplication
+        C.Cxx.ConsoleApplication
     {
         protected override void
         Init(
@@ -96,23 +96,23 @@ namespace RenderTextureAndProcessor
             source.AddFiles("$(pkgroot)/source/textureprocessor/*.cpp");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/source/common", this));
 
-                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.V2.ICommonLinkerOptions;
-                    if (this.Linker is VisualC.V2.LinkerBase)
+                    var linker = settings as C.ICommonLinkerOptions;
+                    if (this.Linker is VisualC.LinkerBase)
                     {
                         linker.Libraries.Add("WS2_32.lib");
                     }
@@ -125,7 +125,7 @@ namespace RenderTextureAndProcessor
     }
 
     sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -133,8 +133,8 @@ namespace RenderTextureAndProcessor
         {
             base.Init(parent);
 
-            var app = this.Include<RenderTextureV2>(C.V2.GUIApplication.Key, EPublishingType.WindowedApplication);
-            this.Include<TextureProcessorV2>(C.V2.ConsoleApplication.Key, ".", app);
+            var app = this.Include<RenderTextureV2>(C.GUIApplication.Key, EPublishingType.WindowedApplication);
+            this.Include<TextureProcessorV2>(C.ConsoleApplication.Key, ".", app);
         }
     }
 }

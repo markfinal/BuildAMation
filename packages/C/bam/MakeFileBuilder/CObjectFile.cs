@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class MakeFileCompilation :
         ICompilationPolicy
     {
@@ -42,17 +40,17 @@ namespace V2
             Bam.Core.Module source)
         {
             var commandLineArgs = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLineArgs as object });
             }
 
-            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(objectFilePath);
-            rule.AddPrerequisite(source, C.V2.SourceFile.Key);
+            rule.AddPrerequisite(source, C.SourceFile.Key);
 
             var tool = sender.Tool as Bam.Core.PreBuiltTool;
             var command = new System.Text.StringBuilder();
@@ -65,4 +63,4 @@ namespace V2
         }
     }
 }
-}
+

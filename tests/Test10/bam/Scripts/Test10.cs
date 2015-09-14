@@ -31,7 +31,7 @@ using Bam.Core;
 namespace Test10
 {
     sealed class MyStaticLibraryV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         protected override void
         Init(
@@ -44,7 +44,7 @@ namespace Test10
     }
 
     sealed class MyDynamicLibraryV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         protected override void
         Init(
@@ -55,7 +55,7 @@ namespace Test10
             this.CreateCSourceContainer("$(pkgroot)/source/dylib.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -63,7 +63,7 @@ namespace Test10
     }
 
     class MyStandaloneAppV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -76,7 +76,7 @@ namespace Test10
             this.LinkAgainst<MyStaticLibraryV2>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 // TODO: simplify
                 var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
@@ -87,7 +87,7 @@ namespace Test10
     }
 
     class DllDependentAppV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -99,7 +99,7 @@ namespace Test10
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                    var gccLinker = settings as GccCommon.ICommonLinkerOptions;
                     if (gccLinker != null)
                     {
                         gccLinker.CanUseOrigin = true;
@@ -110,7 +110,7 @@ namespace Test10
             this.LinkAgainst<MyDynamicLibraryV2>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 // TODO: simplify
                 var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
@@ -121,7 +121,7 @@ namespace Test10
     }
 
     sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -129,9 +129,9 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.Include<MyStandaloneAppV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Standalone");
-            var app = this.Include<DllDependentAppV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Dynamic");
-            this.Include<MyDynamicLibraryV2>(C.V2.DynamicLibrary.Key, ".", app);
+            this.Include<MyStandaloneAppV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Standalone");
+            var app = this.Include<DllDependentAppV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Dynamic");
+            this.Include<MyDynamicLibraryV2>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

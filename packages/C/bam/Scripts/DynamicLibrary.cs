@@ -30,8 +30,6 @@
 using Bam.Core;
 namespace C
 {
-namespace V2
-{
     public class DynamicLibrary :
         ConsoleApplication
     {
@@ -52,13 +50,13 @@ namespace V2
 
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.V2.ICommonLinkerOptions;
+                var linker = settings as C.ICommonLinkerOptions;
                 if (null != linker)
                 {
                     linker.OutputType = ELinkerOutput.DynamicLibrary;
                 }
 
-                var osxLinker = settings as C.V2.ILinkerOptionsOSX;
+                var osxLinker = settings as C.ILinkerOptionsOSX;
                 if (null != osxLinker)
                 {
                     osxLinker.InstallName = Bam.Core.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
@@ -84,14 +82,14 @@ namespace V2
             var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
-                (collection.Tool as C.V2.CompilerTool).CompileAsShared(settings);
+                (collection.Tool as C.CompilerTool).CompileAsShared(settings);
             });
             return collection;
         }
 
-        public override Cxx.V2.ObjectFileCollection
+        public override Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
@@ -100,9 +98,9 @@ namespace V2
             var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
-                (collection.Tool as C.V2.CompilerTool).CompileAsShared(settings);
+                (collection.Tool as C.CompilerTool).CompileAsShared(settings);
             });
             return collection;
         }
@@ -129,22 +127,18 @@ namespace V2
             }
         }
     }
-}
-namespace Cxx
-{
-namespace V2
-{
-    public class DynamicLibrary :
-        C.V2.DynamicLibrary
+    namespace Cxx
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        public class DynamicLibrary :
+            C.DynamicLibrary
         {
-            base.Init(parent);
-            this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);
+            protected override void
+            Init(
+                Bam.Core.Module parent)
+            {
+                base.Init(parent);
+                this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
+            }
         }
     }
-}
-}
 }

@@ -30,10 +30,8 @@
 using Bam.Core; // for EPlatform.PlatformExtensions
 namespace ICU
 {
-namespace V2
-{
     public abstract class ICUBase :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -46,7 +44,7 @@ namespace V2
             {
                 this.Macros.Add("ICUInstallPath", Bam.Core.TokenizedString.Create("$(pkgroot)/bin/linux64-gcc44/usr/local/lib", this));
             }
-            this.GeneratedPaths[C.V2.DynamicLibrary.Key] = Bam.Core.TokenizedString.Create("$(ICUInstallPath)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+            this.GeneratedPaths[C.DynamicLibrary.Key] = Bam.Core.TokenizedString.Create("$(ICUInstallPath)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
         }
 
         public override void Evaluate()
@@ -124,5 +122,4 @@ namespace V2
             base.Init(parent);
         }
     }
-}
 }

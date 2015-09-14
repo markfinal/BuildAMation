@@ -29,46 +29,44 @@
 #endregion // License
 namespace VisualCCommon
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this VisualCCommon.V2.ICommonCompilerOptions settings, Bam.Core.Module module)
+        public static void Defaults(this VisualCCommon.ICommonCompilerOptions settings, Bam.Core.Module module)
         {
             settings.NoLogo = true;
         }
 
         public static void
         SharedSettings(
-            this VisualCCommon.V2.ICommonCompilerOptions shared,
-            VisualCCommon.V2.ICommonCompilerOptions lhs,
-            VisualCCommon.V2.ICommonCompilerOptions rhs)
+            this VisualCCommon.ICommonCompilerOptions shared,
+            VisualCCommon.ICommonCompilerOptions lhs,
+            VisualCCommon.ICommonCompilerOptions rhs)
         {
             shared.NoLogo = (lhs.NoLogo == rhs.NoLogo) ? lhs.NoLogo : null;
         }
 
         public static void
         Delta(
-            this VisualCCommon.V2.ICommonCompilerOptions delta,
-            VisualCCommon.V2.ICommonCompilerOptions lhs,
-            VisualCCommon.V2.ICommonCompilerOptions rhs)
+            this VisualCCommon.ICommonCompilerOptions delta,
+            VisualCCommon.ICommonCompilerOptions lhs,
+            VisualCCommon.ICommonCompilerOptions rhs)
         {
             delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
         }
 
         public static void
         Clone(
-            this VisualCCommon.V2.ICommonCompilerOptions settings,
-            VisualCCommon.V2.ICommonCompilerOptions other)
+            this VisualCCommon.ICommonCompilerOptions settings,
+            VisualCCommon.ICommonCompilerOptions other)
         {
             settings.NoLogo = other.NoLogo;
         }
     }
 }
 
-    [Bam.Core.SettingsExtensions(typeof(VisualCCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(VisualCCommon.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
     {
         bool? NoLogo
@@ -78,7 +76,7 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         int VCCommonCOnly
@@ -88,7 +86,7 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         string VCCommonCxxOnly
@@ -97,5 +95,4 @@ namespace DefaultSettings
             set;
         }
     }
-}
 }

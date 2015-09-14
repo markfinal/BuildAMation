@@ -30,8 +30,6 @@
 using System.Linq;
 namespace XcodeBuilder
 {
-namespace V2
-{
     public abstract class Object
     {
         protected Object()
@@ -1593,7 +1591,7 @@ namespace V2
             Configuration configuration,
             Bam.Core.Settings settings)
         {
-            (settings as XcodeProjectProcessor.V2.IConvertToProject).Convert(module, configuration);
+            (settings as XcodeProjectProcessor.IConvertToProject).Convert(module, configuration);
         }
 
         private string
@@ -2232,7 +2230,7 @@ namespace V2
             if (null != patchSettings)
             {
                 var commandLine = new Bam.Core.StringArray();
-                (patchSettings as CommandLineProcessor.V2.IConvertToCommandLine).Convert(module, commandLine);
+                (patchSettings as CommandLineProcessor.IConvertToCommandLine).Convert(module, commandLine);
                 output.Settings = commandLine;
             }
             this.Target.SourcesBuildPhase.AddBuildFile(output); // this is shared among configurations
@@ -2343,7 +2341,7 @@ namespace V2
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = library;
             this.Project.ProductRefGroup.AddReference(library);
-            this.Target = this.Project.FindOrCreateTarget(module, library, V2.Target.EProductType.StaticLibrary);
+            this.Target = this.Project.FindOrCreateTarget(module, library, Target.EProductType.StaticLibrary);
             this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
             this.PullInProjectPreOrPostBuildSteps();
         }
@@ -2424,7 +2422,7 @@ namespace V2
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = application;
             this.Project.ProductRefGroup.AddReference(application);
-            this.Target = this.Project.FindOrCreateTarget(module, application, V2.Target.EProductType.Executable);
+            this.Target = this.Project.FindOrCreateTarget(module, application, Target.EProductType.Executable);
             this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
             this.PullInProjectPreOrPostBuildSteps();
         }
@@ -2445,7 +2443,7 @@ namespace V2
                 sourceTree:FileReference.ESourceTree.BuiltProductsDir);
             this.Output = dynamicLibrary;
             this.Project.ProductRefGroup.AddReference(dynamicLibrary);
-            this.Target = this.Project.FindOrCreateTarget(module, dynamicLibrary, V2.Target.EProductType.DynamicLibrary);
+            this.Target = this.Project.FindOrCreateTarget(module, dynamicLibrary, Target.EProductType.DynamicLibrary);
             this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
             this.PullInProjectPreOrPostBuildSteps();
         }
@@ -2878,5 +2876,4 @@ namespace V2
             this.Write(this.ManagementDocument, schemePathname);
         }
     }
-}
 }

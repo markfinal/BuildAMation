@@ -28,10 +28,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using CodeGenTest.V2.CodeGenExtension;
+using CodeGenTest.CodeGenExtension;
 namespace CodeGenTest
-{
-namespace V2
 {
     namespace CodeGenExtension
     {
@@ -39,7 +37,7 @@ namespace V2
         {
             public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
             GenerateSource(
-                this C.V2.CObjectFileCollection module)
+                this C.CObjectFileCollection module)
             {
                 // generated source file
                 var generatedSourceFile = Bam.Core.Module.Create<GeneratedSourceModule>(module);
@@ -53,7 +51,7 @@ namespace V2
     }
 
     public sealed class BuildCodeGenTool :
-        C.V2.ConsoleApplication,
+        C.ConsoleApplication,
         Bam.Core.ICommandLineTool
     {
         protected override void Init(Bam.Core.Module parent)
@@ -63,7 +61,7 @@ namespace V2
             this.CreateCSourceContainer("$(pkgroot)/source/codegentool/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -92,7 +90,7 @@ namespace V2
         {
             get
             {
-                return this.GeneratedPaths[C.V2.ConsoleApplication.Key];
+                return this.GeneratedPaths[C.ConsoleApplication.Key];
             }
         }
     }
@@ -113,7 +111,7 @@ namespace V2
     }
 
     public class GeneratedSourceModule :
-        C.V2.SourceFile
+        C.SourceFile
     {
         private Bam.Core.ICommandLineTool Compiler;
         private IGeneratedSourcePolicy Policy;
@@ -147,13 +145,13 @@ namespace V2
         GetExecutionPolicy(
             string mode)
         {
-            var className = "CodeGenTest.V2." + mode + "GenerateSource";
+            var className = "CodeGenTest." + mode + "GenerateSource";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
         }
     }
-}
+
     public sealed class TestAppV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -164,7 +162,7 @@ namespace V2
             /*var generatedSourceTuple = */source.GenerateSource();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }

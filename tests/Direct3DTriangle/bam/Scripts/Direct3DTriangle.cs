@@ -31,7 +31,7 @@ namespace Direct3DTriangle
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class D3D9TriangleTestV2 :
-        C.Cxx.V2.GUIApplication
+        C.Cxx.GUIApplication
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -42,11 +42,11 @@ namespace Direct3DTriangle
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
             source.PrivatePatch(settings =>
                 {
-                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
-            if (this.Linker is VisualC.V2.LinkerBase)
+            if (this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<DirectXSDK.Direct3D9V2>(source);
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
@@ -54,7 +54,7 @@ namespace Direct3DTriangle
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerOptions;
                     linker.Libraries.Add("USER32.lib");
                     linker.Libraries.Add("d3d9.lib");
                     linker.Libraries.Add("dxerr.lib");

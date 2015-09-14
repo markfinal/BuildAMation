@@ -29,9 +29,7 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
-    [Bam.Core.SettingsExtensions(typeof(C.Cxx.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.Cxx.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         C.Cxx.EExceptionHandler? ExceptionHandler
@@ -52,5 +50,4 @@ namespace V2
             set;
         }
     }
-}
 }

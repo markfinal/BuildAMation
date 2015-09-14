@@ -28,11 +28,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using QtCommon.V2.MocExtension;
+using QtCommon.MocExtension;
 namespace Qt5Test1
 {
     sealed class Qt5Application :
-        C.Cxx.V2.GUIApplication
+        C.Cxx.GUIApplication
     {
         protected override void
         Init(
@@ -44,12 +44,12 @@ namespace Qt5Test1
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
             foreach (var mocHeader in mocHeaders.Children)
             {
-                /*var myObjectMocTuple = */ source.MocHeader(mocHeader as C.V2.HeaderFile);
+                /*var myObjectMocTuple = */ source.MocHeader(mocHeader as C.HeaderFile);
             }
 
             source.PrivatePatch(settings =>
                 {
-                    var gccCompiler = settings as GccCommon.V2.ICommonCompilerOptions;
+                    var gccCompiler = settings as GccCommon.ICommonCompilerOptions;
                     if (null != gccCompiler)
                     {
                         gccCompiler.PositionIndependentCode = true;
@@ -58,7 +58,7 @@ namespace Qt5Test1
 
             this.PrivatePatch(settings =>
             {
-                var gccLinker = settings as GccCommon.V2.ICommonLinkerOptions;
+                var gccLinker = settings as GccCommon.ICommonLinkerOptions;
                 if (gccLinker != null)
                 {
                     gccLinker.CanUseOrigin = true;
@@ -68,21 +68,21 @@ namespace Qt5Test1
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                this.CompilePubliclyAndLinkAgainst<Qt.V2.CoreFramework>(source);
-                this.CompilePubliclyAndLinkAgainst<Qt.V2.WidgetsFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.CoreFramework>(source);
+                this.CompilePubliclyAndLinkAgainst<Qt.WidgetsFramework>(source);
             }
             else
             {
-                this.CompileAndLinkAgainst<Qt.V2.Core>(source);
-                this.CompileAndLinkAgainst<Qt.V2.Widgets>(source);
+                this.CompileAndLinkAgainst<Qt.Core>(source);
+                this.CompileAndLinkAgainst<Qt.Widgets>(source);
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                 {
-                    this.LinkAgainst<Qt.V2.Gui>();
+                    this.LinkAgainst<Qt.Gui>();
                 }
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
@@ -90,7 +90,7 @@ namespace Qt5Test1
     }
 
     sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -98,24 +98,24 @@ namespace Qt5Test1
         {
             base.Init(parent);
 
-            var app = this.Include<Qt5Application>(C.V2.ConsoleApplication.Key, EPublishingType.WindowedApplication);
+            var app = this.Include<Qt5Application>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
             }
             else
             {
-                this.Include<Qt.V2.Core>(C.V2.DynamicLibrary.Key, ".", app);
-                this.Include<Qt.V2.Widgets>(C.V2.DynamicLibrary.Key, ".", app);
-                this.Include<Qt.V2.Gui>(C.V2.DynamicLibrary.Key, ".", app);
-                this.Include<ICU.V2.ICUIN>(C.V2.DynamicLibrary.Key, ".", app);
-                this.Include<ICU.V2.ICUUC>(C.V2.DynamicLibrary.Key, ".", app);
-                this.Include<ICU.V2.ICUDT>(C.V2.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.Core>(C.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.Widgets>(C.DynamicLibrary.Key, ".", app);
+                this.Include<Qt.Gui>(C.DynamicLibrary.Key, ".", app);
+                this.Include<ICU.ICUIN>(C.DynamicLibrary.Key, ".", app);
+                this.Include<ICU.ICUUC>(C.DynamicLibrary.Key, ".", app);
+                this.Include<ICU.ICUDT>(C.DynamicLibrary.Key, ".", app);
             }
         }
     }
 
     sealed class TarBallInstaller :
-        Publisher.V2.TarBall
+        Publisher.TarBall
     {
         protected override void
         Init(
@@ -123,7 +123,7 @@ namespace Qt5Test1
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
         }
     }
 }

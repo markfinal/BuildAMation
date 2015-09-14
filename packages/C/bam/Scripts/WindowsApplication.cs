@@ -30,8 +30,6 @@
 using Bam.Core;
 namespace C
 {
-namespace V2
-{
     public class GUIApplication :
         ConsoleApplication
     {
@@ -43,7 +41,7 @@ namespace V2
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.V2.ILinkerOptionsWin;
+                    var linker = settings as C.ILinkerOptionsWin;
                     if (linker != null)
                     {
                         linker.SubSystem = ESubsystem.Windows;
@@ -53,7 +51,7 @@ namespace V2
 
         protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Remove("_CONSOLE");
                 compiler.PreprocessorDefines.Add("_WINDOWS");
             };
@@ -72,23 +70,20 @@ namespace V2
             return container;
         }
     }
-}
     namespace Cxx
     {
-    namespace V2
-    {
         public class GUIApplication :
-            C.V2.GUIApplication
+            C.GUIApplication
         {
             protected override void
             Init(
                 Module parent)
             {
                 base.Init(parent);
-                this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);
+                this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
             }
 
-            public override Cxx.V2.ObjectFileCollection
+            public override Cxx.ObjectFileCollection
             CreateCxxSourceContainer(
                 string wildcardPath = null,
                 Bam.Core.Module macroModuleOverride = null,
@@ -102,6 +97,5 @@ namespace V2
                 return container;
             }
         }
-    }
     }
 }

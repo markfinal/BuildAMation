@@ -31,7 +31,7 @@ using Bam.Core;
 namespace Test5
 {
     sealed class MyDynamicLibTestAppV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -41,7 +41,7 @@ namespace Test5
 
             this.PrivatePatch(settings =>
                 {
-                    var gccCommon = settings as GccCommon.V2.ICommonLinkerOptions;
+                    var gccCommon = settings as GccCommon.ICommonLinkerOptions;
                     if (null != gccCommon)
                     {
                         gccCommon.CanUseOrigin = true;
@@ -55,7 +55,7 @@ namespace Test5
             this.CompileAndLinkAgainst<Test4.MyDynamicLibV2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }
@@ -63,7 +63,7 @@ namespace Test5
     }
 
     sealed class RuntimePackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -71,13 +71,13 @@ namespace Test5
         {
             base.Init(parent);
 
-            var app = this.Include<MyDynamicLibTestAppV2>(C.V2.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, ".", app);
+            var app = this.Include<MyDynamicLibTestAppV2>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Test4.MyDynamicLibV2>(C.DynamicLibrary.Key, ".", app);
         }
     }
 
     sealed class SDKPackage :
-        Publisher.V2.Package
+        Publisher.Package
     {
         protected override void
         Init(
@@ -85,10 +85,10 @@ namespace Test5
         {
             base.Init(parent);
 
-            var dll = this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
+            var dll = this.Include<Test4.MyDynamicLibV2>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Include<Test4.MyDynamicLibV2>(C.V2.DynamicLibrary.ImportLibraryKey, "../lib", dll);
+                this.Include<Test4.MyDynamicLibV2>(C.DynamicLibrary.ImportLibraryKey, "../lib", dll);
             }
 
             this.IncludeFiles<Test4.MyDynamicLibV2>("$(pkgroot)/include/dynamiclibrary.h", "../include", dll);
@@ -96,7 +96,7 @@ namespace Test5
     }
 
     sealed class WinInstallerInno :
-        Publisher.V2.InnoSetupInstaller
+        Publisher.InnoSetupInstaller
     {
         protected override void
         Init(
@@ -104,12 +104,12 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
         }
     }
 
     sealed class WinInstallerNSIS :
-        Publisher.V2.NSISInstaller
+        Publisher.NSISInstaller
     {
         protected override void
         Init(
@@ -117,12 +117,12 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
         }
     }
 
     sealed class TarBallInstaller :
-        Publisher.V2.TarBall
+        Publisher.TarBall
     {
         protected override void
         Init(
@@ -130,12 +130,12 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
         }
     }
 
     sealed class DiskImageInstaller :
-        Publisher.V2.DiskImage
+        Publisher.DiskImage
     {
         protected override void
         Init(
@@ -143,7 +143,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.V2.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
         }
     }
 }

@@ -29,8 +29,6 @@
 #endregion // License
 namespace CodeGenTest
 {
-namespace V2
-{
     public sealed class MakeFileGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -41,11 +39,11 @@ namespace V2
             Bam.Core.ICommandLineTool compiler,
             Bam.Core.TokenizedString generatedFilePath)
         {
-            var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(generatedFilePath);
 
-            var buildTool = (compiler as Bam.Core.Module).MetaData as MakeFileBuilder.V2.MakeFileMeta;
+            var buildTool = (compiler as Bam.Core.Module).MetaData as MakeFileBuilder.MakeFileMeta;
             rule.AddOrderOnlyDependency(System.String.Format("$({0})", buildTool.Rules[0].Targets[0].VariableName));
 
             var commandLineArgs = new Bam.Core.StringArray();
@@ -58,5 +56,4 @@ namespace V2
             rule.AddShellCommand(command.ToString());
         }
     }
-}
 }

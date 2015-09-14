@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class VSSolutionCompilation :
         ICompilationPolicy
     {
@@ -43,12 +41,11 @@ namespace V2
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            sender.MetaData = config.GetSettingsGroup(VSSolutionBuilder.V2.VSSettingsGroup.ESettingsGroup.Compiler, include: source.GeneratedPaths[C.V2.SourceFile.Key], uniqueToProject: true);
+            sender.MetaData = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler, include: source.GeneratedPaths[C.SourceFile.Key], uniqueToProject: true);
         }
     }
-}
 }

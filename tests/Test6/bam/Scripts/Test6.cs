@@ -31,7 +31,7 @@ using Bam.Core;
 namespace Test6
 {
     sealed class ConditionApplicationV2 :
-        C.V2.ConsoleApplication
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -45,14 +45,14 @@ namespace Test6
             var source = this.CreateCSourceContainer();
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
             var main = source.AddFile("$(pkgroot)/source/main.c");
             main.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.PreprocessorDefines.Add("MAIN_C");
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include/platform", this));
                 });
@@ -63,7 +63,7 @@ namespace Test6
             source.AddFile(platformPath);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDKV2>();
             }

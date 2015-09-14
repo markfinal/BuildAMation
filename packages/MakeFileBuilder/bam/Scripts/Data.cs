@@ -29,8 +29,6 @@
 #endregion // License
 namespace MakeFileBuilder
 {
-namespace V2
-{
     // Notes:
     // A rule is target + prerequisities + receipe
     // A recipe is a collection of commands
@@ -491,5 +489,4 @@ namespace V2
             Bam.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", graph.MasterPackage.Name, makeFilePath);
         }
     }
-}
 }

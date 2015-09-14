@@ -29,8 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-namespace V2
-{
     public interface IConvertToCommandLine
     {
         void
@@ -38,5 +36,4 @@ namespace V2
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine);
     }
-}
 }

@@ -29,21 +29,15 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public abstract class Plugin :
         DynamicLibrary
     {
     }
-}
     namespace Cxx
-    {
-    namespace V2
     {
         public abstract class Plugin :
             DynamicLibrary
         {
         }
-    }
     }
 }

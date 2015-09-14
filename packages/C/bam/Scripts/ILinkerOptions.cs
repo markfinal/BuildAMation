@@ -30,13 +30,11 @@
 using Bam.Core;
 namespace C
 {
-namespace V2
-{
 namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonLinkerOptions settings, Bam.Core.Module module)
+        public static void Defaults(this C.ICommonLinkerOptions settings, Bam.Core.Module module)
         {
             settings.OutputType = ELinkerOutput.Executable;
             settings.LibraryPaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
@@ -45,7 +43,7 @@ namespace DefaultSettings
         }
         public static void
         Defaults(
-            this C.V2.ICxxOnlyLinkerOptions settings,
+            this C.ICxxOnlyLinkerOptions settings,
             Bam.Core.Module module)
         {
             settings.StandardLibrary = C.Cxx.EStandardLibrary.NotSet;
@@ -53,7 +51,7 @@ namespace DefaultSettings
     }
 }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
     {
         C.ELinkerOutput OutputType
@@ -81,7 +79,7 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICxxOnlyLinkerOptions :
         Bam.Core.ISettingsBase
     {
@@ -91,5 +89,4 @@ namespace DefaultSettings
             set;
         }
     }
-}
 }

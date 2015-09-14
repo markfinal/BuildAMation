@@ -30,8 +30,6 @@
 using Bam.Core;
 namespace C
 {
-namespace V2
-{
     public sealed class NativeLinker :
         ILinkerPolicy
     {
@@ -48,12 +46,12 @@ namespace V2
             // any libraries added prior to here, need to be moved to the end
             // they are external dependencies, and thus all built modules (to be added now) may have
             // a dependency on them (and not vice versa)
-            var linker = sender.Settings as C.V2.ICommonLinkerOptions;
+            var linker = sender.Settings as C.ICommonLinkerOptions;
             var externalLibs = linker.Libraries;
             linker.Libraries = new Bam.Core.StringArray();
             foreach (var library in libraries)
             {
-                (sender.Tool as C.V2.LinkerTool).ProcessLibraryDependency(sender as CModule, library as CModule);
+                (sender.Tool as C.LinkerTool).ProcessLibraryDependency(sender as CModule, library as CModule);
             }
             linker.Libraries.AddRange(externalLibs);
 
@@ -68,19 +66,18 @@ namespace V2
             // first object files
             foreach (var input in objectFiles)
             {
-                commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToString());
             }
 
             // then all options
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLine as object });
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
-}
 }

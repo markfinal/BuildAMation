@@ -29,8 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace V2
-{
     public sealed class NativeLibrarian :
         ILibrarianPolicy
     {
@@ -43,7 +41,7 @@ namespace V2
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             var commandLine = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
             if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
             {
                 var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
@@ -58,11 +56,10 @@ namespace V2
 
             foreach (var input in objectFiles)
             {
-                commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
+                commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToString());
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
-}
 }

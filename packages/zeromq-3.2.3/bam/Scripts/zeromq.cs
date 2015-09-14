@@ -32,7 +32,7 @@ using System.Linq;
 namespace zeromq
 {
     public sealed class ZMQPlatformHeader :
-        C.V2.CModule
+        C.CModule
     {
         private static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ZeroMQ platform header");
 
@@ -116,7 +116,7 @@ namespace zeromq
     }
 
     public sealed class ZMQSharedLibraryV2 :
-        C.Cxx.V2.DynamicLibrary
+        C.Cxx.DynamicLibrary
     {
         protected override void Init(Bam.Core.Module parent)
         {
@@ -128,10 +128,10 @@ namespace zeromq
 
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.PreprocessorDefines.Add("DLL_EXPORT");
 
-                    var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -149,29 +149,29 @@ namespace zeromq
 
                 source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(config)", this));
                 });
 
-                if (this.Linker is Clang.V2.LinkerBase)
+                if (this.Linker is Clang.LinkerBase)
                 {
-                    var ipc_listener = source.Children.Where(item => (item as C.V2.ObjectFile).InputPath.Parse().EndsWith("ipc_listener.cpp"));
+                    var ipc_listener = source.Children.Where(item => (item as C.ObjectFile).InputPath.Parse().EndsWith("ipc_listener.cpp"));
                     ipc_listener.ElementAt(0).PrivatePatch(settings => {
-                        var compiler = settings as C.V2.ICommonCompilerOptions;
+                        var compiler = settings as C.ICommonCompilerOptions;
                         compiler.DisableWarnings.Add("deprecated-declarations");
                     });
                 }
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDKV2>(source);
             }
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.V2.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerOptions;
                     if (null != compiler)
                     {
                         compiler.IncludePaths.Add(TokenizedString.Create("$(pkgroot)/include", this));
@@ -180,15 +180,15 @@ namespace zeromq
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.V2.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerOptions;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        if (this.Linker is VisualC.V2.LinkerBase)
+                        if (this.Linker is VisualC.LinkerBase)
                         {
                             linker.Libraries.Add("Ws2_32.lib");
                             linker.Libraries.Add("Advapi32.lib");
                         }
-                        else if (this.Linker is Mingw.V2.LinkerBase)
+                        else if (this.Linker is Mingw.LinkerBase)
                         {
                             linker.Libraries.Add("-lws2_32");
                             linker.Libraries.Add("-ladvapi32");

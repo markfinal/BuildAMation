@@ -31,11 +31,11 @@ using Bam.Core;
 namespace Test4
 {
     sealed class MyDynamicLibV2 :
-        C.V2.DynamicLibrary
+        C.DynamicLibrary
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
@@ -58,7 +58,7 @@ namespace Test4
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.V2.LinkerBase)
+                this.Linker is VisualC.LinkerBase)
             {
                 // TODO: simplify
                 var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
@@ -70,7 +70,7 @@ namespace Test4
     }
 
     sealed class MyStaticLibV2 :
-        C.V2.StaticLibrary
+        C.StaticLibrary
     {
         protected override void
         Init(
@@ -84,7 +84,7 @@ namespace Test4
 
             source.PublicPatch((settings, appliedTo) =>
             {
-                var compiler = settings as C.V2.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerOptions;
                 compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
             });
         }
