@@ -32,19 +32,19 @@ namespace Test18
     public sealed class ControlV2 :
         C.V2.ConsoleApplication
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
             // NB: these are long handed code, normally hidden behind utility functions
 
-            var x = Bam.Core.V2.Graph.Instance.FindReferencedModule<XV2>();
+            var x = Bam.Core.Graph.Instance.FindReferencedModule<XV2>();
             this.DependsOn(x);
 
-            var y = Bam.Core.V2.Graph.Instance.FindReferencedModule<YV2>();
+            var y = Bam.Core.Graph.Instance.FindReferencedModule<YV2>();
             this.DependsOn(y);
 
-            var z = Bam.Core.V2.Graph.Instance.FindReferencedModule<ZV2>();
+            var z = Bam.Core.Graph.Instance.FindReferencedModule<ZV2>();
             this.DependsOn(z);
         }
     }
@@ -52,11 +52,11 @@ namespace Test18
     public sealed class XV2 :
         C.V2.StaticLibrary
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            var y = Bam.Core.V2.Graph.Instance.FindReferencedModule<YV2>();
+            var y = Bam.Core.Graph.Instance.FindReferencedModule<YV2>();
             this.DependsOn(y);
         }
     }
@@ -69,11 +69,11 @@ namespace Test18
     public sealed class ZV2 :
         C.V2.StaticLibrary
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            var x = Bam.Core.V2.Graph.Instance.FindReferencedModule<XV2>();
+            var x = Bam.Core.Graph.Instance.FindReferencedModule<XV2>();
             this.DependsOn(x);
         }
     }

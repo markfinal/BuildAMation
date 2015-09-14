@@ -37,7 +37,7 @@ namespace V2
         static private void
         CopyFile(
             Package sender,
-            Bam.Core.V2.ExecutionContext context,
+            Bam.Core.ExecutionContext context,
             string sourcePath,
             string destinationDir)
         {
@@ -59,15 +59,15 @@ namespace V2
 
             commandLine.Add(sourcePath);
             commandLine.Add(destinationPath);
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, commandLine);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
 
         void
         IPackagePolicy.Package(
             Package sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects)
         {
             var root = packageRoot.Parse();
             foreach (var module in packageObjects)
@@ -108,9 +108,9 @@ namespace V2
         void
         IInnoSetupPolicy.CreateInstaller(
             InnoSetupInstaller sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString scriptPath)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath)
         {
             var args = new Bam.Core.StringArray();
             args.Add(scriptPath.Parse());
@@ -126,9 +126,9 @@ namespace V2
         void
         INSISPolicy.CreateInstaller(
             NSISInstaller sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString scriptPath)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath)
         {
             var args = new Bam.Core.StringArray();
             args.Add(scriptPath.Parse());
@@ -144,10 +144,10 @@ namespace V2
         void
         ITarPolicy.CreateTarBall(
             TarBall sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString scriptPath,
-            Bam.Core.V2.TokenizedString outputPath)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath,
+            Bam.Core.TokenizedString outputPath)
         {
             var args = new Bam.Core.StringArray();
             args.Add("-c");
@@ -168,10 +168,10 @@ namespace V2
         void
         IDiskImagePolicy.CreateDMG(
             DiskImage sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString sourceFolderPath,
-            Bam.Core.V2.TokenizedString outputPath)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString sourceFolderPath,
+            Bam.Core.TokenizedString outputPath)
         {
             var volumeName = "My Volume";
             var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension

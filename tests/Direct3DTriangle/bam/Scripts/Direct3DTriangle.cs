@@ -29,11 +29,11 @@
 #endregion // License
 namespace Direct3DTriangle
 {
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class D3D9TriangleTestV2 :
         C.Cxx.V2.GUIApplication
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 

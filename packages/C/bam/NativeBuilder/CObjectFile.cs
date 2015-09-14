@@ -37,9 +37,9 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString objectFilePath,
-            Bam.Core.V2.Module source)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
         {
             var commandLine = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
@@ -55,7 +55,7 @@ namespace V2
                 System.IO.Directory.CreateDirectory(objectFileDir);
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, commandLine);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 }

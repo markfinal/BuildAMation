@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2;
+using Bam.Core;
 namespace Publisher
 {
 namespace V2
@@ -37,7 +37,7 @@ namespace V2
         public static void
         Defaults(
             this ICopyFileSettings settings,
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             settings.Force = true;
         }
@@ -66,7 +66,7 @@ namespace V2
     }
 
     public abstract class CopyFileTool :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
         public override void
         Evaluate()
@@ -75,7 +75,7 @@ namespace V2
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(DefaultExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(DefaultExtensions))]
     public interface ICopyFileSettings :
         ISettingsBase
     {
@@ -87,7 +87,7 @@ namespace V2
     }
 
     public sealed class CopyFileSettings :
-        Bam.Core.V2.Settings,
+        Bam.Core.Settings,
         ICopyFileSettings,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
@@ -95,7 +95,7 @@ namespace V2
         {}
 
         public CopyFileSettings(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -127,18 +127,18 @@ namespace V2
     public sealed class CopyFilePosix :
         CopyFileTool
     {
-        public override Bam.Core.V2.Settings
+        public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
         {
             return new CopyFileSettings(module);
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create("cp", null, verbatim: true);
+                return Bam.Core.TokenizedString.Create("cp", null, verbatim: true);
             }
         }
     }
@@ -146,18 +146,18 @@ namespace V2
     public sealed class CopyFileWin :
         CopyFileTool
     {
-        public override Bam.Core.V2.Settings
+        public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
         {
             return new CopyFileSettings(module);
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create("cmd", null, verbatim: true);
+                return Bam.Core.TokenizedString.Create("cmd", null, verbatim: true);
             }
         }
     }
@@ -165,7 +165,7 @@ namespace V2
     public sealed class PackageReference
     {
         public PackageReference(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             string subdirectory,
             Bam.Core.Array<PackageReference> references)
         {
@@ -182,7 +182,7 @@ namespace V2
             }
         }
 
-        public Bam.Core.V2.Module Module
+        public Bam.Core.Module Module
         {
             get;
             private set;
@@ -212,21 +212,21 @@ namespace V2
         void
         Package(
             Package sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects);
     }
 
     public abstract class Package :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, PackageReference>>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, PackageReference>>();
         private IPackagePolicy Policy = null;
-        public static Bam.Core.V2.FileKey PackageRoot = Bam.Core.V2.FileKey.Generate("Package Root");
+        public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
 
         protected Package()
         {
-            this.RegisterGeneratedFile(PackageRoot, Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
+            this.RegisterGeneratedFile(PackageRoot, Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
         }
 
         protected override void Init(Module parent)
@@ -234,11 +234,11 @@ namespace V2
             base.Init(parent);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Tool = Bam.Core.V2.Graph.Instance.FindReferencedModule<CopyFileWin>();
+                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFileWin>();
             }
             else
             {
-                this.Tool = Bam.Core.V2.Graph.Instance.FindReferencedModule<CopyFilePosix>();
+                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFilePosix>();
             }
         }
 
@@ -250,7 +250,7 @@ namespace V2
 
         private string
         PublishingPath(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             EPublishingType type)
         {
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
@@ -261,7 +261,7 @@ namespace V2
                     return null;
 
                 case EPublishingType.WindowedApplication:
-                    return Bam.Core.V2.TokenizedString.Create("$(OutputName).app/Contents/MacOS", module).Parse();
+                    return Bam.Core.TokenizedString.Create("$(OutputName).app/Contents/MacOS", module).Parse();
 
                 default:
                     return null;
@@ -275,11 +275,11 @@ namespace V2
 
         public PackageReference
         Include<DependentModule>(
-            Bam.Core.V2.FileKey key,
+            Bam.Core.FileKey key,
             EPublishingType type,
-            string subdir = null) where DependentModule : Bam.Core.V2.Module, new()
+            string subdir = null) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return null;
@@ -313,12 +313,12 @@ namespace V2
 
         public void
         Include<DependentModule>(
-            Bam.Core.V2.FileKey key,
+            Bam.Core.FileKey key,
             string subdir,
             PackageReference reference,
-            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.V2.Module, new()
+            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
@@ -339,9 +339,9 @@ namespace V2
             string parameterizedFilePath,
             string subdir,
             PackageReference reference,
-            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.V2.Module, new()
+            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
@@ -353,7 +353,7 @@ namespace V2
             }
             var refs = new Bam.Core.Array<PackageReference>(reference);
             refs.AddRangeUnique(new Bam.Core.Array<PackageReference>(additionalReferences));
-            var tokenString = Bam.Core.V2.TokenizedString.Create(parameterizedFilePath, dependent);
+            var tokenString = Bam.Core.TokenizedString.Create(parameterizedFilePath, dependent);
             var packaging = new PackageReference(dependent, subdir, refs);
             this.dependents[dependent].Add(tokenString, packaging);
         }
@@ -366,34 +366,34 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             // TODO: the nested dictionary is not readonly - not sure how to construct this
-            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>>(this.dependents);
+            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>>(this.dependents);
             this.Policy.Package(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
         }
 
         protected override void GetExecutionPolicy(string mode)
         {
             var className = "Publisher.V2." + mode + "Packager";
-            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IPackagePolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<IPackagePolicy>.Create(className);
         }
     }
 }
 namespace V2
 {
     class InnoSetupScript :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
 
         public InnoSetupScript()
         {
-            this.ScriptPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)/script.iss", this);
+            this.ScriptPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)/script.iss", this);
         }
 
-        public Bam.Core.V2.TokenizedString ScriptPath
+        public Bam.Core.TokenizedString ScriptPath
         {
             get;
             private set;
@@ -401,8 +401,8 @@ namespace V2
 
         public void
         AddFile(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
+            Bam.Core.Module module,
+            Bam.Core.FileKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -410,8 +410,8 @@ namespace V2
 
         public void
         AddPath(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
+            Bam.Core.Module module,
+            Bam.Core.FileKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -424,7 +424,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             var path = this.ScriptPath.Parse();
             var dir = System.IO.Path.GetDirectoryName(path);
@@ -464,23 +464,23 @@ namespace V2
     }
 
     public sealed class InnoSetupCompilerSettings :
-        Bam.Core.V2.Settings
+        Bam.Core.Settings
     {
     }
 
     public sealed class InnoSetupCompiler :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             return new InnoSetupCompilerSettings();
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Inno Setup 5\ISCC.exe", null);
+                return Bam.Core.TokenizedString.Create(@"C:\Program Files (x86)\Inno Setup 5\ISCC.exe", null);
             }
         }
     }
@@ -489,17 +489,17 @@ namespace V2
     {
         void CreateInstaller(
             InnoSetupInstaller sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString scriptPath);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath);
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     public abstract class InnoSetupInstaller :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
         private InnoSetupScript ScriptModule;
-        private Bam.Core.V2.PreBuiltTool Compiler;
+        private Bam.Core.PreBuiltTool Compiler;
         private IInnoSetupPolicy Policy;
 
         public InnoSetupInstaller()
@@ -507,26 +507,26 @@ namespace V2
             // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
             // need to find a way to instantiate a non-abstract instance of an abstract class
             // looks like emit is needed
-            this.ScriptModule = Bam.Core.V2.Graph.Instance.FindReferencedModule<InnoSetupScript>();
+            this.ScriptModule = Bam.Core.Graph.Instance.FindReferencedModule<InnoSetupScript>();
             this.DependsOn(this.ScriptModule);
 
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<InnoSetupCompiler>();
+            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<InnoSetupCompiler>();
             this.Requires(this.Compiler);
         }
 
         public void
         Include<DependentModule>(
-            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddFile(dependent, key);
         }
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddPath(dependent, key);
         }
 
@@ -537,7 +537,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             if (null != this.Policy)
             {
@@ -552,7 +552,7 @@ namespace V2
             if (mode == "Native")
             {
                 var className = "Publisher.V2." + mode + "InnoSetup";
-                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IInnoSetupPolicy>.Create(className);
+                this.Policy = Bam.Core.ExecutionPolicyUtilities<IInnoSetupPolicy>.Create(className);
             }
         }
     }
@@ -560,17 +560,17 @@ namespace V2
 namespace V2
 {
     class NSISScript :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
 
         public NSISScript()
         {
-            this.ScriptPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)/script.nsi", this);
+            this.ScriptPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)/script.nsi", this);
         }
 
-        public Bam.Core.V2.TokenizedString ScriptPath
+        public Bam.Core.TokenizedString ScriptPath
         {
             get;
             private set;
@@ -578,8 +578,8 @@ namespace V2
 
         public void
         AddFile(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
+            Bam.Core.Module module,
+            Bam.Core.FileKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -587,8 +587,8 @@ namespace V2
 
         public void
         AddPath(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
+            Bam.Core.Module module,
+            Bam.Core.FileKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -601,7 +601,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             var path = this.ScriptPath.Parse();
             var dir = System.IO.Path.GetDirectoryName(path);
@@ -638,23 +638,23 @@ namespace V2
     }
 
     public sealed class NSISCompilerSettings :
-        Bam.Core.V2.Settings
+        Bam.Core.Settings
     {
     }
 
     public sealed class NSISCompiler :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             return new NSISCompilerSettings();
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\NSIS\makensis.exe", null);
+                return Bam.Core.TokenizedString.Create(@"C:\Program Files (x86)\NSIS\makensis.exe", null);
             }
         }
     }
@@ -663,17 +663,17 @@ namespace V2
     {
         void CreateInstaller(
             NSISInstaller sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString scriptPath);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath);
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     public abstract class NSISInstaller :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
         private NSISScript ScriptModule;
-        private Bam.Core.V2.PreBuiltTool Compiler;
+        private Bam.Core.PreBuiltTool Compiler;
         private INSISPolicy Policy;
 
         public NSISInstaller()
@@ -681,26 +681,26 @@ namespace V2
             // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
             // need to find a way to instantiate a non-abstract instance of an abstract class
             // looks like emit is needed
-            this.ScriptModule = Bam.Core.V2.Graph.Instance.FindReferencedModule<NSISScript>();
+            this.ScriptModule = Bam.Core.Graph.Instance.FindReferencedModule<NSISScript>();
             this.DependsOn(this.ScriptModule);
 
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<NSISCompiler>();
+            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<NSISCompiler>();
             this.Requires(this.Compiler);
         }
 
         public void
         Include<DependentModule>(
-            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddFile(dependent, key);
         }
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddPath(dependent, key);
         }
 
@@ -711,7 +711,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             if (null != this.Policy)
             {
@@ -726,7 +726,7 @@ namespace V2
             if (mode == "Native")
             {
                 var className = "Publisher.V2." + mode + "NSIS";
-                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<INSISPolicy>.Create(className);
+                this.Policy = Bam.Core.ExecutionPolicyUtilities<INSISPolicy>.Create(className);
             }
         }
     }
@@ -734,17 +734,17 @@ namespace V2
 namespace V2
 {
     class TarInputFiles :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
 
         public TarInputFiles()
         {
-            this.ScriptPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(modulename)/tarinput.txt", this);
+            this.ScriptPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)/tarinput.txt", this);
         }
 
-        public Bam.Core.V2.TokenizedString ScriptPath
+        public Bam.Core.TokenizedString ScriptPath
         {
             get;
             private set;
@@ -752,8 +752,8 @@ namespace V2
 
         public void
         AddFile(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
+            Bam.Core.Module module,
+            Bam.Core.FileKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -761,8 +761,8 @@ namespace V2
 
         public void
         AddPath(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
+            Bam.Core.Module module,
+            Bam.Core.FileKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -775,7 +775,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             var path = this.ScriptPath.Parse();
             var dir = System.IO.Path.GetDirectoryName(path);
@@ -825,23 +825,23 @@ namespace V2
     }
 
     public sealed class TarSettings :
-        Bam.Core.V2.Settings
+        Bam.Core.Settings
     {
     }
 
     public sealed class TarCompiler :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             return new TarSettings();
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create("tar", null);
+                return Bam.Core.TokenizedString.Create("tar", null);
             }
         }
     }
@@ -850,49 +850,49 @@ namespace V2
     {
         void CreateTarBall(
             TarBall sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString scriptPath,
-            Bam.Core.V2.TokenizedString outputPath);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath,
+            Bam.Core.TokenizedString outputPath);
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Linux | Bam.Core.EPlatform.OSX)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Linux | Bam.Core.EPlatform.OSX)]
     public abstract class TarBall :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
-        public static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Installer");
+        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Installer");
 
         private TarInputFiles InputFiles;
-        private Bam.Core.V2.PreBuiltTool Compiler;
+        private Bam.Core.PreBuiltTool Compiler;
         private ITarPolicy Policy;
 
         public TarBall()
         {
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/installer.tar", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(buildroot)/installer.tar", this));
 
             // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
             // need to find a way to instantiate a non-abstract instance of an abstract class
             // looks like emit is needed
-            this.InputFiles = Bam.Core.V2.Graph.Instance.FindReferencedModule<TarInputFiles>();
+            this.InputFiles = Bam.Core.Graph.Instance.FindReferencedModule<TarInputFiles>();
             this.DependsOn(this.InputFiles);
 
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<TarCompiler>();
+            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<TarCompiler>();
             this.Requires(this.Compiler);
         }
 
         public void
         Include<DependentModule>(
-            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.InputFiles.AddFile(dependent, key);
         }
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.InputFiles.AddPath(dependent, key);
         }
 
@@ -903,7 +903,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             if (null != this.Policy)
             {
@@ -918,7 +918,7 @@ namespace V2
             if (mode == "Native")
             {
                 var className = "Publisher.V2." + mode + "TarBall";
-                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ITarPolicy>.Create(className);
+                this.Policy = Bam.Core.ExecutionPolicyUtilities<ITarPolicy>.Create(className);
             }
         }
     }
@@ -926,23 +926,23 @@ namespace V2
 namespace V2
 {
     public sealed class DiskImageSettings :
-        Bam.Core.V2.Settings
+        Bam.Core.Settings
     {
     }
 
     public sealed class DiskImageCompiler :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             return new TarSettings();
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create("hdiutil", null);
+                return Bam.Core.TokenizedString.Create("hdiutil", null);
             }
         }
     }
@@ -951,35 +951,35 @@ namespace V2
     {
         void CreateDMG(
             DiskImage sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString scriptPath,
-            Bam.Core.V2.TokenizedString outputPath);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath,
+            Bam.Core.TokenizedString outputPath);
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.OSX)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
     public abstract class DiskImage :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
-        public static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Installer");
+        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Installer");
 
-        private Bam.Core.V2.TokenizedString SourceFolderPath;
-        private Bam.Core.V2.PreBuiltTool Compiler;
+        private Bam.Core.TokenizedString SourceFolderPath;
+        private Bam.Core.PreBuiltTool Compiler;
         private IDiskImagePolicy Policy;
 
         public DiskImage()
         {
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/installer.dmg", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(buildroot)/installer.dmg", this));
 
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
+            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
             this.Requires(this.Compiler);
         }
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.V2.FileKey key) where DependentModule : Bam.Core.V2.Module, new()
+            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.SourceFolderPath = dependent.GeneratedPaths[key];
         }
@@ -991,7 +991,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             if (null != this.Policy)
             {
@@ -1006,7 +1006,7 @@ namespace V2
             if (mode == "Native")
             {
                 var className = "Publisher.V2." + mode + "DMG";
-                this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
+                this.Policy = Bam.Core.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
             }
         }
     }

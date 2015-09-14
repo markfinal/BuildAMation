@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace C
 {
 namespace V2
@@ -35,19 +35,19 @@ namespace V2
     public class DynamicLibrary :
         ConsoleApplication
     {
-        static public Bam.Core.V2.FileKey ImportLibraryKey = Bam.Core.V2.FileKey.Generate("Import Library File");
+        static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Import Library File");
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+            this.GeneratedPaths[Key] = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
             this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
+                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
             }
 
             this.PrivatePatch(settings =>
@@ -61,24 +61,24 @@ namespace V2
                 var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                 if (null != osxLinker)
                 {
-                    osxLinker.InstallName = Bam.Core.V2.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
+                    osxLinker.InstallName = Bam.Core.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
                 }
             });
         }
 
         // TODO: what is this used for?
-        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source
+        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules.ToArray());
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.sourceModules.ToArray());
             }
         }
 
         public override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
@@ -94,7 +94,7 @@ namespace V2
         public override Cxx.V2.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
@@ -116,7 +116,7 @@ namespace V2
                 throw new Bam.Core.Exception("At least one source module argument must be passed to {0} in {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, this.ToString());
             }
 
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             foreach (var source in affectedSources)
             {
@@ -139,7 +139,7 @@ namespace V2
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);

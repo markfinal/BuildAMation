@@ -35,7 +35,7 @@ namespace V2
     {
         void
         Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine);
     }
 }

@@ -37,13 +37,13 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString objectFilePath,
-            Bam.Core.V2.Module source)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 

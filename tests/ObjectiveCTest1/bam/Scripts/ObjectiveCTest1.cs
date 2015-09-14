@@ -27,13 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace ObjectiveCTest1
 {
     sealed class ProgramV2 :
         C.V2.ConsoleApplication
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -45,7 +45,7 @@ namespace ObjectiveCTest1
                 source.PrivatePatch(settings =>
                     {
                         var compiler = settings as C.V2.ICommonCompilerOptions;
-                        compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("/usr/include/GNUstep", null, verbatim: true));
+                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("/usr/include/GNUstep", null, verbatim: true));
 
                         var objcCompiler = settings as C.V2.IObjectiveCOnlyCompilerOptions;
                         objcCompiler.ConstantStringClass = "NSConstantString";
@@ -57,7 +57,7 @@ namespace ObjectiveCTest1
                     var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                     if (null != osxLinker)
                     {
-                        osxLinker.Frameworks.Add(Bam.Core.V2.TokenizedString.Create("Cocoa", null, verbatim:true));
+                        osxLinker.Frameworks.Add(Bam.Core.TokenizedString.Create("Cocoa", null, verbatim:true));
                     }
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))

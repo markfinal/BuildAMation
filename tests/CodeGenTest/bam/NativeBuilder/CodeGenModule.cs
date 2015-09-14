@@ -37,13 +37,13 @@ namespace V2
         void
         IGeneratedSourcePolicy.GenerateSource(
             GeneratedSourceModule sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString generatedFilePath)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString generatedFilePath)
         {
             var args = new Bam.Core.StringArray();
             // TODO: change this to a configuration directory really
-            args.Add(Bam.Core.V2.TokenizedString.Create("$(buildroot)", sender).Parse());
+            args.Add(Bam.Core.TokenizedString.Create("$(buildroot)", sender).Parse());
             args.Add("Generated");
             CommandLineProcessor.V2.Processor.Execute(context, compiler, args);
         }

@@ -35,7 +35,7 @@ namespace OpenGLSDK
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -56,7 +56,7 @@ namespace OpenGLSDK
                     var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                     if (null != osxLinker)
                     {
-                        osxLinker.Frameworks.AddUnique(Bam.Core.V2.TokenizedString.Create("OpenGL", null, verbatim: true));
+                        osxLinker.Frameworks.AddUnique(Bam.Core.TokenizedString.Create("OpenGL", null, verbatim: true));
                     }
                 });
         }
@@ -67,7 +67,7 @@ namespace OpenGLSDK
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
         {
             // do nothing
         }

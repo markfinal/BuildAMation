@@ -36,13 +36,13 @@ namespace V2
         public static partial class DefaultSettingsExtensions
         {
             public static void
-            Defaults(this GccCommon.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
+            Defaults(this GccCommon.V2.ICommonCompilerOptions settings, Bam.Core.Module module)
             {
                 settings.PositionIndependentCode = false;
             }
 
             public static void
-            Defaults(this GccCommon.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
+            Defaults(this GccCommon.V2.ICommonLinkerOptions settings, Bam.Core.Module module)
             {
                 settings.CanUseOrigin = false;
                 settings.RPath = new Bam.Core.StringArray();
@@ -56,7 +56,7 @@ namespace V2
         public static void
         Convert(
             this GccCommon.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != options.PositionIndependentCode)
@@ -71,7 +71,7 @@ namespace V2
         public static void
         Convert(
             this GccCommon.V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != options.CanUseOrigin)

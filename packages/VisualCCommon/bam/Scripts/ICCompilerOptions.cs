@@ -35,7 +35,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this VisualCCommon.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this VisualCCommon.V2.ICommonCompilerOptions settings, Bam.Core.Module module)
         {
             settings.NoLogo = true;
         }
@@ -68,8 +68,8 @@ namespace DefaultSettings
     }
 }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(VisualCCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(VisualCCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
     {
         bool? NoLogo
         {
@@ -78,8 +78,8 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         int VCCommonCOnly
         {
@@ -88,8 +88,8 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         string VCCommonCxxOnly
         {

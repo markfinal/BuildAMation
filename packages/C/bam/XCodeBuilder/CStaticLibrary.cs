@@ -37,10 +37,10 @@ namespace V2
         void
         ILibrarianPolicy.Archive(
             StaticLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             XcodeBuilder.V2.XcodeCommonProject library;
             // TODO: this is a hack, so that modules earlier in the graph can add pre/post build commands
@@ -58,7 +58,7 @@ namespace V2
             {
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
                 {
-                    typeof(Bam.Core.V2.Module),
+                    typeof(Bam.Core.Module),
                     typeof(XcodeBuilder.V2.Configuration)
                 };
 

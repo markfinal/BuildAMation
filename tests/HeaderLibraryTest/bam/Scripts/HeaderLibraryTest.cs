@@ -27,13 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace HeaderLibraryTest
 {
     public sealed class HeaderLibraryV2 :
         C.V2.HeaderLibrary
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -44,7 +44,7 @@ namespace HeaderLibraryTest
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     if (null != compiler)
                     {
-                        compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                     }
                 });
         }
@@ -53,7 +53,7 @@ namespace HeaderLibraryTest
     public sealed class ApplicationV2 :
         C.V2.ConsoleApplication
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 

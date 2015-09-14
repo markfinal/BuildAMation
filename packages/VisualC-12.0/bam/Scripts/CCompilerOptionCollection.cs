@@ -37,7 +37,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -140,7 +140,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -149,7 +149,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -182,7 +182,7 @@ namespace VisualC
         public static void
         Convert(
             this VisualCCommon.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -195,7 +195,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICCompilerOptionsWin options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -213,7 +213,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             var objectFile = module as C.V2.ObjectFile;
@@ -304,7 +304,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -312,7 +312,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != options.ExceptionHandler)
@@ -340,7 +340,7 @@ namespace VisualC
         public static void
         Convert(
             this VisualCCommon.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != options.NoLogo)
@@ -355,7 +355,7 @@ namespace VisualC
         public static void
         Convert(
             this VisualCCommon.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -363,7 +363,7 @@ namespace VisualC
         public static void
         Convert(
             this VisualCCommon.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -371,7 +371,7 @@ namespace VisualC
         public static void
         Convert(
             this VisualC.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -379,7 +379,7 @@ namespace VisualC
         public static void
         Convert(
             this VisualC.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -387,7 +387,7 @@ namespace VisualC
         public static void
         Convert(
             this VisualC.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -395,7 +395,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICCompilerOptionsWin options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (options.CharacterSet.HasValue)
@@ -426,8 +426,8 @@ namespace VisualC
 
 namespace V2
 {
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
     {
         bool VC12Common
         {
@@ -436,8 +436,8 @@ namespace V2
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         int VC12COnly
         {
@@ -446,8 +446,8 @@ namespace V2
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         Bam.Core.EPlatform VC12CxxOnly
         {
@@ -470,12 +470,12 @@ namespace V2
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject
     {
-        public CompilerSettings(Bam.Core.V2.Module module)
+        public CompilerSettings(Bam.Core.Module module)
             : this(module, true)
         {
         }
 
-        public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        public CompilerSettings(Bam.Core.Module module, bool useDefaults)
         {
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
@@ -506,13 +506,13 @@ namespace V2
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
@@ -600,7 +600,7 @@ namespace V2
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
@@ -614,7 +614,7 @@ namespace V2
 
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition)
         {
@@ -637,12 +637,12 @@ namespace V2
         //VisualC.V2.ICommonCompilerOptions,
         //VisualC.V2.ICxxOnlyCompilerOptions
     {
-        public CxxCompilerSettings(Bam.Core.V2.Module module)
+        public CxxCompilerSettings(Bam.Core.Module module)
             : this(module, true)
         {
         }
 
-        public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        public CxxCompilerSettings(Bam.Core.Module module, bool useDefaults)
         {
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
@@ -659,7 +659,7 @@ namespace V2
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             // TODO: iterate in reflection, in a well defined static class
@@ -676,7 +676,7 @@ namespace V2
 
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition)
         {
@@ -704,13 +704,13 @@ namespace V2
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
@@ -813,10 +813,10 @@ namespace V2
     {
         static Configure()
         {
-            InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null);
+            InstallPath = Bam.Core.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null);
         }
 
-        public static Bam.Core.V2.TokenizedString InstallPath
+        public static Bam.Core.TokenizedString InstallPath
         {
             get;
             private set;
@@ -834,19 +834,19 @@ namespace V2
             this.InheritedEnvironmentVariables.Add("TMP");
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
+            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
             this.Macros.Add("objext", ".obj");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Common7\IDE", this)));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Common7\IDE", this)));
 
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compilation = settings as C.V2.ICommonCompilerOptions;
-                    compilation.SystemIncludePaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
+                    compilation.SystemIncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
                 });
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
@@ -854,7 +854,7 @@ namespace V2
             }
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
                 typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
@@ -876,7 +876,7 @@ namespace V2
             }
         }
 
-        protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
+        protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
     }
 
     [C.V2.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
@@ -885,10 +885,10 @@ namespace V2
     {
         public Compiler32()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\cl.exe", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\cl.exe", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.ThirtyTwo;
@@ -904,7 +904,7 @@ namespace V2
         {
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
             var cSettings = settings as C.V2.ICommonCompilerOptions;
@@ -919,12 +919,12 @@ namespace V2
         public Compiler64()
             : base()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\x86_amd64\cl.exe", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\x86_amd64\cl.exe", this));
             // some DLLs exist only in the 32-bit bin folder
             this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.SixtyFour;
@@ -940,7 +940,7 @@ namespace V2
         {
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
             var cSettings = settings as C.V2.ICommonCompilerOptions;

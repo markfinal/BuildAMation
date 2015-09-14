@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     using System.Linq;
 
     public sealed class FileKey
@@ -725,7 +723,7 @@ namespace V2
     {
         Settings
         CreateDefaultSettings<T>(
-            T module) where T : Bam.Core.V2.Module;
+            T module) where T : Module;
     }
 
     public interface ICommandLineTool :
@@ -770,7 +768,7 @@ namespace V2
         }
             #endif
 
-        public abstract Settings CreateDefaultSettings<T>(T module) where T : Bam.Core.V2.Module;
+        public abstract Settings CreateDefaultSettings<T>(T module) where T : Module;
 
         public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
         {
@@ -888,7 +886,6 @@ namespace V2
             this.ErrorStringBuilder.Append(e.Data + '\n');
         }
     }
-}
 
     public static class State
     {

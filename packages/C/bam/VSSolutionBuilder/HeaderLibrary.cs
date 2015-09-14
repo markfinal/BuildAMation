@@ -37,15 +37,15 @@ namespace V2
         void
         IHeaderLibraryPolicy.HeadersOnly(
             HeaderLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+            Bam.Core.ExecutionContext context,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             if (0 == headers.Count)
             {
                 return;
             }
 
-            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
             var project = solution.EnsureProjectExists(sender);
             var config = project.GetConfiguration(sender);
 

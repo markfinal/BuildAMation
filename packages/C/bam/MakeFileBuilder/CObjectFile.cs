@@ -37,9 +37,9 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString objectFilePath,
-            Bam.Core.V2.Module source)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
         {
             var commandLineArgs = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
@@ -54,7 +54,7 @@ namespace V2
             rule.AddTarget(objectFilePath);
             rule.AddPrerequisite(source, C.V2.SourceFile.Key);
 
-            var tool = sender.Tool as Bam.Core.V2.PreBuiltTool;
+            var tool = sender.Tool as Bam.Core.PreBuiltTool;
             var command = new System.Text.StringBuilder();
             command.AppendFormat(tool.Executable.ContainsSpace ? "\"{0}\" {1}" : "{0} {1}", tool.Executable, commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());

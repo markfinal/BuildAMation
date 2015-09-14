@@ -65,11 +65,11 @@ namespace DirectXSDK
             var installPath = Direct3D9Location.InstallPath;
 
             this.Macros.Add("InstallPath", installPath);
-            this.Macros.Add("IncludePath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/include", this));
-            this.Macros.Add("LibraryPath", Bam.Core.V2.TokenizedString.Create("$(InstallPath)/lib", this));
+            this.Macros.Add("IncludePath", Bam.Core.TokenizedString.Create("$(InstallPath)/include", this));
+            this.Macros.Add("LibraryPath", Bam.Core.TokenizedString.Create("$(InstallPath)/lib", this));
         }
 
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -86,11 +86,11 @@ namespace DirectXSDK
                     {
                         if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
                         {
-                            linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create("$(LibraryPath)/x86", this));
+                            linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create("$(LibraryPath)/x86", this));
                         }
                         else
                         {
-                            linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create("$(LibraryPath)/x64", this));
+                            linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create("$(LibraryPath)/x64", this));
                         }
                     }
                 });
@@ -102,7 +102,7 @@ namespace DirectXSDK
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
         {
             // do nothing
         }

@@ -30,8 +30,6 @@
 using System.Linq;
 namespace Bam.Core
 {
-namespace V2
-{
     [System.AttributeUsage(System.AttributeTargets.Interface)]
     public sealed class SettingsExtensionsAttribute : System.Attribute
     {
@@ -155,5 +153,4 @@ namespace V2
             }
         }
     }
-}
 }

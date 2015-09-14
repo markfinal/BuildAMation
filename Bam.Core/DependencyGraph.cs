@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     using System.Linq;
 
     /// <summary>
@@ -506,5 +504,4 @@ namespace V2
             }
         }
     }
-}
 }

@@ -27,24 +27,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace Test4
 {
     sealed class MyDynamicLibV2 :
         C.V2.DynamicLibrary
     {
-        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+        private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null != compiler)
                 {
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
                 }
             };
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -61,7 +61,7 @@ namespace Test4
                 this.Linker is VisualC.V2.LinkerBase)
             {
                 // TODO: simplify
-                var windowsSDK = Bam.Core.V2.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
+                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDKV2>();
                 this.Requires(windowsSDK);
                 source.UsePublicPatches(windowsSDK); // compiling
                 this.UsePublicPatches(windowsSDK); // linking
@@ -74,7 +74,7 @@ namespace Test4
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -85,7 +85,7 @@ namespace Test4
             source.PublicPatch((settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
             });
         }
     }

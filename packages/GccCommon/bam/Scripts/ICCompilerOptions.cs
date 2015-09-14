@@ -31,8 +31,8 @@ namespace GccCommon
 {
 namespace V2
 {
-    [Bam.Core.V2.SettingsExtensions(typeof(GccCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(GccCommon.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
     {
         bool? PositionIndependentCode
         {

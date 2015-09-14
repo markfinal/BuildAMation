@@ -33,9 +33,9 @@ namespace C
 namespace V2
 {
     public sealed class DefaultBitDepth :
-        Bam.Core.V2.IIntegerCommandLineArgument
+        Bam.Core.IIntegerCommandLineArgument
     {
-        string Bam.Core.V2.ICommandLineArgument.ContextHelp
+        string Bam.Core.ICommandLineArgument.ContextHelp
         {
             get
             {
@@ -43,7 +43,7 @@ namespace V2
             }
         }
 
-        string Bam.Core.V2.ICommandLineArgument.LongName
+        string Bam.Core.ICommandLineArgument.LongName
         {
             get
             {
@@ -51,7 +51,7 @@ namespace V2
             }
         }
 
-        string Bam.Core.V2.ICommandLineArgument.ShortName
+        string Bam.Core.ICommandLineArgument.ShortName
         {
             get
             {
@@ -59,7 +59,7 @@ namespace V2
             }
         }
 
-        int Bam.Core.V2.ICommandLineArgumentDefault<int>.Default
+        int Bam.Core.ICommandLineArgumentDefault<int>.Default
         {
             get
             {
@@ -69,20 +69,20 @@ namespace V2
     }
 
     public abstract class CModule :
-        Bam.Core.V2.Module
+        Bam.Core.Module
     {
-        protected Bam.Core.Array<Bam.Core.V2.Module> headerModules = new Bam.Core.Array<Bam.Core.V2.Module>();
+        protected Bam.Core.Array<Bam.Core.Module> headerModules = new Bam.Core.Array<Bam.Core.Module>();
 
         public CModule()
         {
             this.Macros.Add("OutputName", this.Macros["modulename"]);
             // default bit depth
-            this.BitDepth = (EBit)Bam.Core.V2.CommandLineProcessor.Evaluate(new DefaultBitDepth());
+            this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new DefaultBitDepth());
         }
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -99,14 +99,14 @@ namespace V2
             set;
         }
 
-        protected static Bam.Core.Array<Bam.Core.V2.Module>
+        protected static Bam.Core.Array<Bam.Core.Module>
         FlattenHierarchicalFileList(
-            Bam.Core.Array<Bam.Core.V2.Module> files)
+            Bam.Core.Array<Bam.Core.Module> files)
         {
-            var list = new Bam.Core.Array<Bam.Core.V2.Module>();
+            var list = new Bam.Core.Array<Bam.Core.Module>();
             foreach (var input in files)
             {
-                if (input is Bam.Core.V2.IModuleGroup)
+                if (input is Bam.Core.IModuleGroup)
                 {
                     foreach (var child in input.Children)
                     {
@@ -125,12 +125,12 @@ namespace V2
         InternalCreateContainer<T>(
             bool requires,
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null,
-            Bam.Core.V2.Module.PrivatePatchDelegate privatePatch = null)
+            Bam.Core.Module.PrivatePatchDelegate privatePatch = null)
             where T : CModule, new()
         {
-            var source = Bam.Core.V2.Module.Create<T>(this);
+            var source = Bam.Core.Module.Create<T>(this);
             if (null != privatePatch)
             {
                 source.PrivatePatch(privatePatch);
@@ -156,7 +156,7 @@ namespace V2
         public HeaderFileCollection
         CreateHeaderContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var headers = this.InternalCreateContainer<HeaderFileCollection>(true, wildcardPath, macroModuleOverride, filter);
@@ -167,46 +167,46 @@ namespace V2
 
     interface IAddFiles
     {
-        Bam.Core.Array<Bam.Core.V2.Module>
+        Bam.Core.Array<Bam.Core.Module>
         AddFiles(
             string path,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null);
     }
 
     public abstract class CModuleContainer<ChildModuleType> :
         CModule,
-        Bam.Core.V2.IModuleGroup,
+        Bam.Core.IModuleGroup,
         IAddFiles
-        where ChildModuleType : Bam.Core.V2.Module, Bam.Core.V2.IInputPath, Bam.Core.V2.IChildModule, new()
+        where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     {
         private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
 
         public ChildModuleType
         AddFile(
             string path,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             bool verbatim = false)
         {
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
-            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this);
+            var child = Bam.Core.Module.Create<ChildModuleType>(this);
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            child.InputPath = Bam.Core.V2.TokenizedString.Create(path, macroModule, verbatim);
-            (child as Bam.Core.V2.IChildModule).Parent = this;
+            child.InputPath = Bam.Core.TokenizedString.Create(path, macroModule, verbatim);
+            (child as Bam.Core.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);
             return child;
         }
 
-        public Bam.Core.Array<Bam.Core.V2.Module>
+        public Bam.Core.Array<Bam.Core.Module>
         AddFiles(
             string path,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            var wildcardPath = Bam.Core.V2.TokenizedString.Create(path, macroModule).Parse();
+            var wildcardPath = Bam.Core.TokenizedString.Create(path, macroModule).Parse();
 
             var dir = System.IO.Path.GetDirectoryName(wildcardPath);
             var leafname = System.IO.Path.GetFileName(wildcardPath);
@@ -219,7 +219,7 @@ namespace V2
             {
                 throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
             }
-            var modulesCreated = new Bam.Core.Array<Bam.Core.V2.Module>();
+            var modulesCreated = new Bam.Core.Array<Bam.Core.Module>();
             foreach (var filepath in files)
             {
                 var fp = filepath;
@@ -230,17 +230,17 @@ namespace V2
 
         public ChildModuleType
         AddFile(
-            Bam.Core.V2.FileKey generatedFileKey,
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.Module.ModulePreInitDelegate preInitDlg = null)
+            Bam.Core.FileKey generatedFileKey,
+            Bam.Core.Module module,
+            Bam.Core.Module.ModulePreInitDelegate preInitDlg = null)
         {
             if (!module.GeneratedPaths.ContainsKey(generatedFileKey))
             {
                 throw new System.Exception(System.String.Format("No generated path found with key '{0}'", generatedFileKey.Id));
             }
-            var child = Bam.Core.V2.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
+            var child = Bam.Core.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
             child.InputPath = module.GeneratedPaths[generatedFileKey];
-            (child as Bam.Core.V2.IChildModule).Parent = this;
+            (child as Bam.Core.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);
             child.DependsOn(module);
@@ -249,7 +249,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             // do nothing
         }
@@ -274,7 +274,7 @@ namespace V2
                 }
                 if (null != child.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
                     return;
                 }
             }
@@ -292,18 +292,18 @@ namespace V2
     public class ConsoleApplication :
         CModule
     {
-        protected Bam.Core.Array<Bam.Core.V2.Module> sourceModules = new Bam.Core.Array<Bam.Core.V2.Module>();
-        private Bam.Core.Array<Bam.Core.V2.Module> linkedModules = new Bam.Core.Array<Bam.Core.V2.Module>();
+        protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
+        private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
         private ILinkerPolicy Policy = null;
 
-        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("ExecutableFile");
+        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ExecutableFile");
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)", this));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             this.PrivatePatch(settings =>
             {
@@ -312,7 +312,7 @@ namespace V2
             });
         }
 
-        private Bam.Core.V2.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
+        private Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Add("_CONSOLE");
@@ -321,7 +321,7 @@ namespace V2
         public virtual CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
@@ -332,7 +332,7 @@ namespace V2
         public virtual Cxx.V2.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<Cxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
@@ -343,7 +343,7 @@ namespace V2
         public virtual C.ObjC.V2.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<C.ObjC.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
@@ -354,7 +354,7 @@ namespace V2
         public virtual C.ObjCxx.V2.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
@@ -371,7 +371,7 @@ namespace V2
                 throw new Bam.Core.Exception("At least one source module argument must be passed to {0} in {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, this.ToString());
             }
 
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             foreach (var source in affectedSources)
             {
@@ -385,7 +385,7 @@ namespace V2
 
         public void LinkAgainst<DependentModule>() where DependentModule : CModule, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.linkedModules.Add(dependent);
             this.UsePublicPatches(dependent);
@@ -393,7 +393,7 @@ namespace V2
 
         public void RequiredToExist<DependentModule>() where DependentModule : CModule, new()
         {
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
@@ -410,7 +410,7 @@ namespace V2
                 throw new Bam.Core.Exception("At least one source must be provided");
             }
 
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.linkedModules.Add(dependent);
             foreach (var source in affectedSources)
@@ -429,13 +429,13 @@ namespace V2
             params CModule[] affectedSources) where DependentModule : CModule, new()
         {
             this.CompileAndLinkAgainst<DependentModule>(affectedSources);
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.UsePublicPatches(dependent);
         }
 
         private void
         LinkAllForwardedDependenciesFromLibraries(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             var withForwarded = module as IForwardedLibraries;
             if (null == withForwarded)
@@ -472,11 +472,11 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
-            var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.linkedModules.ToArray());
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
+            var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.linkedModules.ToArray());
             var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, context, executable, source, headers, linked, null);
         }
@@ -484,7 +484,7 @@ namespace V2
         protected override void GetExecutionPolicy(string mode)
         {
             var className = "C.V2." + mode + "Linker";
-            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ILinkerPolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkerPolicy>.Create(className);
         }
 
         public override void
@@ -494,7 +494,7 @@ namespace V2
             var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
             if (!exists)
             {
-                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
             foreach (var source in this.linkedModules)
@@ -505,7 +505,7 @@ namespace V2
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
                     return;
                 }
             }
@@ -517,7 +517,7 @@ namespace V2
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
                     return;
                 }
             }
@@ -533,7 +533,7 @@ namespace V2
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Linker = C.V2.DefaultToolchain.Cxx_Linker(this.BitDepth);

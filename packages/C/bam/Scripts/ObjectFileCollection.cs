@@ -42,7 +42,7 @@ namespace V2
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Tool = DefaultToolchain.C_Compiler(this.BitDepth);

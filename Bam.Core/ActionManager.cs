@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     public static class CommandLineProcessor
     {
         private static StringArray Arguments;
@@ -142,5 +140,4 @@ namespace V2
             return results;
         }
     }
-}
 }

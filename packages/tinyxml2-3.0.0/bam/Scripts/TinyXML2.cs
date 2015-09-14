@@ -33,16 +33,16 @@ namespace TinyXML2
     sealed class TinyXML2StaticV2 :
         C.V2.StaticLibrary
     {
-        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+        private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
         {
             var compiler = settings as C.V2.ICommonCompilerOptions;
             if (null != compiler)
             {
-                compiler.IncludePaths.AddUnique(Bam.Core.V2.TokenizedString.Create("$(pkgroot)", appliedTo));
+                compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(pkgroot)", appliedTo));
             }
         };
 
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 

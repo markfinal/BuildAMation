@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace C
 {
 namespace V2
@@ -38,12 +38,12 @@ namespace V2
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString executablePath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             // any libraries added prior to here, need to be moved to the end
             // they are external dependencies, and thus all built modules (to be added now) may have
@@ -79,7 +79,7 @@ namespace V2
                 map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLine as object });
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, commandLine);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 }

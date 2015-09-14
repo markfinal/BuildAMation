@@ -37,9 +37,9 @@ namespace V2
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString objectFilePath,
-            Bam.Core.V2.Module source)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
         {
             var objectFile = new XcodeBuilder.V2.XcodeObjectFile(sender);
             objectFile.Source = objectFile.Project.FindOrCreateFileReference(

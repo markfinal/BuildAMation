@@ -36,7 +36,7 @@ namespace Mingw
         public static void
         Convert(
             this C.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             var objectFile = module as C.V2.ObjectFile;
@@ -135,7 +135,7 @@ namespace Mingw
         public static void
         Convert(
             this C.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != options.LanguageStandard)
@@ -156,7 +156,7 @@ namespace Mingw
         public static void
         Convert(
             this C.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != options.ExceptionHandler)
@@ -192,7 +192,7 @@ namespace Mingw
         public static void
         Convert(
             this C.V2.ICCompilerOptionsWin options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (options.CharacterSet.HasValue)
@@ -222,7 +222,7 @@ namespace Mingw
         public static void
         Convert(
             this MingwCommon.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -230,7 +230,7 @@ namespace Mingw
         public static void
         Convert(
             this MingwCommon.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -238,7 +238,7 @@ namespace Mingw
         public static void
         Convert(
             this MingwCommon.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -246,7 +246,7 @@ namespace Mingw
         public static void
         Convert(
             this Mingw.V2.ICommonCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -254,7 +254,7 @@ namespace Mingw
         public static void
         Convert(
             this Mingw.V2.ICOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -262,7 +262,7 @@ namespace Mingw
         public static void
         Convert(
             this Mingw.V2.ICxxOnlyCompilerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -281,12 +281,12 @@ namespace V2
         Mingw.V2.ICommonCompilerOptions,
         Mingw.V2.ICOnlyCompilerOptions
     {
-        public CompilerSettings(Bam.Core.V2.Module module)
+        public CompilerSettings(Bam.Core.Module module)
             : this(module, useDefaults:true)
         {
         }
 
-        public CompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        public CompilerSettings(Bam.Core.Module module, bool useDefaults)
         {
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
@@ -301,7 +301,7 @@ namespace V2
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
@@ -331,13 +331,13 @@ namespace V2
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
@@ -433,12 +433,12 @@ namespace V2
         Mingw.V2.ICommonCompilerOptions,
         Mingw.V2.ICxxOnlyCompilerOptions
     {
-        public CxxCompilerSettings(Bam.Core.V2.Module module)
+        public CxxCompilerSettings(Bam.Core.Module module)
             : this(module, useDefaults:true)
         {
         }
 
-        public CxxCompilerSettings(Bam.Core.V2.Module module, bool useDefaults)
+        public CxxCompilerSettings(Bam.Core.Module module, bool useDefaults)
         {
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
@@ -455,7 +455,7 @@ namespace V2
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICCompilerOptionsWin).Convert(module, commandLine);
@@ -485,13 +485,13 @@ namespace V2
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonCompilerOptions.SystemIncludePaths
         {
             get;
             set;
@@ -586,10 +586,10 @@ namespace V2
     {
         static Configure()
         {
-            InstallPath = Bam.Core.V2.TokenizedString.Create(@"C:\MinGW", null);
+            InstallPath = Bam.Core.TokenizedString.Create(@"C:\MinGW", null);
         }
 
-        public static Bam.Core.V2.TokenizedString InstallPath
+        public static Bam.Core.TokenizedString InstallPath
         {
             get;
             private set;
@@ -604,14 +604,14 @@ namespace V2
             this.InheritedEnvironmentVariables.Add("TEMP");
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin", this));
-            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
+            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
             this.Macros.Add("objext", ".o");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(this.Macros["BinPath"]));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
@@ -619,7 +619,7 @@ namespace V2
             }
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             if (typeof(C.Cxx.V2.ObjectFile).IsInstanceOfType(module) ||
                 typeof(C.Cxx.V2.ObjectFileCollection).IsInstanceOfType(module))
@@ -641,14 +641,14 @@ namespace V2
             }
         }
 
-        protected abstract void OverrideDefaultSettings(Bam.Core.V2.Settings settings);
+        protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
     }
 
     [C.V2.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows, C.V2.EBit.ThirtyTwo)]
     public class Compiler32 :
         CompilerBase
     {
-        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.ThirtyTwo;
@@ -661,10 +661,10 @@ namespace V2
     {
         public Compiler32Cxx()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
             var cSettings = settings as C.V2.ICommonCompilerOptions;
@@ -676,7 +676,7 @@ namespace V2
     public sealed class Compiler64 :
         CompilerBase
     {
-        protected override void OverrideDefaultSettings(Bam.Core.V2.Settings settings)
+        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             var cSettings = settings as C.V2.ICommonCompilerOptions;
             cSettings.Bits = C.V2.EBit.SixtyFour;

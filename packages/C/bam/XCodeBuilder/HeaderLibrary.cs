@@ -37,8 +37,8 @@ namespace V2
         void
         IHeaderLibraryPolicy.HeadersOnly(
             HeaderLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+            Bam.Core.ExecutionContext context,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             var library = new XcodeBuilder.V2.XcodeHeaderLibrary(sender);
             foreach (var header in headers)

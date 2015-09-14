@@ -228,7 +228,7 @@ namespace V2
         }
 
         public FileReference(
-            Bam.Core.V2.TokenizedString path,
+            Bam.Core.TokenizedString path,
             EFileType type,
             Project project,
             bool explicitType = false,
@@ -281,8 +281,8 @@ namespace V2
             return clone;
         }
 
-        private Bam.Core.V2.TokenizedString ThePath;
-        public Bam.Core.V2.TokenizedString Path
+        private Bam.Core.TokenizedString ThePath;
+        public Bam.Core.TokenizedString Path
         {
             get
             {
@@ -433,8 +433,8 @@ namespace V2
                             // but must use the definition of CONFIGURATION_BUILD_DIR to denote where it will end up
                             // cannot use the real path
                             var configName = this.Project.Module.BuildEnvironment.Configuration.ToString();
-                            var macros = new Bam.Core.V2.MacroList();
-                            macros.Add("moduleoutputdir", Bam.Core.V2.TokenizedString.Create(configName, null));
+                            var macros = new Bam.Core.MacroList();
+                            macros.Add("moduleoutputdir", Bam.Core.TokenizedString.Create(configName, null));
                             var fully = this.Path.Parse(macros);
                             var configurationBuildDir = this.Project.BuiltProductsDir + "/" + configName + "/";
                             path = Bam.Core.RelativePathUtilities.GetPath(fully, configurationBuildDir);
@@ -461,7 +461,7 @@ namespace V2
         Object
     {
         public BuildFile(
-            Bam.Core.V2.TokenizedString path,
+            Bam.Core.TokenizedString path,
             FileReference source)
         {
             this.IsA = "PBXBuildFile";
@@ -469,7 +469,7 @@ namespace V2
             this.Source = source;
         }
 
-        public Bam.Core.V2.TokenizedString Path
+        public Bam.Core.TokenizedString Path
         {
             get;
             private set;
@@ -950,20 +950,20 @@ namespace V2
         Object
     {
         public Project(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             string name)
         {
             this.IsA = "PBXProject";
             this.Name = name;
-            var projectDir = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj", module);
+            var projectDir = Bam.Core.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj", module);
             module.Macros.Add("xcodeprojectdir", projectDir);
             this.ProjectDir = projectDir.Parse();
 
-            var projectPath = Bam.Core.V2.TokenizedString.Create("$(xcodeprojectdir)/project.pbxproj", module);
+            var projectPath = Bam.Core.TokenizedString.Create("$(xcodeprojectdir)/project.pbxproj", module);
             this.ProjectPath = projectPath.Parse();
 
-            this.SourceRoot = Bam.Core.V2.TokenizedString.Create("$(pkgroot)", module).Parse();
-            this.BuildRoot = Bam.Core.V2.TokenizedString.Create("$(buildroot)", module).Parse();
+            this.SourceRoot = Bam.Core.TokenizedString.Create("$(pkgroot)", module).Parse();
+            this.BuildRoot = Bam.Core.TokenizedString.Create("$(buildroot)", module).Parse();
 
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
@@ -1027,7 +1027,7 @@ namespace V2
             }
         }
 
-        public Bam.Core.V2.Module Module
+        public Bam.Core.Module Module
         {
             get;
             private set;
@@ -1145,7 +1145,7 @@ namespace V2
 
         public FileReference
         FindOrCreateFileReference(
-            Bam.Core.V2.TokenizedString path,
+            Bam.Core.TokenizedString path,
             FileReference.EFileType type,
             bool explicitType = false,
             FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
@@ -1186,7 +1186,7 @@ namespace V2
 
         public BuildFile
         FindOrCreateBuildFile(
-            Bam.Core.V2.TokenizedString path,
+            Bam.Core.TokenizedString path,
             FileReference fileRef)
         {
             foreach (var buildFile in this.BuildFiles)
@@ -1204,7 +1204,7 @@ namespace V2
 
         public Target
         FindOrCreateTarget(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             FileReference fileRef,
             Target.EProductType type)
         {
@@ -1223,7 +1223,7 @@ namespace V2
 
         public void
         AddNewProjectConfiguration(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             var config = module.BuildEnvironment.Configuration;
             if (this.ProjectConfigurations.ContainsKey(config))
@@ -1261,7 +1261,7 @@ namespace V2
 
         public Configuration
         AddNewTargetConfiguration(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Target target)
         {
             // add configuration to target
@@ -1503,7 +1503,7 @@ namespace V2
         }
 
         public Target(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Project project,
             FileReference fileRef,
             EProductType type)
@@ -1589,9 +1589,9 @@ namespace V2
 
         public void
         SetCommonCompilationOptions(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Configuration configuration,
-            Bam.Core.V2.Settings settings)
+            Bam.Core.Settings settings)
         {
             (settings as XcodeProjectProcessor.V2.IConvertToProject).Convert(module, configuration);
         }
@@ -1936,7 +1936,7 @@ namespace V2
 
         public Project
         FindOrCreateProject(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             XcodeMeta.Type projectType)
         {
             lock(this)
@@ -1974,9 +1974,9 @@ namespace V2
     }
 
     public sealed class GenerateXcodeSchemes :
-        Bam.Core.V2.IBooleanCommandLineArgument
+        Bam.Core.IBooleanCommandLineArgument
     {
-        string Bam.Core.V2.ICommandLineArgument.ShortName
+        string Bam.Core.ICommandLineArgument.ShortName
         {
             get
             {
@@ -1984,7 +1984,7 @@ namespace V2
             }
         }
 
-        string Bam.Core.V2.ICommandLineArgument.LongName
+        string Bam.Core.ICommandLineArgument.LongName
         {
             get
             {
@@ -1992,7 +1992,7 @@ namespace V2
             }
         }
 
-        string Bam.Core.V2.ICommandLineArgument.ContextHelp
+        string Bam.Core.ICommandLineArgument.ContextHelp
         {
             get
             {
@@ -2011,9 +2011,9 @@ namespace V2
             DynamicLibrary
         }
 
-        protected XcodeMeta(Bam.Core.V2.Module module, Type type)
+        protected XcodeMeta(Bam.Core.Module module, Type type)
         {
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             var isReferenced = graph.IsReferencedModule(module);
             this.IsProjectModule = isReferenced;
 
@@ -2030,7 +2030,7 @@ namespace V2
             private set;
         }
 
-        public Bam.Core.V2.Module ProjectModule
+        public Bam.Core.Module ProjectModule
         {
             get;
             private set;
@@ -2056,7 +2056,7 @@ namespace V2
 
         public static void PreExecution()
         {
-            Bam.Core.V2.Graph.Instance.MetaData = new WorkspaceMeta();
+            Bam.Core.Graph.Instance.MetaData = new WorkspaceMeta();
         }
 
         public static void PostExecution()
@@ -2072,14 +2072,14 @@ namespace V2
             // create folder project.xcworkspace
             // create folder xcuserdata
 
-            var workspaceMeta = Bam.Core.V2.Graph.Instance.MetaData as WorkspaceMeta;
+            var workspaceMeta = Bam.Core.Graph.Instance.MetaData as WorkspaceMeta;
 
             var workspaceContents = new System.Xml.XmlDocument();
             var workspace = workspaceContents.CreateElement("Workspace");
             workspace.Attributes.Append(workspaceContents.CreateAttribute("version")).Value = "1.0";
             workspaceContents.AppendChild(workspace);
 
-            var generateProjectSchemes = Bam.Core.V2.CommandLineProcessor.Evaluate(new GenerateXcodeSchemes());
+            var generateProjectSchemes = Bam.Core.CommandLineProcessor.Evaluate(new GenerateXcodeSchemes());
 
             foreach (var project in workspaceMeta)
             {
@@ -2130,7 +2130,7 @@ namespace V2
                 workspace.AppendChild(workspaceFileRef);
             }
 
-            var workspacePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
+            var workspacePath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
             workspacePath.Parse();
 
             var workspaceDir = System.IO.Path.GetDirectoryName(workspacePath.ToString());
@@ -2154,14 +2154,14 @@ namespace V2
             var workspaceSettings = new WorkspaceSettings(workspaceDir);
             workspaceSettings.Serialize();
 
-            Bam.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Bam.Core.V2.Graph.Instance.MasterPackage.Name, workspaceDir);
+            Bam.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Bam.Core.Graph.Instance.MasterPackage.Name, workspaceDir);
         }
     }
 
     public sealed class XcodeHeaderFile :
         XcodeMeta
     {
-        public XcodeHeaderFile(Bam.Core.V2.Module module) :
+        public XcodeHeaderFile(Bam.Core.Module module) :
             base(module, Type.NA)
         {
         }
@@ -2176,7 +2176,7 @@ namespace V2
     public sealed class XcodeObjectFile :
         XcodeMeta
     {
-        public XcodeObjectFile(Bam.Core.V2.Module module) :
+        public XcodeObjectFile(Bam.Core.Module module) :
             base(module, Type.NA)
         {
         }
@@ -2198,8 +2198,8 @@ namespace V2
         XcodeMeta
     {
         public XcodeCommonProject(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString libraryPath,
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString libraryPath,
             XcodeMeta.Type type) :
             base(module, type)
         {
@@ -2227,7 +2227,7 @@ namespace V2
             this.Project.HeaderFilesGroup.AddReference(header);
         }
 
-        public void AddSource(Bam.Core.V2.Module module, FileReference source, BuildFile output, Bam.Core.V2.Settings patchSettings)
+        public void AddSource(Bam.Core.Module module, FileReference source, BuildFile output, Bam.Core.Settings patchSettings)
         {
             if (null != patchSettings)
             {
@@ -2240,7 +2240,7 @@ namespace V2
             this.Configuration.BuildFiles.Add(output);
         }
 
-        public void SetCommonCompilationOptions(Bam.Core.V2.Module module, Bam.Core.V2.Settings settings)
+        public void SetCommonCompilationOptions(Bam.Core.Module module, Bam.Core.Settings settings)
         {
             this.Target.SetCommonCompilationOptions(module, this.Configuration, settings);
         }
@@ -2321,7 +2321,7 @@ namespace V2
         XcodeCommonProject
     {
         public XcodeHeaderLibrary(
-            Bam.Core.V2.Module module) :
+            Bam.Core.Module module) :
             base(module, null, Type.NA)
         {
             this.PullInProjectPreOrPostBuildSteps();
@@ -2332,8 +2332,8 @@ namespace V2
         XcodeCommonProject
     {
         public XcodeStaticLibrary(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString libraryPath) :
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString libraryPath) :
             base(module, libraryPath, Type.StaticLibrary)
         {
             var library = this.Project.FindOrCreateFileReference(
@@ -2353,8 +2353,8 @@ namespace V2
         XcodeCommonProject
     {
         public XcodeCommonLinkable(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString libraryPath,
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString libraryPath,
             XcodeMeta.Type type) :
             base(module, libraryPath, type)
         {
@@ -2413,8 +2413,8 @@ namespace V2
         XcodeCommonLinkable
     {
         public XcodeProgram(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString executablePath) :
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString executablePath) :
             base(module, executablePath, Type.Application)
         {
             var application = this.Project.FindOrCreateFileReference(
@@ -2434,8 +2434,8 @@ namespace V2
         XcodeCommonLinkable
     {
         public XcodeDynamicLibrary(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.TokenizedString libraryPath) :
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString libraryPath) :
             base(module, libraryPath, Type.DynamicLibrary)
         {
             var dynamicLibrary = this.Project.FindOrCreateFileReference(

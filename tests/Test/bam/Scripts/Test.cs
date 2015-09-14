@@ -27,11 +27,11 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2;
+using Bam.Core;
 namespace Test
 {
     public sealed class LocalPolicy :
-        Bam.Core.V2.ISitePolicy
+        Bam.Core.ISitePolicy
     {
         void
         ISitePolicy.DefineLocalSettings(
@@ -57,14 +57,14 @@ namespace Test
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main.c", this);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 // example of switching out the tool within a module
-                this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
+                this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<Mingw.V2.Compiler32>();
             }
         }
     }
@@ -74,10 +74,10 @@ namespace Test
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main.c", this);
             this.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
@@ -122,7 +122,7 @@ namespace Test
         }
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class BuildWindowsApplicationV2 :
         C.V2.GUIApplication
     {

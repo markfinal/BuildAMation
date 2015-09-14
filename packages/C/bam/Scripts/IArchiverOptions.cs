@@ -35,15 +35,15 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonArchiverOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this C.V2.ICommonArchiverOptions settings, Bam.Core.Module module)
         {
             settings.OutputType = EArchiverOutput.StaticLibrary;
         }
     }
 }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
     {
         C.EArchiverOutput OutputType
         {

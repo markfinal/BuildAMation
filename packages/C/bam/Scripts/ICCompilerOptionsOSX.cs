@@ -39,14 +39,14 @@ namespace DefaultSettings
         public static void
         Defaults(
             this C.V2.ICCompilerOptionsOSX settings,
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
         }
         public static void
         Empty(
             this C.V2.ICCompilerOptionsOSX settings)
         {
-            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
         public static void
         SharedSettings(
@@ -54,7 +54,7 @@ namespace DefaultSettings
             C.V2.ICCompilerOptionsOSX lhs,
             C.V2.ICCompilerOptionsOSX rhs)
         {
-            shared.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>(lhs.FrameworkSearchDirectories.Intersect(rhs.FrameworkSearchDirectories));
+            shared.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Intersect(rhs.FrameworkSearchDirectories));
         }
         public static void
         Delta(
@@ -62,7 +62,7 @@ namespace DefaultSettings
             C.V2.ICCompilerOptionsOSX lhs,
             C.V2.ICCompilerOptionsOSX rhs)
         {
-            delta.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>(lhs.FrameworkSearchDirectories.Except(rhs.FrameworkSearchDirectories));
+            delta.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Except(rhs.FrameworkSearchDirectories));
         }
         public static void
         Clone(
@@ -76,11 +76,11 @@ namespace DefaultSettings
         }
     }
 }
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICCompilerOptionsOSX :
-        Bam.Core.V2.ISettingsBase
+        Bam.Core.ISettingsBase
     {
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> FrameworkSearchDirectories
+        Bam.Core.Array<Bam.Core.TokenizedString> FrameworkSearchDirectories
         {
             get;
             set;
@@ -96,7 +96,7 @@ namespace V2
             public static void
             Defaults(
                 this C.V2.ICCompilerOptionsWin settings,
-                Bam.Core.V2.Module module)
+                Bam.Core.Module module)
             {
                 settings.CharacterSet = ECharacterSet.NotSet;
             }
@@ -130,9 +130,9 @@ namespace V2
             }
         }
     }
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICCompilerOptionsWin :
-        Bam.Core.V2.ISettingsBase
+        Bam.Core.ISettingsBase
     {
         C.ECharacterSet? CharacterSet
         {

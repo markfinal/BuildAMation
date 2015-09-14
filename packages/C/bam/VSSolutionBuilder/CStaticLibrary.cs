@@ -37,17 +37,17 @@ namespace V2
         void
         ILibrarianPolicy.Archive(
             StaticLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             if (0 == objectFiles.Count)
             {
                 return;
             }
 
-            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
             var project = solution.EnsureProjectExists(sender);
             var config = project.GetConfiguration(sender);
 
@@ -66,7 +66,7 @@ namespace V2
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
-                    typeof(Bam.Core.V2.Module),
+                    typeof(Bam.Core.Module),
                     typeof(VSSolutionBuilder.V2.VSSettingsGroup),
                     typeof(string)
                 };

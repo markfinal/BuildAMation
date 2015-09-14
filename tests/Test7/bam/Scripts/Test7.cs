@@ -27,29 +27,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace Test7
 {
     sealed class ExplicitDynamicLibraryV2 :
         C.V2.DynamicLibrary
     {
-        private Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+        private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null == compiler)
                 {
                     return;
                 }
-                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
             };
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            this.Macros["OutputName"] = Bam.Core.V2.TokenizedString.Create("ExplicitDynamicLibrary", null);
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.Create("ExplicitDynamicLibrary", null);
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 

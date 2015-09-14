@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     using System.Linq;
 
     [System.AttributeUsage(System.AttributeTargets.Class)]
@@ -299,7 +297,7 @@ namespace V2
             }
 
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
-            var metaName = System.String.Format("{0}Builder.V2.{0}Meta", State.BuildMode);
+            var metaName = System.String.Format("{0}Builder.{0}Meta", State.BuildMode);
             var metaDataType = State.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)
             {
@@ -457,5 +455,4 @@ namespace V2
             ExecutePostBuild(metaDataType);
         }
     }
-}
 }

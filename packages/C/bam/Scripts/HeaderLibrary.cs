@@ -33,7 +33,7 @@ namespace V2
 {
     public interface IForwardedLibraries
     {
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> ForwardedLibraries
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> ForwardedLibraries
         {
             get;
         }
@@ -43,7 +43,7 @@ namespace V2
         CModule,
         IForwardedLibraries
     {
-        private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
         private IHeaderLibraryPolicy Policy;
 
         public override void
@@ -52,14 +52,14 @@ namespace V2
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
         {
             if (null == this.Policy)
             {
                 return;
             }
 
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
             this.Policy.HeadersOnly(this, context, headers);
         }
 
@@ -73,17 +73,17 @@ namespace V2
             case "Xcode":
                 {
                     var className = "C.V2." + mode + "HeaderLibrary";
-                    this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
+                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
                 }
                 break;
             }
         }
 
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> IForwardedLibraries.ForwardedLibraries
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.forwardedDeps.ToArray());
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.forwardedDeps.ToArray());
             }
         }
 
@@ -92,7 +92,7 @@ namespace V2
         {
             // no graph dependency, as it's just using patches
             // note that this won't add the module into the graph, unless a link dependency is made
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.UsePublicPatches(dependent);
             if (!(dependent is HeaderLibrary))
             {

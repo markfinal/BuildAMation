@@ -27,23 +27,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace Test8
 {
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class ApplicationTestV2 :
         C.V2.ConsoleApplication
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
             var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
 
             // TODO: required to exist?
-            var dynamicLib = Bam.Core.V2.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibraryV2>();
+            var dynamicLib = Bam.Core.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibraryV2>();
             this.Requires(dynamicLib);
             source.UsePublicPatches(dynamicLib);
 
@@ -60,13 +60,13 @@ namespace Test8
         }
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.Windows)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class RuntimePackage :
         Publisher.V2.Package
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

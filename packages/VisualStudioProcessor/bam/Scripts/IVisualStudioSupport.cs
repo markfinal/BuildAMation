@@ -35,7 +35,7 @@ namespace V2
     {
         void
         Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition = null);
     }

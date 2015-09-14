@@ -35,13 +35,13 @@ namespace V2
     {
         public static class MocExtension
         {
-            public static System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>
+            public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
             MocHeader(
                 this C.Cxx.V2.ObjectFileCollection module,
                 C.V2.HeaderFile header)
             {
                 // moc file
-                var mocFile = Bam.Core.V2.Module.Create<MocModule>(module);
+                var mocFile = Bam.Core.Module.Create<MocModule>(module);
                 mocFile.SourceHeader = header;
                 // TODO: reinstate this - but causes an exception in finding the encapsulating module
                 //mocFile.DependsOn(header);
@@ -49,29 +49,29 @@ namespace V2
                 // compile source
                 var objFile = module.AddFile(MocModule.Key, mocFile);
 
-                return new System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>(mocFile, objFile);
+                return new System.Tuple<Bam.Core.Module, Bam.Core.Module>(mocFile, objFile);
             }
         }
     }
 
     public sealed class MocSettings :
-        Bam.Core.V2.Settings
+        Bam.Core.Settings
     {
     }
 
     public sealed class MocTool :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             return new MocSettings();
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return Bam.Core.V2.TokenizedString.Create(System.IO.Path.Combine(new[] { QtCommon.V2.Configure.InstallPath.Parse(), "bin", "moc" }), null);
+                return Bam.Core.TokenizedString.Create(System.IO.Path.Combine(new[] { QtCommon.V2.Configure.InstallPath.Parse(), "bin", "moc" }), null);
             }
         }
 
@@ -87,26 +87,26 @@ namespace V2
         void
         Moc(
             MocModule sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool mocCompiler,
-            Bam.Core.V2.TokenizedString generatedMocSource,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool mocCompiler,
+            Bam.Core.TokenizedString generatedMocSource,
             C.V2.HeaderFile source);
     }
 
     public class MocModule :
         C.V2.SourceFile
     {
-        private Bam.Core.V2.PreBuiltTool Compiler;
+        private Bam.Core.PreBuiltTool Compiler;
         private C.V2.HeaderFile SourceHeaderModule;
         private IMocGenerationPolicy Policy = null;
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(encapsulatingpkgbuilddir)/$(config)/@basename($(mocheaderpath))_moc.cpp", this));
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<MocTool>();
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(encapsulatingpkgbuilddir)/$(config)/@basename($(mocheaderpath))_moc.cpp", this));
+            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<MocTool>();
             this.Requires(this.Compiler);
         }
 
@@ -130,21 +130,21 @@ namespace V2
             var generatedPath = this.GeneratedPaths[Key].Parse();
             if (!System.IO.File.Exists(generatedPath))
             {
-                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
             var sourceFileWriteTime = System.IO.File.GetLastWriteTime(generatedPath);
             var headerFileWriteTime = System.IO.File.GetLastWriteTime(this.SourceHeaderModule.InputPath.Parse());
             if (headerFileWriteTime > sourceFileWriteTime)
             {
-                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourceHeaderModule.InputPath);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourceHeaderModule.InputPath);
                 return;
             }
         }
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             this.Policy.Moc(this, context, this.Compiler, this.GeneratedPaths[Key], this.SourceHeader);
         }
@@ -154,7 +154,7 @@ namespace V2
             string mode)
         {
             var className = "QtCommon.V2." + mode + "MocGeneration";
-            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IMocGenerationPolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<IMocGenerationPolicy>.Create(className);
         }
     }
 }

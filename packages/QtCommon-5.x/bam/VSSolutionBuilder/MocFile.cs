@@ -37,14 +37,14 @@ namespace V2
         void
         IMocGenerationPolicy.Moc(
             MocModule sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool mocCompiler,
-            Bam.Core.V2.TokenizedString generatedMocSource,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool mocCompiler,
+            Bam.Core.TokenizedString generatedMocSource,
             C.V2.HeaderFile source)
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 

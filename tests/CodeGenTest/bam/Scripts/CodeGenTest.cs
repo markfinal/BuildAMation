@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 using CodeGenTest.V2.CodeGenExtension;
 namespace CodeGenTest
 {
@@ -37,26 +37,26 @@ namespace V2
     {
         public static class CodeGenExtension
         {
-            public static System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>
+            public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
             GenerateSource(
                 this C.V2.CObjectFileCollection module)
             {
                 // generated source file
-                var generatedSourceFile = Bam.Core.V2.Module.Create<GeneratedSourceModule>(module);
+                var generatedSourceFile = Bam.Core.Module.Create<GeneratedSourceModule>(module);
 
                 // compile source
                 var objFile = module.AddFile(GeneratedSourceModule.Key, generatedSourceFile);
 
-                return new System.Tuple<Bam.Core.V2.Module, Bam.Core.V2.Module>(generatedSourceFile, objFile);
+                return new System.Tuple<Bam.Core.Module, Bam.Core.Module>(generatedSourceFile, objFile);
             }
         }
     }
 
     public sealed class BuildCodeGenTool :
         C.V2.ConsoleApplication,
-        Bam.Core.V2.ICommandLineTool
+        Bam.Core.ICommandLineTool
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -98,7 +98,7 @@ namespace V2
     }
 
     public sealed class GeneratedSourceSettings :
-        Bam.Core.V2.Settings
+        Bam.Core.Settings
     {
     }
 
@@ -107,22 +107,22 @@ namespace V2
         void
         GenerateSource(
             GeneratedSourceModule sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString generatedFilePath);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString generatedFilePath);
     }
 
     public class GeneratedSourceModule :
         C.V2.SourceFile
     {
-        private Bam.Core.V2.ICommandLineTool Compiler;
+        private Bam.Core.ICommandLineTool Compiler;
         private IGeneratedSourcePolicy Policy;
 
         public GeneratedSourceModule()
         {
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(buildroot)/Generated.c", this));
-            this.Compiler = Bam.Core.V2.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
-            this.Requires(this.Compiler as Bam.Core.V2.Module);
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(buildroot)/Generated.c", this));
+            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
+            this.Requires(this.Compiler as Bam.Core.Module);
         }
 
         public override void
@@ -133,7 +133,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             if (null == this.Policy)
             {
@@ -148,14 +148,14 @@ namespace V2
             string mode)
         {
             var className = "CodeGenTest.V2." + mode + "GenerateSource";
-            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
         }
     }
 }
     public sealed class TestAppV2 :
         C.V2.ConsoleApplication
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 

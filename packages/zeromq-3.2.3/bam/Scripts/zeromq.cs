@@ -27,20 +27,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 using System.Linq;
 namespace zeromq
 {
     public sealed class ZMQPlatformHeader :
         C.V2.CModule
     {
-        private static Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("ZeroMQ platform header");
+        private static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ZeroMQ platform header");
 
         protected override void
         Init(Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths.Add(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)/platform.hpp", this));
+            this.GeneratedPaths.Add(Key, Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(config)/platform.hpp", this));
         }
 
         public override void
@@ -50,7 +50,7 @@ namespace zeromq
             var outputPath = this.GeneratedPaths[Key].Parse();
             if (!System.IO.File.Exists(outputPath))
             {
-                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
 
@@ -60,7 +60,7 @@ namespace zeromq
         protected override void
         ExecuteInternal(ExecutionContext context)
         {
-            var source = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/src/platform.hpp.in", this);
+            var source = Bam.Core.TokenizedString.Create("$(pkgroot)/src/platform.hpp.in", this);
 
             // parse the input header, and modify it while writing it out
             // modifications are platform specific
@@ -118,11 +118,11 @@ namespace zeromq
     public sealed class ZMQSharedLibraryV2 :
         C.Cxx.V2.DynamicLibrary
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            this.Macros.Add("zmqsrcdir", Bam.Core.V2.TokenizedString.Create("$(pkgroot)/src", this));
+            this.Macros.Add("zmqsrcdir", Bam.Core.TokenizedString.Create("$(pkgroot)/src", this));
 
             var source = this.CreateCxxSourceContainer("$(zmqsrcdir)/*.cpp", macroModuleOverride: this);
 
@@ -142,7 +142,7 @@ namespace zeromq
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX | Bam.Core.EPlatform.Linux))
             {
                 // TODO: is there a call for a CompileWith function?
-                var platformHeader = Bam.Core.V2.Graph.Instance.FindReferencedModule<ZMQPlatformHeader>();
+                var platformHeader = Bam.Core.Graph.Instance.FindReferencedModule<ZMQPlatformHeader>();
                 source.DependsOn(platformHeader);
                 source.UsePublicPatches(platformHeader);
                 // TODO: end of function
@@ -150,7 +150,7 @@ namespace zeromq
                 source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(config)", this));
                 });
 
                 if (this.Linker is Clang.V2.LinkerBase)

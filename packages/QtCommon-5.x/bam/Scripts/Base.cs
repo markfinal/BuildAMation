@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 using System.Linq;
 namespace QtCommon
 {
@@ -36,8 +36,8 @@ namespace V2
     public static class Configure
     {
         class QtInstallPath :
-            Bam.Core.V2.IStringCommandLineArgument,
-            Bam.Core.V2.ICommandLineArgumentDefault<string>
+            Bam.Core.IStringCommandLineArgument,
+            Bam.Core.ICommandLineArgumentDefault<string>
         {
             string ICommandLineArgument.ContextHelp
             {
@@ -67,7 +67,7 @@ namespace V2
             {
                 get
                 {
-                    var graph = Bam.Core.V2.Graph.Instance;
+                    var graph = Bam.Core.Graph.Instance;
                     var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
 
                     switch (Bam.Core.OSUtilities.CurrentOS)
@@ -146,18 +146,18 @@ namespace V2
 
         static Configure()
         {
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
 
-            var qtInstallDir = Bam.Core.V2.CommandLineProcessor.Evaluate(new QtInstallPath());
+            var qtInstallDir = Bam.Core.CommandLineProcessor.Evaluate(new QtInstallPath());
             if (!System.IO.Directory.Exists(qtInstallDir))
             {
                 throw new Bam.Core.Exception("Qt install dir, {0}, does not exist", qtInstallDir);
             }
-            InstallPath = Bam.Core.V2.TokenizedString.Create(qtInstallDir, null);
+            InstallPath = Bam.Core.TokenizedString.Create(qtInstallDir, null);
         }
 
-        public static Bam.Core.V2.TokenizedString InstallPath
+        public static Bam.Core.TokenizedString InstallPath
         {
             get;
             private set;
@@ -177,10 +177,10 @@ namespace V2
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Macros.Add("QtFrameworkPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/lib", this));
+            this.Macros.Add("QtFrameworkPath", Bam.Core.TokenizedString.Create("$(QtInstallPath)/lib", this));
 
             this.PublicPatch((settings, appliedTo) =>
             {
@@ -193,7 +193,7 @@ namespace V2
                 var osxLinker = settings as C.V2.ILinkerOptionsOSX;
                 if (null != osxLinker)
                 {
-                    osxLinker.Frameworks.AddUnique(Bam.Core.V2.TokenizedString.Create("$(QtFrameworkPath)/Qt$(QtModuleName).framework", this));
+                    osxLinker.Frameworks.AddUnique(Bam.Core.TokenizedString.Create("$(QtFrameworkPath)/Qt$(QtModuleName).framework", this));
                     osxLinker.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
                 }
             });
@@ -204,7 +204,7 @@ namespace V2
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
         {
             // prebuilt - no execution
         }
@@ -228,22 +228,22 @@ namespace V2
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Macros.Add("QtIncludePath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/include", this));
-            this.Macros.Add("QtLibraryPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/lib", this));
-            this.Macros.Add("QtBinaryPath", Bam.Core.V2.TokenizedString.Create("$(QtInstallPath)/bin", this));
-            this.Macros.Add("QtConfig", Bam.Core.V2.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
+            this.Macros.Add("QtIncludePath", Bam.Core.TokenizedString.Create("$(QtInstallPath)/include", this));
+            this.Macros.Add("QtLibraryPath", Bam.Core.TokenizedString.Create("$(QtInstallPath)/lib", this));
+            this.Macros.Add("QtBinaryPath", Bam.Core.TokenizedString.Create("$(QtInstallPath)/bin", this));
+            this.Macros.Add("QtConfig", Bam.Core.TokenizedString.Create((this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ? "d" : string.Empty, null));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtBinaryPath)/$(dynamicprefix)Qt5$(QtModuleName)$(QtConfig)$(dynamicext)", this);
-                this.GeneratedPaths[ImportLibraryKey] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)Qt5$(QtModuleName)$(QtConfig)$(libext)", this);
+                this.GeneratedPaths[Key] = Bam.Core.TokenizedString.Create("$(QtBinaryPath)/$(dynamicprefix)Qt5$(QtModuleName)$(QtConfig)$(dynamicext)", this);
+                this.GeneratedPaths[ImportLibraryKey] = Bam.Core.TokenizedString.Create("$(QtLibraryPath)/$(libprefix)Qt5$(QtModuleName)$(QtConfig)$(libext)", this);
             }
             else
             {
-                this.GeneratedPaths[Key] = Bam.Core.V2.TokenizedString.Create("$(QtLibraryPath)/$(dynamicprefix)Qt5$(QtModuleName)$(dynamicext)", this);
+                this.GeneratedPaths[Key] = Bam.Core.TokenizedString.Create("$(QtLibraryPath)/$(dynamicprefix)Qt5$(QtModuleName)$(dynamicext)", this);
             }
 
             this.PublicPatch((settings, appliedTo) =>
@@ -267,7 +267,7 @@ namespace V2
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.V2.ExecutionContext context)
+        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
         {
             // prebuilt - no execution
         }

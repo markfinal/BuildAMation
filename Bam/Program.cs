@@ -52,14 +52,14 @@ namespace Bam
                 Core.Log.Info("    bam [[option[=value]]...]");
                 Core.Log.Info("");
                 // TODO: this does not cover any arguments in the package assembly
-                var argumentTypes = System.AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => typeof(Core.V2.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
+                var argumentTypes = System.AppDomain.CurrentDomain.GetAssemblies().SelectMany(s => s.GetTypes()).Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
                 Core.Log.Info("Options");
                 foreach (var argType in argumentTypes)
                 {
-                    var arg = System.Activator.CreateInstance(argType) as Core.V2.ICommandLineArgument;
-                    if (arg is Core.V2.ICustomHelpText)
+                    var arg = System.Activator.CreateInstance(argType) as Core.ICommandLineArgument;
+                    if (arg is Core.ICustomHelpText)
                     {
-                        Core.Log.Info("{0}: {1}", (arg as Core.V2.ICustomHelpText).OptionHelp, arg.ContextHelp);
+                        Core.Log.Info("{0}: {1}", (arg as Core.ICustomHelpText).OptionHelp, arg.ContextHelp);
                     }
                     else
                     {
@@ -91,7 +91,7 @@ namespace Bam
 
             if (UseV2)
             {
-                var verbosityLevel = (Core.EVerboseLevel)Core.V2.CommandLineProcessor.Evaluate(new Core.V2.VerbosityLevel());
+                var verbosityLevel = (Core.EVerboseLevel)Core.CommandLineProcessor.Evaluate(new Core.VerbosityLevel());
                 switch (verbosityLevel)
                 {
                     case Core.EVerboseLevel.None:
@@ -105,56 +105,56 @@ namespace Bam
                         throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
                 }
 
-                Core.State.ForceDefinitionFileUpdate = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.ForceDefinitionFileUpdate());
+                Core.State.ForceDefinitionFileUpdate = Core.CommandLineProcessor.Evaluate(new Core.ForceDefinitionFileUpdate());
 
-                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.PrintHelp()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.PrintHelp()))
                 {
                     CommandLineArgumentHelper.PrintHelp();
                     return;
                 }
 
-                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.PrintVersion()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.PrintVersion()))
                 {
                     Core.Log.MessageAll(Core.State.VersionString);
                     return;
                 }
 
-                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.CreateDebugProject()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.CreateDebugProject()))
                 {
-                    V2.DebugProject.Create();
+                    DebugProject.Create();
                     return;
                 }
 
-                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.MakePackage()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.MakePackage()))
                 {
                     Core.PackageUtilities.MakePackage();
                     return;
                 }
 
-                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.AddDependentPackage()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.AddDependentPackage()))
                 {
                     Core.PackageUtilities.AddDependentPackage();
                     return;
                 }
 
-                if (Core.V2.CommandLineProcessor.Evaluate(new Core.V2.ShowDefinitionFile()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.ShowDefinitionFile()))
                 {
                     Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
-                    Core.V2.Graph.Instance.MasterPackage.Show();
+                    Core.Graph.Instance.MasterPackage.Show();
                     return;
                 }
 
                 // configure
-                Core.State.BuildRoot = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildRoot());
-                Core.State.CompileWithDebugSymbols = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.UseDebugSymbols());
-                Core.State.BuildMode = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildMode());
+                Core.State.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
+                Core.State.CompileWithDebugSymbols = Core.CommandLineProcessor.Evaluate(new Core.UseDebugSymbols());
+                Core.State.BuildMode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
                 if (null == Core.State.BuildMode)
                 {
                     throw new Core.Exception("No build mode specified");
                 }
 
-                var configs = new Core.Array<Core.V2.Environment>();
-                var requestedConfigs = Core.V2.CommandLineProcessor.Evaluate(new Core.V2.BuildConfigurations());
+                var configs = new Core.Array<Core.Environment>();
+                var requestedConfigs = Core.CommandLineProcessor.Evaluate(new Core.BuildConfigurations());
                 if (0 == requestedConfigs.Count)
                 {
                     // default
@@ -168,7 +168,7 @@ namespace Bam
                         {
                             case "debug":
                                 {
-                                    var env = new Core.V2.Environment();
+                                    var env = new Core.Environment();
                                     env.Configuration = Core.EConfiguration.Debug;
                                     configs.Add(env);
                                 }
@@ -176,7 +176,7 @@ namespace Bam
 
                             case "optimized":
                                 {
-                                    var env = new Core.V2.Environment();
+                                    var env = new Core.Environment();
                                     env.Configuration = Core.EConfiguration.Optimized;
                                     configs.Add(env);
                                 }
@@ -184,7 +184,7 @@ namespace Bam
 
                             case "profile":
                                 {
-                                    var env = new Core.V2.Environment();
+                                    var env = new Core.Environment();
                                     env.Configuration = Core.EConfiguration.Profile;
                                     configs.Add(env);
                                 }
@@ -192,7 +192,7 @@ namespace Bam
 
                             case "final":
                                 {
-                                    var env = new Core.V2.Environment();
+                                    var env = new Core.Environment();
                                     env.Configuration = Core.EConfiguration.Final;
                                     configs.Add(env);
                                 }
@@ -206,7 +206,7 @@ namespace Bam
 
                 try
                 {
-                    Core.V2.EntryPoint.Execute(configs);
+                    Core.EntryPoint.Execute(configs);
                 }
                 catch (Bam.Core.Exception exception)
                 {

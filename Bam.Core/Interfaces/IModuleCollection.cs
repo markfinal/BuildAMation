@@ -29,10 +29,7 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     public interface IModuleGroup
     {
     }
-}
 }

@@ -37,19 +37,19 @@ namespace V2
         void
         IGeneratedSourcePolicy.GenerateSource(
             GeneratedSourceModule sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString generatedFilePath)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString generatedFilePath)
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
             var command = new System.Text.StringBuilder();
             // recode the executable path for Xcode
-            var xcodePath = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", encapsulating).Parse();
+            var xcodePath = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(config)", encapsulating).Parse();
             xcodePath += "/" + System.IO.Path.GetFileName(compiler.Executable.Parse());
             command.AppendFormat(xcodePath);
             // TODO: change this to a configuration directory really
-            command.AppendFormat(" {0}", Bam.Core.V2.TokenizedString.Create("$(buildroot)", sender).Parse());
+            command.AppendFormat(" {0}", Bam.Core.TokenizedString.Create("$(buildroot)", sender).Parse());
             command.AppendFormat(" {0}", "Generated");
 
             var commands = new Bam.Core.StringArray();
@@ -61,7 +61,7 @@ namespace V2
             var application = new XcodeBuilder.V2.XcodeProgram(encapsulating, encapsulating.GeneratedPaths[C.V2.ConsoleApplication.Key]);
             application.AddPreBuildCommands(commands);
 
-            var compilerProject = (compiler as Bam.Core.V2.Module).MetaData as XcodeBuilder.V2.XcodeCommonProject;
+            var compilerProject = (compiler as Bam.Core.Module).MetaData as XcodeBuilder.V2.XcodeCommonProject;
             application.RequiresProject(compilerProject);
         }
     }

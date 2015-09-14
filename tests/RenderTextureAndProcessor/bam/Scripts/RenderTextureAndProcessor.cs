@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2;
+using Bam.Core;
 namespace RenderTextureAndProcessor
 {
     sealed class RenderTextureV2 :
@@ -35,7 +35,7 @@ namespace RenderTextureAndProcessor
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -47,7 +47,7 @@ namespace RenderTextureAndProcessor
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/common", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/source/common", this));
 
                 var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -86,7 +86,7 @@ namespace RenderTextureAndProcessor
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -97,7 +97,7 @@ namespace RenderTextureAndProcessor
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/common", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/source/common", this));
 
                     var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -129,7 +129,7 @@ namespace RenderTextureAndProcessor
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

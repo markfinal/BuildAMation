@@ -155,7 +155,7 @@ namespace V2
 
         public VSSettingsGroup(
             ESettingsGroup group,
-            Bam.Core.V2.TokenizedString include = null)
+            Bam.Core.TokenizedString include = null)
         {
             this.Group = group;
             this.Include = include;
@@ -168,7 +168,7 @@ namespace V2
             private set;
         }
 
-        public Bam.Core.V2.TokenizedString Include
+        public Bam.Core.TokenizedString Include
         {
             get;
             private set;
@@ -212,7 +212,7 @@ namespace V2
         public void
         AddSetting(
             string name,
-            Bam.Core.V2.TokenizedString path,
+            Bam.Core.TokenizedString path,
             string condition = null,
             bool inheritExisting = false)
         {
@@ -228,7 +228,7 @@ namespace V2
         public void
         AddSetting(
             string name,
-            Bam.Core.Array<Bam.Core.V2.TokenizedString> value,
+            Bam.Core.Array<Bam.Core.TokenizedString> value,
             string condition = null,
             bool inheritExisting = false)
         {
@@ -353,7 +353,7 @@ namespace V2
 
         public VSProjectConfiguration(
             VSProject project,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.EPlatform platform)
         {
             this.Project = project;
@@ -421,7 +421,7 @@ namespace V2
             }
         }
 
-        public Bam.Core.V2.Module Module
+        public Bam.Core.Module Module
         {
             get;
             private set;
@@ -556,13 +556,13 @@ namespace V2
 
         public void
         SetOutputPath(
-            Bam.Core.V2.TokenizedString path)
+            Bam.Core.TokenizedString path)
         {
-            var macros = new Bam.Core.V2.MacroList();
+            var macros = new Bam.Core.MacroList();
             // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
             // but it does not seem to be a show stopper if it doesn't
-            macros.Add("pkgbuilddir", Bam.Core.V2.TokenizedString.Create("$(ProjectDir)", null, verbatim: true));
-            macros.Add("modulename", Bam.Core.V2.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
+            macros.Add("pkgbuilddir", Bam.Core.TokenizedString.Create("$(ProjectDir)", null, verbatim: true));
+            macros.Add("modulename", Bam.Core.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
             var outDir = path.Parse(macros);
             outDir = System.IO.Path.GetDirectoryName(outDir);
             outDir += "\\";
@@ -586,7 +586,7 @@ namespace V2
         public VSSettingsGroup
         GetSettingsGroup(
             VSSettingsGroup.ESettingsGroup group,
-            Bam.Core.V2.TokenizedString include = null,
+            Bam.Core.TokenizedString include = null,
             bool uniqueToProject = false)
         {
             lock (this.SettingGroups)
@@ -626,8 +626,8 @@ namespace V2
 
         public void
         AddSourceFile(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.Settings patchSettings)
+            Bam.Core.Module module,
+            Bam.Core.Settings patchSettings)
         {
             var settings = module.MetaData as VSSettingsGroup;
             if (null != patchSettings)
@@ -640,7 +640,7 @@ namespace V2
 
         public void
         AddOtherFile(
-            Bam.Core.V2.IInputPath other)
+            Bam.Core.IInputPath other)
         {
             var otherGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.CustomBuild, other.InputPath);
             this.Project.AddOtherFile(otherGroup);
@@ -789,7 +789,7 @@ namespace V2
 
         public VSProject
         EnsureProjectExists(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             var moduleType = module.GetType();
             lock (this.ProjectMap)
@@ -918,7 +918,7 @@ namespace V2
 
         public void
         AddHeader(
-            Bam.Core.V2.TokenizedString path)
+            Bam.Core.TokenizedString path)
         {
             lock (this.Headers)
             {
@@ -933,7 +933,7 @@ namespace V2
 
         public void
         AddSource(
-            Bam.Core.V2.TokenizedString path)
+            Bam.Core.TokenizedString path)
         {
             lock (this.Source)
             {
@@ -948,7 +948,7 @@ namespace V2
 
         public void
         AddOther(
-            Bam.Core.V2.TokenizedString path)
+            Bam.Core.TokenizedString path)
         {
             lock (this.Others)
             {
@@ -1019,10 +1019,10 @@ namespace V2
     {
         public VSProject(
             VSSolution solution,
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             this.Solution = solution;
-            this.ProjectPath = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module).Parse();
+            this.ProjectPath = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module).Parse();
             this.Guid = new DeterministicGuid(this.ProjectPath).Guid;
             this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
@@ -1036,7 +1036,7 @@ namespace V2
 
         public VSProjectConfiguration
         GetConfiguration(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             lock (this.Configurations)
             {
@@ -1071,7 +1071,7 @@ namespace V2
         public  VSSettingsGroup
         GetUniqueSettingsGroup(
             VSSettingsGroup.ESettingsGroup group,
-            Bam.Core.V2.TokenizedString include = null)
+            Bam.Core.TokenizedString include = null)
         {
             lock (this.ProjectSettings)
             {
@@ -1346,7 +1346,7 @@ namespace V2
         public static void
         PreExecution()
         {
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             graph.MetaData = new VSSolution();
         }
 
@@ -1371,7 +1371,7 @@ namespace V2
         public static void
         PostExecution()
         {
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             var solution = graph.MetaData as VSSolution;
             if (0 == solution.Projects.Count())
             {
@@ -1409,7 +1409,7 @@ namespace V2
                 Bam.Core.Log.DebugMessage(PrettyPrintXMLDoc(projectFilterXML));
             }
 
-            var solutionPath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/$(masterpackagename).sln", null).Parse();
+            var solutionPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).sln", null).Parse();
             var solutionContents = solution.Serialize();
             using (var writer = new System.IO.StreamWriter(solutionPath))
             {

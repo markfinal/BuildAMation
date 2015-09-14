@@ -29,11 +29,11 @@
 #endregion // License
 namespace CocoaTest1
 {
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.OSX)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
     sealed class CLibraryV2 :
         C.V2.StaticLibrary
     {
-        protected override void Init (Bam.Core.V2.Module parent)
+        protected override void Init (Bam.Core.Module parent)
         {
             base.Init (parent);
 
@@ -41,11 +41,11 @@ namespace CocoaTest1
         }
     }
 
-    [Bam.Core.V2.PlatformFilter(Bam.Core.EPlatform.OSX)]
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
     sealed class CocoaTestV2 :
         C.V2.GUIApplication
     {
-        protected override void Init (Bam.Core.V2.Module parent)
+        protected override void Init (Bam.Core.Module parent)
         {
             base.Init (parent);
 
@@ -58,7 +58,7 @@ namespace CocoaTest1
                     var linker = settings as C.V2.ILinkerOptionsOSX;
                     if (null != linker)
                     {
-                        linker.Frameworks.Add(Bam.Core.V2.TokenizedString.Create("Cocoa", null, verbatim:true));
+                        linker.Frameworks.Add(Bam.Core.TokenizedString.Create("Cocoa", null, verbatim:true));
                     }
                 });
         }
@@ -69,7 +69,7 @@ namespace CocoaTest1
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

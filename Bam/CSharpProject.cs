@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam
 {
-namespace V2
-{
     public static class DebugProject
     {
         private static readonly string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
@@ -180,7 +178,7 @@ namespace V2
             allDefines.Add(Core.PackageUtilities.VersionDefineForCompiler);
             allDefines.Add(Core.PackageUtilities.HostPlatformDefineForCompiler);
             // custom definitions from all the packages in the compilation
-            foreach (var package in Core.V2.Graph.Instance.Packages)
+            foreach (var package in Core.Graph.Instance.Packages)
             {
                 allDefines.AddRange(package.Definitions);
             }
@@ -218,15 +216,15 @@ namespace V2
                 writer.WriteLine("{0}Core.State.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
                 writer.WriteLine("{0}Core.State.CompileWithDebugSymbols = true;", indent(3));
                 writer.WriteLine("{0}Core.State.BuildMode = \"Native\";", indent(3));
-                writer.WriteLine("{0}var debug = new Core.V2.Environment();", indent(3));
+                writer.WriteLine("{0}var debug = new Core.Environment();", indent(3));
                 writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
-                writer.WriteLine("{0}var optimized = new Core.V2.Environment();", indent(3));
+                writer.WriteLine("{0}var optimized = new Core.Environment();", indent(3));
                 writer.WriteLine("{0}optimized.Configuration = Core.EConfiguration.Optimized;", indent(3));
-                writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.V2.Environment>(debug, optimized);", indent(3));
+                writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.Environment>(debug, optimized);", indent(3));
                 writer.WriteLine("{0}// execute", indent(3));
                 writer.WriteLine("{0}try", indent(3));
                 writer.WriteLine("{0}{{", indent(3));
-                writer.WriteLine("{0}Core.V2.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());", indent(4));
+                writer.WriteLine("{0}Core.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());", indent(4));
                 writer.WriteLine("{0}}}", indent(3));
                 writer.WriteLine("{0}catch (Bam.Core.Exception exception)", indent(3));
                 writer.WriteLine("{0}{{", indent(3));
@@ -251,7 +249,7 @@ namespace V2
         {
             Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
 
-            var masterPackage = Core.V2.Graph.Instance.MasterPackage;
+            var masterPackage = Core.Graph.Instance.MasterPackage;
             var masterPackageName = masterPackage.Name;
             var projectPathname = masterPackage.GetDebugPackageProjectPathname();
             RootUri = new System.Uri(projectPathname);
@@ -310,7 +308,7 @@ namespace V2
 
             var mainSource = CreateItemGroup(parent: project);
             CreateCompilableSourceFile(mainSourceFile, null, mainSource);
-            foreach (var package in Core.V2.Graph.Instance.Packages)
+            foreach (var package in Core.Graph.Instance.Packages)
             {
                 var packageSource = CreateItemGroup(parent: project);
 
@@ -341,5 +339,4 @@ namespace V2
             Core.Log.Info("\t{0}", projectPathname);
         }
     }
-}
 }

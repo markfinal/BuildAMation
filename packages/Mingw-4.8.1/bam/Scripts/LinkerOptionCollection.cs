@@ -37,13 +37,13 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this ILinkerOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this ILinkerOptions settings, Bam.Core.Module module)
         {
         }
     }
 }
-    [Bam.Core.V2.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ILinkerOptions : Bam.Core.ISettingsBase
     {
     }
 
@@ -52,7 +52,7 @@ namespace DefaultSettings
         public static void
         Convert(
             this C.V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             //var applicationFile = module as C.V2.ConsoleApplication;
@@ -86,7 +86,7 @@ namespace DefaultSettings
         public static void
         Convert(
             this ILinkerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }
@@ -98,7 +98,7 @@ namespace DefaultSettings
         C.V2.ICommonLinkerOptions,
         ILinkerOptions
     {
-        public LinkerSettings(Bam.Core.V2.Module module)
+        public LinkerSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
@@ -110,7 +110,7 @@ namespace DefaultSettings
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonLinkerOptions).Convert(module, commandLine);
@@ -123,7 +123,7 @@ namespace DefaultSettings
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
         {
             get;
             set;
@@ -149,8 +149,8 @@ namespace DefaultSettings
             string executable)
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin", this));
-            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(BinPath)\" + executable, this));
+            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin", this));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\" + executable, this));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
@@ -158,10 +158,10 @@ namespace DefaultSettings
             this.Macros.Add("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(this.Macros["BinPath"]));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
@@ -169,7 +169,7 @@ namespace DefaultSettings
             }
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             var settings = new LinkerSettings(module);
             return settings;
@@ -177,7 +177,7 @@ namespace DefaultSettings
 
         private static string
         GetLibraryPath(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             if (module is C.V2.StaticLibrary)
             {
@@ -226,7 +226,7 @@ namespace DefaultSettings
             {
                 return;
             }
-            var dir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
+            var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = GetLPrefixLibraryName(fullLibraryPath);
             var linker = executable.Settings as C.V2.ICommonLinkerOptions;
             linker.Libraries.AddUnique(libFilename);

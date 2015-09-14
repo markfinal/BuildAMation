@@ -40,10 +40,10 @@ namespace V2
             MakeFileBuilder.V2.MakeFileMeta sourceMeta,
             MakeFileBuilder.V2.Rule parentRule,
             string outputDirectory,
-            Bam.Core.V2.TokenizedString sourcePath)
+            Bam.Core.TokenizedString sourcePath)
         {
             var copyRule = meta.AddRule();
-            var target = copyRule.AddTarget(Bam.Core.V2.TokenizedString.Create(outputDirectory + "/" + System.IO.Path.GetFileName(sourcePath.Parse()), null));
+            var target = copyRule.AddTarget(Bam.Core.TokenizedString.Create(outputDirectory + "/" + System.IO.Path.GetFileName(sourcePath.Parse()), null));
 
             // TODO: there needs to be a mapping from this path to any existing targets so that the target variable names can be used
             copyRule.AddPrerequisite(sourcePath);
@@ -60,15 +60,15 @@ namespace V2
         void
         IPackagePolicy.Package(
             Package sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module,
-            System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module,
+            System.Collections.Generic.Dictionary<Bam.Core.TokenizedString,
             PackageReference>> packageObjects)
         {
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);
             var rule = meta.AddRule();
-            rule.AddTarget(Bam.Core.V2.TokenizedString.Create("publish", null, verbatim:true), isPhony:true);
+            rule.AddTarget(Bam.Core.TokenizedString.Create("publish", null, verbatim:true), isPhony:true);
 
             foreach (var module in packageObjects)
             {

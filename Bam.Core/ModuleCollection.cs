@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     /// <summary>
     /// Container representing a 'ranked' collection of modules
     /// </summary>
@@ -83,5 +81,4 @@ namespace V2
             return this.GetEnumerator();
         }
     }
-}
 }

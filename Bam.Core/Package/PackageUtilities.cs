@@ -45,14 +45,14 @@ namespace Bam.Core
                 throw new Exception("A Bam package already exists at {0}", packageDir);
             }
 
-            var packageNameArgument = new V2.PackageName();
-            var packageName = V2.CommandLineProcessor.Evaluate(packageNameArgument);
+            var packageNameArgument = new PackageName();
+            var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
             if (null == packageName)
             {
-                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as V2.ICommandLineArgument).LongName);
+                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
             }
 
-            var packageVersion = V2.CommandLineProcessor.Evaluate(new V2.PackageVersion());
+            var packageVersion = CommandLineProcessor.Evaluate(new PackageVersion());
             var definition = new PackageDefinitionFile(bamDir, packageName, packageVersion);
 
             System.IO.Directory.CreateDirectory(bamDir);
@@ -75,14 +75,14 @@ namespace Bam.Core
         public static void
         AddDependentPackage()
         {
-            var packageNameArgument = new V2.PackageName();
-            var packageName = V2.CommandLineProcessor.Evaluate(packageNameArgument);
+            var packageNameArgument = new PackageName();
+            var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
             if (null == packageName)
             {
-                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as V2.ICommandLineArgument).LongName);
+                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
             }
 
-            var packageVersion = V2.CommandLineProcessor.Evaluate(new V2.PackageVersion());
+            var packageVersion = CommandLineProcessor.Evaluate(new PackageVersion());
 
             var masterPackage = GetMasterPackage();
             // TODO: no checking if this package exists
@@ -408,8 +408,8 @@ namespace Bam.Core
             var duplicatePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() > 1).Select(item => item.Key);
             if (duplicatePackageNames.Count() > 0)
             {
-                var versionSpeciferArgs = new V2.PackageDefaultVersion();
-                var packageVersionSpecifiers = V2.CommandLineProcessor.Evaluate(versionSpeciferArgs);
+                var versionSpeciferArgs = new PackageDefaultVersion();
+                var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
 
                 foreach (var dupName in duplicatePackageNames)
                 {
@@ -467,7 +467,7 @@ namespace Bam.Core
                 }
             }
 
-            V2.Graph.Instance.SetPackageDefinitions(packageDefinitions);
+            Graph.Instance.SetPackageDefinitions(packageDefinitions);
 #else
             // TODO: check for inconsistent circular dependencies
             // i.e. package A depends on B, and B depends on A, but a different version of A
@@ -721,7 +721,7 @@ namespace Bam.Core
             var sourceCode = new StringArray();
 #if true
             int packageIndex = 0;
-            foreach (var package in V2.Graph.Instance.Packages)
+            foreach (var package in Graph.Instance.Packages)
             {
                 Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, package.Version, package.PackageRepositories[0]);
 
@@ -853,7 +853,7 @@ namespace Bam.Core
             // assembly is written to the build root
             var cachedAssemblyPathname = System.IO.Path.Combine(State.BuildRoot, "CachedPackageAssembly");
 #if true
-            cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, V2.Graph.Instance.MasterPackage.Name) + ".dll";
+            cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, Graph.Instance.MasterPackage.Name) + ".dll";
 #else
             cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, mainPackage.Name) + ".dll";
 #endif
@@ -864,7 +864,7 @@ namespace Bam.Core
             {
                 // can an existing assembly be reused?
 #if true
-                thisHashCode = GetPackageHash(sourceCode, definitions, V2.Graph.Instance.MasterPackage.BamAssemblies);
+                thisHashCode = GetPackageHash(sourceCode, definitions, Graph.Instance.MasterPackage.BamAssemblies);
                 if (State.CacheAssembly)
                 {
                     if (System.IO.File.Exists(hashPathName))
@@ -951,7 +951,7 @@ namespace Bam.Core
                 if (State.CompileWithDebugSymbols)
                 {
 #if true
-                    compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), V2.Graph.Instance.MasterPackage.Name) + ".dll";
+                    compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
 #else
                     compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), mainPackage.Name) + ".dll";
 #endif
@@ -992,7 +992,7 @@ namespace Bam.Core
                     // Bam assembly
 #if true
                     // TODO: Q: why is it only for the master package? Why not all of them, which may have additional dependencies?
-                    foreach (var assembly in V2.Graph.Instance.MasterPackage.BamAssemblies)
+                    foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
                     {
                         var assemblyFileName = System.String.Format("{0}.dll", assembly);
                         var assemblyPathName = System.IO.Path.Combine(State.ExecutableDirectory, assemblyFileName);
@@ -1000,7 +1000,7 @@ namespace Bam.Core
                     }
 
                     // DotNet assembly
-                    foreach (var desc in V2.Graph.Instance.MasterPackage.DotNetAssemblies)
+                    foreach (var desc in Graph.Instance.MasterPackage.DotNetAssemblies)
                     {
                         var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
                         compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
@@ -1040,7 +1040,7 @@ namespace Bam.Core
                 if (results.Errors.HasErrors || results.Errors.HasWarnings)
                 {
 #if true
-                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", V2.Graph.Instance.MasterPackage.FullName, results.Errors.Count);
+                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", Graph.Instance.MasterPackage.FullName, results.Errors.Count);
                     foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
                     {
                         Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);

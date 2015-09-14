@@ -35,8 +35,8 @@ namespace V2
     {
         public static void
         Execute(
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool tool,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool tool,
             Bam.Core.StringArray commandLine,
             string hostApplication = null,
             string workingDirectory = null)

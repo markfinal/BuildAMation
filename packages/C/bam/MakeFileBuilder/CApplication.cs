@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace C
 {
 namespace V2
@@ -36,7 +36,7 @@ namespace V2
         ILinkerPolicy
     {
         private static string
-        GetLibraryPath(Bam.Core.V2.Module module)
+        GetLibraryPath(Bam.Core.Module module)
         {
             if (module is C.V2.StaticLibrary)
             {
@@ -77,12 +77,12 @@ namespace V2
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString executablePath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             // TODO: modify to use ProcessLibraryDependency
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
@@ -95,7 +95,7 @@ namespace V2
                     continue;
                 }
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                linker.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(dir, null));
+                linker.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(dir, null));
             }
 
             var commandLineArgs = new Bam.Core.StringArray();
@@ -144,7 +144,7 @@ namespace V2
                 }
             }
 
-            var tool = sender.Tool as Bam.Core.V2.PreBuiltTool;
+            var tool = sender.Tool as Bam.Core.PreBuiltTool;
             var commands = new System.Text.StringBuilder();
             commands.AppendFormat(tool.Executable.ContainsSpace ? "\"{0}\" $^ {1}" : "{0} $^ {1}", tool.Executable, commandLineArgs.ToString(' '));
             rule.AddShellCommand(commands.ToString());

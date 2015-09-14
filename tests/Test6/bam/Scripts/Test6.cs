@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace Test6
 {
     sealed class ConditionApplicationV2 :
@@ -35,7 +35,7 @@ namespace Test6
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -46,7 +46,7 @@ namespace Test6
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
             var main = source.AddFile("$(pkgroot)/source/main.c");
@@ -54,7 +54,7 @@ namespace Test6
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
                     compiler.PreprocessorDefines.Add("MAIN_C");
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include/platform", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include/platform", this));
                 });
 
             var platformPath = (this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ?

@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 using System.Linq;
 namespace C
 {
@@ -37,7 +37,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonCompilerOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this C.V2.ICommonCompilerOptions settings, Bam.Core.Module module)
         {
             settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug;
@@ -83,10 +83,10 @@ namespace DefaultSettings
         public static void Empty(this C.V2.ICommonCompilerOptions settings)
         {
             settings.DisableWarnings = new Bam.Core.StringArray();
-            settings.IncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.IncludePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
             settings.PreprocessorDefines = new PreprocessorDefinitions();
             settings.PreprocessorUndefines = new Bam.Core.StringArray();
-            settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.SystemIncludePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
         public static void
         SharedSettings(
@@ -162,11 +162,11 @@ namespace DefaultSettings
     }
 }
     public abstract class SettingsBase :
-        Bam.Core.V2.Settings
+        Bam.Core.Settings
     {
         public SettingsBase
         CreateDeltaSettings(
-            Bam.Core.V2.Settings sharedSettings,
+            Bam.Core.Settings sharedSettings,
             Module module)
         {
             var settingsType = module.Settings.GetType();
@@ -184,7 +184,7 @@ namespace DefaultSettings
                     throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
                 }
 
-                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
+                var attribute = attributeArray[0] as Bam.Core.SettingsExtensionsAttribute;
 
                 if (sharedInterfaces.Any(item => item == i))
                 {
@@ -219,7 +219,7 @@ namespace DefaultSettings
 
         private static Bam.Core.TypeArray
         SharedInterfaces(
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles)
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles)
         {
             System.Collections.Generic.IEnumerable<System.Type> sharedInterfaces = null;
             foreach (var input in objectFiles)
@@ -239,7 +239,7 @@ namespace DefaultSettings
 
         public static SettingsBase
         SharedSettings(
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
             System.Type convertExtensionClassType,
             System.Type conversionInterfaceType,
             Bam.Core.TypeArray convertParameterTypes)
@@ -358,7 +358,7 @@ namespace DefaultSettings
                     throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
                 }
 
-                var attribute = attributeArray[0] as Bam.Core.V2.SettingsExtensionsAttribute;
+                var attribute = attributeArray[0] as Bam.Core.SettingsExtensionsAttribute;
 
                 var method = attribute.GetMethod("SharedSettings", new[] { i, i, i });
                 if (null != method)
@@ -386,8 +386,8 @@ namespace DefaultSettings
         SixtyFour = 64
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
     {
         EBit? Bits
         {
@@ -401,13 +401,13 @@ namespace DefaultSettings
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> SystemIncludePaths
         {
             get;
             set;
@@ -462,8 +462,8 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         C.ECLanguageStandard? LanguageStandard
         {
@@ -472,8 +472,8 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.ObjC.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IObjectiveCOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.ObjC.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IObjectiveCOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
         string ConstantStringClass
         {
@@ -482,8 +482,8 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.ObjCxx.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IObjectiveCxxOnlyCompilerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.ObjCxx.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IObjectiveCxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
     }
 }

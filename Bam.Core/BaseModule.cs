@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     using System.Linq;
 
     public class ExecuteReasoning
@@ -617,5 +615,4 @@ namespace V2
             }
         }
     }
-}
 }

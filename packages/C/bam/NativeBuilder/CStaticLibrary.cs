@@ -37,10 +37,10 @@ namespace V2
         void
         ILibrarianPolicy.Archive(
             StaticLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             var commandLine = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
@@ -61,7 +61,7 @@ namespace V2
                 commandLine.Add(input.GeneratedPaths[C.V2.ObjectFile.Key].ToString());
             }
 
-            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.V2.ICommandLineTool, commandLine);
+            CommandLineProcessor.V2.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 }

@@ -27,23 +27,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace glew
 {
     sealed class GLEWStaticV2 :
         C.V2.StaticLibrary
     {
-        private Bam.Core.V2.Module.PublicPatchDelegate exported = (settings, appliedTo) =>
+        private Bam.Core.Module.PublicPatchDelegate exported = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null != compiler)
                 {
                     compiler.PreprocessorDefines.Add("GLEW_STATIC");
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
                 }
             };
 
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 

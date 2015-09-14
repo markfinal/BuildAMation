@@ -37,9 +37,9 @@ namespace V2
         void
         IMocGenerationPolicy.Moc(
             MocModule sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool mocCompiler,
-            Bam.Core.V2.TokenizedString generatedMocSource,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool mocCompiler,
+            Bam.Core.TokenizedString generatedMocSource,
             C.V2.HeaderFile source)
         {
             var meta = new MakeFileBuilder.V2.MakeFileMeta(sender);

@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2;
+using Bam.Core;
 namespace C
 {
 namespace V2
@@ -37,7 +37,7 @@ namespace V2
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -51,7 +51,7 @@ namespace V2
                 });
         }
 
-        protected Bam.Core.V2.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
+        protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 compiler.PreprocessorDefines.Remove("_CONSOLE");
@@ -61,7 +61,7 @@ namespace V2
         public override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var container = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
@@ -91,7 +91,7 @@ namespace V2
             public override Cxx.V2.ObjectFileCollection
             CreateCxxSourceContainer(
                 string wildcardPath = null,
-                Bam.Core.V2.Module macroModuleOverride = null,
+                Bam.Core.Module macroModuleOverride = null,
                 System.Text.RegularExpressions.Regex filter = null)
             {
                 var container = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);

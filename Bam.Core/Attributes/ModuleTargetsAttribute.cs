@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
     public sealed class PlatformFilterAttribute :
         System.Attribute
@@ -47,5 +45,4 @@ namespace V2
             private set;
         }
     }
-}
 }

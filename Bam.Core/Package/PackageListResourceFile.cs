@@ -36,13 +36,13 @@ namespace Bam.Core
         WriteResourceFile()
         {
 #if true
-            if (0 == V2.Graph.Instance.Packages.Count())
+            if (0 == Graph.Instance.Packages.Count())
             {
                 throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
             }
 
             var tempDirectory = System.IO.Path.GetTempPath();
-            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", V2.Graph.Instance.MasterPackage.Name, "PackageInfoResources.resources"));
+            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", Graph.Instance.MasterPackage.Name, "PackageInfoResources.resources"));
 #else
             if (0 == State.PackageInfo.Count)
             {
@@ -109,12 +109,12 @@ namespace Bam.Core
             string projectPath)
         {
 #if true
-            if (0 == V2.Graph.Instance.Packages.Count())
+            if (0 == Graph.Instance.Packages.Count())
             {
                 throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
             }
 
-            var masterPackage = V2.Graph.Instance.MasterPackage;
+            var masterPackage = Graph.Instance.MasterPackage;
 
             var projectDirectory = System.IO.Path.GetDirectoryName(projectPath);
             if (!System.IO.Directory.Exists(projectDirectory))

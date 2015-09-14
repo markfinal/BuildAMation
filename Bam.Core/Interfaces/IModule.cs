@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-namespace V2
-{
     // only here because not all modules require a path
     public interface IInputPath
     {
@@ -49,5 +47,4 @@ namespace V2
             set;
         }
     }
-}
 }

@@ -37,24 +37,24 @@ namespace V2
         void
         IGeneratedSourcePolicy.GenerateSource(
             GeneratedSourceModule sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.ICommandLineTool compiler,
-            Bam.Core.V2.TokenizedString generatedFilePath)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString generatedFilePath)
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
             var command = new System.Text.StringBuilder();
             command.AppendFormat(compiler.Executable.Parse());
             // TODO: change this to a configuration directory really
-            command.AppendFormat(" {0}", Bam.Core.V2.TokenizedString.Create("$(buildroot)", sender).Parse());
+            command.AppendFormat(" {0}", Bam.Core.TokenizedString.Create("$(buildroot)", sender).Parse());
             command.AppendFormat(" {0}", "Generated");
             config.AddPreBuildCommand(command.ToString());
 
-            var compilerProject = solution.EnsureProjectExists(compiler as Bam.Core.V2.Module);
+            var compilerProject = solution.EnsureProjectExists(compiler as Bam.Core.Module);
             project.RequiresProject(compilerProject);
         }
     }

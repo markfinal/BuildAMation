@@ -35,7 +35,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICommonArchiverOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             //var libraryFile = module as C.V2.StaticLibrary;
@@ -50,7 +50,7 @@ namespace VisualC
         public static void
         Convert(
             this V2.ICommonArchiverOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (options.NoLogo.GetValueOrDefault())
@@ -65,7 +65,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICommonArchiverOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -86,7 +86,7 @@ namespace VisualC
         public static void
         Convert(
             this V2.ICommonArchiverOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -103,14 +103,14 @@ namespace DefaultSettings
 {
     static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this ICommonArchiverOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this ICommonArchiverOptions settings, Bam.Core.Module module)
         {
             settings.NoLogo = true;
         }
     }
 }
-    [Bam.Core.V2.SettingsExtensions(typeof(VisualC.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(VisualC.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
     {
         bool? NoLogo
         {
@@ -126,7 +126,7 @@ namespace DefaultSettings
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject
     {
-        public ArchiverSettings(Bam.Core.V2.Module module)
+        public ArchiverSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
@@ -149,7 +149,7 @@ namespace DefaultSettings
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ICommonArchiverOptions).Convert(module, commandLine);
@@ -158,7 +158,7 @@ namespace DefaultSettings
 
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition)
         {
@@ -174,18 +174,18 @@ namespace DefaultSettings
         public Librarian()
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("ArchiverPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin\lib.exe", this));
+            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\bin\lib.exe", this));
             this.Macros.Add("libprefix", string.Empty);
             this.Macros.Add("libext", ".lib");
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             var settings = new ArchiverSettings(module);
             return settings;
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {

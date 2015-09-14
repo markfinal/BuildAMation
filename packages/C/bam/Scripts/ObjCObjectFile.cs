@@ -35,7 +35,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.IObjectiveCOnlyCompilerOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this C.V2.IObjectiveCOnlyCompilerOptions settings, Bam.Core.Module module)
         {
         }
     }
@@ -45,7 +45,7 @@ namespace DefaultSettings
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Compiler = C.V2.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);

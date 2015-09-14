@@ -37,9 +37,9 @@ namespace V2
         void
         IPackagePolicy.Package(
             Package sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects)
         {
             // instead of copying to the package root, modules are copied next to their dependees
             foreach (var module in packageObjects)
@@ -53,7 +53,7 @@ namespace V2
                         // therefore ignore any subdirectory on this module
 
                         // this has to be the path that Xcode writes to
-                        var dir = Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(config)", module.Key).Parse();
+                        var dir = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(config)", module.Key).Parse();
                         path.Value.DestinationDir = dir;
 
                         if ((path.Value.SubDirectory != null) && path.Value.SubDirectory.Contains(".app/"))

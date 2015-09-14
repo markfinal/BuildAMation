@@ -38,7 +38,7 @@ namespace DefaultSettings
         public static void
         Defaults(
             this C.V2.IObjectiveCxxOnlyCompilerOptions settings,
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
         }
         public static void
@@ -54,7 +54,7 @@ namespace DefaultSettings
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Compiler = C.V2.DefaultToolchain.ObjectiveCxx_Compiler(this.BitDepth);

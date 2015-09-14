@@ -37,10 +37,10 @@ namespace V2
         void
         ILibrarianPolicy.Archive(
             StaticLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             var commandLineArgs = new Bam.Core.StringArray();
             var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.V2.IConvertToCommandLine");
@@ -58,7 +58,7 @@ namespace V2
                 rule.AddPrerequisite(input, C.V2.ObjectFile.Key);
             }
 
-            var tool = sender.Tool as Bam.Core.V2.PreBuiltTool;
+            var tool = sender.Tool as Bam.Core.PreBuiltTool;
             var command = new System.Text.StringBuilder();
             command.AppendFormat(tool.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", tool.Executable, commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());

@@ -33,7 +33,7 @@ namespace V2
 {
     public interface IConvertToProject
     {
-        void Convert(Bam.Core.V2.Module module, XcodeBuilder.V2.Configuration configuration);
+        void Convert(Bam.Core.Module module, XcodeBuilder.V2.Configuration configuration);
     }
 }
 }

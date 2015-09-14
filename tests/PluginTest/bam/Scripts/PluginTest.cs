@@ -27,20 +27,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace PluginTest
 {
     public sealed class ApplicationV2 :
         C.Cxx.V2.ConsoleApplication
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
             this.CreateCxxSourceContainer("$(pkgroot)/source/application/main.cpp");
 
             // TODO: required to exist
-            var plugin = Bam.Core.V2.Graph.Instance.FindReferencedModule<PluginV2>();
+            var plugin = Bam.Core.Graph.Instance.FindReferencedModule<PluginV2>();
             this.Requires(plugin);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
@@ -54,7 +54,7 @@ namespace PluginTest
     public sealed class PluginV2 :
         C.Cxx.V2.DynamicLibrary
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -71,7 +71,7 @@ namespace PluginTest
     public sealed class RuntimePackage :
         Publisher.V2.Package
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 

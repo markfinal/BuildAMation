@@ -37,31 +37,31 @@ namespace V2
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString executablePath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             var linker = sender.Settings as C.V2.ICommonLinkerOptions;
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             var configName = sender.BuildEnvironment.Configuration.ToString();
-            var macros = new Bam.Core.V2.MacroList();
-            macros.Add("moduleoutputdir", Bam.Core.V2.TokenizedString.Create(configName, null));
+            var macros = new Bam.Core.MacroList();
+            macros.Add("moduleoutputdir", Bam.Core.TokenizedString.Create(configName, null));
             foreach (var library in libraries)
             {
                 if (library is C.V2.StaticLibrary)
                 {
                     var fullLibraryPath = library.GeneratedPaths[C.V2.StaticLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                    linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                    linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
                 }
                 else if (library is C.V2.DynamicLibrary)
                 {
                     var fullLibraryPath = library.GeneratedPaths[C.V2.DynamicLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                    linker.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(dir, null));
+                    linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
                 }
                 else if (library is C.V2.CSDKModule)
                 {
@@ -112,7 +112,7 @@ namespace V2
             {
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
                 {
-                    typeof(Bam.Core.V2.Module),
+                    typeof(Bam.Core.Module),
                     typeof(XcodeBuilder.V2.Configuration)
                 };
 

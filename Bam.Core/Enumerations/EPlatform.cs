@@ -53,8 +53,6 @@ namespace Bam.Core
         All        = Windows | Linux | OSX
     }
 
-namespace V2
-{
     static public class PlatformExtensions
     {
         // can't just use HasFlag, as the logic is inversed with the combined flag enum values
@@ -66,5 +64,4 @@ namespace V2
             return (0 != (platform & choice));
         }
     }
-}
 }

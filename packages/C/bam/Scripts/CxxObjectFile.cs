@@ -38,7 +38,7 @@ namespace DefaultSettings
         public static void
         Defaults(
             this C.V2.ICxxOnlyCompilerOptions settings,
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
             settings.LanguageStandard = ELanguageStandard.Cxx98;
@@ -80,7 +80,7 @@ namespace DefaultSettings
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             // TODO: shouldn't attempt to find the default C compiler if only C++ is of interest

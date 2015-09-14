@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace C
 {
 namespace V2
@@ -36,25 +36,25 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this C.V2.ICommonLinkerOptions settings, Bam.Core.Module module)
         {
             settings.OutputType = ELinkerOutput.Executable;
-            settings.LibraryPaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.LibraryPaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
             settings.Libraries = new Bam.Core.StringArray();
             settings.DebugSymbols = (module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug || module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Profile);
         }
         public static void
         Defaults(
             this C.V2.ICxxOnlyLinkerOptions settings,
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             settings.StandardLibrary = C.Cxx.EStandardLibrary.NotSet;
         }
     }
 }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
     {
         C.ELinkerOutput OutputType
         {
@@ -62,7 +62,7 @@ namespace DefaultSettings
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> LibraryPaths
         {
             get;
             set;
@@ -81,9 +81,9 @@ namespace DefaultSettings
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICxxOnlyLinkerOptions :
-        Bam.Core.V2.ISettingsBase
+        Bam.Core.ISettingsBase
     {
         C.Cxx.EStandardLibrary? StandardLibrary
         {

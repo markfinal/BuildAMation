@@ -40,7 +40,7 @@ namespace WindowsSDK
                     var compilation = settings as C.V2.ICommonCompilerOptions;
                     if (null != compilation)
                     {
-                        compilation.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Include", this));
+                        compilation.IncludePaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Include", this));
                     }
 
                     var linking = settings as C.V2.ICommonLinkerOptions;
@@ -48,11 +48,11 @@ namespace WindowsSDK
                     {
                         if ((appliedTo as C.V2.CModule).BitDepth == C.V2.EBit.ThirtyTwo)
                         {
-                            linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib", this));
+                            linking.LibraryPaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Lib", this));
                         }
                         else
                         {
-                            linking.LibraryPaths.Add(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\Lib\x64", this));
+                            linking.LibraryPaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Lib\x64", this));
                         }
                     }
                 });
@@ -66,7 +66,7 @@ namespace WindowsSDK
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             // do nothing
         }

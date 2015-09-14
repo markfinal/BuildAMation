@@ -27,11 +27,11 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace Cxx11Test1
 {
     public sealed class LocalPolicy :
-        Bam.Core.V2.ISitePolicy
+        Bam.Core.ISitePolicy
     {
         void
         ISitePolicy.DefineLocalSettings(
@@ -56,7 +56,7 @@ namespace Cxx11Test1
     public sealed class TestProgV2 :
         C.Cxx.V2.ConsoleApplication
     {
-        protected override void Init(Bam.Core.V2.Module parent)
+        protected override void Init(Bam.Core.Module parent)
         {
             base.Init(parent);
 

@@ -37,7 +37,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this IArchiverOptions settings, Bam.Core.V2.Module module)
+        public static void Defaults(this IArchiverOptions settings, Bam.Core.Module module)
         {
             settings.Ranlib = true;
             settings.DoNotWarnIfLibraryCreated = true;
@@ -45,8 +45,8 @@ namespace DefaultSettings
         }
     }
 }
-    [Bam.Core.V2.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IArchiverOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(Mingw.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IArchiverOptions : Bam.Core.ISettingsBase
     {
         bool Ranlib
         {
@@ -72,7 +72,7 @@ namespace DefaultSettings
         public static void
         Convert(
             this C.V2.ICommonArchiverOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             //var staticLibrary = module as C.V2.StaticLibrary;
@@ -90,7 +90,7 @@ namespace DefaultSettings
         public static void
         Convert(
             this IArchiverOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (options.Ranlib)
@@ -119,7 +119,7 @@ namespace DefaultSettings
         IArchiverOptions,
         CommandLineProcessor.V2.IConvertToCommandLine
     {
-        public LibrarianSettings(Bam.Core.V2.Module module)
+        public LibrarianSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
@@ -155,7 +155,7 @@ namespace DefaultSettings
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as IArchiverOptions).Convert(module, commandLine);
@@ -171,14 +171,14 @@ namespace DefaultSettings
         public Librarian()
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("ArchiverPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\bin\ar.exe", this));
+            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin\ar.exe", this));
             this.Macros.Add("libprefix", "lib");
             this.Macros.Add("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
@@ -186,7 +186,7 @@ namespace DefaultSettings
             }
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             var settings = new LibrarianSettings(module);
             return settings;

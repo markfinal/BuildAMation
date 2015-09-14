@@ -63,7 +63,7 @@ namespace V2
 
         public void
         ExtendEnvironmentVariables(
-            System.Collections.Generic.Dictionary<string, Bam.Core.V2.TokenizedStringArray> import)
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> import)
         {
             foreach (var env in import)
             {
@@ -82,9 +82,9 @@ namespace V2
     public sealed class Target
     {
         public Target(
-            Bam.Core.V2.TokenizedString nameOrOutput,
+            Bam.Core.TokenizedString nameOrOutput,
             bool isPhony,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             int count)
         {
             this.Path = nameOrOutput;
@@ -97,14 +97,14 @@ namespace V2
             {
                 return;
             }
-            if (Bam.Core.V2.Graph.Instance.IsReferencedModule(module))
+            if (Bam.Core.Graph.Instance.IsReferencedModule(module))
             {
                 // make the target names unique across configurations
                 this.VariableName = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
             }
         }
 
-        public Bam.Core.V2.TokenizedString Path
+        public Bam.Core.TokenizedString Path
         {
             get;
             private set;
@@ -126,15 +126,15 @@ namespace V2
     public sealed class Rule
     {
         public Rule(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             int count)
         {
             this.RuleCount = count;
             this.Module = module;
             this.Targets = new Bam.Core.Array<Target>();
-            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey>();
+            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
-            this.PrerequisitePaths = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            this.PrerequisitePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
             this.ShellCommands = new Bam.Core.StringArray();
             this.OrderOnlyDependencies = new Bam.Core.StringArray();
             this.OrderOnlyDependencies.Add("$(DIRS)");
@@ -142,7 +142,7 @@ namespace V2
 
         public Target
         AddTarget(
-            Bam.Core.V2.TokenizedString targetNameOrOutput,
+            Bam.Core.TokenizedString targetNameOrOutput,
             bool isPhony = false)
         {
             var target = new Target(targetNameOrOutput, isPhony, this.Module, this.RuleCount);
@@ -152,8 +152,8 @@ namespace V2
 
         public void
         AddPrerequisite(
-            Bam.Core.V2.Module module,
-            Bam.Core.V2.FileKey key)
+            Bam.Core.Module module,
+            Bam.Core.FileKey key)
         {
             if (this.Prequisities.ContainsKey(module))
             {
@@ -165,7 +165,7 @@ namespace V2
 
         public void
         AddPrerequisite(
-            Bam.Core.V2.TokenizedString path)
+            Bam.Core.TokenizedString path)
         {
             this.PrerequisitePaths.Add(path);
         }
@@ -303,7 +303,7 @@ namespace V2
             set;
         }
 
-        private Bam.Core.V2.Module Module
+        private Bam.Core.Module Module
         {
             get;
             set;
@@ -315,7 +315,7 @@ namespace V2
             private set;
         }
 
-        private System.Collections.Generic.Dictionary<Bam.Core.V2.Module, Bam.Core.V2.FileKey> Prequisities
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Prequisities
         {
             get;
             set;
@@ -327,7 +327,7 @@ namespace V2
             set;
         }
 
-        private Bam.Core.Array<Bam.Core.V2.TokenizedString> PrerequisitePaths
+        private Bam.Core.Array<Bam.Core.TokenizedString> PrerequisitePaths
         {
             get;
             set;
@@ -349,11 +349,11 @@ namespace V2
     public sealed class MakeFileMeta
     {
         public MakeFileMeta(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             this.Module = module;
             module.MetaData = this;
-            this.CommonMetaData = Bam.Core.V2.Graph.Instance.MetaData as MakeFileCommonMetaData;
+            this.CommonMetaData = Bam.Core.Graph.Instance.MetaData as MakeFileCommonMetaData;
             this.Rules = new Bam.Core.Array<Rule>();
         }
 
@@ -377,7 +377,7 @@ namespace V2
             private set;
         }
 
-        private Bam.Core.V2.Module Module
+        private Bam.Core.Module Module
         {
             get;
             set;
@@ -385,13 +385,13 @@ namespace V2
 
         public static void PreExecution()
         {
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             graph.MetaData = new MakeFileCommonMetaData();
         }
 
         public static void PostExecution()
         {
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             var commonMeta = graph.MetaData as MakeFileCommonMetaData;
 
             var makeEnvironment = new System.Text.StringBuilder();
@@ -478,7 +478,7 @@ namespace V2
             Bam.Core.Log.DebugMessage(makeRules.ToString());
             Bam.Core.Log.DebugMessage("MAKEFILE CONTENTS: END");
 
-            var makeFilePath = Bam.Core.V2.TokenizedString.Create("$(buildroot)/Makefile", null);
+            var makeFilePath = Bam.Core.TokenizedString.Create("$(buildroot)/Makefile", null);
             makeFilePath.Parse();
 
             using (var writer = new System.IO.StreamWriter(makeFilePath.ToString()))

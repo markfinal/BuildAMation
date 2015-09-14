@@ -32,18 +32,18 @@ namespace Test3
     sealed class Library2V2 :
         C.V2.StaticLibrary
     {
-        public Bam.Core.V2.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
+        public Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
                 if (null != compiler)
                 {
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
                 }
             };
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

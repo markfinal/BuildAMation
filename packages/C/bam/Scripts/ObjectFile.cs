@@ -35,7 +35,7 @@ namespace V2
     {
         public static partial class DefaultSettingsExtensions
         {
-            public static void Defaults(this C.V2.ICOnlyCompilerOptions settings, Bam.Core.V2.Module module)
+            public static void Defaults(this C.V2.ICOnlyCompilerOptions settings, Bam.Core.Module module)
             {
             }
             public static void
@@ -66,9 +66,9 @@ namespace V2
         void
         Compile(
             ObjectFile sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString objectFilePath,
-            Bam.Core.V2.Module source);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source);
     }
 
     public interface ILibrarianPolicy
@@ -76,10 +76,10 @@ namespace V2
         void
         Archive(
             StaticLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString libraryPath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers);
     }
 
     public interface ILinkerPolicy
@@ -87,12 +87,12 @@ namespace V2
         void
         Link(
             ConsoleApplication sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString executablePath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks);
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks);
     }
 
     public interface IHeaderLibraryPolicy
@@ -100,28 +100,28 @@ namespace V2
         void
         HeadersOnly(
             HeaderLibrary sender,
-            Bam.Core.V2.ExecutionContext context,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers);
+            Bam.Core.ExecutionContext context,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers);
     }
 
     // TODO: register a tooltype, e.g. compiler, linker, archiver
 
     public abstract class CompilerTool :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
         // TODO: is this needed?
         public virtual void
         CompileAsShared(
-            Bam.Core.V2.Settings settings)
+            Bam.Core.Settings settings)
         {}
     }
 
     public abstract class LibrarianTool :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     { }
 
     public abstract class LinkerTool :
-        Bam.Core.V2.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
         public abstract void ProcessLibraryDependency(
             CModule executable,
@@ -255,9 +255,9 @@ namespace V2
     public static class DefaultToolchain
     {
         public class DefaultToolchainCommand :
-            Bam.Core.V2.IStringCommandLineArgument
+            Bam.Core.IStringCommandLineArgument
         {
-            string Bam.Core.V2.ICommandLineArgument.LongName
+            string Bam.Core.ICommandLineArgument.LongName
             {
                 get
                 {
@@ -265,7 +265,7 @@ namespace V2
                 }
             }
 
-            string Bam.Core.V2.ICommandLineArgument.ShortName
+            string Bam.Core.ICommandLineArgument.ShortName
             {
                 get
                 {
@@ -273,7 +273,7 @@ namespace V2
                 }
             }
 
-            string Bam.Core.V2.ICommandLineArgument.ContextHelp
+            string Bam.Core.ICommandLineArgument.ContextHelp
             {
                 get
                 {
@@ -319,9 +319,9 @@ namespace V2
         FindTools<AttributeType, ToolType>(
             System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<ToolType>> collection)
             where AttributeType : ToolRegistrationAttribute
-            where ToolType : Bam.Core.V2.PreBuiltTool
+            where ToolType : Bam.Core.PreBuiltTool
         {
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             foreach (var toolData in GetToolsFromMetaData<AttributeType>())
             {
                 var tool = graph.MakeModuleOfType<ToolType>(toolData.Item1);
@@ -339,7 +339,7 @@ namespace V2
 
         static DefaultToolchain()
         {
-            DefaultToolChain = Bam.Core.V2.CommandLineProcessor.Evaluate(new DefaultToolchainCommand());
+            DefaultToolChain = Bam.Core.CommandLineProcessor.Evaluate(new DefaultToolchainCommand());
             FindTools<RegisterCCompilerAttribute, CompilerTool>(C_Compilers);
             FindTools<RegisterCxxCompilerAttribute, CompilerTool>(Cxx_Compilers);
             FindTools<RegisterArchiverAttribute, LibrarianTool>(Archivers);
@@ -354,7 +354,7 @@ namespace V2
             System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<ToolType>> collection,
             EBit bitDepth,
             string toolDescription)
-            where ToolType : Bam.Core.V2.PreBuiltTool
+            where ToolType : Bam.Core.PreBuiltTool
         {
             if (!collection.ContainsKey(bitDepth) || 0 == collection[bitDepth].Count)
             {
@@ -431,10 +431,10 @@ namespace V2
     }
 
     public class SourceFile :
-        Bam.Core.V2.Module,
-        Bam.Core.V2.IInputPath
+        Bam.Core.Module,
+        Bam.Core.IInputPath
     {
-        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Source File");
+        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Source File");
 
         public override void
         Evaluate()
@@ -445,7 +445,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             // TODO: exception to this is generated source, but there ought to be an override for that
         }
@@ -455,7 +455,7 @@ namespace V2
             // there is no execution policy
         }
 
-        public virtual Bam.Core.V2.TokenizedString InputPath
+        public virtual Bam.Core.TokenizedString InputPath
         {
             get
             {
@@ -469,11 +469,11 @@ namespace V2
     }
 
     public sealed class HeaderFile :
-        Bam.Core.V2.Module,
-        Bam.Core.V2.IInputPath,
-        Bam.Core.V2.IChildModule
+        Bam.Core.Module,
+        Bam.Core.IInputPath,
+        Bam.Core.IChildModule
     {
-        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Header File");
+        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Header File");
 
         public override void
         Evaluate()
@@ -484,7 +484,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             // TODO: exception to this is generated source, but there ought to be an override for that
         }
@@ -494,7 +494,7 @@ namespace V2
             // there is no execution policy
         }
 
-        public Bam.Core.V2.TokenizedString InputPath
+        public Bam.Core.TokenizedString InputPath
         {
             get
             {
@@ -506,7 +506,7 @@ namespace V2
             }
         }
 
-        Bam.Core.V2.Module Bam.Core.V2.IChildModule.Parent
+        Bam.Core.Module Bam.Core.IChildModule.Parent
         {
             get;
             set;
@@ -515,25 +515,25 @@ namespace V2
 
     public class ObjectFile :
         CModule,
-        Bam.Core.V2.IChildModule,
-        Bam.Core.V2.IInputPath
+        Bam.Core.IChildModule,
+        Bam.Core.IInputPath
     {
-        private Bam.Core.V2.Module Parent = null;
+        private Bam.Core.Module Parent = null;
         private ICompilationPolicy Policy = null;
         public SourceFile Source = null;
 
-        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Compiled Object File");
+        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Compiled Object File");
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/@basename($(inputpath))$(objext)", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/@basename($(inputpath))$(objext)", this));
         }
 
-        public Bam.Core.V2.TokenizedString InputPath
+        public Bam.Core.TokenizedString InputPath
         {
             get
             {
@@ -547,7 +547,7 @@ namespace V2
                     // of this type (generally)
                     // but this does mean there may be many instances of this 'type' of module
                     // and for multi-configuration builds there may be many instances of the same path
-                    this.Source = Bam.Core.V2.Module.Create<SourceFile>();
+                    this.Source = Bam.Core.Module.Create<SourceFile>();
                     this.DependsOn(this.Source);
                 }
                 this.Source.InputPath = value;
@@ -555,7 +555,7 @@ namespace V2
             }
         }
 
-        Bam.Core.V2.Module Bam.Core.V2.IChildModule.Parent
+        Bam.Core.Module Bam.Core.IChildModule.Parent
         {
             get
             {
@@ -581,7 +581,7 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
             var sourceFile = this.Source;
             var objectFile = this.GeneratedPaths[Key];
@@ -591,21 +591,21 @@ namespace V2
         protected override void GetExecutionPolicy(string mode)
         {
             var className = "C.V2." + mode + "Compilation";
-            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
         }
 
         public override void
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var graph = Bam.Core.V2.Graph.Instance;
+            var graph = Bam.Core.Graph.Instance;
             var factory = graph.MetaData as System.Threading.Tasks.TaskFactory;
             this.EvaluationTask = factory.StartNew(() =>
             {
                 var objectFilePath = this.GeneratedPaths[Key].Parse();
                 if (!System.IO.File.Exists(objectFilePath))
                 {
-                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                     return;
                 }
                 var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
@@ -614,7 +614,7 @@ namespace V2
                 var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
                 if (sourceWriteTime > objectFileWriteTime)
                 {
-                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
                     return;
                 }
 
@@ -663,7 +663,7 @@ namespace V2
                                 // early out - header is newer than generated object file
                                 if (headerWriteTime > objectFileWriteTime)
                                 {
-                                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], Bam.Core.V2.TokenizedString.Create(potentialPath, null, verbatim:true));
+                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], Bam.Core.TokenizedString.Create(potentialPath, null, verbatim:true));
                                     return;
                                 }
 

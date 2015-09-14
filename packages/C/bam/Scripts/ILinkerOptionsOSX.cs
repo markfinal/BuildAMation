@@ -35,29 +35,29 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this C.V2.ILinkerOptionsOSX settings, Bam.Core.V2.Module module)
+        public static void Defaults(this C.V2.ILinkerOptionsOSX settings, Bam.Core.Module module)
         {
-            settings.Frameworks = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
-            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.V2.TokenizedString>();
+            settings.Frameworks = new Bam.Core.Array<Bam.Core.TokenizedString>();
+            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
     }
 }
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerOptionsOSX : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ILinkerOptionsOSX : Bam.Core.ISettingsBase
     {
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> Frameworks
+        Bam.Core.Array<Bam.Core.TokenizedString> Frameworks
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> FrameworkSearchDirectories
+        Bam.Core.Array<Bam.Core.TokenizedString> FrameworkSearchDirectories
         {
             get;
             set;
         }
 
-        Bam.Core.V2.TokenizedString InstallName
+        Bam.Core.TokenizedString InstallName
         {
             get;
             set;
@@ -73,7 +73,7 @@ namespace V2
             public static void
             Defaults(
                 this C.V2.ILinkerOptionsWin settings,
-                Bam.Core.V2.Module module)
+                Bam.Core.Module module)
             {
                 settings.SubSystem = ESubsystem.Console;
             }
@@ -107,9 +107,9 @@ namespace V2
             }
         }
     }
-    [Bam.Core.V2.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsExtensions(typeof(C.V2.DefaultSettings.DefaultSettingsExtensions))]
     public interface ILinkerOptionsWin :
-        Bam.Core.V2.ISettingsBase
+        Bam.Core.ISettingsBase
     {
         C.ESubsystem? SubSystem
         {

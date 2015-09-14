@@ -28,7 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
-using Bam.Core.V2;
 namespace Bam.Core
 {
     public class PackageDefinitionFile
@@ -901,7 +900,7 @@ namespace Bam.Core
             var builderNames = new StringArray();
             if (allBuilders)
             {
-                foreach (var package in V2.Graph.Instance.Packages)
+                foreach (var package in Graph.Instance.Packages)
                 {
                     if (!BuilderUtilities.IsBuilderPackage(package.Name))
                     {
@@ -971,7 +970,7 @@ namespace Bam.Core
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
             {
-                var dep = V2.Graph.Instance.Packages.Where(item => item.Name == dependent.Item1 && item.Version == dependent.Item2).ElementAt(0);
+                var dep = Graph.Instance.Packages.Where(item => item.Name == dependent.Item1 && item.Version == dependent.Item2).ElementAt(0);
                 if (visitedPackages.Contains(dep))
                 {
                     continue;

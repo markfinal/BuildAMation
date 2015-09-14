@@ -35,42 +35,42 @@ namespace V2
         CModule,
         IForwardedLibraries
     {
-        private Bam.Core.Array<Bam.Core.V2.Module> sourceModules = new Bam.Core.Array<Bam.Core.V2.Module>();
-        private Bam.Core.Array<Bam.Core.V2.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.V2.Module>();
+        private Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
+        private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
         private ILibrarianPolicy Policy = null;
 
-        static public Bam.Core.V2.FileKey Key = Bam.Core.V2.FileKey.Generate("Static Library File");
+        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Static Library File");
 
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Librarian = DefaultToolchain.Librarian(this.BitDepth);
-            this.RegisterGeneratedFile(Key, Bam.Core.V2.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
         }
 
         // TODO: what is this for?
-        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> Source
+        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.sourceModules.ToArray());
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.sourceModules.ToArray());
             }
         }
 
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> IForwardedLibraries.ForwardedLibraries
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(this.forwardedDeps.ToArray());
+                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.forwardedDeps.ToArray());
             }
         }
 
         public CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
@@ -81,7 +81,7 @@ namespace V2
         public Cxx.V2.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<Cxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
@@ -92,7 +92,7 @@ namespace V2
         public virtual C.ObjC.V2.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<C.ObjC.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
@@ -103,7 +103,7 @@ namespace V2
         public virtual C.ObjCxx.V2.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
-            Bam.Core.V2.Module macroModuleOverride = null,
+            Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<C.ObjCxx.V2.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
@@ -122,7 +122,7 @@ namespace V2
 
             // no graph dependency, as it's just using patches
             // note that this won't add the module into the graph, unless a link dependency is made
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             foreach (var source in affectedSources)
             {
                 if (null == source)
@@ -142,7 +142,7 @@ namespace V2
             params CModule[] affectedSources) where DependentModule : CModule, new()
         {
             this.CompileAgainst<DependentModule>(affectedSources);
-            var dependent = Bam.Core.V2.Graph.Instance.FindReferencedModule<DependentModule>();
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.UsePublicPatches(dependent);
         }
 
@@ -160,10 +160,10 @@ namespace V2
 
         protected override void
         ExecuteInternal(
-            Bam.Core.V2.ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
+            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
+            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
             var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, context, libraryFile, source, headers);
         }
@@ -171,7 +171,7 @@ namespace V2
         protected override void GetExecutionPolicy(string mode)
         {
             var className = "C.V2." + mode + "Librarian";
-            this.Policy = Bam.Core.V2.ExecutionPolicyUtilities<ILibrarianPolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<ILibrarianPolicy>.Create(className);
         }
 
         public override void
@@ -181,7 +181,7 @@ namespace V2
             var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
             if (!exists)
             {
-                this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
             foreach (var source in this.sourceModules)
@@ -192,7 +192,7 @@ namespace V2
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.V2.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
                     return;
                 }
             }

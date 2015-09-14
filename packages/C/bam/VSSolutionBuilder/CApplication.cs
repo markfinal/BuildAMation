@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 using C.V2.DefaultSettings;
 namespace C
 {
@@ -39,19 +39,19 @@ namespace V2
         void
         ILinkerPolicy.Link(
             ConsoleApplication sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString executablePath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> headers,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> libraries,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.V2.Module> frameworks)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString executablePath,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             if (0 == objectFiles.Count)
             {
                 return;
             }
 
-            var solution = Bam.Core.V2.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.V2.VSSolution;
             var project = solution.EnsureProjectExists(sender);
             var config = project.GetConfiguration(sender);
 
@@ -70,7 +70,7 @@ namespace V2
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
-                    typeof(Bam.Core.V2.Module),
+                    typeof(Bam.Core.Module),
                     typeof(VSSolutionBuilder.V2.VSSettingsGroup),
                     typeof(string)
                 };

@@ -36,7 +36,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ILinkerOptionsWin options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             switch (options.SubSystem.Value)
@@ -57,7 +57,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             //var applicationFile = module as C.V2.ConsoleApplication;
@@ -90,7 +90,7 @@ namespace VisualC
         public static void
         Convert(
             this V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (options.NoLogo.GetValueOrDefault())
@@ -105,7 +105,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ILinkerOptionsWin options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -124,7 +124,7 @@ namespace VisualC
         public static void
         Convert(
             this C.V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -157,7 +157,7 @@ namespace VisualC
         public static void
         Convert(
             this V2.ICommonLinkerOptions options,
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settingsGroup,
             string condition)
         {
@@ -174,15 +174,15 @@ namespace V2
     {
         public static partial class DefaultSettingsExtensions
         {
-            public static void Defaults(this VisualC.V2.ICommonLinkerOptions settings, Bam.Core.V2.Module module)
+            public static void Defaults(this VisualC.V2.ICommonLinkerOptions settings, Bam.Core.Module module)
             {
                 settings.NoLogo = true;
             }
         }
     }
 
-    [Bam.Core.V2.SettingsExtensions(typeof(VisualC.V2.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerOptions : Bam.Core.V2.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(VisualC.V2.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
     {
         bool? NoLogo
         {
@@ -199,7 +199,7 @@ namespace V2
         CommandLineProcessor.V2.IConvertToCommandLine,
         VisualStudioProcessor.V2.IConvertToProject
     {
-        public LinkerSettings(Bam.Core.V2.Module module)
+        public LinkerSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
@@ -221,7 +221,7 @@ namespace V2
             set;
         }
 
-        Bam.Core.Array<Bam.Core.V2.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.V2.ICommonLinkerOptions.LibraryPaths
         {
             get;
             set;
@@ -247,7 +247,7 @@ namespace V2
 
         void
         CommandLineProcessor.V2.IConvertToCommandLine.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             (this as C.V2.ILinkerOptionsWin).Convert(module, commandLine);
@@ -257,7 +257,7 @@ namespace V2
 
         void
         VisualStudioProcessor.V2.IConvertToProject.Convert(
-            Bam.Core.V2.Module module,
+            Bam.Core.Module module,
             VSSolutionBuilder.V2.VSSettingsGroup settings,
             string condition)
         {
@@ -275,8 +275,8 @@ namespace V2
             string libPath)
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
-            this.Macros.Add("LinkerPath", Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + toolPath, this));
+            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)" + toolPath, this));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", string.Empty);
             this.Macros.Add("dynamicext", ".dll");
@@ -291,18 +291,18 @@ namespace V2
                 var linking = settings as C.V2.ICommonLinkerOptions;
                 if (null != linking)
                 {
-                    linking.LibraryPaths.AddUnique(Bam.Core.V2.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
+                    linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
                 }
             });
         }
 
-        public override Bam.Core.V2.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             var settings = new LinkerSettings(module);
             return settings;
         }
 
-        public override Bam.Core.V2.TokenizedString Executable
+        public override Bam.Core.TokenizedString Executable
         {
             get
             {
@@ -312,7 +312,7 @@ namespace V2
 
         private static string
         GetLibraryPath(
-            Bam.Core.V2.Module module)
+            Bam.Core.Module module)
         {
             if (module is C.V2.StaticLibrary)
             {
@@ -352,7 +352,7 @@ namespace V2
             {
                 return;
             }
-            var dir = Bam.Core.V2.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
+            var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
             var linker = executable.Settings as C.V2.ICommonLinkerOptions;
             linker.Libraries.AddUnique(libFilename);
@@ -379,7 +379,7 @@ namespace V2
             base(@"\VC\bin\x86_amd64\link.exe", @"\VC\lib\amd64")
         {
             // some DLLs exist only in the 32-bit bin folder
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.V2.TokenizedStringArray(this.Macros["BinPath"]));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
     }
 }

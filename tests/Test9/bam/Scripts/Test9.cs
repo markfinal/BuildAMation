@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core.V2; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace Test9
 {
     sealed class CFileV2 :
@@ -35,11 +35,11 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main_c.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main_c.c", this);
         }
     }
 
@@ -48,7 +48,7 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -61,11 +61,11 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            this.InputPath = Bam.Core.V2.TokenizedString.Create("$(pkgroot)/source/main_cpp.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main_cpp.c", this);
             this.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICxxOnlyCompilerOptions;
@@ -80,7 +80,7 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -90,7 +90,7 @@ namespace Test9
             cSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
             var cxxSource = this.CreateCxxSourceContainer();
@@ -99,7 +99,7 @@ namespace Test9
             cxxSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                     var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
@@ -117,7 +117,7 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -127,7 +127,7 @@ namespace Test9
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
         }
     }
@@ -137,7 +137,7 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -147,7 +147,7 @@ namespace Test9
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
 
                 var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -160,7 +160,7 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -170,7 +170,7 @@ namespace Test9
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.V2.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
@@ -186,7 +186,7 @@ namespace Test9
     {
         protected override void
         Init(
-            Bam.Core.V2.Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -196,7 +196,7 @@ namespace Test9
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.V2.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.V2.TokenizedString.Create("$(pkgroot)/include", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
 
                 var cxxCompiler = settings as C.V2.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;

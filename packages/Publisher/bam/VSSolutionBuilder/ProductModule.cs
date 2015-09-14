@@ -37,9 +37,9 @@ namespace V2
         void
         IPackagePolicy.Package(
             Package sender,
-            Bam.Core.V2.ExecutionContext context,
-            Bam.Core.V2.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.V2.Module, System.Collections.Generic.Dictionary<Bam.Core.V2.TokenizedString, PackageReference>> packageObjects)
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects)
         {
             // instead of copying to the package root, modules are copied next to their dependees
             foreach (var module in packageObjects)
