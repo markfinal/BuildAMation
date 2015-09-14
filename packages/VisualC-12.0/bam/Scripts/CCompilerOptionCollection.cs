@@ -454,7 +454,6 @@ namespace VisualC
         }
     }
 
-    // V2
     public class CompilerSettings :
         C.SettingsBase,
         C.ICCompilerOptionsWin,
@@ -944,5 +943,4 @@ namespace VisualC
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
-    // -V2
 }
