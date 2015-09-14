@@ -206,7 +206,7 @@ namespace Bam.Core
         {
             get
             {
-                return null;
+                return "-v";
             }
         }
 
@@ -334,7 +334,7 @@ namespace Bam.Core
         {
             get
             {
-                return "-v";
+                return null;
             }
         }
 
@@ -350,7 +350,7 @@ namespace Bam.Core
         {
             get
             {
-                return "Change the logging level of detail (0 for least, 3 for maximum).";
+                return "Change the logging level of detail (0 for least, 3 for most).";
             }
         }
     }
@@ -527,7 +527,7 @@ namespace Bam.Core
         {
             get
             {
-                return "--name";
+                return "--pkgname";
             }
         }
 
@@ -555,7 +555,7 @@ namespace Bam.Core
         {
             get
             {
-                return "--version";
+                return "--pkgversion";
             }
         }
 
