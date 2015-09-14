@@ -108,14 +108,6 @@ namespace Bam.Core
 
         public static string
         GetPath(
-            Location location,
-            System.Uri relativeToUri)
-        {
-            return GetPath(location.GetSinglePath(), relativeToUri, null);
-        }
-
-        public static string
-        GetPath(
             string path,
             string relativeToString,
             string relativePrefix)
@@ -132,16 +124,6 @@ namespace Bam.Core
         {
             var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
             var relativePath = GetPath(path, relativeToUri);
-            return relativePath;
-        }
-
-        public static string
-        GetPath(
-            Location location,
-            string relativeToString)
-        {
-            var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
-            var relativePath = GetPath(location, relativeToUri);
             return relativePath;
         }
 

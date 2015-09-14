@@ -304,13 +304,13 @@ namespace Bam.Core
         {
 #if true
             var packageRepos = new System.Collections.Generic.Queue<string>();
-            foreach (var repo in State.PackageRoots)
+            foreach (var repo in State.PackageRepositories)
             {
-                if (packageRepos.Contains(repo.AbsolutePath))
+                if (packageRepos.Contains(repo))
                 {
                     continue;
                 }
-                packageRepos.Enqueue(repo.AbsolutePath);
+                packageRepos.Enqueue(repo);
             }
 #else
             var buildList = new PackageBuildList();
@@ -369,9 +369,7 @@ namespace Bam.Core
                 var repo = packageRepos.Dequeue();
                 var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
 
-                // TODO: when DirectoryLocations are removed, remove this
-                var tempDirLoc = DirectoryLocation.Get(repo, Location.EExists.Exists);
-                State.PackageRoots.Add(tempDirLoc);
+                State.PackageRepositories.Add(repo);
 
                 foreach (var bamDir in candidatePackageDirs)
                 {
@@ -390,7 +388,7 @@ namespace Bam.Core
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
-                        if (State.PackageRoots.Contains(tempDirLoc))
+                        if (State.PackageRepositories.Contains(repo))
                         {
                             continue;
                         }

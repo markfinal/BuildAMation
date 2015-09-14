@@ -33,6 +33,49 @@ namespace V2
 {
     using System.Linq;
 
+    public sealed class FileKey
+    {
+        private FileKey(string key)
+        {
+            this.Id = key;
+        }
+
+        private static System.Collections.Generic.List<FileKey> GeneratedKeys = new System.Collections.Generic.List<FileKey>();
+
+        public static FileKey Generate(string key)
+        {
+            var matches = GeneratedKeys.Where(item => (item.Id == key));
+            if (1 == matches.Count())
+            {
+                return matches.ElementAt(0);
+            }
+            var newKey = new FileKey(key);
+            GeneratedKeys.Add(newKey);
+            return newKey;
+        }
+
+        public string Id
+        {
+            get;
+            private set;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Id.Equals((obj as FileKey).Id);
+        }
+
+        public override string ToString()
+        {
+            return this.Id;
+        }
+    }
+
     public static class EntryPoint
     {
         public static void
@@ -849,9 +892,6 @@ namespace V2
 
     public static class State
     {
-        public static readonly LocationKey BuildRootLocationKey = new LocationKey("BuildRoot", ScaffoldLocation.ETypeHint.Directory);
-        public static readonly LocationKey ModuleBuildDirLocationKey = new LocationKey("ModuleBuildDirectory", ScaffoldLocation.ETypeHint.Directory);
-
         public class Category :
             System.Collections.Generic.Dictionary<string, object>
         {}
@@ -938,36 +978,7 @@ namespace V2
             Add<string>("BuildAMation", "CSharpCompilerVersion", targetFrameworkNameSplit[1]);
 #endif
 
-            var schemaDirectory = System.IO.Path.Combine(State.ExecutableDirectory, "Schema");
-            {
-                var schemaPath = System.IO.Path.Combine(schemaDirectory, "OpusPackageDependency.xsd");
-                if (!System.IO.File.Exists(schemaPath))
-                {
-                    // TODO: this is quite dangerous, as the exception will try to log a message
-                    // but the logger depends on the State object, so an unhandled exception occurs
-                    // might be better to just exit here
-                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", schemaPath, schemaDirectory);
-                }
-                Add<string>("BuildAMation", "PackageDependencySchemaPathName", schemaPath);
-            }
-            {
-                var schemaV2Path = System.IO.Path.Combine(schemaDirectory, "OpusPackageDependencyV2.xsd");
-                if (!System.IO.File.Exists(schemaV2Path))
-                {
-                    // TODO: this is quite dangerous, as the exception will try to log a message
-                    // but the logger depends on the State object, so an unhandled exception occurs
-                    // might be better to just exit here
-                    throw new Exception("Schema '{0}' does not exist. Expected it to be in '{1}'", schemaV2Path, schemaDirectory);
-                }
-                Add<string>("BuildAMation", "PackageDependencySchemaPathNameV2", schemaV2Path);
-
-                // relative path for definition files
-                Add<string>("BuildAMation", "PackageDependencySchemaRelativePathNameV2", "./Schema/OpusPackageDependencyV2.xsd");
-            }
-            {
-                // relative path for definition files
-                Add<string>("BuildAMation", "PackageDefinitionSchemaRelativePathNameV3", "./Schema/BamPackageDefinitionV1.xsd");
-            }
+            Add<string>("BuildAMation", "PackageDefinitionSchemaRelativePath", "./Schema/BamPackageDefinitionV1.xsd");
 
             AddCategory("System");
             OSUtilities.SetupPlatform();
@@ -977,25 +988,15 @@ namespace V2
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
             Add<bool>("System", "Pedantic", false);
 
-            var primaryPackageRoot = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(assemblyDirectory).FullName).FullName, "packages");
-            var packageRoots = new Array<DirectoryLocation>();
-            packageRoots.Add(DirectoryLocation.Get(primaryPackageRoot));
-            Add<Array<DirectoryLocation>>("System", "PackageRoots", packageRoots);
-
-#if true
-#else
-            var packageInfoCollection = new PackageInformationCollection();
-            Add<PackageInformationCollection>("System", "Packages", packageInfoCollection);
-
-            var dependentPackageList = new UniqueList<PackageIdentifier>();
-            Add<UniqueList<PackageIdentifier>>("System", "DependentPackageList", dependentPackageList);
-#endif
+            var primaryPackageRepo = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(assemblyDirectory).FullName).FullName, "packages");
+            var packageRepos = new StringArray();
+            packageRepos.Add(primaryPackageRepo);
+            Add<StringArray>("System", "PackageRepositories", packageRepos);
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<string>("System", "BuilderName", null);
             Add<string>("System", "BuildRoot", null);
-            Add<DirectoryLocation>("System", "BuildRootLocation", null);
             Add<System.Threading.ManualResetEvent>("System", "BuildStartedEvent", new System.Threading.ManualResetEvent(false));
             Add<bool>("System", "ShowTimingStatistics", false);
             Add<StringArray>("System", "CompilerDefines", new StringArray());
@@ -1194,35 +1195,11 @@ namespace V2
         }
 #endif
 
-        public static string PackageDefinitionSchemaPath
+        public static string PackageDefinitionSchemaRelativePath
         {
             get
             {
-                return Get("BuildAMation", "PackageDependencySchemaPathName") as string;
-            }
-        }
-
-        public static string PackageDefinitionSchemaPathV2
-        {
-            get
-            {
-                return Get("BuildAMation", "PackageDependencySchemaPathNameV2") as string;
-            }
-        }
-
-        public static string PackageDefinitionSchemaRelativePathNameV2
-        {
-            get
-            {
-                return Get("BuildAMation", "PackageDependencySchemaRelativePathNameV2") as string;
-            }
-        }
-
-        public static string PackageDefinitionSchemaRelativePathNameV3
-        {
-            get
-            {
-                return Get("BuildAMation", "PackageDefinitionSchemaRelativePathNameV3") as string;
+                return Get("BuildAMation", "PackageDefinitionSchemaRelativePath") as string;
             }
         }
 
@@ -1262,15 +1239,15 @@ namespace V2
             }
         }
 
-        public static Array<DirectoryLocation> PackageRoots
+        public static StringArray PackageRepositories
         {
             set
             {
-                Set("System", "PackageRoots", value);
+                Set("System", "PackageRepositories", value);
             }
             get
             {
-                return Get("System", "PackageRoots") as Array<DirectoryLocation>;
+                return Get("System", "PackageRepositories") as StringArray;
             }
         }
 
@@ -1347,19 +1324,10 @@ namespace V2
                 var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
 
                 Set("System", "BuildRoot", absoluteBuildRootPath);
-                Set("System", "BuildRootLocation", DirectoryLocation.Get(absoluteBuildRootPath, Location.EExists.WillExist));
             }
             get
             {
                 return Get("System", "BuildRoot") as string;
-            }
-        }
-
-        public static DirectoryLocation BuildRootLocation
-        {
-            get
-            {
-                return Get("System", "BuildRootLocation") as DirectoryLocation;
             }
         }
 

@@ -33,8 +33,6 @@ namespace Bam.Core
 {
     public class PackageDefinitionFile
     {
-        private static readonly string xmlNamespace = "Opus";
-
         private bool validate;
 
         private static void
@@ -48,20 +46,9 @@ namespace Bam.Core
             }
             else
             {
-                // NEW style definition files
                 if (args.Exception is System.Xml.Schema.XmlSchemaException)
                 {
                     throw new Exception("From {0} (line {1}, position {2}):\n{3}", args.Exception.SourceUri, args.Exception.LineNumber, args.Exception.LinePosition, args.Exception.Message);
-                }
-
-                // OLD style definition files
-                if (args.Exception.SourceUri.Contains(".xsd"))
-                {
-                    var schemaUri = new System.Uri(State.PackageDefinitionSchemaPathV2);
-                    if (schemaUri.AbsolutePath != args.Exception.SourceUri)
-                    {
-                        throw new Exception("Duplicate schemas exist! From package definition file '{0}', and from the build '{1}'", args.Exception.SourceUri, schemaUri.AbsolutePath);
-                    }
                 }
 
                 var message = System.String.Format("Validation error: " + args.Message);
@@ -97,11 +84,7 @@ namespace Bam.Core
         {
             this.validate = validate;
             this.XMLFilename = xmlFilename;
-#if true
             this.Dependents = new Array<System.Tuple<string, string, bool?>>();
-#else
-            this.PackageIdentifiers = new PackageIdentifierCollection();
-#endif
             this.BamAssemblies = new StringArray();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.SupportedPlatforms = EPlatform.All;
@@ -174,11 +157,7 @@ namespace Bam.Core
                 }
             }
 
-#if true
             this.Dependents.Sort();
-#else
-            this.PackageIdentifiers.Sort();
-#endif
 
             var document = new System.Xml.XmlDocument();
             var namespaceURI = "http://www.buildamation.com";
@@ -186,7 +165,7 @@ namespace Bam.Core
             {
                 var xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 var schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
-                var mostRecentSchemaRelativePath = State.PackageDefinitionSchemaRelativePathNameV3;
+                var mostRecentSchemaRelativePath = State.PackageDefinitionSchemaRelativePath;
                 schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, mostRecentSchemaRelativePath);
                 packageDefinition.Attributes.Append(schemaAttribute);
                 packageDefinition.SetAttribute("name", this.Name);
@@ -229,7 +208,6 @@ namespace Bam.Core
                 packageDefinition.AppendChild(packageRootsElement);
             }
 
-#if true
             if (this.Dependents.Count > 0)
             {
                 var dependentsEl = document.CreateElement("Dependents", namespaceURI);
@@ -273,74 +251,6 @@ namespace Bam.Core
                 }
                 packageDefinition.AppendChild(dependentsEl);
             }
-#else
-            if (this.PackageIdentifiers.Count > 0)
-            {
-                var requiredPackages = document.CreateElement("RequiredPackages", namespaceURI);
-                foreach (var package in this.PackageIdentifiers)
-                {
-                    System.Xml.XmlElement packageElement = null;
-
-                    {
-                        var node = requiredPackages.FirstChild;
-                        while (node != null)
-                        {
-                            var attributes = node.Attributes;
-                            var nameAttribute = attributes["Name"];
-                            if ((null != nameAttribute) && (nameAttribute.Value == package.Name))
-                            {
-                                packageElement = node as System.Xml.XmlElement;
-                                break;
-                            }
-
-                            node = node.NextSibling;
-                        }
-                    }
-
-                    if (null == packageElement)
-                    {
-                        packageElement = document.CreateElement("Package", namespaceURI);
-                        packageElement.SetAttribute("Name", package.Name);
-                        requiredPackages.AppendChild(packageElement);
-                    }
-                    {
-                        var packageVersionElement = document.CreateElement("Version", namespaceURI);
-                        packageVersionElement.SetAttribute("Id", package.Version);
-
-                        var platformFilter = package.PlatformFilter;
-                        if (platformFilter == EPlatform.Invalid)
-                        {
-                            throw new Exception("Dependent '{0}' requires at least one platform filter", package.ToString());
-                        }
-
-                        if (platformFilter != EPlatform.All)
-                        {
-                            var platformFilterString = Platform.ToString(platformFilter, ' ');
-                            var split = platformFilterString.Split(' ');
-                            string conditionText = null;
-                            foreach (var platform in split)
-                            {
-                                if (null != conditionText)
-                                {
-                                    conditionText += " || ";
-                                }
-                                conditionText += System.String.Format("'$(Platform)' == '{0}'", platform);
-                            }
-
-                            packageVersionElement.SetAttribute("Condition", conditionText);
-                        }
-
-                        if (package.IsDefaultVersion)
-                        {
-                            packageVersionElement.SetAttribute("Default", "true");
-                        }
-
-                        packageElement.AppendChild(packageVersionElement);
-                    }
-                }
-                packageDefinition.AppendChild(requiredPackages);
-            }
-#endif
 
             if (this.BamAssemblies.Count > 0)
             {
@@ -480,129 +390,14 @@ namespace Bam.Core
                 return;
             }
 
-            // fall back on earlier versions of the schema
-            if (this.ReadV2(xmlReaderSettings, validateSchemaLocation, validatePackageLocations))
-            {
-                // now write the file out using the current schema
-                this.Write();
-                Log.MessageAll("Package definition file '{0}' converted to use the latest schema", this.XMLFilename);
-                return;
-            }
-
-            if (this.ReadV1(xmlReaderSettings))
-            {
-                // now write the file out using the current schema
-                this.Write();
-                Log.MessageAll("Package definition file '{0}' converted to use the latest schema", this.XMLFilename);
-                return;
-            }
+            // this is where earlier versions would be read
+            // and immediately written back to update to the latest schema
 
             throw new Exception("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the package definition schemas", this.XMLFilename);
         }
 
-        protected EPlatform
-        InterpretConditionValue(
-            string condition)
-        {
-            // unless you apply the pattern, remove the match, apply another pattern, etc.?
-
-            //string filter = "'$(Platform)'";
-            //string pattern = @"('\$\(([A-Za-z0-9]+)\)')";
-            //string pattern = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s)";
-            //string pattern = @"^('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')";
-            //string pattern = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')\s([\|]{2})";
-            //string pattern2 = @"^\s([\|]{2})\s";
-            var pattern = new string[2];
-            pattern[0] = @"('\$\(([A-Za-z0-9]+)\)'\s([=]{2})\s'([A-za-z0-9\*]+)')";
-            pattern[1] = @"([\|]{2})";
-            System.Text.RegularExpressions.RegexOptions expOptions =
-                System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace |
-                System.Text.RegularExpressions.RegexOptions.Singleline;
-
-            var supportedPlatforms = EPlatform.Invalid;
-
-            int position = 0;
-            int patternIndex = 0;
-            for (; ; )
-            {
-                Core.Log.DebugMessage("Searching from pos {0} with pattern index {1}", position, patternIndex);
-                if (position > condition.Length)
-                {
-                    Core.Log.DebugMessage("End of string");
-                    break;
-                }
-
-                var exp = new System.Text.RegularExpressions.Regex(pattern[patternIndex], expOptions);
-                var matches = exp.Matches(condition, position);
-                if (0 == matches.Count)
-                {
-                    break;
-                }
-
-                foreach (System.Text.RegularExpressions.Match match in matches)
-                {
-                    if (match.Length > 0)
-                    {
-                        Core.Log.DebugMessage("Match '{0}'", match.Value);
-                        foreach (System.Text.RegularExpressions.Group group in match.Groups)
-                        {
-                            Core.Log.DebugMessage("\tg '{0}' @ {1}", group.Value, group.Index);
-                        }
-
-                        if (0 == patternIndex)
-                        {
-                            if (match.Groups.Count != 5)
-                            {
-                                throw new Exception("Expected format to be '$(Platform) == '...''. Instead found '{0}'", match.Value);
-                            }
-
-                            if (match.Groups[2].Value != "Platform")
-                            {
-                                throw new Exception("Expected 'Platform/ in '{0}'", match.Value);
-                            }
-
-                            if (match.Groups[3].Value != "==")
-                            {
-                                throw new Exception("Only supporting equivalence == in '{0}'", match.Value);
-                            }
-
-                            var platform = match.Groups[4].Value;
-                            var ePlatform = Platform.FromString(platform);
-                            if (ePlatform == EPlatform.Invalid)
-                            {
-                                throw new Exception("Unrecognize platform '{0}'", platform);
-                            }
-
-                            supportedPlatforms |= ePlatform;
-                        }
-                        else if (1 == patternIndex)
-                        {
-                            if (match.Groups.Count != 2)
-                            {
-                                throw new Exception("Expected format to be '... || ...'. Instead found '{0}'", match.Value);
-                            }
-
-                            if (match.Groups[1].Value != "||")
-                            {
-                                throw new Exception("Only supporting Boolean OR || in '{0}'", match.Value);
-                            }
-                        }
-
-                        position += match.Length + 1;
-                        ++patternIndex;
-                        patternIndex = patternIndex % 2;
-
-                        break;
-                    }
-                }
-            }
-            Core.Log.DebugMessage("End of matches");
-
-            return supportedPlatforms;
-        }
-
         private bool
-        ReadDescriptionV3(
+        ReadDescription(
             System.Xml.XmlReader xmlReader)
         {
             var descriptionElementName = "Description";
@@ -645,52 +440,6 @@ namespace Bam.Core
                 var bamDir = this.GetBamDirectory();
                 var absolutePackageRepoDir = Core.RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
                 this.PackageRepositories.Add(absolutePackageRepoDir);
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadPackageRootsV3(
-            System.Xml.XmlReader xmlReader)
-        {
-            var packageRootsElementName = "PackageRoots";
-            if (packageRootsElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var rootDirElementName = "RootDirectory";
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == packageRootsElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (rootDirElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var pathAttribute = "Path";
-                        if (!xmlReader.MoveToAttribute(pathAttribute))
-                        {
-                            throw new Exception("Required '{0}' attribute of '{1}' node missing", pathAttribute, rootDirElementName);
-                        }
-
-                        var path = xmlReader.Value;
-                        this.PackageRepositories.Add(path);
-
-                        var packageDirectory = System.IO.Path.GetDirectoryName(this.XMLFilename);
-                        var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteTo(path, packageDirectory);
-                        Core.State.PackageRoots.Add(Core.DirectoryLocation.Get(absolutePackageRoot));
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", packageRootsElementName, xmlReader.Name);
-                }
             }
 
             return true;
@@ -741,95 +490,6 @@ namespace Bam.Core
         }
 
         private bool
-        ReadRequiredPackagesV3(
-            System.Xml.XmlReader xmlReader,
-            bool validatePackageLocations)
-        {
-            var requiredPackagesElementName = "RequiredPackages";
-            if (requiredPackagesElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var packageElementName = "Package";
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == requiredPackagesElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (xmlReader.Name == packageElementName)
-                {
-                    var packageNameAttribute = "Name";
-                    if (!xmlReader.MoveToAttribute(packageNameAttribute))
-                    {
-                        throw new Exception("Required attribute 'Name' of 'Package' node missing");
-                    }
-                    var packageName = xmlReader.Value;
-
-                    var packageVersionElementName = "Version";
-                    while (xmlReader.Read())
-                    {
-                        if ((xmlReader.Name == packageElementName) &&
-                            (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                        {
-                            break;
-                        }
-
-                        if (xmlReader.Name == packageVersionElementName)
-                        {
-                            if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                            {
-                                var packageVersionIdAttribute = "Id";
-                                if (!xmlReader.MoveToAttribute(packageVersionIdAttribute))
-                                {
-                                    throw new Exception("Required 'Id' attribute of 'Version' node missing");
-                                }
-                                var packageVersion = xmlReader.Value;
-
-#if true
-#else
-                                var platformFilter = EPlatform.All;
-                                var packageConditionAttribute = "Condition";
-                                if (xmlReader.MoveToAttribute(packageConditionAttribute))
-                                {
-                                    var conditionValue = xmlReader.Value;
-                                    platformFilter = this.InterpretConditionValue(conditionValue);
-                                }
-
-                                var isDefaultVersion = false;
-                                var packageVersionDefaultAttribute = "Default";
-                                if (xmlReader.MoveToAttribute(packageVersionDefaultAttribute))
-                                {
-                                    var isDefault = System.Xml.XmlConvert.ToBoolean(xmlReader.Value);
-                                    isDefaultVersion = isDefault;
-                                }
-
-                                var id = new PackageIdentifier(packageName, packageVersion, validatePackageLocations);
-                                id.PlatformFilter = platformFilter;
-                                id.IsDefaultVersion = isDefaultVersion;
-                                this.PackageIdentifiers.Add(id);
-#endif
-                            }
-                        }
-                        else
-                        {
-                            throw new Exception("Unexpected element");
-                        }
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredPackagesElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        private bool
         ReadBamAssemblies(
             System.Xml.XmlReader xmlReader)
         {
@@ -855,54 +515,6 @@ namespace Bam.Core
 
                 var assembly = xmlReader.GetAttribute("name");
                 this.BamAssemblies.AddUnique(assembly);
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadRequiredBamAssembliesV3(
-            System.Xml.XmlReader xmlReader)
-        {
-            var requiredBamAssembliesElementName = "RequiredBamAssemblies";
-            if (requiredBamAssembliesElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var opusAssemblyElementName = "BamAssembly";
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == requiredBamAssembliesElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (opusAssemblyElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var assemblyNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of 'BamAssembly' node missing");
-                        }
-                        var assemblyName = xmlReader.Value;
-
-                        // conversion from Opus to BuildAMation
-                        if (assemblyName.StartsWith("Opus."))
-                        {
-                            assemblyName = assemblyName.Replace("Opus.", "Bam.");
-                        }
-
-                        this.BamAssemblies.Add(assemblyName);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredBamAssembliesElementName, xmlReader.Name);
-                }
             }
 
             return true;
@@ -942,56 +554,6 @@ namespace Bam.Core
                 }
 
                 this.DotNetAssemblies.AddUnique(desc);
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadRequiredDotNetAssembliesV3(
-            System.Xml.XmlReader xmlReader)
-        {
-            var requiredDotNetAssembliesElementName = "RequiredDotNetAssemblies";
-            if (requiredDotNetAssembliesElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var dotNetAssemblyElementName = "DotNetAssembly";
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == requiredDotNetAssembliesElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (dotNetAssemblyElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var assemblyNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of '{0}:DotNetAssembly' node missing", xmlNamespace);
-                        }
-                        var assemblyName = xmlReader.Value;
-
-                        var desc = new DotNetAssemblyDescription(assemblyName);
-
-                        var assemblyRequiredTargetFrameworkNameAttribute = "RequiredTargetFramework";
-                        if (xmlReader.MoveToAttribute(assemblyRequiredTargetFrameworkNameAttribute))
-                        {
-                            desc.RequiredTargetFramework = xmlReader.Value;
-                        }
-
-                        this.DotNetAssemblies.Add(desc);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredDotNetAssembliesElementName, xmlReader.Name);
-                }
             }
 
             return true;
@@ -1046,60 +608,6 @@ namespace Bam.Core
         }
 
         private bool
-        ReadSupportedPlatformsV3(
-            System.Xml.XmlReader xmlReader)
-        {
-            var supportedPlatformsElementName = "SupportedPlatforms";
-            if (supportedPlatformsElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            this.SupportedPlatforms = EPlatform.Invalid;
-            var platformElementName = "Platform";
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == supportedPlatformsElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (platformElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var platformNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(platformNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of '{0}:Platform' node missing", xmlNamespace);
-                        }
-
-                        var platformName = xmlReader.Value;
-                        if ("Windows" == platformName)
-                        {
-                            this.SupportedPlatforms |= EPlatform.Windows;
-                        }
-                        if ("Linux" == platformName)
-                        {
-                            this.SupportedPlatforms |= EPlatform.Linux;
-                        }
-                        if ("OSX" == platformName)
-                        {
-                            this.SupportedPlatforms |= EPlatform.OSX;
-                        }
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", supportedPlatformsElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        private bool
         ReadDefinitions(
             System.Xml.XmlReader xmlReader)
         {
@@ -1125,49 +633,6 @@ namespace Bam.Core
 
                 var definition = xmlReader.GetAttribute("name");
                 this.Definitions.AddUnique(definition);
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadDefinitionsV3(
-            System.Xml.XmlReader xmlReader)
-        {
-            var definitionsElementName = "Definitions";
-            if (definitionsElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var defineElementName = "Definition";
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == definitionsElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (defineElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var defineNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(defineNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of '{0}:Definition' node missing", xmlNamespace);
-                        }
-
-                        var definition = xmlReader.Value;
-
-                        this.Definitions.Add(definition);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", definitionsElementName, xmlReader.Name);
-                }
             }
 
             return true;
@@ -1206,7 +671,7 @@ namespace Bam.Core
 
                     while (xmlReader.Read())
                     {
-                        if (ReadDescriptionV3(xmlReader))
+                        if (ReadDescription(xmlReader))
                         {
                             // all done
                         }
@@ -1214,15 +679,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadPackageRootsV3(xmlReader))
-                        {
-                            // all done
-                        }
                         else if (ReadDependents(xmlReader, validatePackageLocations))
-                        {
-                            // all done
-                        }
-                        else if (ReadRequiredPackagesV3(xmlReader, validatePackageLocations))
                         {
                             // all done
                         }
@@ -1230,15 +687,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadRequiredBamAssembliesV3(xmlReader))
-                        {
-                            // all done
-                        }
                         else if (ReadDotNetAssemblies(xmlReader))
-                        {
-                            // all done
-                        }
-                        else if (ReadRequiredDotNetAssembliesV3(xmlReader))
                         {
                             // all done
                         }
@@ -1246,15 +695,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadSupportedPlatformsV3(xmlReader))
-                        {
-                            // all done
-                        }
                         else if (ReadDefinitions(xmlReader))
-                        {
-                            // all done
-                        }
-                        else if (ReadDefinitionsV3(xmlReader))
                         {
                             // all done
                         }
@@ -1296,605 +737,6 @@ namespace Bam.Core
             return true;
         }
 
-        private bool
-        ReadPackageRootsV2(
-            System.Xml.XmlReader xmlReader)
-        {
-            var packageRootsElementName = System.String.Format("{0}:PackageRoots", xmlNamespace);
-            if (packageRootsElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var rootDirElementName = System.String.Format("{0}:RootDirectory", xmlNamespace);
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == packageRootsElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (rootDirElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var pathAttribute = "Path";
-                        if (!xmlReader.MoveToAttribute(pathAttribute))
-                        {
-                            throw new Exception("Required '{0}' attribute of '{1}' node missing", pathAttribute, pathAttribute, rootDirElementName);
-                        }
-
-                        var path = xmlReader.Value;
-                        this.PackageRepositories.Add(path);
-
-                        var absolutePackageRoot = Core.RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(path);
-                        Core.State.PackageRoots.Add(Core.DirectoryLocation.Get(absolutePackageRoot));
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", packageRootsElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadRequiredPackagesV2(
-            System.Xml.XmlReader xmlReader,
-            bool validatePackageLocations)
-        {
-            var requiredPackagesElementName = System.String.Format("{0}:RequiredPackages", xmlNamespace);
-            if (requiredPackagesElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var packageElementName = System.String.Format("{0}:Package", xmlNamespace);
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == requiredPackagesElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (xmlReader.Name == packageElementName)
-                {
-                    var packageNameAttribute = "Name";
-                    if (!xmlReader.MoveToAttribute(packageNameAttribute))
-                    {
-                        throw new Exception("Required attribute 'Name' of 'Package' node missing");
-                    }
-                    var packageName = xmlReader.Value;
-
-                    var packageVersionElementName = System.String.Format("{0}:Version", xmlNamespace);
-                    while (xmlReader.Read())
-                    {
-                        if ((xmlReader.Name == packageElementName) &&
-                            (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                        {
-                            break;
-                        }
-
-                        if (xmlReader.Name == packageVersionElementName)
-                        {
-                            if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                            {
-                                var packageVersionIdAttribute = "Id";
-                                if (!xmlReader.MoveToAttribute(packageVersionIdAttribute))
-                                {
-                                    throw new Exception("Required 'Id' attribute of 'Version' node missing");
-                                }
-                                var packageVersion = xmlReader.Value;
-
-#if true
-#else
-                                var platformFilter = EPlatform.All;
-                                var packageConditionAttribute = "Condition";
-                                if (xmlReader.MoveToAttribute(packageConditionAttribute))
-                                {
-                                    var conditionValue = xmlReader.Value;
-                                    platformFilter = this.InterpretConditionValue(conditionValue);
-                                }
-
-                                var isDefaultVersion = false;
-                                var packageVersionDefaultAttribute = "Default";
-                                if (xmlReader.MoveToAttribute(packageVersionDefaultAttribute))
-                                {
-                                    var isDefault = System.Xml.XmlConvert.ToBoolean(xmlReader.Value);
-                                    isDefaultVersion = isDefault;
-                                }
-
-                                var id = new PackageIdentifier(packageName, packageVersion, validatePackageLocations);
-                                id.PlatformFilter = platformFilter;
-                                id.IsDefaultVersion = isDefaultVersion;
-                                this.PackageIdentifiers.Add(id);
-#endif
-                            }
-                        }
-                        else
-                        {
-                            throw new Exception("Unexpected element");
-                        }
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredPackagesElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadRequiredOpusAssembliesV2(
-            System.Xml.XmlReader xmlReader)
-        {
-            var requiredOpusAssembliesElementName = System.String.Format("{0}:RequiredOpusAssemblies", xmlNamespace);
-            if (requiredOpusAssembliesElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var opusAssemblyElementName = System.String.Format("{0}:OpusAssembly", xmlNamespace);
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == requiredOpusAssembliesElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (opusAssemblyElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var assemblyNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of '{0}:OpusAssembly' node missing", xmlNamespace);
-                        }
-                        var assemblyName = xmlReader.Value;
-
-                        // conversion from Opus to BuildAMation
-                        if (assemblyName.StartsWith("Opus."))
-                        {
-                            assemblyName = assemblyName.Replace("Opus.", "Bam.");
-                        }
-
-                        this.BamAssemblies.Add(assemblyName);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredOpusAssembliesElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadRequiredDotNetAssembliesV2(
-            System.Xml.XmlReader xmlReader)
-        {
-            var requiredDotNetAssembliesElementName = System.String.Format("{0}:RequiredDotNetAssemblies", xmlNamespace);
-            if (requiredDotNetAssembliesElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var dotNetAssemblyElementName = System.String.Format("{0}:DotNetAssembly", xmlNamespace);
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == requiredDotNetAssembliesElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (dotNetAssemblyElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var assemblyNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(assemblyNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of '{0}:DotNetAssembly' node missing", xmlNamespace);
-                        }
-                        var assemblyName = xmlReader.Value;
-
-                        var desc = new DotNetAssemblyDescription(assemblyName);
-
-                        var assemblyRequiredTargetFrameworkNameAttribute = "RequiredTargetFramework";
-                        if (xmlReader.MoveToAttribute(assemblyRequiredTargetFrameworkNameAttribute))
-                        {
-                            desc.RequiredTargetFramework = xmlReader.Value;
-                        }
-
-                        this.DotNetAssemblies.Add(desc);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", requiredDotNetAssembliesElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadSupportedPlatformsV2(
-            System.Xml.XmlReader xmlReader)
-        {
-            var supportedPlatformsElementName = System.String.Format("{0}:SupportedPlatforms", xmlNamespace);
-            if (supportedPlatformsElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            this.SupportedPlatforms = EPlatform.Invalid;
-            var platformElementName = System.String.Format("{0}:Platform", xmlNamespace);
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == supportedPlatformsElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (platformElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var platformNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(platformNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of '{0}:Platform' node missing", xmlNamespace);
-                        }
-
-                        var platformName = xmlReader.Value;
-                        if ("Windows" == platformName)
-                        {
-                            this.SupportedPlatforms |= EPlatform.Windows;
-                        }
-                        if ("Linux" == platformName)
-                        {
-                            this.SupportedPlatforms |= EPlatform.Linux;
-                        }
-                        if ("OSX" == platformName)
-                        {
-                            this.SupportedPlatforms |= EPlatform.OSX;
-                        }
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", supportedPlatformsElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        private bool
-        ReadDefinitionsV2(
-            System.Xml.XmlReader xmlReader)
-        {
-            var definitionsElementName = System.String.Format("{0}:Definitions", xmlNamespace);
-            if (definitionsElementName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            var defineElementName = System.String.Format("{0}:Definition", xmlNamespace);
-            while (xmlReader.Read())
-            {
-                if ((xmlReader.Name == definitionsElementName) &&
-                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
-                {
-                    break;
-                }
-
-                if (defineElementName == xmlReader.Name)
-                {
-                    if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                    {
-                        var defineNameAttribute = "Name";
-                        if (!xmlReader.MoveToAttribute(defineNameAttribute))
-                        {
-                            throw new Exception("Required 'Name' attribute of '{0}:Definition' node missing", xmlNamespace);
-                        }
-
-                        var definition = xmlReader.Value;
-
-                        this.Definitions.Add(definition);
-                    }
-                }
-                else
-                {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'", definitionsElementName, xmlReader.Name);
-                }
-            }
-
-            return true;
-        }
-
-        protected bool
-        ReadV2(
-            System.Xml.XmlReaderSettings readerSettings,
-            bool validateSchemaLocation,
-            bool validatePackageLocations)
-        {
-            try
-            {
-                var settings = readerSettings.Clone();
-                if (this.validate)
-                {
-                    if (validateSchemaLocation)
-                    {
-                        settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
-                    }
-                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
-                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
-                }
-
-                using (var xmlReader = System.Xml.XmlReader.Create(this.XMLFilename, settings))
-                {
-                    string rootElementName = System.String.Format("{0}:PackageDefinition", xmlNamespace);
-                    if (!xmlReader.ReadToFollowing(rootElementName))
-                    {
-                        Log.DebugMessage("Root element '{0}' not found in '{1}'. Xml instance may be referencing an old {2} schema. This file will now be upgraded to the latest schema.", rootElementName, this.XMLFilename, xmlNamespace);
-                        return false;
-                    }
-
-                    while (xmlReader.Read())
-                    {
-                        if (ReadPackageRootsV2(xmlReader))
-                        {
-                            // all done
-                        }
-                        else if (ReadRequiredPackagesV2(xmlReader, validatePackageLocations))
-                        {
-                            // all done
-                        }
-                        else if (ReadRequiredOpusAssembliesV2(xmlReader))
-                        {
-                            // all done
-                        }
-                        else if (ReadRequiredDotNetAssembliesV2(xmlReader))
-                        {
-                            // all done
-                        }
-                        else if (ReadSupportedPlatformsV2(xmlReader))
-                        {
-                            // all done
-                        }
-                        else if (ReadDefinitionsV2(xmlReader))
-                        {
-                            // all done
-                        }
-                        else if (xmlReader.Name == rootElementName)
-                        {
-                            // should be the end element
-                            if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
-                            {
-                                throw new Exception("Expected end of root element but found '{0}'", xmlReader.Name);
-                            }
-                        }
-                        else
-                        {
-                            throw new Exception("Package definition reading code failed to recognize element with name '{0}'", xmlReader.Name);
-                        }
-                    }
-
-                    if (!xmlReader.EOF)
-                    {
-                        throw new Exception("Failed to read all of file");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            catch (System.Exception)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public bool
-        ReadV1(
-            System.Xml.XmlReaderSettings readerSettings)
-        {
-            try
-            {
-                var settings = readerSettings.Clone();
-                settings.Schemas.Add(null, State.PackageDefinitionSchemaPath);
-
-                using (var xmlReader = System.Xml.XmlReader.Create(this.XMLFilename, settings))
-                {
-                    while (xmlReader.Read())
-                    {
-                        if (System.Xml.XmlNodeType.XmlDeclaration == xmlReader.NodeType)
-                        {
-                            // do nothing
-                        }
-                        else if (System.Xml.XmlNodeType.Whitespace == xmlReader.NodeType)
-                        {
-                            // do nothing
-                        }
-                        else if (System.Xml.XmlNodeType.Element == xmlReader.NodeType)
-                        {
-                            if ("RequiredPackages" == xmlReader.Name)
-                            {
-                                while (xmlReader.Read())
-                                {
-                                    if (System.Xml.XmlNodeType.Whitespace == xmlReader.NodeType)
-                                    {
-                                        // do nothing
-                                    }
-                                    else if (System.Xml.XmlNodeType.EndElement == xmlReader.NodeType)
-                                    {
-                                        if ("RequiredPackages" == xmlReader.Name)
-                                        {
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            throw new Exception("Unexpected EndElement");
-                                        }
-                                    }
-                                    else if (System.Xml.XmlNodeType.Element == xmlReader.NodeType)
-                                    {
-                                        if ("Package" == xmlReader.Name)
-                                        {
-                                            if (xmlReader.HasAttributes)
-                                            {
-                                                xmlReader.MoveToAttribute("Name");
-                                                var packageName = xmlReader.Value;
-                                                xmlReader.MoveToAttribute("Version");
-                                                var packageVersion = xmlReader.Value;
-
-#if true
-#else
-                                                var id = new PackageIdentifier(packageName, packageVersion);
-                                                id.PlatformFilter = EPlatform.All;
-                                                this.PackageIdentifiers.Add(id);
-#endif
-
-                                                xmlReader.MoveToElement();
-                                            }
-                                            else
-                                            {
-                                                throw new Exception("Package element has no attributes");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (!xmlReader.EOF)
-                    {
-                        throw new System.Xml.XmlException("Failed to read all of file");
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
-                Log.MessageAll("Package Definition Read of Schema v1 failed: '{0}'", ex.Message);
-                return false;
-            }
-
-            // add required BuildAMation assemblies
-            this.BamAssemblies.Add("Bam.Core");
-
-            // add required DotNet assemblies
-            {
-                var systemDesc = new DotNetAssemblyDescription("System");
-                var systemXmlDesc = new DotNetAssemblyDescription("System.Xml");
-                var systemCoreDesc = new DotNetAssemblyDescription("System.Core");
-
-                systemDesc.RequiredTargetFramework = "4.0.30319";
-                systemXmlDesc.RequiredTargetFramework = "4.0.30319";
-                systemCoreDesc.RequiredTargetFramework = "4.0.30319";
-
-                this.DotNetAssemblies.AddRange(new [] { systemDesc, systemXmlDesc, systemCoreDesc });
-            }
-
-            // supported on all platforms
-            this.SupportedPlatforms = EPlatform.All;
-
-            return true;
-        }
-
-#if true
-#else
-        public void
-        AddRequiredPackage(
-            PackageIdentifier idToAdd)
-        {
-            foreach (var id in this.PackageIdentifiers)
-            {
-                if (id.Match(idToAdd, false))
-                {
-                    throw new Exception("Package '{0}' is already included in the dependency file", id.ToString());
-                }
-            }
-
-            this.PackageIdentifiers.Add(idToAdd);
-            Log.Info("Added dependency '{0}' from root '{1}'", idToAdd.ToString(), idToAdd.Root.GetSingleRawPath());
-        }
-#endif
-
-#if true
-#else
-        public bool
-        RemovePackage(
-            PackageIdentifier idToRemove)
-        {
-            PackageIdentifier idToRemoveReally = null;
-            foreach (var id in this.PackageIdentifiers)
-            {
-                if (id.Match(idToRemove, false))
-                {
-                    idToRemoveReally = id;
-                    break;
-                }
-            }
-
-            if (null != idToRemoveReally)
-            {
-                this.PackageIdentifiers.Remove(idToRemoveReally);
-                var root = idToRemove.Root;
-                if (root != null)
-                {
-                    Log.Info("Removed dependency '{0}' from root '{1}'", idToRemove.ToString(), root.GetSingleRawPath());
-                }
-                else
-                {
-                    Log.Info("Removed dependency '{0}' from undefined root", idToRemove.ToString());
-                }
-                return true;
-            }
-            else
-            {
-                Log.Info("Could not find reference to package '{0}' to remove", idToRemove.ToString());
-                return false;
-            }
-        }
-#endif
-
-#if true
-#else
-        public Array<PackageIdentifier>
-        RecursiveDependentIdentifiers()
-        {
-            var ids = new Array<PackageIdentifier>();
-            foreach (var id in this.PackageIdentifiers)
-            {
-                ids.AddUnique(id);
-                var definition = id.Definition;
-                if (null == definition)
-                {
-                    continue;
-                }
-                ids.AddRangeUnique(definition.RecursiveDependentIdentifiers());
-            }
-            return ids;
-        }
-#endif
-
         public string XMLFilename
         {
             get;
@@ -1913,19 +755,11 @@ namespace Bam.Core
             private set;
         }
 
-#if true
         public Array<System.Tuple<string, string, bool?>> Dependents
         {
             get;
             private set;
         }
-#else
-        public PackageIdentifierCollection PackageIdentifiers
-        {
-            get;
-            private set;
-        }
-#endif
 
         public StringArray BamAssemblies
         {
@@ -2011,7 +845,7 @@ namespace Bam.Core
                     }
                     message.AppendLine();
                     var packageRepos = new StringArray();
-                    State.PackageRoots.ToList().ForEach(item => packageRepos.AddUnique(item.AbsolutePath));
+                    State.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
                     message.AppendLine("Searched in the package repositories:");
                     message.AppendLine(packageRepos.ToString("\n"));
                     throw new Exception(message.ToString());
@@ -2031,7 +865,7 @@ namespace Bam.Core
                         message.AppendLine();
                     }
                     var packageRepos = new StringArray();
-                    State.PackageRoots.ToList().ForEach(item => packageRepos.AddUnique(item.AbsolutePath));
+                    State.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
                     message.AppendLine("Found in the package repositories:");
                     message.AppendLine(packageRepos.ToString("\n"));
                     throw new Exception(message.ToString());

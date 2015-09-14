@@ -61,8 +61,6 @@
     <Compile Include="BuilderUtilities.cs" />
     <Compile Include="BuildManager.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="DirectoryCollection.cs" />
-    <Compile Include="DirectoryCollectionEnumerator.cs" />
     <Compile Include="DependencyGraph.cs" />
     <Compile Include="Enumerations\EBuildState.cs" />
     <Compile Include="Enumerations\EConfiguration.cs" />
@@ -70,20 +68,10 @@
     <Compile Include="Enumerations\ETimingProfiles.cs" />
     <Compile Include="Enumerations\EVerboseLevel.cs" />
     <Compile Include="Exception.cs" />
-    <Compile Include="FileCollection.cs" />
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\IModuleCollection.cs" />
     <Compile Include="Interfaces\ISetOperations.cs" />
-    <Compile Include="Locations\DirectoryLocation.cs" />
-    <Compile Include="Locations\FileLocation.cs" />
-    <Compile Include="Locations\Location.cs" />
-    <Compile Include="Locations\LocationArray.cs" />
-    <Compile Include="Locations\LocationComparer.cs" />
-    <Compile Include="Locations\LocationKey.cs" />
-    <Compile Include="Locations\LocationMap.cs" />
-    <Compile Include="Locations\ScaffoldLocation.cs" />
-    <Compile Include="Locations\SymlinkLocation.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ModuleCollection.cs" />
     <Compile Include="Options\BaseOptionCollection.cs" />
@@ -105,7 +93,6 @@
     <Compile Include="Package\XmlResolver.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyModulePath.cs" />
     <Compile Include="RelativePathUtilities.cs" />
     <Compile Include="State.cs" />
     <Compile Include="StringArray.cs" />
@@ -113,17 +100,9 @@
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />
     <Compile Include="TypeArray.cs" />
-    <Compile Include="TypeUtilities.cs" />
-    <Compile Include="UniqueList.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />
     <None Include="app.config" />
     <None Include="Schema\BamPackageDefinitionV1.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Schema\OpusPackageDependency.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Schema\OpusPackageDependencyV2.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packagetools\executeprocess.py">

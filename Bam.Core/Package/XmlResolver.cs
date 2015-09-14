@@ -56,31 +56,14 @@ namespace Bam.Core
                 throw new System.Xml.XmlException(System.String.Format("Don't know how to resolve URIs such as '{0}'", relativeUri));
             }
 
-            if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV3)
+            if (relativeUri == State.PackageDefinitionSchemaRelativePath)
             {
                 // we've got a relative path match, so build an absolute path from the executable directory
                 var absolutePath = System.IO.Path.Combine(State.ExecutableDirectory, relativeUri);
                 return new System.Uri(absolutePath);
             }
-            else if (relativeUri == State.PackageDefinitionSchemaRelativePathNameV2) // Last Opus style definition files (v0.50)
-            {
-                // we've got a local match, so use the version of the Schema that is next to the application binary
-                return new System.Uri(State.PackageDefinitionSchemaPathV2);
-            }
-            else
-            {
-                // OLD style Opus definition files (pre 0.50)
-                if (System.IO.File.Exists(relativeUri))
-                {
-                    // absolute pathname to a schema that exists on disk!
-                    return base.ResolveUri(baseUri, relativeUri);
-                }
-                else
-                {
-                    // absolute pathname to a schema that doesn't exist on disk!
-                    throw new System.Xml.Schema.XmlSchemaException(System.String.Format("Schema '{0}' cannot be located. Please re-run 'bam' and force a definition file update", relativeUri));
-                }
-            }
+
+            throw new System.Xml.Schema.XmlSchemaException(System.String.Format("Schema '{0}' cannot be located. Please re-run 'bam' and force a definition file update", relativeUri));
         }
 
         public override object
