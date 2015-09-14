@@ -35,8 +35,6 @@ namespace Bam
     /// </summary>
     class Program
     {
-        static bool UseV2 = true;
-
         public static class CommandLineArgumentHelper
         {
             public static void
@@ -89,140 +87,137 @@ namespace Bam
             System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
 #endif
 
-            if (UseV2)
+            var verbosityLevel = (Core.EVerboseLevel)Core.CommandLineProcessor.Evaluate(new Core.VerbosityLevel());
+            switch (verbosityLevel)
             {
-                var verbosityLevel = (Core.EVerboseLevel)Core.CommandLineProcessor.Evaluate(new Core.VerbosityLevel());
-                switch (verbosityLevel)
-                {
-                    case Core.EVerboseLevel.None:
-                    case Core.EVerboseLevel.Info:
-                    case Core.EVerboseLevel.Detail:
-                    case Core.EVerboseLevel.Full:
-                        Core.State.VerbosityLevel = verbosityLevel;
-                        break;
+                case Core.EVerboseLevel.None:
+                case Core.EVerboseLevel.Info:
+                case Core.EVerboseLevel.Detail:
+                case Core.EVerboseLevel.Full:
+                    Core.State.VerbosityLevel = verbosityLevel;
+                    break;
 
-                    default:
-                        throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
-                }
+                default:
+                    throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
+            }
 
-                Core.State.ForceDefinitionFileUpdate = Core.CommandLineProcessor.Evaluate(new Core.ForceDefinitionFileUpdate());
+            Core.State.ForceDefinitionFileUpdate = Core.CommandLineProcessor.Evaluate(new Core.ForceDefinitionFileUpdate());
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.PrintHelp()))
-                {
-                    CommandLineArgumentHelper.PrintHelp();
-                    return;
-                }
+            if (Core.CommandLineProcessor.Evaluate(new Core.PrintHelp()))
+            {
+                CommandLineArgumentHelper.PrintHelp();
+                return;
+            }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.PrintVersion()))
-                {
-                    Core.Log.MessageAll(Core.State.VersionString);
-                    return;
-                }
+            if (Core.CommandLineProcessor.Evaluate(new Core.PrintVersion()))
+            {
+                Core.Log.MessageAll(Core.State.VersionString);
+                return;
+            }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.CreateDebugProject()))
-                {
-                    DebugProject.Create();
-                    return;
-                }
+            if (Core.CommandLineProcessor.Evaluate(new Core.CreateDebugProject()))
+            {
+                DebugProject.Create();
+                return;
+            }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.MakePackage()))
-                {
-                    Core.PackageUtilities.MakePackage();
-                    return;
-                }
+            if (Core.CommandLineProcessor.Evaluate(new Core.MakePackage()))
+            {
+                Core.PackageUtilities.MakePackage();
+                return;
+            }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.AddDependentPackage()))
-                {
-                    Core.PackageUtilities.AddDependentPackage();
-                    return;
-                }
+            if (Core.CommandLineProcessor.Evaluate(new Core.AddDependentPackage()))
+            {
+                Core.PackageUtilities.AddDependentPackage();
+                return;
+            }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.ShowDefinitionFile()))
-                {
-                    Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
-                    Core.Graph.Instance.MasterPackage.Show();
-                    return;
-                }
+            if (Core.CommandLineProcessor.Evaluate(new Core.ShowDefinitionFile()))
+            {
+                Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
+                Core.Graph.Instance.MasterPackage.Show();
+                return;
+            }
 
-                // configure
-                Core.State.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
-                Core.State.CompileWithDebugSymbols = Core.CommandLineProcessor.Evaluate(new Core.UseDebugSymbols());
-                Core.State.BuildMode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
-                if (null == Core.State.BuildMode)
-                {
-                    throw new Core.Exception("No build mode specified");
-                }
+            // configure
+            Core.State.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
+            Core.State.CompileWithDebugSymbols = Core.CommandLineProcessor.Evaluate(new Core.UseDebugSymbols());
+            Core.State.BuildMode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
+            if (null == Core.State.BuildMode)
+            {
+                throw new Core.Exception("No build mode specified");
+            }
 
-                var configs = new Core.Array<Core.Environment>();
-                var requestedConfigs = Core.CommandLineProcessor.Evaluate(new Core.BuildConfigurations());
-                if (0 == requestedConfigs.Count)
+            var configs = new Core.Array<Core.Environment>();
+            var requestedConfigs = Core.CommandLineProcessor.Evaluate(new Core.BuildConfigurations());
+            if (0 == requestedConfigs.Count)
+            {
+                // default
+                requestedConfigs.Add(new Core.StringArray("debug"));
+            }
+            foreach (var configOption in requestedConfigs)
+            {
+                foreach (var config in configOption)
                 {
-                    // default
-                    requestedConfigs.Add(new Core.StringArray("debug"));
-                }
-                foreach (var configOption in requestedConfigs)
-                {
-                    foreach (var config in configOption)
+                    switch (config)
                     {
-                        switch (config)
-                        {
-                            case "debug":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Debug;
-                                    configs.Add(env);
-                                }
-                                break;
+                        case "debug":
+                            {
+                                var env = new Core.Environment();
+                                env.Configuration = Core.EConfiguration.Debug;
+                                configs.Add(env);
+                            }
+                            break;
 
-                            case "optimized":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Optimized;
-                                    configs.Add(env);
-                                }
-                                break;
+                        case "optimized":
+                            {
+                                var env = new Core.Environment();
+                                env.Configuration = Core.EConfiguration.Optimized;
+                                configs.Add(env);
+                            }
+                            break;
 
-                            case "profile":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Profile;
-                                    configs.Add(env);
-                                }
-                                break;
+                        case "profile":
+                            {
+                                var env = new Core.Environment();
+                                env.Configuration = Core.EConfiguration.Profile;
+                                configs.Add(env);
+                            }
+                            break;
 
-                            case "final":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Final;
-                                    configs.Add(env);
-                                }
-                                break;
+                        case "final":
+                            {
+                                var env = new Core.Environment();
+                                env.Configuration = Core.EConfiguration.Final;
+                                configs.Add(env);
+                            }
+                            break;
 
-                            default:
-                                throw new Core.Exception("Unrecognized configuration, {0}", config);
-                        }
+                        default:
+                            throw new Core.Exception("Unrecognized configuration, {0}", config);
                     }
                 }
+            }
 
-                try
+            try
+            {
+                Core.EntryPoint.Execute(configs);
+            }
+            catch (Bam.Core.Exception exception)
+            {
+                Core.Log.ErrorMessage(exception.Message);
+                if (null != exception.InnerException)
                 {
-                    Core.EntryPoint.Execute(configs);
+                    Core.Log.ErrorMessage("Additional details:");
+                    Core.Log.ErrorMessage(exception.InnerException.Message);
                 }
-                catch (Bam.Core.Exception exception)
-                {
-                    Core.Log.ErrorMessage(exception.Message);
-                    if (null != exception.InnerException)
-                    {
-                        Core.Log.ErrorMessage("Additional details:");
-                        Core.Log.ErrorMessage(exception.InnerException.Message);
-                    }
-                    System.Environment.ExitCode = -1;
-                }
-                finally
-                {
-                    Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
-                    Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
-                }
+                System.Environment.ExitCode = -1;
+            }
+            finally
+            {
+                Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
+                Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
             }
         }
 
