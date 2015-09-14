@@ -62,7 +62,6 @@
     <Compile Include="BuildManager.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DependencyGraph.cs" />
-    <Compile Include="Enumerations\EBuildState.cs" />
     <Compile Include="Enumerations\EConfiguration.cs" />
     <Compile Include="Enumerations\EPlatform.cs" />
     <Compile Include="Enumerations\ETimingProfiles.cs" />
@@ -75,19 +74,9 @@
     <Compile Include="Log.cs" />
     <Compile Include="ModuleCollection.cs" />
     <Compile Include="Options\BaseOptionCollection.cs" />
-    <Compile Include="Options\Option.cs" />
-    <Compile Include="Options\OutputPaths.cs" />
-    <Compile Include="Options\ReferenceTypeOption.cs" />
-    <Compile Include="Options\ValueTypeOption.cs" />
     <Compile Include="OSUtilities.cs" />
     <Compile Include="Package\DotNetAssemblyDescription.cs" />
-    <Compile Include="Package\PackageBuild.cs" />
-    <Compile Include="Package\PackageBuildList.cs" />
     <Compile Include="Package\PackageDefinitionFile.cs" />
-    <Compile Include="Package\PackageIdentifier.cs" />
-    <Compile Include="Package\PackageIdentifierCollection.cs" />
-    <Compile Include="Package\PackageInformation.cs" />
-    <Compile Include="Package\PackageInformationCollection.cs" />
     <Compile Include="Package\PackageListResourceFile.cs" />
     <Compile Include="Package\PackageUtilities.cs" />
     <Compile Include="Package\XmlResolver.cs" />
@@ -96,22 +85,12 @@
     <Compile Include="RelativePathUtilities.cs" />
     <Compile Include="State.cs" />
     <Compile Include="StringArray.cs" />
-    <Compile Include="StringUtilities.cs" />
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />
     <Compile Include="TypeArray.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />
     <None Include="app.config" />
     <None Include="Schema\BamPackageDefinitionV1.xsd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packagetools\executeprocess.py">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packagetools\getpaths.py">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="packagetools\standardoptions.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

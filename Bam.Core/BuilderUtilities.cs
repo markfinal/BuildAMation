@@ -48,23 +48,11 @@ namespace Bam.Core
             }
 
             var builderPackageName = System.String.Format("{0}Builder", State.BuildMode);
-#if true
             var builderPackage = V2.Graph.Instance.Packages.Where(item => item.Name == builderPackageName).FirstOrDefault();
             if (null != builderPackage)
             {
                 return;
             }
-#else
-            foreach (var package in State.PackageInfo)
-            {
-                if (builderPackageName == package.Name)
-                {
-                    package.IsBuilder = true;
-                    State.BuilderPackage = package;
-                    return;
-                }
-            }
-#endif
 
             throw new Exception("Builder package '{0}' was not specified as a dependency", builderPackageName);
         }
