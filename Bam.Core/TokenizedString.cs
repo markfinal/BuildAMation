@@ -36,7 +36,10 @@ namespace Bam.Core
     static class Extensions
     {
         // ref: http://stackoverflow.com/questions/521687/c-sharp-foreach-with-index
-        static public void Each<T>(this System.Collections.Generic.IEnumerable<T> ie, System.Action<T, int> action)
+        static public void
+        Each<T>(
+            this System.Collections.Generic.IEnumerable<T> ie,
+            System.Action<T, int> action)
         {
             var i = 0;
             foreach (var e in ie) action(e, i++);
@@ -63,7 +66,10 @@ namespace Bam.Core
         private string ParsedString = null;
         private bool Verbatim;
 
-        static private System.Collections.Generic.IEnumerable<string> SplitToParse(string original, string regExPattern)
+        static private System.Collections.Generic.IEnumerable<string>
+        SplitToParse(
+            string original,
+            string regExPattern)
         {
             var matches = System.Text.RegularExpressions.Regex.Split(original, regExPattern);
             var filtered = matches.Where(item => !System.String.IsNullOrEmpty(item));
@@ -174,7 +180,9 @@ namespace Bam.Core
             }
         }
 
-        private static string JoinTokens(System.Collections.Generic.List<string> tokens)
+        private static string
+        JoinTokens(
+            System.Collections.Generic.List<string> tokens)
         {
             if (1 == tokens.Count)
             {
@@ -192,7 +200,8 @@ namespace Bam.Core
             return join;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             if (this.Verbatim)
             {
@@ -216,7 +225,8 @@ namespace Bam.Core
             }
         }
 
-        public static void ParseAll()
+        public static void
+        ParseAll()
         {
             Log.Detail("Parsing tokenized strings");
             foreach (var t in Cache)
@@ -225,12 +235,15 @@ namespace Bam.Core
             }
         }
 
-        public string Parse()
+        public string
+        Parse()
         {
             return this.Parse(null);
         }
 
-        public string Parse(MacroList customMacros)
+        public string
+        Parse(
+            MacroList customMacros)
         {
             if (this.IsExpanded && (null == customMacros))
             {
@@ -393,7 +406,10 @@ namespace Bam.Core
             return joined;
         }
 
-        private string FunctionExpression(string functionName, string argument)
+        private string
+        FunctionExpression(
+            string functionName,
+            string argument)
         {
             switch (functionName)
             {
@@ -431,14 +447,17 @@ namespace Bam.Core
             }
         }
 
-        public override bool Equals(object obj)
+        public override bool
+        Equals(
+            object obj)
         {
             var other = obj as TokenizedString;
             var equal = (this.Parse() == other.Parse());
             return equal;
         }
 
-        public override int GetHashCode()
+        public override int
+        GetHashCode()
         {
             return base.GetHashCode();
         }

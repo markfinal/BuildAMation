@@ -39,7 +39,9 @@ namespace Bam.Core
             this.DictInternal = new System.Collections.Generic.Dictionary<string, TokenizedString>();
         }
 
-        private static string FormattedKey(string key)
+        private static string
+        FormattedKey(
+            string key)
         {
             return System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
         }
@@ -56,7 +58,10 @@ namespace Bam.Core
             }
         }
 
-        public void Add(string key, TokenizedString value)
+        public void
+        Add(
+            string key,
+            TokenizedString value)
         {
             if (key.StartsWith(TokenizedString.TokenPrefix) || key.EndsWith(TokenizedString.TokenSuffix))
             {
@@ -69,7 +74,10 @@ namespace Bam.Core
             this.DictInternal[FormattedKey(key)] = value;
         }
 
-        public void Add(string key, string value)
+        public void
+        Add(
+            string key,
+            string value)
         {
             this.Add(key, TokenizedString.Create(value, null));
         }
@@ -88,7 +96,9 @@ namespace Bam.Core
             }
         }
 
-        public bool Contains(string token)
+        public bool
+        Contains(
+            string token)
         {
             return this.Dict.ContainsKey(token);
         }
