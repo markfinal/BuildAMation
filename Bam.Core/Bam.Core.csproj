@@ -81,6 +81,7 @@
     <Compile Include="Interfaces\ISettingsBase.cs" />
     <Compile Include="Interfaces\ISitePolicy.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="MacroList.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="ModuleCollection.cs" />
     <Compile Include="Options\AddDependentPackage.cs" />
