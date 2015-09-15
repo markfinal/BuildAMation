@@ -127,18 +127,4 @@ namespace C
             }
         }
     }
-    namespace Cxx
-    {
-        public class DynamicLibrary :
-            C.DynamicLibrary
-        {
-            protected override void
-            Init(
-                Bam.Core.Module parent)
-            {
-                base.Init(parent);
-                this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
-            }
-        }
-    }
 }

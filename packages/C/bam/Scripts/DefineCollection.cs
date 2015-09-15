@@ -46,7 +46,10 @@ namespace C
             }
         }
 
-        public void Add(string name, string value)
+        public void
+        Add(
+            string name,
+            string value)
         {
             if (this.Defines.ContainsKey(name))
             {
@@ -59,7 +62,9 @@ namespace C
             this.Defines.Add(name, value);
         }
 
-        public void Add(string name)
+        public void
+        Add(
+            string name)
         {
             this.Add(name, string.Empty);
         }
@@ -98,7 +103,8 @@ namespace C
             }
         }
 
-        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>>
+        GetEnumerator()
         {
             foreach (var item in this.Defines)
             {
@@ -106,12 +112,14 @@ namespace C
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             var content = new System.Text.StringBuilder();
             foreach (var item in this.Defines)
