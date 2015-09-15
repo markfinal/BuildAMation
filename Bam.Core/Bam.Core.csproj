@@ -62,6 +62,7 @@
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DependencyGraph.cs" />
+    <Compile Include="EntryPoint.cs" />
     <Compile Include="Enumerations\EConfiguration.cs" />
     <Compile Include="Enumerations\EPlatform.cs" />
     <Compile Include="Enumerations\ETimingProfiles.cs" />
