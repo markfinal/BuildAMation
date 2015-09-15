@@ -129,7 +129,7 @@ namespace Qt5Test1
     }
 
     sealed class TarBallInstaller :
-        Publisher.TarBall
+        Installer.TarBall
     {
         protected override void
         Init(

@@ -96,7 +96,7 @@ namespace Test5
     }
 
     sealed class WinInstallerInno :
-        Publisher.InnoSetupInstaller
+        Installer.InnoSetupInstaller
     {
         protected override void
         Init(
@@ -109,7 +109,7 @@ namespace Test5
     }
 
     sealed class WinInstallerNSIS :
-        Publisher.NSISInstaller
+        Installer.NSISInstaller
     {
         protected override void
         Init(
@@ -122,7 +122,7 @@ namespace Test5
     }
 
     sealed class TarBallInstaller :
-        Publisher.TarBall
+        Installer.TarBall
     {
         protected override void
         Init(
@@ -135,7 +135,7 @@ namespace Test5
     }
 
     sealed class DiskImageInstaller :
-        Publisher.DiskImage
+        Installer.DiskImage
     {
         protected override void
         Init(
