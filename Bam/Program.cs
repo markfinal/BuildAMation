@@ -123,43 +123,9 @@ namespace Bam
                 {
                     foreach (var config in configOption)
                     {
-                        switch (config)
-                        {
-                            case "debug":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Debug;
-                                    configs.Add(env);
-                                }
-                                break;
-
-                            case "optimized":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Optimized;
-                                    configs.Add(env);
-                                }
-                                break;
-
-                            case "profile":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Profile;
-                                    configs.Add(env);
-                                }
-                                break;
-
-                            case "final":
-                                {
-                                    var env = new Core.Environment();
-                                    env.Configuration = Core.EConfiguration.Final;
-                                    configs.Add(env);
-                                }
-                                break;
-
-                            default:
-                                throw new Core.Exception("Unrecognized configuration, {0}", config);
-                        }
+                        var env = new Core.Environment();
+                        env.Configuration = Core.Configuration.FromString(config);
+                        configs.Add(env);
                     }
                 }
 
