@@ -29,45 +29,9 @@
 #endregion // License
 namespace VisualCCommon
 {
-namespace DefaultSettings
-{
-    public static partial class DefaultSettingsExtensions
-    {
-        public static void Defaults(this VisualCCommon.ICommonCompilerOptions settings, Bam.Core.Module module)
-        {
-            settings.NoLogo = true;
-        }
-
-        public static void
-        SharedSettings(
-            this VisualCCommon.ICommonCompilerOptions shared,
-            VisualCCommon.ICommonCompilerOptions lhs,
-            VisualCCommon.ICommonCompilerOptions rhs)
-        {
-            shared.NoLogo = (lhs.NoLogo == rhs.NoLogo) ? lhs.NoLogo : null;
-        }
-
-        public static void
-        Delta(
-            this VisualCCommon.ICommonCompilerOptions delta,
-            VisualCCommon.ICommonCompilerOptions lhs,
-            VisualCCommon.ICommonCompilerOptions rhs)
-        {
-            delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
-        }
-
-        public static void
-        Clone(
-            this VisualCCommon.ICommonCompilerOptions settings,
-            VisualCCommon.ICommonCompilerOptions other)
-        {
-            settings.NoLogo = other.NoLogo;
-        }
-    }
-}
-
     [Bam.Core.SettingsExtensions(typeof(VisualCCommon.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
+    public interface ICommonCompilerOptions :
+        Bam.Core.ISettingsBase
     {
         bool? NoLogo
         {
