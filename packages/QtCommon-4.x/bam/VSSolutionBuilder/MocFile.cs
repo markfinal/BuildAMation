@@ -40,7 +40,6 @@ namespace QtCommon
             Bam.Core.TokenizedString generatedMocSource,
             C.HeaderFile source)
         {
-#if true
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
@@ -51,38 +50,19 @@ namespace QtCommon
 
             var args = new Bam.Core.StringArray();
             args.Add(mocCompiler.Executable.Parse());
-            args.Add(System.String.Format("-o{0}", output));
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, args as object });
+            }
+            args.Add(System.String.Format("-o {0}", output));
             args.Add("%(FullPath)");
 
             var customBuild = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild, include: source.InputPath, uniqueToProject: true);
             customBuild.AddSetting("Command", args.ToString(' '), condition: config.ConditionText);
             customBuild.AddSetting("Message", System.String.Format("Moccing {0}", System.IO.Path.GetFileName(source.InputPath.Parse())), condition: config.ConditionText);
             customBuild.AddSetting("Outputs", output, condition: config.ConditionText);
-#else
-            if (null != source.MetaData)
-            {
-                throw new Bam.Core.Exception("Header file {0} already has VSSolution metadata", source.InputPath.Parse());
-            }
-
-            // TODO: this is hardcoded - needed a better way to figure this out
-            var platform = VSSolutionBuilder.VSSolutionMeta.EPlatform.SixtyFour;
-
-            var output = generatedMocSource.Parse();
-
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            args.Add(System.String.Format("-o{0}", output));
-            args.Add("%(FullPath)");
-
-            var customBuild = new VSSolutionBuilder.VSProjectCustomBuild(source, platform);
-            customBuild.Message = "Moccing";
-            customBuild.Command = args.ToString(' ');
-            customBuild.Outputs.AddUnique(generatedMocSource.Parse());
-
-            var headerFile = new VSSolutionBuilder.VSProjectHeaderFile(source, platform);
-            headerFile.Source = source.GeneratedPaths[C.HeaderFile.Key];
-            headerFile.CustomBuild = customBuild;
-#endif
         }
     }
 }

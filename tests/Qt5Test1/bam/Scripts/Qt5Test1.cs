@@ -44,7 +44,21 @@ namespace Qt5Test1
             var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
             foreach (var mocHeader in mocHeaders.Children)
             {
-                /*var myObjectMocTuple = */ source.MocHeader(mocHeader as C.HeaderFile);
+                var myObjectMocTuple = source.MocHeader(mocHeader as C.HeaderFile);
+
+                // first item in Tuple is the generated moc source file
+                myObjectMocTuple.Item1.PrivatePatch(settings =>
+                    {
+                        var mocSettings = settings as QtCommon.IMocSettings;
+                        mocSettings.PreprocessorDefinitions.Add("GENERATING_MOC");
+                    });
+
+                // second item in Tuple is the C++ compilation of that generated source
+                myObjectMocTuple.Item2.PrivatePatch(settings =>
+                    {
+                        var compiler = settings as C.ICommonCompilerOptions;
+                        compiler.PreprocessorDefines.Add("COMPILING_GENERATED_MOC");
+                    });
             }
 
             source.PrivatePatch(settings =>

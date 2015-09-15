@@ -47,9 +47,18 @@ namespace QtCommon
 
             var mocOutputPath = generatedMocSource.Parse();
             var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
-            var command = new System.Text.StringBuilder();
-            command.AppendFormat(System.String.Format("{0} -o{1} {2}", mocCompiler.Executable, mocOutputPath, source.InputPath.Parse()));
-            rule.AddShellCommand(command.ToString());
+
+            var args = new Bam.Core.StringArray();
+            args.Add(mocCompiler.Executable.Parse());
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, args as object });
+            }
+            args.Add(System.String.Format("-o {0}", mocOutputPath));
+            args.Add(source.InputPath.Parse());
+            rule.AddShellCommand(args.ToString(' '));
 
             meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
         }

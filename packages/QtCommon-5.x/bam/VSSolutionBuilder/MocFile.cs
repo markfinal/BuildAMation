@@ -50,7 +50,13 @@ namespace QtCommon
 
             var args = new Bam.Core.StringArray();
             args.Add(mocCompiler.Executable.Parse());
-            args.Add(System.String.Format("-o{0}", output));
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, args as object });
+            }
+            args.Add(System.String.Format("-o {0}", output));
             args.Add("%(FullPath)");
 
             var customBuild = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild, include: source.InputPath, uniqueToProject: true);

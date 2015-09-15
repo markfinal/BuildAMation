@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace QtCommon
 {
     namespace MocExtension
@@ -52,9 +53,157 @@ namespace QtCommon
         }
     }
 
-    public sealed class MocSettings :
-        Bam.Core.Settings
+    public static class DefaultExtensions
     {
+        public static void
+        Defaults(
+            this IMocSettings settings,
+            Bam.Core.Module module)
+        {
+            var qtPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Qt").First();
+            var qtVersion = qtPackage.Version.Split('.');
+            var paddedQtVersion = System.String.Format("0x{0}{1}{2}",
+                System.Convert.ToInt32(qtVersion[0]).ToString("00"),
+                System.Convert.ToInt32(qtVersion[1]).ToString("00"),
+                System.Convert.ToInt32(qtVersion[2]).ToString("00"));
+            settings.PreprocessorDefinitions.Add("QT_VERSION", paddedQtVersion);
+        }
+
+        public static void
+        Empty(
+            this IMocSettings settings)
+        {
+            settings.PreprocessorDefinitions = new C.PreprocessorDefinitions();
+            settings.IncludePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
+        }
+    }
+
+    public static partial class NativeImplementation
+    {
+        public static void
+        Convert(
+            this IMocSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            foreach (var define in options.PreprocessorDefinitions)
+            {
+                if (System.String.IsNullOrEmpty(define.Value))
+                {
+                    commandLine.Add(System.String.Format("-D {0}", define.Key));
+                }
+                else
+                {
+                    commandLine.Add(System.String.Format("-D {0}={1}", define.Key, define.Value));
+                }
+            }
+
+            foreach (var path in options.IncludePaths)
+            {
+                commandLine.Add(System.String.Format("-I {0}", path.Parse()));
+            }
+
+            if (options.DoNotGenerateIncludeStatement.HasValue && options.DoNotGenerateIncludeStatement.Value)
+            {
+                commandLine.Add("-i");
+            }
+
+            if (options.DoNotDisplayWarnings.HasValue && options.DoNotDisplayWarnings.Value)
+            {
+                commandLine.Add("--no-warnings");
+            }
+
+            if (!System.String.IsNullOrEmpty(options.PathPrefix))
+            {
+                commandLine.Add(System.String.Format("-p {0}", options.PathPrefix));
+            }
+        }
+    }
+
+    [Bam.Core.SettingsExtensions(typeof(DefaultExtensions))]
+    public interface IMocSettings :
+        Bam.Core.ISettingsBase
+    {
+        C.PreprocessorDefinitions PreprocessorDefinitions
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.TokenizedString> IncludePaths
+        {
+            get;
+            set;
+        }
+
+        bool? DoNotGenerateIncludeStatement
+        {
+            get;
+            set;
+        }
+
+        bool? DoNotDisplayWarnings
+        {
+            get;
+            set;
+        }
+
+        string PathPrefix
+        {
+            get;
+            set;
+        }
+    }
+
+    public sealed class MocSettings :
+        Bam.Core.Settings,
+        CommandLineProcessor.IConvertToCommandLine,
+        IMocSettings
+    {
+        public MocSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, true, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as IMocSettings).Convert(module, commandLine);
+        }
+
+        C.PreprocessorDefinitions IMocSettings.PreprocessorDefinitions
+        {
+            get;
+            set;
+        }
+
+
+        Bam.Core.Array<Bam.Core.TokenizedString> IMocSettings.IncludePaths
+        {
+            get;
+            set;
+        }
+
+        bool? IMocSettings.DoNotGenerateIncludeStatement
+        {
+            get;
+            set;
+        }
+
+        bool? IMocSettings.DoNotDisplayWarnings
+        {
+            get;
+            set;
+        }
+
+        string IMocSettings.PathPrefix
+        {
+            get;
+            set;
+        }
     }
 
     public sealed class MocTool :
@@ -62,7 +211,7 @@ namespace QtCommon
     {
         public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
-            return new MocSettings();
+            return new MocSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -94,7 +243,6 @@ namespace QtCommon
     public class MocModule :
         C.SourceFile
     {
-        private Bam.Core.PreBuiltTool Compiler;
         private C.HeaderFile SourceHeaderModule;
         private IMocGenerationPolicy Policy = null;
 
@@ -153,6 +301,19 @@ namespace QtCommon
         {
             var className = "QtCommon." + mode + "MocGeneration";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IMocGenerationPolicy>.Create(className);
+        }
+
+        private Bam.Core.PreBuiltTool Compiler
+        {
+            get
+            {
+                return this.Tool as Bam.Core.PreBuiltTool;
+            }
+
+            set
+            {
+                this.Tool = value;
+            }
         }
     }
 }

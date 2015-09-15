@@ -45,9 +45,17 @@ namespace QtCommon
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));
 
-            var mocInvoke = new System.Text.StringBuilder();
-            mocInvoke.AppendFormat("{0} -o{1} {2}", mocCompiler.Executable.Parse(), output, source.InputPath.Parse());
-            commands.Add(mocInvoke.ToString());
+            var args = new Bam.Core.StringArray();
+            args.Add(mocCompiler.Executable.Parse());
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, args as object });
+            }
+            args.Add(System.String.Format("-o {0}", output));
+            args.Add(source.InputPath.Parse());
+            commands.Add(args.ToString(' '));
 
             var header = new XcodeBuilder.XcodeHeaderFile(sender);
             header.Project.ProjectConfigurations[sender.BuildEnvironment.Configuration].PreBuildCommands.AddRange(commands);

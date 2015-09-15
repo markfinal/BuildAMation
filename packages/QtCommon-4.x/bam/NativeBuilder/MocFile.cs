@@ -48,7 +48,13 @@ namespace QtCommon
             }
 
             var args = new Bam.Core.StringArray();
-            args.Add(System.String.Format("-o{0}", mocOutputPath));
+            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
+            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
+            {
+                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
+                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, args as object });
+            }
+            args.Add(System.String.Format("-o {0}", mocOutputPath));
             args.Add(source.InputPath.Parse());
             CommandLineProcessor.Processor.Execute(context, mocCompiler, args);
         }
