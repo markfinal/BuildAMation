@@ -55,6 +55,14 @@ namespace Bam.Core
         }
     }
 
+    public interface ICustomHelpText
+    {
+        string OptionHelp
+        {
+            get;
+        }
+    }
+
     public interface IBooleanCommandLineArgument : ICommandLineArgument
     {
     }
@@ -69,13 +77,5 @@ namespace Bam.Core
 
     public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
     {
-    }
-
-    public interface ICustomHelpText
-    {
-        string OptionHelp
-        {
-            get;
-        }
     }
 }
