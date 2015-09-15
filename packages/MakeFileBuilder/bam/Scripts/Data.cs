@@ -44,6 +44,8 @@ namespace MakeFileBuilder
             {
                 // for system utilities, e.g. mkdir, cp, echo
                 this.Environment.Add("PATH", new Bam.Core.StringArray("/bin"));
+                // for some tools, e.g. as
+                this.Environment["PATH"].Add("/usr/bin");
             }
         }
 
