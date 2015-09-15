@@ -27,13 +27,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core; // for EPlatform.PlatformExtensions
+using Bam.Core;
 namespace ICU
 {
     public abstract class ICUBase :
         C.DynamicLibrary
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -47,17 +49,22 @@ namespace ICU
             this.GeneratedPaths[C.DynamicLibrary.Key] = Bam.Core.TokenizedString.Create("$(ICUInstallPath)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
         {
             // do nothing
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // do nothing
         }
