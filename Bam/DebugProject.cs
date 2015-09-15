@@ -134,7 +134,7 @@ namespace Bam
         private static void
         CreateCompilableSourceFile(
             string include,
-            Core.PackageDefinitionFile packageDefinition,
+            Core.PackageDefinition packageDefinition,
             System.Xml.XmlElement parent)
         {
             var source = CreateElement("Compile", parent: parent);
@@ -150,7 +150,7 @@ namespace Bam
         private static void
         CreateOtherSourceFile(
             string include,
-            Core.PackageDefinitionFile packageDefinition,
+            Core.PackageDefinition packageDefinition,
             System.Xml.XmlElement parent)
         {
             var source = CreateElement("None", parent: parent);

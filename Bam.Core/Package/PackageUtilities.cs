@@ -53,7 +53,7 @@ namespace Bam.Core
             }
 
             var packageVersion = CommandLineProcessor.Evaluate(new PackageVersion());
-            var definition = new PackageDefinitionFile(bamDir, packageName, packageVersion);
+            var definition = new PackageDefinition(bamDir, packageName, packageVersion);
 
             System.IO.Directory.CreateDirectory(bamDir);
             definition.Write();
@@ -244,7 +244,7 @@ namespace Bam.Core
 #endif
 
 #if true
-        public static PackageDefinitionFile
+        public static PackageDefinition
         GetMasterPackage()
         {
             var workingDir = State.WorkingDirectory;
@@ -254,7 +254,7 @@ namespace Bam.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinitionFile(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
+            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
             masterDefinitionFile.Read(true);
             return masterDefinitionFile;
         }
@@ -276,7 +276,7 @@ namespace Bam.Core
             }
 
             var definitionPathName = PackageDefinitionPathName(id);
-            var definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
+            var definitionFile = new PackageDefinition(definitionPathName, !State.ForceDefinitionFileUpdate);
             definitionFile.Read(true);
             id.Definition = definitionFile;
 
@@ -327,7 +327,7 @@ namespace Bam.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinitionFile(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
+            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
             masterDefinitionFile.Read(true);
 #endif
 
@@ -362,7 +362,7 @@ namespace Bam.Core
 
 #if true
             // read the definition files of any package found in the package roots
-            var candidatePackageDefinitions = new Array<PackageDefinitionFile>();
+            var candidatePackageDefinitions = new Array<PackageDefinition>();
             candidatePackageDefinitions.Add(masterDefinitionFile);
             while (packageRepos.Count > 0)
             {
@@ -382,7 +382,7 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var definitionFile = new PackageDefinitionFile(packageDefinitionPath, !State.ForceDefinitionFileUpdate);
+                    var definitionFile = new PackageDefinition(packageDefinitionPath, !State.ForceDefinitionFileUpdate);
                     definitionFile.Read(true);
                     candidatePackageDefinitions.Add(definitionFile);
 
@@ -401,8 +401,8 @@ namespace Bam.Core
             // - the master definition file
             // - command line args (these trump the mdf)
             // and only requires resolving when referenced
-            var packageDefinitions = new Array<PackageDefinitionFile>();
-            PackageDefinitionFile.ResolveDependencies(masterDefinitionFile, packageDefinitions, candidatePackageDefinitions);
+            var packageDefinitions = new Array<PackageDefinition>();
+            PackageDefinition.ResolveDependencies(masterDefinitionFile, packageDefinitions, candidatePackageDefinitions);
 
             // now resolve any duplicate names using defaults
             var duplicatePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() > 1).Select(item => item.Key);
@@ -416,7 +416,7 @@ namespace Bam.Core
                     var duplicates = packageDefinitions.Where(item => item.Name == dupName);
                     var masterDependency = masterDefinitionFile.Dependents.Where(item => item.Item1 == dupName);
                     var resolvedDuplicate = false;
-                    var toRemove = new Array<PackageDefinitionFile>();
+                    var toRemove = new Array<PackageDefinition>();
                     foreach (var masterDep in masterDependency)
                     {
                         // guaranteed that at most one instance of the dependency is marked as default
@@ -490,7 +490,7 @@ namespace Bam.Core
                     }
                 }
 
-                var definitionFile = new PackageDefinitionFile(definitionPathName, !State.ForceDefinitionFileUpdate);
+                var definitionFile = new PackageDefinition(definitionPathName, !State.ForceDefinitionFileUpdate);
                 try
                 {
                     definitionFile.Read(true);

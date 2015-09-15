@@ -471,13 +471,13 @@ namespace Bam.Core
             }
         }
 
-        private Array<PackageDefinitionFile> PackageDefinitions
+        private Array<PackageDefinition> PackageDefinitions
         {
             get;
             set;
         }
 
-        public PackageDefinitionFile MasterPackage
+        public PackageDefinition MasterPackage
         {
             get
             {
@@ -487,13 +487,13 @@ namespace Bam.Core
 
         public void
         SetPackageDefinitions(
-            Array<PackageDefinitionFile> packages)
+            Array<PackageDefinition> packages)
         {
             this.PackageDefinitions = packages;
             this.Macros.Add("masterpackagename", this.MasterPackage.Name);
         }
 
-        public System.Collections.Generic.IEnumerable<PackageDefinitionFile> Packages
+        public System.Collections.Generic.IEnumerable<PackageDefinition> Packages
         {
             get
             {

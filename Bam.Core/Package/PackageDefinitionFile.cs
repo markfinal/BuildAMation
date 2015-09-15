@@ -30,7 +30,7 @@
 using System.Linq;
 namespace Bam.Core
 {
-    public class PackageDefinitionFile
+    public class PackageDefinition
     {
         private bool validate;
 
@@ -94,7 +94,7 @@ namespace Bam.Core
         }
 
         public
-        PackageDefinitionFile(
+        PackageDefinition(
             string xmlFilename,
             bool validate)
         {
@@ -102,7 +102,7 @@ namespace Bam.Core
         }
 
         public
-        PackageDefinitionFile(
+        PackageDefinition(
             string bamDirectory,
             string name,
             string version)
@@ -810,9 +810,9 @@ namespace Bam.Core
 
         public static void
         ResolveDependencies(
-            PackageDefinitionFile current,
-            Array<PackageDefinitionFile> authenticated,
-            Array<PackageDefinitionFile> candidatePackageDefinitions)
+            PackageDefinition current,
+            Array<PackageDefinition> authenticated,
+            Array<PackageDefinition> candidatePackageDefinitions)
         {
             var matchingPackages = authenticated.Where(item => item.Name == current.Name);
             if (null != current.Version)
@@ -971,7 +971,7 @@ namespace Bam.Core
         private void
         ShowDependencies(
             int depth,
-            Array<PackageDefinitionFile> visitedPackages)
+            Array<PackageDefinition> visitedPackages)
         {
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
@@ -1048,7 +1048,7 @@ namespace Bam.Core
             if (this.Dependents.Count > 0)
             {
                 Log.MessageAll("\nDependent packages (* = default version):", packageName);
-                var visitedPackages = new Array<PackageDefinitionFile>();
+                var visitedPackages = new Array<PackageDefinition>();
                 this.ShowDependencies(1, visitedPackages);
             }
             else

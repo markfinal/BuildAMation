@@ -1923,10 +1923,10 @@ namespace XcodeBuilder
     {
         public WorkspaceMeta()
         {
-            this.Projects = new System.Collections.Generic.Dictionary<Bam.Core.PackageDefinitionFile, Project>();
+            this.Projects = new System.Collections.Generic.Dictionary<Bam.Core.PackageDefinition, Project>();
         }
 
-        private System.Collections.Generic.Dictionary<Bam.Core.PackageDefinitionFile, Project> Projects
+        private System.Collections.Generic.Dictionary<Bam.Core.PackageDefinition, Project> Projects
         {
             get;
             set;

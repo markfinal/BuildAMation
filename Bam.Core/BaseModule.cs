@@ -328,7 +328,7 @@ namespace Bam.Core
         }
 
 #if true
-        public PackageDefinitionFile PackageDefinition
+        public PackageDefinition PackageDefinition
         {
             get;
             private set;
