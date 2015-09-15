@@ -131,40 +131,19 @@ namespace Bam.Core
             {
                 case Platform.OS.Windows:
                     {
-                        if (CheckFor64BitOS)
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Win64);
-                        }
-                        else
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Win32);
-                        }
+                        State.Add<EPlatform>("System", "Platform", CheckFor64BitOS ? EPlatform.Win64 : EPlatform.Win32);
                     }
                     break;
 
                 case Platform.OS.Linux:
                     {
-                        if (CheckFor64BitOS)
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Linux64);
-                        }
-                        else
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.Linux32);
-                        }
+                        State.Add<EPlatform>("System", "Platform", CheckFor64BitOS ? EPlatform.Linux64 : EPlatform.Linux32);
                     }
                     break;
 
                 case Platform.OS.OSX:
                     {
-                        if (CheckFor64BitOS)
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.OSX64);
-                        }
-                        else
-                        {
-                            State.Add<EPlatform>("System", "Platform", EPlatform.OSX32);
-                        }
+                        State.Add<EPlatform>("System", "Platform", CheckFor64BitOS ? EPlatform.OSX64 : EPlatform.OSX32);
                     }
                     break;
 
