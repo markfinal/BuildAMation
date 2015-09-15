@@ -47,4 +47,12 @@ namespace Bam.Core
             set;
         }
     }
+
+    public interface IPackageMetaData
+    {
+        object this[string index]
+        {
+            get;
+        }
+    }
 }

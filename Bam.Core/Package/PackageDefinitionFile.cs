@@ -1050,5 +1050,11 @@ namespace Bam.Core
                 Log.MessageAll("\nNo dependent packages", packageName);
             }
         }
+
+        public IPackageMetaData MetaData
+        {
+            get;
+            set;
+        }
     }
 }

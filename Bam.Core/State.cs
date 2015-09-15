@@ -102,6 +102,17 @@ namespace Bam.Core
                 PackageUtilities.LoadPackageAssembly();
             }
 
+            // packages can have meta data - instantiate where they exist
+            foreach (var package in Graph.Instance.Packages)
+            {
+                var ns = package.Name;
+                var metaType = State.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(IPackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
+                if (null != metaType)
+                {
+                    package.MetaData = System.Activator.CreateInstance(metaType) as IPackageMetaData;
+                }
+            }
+
             var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
 
             var graph = Graph.Instance;
