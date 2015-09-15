@@ -29,25 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-    // only here because not all modules require a path
-    public interface IInputPath
-    {
-        TokenizedString InputPath
-        {
-            get;
-            set;
-        }
-    }
-
-    public interface IChildModule
-    {
-        Module Parent
-        {
-            get;
-            set;
-        }
-    }
-
     public interface IPackageMetaData
     {
         object this[string index]
