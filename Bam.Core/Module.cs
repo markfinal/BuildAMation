@@ -27,10 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
-    using System.Linq;
-
     /// <summary>
     /// Abstract concept of a module, the base class for all buildables in BAM
     /// </summary>
@@ -55,7 +54,6 @@ namespace Bam.Core
 
             // add the package root
             var packageNameSpace = graph.CommonModuleType.Peek().Namespace;
-#if true
             var packageDefinition = graph.Packages.Where(item => item.Name == packageNameSpace).FirstOrDefault();
             if (null == packageDefinition)
             {
@@ -76,29 +74,6 @@ namespace Bam.Core
             this.Macros.Add("packagename", packageDefinition.Name);
             this.Macros.Add("packagebuilddir", packageDefinition.GetBuildDirectory());
             this.Macros.Add("modulename", this.GetType().Name);
-#else
-            var packageInfo = Core.State.PackageInfo[packageNameSpace];
-            if (null == packageInfo)
-            {
-                var includeTests = CommandLineProcessor.Evaluate(new UseTests());
-                if (includeTests && packageNameSpace.EndsWith(".tests"))
-                {
-                    packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
-                    packageInfo = Core.State.PackageInfo[packageNameSpace];
-                }
-
-                if (null == packageInfo)
-                {
-                    throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
-                }
-            }
-            this.Package = packageInfo;
-            var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
-            this.Macros.Add("packagedir", packageRoot);
-            this.Macros.Add("modulename", this.GetType().Name);
-            this.Macros.Add("packagename", packageInfo.Name);
-            this.Macros.Add("packagebuilddir", packageInfo.BuildDirectory);
-#endif
 
             this.OwningRank = null;
             this.Tool = null;
@@ -160,7 +135,10 @@ namespace Bam.Core
             return module;
         }
 
-        protected void RegisterGeneratedFile(FileKey key, TokenizedString path)
+        protected void
+        RegisterGeneratedFile(
+            FileKey key,
+            TokenizedString path)
         {
             if (this.GeneratedPaths.ContainsKey(key))
             {
@@ -170,12 +148,16 @@ namespace Bam.Core
             this.GeneratedPaths.Add(key, path);
         }
 
-        private void RegisterGeneratedFile(FileKey key)
+        private void
+        RegisterGeneratedFile(
+            FileKey key)
         {
             this.RegisterGeneratedFile(key, null);
         }
 
-        private void InternalDependsOn(Module module)
+        private void
+        InternalDependsOn(
+            Module module)
         {
             if (this.DependentsList.Contains(module))
             {
@@ -185,7 +167,10 @@ namespace Bam.Core
             module.DependeesList.Add(this);
         }
 
-        public void DependsOn(Module module, params Module[] moreModules)
+        public void
+        DependsOn(
+            Module module,
+            params Module[] moreModules)
         {
             this.InternalDependsOn(module);
             foreach (var m in moreModules)
@@ -194,7 +179,9 @@ namespace Bam.Core
             }
         }
 
-        private void InternalRequires(Module module)
+        private void
+        InternalRequires(
+            Module module)
         {
             if (this.RequiredDependentsList.Contains(module))
             {
@@ -204,7 +191,10 @@ namespace Bam.Core
             module.RequiredDependeesList.Add(this);
         }
 
-        public void Requires(Module module, params Module[] moreModules)
+        public void
+        Requires(
+            Module module,
+            params Module[] moreModules)
         {
             this.InternalRequires(module);
             foreach (var m in moreModules)
@@ -219,33 +209,33 @@ namespace Bam.Core
             set;
         }
 
-#if true
         public PackageDefinition PackageDefinition
         {
             get;
             private set;
         }
-#else
-        public PackageInformation Package
-        {
-            get;
-            private set;
-        }
-#endif
 
         public delegate void PrivatePatchDelegate(Settings settings);
-        public void PrivatePatch(PrivatePatchDelegate dlg)
+
+        public void
+        PrivatePatch(
+            PrivatePatchDelegate dlg)
         {
             this.PrivatePatches.Add(dlg);
         }
 
         public delegate void PublicPatchDelegate(Settings settings, Module appliedTo);
-        public void PublicPatch(PublicPatchDelegate dlg)
+
+        public void
+        PublicPatch(
+            PublicPatchDelegate dlg)
         {
             this.PublicPatches.Add(dlg);
         }
 
-        public void UsePublicPatches(Module module)
+        public void
+        UsePublicPatches(
+            Module module)
         {
             this.ExternalPatches.Add(module.PublicPatches);
             this.ExternalPatches.AddRange(module.ExternalPatches);
@@ -360,7 +350,9 @@ namespace Bam.Core
             set;
         }
 
-        protected abstract void GetExecutionPolicy(string mode);
+        protected abstract void
+        GetExecutionPolicy(
+            string mode);
 
         public Module Tool
         {
@@ -368,7 +360,8 @@ namespace Bam.Core
             protected set;
         }
 
-        public void ApplySettingsPatches()
+        public void
+        ApplySettingsPatches()
         {
             this.ApplySettingsPatches(this.Settings, true);
         }
@@ -454,7 +447,8 @@ namespace Bam.Core
             private set;
         }
 
-        public Module GetEncapsulatingReferencedModule()
+        public Module
+        GetEncapsulatingReferencedModule()
         {
             if (Graph.Instance.IsReferencedModule(this))
             {
