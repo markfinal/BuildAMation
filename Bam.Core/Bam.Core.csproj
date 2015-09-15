@@ -114,6 +114,7 @@
     <Compile Include="Package\PackageUtilities.cs" />
     <Compile Include="Package\XmlResolver.cs" />
     <Compile Include="Platform.cs" />
+    <Compile Include="PreBuiltTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelativePathUtilities.cs" />
     <Compile Include="Settings.cs" />
