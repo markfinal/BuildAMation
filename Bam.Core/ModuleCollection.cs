@@ -37,7 +37,9 @@ namespace Bam.Core
     {
         private System.Collections.Generic.List<Module> Modules = new System.Collections.Generic.List<Module>();
 
-        public void Add(Module m)
+        public void
+        Add(
+            Module m)
         {
             if (null != m.OwningRank)
             {
@@ -58,7 +60,9 @@ namespace Bam.Core
             m.OwningRank = this;
         }
 
-        private void Move(Module m)
+        private void
+        Move(
+            Module m)
         {
             if (null == m.OwningRank)
             {
@@ -68,7 +72,8 @@ namespace Bam.Core
             m.OwningRank = null;
         }
 
-        public System.Collections.Generic.IEnumerator<Module> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<Module>
+        GetEnumerator()
         {
             for (int i = 0; i < this.Modules.Count; ++i)
             {
@@ -76,7 +81,8 @@ namespace Bam.Core
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
