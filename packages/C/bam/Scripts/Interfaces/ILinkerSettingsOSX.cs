@@ -29,17 +29,6 @@
 #endregion // License
 namespace C
 {
-namespace DefaultSettings
-{
-    public static partial class DefaultSettingsExtensions
-    {
-        public static void Defaults(this C.ILinkerOptionsOSX settings, Bam.Core.Module module)
-        {
-            settings.Frameworks = new Bam.Core.Array<Bam.Core.TokenizedString>();
-            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
-        }
-    }
-}
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ILinkerOptionsOSX : Bam.Core.ISettingsBase
     {
@@ -56,58 +45,6 @@ namespace DefaultSettings
         }
 
         Bam.Core.TokenizedString InstallName
-        {
-            get;
-            set;
-        }
-    }
-
-    namespace DefaultSettings
-    {
-        public static partial class DefaultSettingsExtensions
-        {
-            public static void
-            Defaults(
-                this C.ILinkerOptionsWin settings,
-                Bam.Core.Module module)
-            {
-                settings.SubSystem = ESubsystem.Console;
-            }
-            public static void
-            Empty(
-                this C.ILinkerOptionsWin settings)
-            {
-            }
-            public static void
-            SharedSettings(
-                this C.ILinkerOptionsWin shared,
-                C.ILinkerOptionsWin lhs,
-                C.ILinkerOptionsWin rhs)
-            {
-                shared.SubSystem = (lhs.SubSystem == rhs.SubSystem) ? lhs.SubSystem : null;
-            }
-            public static void
-            Delta(
-                this C.ILinkerOptionsWin delta,
-                C.ILinkerOptionsWin lhs,
-                C.ILinkerOptionsWin rhs)
-            {
-                delta.SubSystem = (lhs.SubSystem != rhs.SubSystem) ? lhs.SubSystem : null;
-            }
-            public static void
-            Clone(
-                this C.ILinkerOptionsWin settings,
-                C.ILinkerOptionsWin other)
-            {
-                settings.SubSystem = other.SubSystem;
-            }
-        }
-    }
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerOptionsWin :
-        Bam.Core.ISettingsBase
-    {
-        C.ESubsystem? SubSystem
         {
             get;
             set;

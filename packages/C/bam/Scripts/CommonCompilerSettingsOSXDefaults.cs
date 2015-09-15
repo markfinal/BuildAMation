@@ -28,9 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
-namespace C
-{
-namespace DefaultSettings
+namespace C.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
@@ -40,12 +38,14 @@ namespace DefaultSettings
             Bam.Core.Module module)
         {
         }
+
         public static void
         Empty(
             this C.ICCompilerOptionsOSX settings)
         {
             settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
+
         public static void
         SharedSettings(
             this C.ICCompilerOptionsOSX shared,
@@ -54,6 +54,7 @@ namespace DefaultSettings
         {
             shared.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Intersect(rhs.FrameworkSearchDirectories));
         }
+
         public static void
         Delta(
             this C.ICCompilerOptionsOSX delta,
@@ -62,6 +63,7 @@ namespace DefaultSettings
         {
             delta.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Except(rhs.FrameworkSearchDirectories));
         }
+
         public static void
         Clone(
             this C.ICCompilerOptionsOSX settings,
@@ -71,69 +73,6 @@ namespace DefaultSettings
             {
                 settings.FrameworkSearchDirectories.AddUnique(path);
             }
-        }
-    }
-}
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICCompilerOptionsOSX :
-        Bam.Core.ISettingsBase
-    {
-        Bam.Core.Array<Bam.Core.TokenizedString> FrameworkSearchDirectories
-        {
-            get;
-            set;
-        }
-    }
-
-    namespace DefaultSettings
-    {
-        public static partial class DefaultSettingsExtensions
-        {
-            public static void
-            Defaults(
-                this C.ICCompilerOptionsWin settings,
-                Bam.Core.Module module)
-            {
-                settings.CharacterSet = ECharacterSet.NotSet;
-            }
-            public static void
-            Empty(
-                this C.ICCompilerOptionsWin settings)
-            {
-            }
-            public static void
-            SharedSettings(
-                this C.ICCompilerOptionsWin shared,
-                C.ICCompilerOptionsWin lhs,
-                C.ICCompilerOptionsWin rhs)
-            {
-                shared.CharacterSet = (lhs.CharacterSet == rhs.CharacterSet) ? lhs.CharacterSet : null;
-            }
-            public static void
-            Delta(
-                this C.ICCompilerOptionsWin delta,
-                C.ICCompilerOptionsWin lhs,
-                C.ICCompilerOptionsWin rhs)
-            {
-                delta.CharacterSet = (lhs.CharacterSet != rhs.CharacterSet) ? lhs.CharacterSet : null;
-            }
-            public static void
-            Clone(
-                this C.ICCompilerOptionsWin settings,
-                C.ICCompilerOptionsWin other)
-            {
-                settings.CharacterSet = other.CharacterSet;
-            }
-        }
-    }
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICCompilerOptionsWin :
-        Bam.Core.ISettingsBase
-    {
-        C.ECharacterSet? CharacterSet
-        {
-            get;
-            set;
         }
     }
 }

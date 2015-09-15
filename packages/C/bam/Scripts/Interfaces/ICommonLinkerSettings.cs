@@ -27,30 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace C
 {
-namespace DefaultSettings
-{
-    public static partial class DefaultSettingsExtensions
-    {
-        public static void Defaults(this C.ICommonLinkerOptions settings, Bam.Core.Module module)
-        {
-            settings.OutputType = ELinkerOutput.Executable;
-            settings.LibraryPaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
-            settings.Libraries = new Bam.Core.StringArray();
-            settings.DebugSymbols = (module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug || module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Profile);
-        }
-        public static void
-        Defaults(
-            this C.ICxxOnlyLinkerOptions settings,
-            Bam.Core.Module module)
-        {
-            settings.StandardLibrary = C.Cxx.EStandardLibrary.NotSet;
-        }
-    }
-}
-
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
     {
@@ -73,17 +51,6 @@ namespace DefaultSettings
         }
 
         bool? DebugSymbols
-        {
-            get;
-            set;
-        }
-    }
-
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICxxOnlyLinkerOptions :
-        Bam.Core.ISettingsBase
-    {
-        C.Cxx.EStandardLibrary? StandardLibrary
         {
             get;
             set;
