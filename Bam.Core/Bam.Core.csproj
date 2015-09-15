@@ -53,7 +53,6 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
-    <Compile Include="ActionManager.cs" />
     <Compile Include="Array.cs" />
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
     <Compile Include="Attributes\PlatformFilterAttribute.cs" />
@@ -61,6 +60,7 @@
     <Compile Include="BaseModule.cs" />
     <Compile Include="BuilderUtilities.cs" />
     <Compile Include="BuildManager.cs" />
+    <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DependencyGraph.cs" />
     <Compile Include="Enumerations\EConfiguration.cs" />
