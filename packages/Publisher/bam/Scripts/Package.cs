@@ -30,191 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-    public static class DefaultExtensions
-    {
-        public static void
-        Defaults(
-            this ICopyFileSettings settings,
-            Bam.Core.Module module)
-        {
-            settings.Force = true;
-        }
-    }
-
-    public static partial class NativeImplementation
-    {
-        public static void
-        Convert(
-            this ICopyFileSettings settings,
-            Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            if (settings.Force)
-            {
-                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    commandLine.Add("/Y");
-                }
-                else
-                {
-                    commandLine.Add("-f");
-                }
-            }
-        }
-    }
-
-    public abstract class CopyFileTool :
-        Bam.Core.PreBuiltTool
-    {
-        public override void
-        Evaluate()
-        {
-            this.ReasonToExecute = null;
-        }
-    }
-
-    [Bam.Core.SettingsExtensions(typeof(DefaultExtensions))]
-    public interface ICopyFileSettings :
-        ISettingsBase
-    {
-        bool Force
-        {
-            get;
-            set;
-        }
-    }
-
-    public sealed class CopyFileSettings :
-        Bam.Core.Settings,
-        ICopyFileSettings,
-        CommandLineProcessor.IConvertToCommandLine
-    {
-        public CopyFileSettings()
-        {}
-
-        public CopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
-            }
-            else
-            {
-                commandLine.Add("-v");
-            }
-            (this as ICopyFileSettings).Convert(module, commandLine);
-        }
-    }
-
-    public sealed class CopyFilePosix :
-        CopyFileTool
-    {
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            return new CopyFileSettings(module);
-        }
-
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.Create("cp", null, verbatim: true);
-            }
-        }
-    }
-
-    public sealed class CopyFileWin :
-        CopyFileTool
-    {
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            return new CopyFileSettings(module);
-        }
-
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.Create("cmd", null, verbatim: true);
-            }
-        }
-    }
-
-    public sealed class PackageReference
-    {
-        public PackageReference(
-            Bam.Core.Module module,
-            string subdirectory,
-            Bam.Core.Array<PackageReference> references)
-        {
-            this.Module = module;
-            this.SubDirectory = subdirectory;
-            this.References = references;
-        }
-
-        public bool IsMarker
-        {
-            get
-            {
-                return (null == this.References);
-            }
-        }
-
-        public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
-
-        public string SubDirectory
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.Array<PackageReference> References
-        {
-            get;
-            private set;
-        }
-
-        public string DestinationDir
-        {
-            get;
-            set;
-        }
-    }
-
-    public interface IPackagePolicy
-    {
-        void
-        Package(
-            Package sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects);
-    }
-
     public abstract class Package :
         Bam.Core.Module
     {
@@ -222,12 +37,20 @@ namespace Publisher
         private IPackagePolicy Policy = null;
         public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
 
+        public enum EPublishingType
+        {
+            ConsoleApplication,
+            WindowedApplication
+        }
+
         protected Package()
         {
             this.RegisterGeneratedFile(PackageRoot, Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
         }
 
-        protected override void Init(Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -238,12 +61,6 @@ namespace Publisher
             {
                 this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFilePosix>();
             }
-        }
-
-        public enum EPublishingType
-        {
-            ConsoleApplication,
-            WindowedApplication
         }
 
         private string
@@ -371,7 +188,9 @@ namespace Publisher
             this.Policy.Package(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             var className = "Publisher." + mode + "Packager";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IPackagePolicy>.Create(className);
