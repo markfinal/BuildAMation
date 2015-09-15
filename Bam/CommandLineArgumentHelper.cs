@@ -92,6 +92,7 @@ namespace Bam
             }
             catch (Core.Exception)
             {
+                // purposefully empty, as IsPackageDirectory can throw, but we can ignore it in this scenario
             }
 
             Core.Log.Info("General options");
