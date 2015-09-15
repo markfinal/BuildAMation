@@ -49,7 +49,8 @@ namespace Bam.Core
         /// <param name="message">Exception message.</param>
         public
         Exception(
-            string message) : base(message)
+            string message) :
+            base(message)
         {}
 
         /// <summary>
@@ -60,7 +61,8 @@ namespace Bam.Core
         public
         Exception(
             string format,
-            params object[] args) : base(System.String.Format(format, args))
+            params object[] args) :
+            base(System.String.Format(format, args))
         {}
 
         /// <summary>
@@ -73,7 +75,8 @@ namespace Bam.Core
         Exception(
             System.Exception innerException,
             string format,
-            params object[] args) : base(System.String.Format(format, args), innerException)
+            params object[] args) :
+            base(System.String.Format(format, args), innerException)
         {}
 
         /// <summary>
@@ -84,7 +87,8 @@ namespace Bam.Core
         protected
         Exception(
             System.Runtime.Serialization.SerializationInfo serializationInfo,
-            System.Runtime.Serialization.StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+            System.Runtime.Serialization.StreamingContext streamingContext) :
+            base(serializationInfo, streamingContext)
         {}
 
         public static bool
