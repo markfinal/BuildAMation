@@ -29,14 +29,6 @@
 #endregion // License
 namespace C
 {
-    public interface IForwardedLibraries
-    {
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> ForwardedLibraries
-        {
-            get;
-        }
-    }
-
     public abstract class HeaderLibrary :
         CModule,
         IForwardedLibraries
@@ -50,7 +42,9 @@ namespace C
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
         {
             if (null == this.Policy)
             {

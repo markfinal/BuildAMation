@@ -29,13 +29,11 @@
 #endregion // License
 namespace C
 {
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
+    public interface IForwardedLibraries
     {
-        C.EArchiverOutput OutputType
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> ForwardedLibraries
         {
             get;
-            set;
         }
     }
 }

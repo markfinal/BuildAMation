@@ -29,13 +29,8 @@
 #endregion // License
 namespace C
 {
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.ObjCxx.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IObjectiveCxxOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
-        C.EArchiverOutput OutputType
-        {
-            get;
-            set;
-        }
     }
 }

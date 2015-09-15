@@ -29,13 +29,9 @@
 #endregion // License
 namespace C
 {
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
+    public enum EBit
     {
-        C.EArchiverOutput OutputType
-        {
-            get;
-            set;
-        }
+        ThirtyTwo = 32,
+        SixtyFour = 64
     }
 }

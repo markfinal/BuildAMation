@@ -29,10 +29,10 @@
 #endregion // License
 namespace C
 {
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(C.ObjC.DefaultSettings.DefaultSettingsExtensions))]
+    public interface IObjectiveCOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
-        C.EArchiverOutput OutputType
+        string ConstantStringClass
         {
             get;
             set;

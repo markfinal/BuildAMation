@@ -30,9 +30,9 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
+    public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
-        C.EArchiverOutput OutputType
+        C.ELanguageStandard? LanguageStandard
         {
             get;
             set;
