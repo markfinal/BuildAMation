@@ -84,7 +84,9 @@ namespace WindowsSDK
             // do nothing
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // do nothing
         }
