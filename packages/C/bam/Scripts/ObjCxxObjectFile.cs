@@ -29,24 +29,6 @@
 #endregion // License
 namespace C.ObjCxx
 {
-namespace DefaultSettings
-{
-    public static partial class DefaultSettingsExtensions
-    {
-        public static void
-        Defaults(
-            this C.IObjectiveCxxOnlyCompilerOptions settings,
-            Bam.Core.Module module)
-        {
-        }
-        public static void
-        Clone(
-            this C.IObjectiveCxxOnlyCompilerOptions settings,
-            C.IObjectiveCxxOnlyCompilerOptions other)
-        {
-        }
-    }
-}
     public class ObjectFile :
         C.ObjectFile
     {

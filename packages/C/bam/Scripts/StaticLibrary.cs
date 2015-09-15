@@ -166,7 +166,9 @@ namespace C
             this.Policy.Archive(this, context, libraryFile, source, headers);
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             var className = "C." + mode + "Librarian";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILibrarianPolicy>.Create(className);

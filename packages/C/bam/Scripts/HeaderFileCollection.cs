@@ -29,8 +29,8 @@
 #endregion // License
 namespace C
 {
-    public abstract class Plugin :
-        DynamicLibrary
+    public class HeaderFileCollection :
+        CModuleContainer<HeaderFile>
     {
     }
 }

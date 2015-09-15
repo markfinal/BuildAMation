@@ -27,10 +27,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace C.ObjCxx.DefaultSettings
 {
-    public abstract class Plugin :
-        DynamicLibrary
+    public static partial class DefaultSettingsExtensions
     {
+        public static void
+        Defaults(
+            this C.IObjectiveCxxOnlyCompilerOptions settings,
+            Bam.Core.Module module)
+        {
+        }
+
+        public static void
+        Clone(
+            this C.IObjectiveCxxOnlyCompilerOptions settings,
+            C.IObjectiveCxxOnlyCompilerOptions other)
+        {
+        }
     }
 }
+

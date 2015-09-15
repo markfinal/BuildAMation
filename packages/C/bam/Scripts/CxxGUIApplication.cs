@@ -28,74 +28,31 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-namespace C
+namespace C.Cxx
 {
     public class GUIApplication :
-        ConsoleApplication
+        C.GUIApplication
     {
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-
-            this.PrivatePatch(settings =>
-                {
-                    var linker = settings as C.ILinkerOptionsWin;
-                    if (linker != null)
-                    {
-                        linker.SubSystem = ESubsystem.Windows;
-                    }
-                });
+            this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
         }
 
-        protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
-            {
-                var compiler = settings as C.ICommonCompilerOptions;
-                compiler.PreprocessorDefines.Remove("_CONSOLE");
-                compiler.PreprocessorDefines.Add("_WINDOWS");
-            };
-
-        public override CObjectFileCollection
-        CreateCSourceContainer(
+        public override Cxx.ObjectFileCollection
+        CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var container = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
+            var container = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 container.PrivatePatch(this.WindowsPreprocessor);
             }
             return container;
-        }
-    }
-    namespace Cxx
-    {
-        public class GUIApplication :
-            C.GUIApplication
-        {
-            protected override void
-            Init(
-                Module parent)
-            {
-                base.Init(parent);
-                this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
-            }
-
-            public override Cxx.ObjectFileCollection
-            CreateCxxSourceContainer(
-                string wildcardPath = null,
-                Bam.Core.Module macroModuleOverride = null,
-                System.Text.RegularExpressions.Regex filter = null)
-            {
-                var container = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
-                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    container.PrivatePatch(this.WindowsPreprocessor);
-                }
-                return container;
-            }
         }
     }
 }

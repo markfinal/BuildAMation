@@ -29,15 +29,6 @@
 #endregion // License
 namespace C.ObjC
 {
-namespace DefaultSettings
-{
-    public static partial class DefaultSettingsExtensions
-    {
-        public static void Defaults(this C.IObjectiveCOnlyCompilerOptions settings, Bam.Core.Module module)
-        {
-        }
-    }
-}
     public class ObjectFile :
         C.ObjectFile
     {

@@ -27,10 +27,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace C
 {
-    public abstract class Plugin :
-        DynamicLibrary
+    public class GUIApplication :
+        ConsoleApplication
     {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.PrivatePatch(settings =>
+                {
+                    var linker = settings as C.ILinkerOptionsWin;
+                    if (linker != null)
+                    {
+                        linker.SubSystem = ESubsystem.Windows;
+                    }
+                });
+        }
+
+        protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
+            {
+                var compiler = settings as C.ICommonCompilerOptions;
+                compiler.PreprocessorDefines.Remove("_CONSOLE");
+                compiler.PreprocessorDefines.Add("_WINDOWS");
+            };
+
+        public override CObjectFileCollection
+        CreateCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var container = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                container.PrivatePatch(this.WindowsPreprocessor);
+            }
+            return container;
+        }
     }
 }
