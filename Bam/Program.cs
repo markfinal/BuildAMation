@@ -254,8 +254,11 @@ namespace Bam
             }
             finally
             {
-                Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
-                Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
+                if (Core.Graph.Instance.BuildEnvironments.Count > 0)
+                {
+                    Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
+                    Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
+                }
             }
         }
 
