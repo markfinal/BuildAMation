@@ -70,12 +70,7 @@ namespace C
             }
 
             // then all options
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
-            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
-            {
-                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLine as object });
-            }
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }

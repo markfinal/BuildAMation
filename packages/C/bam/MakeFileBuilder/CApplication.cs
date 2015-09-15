@@ -97,12 +97,7 @@ namespace C
             }
 
             var commandLineArgs = new Bam.Core.StringArray();
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
-            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
-            {
-                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, commandLineArgs as object });
-            }
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLineArgs);
 
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();

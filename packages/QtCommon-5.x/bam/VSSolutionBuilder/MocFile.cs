@@ -50,12 +50,7 @@ namespace QtCommon
 
             var args = new Bam.Core.StringArray();
             args.Add(mocCompiler.Executable.Parse());
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("CommandLineProcessor.IConvertToCommandLine");
-            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
-            {
-                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new[] { sender, args as object });
-            }
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
             args.Add(System.String.Format("-o {0}", output));
             args.Add("%(FullPath)");
 
