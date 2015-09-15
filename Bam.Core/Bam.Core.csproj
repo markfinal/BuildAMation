@@ -68,6 +68,7 @@
     <Compile Include="Enumerations\EVerboseLevel.cs" />
     <Compile Include="Exception.cs" />
     <Compile Include="ExecuteReasoning.cs" />
+    <Compile Include="FileKey.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Interfaces\IChildModule.cs" />
     <Compile Include="Interfaces\ICommandLineArgument.cs" />
