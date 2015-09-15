@@ -29,48 +29,17 @@
 #endregion // License
 namespace VisualC
 {
-    public class ArchiverSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonArchiverOptions,
-        ICommonArchiverOptions
+    namespace DefaultSettings
     {
-        public ArchiverSettings(
-            Bam.Core.Module module)
+        public static partial class DefaultSettingsExtensions
         {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
-            (this as ICommonArchiverOptions).Convert(module, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
-            string condition)
-        {
-            (this as C.ICommonArchiverOptions).Convert(module, settings, condition);
-            (this as ICommonArchiverOptions).Convert(module, settings, condition);
-        }
-
-        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool? ICommonArchiverOptions.NoLogo
-        {
-            get;
-            set;
+            public static void
+            Defaults(
+                this VisualC.ICommonLinkerOptions settings,
+                Bam.Core.Module module)
+            {
+                settings.NoLogo = true;
+            }
         }
     }
 }

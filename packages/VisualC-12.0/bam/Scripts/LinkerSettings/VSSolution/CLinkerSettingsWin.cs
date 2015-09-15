@@ -29,48 +29,25 @@
 #endregion // License
 namespace VisualC
 {
-    public class ArchiverSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonArchiverOptions,
-        ICommonArchiverOptions
+    public static partial class VSSolutionImplementation
     {
-        public ArchiverSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ILinkerOptionsWin options,
             Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
-            (this as ICommonArchiverOptions).Convert(module, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
-            (this as C.ICommonArchiverOptions).Convert(module, settings, condition);
-            (this as ICommonArchiverOptions).Convert(module, settings, condition);
-        }
+            switch (options.SubSystem.Value)
+            {
+                case C.ESubsystem.Console:
+                case C.ESubsystem.Windows:
+                    settingsGroup.AddSetting("SubSystem", options.SubSystem.Value.ToString(), condition);
+                    break;
 
-        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool? ICommonArchiverOptions.NoLogo
-        {
-            get;
-            set;
+                default:
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", options.SubSystem.Value.ToString());
+            }
         }
     }
 }

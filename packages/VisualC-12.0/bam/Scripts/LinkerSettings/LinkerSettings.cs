@@ -27,16 +27,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using C.DefaultSettings;
+using VisualC.DefaultSettings;
 namespace VisualC
 {
-    public class ArchiverSettings :
+    public class LinkerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
-        C.ICommonArchiverOptions,
-        ICommonArchiverOptions
+        C.ILinkerOptionsWin,
+        C.ICommonLinkerOptions,
+        ICommonLinkerOptions
     {
-        public ArchiverSettings(
+        public LinkerSettings(
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
@@ -47,8 +50,9 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
-            (this as ICommonArchiverOptions).Convert(module, commandLine);
+            (this as C.ILinkerOptionsWin).Convert(module, commandLine);
+            (this as C.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as ICommonLinkerOptions).Convert(module, commandLine);
         }
 
         void
@@ -57,17 +61,42 @@ namespace VisualC
             VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.ICommonArchiverOptions).Convert(module, settings, condition);
-            (this as ICommonArchiverOptions).Convert(module, settings, condition);
+            (this as C.ILinkerOptionsWin).Convert(module, settings, condition);
+            (this as C.ICommonLinkerOptions).Convert(module, settings, condition);
+            (this as ICommonLinkerOptions).Convert(module, settings, condition);
         }
 
-        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
+        C.ESubsystem? C.ILinkerOptionsWin.SubSystem
         {
             get;
             set;
         }
 
-        bool? ICommonArchiverOptions.NoLogo
+        C.ELinkerOutput C.ICommonLinkerOptions.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerOptions.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.ICommonLinkerOptions.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? C.ICommonLinkerOptions.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        bool? ICommonLinkerOptions.NoLogo
         {
             get;
             set;

@@ -29,48 +29,39 @@
 #endregion // License
 namespace VisualC
 {
-    public class ArchiverSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonArchiverOptions,
-        ICommonArchiverOptions
+    public static partial class VSSolutionImplementation
     {
-        public ArchiverSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ICommonLinkerOptions options,
             Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
-            (this as ICommonArchiverOptions).Convert(module, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
-            (this as C.ICommonArchiverOptions).Convert(module, settings, condition);
-            (this as ICommonArchiverOptions).Convert(module, settings, condition);
-        }
+            switch (options.OutputType)
+            {
+                case C.ELinkerOutput.Executable:
+                    {
+                        var outPath = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
+                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
+                    }
+                    break;
 
-        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
-        {
-            get;
-            set;
-        }
+                case C.ELinkerOutput.DynamicLibrary:
+                    {
+                        var outPath = module.GeneratedPaths[C.DynamicLibrary.Key].Parse();
+                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
 
-        bool? ICommonArchiverOptions.NoLogo
-        {
-            get;
-            set;
+                        var importPath = module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
+                        settingsGroup.AddSetting("ImportLibrary", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(importPath)), condition);
+                    }
+                    break;
+            }
+
+            settingsGroup.AddSetting("AdditionalLibraryDirectories", options.LibraryPaths, condition);
+            settingsGroup.AddSetting("AdditionalDependencies", options.Libraries, condition);
+
+            settingsGroup.AddSetting("GenerateDebugInformation", options.DebugSymbols.GetValueOrDefault(false), condition);
         }
     }
 }
