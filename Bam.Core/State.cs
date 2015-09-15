@@ -29,71 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-    using System.Linq;
-
-    public class ExecutionContext
-    {
-        public ExecutionContext(
-            bool useEvaluation,
-            bool explainRebuild)
-        {
-            this.Evaluate = useEvaluation;
-            this.ExplainLoggingLevel = explainRebuild ? State.VerbosityLevel : EVerboseLevel.Full;
-            this.OutputStringBuilder = new System.Text.StringBuilder();
-            this.ErrorStringBuilder = new System.Text.StringBuilder();
-        }
-
-        public bool Evaluate
-        {
-            get;
-            private set;
-        }
-
-        public EVerboseLevel ExplainLoggingLevel
-        {
-            get;
-            private set;
-        }
-
-        public System.Text.StringBuilder OutputStringBuilder
-        {
-            get;
-            private set;
-        }
-
-        public System.Text.StringBuilder ErrorStringBuilder
-        {
-            get;
-            private set;
-        }
-
-        public void
-        OutputDataReceived(
-            object sender,
-            System.Diagnostics.DataReceivedEventArgs e)
-        {
-            if (System.String.IsNullOrEmpty(e.Data))
-            {
-                return;
-            }
-            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
-            this.OutputStringBuilder.Append(e.Data + '\n');
-        }
-
-        public void
-        ErrorDataReceived(
-            object sender,
-            System.Diagnostics.DataReceivedEventArgs e)
-        {
-            if (System.String.IsNullOrEmpty(e.Data))
-            {
-                return;
-            }
-            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
-            this.ErrorStringBuilder.Append(e.Data + '\n');
-        }
-    }
-
     public static class State
     {
         public class Category :
@@ -213,10 +148,6 @@ namespace Bam.Core
             Add<StringArray>("PackageCreation", "Builders", null);
 
             AddCategory("Build");
-#if true
-#else
-            Add<PackageInformation>("Build", "BuilderPackage", null);
-#endif
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
             Add<System.Collections.Generic.Dictionary<string, string>>("Build", "LazyArguments", new System.Collections.Generic.Dictionary<string, string>());
@@ -455,36 +386,6 @@ namespace Bam.Core
             }
         }
 
-#if true
-#else
-        public static PackageInformationCollection PackageInfo
-        {
-           set
-           {
-               Set("System", "Packages", value);
-           }
-           get
-           {
-               return Get("System", "Packages") as PackageInformationCollection;
-           }
-        }
-#endif
-
-#if true
-#else
-        public static UniqueList<PackageIdentifier> DependentPackageList
-        {
-            set
-            {
-                Set("System", "DependentPackageList", value);
-            }
-            get
-            {
-                return Get("System", "DependentPackageList") as UniqueList<PackageIdentifier>;
-            }
-        }
-#endif
-
         public static string ScriptAssemblyPathname
         {
             set
@@ -546,22 +447,6 @@ namespace Bam.Core
                 return Get("PackageCreation", "DependentPackages") as StringArray;
             }
         }
-
-#if true
-#else
-        public static PackageInformation BuilderPackage
-        {
-            set
-            {
-                Set("Build", "BuilderPackage", value);
-            }
-
-            get
-            {
-                return Get("Build", "BuilderPackage") as PackageInformation;
-            }
-        }
-#endif
 
         public static int JobCount
         {
