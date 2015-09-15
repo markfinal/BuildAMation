@@ -99,12 +99,8 @@ namespace C
                 application = sender.MetaData as XcodeBuilder.XcodeCommonLinkable;
             }
 
-            var interfaceType = Bam.Core.State.ScriptAssembly.GetType("XcodeProjectProcessor.IConvertToProject");
-            if (interfaceType.IsAssignableFrom(sender.Settings.GetType()))
-            {
-                var map = sender.Settings.GetType().GetInterfaceMap(interfaceType);
-                map.InterfaceMethods[0].Invoke(sender.Settings, new object[] { sender, application.Configuration });
-            }
+            // convert link settings to the Xcode project
+            (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, application.Configuration);
 
             if (objectFiles.Count > 1)
             {
