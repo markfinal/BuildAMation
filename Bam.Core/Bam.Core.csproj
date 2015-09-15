@@ -57,7 +57,6 @@
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
     <Compile Include="Attributes\PlatformFilterAttribute.cs" />
     <Compile Include="Attributes\SettingsExtensionsAttribute.cs" />
-    <Compile Include="BaseModule.cs" />
     <Compile Include="BuilderUtilities.cs" />
     <Compile Include="BuildManager.cs" />
     <Compile Include="CommandLineProcessor.cs" />
@@ -79,6 +78,7 @@
     <Compile Include="Interfaces\ISettingsBase.cs" />
     <Compile Include="Interfaces\ISitePolicy.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Module.cs" />
     <Compile Include="ModuleCollection.cs" />
     <Compile Include="Options\AddDependentPackage.cs" />
     <Compile Include="Options\BuildConfigurations.cs" />
