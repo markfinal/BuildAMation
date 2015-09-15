@@ -29,53 +29,40 @@
 #endregion // License
 namespace Bam.Core
 {
-    public interface ICommandLineArgument
+    public sealed class BuildRoot :
+        IStringCommandLineArgument,
+        ICommandLineArgumentDefault<string>
     {
-        string ShortName
+        string ICommandLineArgument.ShortName
         {
-            get;
+            get
+            {
+                return "-o";
+            }
         }
 
-        string LongName
+        string ICommandLineArgument.LongName
         {
-            get;
+            get
+            {
+                return "--output";
+            }
         }
 
-        string ContextHelp
+        string ICommandLineArgument.ContextHelp
         {
-            get;
+            get
+            {
+                return "Set the output directory (build root) for all build artifacts.";
+            }
         }
-    }
 
-    public interface ICommandLineArgumentDefault<T>
-    {
-        T Default
+        string ICommandLineArgumentDefault<string>.Default
         {
-            get;
-        }
-    }
-
-    public interface IBooleanCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IStringCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
-    {
-    }
-
-    public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
-    {
-    }
-
-    public interface ICustomHelpText
-    {
-        string OptionHelp
-        {
-            get;
+            get
+            {
+                return "build";
+            }
         }
     }
 }

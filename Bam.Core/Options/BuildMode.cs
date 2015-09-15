@@ -29,53 +29,31 @@
 #endregion // License
 namespace Bam.Core
 {
-    public interface ICommandLineArgument
+    public sealed class BuildMode :
+        IStringCommandLineArgument
     {
-        string ShortName
+        string ICommandLineArgument.ShortName
         {
-            get;
+            get
+            {
+                return "-b";
+            }
         }
 
-        string LongName
+        string ICommandLineArgument.LongName
         {
-            get;
+            get
+            {
+                return "--buildmode";
+            }
         }
 
-        string ContextHelp
+        string ICommandLineArgument.ContextHelp
         {
-            get;
-        }
-    }
-
-    public interface ICommandLineArgumentDefault<T>
-    {
-        T Default
-        {
-            get;
-        }
-    }
-
-    public interface IBooleanCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IStringCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
-    {
-    }
-
-    public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
-    {
-    }
-
-    public interface ICustomHelpText
-    {
-        string OptionHelp
-        {
-            get;
+            get
+            {
+                return "Specify the build mode to use";
+            }
         }
     }
 }

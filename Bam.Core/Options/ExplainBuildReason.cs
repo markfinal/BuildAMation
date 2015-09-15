@@ -29,53 +29,31 @@
 #endregion // License
 namespace Bam.Core
 {
-    public interface ICommandLineArgument
+    public sealed class ExplainBuildReason :
+        IBooleanCommandLineArgument
     {
-        string ShortName
+        string ICommandLineArgument.ShortName
         {
-            get;
+            get
+            {
+                return null;
+            }
         }
 
-        string LongName
+        string ICommandLineArgument.LongName
         {
-            get;
+            get
+            {
+                return "--explain";
+            }
         }
 
-        string ContextHelp
+        string ICommandLineArgument.ContextHelp
         {
-            get;
-        }
-    }
-
-    public interface ICommandLineArgumentDefault<T>
-    {
-        T Default
-        {
-            get;
-        }
-    }
-
-    public interface IBooleanCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IStringCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
-    {
-    }
-
-    public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
-    {
-    }
-
-    public interface ICustomHelpText
-    {
-        string OptionHelp
-        {
-            get;
+            get
+            {
+                return "For build modes that evaluate, explain why modules are building";
+            }
         }
     }
 }

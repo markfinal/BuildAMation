@@ -29,53 +29,31 @@
 #endregion // License
 namespace Bam.Core
 {
-    public interface ICommandLineArgument
+    public sealed class PackageName :
+        IStringCommandLineArgument
     {
-        string ShortName
+        string ICommandLineArgument.ShortName
         {
-            get;
+            get
+            {
+                return null;
+            }
         }
 
-        string LongName
+        string ICommandLineArgument.LongName
         {
-            get;
+            get
+            {
+                return "--pkgname";
+            }
         }
 
-        string ContextHelp
+        string ICommandLineArgument.ContextHelp
         {
-            get;
-        }
-    }
-
-    public interface ICommandLineArgumentDefault<T>
-    {
-        T Default
-        {
-            get;
-        }
-    }
-
-    public interface IBooleanCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IStringCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
-    {
-    }
-
-    public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
-    {
-    }
-
-    public interface ICustomHelpText
-    {
-        string OptionHelp
-        {
-            get;
+            get
+            {
+                return "Define the package name to use in other operations";
+            }
         }
     }
 }

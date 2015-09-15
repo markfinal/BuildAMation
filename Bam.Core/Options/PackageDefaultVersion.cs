@@ -29,53 +29,39 @@
 #endregion // License
 namespace Bam.Core
 {
-    public interface ICommandLineArgument
+    public sealed class PackageDefaultVersion :
+        IRegExCommandLineArgument
     {
-        string ShortName
+        string ICommandLineArgument.ShortName
         {
-            get;
+            get
+            {
+                return null;
+            }
         }
 
-        string LongName
+        string ICommandLineArgument.LongName
         {
-            get;
+            get
+            {
+                return @"--([A-Za-z0-9]+)\.version=([A-Za-z0-9\.]+)";
+            }
         }
 
-        string ContextHelp
+        string ICommandLineArgument.ContextHelp
         {
-            get;
+            get
+            {
+                return "Define the default version of a package";
+            }
         }
-    }
 
-    public interface ICommandLineArgumentDefault<T>
-    {
-        T Default
+        string ICustomHelpText.OptionHelp
         {
-            get;
-        }
-    }
-
-    public interface IBooleanCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IStringCommandLineArgument : ICommandLineArgument
-    {
-    }
-
-    public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
-    {
-    }
-
-    public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
-    {
-    }
-
-    public interface ICustomHelpText
-    {
-        string OptionHelp
-        {
-            get;
+            get
+            {
+                return "--<packagename>.version=<packageversion>";
+            }
         }
     }
 }

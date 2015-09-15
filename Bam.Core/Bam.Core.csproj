@@ -73,6 +73,25 @@
     <Compile Include="Interfaces\ISetOperations.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="ModuleCollection.cs" />
+    <Compile Include="Options\AddDependentPackage.cs" />
+    <Compile Include="Options\BuildConfigurations.cs" />
+    <Compile Include="Options\BuildMode.cs" />
+    <Compile Include="Options\BuildRoot.cs" />
+    <Compile Include="Options\CleanFirst.cs" />
+    <Compile Include="Options\CreateDebugProject.cs" />
+    <Compile Include="Options\ExplainBuildReason.cs" />
+    <Compile Include="Options\ForceDefinitionFileUpdate.cs" />
+    <Compile Include="Options\MakePackage.cs" />
+    <Compile Include="Options\MultiThreaded.cs" />
+    <Compile Include="Options\PackageDefaultVersion.cs" />
+    <Compile Include="Options\PackageName.cs" />
+    <Compile Include="Options\PackageVersion.cs" />
+    <Compile Include="Options\PrintHelp.cs" />
+    <Compile Include="Options\PrintVersion.cs" />
+    <Compile Include="Options\ShowDefinitionFile.cs" />
+    <Compile Include="Options\UseDebugSymbols.cs" />
+    <Compile Include="Options\UseTests.cs" />
+    <Compile Include="Options\VerbosityLevel.cs" />
     <Compile Include="OSUtilities.cs" />
     <Compile Include="Package\DotNetAssemblyDescription.cs" />
     <Compile Include="Package\PackageDefinitionFile.cs" />
@@ -107,4 +126,5 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
 </Project>
