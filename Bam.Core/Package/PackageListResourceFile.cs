@@ -66,7 +66,6 @@ namespace Bam.Core
         WriteResXFile(
             string projectPath)
         {
-#if true
             if (0 == Graph.Instance.Packages.Count())
             {
                 throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
@@ -95,14 +94,6 @@ namespace Bam.Core
             AddData(resourceFile, "BamInstallDir", State.ExecutableDirectory, root);
             AddData(resourceFile, "WorkingDir", masterPackage.GetPackageDirectory(), root);
 
-            // TODO: are these necessary now?
-#if false
-            foreach (var package in State.PackageInfo)
-            {
-                AddData(resourceFile, package.Identifier.ToString("_"), package.Identifier.Root.AbsolutePath, root);
-            }
-#endif
-
             var xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;
             xmlWriterSettings.CloseOutput = true;
@@ -114,55 +105,6 @@ namespace Bam.Core
             }
 
             return resourceFilePathName;
-#else
-            if (0 == State.PackageInfo.Count)
-            {
-                throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
-            }
-
-            var mainPackage = State.PackageInfo.MainPackage;
-
-            var projectDirectory = mainPackage.ProjectDirectory;
-            if (!System.IO.Directory.Exists(projectDirectory))
-            {
-                System.IO.Directory.CreateDirectory(projectDirectory);
-            }
-
-            var resourceFilePathName = System.IO.Path.Combine(projectDirectory, "PackageInfoResources.resx");
-
-            var resourceFile = new System.Xml.XmlDocument();
-            var root = resourceFile.CreateElement("root");
-            resourceFile.AppendChild(root);
-
-            AddResHeader(resourceFile, "resmimetype", "text/microsoft-resx", root);
-            AddResHeader(resourceFile, "version", "2.0", root);
-            // TODO: this looks like the System.Windows.Forms.dll assembly
-            AddResHeader(resourceFile, "reader", "System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
-            AddResHeader(resourceFile, "writer", "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
-
-            AddData(resourceFile, "BamInstallDir", State.ExecutableDirectory, root);
-            AddData(resourceFile, "WorkingDir", mainPackage.Identifier.Path, root);
-
-            // TODO: are these necessary now?
-#if false
-            foreach (var package in State.PackageInfo)
-            {
-                AddData(resourceFile, package.Identifier.ToString("_"), package.Identifier.Root.AbsolutePath, root);
-            }
-#endif
-
-            var xmlWriterSettings = new System.Xml.XmlWriterSettings();
-            xmlWriterSettings.Indent = true;
-            xmlWriterSettings.CloseOutput = true;
-            xmlWriterSettings.OmitXmlDeclaration = true;
-            using (var xmlWriter = System.Xml.XmlWriter.Create(resourceFilePathName, xmlWriterSettings))
-            {
-                resourceFile.WriteTo(xmlWriter);
-                xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
-            }
-
-            return resourceFilePathName;
-#endif
         }
     }
 }
