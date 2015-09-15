@@ -32,13 +32,16 @@ namespace Bam.Core
     internal class XmlResolver :
         System.Xml.XmlResolver
     {
-        internal
-        XmlResolver() : base()
+        internal XmlResolver() :
+            base()
         {}
 
         public override System.Net.ICredentials Credentials
         {
-            set { throw new System.NotImplementedException(); }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
         }
 
         public override System.Uri
