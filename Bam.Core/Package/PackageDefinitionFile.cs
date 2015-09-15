@@ -306,6 +306,7 @@ namespace Bam.Core
             }
 
             // definitions
+            this.Definitions.Remove(this.GetPackageDefinitionName());
             if (this.Definitions.Count > 0)
             {
                 var definitionsElement = document.CreateElement("Definitions", namespaceURI);
@@ -341,21 +342,26 @@ namespace Bam.Core
             }
         }
 
+        private string
+        GetPackageDefinitionName()
+        {
+            if (null != this.Version)
+            {
+                return System.String.Format("D_PACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
+            }
+            else
+            {
+                return System.String.Format("D_PACKAGE_{0}", this.Name).ToUpper();
+            }
+        }
+
         public void
         Read(
             bool validateSchemaLocation)
         {
             this.Read(validateSchemaLocation, true);
 
-            string packageDefinition = null;
-            if (null != this.Version)
-            {
-                packageDefinition = System.String.Format("D_PACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
-            }
-            else
-            {
-                packageDefinition = System.String.Format("D_PACKAGE_{0}", this.Name).ToUpper();
-            }
+            var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
         }
 
