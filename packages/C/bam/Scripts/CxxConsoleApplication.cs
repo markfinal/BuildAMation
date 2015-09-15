@@ -27,20 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace C.Cxx
 {
-    namespace Cxx
+    public class ConsoleApplication :
+        C.ConsoleApplication
     {
-        public class ConsoleApplication :
-            C.ConsoleApplication
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            protected override void
-            Init(
-                Bam.Core.Module parent)
-            {
-                base.Init(parent);
-                this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
-            }
+            base.Init(parent);
+            this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
         }
     }
 }

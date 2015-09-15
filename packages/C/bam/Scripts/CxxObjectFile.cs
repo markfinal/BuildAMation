@@ -29,50 +29,6 @@
 #endregion // License
 namespace C.Cxx
 {
-namespace DefaultSettings
-{
-    public static partial class DefaultSettingsExtensions
-    {
-        public static void
-        Defaults(
-            this C.ICxxOnlyCompilerOptions settings,
-            Bam.Core.Module module)
-        {
-            settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
-            settings.LanguageStandard = ELanguageStandard.Cxx98;
-            settings.StandardLibrary = EStandardLibrary.NotSet;
-        }
-        public static void
-        SharedSettings(
-            this C.ICxxOnlyCompilerOptions shared,
-            C.ICxxOnlyCompilerOptions lhs,
-            C.ICxxOnlyCompilerOptions rhs)
-        {
-            shared.ExceptionHandler = (lhs.ExceptionHandler == rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
-            shared.LanguageStandard = (lhs.LanguageStandard == rhs.LanguageStandard) ? lhs.LanguageStandard : null;
-            shared.StandardLibrary = (lhs.StandardLibrary == rhs.StandardLibrary) ? lhs.StandardLibrary : null;
-        }
-        public static void
-        Delta(
-            this C.ICxxOnlyCompilerOptions delta,
-            C.ICxxOnlyCompilerOptions lhs,
-            C.ICxxOnlyCompilerOptions rhs)
-        {
-            delta.ExceptionHandler = (lhs.ExceptionHandler != rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
-            delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
-            delta.StandardLibrary = (lhs.StandardLibrary != rhs.StandardLibrary) ? lhs.StandardLibrary : null;
-        }
-        public static void
-        Clone(
-            this C.ICxxOnlyCompilerOptions settings,
-            C.ICxxOnlyCompilerOptions other)
-        {
-            settings.ExceptionHandler = other.ExceptionHandler;
-            settings.LanguageStandard = other.LanguageStandard;
-            settings.StandardLibrary = other.StandardLibrary;
-        }
-    }
-}
     public class ObjectFile :
         C.ObjectFile
     {
