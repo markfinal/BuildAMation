@@ -39,7 +39,7 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main_c.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main_c.c", this);
         }
     }
 
@@ -52,7 +52,7 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.AddFile("$(pkgroot)/source/main_c.c");
+            this.AddFile("$(packagedir)/source/main_c.c");
         }
     }
 
@@ -65,7 +65,7 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main_cpp.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main_cpp.c", this);
             this.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICxxOnlyCompilerOptions;
@@ -84,22 +84,22 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/*.h");
+            this.CreateHeaderContainer("$(packagedir)/include/*.h");
 
-            var cSource = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
+            var cSource = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
             cSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
                 });
 
             var cxxSource = this.CreateCxxSourceContainer();
-            cxxSource.AddFile("$(pkgroot)/source/library_cpp.c");
-            cxxSource.AddFile("$(pkgroot)/source/appmain_cpp.c");
+            cxxSource.AddFile("$(packagedir)/source/library_cpp.c");
+            cxxSource.AddFile("$(packagedir)/source/appmain_cpp.c");
             cxxSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
                     var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
@@ -121,13 +121,13 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/library_c.h");
+            this.CreateHeaderContainer("$(packagedir)/include/library_c.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
                 });
         }
     }
@@ -141,13 +141,13 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/library_cpp.h");
+            this.CreateHeaderContainer("$(packagedir)/include/library_cpp.h");
 
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/library_cpp.c");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
 
                 var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -164,13 +164,13 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/library_c.h");
+            this.CreateHeaderContainer("$(packagedir)/include/library_c.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/library_c.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
@@ -190,13 +190,13 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/library_cpp.h");
+            this.CreateHeaderContainer("$(packagedir)/include/library_cpp.h");
 
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/library_cpp.c");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
 
                 var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;

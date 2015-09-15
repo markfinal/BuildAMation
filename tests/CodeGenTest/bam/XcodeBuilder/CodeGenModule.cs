@@ -43,7 +43,7 @@ namespace CodeGenTest
 
             var command = new System.Text.StringBuilder();
             // recode the executable path for Xcode
-            var xcodePath = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(config)", encapsulating).Parse();
+            var xcodePath = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(config)", encapsulating).Parse();
             xcodePath += "/" + System.IO.Path.GetFileName(compiler.Executable.Parse());
             command.AppendFormat(xcodePath);
             // TODO: change this to a configuration directory really

@@ -39,7 +39,7 @@ namespace glew
                 if (null != compiler)
                 {
                     compiler.PreprocessorDefines.Add("GLEW_STATIC");
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
                 }
             };
 
@@ -47,17 +47,17 @@ namespace glew
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer("$(pkgroot)/include/GL/glew.h");
+            var headers = this.CreateHeaderContainer("$(packagedir)/include/GL/glew.h");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                headers.AddFile("$(pkgroot)/include/GL/wglew.h");
+                headers.AddFile("$(packagedir)/include/GL/wglew.h");
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                headers.AddFile("$(pkgroot)/include/GL/glxew.h");
+                headers.AddFile("$(packagedir)/include/GL/glxew.h");
             }
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/src/glew.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/src/glew.c");
             source.PrivatePatch(settings => this.exported(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.exported(settings, this));

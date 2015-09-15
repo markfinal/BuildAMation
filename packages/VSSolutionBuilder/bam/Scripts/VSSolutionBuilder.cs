@@ -559,7 +559,7 @@ namespace VSSolutionBuilder
             var macros = new Bam.Core.MacroList();
             // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
             // but it does not seem to be a show stopper if it doesn't
-            macros.Add("pkgbuilddir", Bam.Core.TokenizedString.Create("$(ProjectDir)", null, verbatim: true));
+            macros.Add("packagebuilddir", Bam.Core.TokenizedString.Create("$(ProjectDir)", null, verbatim: true));
             macros.Add("modulename", Bam.Core.TokenizedString.Create("$(ProjectName)", null, verbatim: true));
             var outDir = path.Parse(macros);
             outDir = System.IO.Path.GetDirectoryName(outDir);
@@ -1019,7 +1019,7 @@ namespace VSSolutionBuilder
             Bam.Core.Module module)
         {
             this.Solution = solution;
-            this.ProjectPath = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(modulename).vcxproj", module).Parse();
+            this.ProjectPath = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(modulename).vcxproj", module).Parse();
             this.Guid = new DeterministicGuid(this.ProjectPath).Guid;
             this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();

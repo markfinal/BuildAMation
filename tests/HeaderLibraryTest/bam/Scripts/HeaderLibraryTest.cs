@@ -37,14 +37,14 @@ namespace HeaderLibraryTest
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/unusedmacros.h");
+            this.CreateHeaderContainer("$(packagedir)/include/unusedmacros.h");
 
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
                     if (null != compiler)
                     {
-                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
                     }
                 });
         }
@@ -57,7 +57,7 @@ namespace HeaderLibraryTest
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/main.c");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/main.c");
 
             this.CompileAgainst<HeaderLibrary>(source);
 

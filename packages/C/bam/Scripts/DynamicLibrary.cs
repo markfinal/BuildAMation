@@ -40,12 +40,12 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths[Key] = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+            this.GeneratedPaths[Key] = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
             this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
+                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
             }
 
             this.PrivatePatch(settings =>

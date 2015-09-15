@@ -37,7 +37,7 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            this.CreateCxxSourceContainer("$(pkgroot)/source/application/main.cpp");
+            this.CreateCxxSourceContainer("$(packagedir)/source/application/main.cpp");
 
             // TODO: required to exist
             var plugin = Bam.Core.Graph.Instance.FindReferencedModule<Plugin>();
@@ -58,7 +58,7 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            this.CreateCxxSourceContainer("$(pkgroot)/source/plugin/pluginmain.cpp");
+            this.CreateCxxSourceContainer("$(packagedir)/source/plugin/pluginmain.cpp");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)

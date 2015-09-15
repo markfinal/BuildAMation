@@ -51,7 +51,7 @@ namespace Publisher
                         // therefore ignore any subdirectory on this module
 
                         // this has to be the path that Xcode writes to
-                        var dir = Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(config)", module.Key).Parse();
+                        var dir = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(config)", module.Key).Parse();
                         path.Value.DestinationDir = dir;
 
                         if ((path.Value.SubDirectory != null) && path.Value.SubDirectory.Contains(".app/"))

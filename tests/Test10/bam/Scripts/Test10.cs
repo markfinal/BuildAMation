@@ -39,7 +39,7 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(pkgroot)/source/stlib.c");
+            this.CreateCSourceContainer("$(packagedir)/source/stlib.c");
         }
     }
 
@@ -52,7 +52,7 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(pkgroot)/source/dylib.c");
+            this.CreateCSourceContainer("$(packagedir)/source/dylib.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
@@ -71,7 +71,7 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(pkgroot)/source/standaloneapp.c");
+            this.CreateCSourceContainer("$(packagedir)/source/standaloneapp.c");
 
             this.LinkAgainst<MyStaticLibrary>();
 
@@ -95,7 +95,7 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(pkgroot)/source/dlldependentapp.c");
+            this.CreateCSourceContainer("$(packagedir)/source/dlldependentapp.c");
 
             this.PrivatePatch(settings =>
                 {

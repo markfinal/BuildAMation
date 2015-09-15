@@ -40,7 +40,7 @@ namespace Test8
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
             // TODO: required to exist?
             var dynamicLib = Bam.Core.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibrary>();

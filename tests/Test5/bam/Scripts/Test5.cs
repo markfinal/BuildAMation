@@ -49,7 +49,7 @@ namespace Test5
                     }
                 });
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamicmain.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicmain.c");
 
             this.LinkAgainst<Test4.MyStaticLib>();
             this.CompileAndLinkAgainst<Test4.MyDynamicLib>(source);
@@ -91,7 +91,7 @@ namespace Test5
                 this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey, "../lib", dll);
             }
 
-            this.IncludeFiles<Test4.MyDynamicLib>("$(pkgroot)/include/dynamiclibrary.h", "../include", dll);
+            this.IncludeFiles<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", "../include", dll);
         }
     }
 

@@ -960,7 +960,7 @@ namespace XcodeBuilder
             var projectPath = Bam.Core.TokenizedString.Create("$(xcodeprojectdir)/project.pbxproj", module);
             this.ProjectPath = projectPath.Parse();
 
-            this.SourceRoot = Bam.Core.TokenizedString.Create("$(pkgroot)", module).Parse();
+            this.SourceRoot = Bam.Core.TokenizedString.Create("$(packagedir)", module).Parse();
             this.BuildRoot = Bam.Core.TokenizedString.Create("$(buildroot)", module).Parse();
 
             this.Module = module;

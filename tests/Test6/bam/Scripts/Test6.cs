@@ -39,27 +39,27 @@ namespace Test6
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer("$(pkgroot)/include/header.h");
-            headers.AddFile("$(pkgroot)/include/platform/platform.h");
+            var headers = this.CreateHeaderContainer("$(packagedir)/include/header.h");
+            headers.AddFile("$(packagedir)/include/platform/platform.h");
 
             var source = this.CreateCSourceContainer();
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
                 });
 
-            var main = source.AddFile("$(pkgroot)/source/main.c");
+            var main = source.AddFile("$(packagedir)/source/main.c");
             main.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
                     compiler.PreprocessorDefines.Add("MAIN_C");
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include/platform", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include/platform", this));
                 });
 
             var platformPath = (this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ?
-                "$(pkgroot)/source/debug/debug.c" :
-                "$(pkgroot)/source/optimized/optimized.c";
+                "$(packagedir)/source/debug/debug.c" :
+                "$(packagedir)/source/optimized/optimized.c";
             source.AddFile(platformPath);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

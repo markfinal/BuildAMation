@@ -38,7 +38,7 @@ namespace Test4
                 var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
                 }
             };
 
@@ -50,9 +50,9 @@ namespace Test4
 
             this.LinkAgainst<MyStaticLib>();
 
-            this.CreateHeaderContainer("$(pkgroot)/include/dynamiclibrary.h");
+            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamiclibrary.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
 
             source.PrivatePatch(settings => this.includePaths(settings, this));
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
@@ -78,14 +78,14 @@ namespace Test4
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/staticlibrary.h");
+            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/staticlibrary.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary.c");
 
             source.PublicPatch((settings, appliedTo) =>
             {
                 var compiler = settings as C.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
             });
         }
     }

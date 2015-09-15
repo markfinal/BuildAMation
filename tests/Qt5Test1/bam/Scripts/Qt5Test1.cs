@@ -40,8 +40,8 @@ namespace Qt5Test1
         {
             base.Init(parent);
 
-            var mocHeaders = this.CreateHeaderContainer("$(pkgroot)/source/*.h");
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
+            var mocHeaders = this.CreateHeaderContainer("$(packagedir)/source/*.h");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/*.cpp");
             foreach (var mocHeader in mocHeaders.Children)
             {
                 var myObjectMocTuple = source.MocHeader(mocHeader as C.HeaderFile);

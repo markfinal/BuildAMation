@@ -251,7 +251,7 @@ namespace QtCommon
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(encapsulatingpkgbuilddir)/$(config)/@basename($(mocheaderpath))_moc.cpp", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(encapsulatingbuilddir)/$(config)/@basename($(mocheaderpath))_moc.cpp", this));
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<MocTool>();
             this.Requires(this.Compiler);
         }

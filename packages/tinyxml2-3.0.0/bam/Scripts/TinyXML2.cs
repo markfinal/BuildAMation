@@ -38,7 +38,7 @@ namespace TinyXML2
             var compiler = settings as C.ICommonCompilerOptions;
             if (null != compiler)
             {
-                compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(pkgroot)", appliedTo));
+                compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)", appliedTo));
             }
         };
 
@@ -46,7 +46,7 @@ namespace TinyXML2
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/tinyxml2.cpp");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/tinyxml2.cpp");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));

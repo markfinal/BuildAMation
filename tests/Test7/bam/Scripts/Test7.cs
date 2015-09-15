@@ -40,7 +40,7 @@ namespace Test7
                 {
                     return;
                 }
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
             };
 
         protected override void
@@ -53,9 +53,9 @@ namespace Test7
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
-            this.CreateHeaderContainer("$(pkgroot)/include/dynamiclibrary.h");
+            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamiclibrary.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

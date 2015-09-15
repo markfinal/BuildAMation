@@ -37,7 +37,7 @@ namespace Test15
                 var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
                 }
             };
 
@@ -45,9 +45,9 @@ namespace Test15
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/staticlibrary1.h");
+            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary1.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/staticlibrary1.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary1.c");
             source.PrivatePatch(settings => this.includePath(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePath(settings, this));

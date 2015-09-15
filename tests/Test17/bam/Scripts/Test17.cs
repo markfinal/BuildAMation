@@ -39,7 +39,7 @@ namespace Test17
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
             this.CompileAndLinkAgainst<Test16.StaticLibrary2>(source);
 

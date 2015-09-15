@@ -38,7 +38,7 @@ namespace Test2
                 var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
                 }
             };
 
@@ -48,9 +48,9 @@ namespace Test2
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/library.h");
+            this.CreateHeaderContainer("$(packagedir)/include/library.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/library.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/library.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
@@ -66,7 +66,7 @@ namespace Test2
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/application.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/application.c");
 
             this.CompileAndLinkAgainst<Library>(source);
             this.CompileAndLinkAgainst<Test3.Library2>(source);

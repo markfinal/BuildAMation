@@ -45,8 +45,8 @@ namespace Test13
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/*.cpp");
-            var mocHeaders = this.CreateHeaderContainer("$(pkgroot)/source/myobject*.h");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/*.cpp");
+            var mocHeaders = this.CreateHeaderContainer("$(packagedir)/source/myobject*.h");
             foreach (var mocHeader in mocHeaders.Children)
             {
                 var myObjectMocTuple = source.MocHeader(mocHeader as C.HeaderFile);

@@ -180,10 +180,10 @@ namespace Bam.Core
                 }
             }
             this.PackageDefinition = packageDefinition;
-            this.Macros.Add("pkgroot", packageDefinition.GetPackageDirectory());
-            this.Macros.Add("modulename", this.GetType().Name);
+            this.Macros.Add("packagedir", packageDefinition.GetPackageDirectory());
             this.Macros.Add("packagename", packageDefinition.Name);
-            this.Macros.Add("pkgbuilddir", packageDefinition.GetBuildDirectory());
+            this.Macros.Add("packagebuilddir", packageDefinition.GetBuildDirectory());
+            this.Macros.Add("modulename", this.GetType().Name);
 #else
             var packageInfo = Core.State.PackageInfo[packageNameSpace];
             if (null == packageInfo)
@@ -202,10 +202,10 @@ namespace Bam.Core
             }
             this.Package = packageInfo;
             var packageRoot = packageInfo.Identifier.Location.AbsolutePath;
-            this.Macros.Add("pkgroot", packageRoot);
+            this.Macros.Add("packagedir", packageRoot);
             this.Macros.Add("modulename", this.GetType().Name);
             this.Macros.Add("packagename", packageInfo.Name);
-            this.Macros.Add("pkgbuilddir", packageInfo.BuildDirectory);
+            this.Macros.Add("packagebuilddir", packageInfo.BuildDirectory);
 #endif
 
             this.OwningRank = null;
@@ -589,7 +589,7 @@ namespace Bam.Core
             {
                 encapsulating = this.DependeesList[0].GetEncapsulatingReferencedModule();
             }
-            this.Macros.Add("encapsulatingpkgbuilddir", encapsulating.Macros["pkgbuilddir"]);
+            this.Macros.Add("encapsulatingbuilddir", encapsulating.Macros["packagebuilddir"]);
             return encapsulating;
         }
 

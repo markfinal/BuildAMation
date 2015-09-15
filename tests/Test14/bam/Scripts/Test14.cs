@@ -38,7 +38,7 @@ namespace Test14
                 var compiler = settings as C.ICommonCompilerOptions;
                 if (null != compiler)
                 {
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
                 }
             };
 
@@ -48,9 +48,9 @@ namespace Test14
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/dynamicLibraryA.h");
+            this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryA.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamicLibraryA.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryA.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
@@ -71,7 +71,7 @@ namespace Test14
             var compiler = settings as C.ICommonCompilerOptions;
             if (null != compiler)
             {
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/include", appliedTo));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
             }
         };
 
@@ -81,9 +81,9 @@ namespace Test14
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/include/dynamicLibraryB.h");
+            this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryB.h");
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/dynamicLibraryB.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryB.c");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
@@ -107,7 +107,7 @@ namespace Test14
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
             this.PrivatePatch(settings =>
                 {

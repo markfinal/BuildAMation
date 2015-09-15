@@ -528,7 +528,7 @@ namespace C
         {
             base.Init(parent);
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(pkgbuilddir)/$(moduleoutputdir)/@basename($(inputpath))$(objext)", this));
+            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/@basename($(inputpath))$(objext)", this));
         }
 
         public Bam.Core.TokenizedString InputPath

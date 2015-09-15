@@ -58,7 +58,7 @@ namespace CodeGenTest
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(pkgroot)/source/codegentool/main.c");
+            this.CreateCSourceContainer("$(packagedir)/source/codegentool/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
@@ -157,7 +157,7 @@ namespace CodeGenTest
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/testapp/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/testapp/main.c");
 
             /*var generatedSourceTuple = */source.GenerateSource();
 

@@ -60,7 +60,7 @@ namespace Test
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main.c", this);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 // example of switching out the tool within a module
@@ -77,7 +77,7 @@ namespace Test
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.InputPath = Bam.Core.TokenizedString.Create("$(pkgroot)/source/main.c", this);
+            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main.c", this);
             this.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerOptions;
@@ -95,7 +95,7 @@ namespace Test
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(pkgroot)/source/main.c");
+            this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
@@ -112,7 +112,7 @@ namespace Test
         {
             base.Init(parent);
 
-            this.CreateCxxSourceContainer("$(pkgroot)/source/main.c");
+            this.CreateCxxSourceContainer("$(packagedir)/source/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualC.LinkerBase)
@@ -132,7 +132,7 @@ namespace Test
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;

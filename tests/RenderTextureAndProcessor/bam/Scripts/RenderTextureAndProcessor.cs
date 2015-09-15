@@ -39,15 +39,15 @@ namespace RenderTextureAndProcessor
         {
             base.Init(parent);
 
-            var headers = this.CreateHeaderContainer("$(pkgroot)/source/common/*.h");
-            headers.AddFiles("$(pkgroot)/source/rendertexture/*.h");
+            var headers = this.CreateHeaderContainer("$(packagedir)/source/common/*.h");
+            headers.AddFiles("$(packagedir)/source/rendertexture/*.h");
 
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/common/*.cpp");
-            source.AddFiles("$(pkgroot)/source/rendertexture/*.cpp");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/common/*.cpp");
+            source.AddFiles("$(packagedir)/source/rendertexture/*.cpp");
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerOptions;
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/source/common", this));
+                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/source/common", this));
 
                 var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -90,14 +90,14 @@ namespace RenderTextureAndProcessor
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(pkgroot)/source/common/*.h");
+            this.CreateHeaderContainer("$(packagedir)/source/common/*.h");
 
-            var source = this.CreateCxxSourceContainer("$(pkgroot)/source/common/*.cpp");
-            source.AddFiles("$(pkgroot)/source/textureprocessor/*.cpp");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/common/*.cpp");
+            source.AddFiles("$(packagedir)/source/textureprocessor/*.cpp");
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerOptions;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(pkgroot)/source/common", this));
+                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/source/common", this));
 
                     var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;

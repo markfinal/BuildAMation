@@ -38,7 +38,7 @@ namespace ObjectiveCTest1
             base.Init(parent);
 
             var source = this.CreateObjectiveCSourceContainer();
-            source.AddFile("$(pkgroot)/source/main.m");
+            source.AddFile("$(packagedir)/source/main.m");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {

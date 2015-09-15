@@ -38,11 +38,11 @@ namespace ICU
             base.Init(parent);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Macros.Add("ICUInstallPath", Bam.Core.TokenizedString.Create("$(pkgroot)/bin/win64-msvc10/bin64", this));
+                this.Macros.Add("ICUInstallPath", Bam.Core.TokenizedString.Create("$(packagedir)/bin/win64-msvc10/bin64", this));
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                this.Macros.Add("ICUInstallPath", Bam.Core.TokenizedString.Create("$(pkgroot)/bin/linux64-gcc44/usr/local/lib", this));
+                this.Macros.Add("ICUInstallPath", Bam.Core.TokenizedString.Create("$(packagedir)/bin/linux64-gcc44/usr/local/lib", this));
             }
             this.GeneratedPaths[C.DynamicLibrary.Key] = Bam.Core.TokenizedString.Create("$(ICUInstallPath)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
         }

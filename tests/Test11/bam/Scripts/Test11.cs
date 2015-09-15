@@ -39,18 +39,18 @@ namespace Test11
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(pkgroot)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                source.AddFile("$(pkgroot)/source/win/win.c");
+                source.AddFile("$(packagedir)/source/win/win.c");
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                source.AddFile("$(pkgroot)/source/unix/unix.c");
+                source.AddFile("$(packagedir)/source/unix/unix.c");
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                source.AddFile("$(pkgroot)/source/osx/osx.c");
+                source.AddFile("$(packagedir)/source/osx/osx.c");
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
