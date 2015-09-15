@@ -29,6 +29,7 @@
 #endregion // License
 namespace Bam.Core
 {
+    // TODO: these may be redundant with Linq
     public interface ISetOperations<T>
     {
         T
