@@ -30,6 +30,25 @@
 using C.DefaultSettings;
 namespace VisualC
 {
+    public class MetaData :
+        Bam.Core.IPackageMetaData
+    {
+        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+
+        public MetaData()
+        {
+            this.Meta.Add("PlatformToolset", "v120");
+        }
+
+        object Bam.Core.IPackageMetaData.this[string index]
+        {
+            get
+            {
+                return this.Meta[index];
+            }
+        }
+    }
+
     public static partial class NativeImplementation
     {
         public static void

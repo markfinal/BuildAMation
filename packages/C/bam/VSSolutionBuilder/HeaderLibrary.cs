@@ -48,7 +48,6 @@ namespace C
             var config = project.GetConfiguration(sender);
 
             config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
-            config.SetPlatformToolset(VSSolutionBuilder.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
             config.EnableIntermediatePath();
 
             foreach (var header in headers)

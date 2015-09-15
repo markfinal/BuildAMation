@@ -343,12 +343,6 @@ namespace VSSolutionBuilder
             Utility
         }
 
-        public enum EPlatformToolset
-        {
-            NA,
-            v120
-        }
-
         public VSProjectConfiguration(
             VSProject project,
             Bam.Core.Module module,
@@ -361,7 +355,9 @@ namespace VSSolutionBuilder
             this.FullName = this.CombinedName;
 
             this.Type = EType.NA;
-            this.PlatformToolset = EPlatformToolset.NA;
+
+            var visualCPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "VisualC").First();
+            this.PlatformToolset = visualCPackage.MetaData["PlatformToolset"] as string;
             this.UseDebugLibraries = false;
             this.CharacterSet = C.ECharacterSet.NotSet;
             this.WholeProgramOptimization = (module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug);
@@ -455,7 +451,7 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public EPlatformToolset PlatformToolset
+        public string PlatformToolset
         {
             get;
             private set;
@@ -531,18 +527,6 @@ namespace VSSolutionBuilder
             }
 
             this.Type = type;
-        }
-
-        public void
-        SetPlatformToolset(
-            EPlatformToolset toolset)
-        {
-            if (this.PlatformToolset != EPlatformToolset.NA)
-            {
-                throw new Bam.Core.Exception("Project configuration already has platform toolset of {0}. Cannot change it to {1}", this.PlatformToolset.ToString(), toolset.ToString());
-            }
-
-            this.PlatformToolset = toolset;
         }
 
         public void
@@ -688,13 +672,11 @@ namespace VSSolutionBuilder
             {
                 Bam.Core.Log.DebugMessage("Defaulting project {0} to type Utility", this.Project.ProjectPath);
                 this.Type = EType.Utility;
-                // PlatformToolset required or else an upgrade is required - either requiring user input in the VS IDE, or stopping automated builds
-                this.PlatformToolset = EPlatformToolset.v120; // TODO: get from VisualC package
                 this.EnableIntermediatePath();
             }
             else
             {
-                if (this.PlatformToolset == EPlatformToolset.NA)
+                if (System.String.IsNullOrEmpty(this.PlatformToolset))
                 {
                     throw new Bam.Core.Exception("Platform toolset not set for project {0}", this.Project.ProjectPath);
                 }

@@ -54,7 +54,6 @@ namespace C
             var config = project.GetConfiguration(sender);
 
             config.SetType((sender is DynamicLibrary) ? VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary : VSSolutionBuilder.VSProjectConfiguration.EType.Application);
-            config.SetPlatformToolset(VSSolutionBuilder.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
             config.SetOutputPath(executablePath);
             config.EnableIntermediatePath();
 

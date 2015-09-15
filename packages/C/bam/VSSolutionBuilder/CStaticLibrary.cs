@@ -50,7 +50,6 @@ namespace C
             var config = project.GetConfiguration(sender);
 
             config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary);
-            config.SetPlatformToolset(VSSolutionBuilder.VSProjectConfiguration.EPlatformToolset.v120); // TODO: get from VisualC
             config.SetOutputPath(libraryPath);
             config.EnableIntermediatePath();
 
