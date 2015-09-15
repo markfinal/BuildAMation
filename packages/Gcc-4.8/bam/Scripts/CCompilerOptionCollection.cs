@@ -173,11 +173,11 @@ namespace Gcc
             {
                 switch (options.LanguageStandard)
                 {
-                    case C.ECLanguageStandard.C89:
+                    case C.ELanguageStandard.C89:
                         commandLine.Add("-std=c89");
                         break;
 
-                    case C.ECLanguageStandard.C99:
+                    case C.ELanguageStandard.C99:
                         commandLine.Add("-std=c99");
                         break;
 
@@ -473,7 +473,7 @@ namespace Gcc
             set;
         }
 
-        C.ECLanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -750,7 +750,7 @@ namespace Gcc
             set;
         }
 
-        C.ECLanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;
@@ -1310,7 +1310,7 @@ namespace Gcc
             var compiler = settings as C.ICommonCompilerOptions;
             compiler.TargetLanguage = C.ETargetLanguage.ObjectiveC;
             var cCompiler = settings as C.ICOnlyCompilerOptions;
-            cCompiler.LanguageStandard = C.ECLanguageStandard.C99;
+            cCompiler.LanguageStandard = C.ELanguageStandard.C99;
         }
     }
 

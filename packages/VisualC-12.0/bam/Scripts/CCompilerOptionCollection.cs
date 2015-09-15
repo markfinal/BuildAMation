@@ -562,7 +562,7 @@ namespace VisualC
             set;
         }
 
-        C.ECLanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;

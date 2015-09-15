@@ -142,9 +142,9 @@ namespace Mingw
             {
                 switch (options.LanguageStandard)
                 {
-                    case C.ECLanguageStandard.C89:
+                    case C.ELanguageStandard.C89:
                         break;
-                    case C.ECLanguageStandard.C99:
+                    case C.ELanguageStandard.C99:
                         commandLine.Add("-std=c99");
                         break;
                     default:
@@ -389,7 +389,7 @@ namespace Mingw
             set;
         }
 
-        C.ECLanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
         {
             get;
             set;

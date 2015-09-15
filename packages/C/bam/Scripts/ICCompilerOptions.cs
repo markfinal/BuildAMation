@@ -463,7 +463,7 @@ namespace DefaultSettings
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
     {
-        C.ECLanguageStandard? LanguageStandard
+        C.ELanguageStandard? LanguageStandard
         {
             get;
             set;

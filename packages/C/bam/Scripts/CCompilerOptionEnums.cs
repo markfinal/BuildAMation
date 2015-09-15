@@ -60,8 +60,7 @@ namespace C
         MultiByte = 2
     }
 
-    // TODO: rename back to ELanguageStandard
-    public enum ECLanguageStandard
+    public enum ELanguageStandard
     {
         NotSet,
         C89,
