@@ -31,6 +31,15 @@ namespace Bam.Core
 {
     public static class Platform
     {
+        // can't just use HasFlag, as the logic is inversed with the combined flag enum values
+        public static bool
+        Includes(
+            this EPlatform platform,
+            EPlatform choice)
+        {
+            return (0 != (platform & choice));
+        }
+
         public static EPlatform
         FromString(
             string platformName)

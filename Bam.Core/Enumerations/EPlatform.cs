@@ -52,16 +52,4 @@ namespace Bam.Core
 
         All        = Windows | Linux | OSX
     }
-
-    static public class PlatformExtensions
-    {
-        // can't just use HasFlag, as the logic is inversed with the combined flag enum values
-        public static bool
-        Includes(
-            this EPlatform platform,
-            EPlatform choice)
-        {
-            return (0 != (platform & choice));
-        }
-    }
 }
