@@ -31,48 +31,6 @@ namespace Bam.Core
 {
     using System.Linq;
 
-    /// <summary>
-    /// Utility functions for dealing with execution policies
-    /// </summary>
-    public static class ExecutionPolicyUtilities<T> where T: class
-    {
-        static System.Collections.Generic.Dictionary<string, T> Policies = new System.Collections.Generic.Dictionary<string, T>();
-
-        private static T InternalCreate(string classname)
-        {
-            var type = System.Type.GetType(classname,
-                (typename) =>
-                {
-                    // TODO: this does not seem to be used
-                    return State.ScriptAssembly;
-                },
-                (assembly, name, checkcase) =>
-                {
-                    return State.ScriptAssembly.GetType(name);
-                });
-            if (null == type)
-            {
-                throw new Exception("Unable to locate class '{0}'", classname);
-            }
-            var policy = System.Activator.CreateInstance(type) as T;
-            if (null == policy)
-            {
-                throw new Exception("Unable to create instance of class '{0}'", classname);
-            }
-            return policy;
-        }
-
-        // there is no where T: interface clause
-        public static T Create(string classname)
-        {
-            if (!Policies.ContainsKey(classname))
-            {
-                Policies.Add(classname, InternalCreate(classname));
-            }
-            return Policies[classname];
-        }
-    }
-
     public sealed class ToolType
     {
         private static System.Collections.Generic.List<ToolType> List = new System.Collections.Generic.List<ToolType>();
