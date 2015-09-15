@@ -57,8 +57,8 @@
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
     <Compile Include="Attributes\PlatformFilterAttribute.cs" />
     <Compile Include="Attributes\SettingsExtensionsAttribute.cs" />
-    <Compile Include="BuilderUtilities.cs" />
     <Compile Include="BuildManager.cs" />
+    <Compile Include="BuildModeUtilities.cs" />
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="DependencyGraph.cs" />

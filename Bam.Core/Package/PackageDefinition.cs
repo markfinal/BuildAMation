@@ -908,7 +908,7 @@ namespace Bam.Core
             {
                 foreach (var package in Graph.Instance.Packages)
                 {
-                    if (!BuilderUtilities.IsBuilderPackage(package.Name))
+                    if (!BuildModeUtilities.IsBuildModePackage(package.Name))
                     {
                         continue;
                     }

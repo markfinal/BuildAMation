@@ -354,7 +354,7 @@ namespace Bam.Core
                 System.IO.Directory.CreateDirectory(State.BuildRoot);
             }
 
-            BuilderUtilities.SetBuilderPackage();
+            BuildModeUtilities.SetBuildModePackage();
 
             var definitions = new StringArray();
 

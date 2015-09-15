@@ -30,17 +30,17 @@
 using System.Linq;
 namespace Bam.Core
 {
-    public static class BuilderUtilities
+    public static class BuildModeUtilities
     {
         public static bool
-        IsBuilderPackage(
+        IsBuildModePackage(
             string packageName)
         {
             return packageName.EndsWith("Builder");
         }
 
         public static void
-        SetBuilderPackage()
+        SetBuildModePackage()
         {
             if (null == State.BuildMode)
             {
