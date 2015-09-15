@@ -31,32 +31,6 @@ namespace Bam.Core
 {
     using System.Linq;
 
-    public interface ITool
-    {
-        Settings
-        CreateDefaultSettings<T>(
-            T module) where T : Module;
-    }
-
-    public interface ICommandLineTool :
-        ITool
-    {
-        System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
-        {
-            get;
-        }
-
-        System.Collections.Generic.List<string> InheritedEnvironmentVariables
-        {
-            get;
-        }
-
-        TokenizedString Executable
-        {
-            get;
-        }
-    }
-
     /// <summary>
     /// A tool is a module in the usual sense, so that it can be added into the dependency tree
     /// </summary>

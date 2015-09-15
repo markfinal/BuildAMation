@@ -75,6 +75,7 @@
     <Compile Include="Graph.cs" />
     <Compile Include="Interfaces\IChildModule.cs" />
     <Compile Include="Interfaces\ICommandLineArgument.cs" />
+    <Compile Include="Interfaces\ICommandLineTool.cs" />
     <Compile Include="Interfaces\IInputPath.cs" />
     <Compile Include="Interfaces\IModuleExecution.cs" />
     <Compile Include="Interfaces\IModuleGroup.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Interfaces\ISetOperations.cs" />
     <Compile Include="Interfaces\ISettingsBase.cs" />
     <Compile Include="Interfaces\ISitePolicy.cs" />
+    <Compile Include="Interfaces\ITool.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MacroList.cs" />
     <Compile Include="Module.cs" />
