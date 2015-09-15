@@ -688,6 +688,8 @@ namespace VSSolutionBuilder
             {
                 Bam.Core.Log.DebugMessage("Defaulting project {0} to type Utility", this.Project.ProjectPath);
                 this.Type = EType.Utility;
+                // PlatformToolset required or else an upgrade is required - either requiring user input in the VS IDE, or stopping automated builds
+                this.PlatformToolset = EPlatformToolset.v120; // TODO: get from VisualC package
                 this.EnableIntermediatePath();
             }
             else
@@ -699,10 +701,7 @@ namespace VSSolutionBuilder
             }
             var propGroup = document.CreateVSPropertyGroup(label: "Configuration", condition: this.ConditionText, parentEl: parentEl);
             document.CreateVSElement("ConfigurationType", value: this.Type.ToString(), parentEl: propGroup);
-            if (this.PlatformToolset != EPlatformToolset.NA)
-            {
-                document.CreateVSElement("PlatformToolset", value: this.PlatformToolset.ToString(), parentEl: propGroup);
-            }
+            document.CreateVSElement("PlatformToolset", value: this.PlatformToolset.ToString(), parentEl: propGroup);
             document.CreateVSElement("UseDebugLibraries", value: this.UseDebugLibraries.ToString().ToLower(), parentEl: propGroup);
             document.CreateVSElement("CharacterSet", value: this.CharacterSet.ToString(), parentEl: propGroup);
             document.CreateVSElement("WholeProgramOptimization", value: this.WholeProgramOptimization.ToString().ToLower(), parentEl: propGroup);
