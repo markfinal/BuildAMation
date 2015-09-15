@@ -31,34 +31,6 @@ namespace Bam.Core
 {
     using System.Linq;
 
-    public sealed class ToolType
-    {
-        private static System.Collections.Generic.List<ToolType> List = new System.Collections.Generic.List<ToolType>();
-
-        private ToolType(string id)
-        {
-            this.Id = id;
-        }
-
-        public string Id
-        {
-            get;
-            private set;
-        }
-
-        public static ToolType Get(string id)
-        {
-            var matches = List.Where((item) => { return item.Id == id; });
-            if (matches.Count() > 0)
-            {
-                return matches.ElementAt(0);
-            }
-            var tooltype = new ToolType(id);
-            List.Add(tooltype);
-            return tooltype;
-        }
-    }
-
     public interface ITool
     {
         Settings
