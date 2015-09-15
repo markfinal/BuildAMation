@@ -125,7 +125,6 @@ namespace Bam.Core
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
 
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
-            Add<bool>("System", "Pedantic", false);
 
             var primaryPackageRepo = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(assemblyDirectory).FullName).FullName, "packages");
             var packageRepos = new StringArray();
@@ -134,29 +133,17 @@ namespace Bam.Core
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
-            Add<string>("System", "BuilderName", null);
+            Add<string>("System", "BuildMode", null);
             Add<string>("System", "BuildRoot", null);
-            Add<System.Threading.ManualResetEvent>("System", "BuildStartedEvent", new System.Threading.ManualResetEvent(false));
             Add<bool>("System", "ShowTimingStatistics", false);
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
             Add<bool>("System", "CacheAssembly", true);
-            Add<string>("System", "SchedulerType", "Bam.Core.DefaultScheduler");
-
-            AddCategory("PackageCreation");
-            Add<StringArray>("PackageCreation", "DependentPackages", null);
-            Add<StringArray>("PackageCreation", "Builders", null);
 
             AddCategory("Build");
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
-            Add<System.Collections.Generic.Dictionary<string, string>>("Build", "LazyArguments", new System.Collections.Generic.Dictionary<string, string>());
-            Add<StringArray>("Build", "Platforms", null);
-            Add<Array<EConfiguration>>("Build", "Configurations", null);
-            Add<StringArray>("Build", "Modules", null);
             Add<bool>("Build", "ForceDefinitionFileUpdate", false);
-
-            AddCategory("Toolset");
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -362,18 +349,6 @@ namespace Bam.Core
             }
         }
 
-        public static bool Pedantic
-        {
-            set
-            {
-                Set("System", "Pedantic", value);
-            }
-            get
-            {
-                return (bool)Get("System", "Pedantic");
-            }
-        }
-
         public static StringArray PackageRepositories
         {
             set
@@ -414,11 +389,11 @@ namespace Bam.Core
         {
             set
             {
-                Set("System", "BuilderName", value);
+                Set("System", "BuildMode", value);
             }
             get
             {
-                return Get("System", "BuilderName") as string;
+                return Get("System", "BuildMode") as string;
             }
         }
 
@@ -433,18 +408,6 @@ namespace Bam.Core
             get
             {
                 return Get("System", "BuildRoot") as string;
-            }
-        }
-
-        public static StringArray PackageCreationDependents
-        {
-            set
-            {
-                Set("PackageCreation", "DependentPackages", value);
-            }
-            get
-            {
-                return Get("PackageCreation", "DependentPackages") as StringArray;
             }
         }
 
@@ -508,58 +471,6 @@ namespace Bam.Core
             }
         }
 
-        public static Array<EPlatform> BuildPlatforms
-        {
-            set
-            {
-                Set("Build", "Platforms", value);
-            }
-
-            get
-            {
-                return Get("Build", "Platforms") as Array<EPlatform>;
-            }
-        }
-
-        public static Array<EConfiguration> BuildConfigurations
-        {
-            set
-            {
-                Set("Build", "Configurations", value);
-            }
-
-            get
-            {
-                return Get("Build", "Configurations") as Array<EConfiguration>;
-            }
-        }
-
-        public static StringArray BuildModules
-        {
-            set
-            {
-                Set("Build", "Modules", value);
-            }
-
-            get
-            {
-                return Get("Build", "Modules") as StringArray;
-            }
-        }
-
-        public static System.Threading.ManualResetEvent BuildStartedEvent
-        {
-            set
-            {
-                Set("System", "BuildStartedEvent", value);
-            }
-
-            get
-            {
-                return Get("System", "BuildStartedEvent") as System.Threading.ManualResetEvent;
-            }
-        }
-
         public static bool ShowTimingStatistics
         {
             set
@@ -609,19 +520,6 @@ namespace Bam.Core
             get
             {
                 return (bool)Get("System", "CacheAssembly");
-            }
-        }
-
-        public static string SchedulerType
-        {
-            set
-            {
-                Set("System", "SchedulerType", value);
-            }
-
-            get
-            {
-                return Get("System", "SchedulerType") as string;
             }
         }
 
