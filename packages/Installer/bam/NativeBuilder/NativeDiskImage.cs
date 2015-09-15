@@ -29,60 +29,6 @@
 #endregion // License
 namespace Installer
 {
-    public sealed class NativeInnoSetup :
-        IInnoSetupPolicy
-    {
-        void
-        IInnoSetupPolicy.CreateInstaller(
-            InnoSetupInstaller sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool compiler,
-            Bam.Core.TokenizedString scriptPath)
-        {
-            var args = new Bam.Core.StringArray();
-            args.Add(scriptPath.Parse());
-            CommandLineProcessor.Processor.Execute(context, compiler, args);
-        }
-    }
-
-    public sealed class NativeNSIS :
-        INSISPolicy
-    {
-        void
-        INSISPolicy.CreateInstaller(
-            NSISInstaller sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool compiler,
-            Bam.Core.TokenizedString scriptPath)
-        {
-            var args = new Bam.Core.StringArray();
-            args.Add(scriptPath.Parse());
-            CommandLineProcessor.Processor.Execute(context, compiler, args);
-        }
-    }
-
-    public sealed class NativeTarBall :
-        ITarPolicy
-    {
-        void
-        ITarPolicy.CreateTarBall(
-            TarBall sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool compiler,
-            Bam.Core.TokenizedString scriptPath,
-            Bam.Core.TokenizedString outputPath)
-        {
-            var args = new Bam.Core.StringArray();
-            args.Add("-c");
-            args.Add("-v");
-            args.Add("-T");
-            args.Add(scriptPath.Parse());
-            args.Add("-f");
-            args.Add(outputPath.ToString());
-            CommandLineProcessor.Processor.Execute(context, compiler, args);
-        }
-    }
-
     public sealed class NativeDMG :
         IDiskImagePolicy
     {
@@ -94,6 +40,7 @@ namespace Installer
             Bam.Core.TokenizedString sourceFolderPath,
             Bam.Core.TokenizedString outputPath)
         {
+            // TODO: volume name has to be different per configuration
             var volumeName = "My Volume";
             var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
             var diskImagePathName = outputPath.ToString();
