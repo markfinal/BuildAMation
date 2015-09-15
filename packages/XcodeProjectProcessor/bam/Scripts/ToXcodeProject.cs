@@ -31,6 +31,9 @@ namespace XcodeProjectProcessor
 {
     public interface IConvertToProject
     {
-        void Convert(Bam.Core.Module module, XcodeBuilder.Configuration configuration);
+        void
+        Convert(
+            Bam.Core.Module module,
+            XcodeBuilder.Configuration configuration);
     }
 }
