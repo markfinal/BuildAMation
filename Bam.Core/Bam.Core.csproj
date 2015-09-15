@@ -96,7 +96,7 @@
     <Compile Include="Options\VerbosityLevel.cs" />
     <Compile Include="OSUtilities.cs" />
     <Compile Include="Package\DotNetAssemblyDescription.cs" />
-    <Compile Include="Package\PackageDefinitionFile.cs" />
+    <Compile Include="Package\PackageDefinition.cs" />
     <Compile Include="Package\PackageListResourceFile.cs" />
     <Compile Include="Package\PackageUtilities.cs" />
     <Compile Include="Package\XmlResolver.cs" />
