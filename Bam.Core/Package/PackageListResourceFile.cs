@@ -32,48 +32,6 @@ namespace Bam.Core
 {
     public static class PackageListResourceFile
     {
-        public static string
-        WriteResourceFile()
-        {
-#if true
-            if (0 == Graph.Instance.Packages.Count())
-            {
-                throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
-            }
-
-            var tempDirectory = System.IO.Path.GetTempPath();
-            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", Graph.Instance.MasterPackage.Name, "PackageInfoResources.resources"));
-#else
-            if (0 == State.PackageInfo.Count)
-            {
-                throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
-            }
-
-            var mainPackage = State.PackageInfo.MainPackage;
-            var tempDirectory = System.IO.Path.GetTempPath();
-            var resourceFilePathName = System.IO.Path.Combine(tempDirectory, System.String.Format("{0}.{1}", mainPackage.Name, "PackageInfoResources.resources"));
-#endif
-
-            using (var writer = new System.Resources.ResourceWriter(resourceFilePathName))
-            {
-                // TODO: are these necessary now?
-#if false
-                foreach (var package in State.PackageInfo)
-                {
-                    var id = package.Identifier;
-                    string name = id.ToString("_");
-                    string value = id.Root.AbsolutePath;
-
-                    writer.AddResource(name, value);
-                }
-#endif
-            }
-
-            Log.DebugMessage("Written package resource file to '{0}'", resourceFilePathName);
-
-            return resourceFilePathName;
-        }
-
         private static void
         AddResHeader(
             System.Xml.XmlDocument document,

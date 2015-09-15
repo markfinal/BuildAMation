@@ -712,9 +712,6 @@ namespace Bam.Core
 
             BuilderUtilities.SetBuilderPackage();
 
-            // Create resource file containing package information
-            var resourceFilePathName = PackageListResourceFile.WriteResourceFile();
-
             var definitions = new StringArray();
 
             // gather source files
@@ -985,7 +982,6 @@ namespace Bam.Core
                 compilerOptions += " /define:" + definitions.ToString(';');
 
                 compilerParameters.CompilerOptions = compilerOptions;
-                compilerParameters.EmbeddedResources.Add(resourceFilePathName);
 
                 if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
                 {
