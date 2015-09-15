@@ -119,15 +119,6 @@ namespace Bam.Core
             platformString += name;
         }
 
-        public static bool
-        Contains(
-            EPlatform flags,
-            EPlatform specificPlatform)
-        {
-            var contains = (specificPlatform == (flags & specificPlatform));
-            return contains;
-        }
-
         public static string
         ToString(
             EPlatform platformFlags)
@@ -143,6 +134,15 @@ namespace Bam.Core
         {
             var value = ToString(platformFlags, separator, null, false);
             return value;
+        }
+
+        private static bool
+        Contains(
+            EPlatform flags,
+            EPlatform specificPlatform)
+        {
+            var contains = (specificPlatform == (flags & specificPlatform));
+            return contains;
         }
 
         public static string
