@@ -30,8 +30,7 @@
 namespace Bam.Core
 {
     public class Array<T> :
-        System.Collections.Generic.ICollection<T>,
-        System.ICloneable
+        System.Collections.Generic.ICollection<T>
     {
         protected System.Collections.Generic.List<T> list = new System.Collections.Generic.List<T>();
 
@@ -322,20 +321,5 @@ namespace Bam.Core
             }
             return newArray;
         }
-
-        #region ICloneable Members
-
-        object
-        System.ICloneable.Clone()
-        {
-            var clone = new Array<T>();
-            foreach (var item in this.list)
-            {
-                clone.Add(item);
-            }
-            return clone;
-        }
-
-        #endregion
     }
 }

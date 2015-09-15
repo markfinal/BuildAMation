@@ -31,7 +31,6 @@ namespace Bam.Core
 {
     public sealed class StringArray :
         Array<string>,
-        System.ICloneable,
         ISetOperations<StringArray>
     {
         public
@@ -140,14 +139,6 @@ namespace Bam.Core
             }
 
             this.list = newList;
-        }
-
-        object
-        System.ICloneable.Clone()
-        {
-            var clone = new StringArray();
-            clone.list.AddRange(this.list);
-            return clone;
         }
 
         #region ISetOperations implementation
