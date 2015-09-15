@@ -65,7 +65,8 @@ namespace Installer
             this.Paths.Add(module, key);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             // do nothing
         }
@@ -105,7 +106,9 @@ namespace Installer
             }
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // do nothing
         }
@@ -119,7 +122,9 @@ namespace Installer
     public sealed class InnoSetupCompiler :
         Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
             return new InnoSetupCompilerSettings();
         }
@@ -178,7 +183,8 @@ namespace Installer
             this.ScriptModule.AddPath(dependent, key);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             // do nothing
         }
@@ -240,7 +246,8 @@ namespace Installer
             this.Paths.Add(module, key);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             // do nothing
         }
@@ -277,7 +284,9 @@ namespace Installer
             }
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // do nothing
         }
@@ -291,7 +300,9 @@ namespace Installer
     public sealed class NSISCompiler :
         Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
             return new NSISCompilerSettings();
         }
@@ -350,7 +361,8 @@ namespace Installer
             this.ScriptModule.AddPath(dependent, key);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             // do nothing
         }
@@ -412,7 +424,8 @@ namespace Installer
             this.Paths.Add(module, key);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             // do nothing
         }
@@ -462,7 +475,9 @@ namespace Installer
             }
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // do nothing
         }
@@ -476,7 +491,9 @@ namespace Installer
     public sealed class TarCompiler :
         Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
             return new TarSettings();
         }
@@ -540,7 +557,8 @@ namespace Installer
             this.InputFiles.AddPath(dependent, key);
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             // do nothing
         }
@@ -575,7 +593,9 @@ namespace Installer
     public sealed class DiskImageCompiler :
         Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
             return new TarSettings();
         }
@@ -626,7 +646,8 @@ namespace Installer
             this.SourceFolderPath = dependent.GeneratedPaths[key];
         }
 
-        public override void Evaluate()
+        public override void
+        Evaluate()
         {
             // do nothing
         }
