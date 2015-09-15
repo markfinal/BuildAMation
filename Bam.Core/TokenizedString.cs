@@ -462,4 +462,14 @@ namespace Bam.Core
             return base.GetHashCode();
         }
     }
+
+    public sealed class TokenizedStringArray :
+        Array<TokenizedString>
+    {
+        public TokenizedStringArray(TokenizedString input)
+            :
+            base(new[] { input })
+        {
+        }
+    }
 }

@@ -31,16 +31,6 @@ namespace Bam.Core
 {
     using System.Linq;
 
-    public sealed class TokenizedStringArray :
-        Array<TokenizedString>
-    {
-        public TokenizedStringArray(TokenizedString input)
-            :
-            base(new[] { input })
-        {
-        }
-    }
-
     public class ExecutionContext
     {
         public ExecutionContext(
