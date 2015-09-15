@@ -67,7 +67,7 @@
     <Compile Include="Enumerations\ETimingProfiles.cs" />
     <Compile Include="Enumerations\EVerboseLevel.cs" />
     <Compile Include="Exception.cs" />
-    <Compile Include="Interfaces\IAction.cs" />
+    <Compile Include="Interfaces\ICommandLineArgument.cs" />
     <Compile Include="Interfaces\IModule.cs" />
     <Compile Include="Interfaces\IModuleCollection.cs" />
     <Compile Include="Interfaces\ISetOperations.cs" />
