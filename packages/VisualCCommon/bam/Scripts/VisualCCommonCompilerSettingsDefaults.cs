@@ -33,7 +33,7 @@ namespace VisualCCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this VisualCCommon.ICommonCompilerOptions settings,
+            this VisualCCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module)
         {
             settings.NoLogo = true;
@@ -41,26 +41,26 @@ namespace VisualCCommon.DefaultSettings
 
         public static void
         SharedSettings(
-            this VisualCCommon.ICommonCompilerOptions shared,
-            VisualCCommon.ICommonCompilerOptions lhs,
-            VisualCCommon.ICommonCompilerOptions rhs)
+            this VisualCCommon.ICommonCompilerSettings shared,
+            VisualCCommon.ICommonCompilerSettings lhs,
+            VisualCCommon.ICommonCompilerSettings rhs)
         {
             shared.NoLogo = (lhs.NoLogo == rhs.NoLogo) ? lhs.NoLogo : null;
         }
 
         public static void
         Delta(
-            this VisualCCommon.ICommonCompilerOptions delta,
-            VisualCCommon.ICommonCompilerOptions lhs,
-            VisualCCommon.ICommonCompilerOptions rhs)
+            this VisualCCommon.ICommonCompilerSettings delta,
+            VisualCCommon.ICommonCompilerSettings lhs,
+            VisualCCommon.ICommonCompilerSettings rhs)
         {
             delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
         }
 
         public static void
         Clone(
-            this VisualCCommon.ICommonCompilerOptions settings,
-            VisualCCommon.ICommonCompilerOptions other)
+            this VisualCCommon.ICommonCompilerSettings settings,
+            VisualCCommon.ICommonCompilerSettings other)
         {
             settings.NoLogo = other.NoLogo;
         }

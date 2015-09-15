@@ -34,7 +34,7 @@ namespace C
     {
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
-        private ILinkerPolicy Policy = null;
+        private ILinkingPolicy Policy = null;
 
         static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ExecutableFile");
 
@@ -47,14 +47,14 @@ namespace C
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.ICommonLinkerOptions;
+                var linker = settings as C.ICommonLinkerSettings;
                 linker.OutputType = ELinkerOutput.Executable;
             });
         }
 
         private Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 compiler.PreprocessorDefines.Add("_CONSOLE");
             };
 
@@ -228,7 +228,7 @@ namespace C
             string mode)
         {
             var className = "C." + mode + "Linker";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkerPolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
 
         public override void

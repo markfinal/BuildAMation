@@ -39,7 +39,7 @@ namespace Gcc
     {
         public static void
         Convert(
-            this C.ICommonCompilerOptions options,
+            this C.ICommonCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -165,7 +165,7 @@ namespace Gcc
 
         public static void
         Convert(
-            this C.ICOnlyCompilerOptions options,
+            this C.ICOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -188,7 +188,7 @@ namespace Gcc
         }
         public static void
         Convert(
-            this C.ICxxOnlyCompilerOptions options,
+            this C.ICxxOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -233,7 +233,7 @@ namespace Gcc
 
         public static void
         Convert(
-            this C.IObjectiveCOnlyCompilerOptions options,
+            this C.IObjectiveCOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -248,7 +248,7 @@ namespace Gcc
     {
         public static void
         Convert(
-            this C.ICommonArchiverOptions options,
+            this C.ICommonArchiverSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -290,7 +290,7 @@ namespace Gcc
     {
         public static void
         Convert(
-            this C.ICommonLinkerOptions options,
+            this C.ICommonLinkerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -365,9 +365,9 @@ namespace Gcc
     public class CompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonCompilerOptions,
-        C.ICOnlyCompilerOptions,
-        GccCommon.ICommonCompilerOptions
+        C.ICommonCompilerSettings,
+        C.ICOnlyCompilerSettings,
+        GccCommon.ICommonCompilerSettings
     {
         public CompilerSettings(Bam.Core.Module module)
             : this(module, true)
@@ -379,14 +379,14 @@ namespace Gcc
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            var stdCommonCompilerOptions = this as C.ICommonCompilerOptions;
+            var stdCommonCompilerOptions = this as C.ICommonCompilerSettings;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
             {
                 stdCommonCompilerOptions.Defaults(module);
             }
 
-            var commonCompilerOptions = this as GccCommon.ICommonCompilerOptions;
+            var commonCompilerOptions = this as GccCommon.ICommonCompilerSettings;
             commonCompilerOptions.Empty();
             if (useDefaults)
             {
@@ -397,89 +397,89 @@ namespace Gcc
 
         void CommandLineProcessor.IConvertToCommandLine.Convert(Bam.Core.Module module, Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as GccCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as GccCommon.ICommonCompilerSettings).Convert(module, commandLine);
         }
 
-        C.EBit? C.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.ELanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-        bool? GccCommon.ICommonCompilerOptions.PositionIndependentCode
+        bool? GccCommon.ICommonCompilerSettings.PositionIndependentCode
         {
             get;
             set;
@@ -489,9 +489,9 @@ namespace Gcc
     public sealed class CxxCompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonCompilerOptions,
-        C.ICxxOnlyCompilerOptions,
-        GccCommon.ICommonCompilerOptions
+        C.ICommonCompilerSettings,
+        C.ICxxOnlyCompilerSettings,
+        GccCommon.ICommonCompilerSettings
     {
         public CxxCompilerSettings(Bam.Core.Module module)
             : this(module, true)
@@ -503,21 +503,21 @@ namespace Gcc
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            var stdCommonCompilerOptions = this as C.ICommonCompilerOptions;
+            var stdCommonCompilerOptions = this as C.ICommonCompilerSettings;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
             {
                 stdCommonCompilerOptions.Defaults(module);
             }
 
-            var stdCommonCxxCompilerSettings = this as C.ICxxOnlyCompilerOptions;
+            var stdCommonCxxCompilerSettings = this as C.ICxxOnlyCompilerSettings;
             stdCommonCxxCompilerSettings.Empty();
             if (useDefaults)
             {
                 stdCommonCxxCompilerSettings.Defaults(module);
             }
 
-            var commonCompilerOptions = this as GccCommon.ICommonCompilerOptions;
+            var commonCompilerOptions = this as GccCommon.ICommonCompilerSettings;
             commonCompilerOptions.Empty();
             if (useDefaults)
             {
@@ -528,102 +528,102 @@ namespace Gcc
 
         void CommandLineProcessor.IConvertToCommandLine.Convert(Bam.Core.Module module, Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as GccCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as C.ICxxOnlyCompilerSettings).Convert(module, commandLine);
+            (this as GccCommon.ICommonCompilerSettings).Convert(module, commandLine);
         }
 
-        C.EBit? C.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
         {
             get;
             set;
         }
 
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerOptions.LanguageStandard
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerOptions.StandardLibrary
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;
             set;
         }
 
-        bool? GccCommon.ICommonCompilerOptions.PositionIndependentCode
+        bool? GccCommon.ICommonCompilerSettings.PositionIndependentCode
         {
             get;
             set;
@@ -633,10 +633,10 @@ namespace Gcc
     public class ObjectiveCCompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonCompilerOptions,
-        C.ICOnlyCompilerOptions,
-        C.IObjectiveCOnlyCompilerOptions,
-        GccCommon.ICommonCompilerOptions
+        C.ICommonCompilerSettings,
+        C.ICOnlyCompilerSettings,
+        C.IObjectiveCOnlyCompilerSettings,
+        GccCommon.ICommonCompilerSettings
     {
         public ObjectiveCCompilerSettings(Bam.Core.Module module)
             : this(module, true)
@@ -648,21 +648,21 @@ namespace Gcc
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            var stdCommonCompilerOptions = this as C.ICommonCompilerOptions;
+            var stdCommonCompilerOptions = this as C.ICommonCompilerSettings;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
             {
                 stdCommonCompilerOptions.Defaults(module);
             }
 
-            var objCCompilerOptions = this as C.IObjectiveCOnlyCompilerOptions;
+            var objCCompilerOptions = this as C.IObjectiveCOnlyCompilerSettings;
             objCCompilerOptions.Empty();
             if (useDefaults)
             {
                objCCompilerOptions.Defaults(module);
             }
 
-            var commonCompilerOptions = this as GccCommon.ICommonCompilerOptions;
+            var commonCompilerOptions = this as GccCommon.ICommonCompilerSettings;
             commonCompilerOptions.Empty();
             if (useDefaults)
             {
@@ -673,96 +673,96 @@ namespace Gcc
 
         void CommandLineProcessor.IConvertToCommandLine.Convert(Bam.Core.Module module, Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.IObjectiveCOnlyCompilerOptions).Convert(module, commandLine);
-            (this as GccCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as C.IObjectiveCOnlyCompilerSettings).Convert(module, commandLine);
+            (this as GccCommon.ICommonCompilerSettings).Convert(module, commandLine);
         }
 
-        C.EBit? C.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.ELanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-        string C.IObjectiveCOnlyCompilerOptions.ConstantStringClass
+        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
         {
             get;
             set;
         }
 
-        bool? GccCommon.ICommonCompilerOptions.PositionIndependentCode
+        bool? GccCommon.ICommonCompilerSettings.PositionIndependentCode
         {
             get;
             set;
@@ -772,10 +772,10 @@ namespace Gcc
     public sealed class ObjectiveCxxCompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonCompilerOptions,
-        C.ICxxOnlyCompilerOptions,
-        C.IObjectiveCxxOnlyCompilerOptions,
-        GccCommon.ICommonCompilerOptions
+        C.ICommonCompilerSettings,
+        C.ICxxOnlyCompilerSettings,
+        C.IObjectiveCxxOnlyCompilerSettings,
+        GccCommon.ICommonCompilerSettings
     {
         public ObjectiveCxxCompilerSettings(Bam.Core.Module module)
             : this(module, true)
@@ -787,21 +787,21 @@ namespace Gcc
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            var stdCommonCompilerOptions = this as C.ICommonCompilerOptions;
+            var stdCommonCompilerOptions = this as C.ICommonCompilerSettings;
             stdCommonCompilerOptions.Empty();
             if (useDefaults)
             {
                 stdCommonCompilerOptions.Defaults(module);
             }
 
-            var stdCommonCxxCompilerSettings = this as C.ICxxOnlyCompilerOptions;
+            var stdCommonCxxCompilerSettings = this as C.ICxxOnlyCompilerSettings;
             stdCommonCxxCompilerSettings.Empty();
             if (useDefaults)
             {
                 stdCommonCxxCompilerSettings.Defaults(module);
             }
 
-            var commonCompilerOptions = this as GccCommon.ICommonCompilerOptions;
+            var commonCompilerOptions = this as GccCommon.ICommonCompilerSettings;
             commonCompilerOptions.Empty();
             if (useDefaults)
             {
@@ -812,102 +812,102 @@ namespace Gcc
 
         void CommandLineProcessor.IConvertToCommandLine.Convert(Bam.Core.Module module, Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as GccCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as C.ICxxOnlyCompilerSettings).Convert(module, commandLine);
+            (this as GccCommon.ICommonCompilerSettings).Convert(module, commandLine);
         }
 
-        C.EBit? C.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
         {
             get;
             set;
         }
 
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerOptions.LanguageStandard
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerOptions.StandardLibrary
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;
             set;
         }
 
-        bool? GccCommon.ICommonCompilerOptions.PositionIndependentCode
+        bool? GccCommon.ICommonCompilerSettings.PositionIndependentCode
         {
             get;
             set;
@@ -917,7 +917,7 @@ namespace Gcc
     public class LibrarianSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonArchiverOptions,
+        C.ICommonArchiverSettings,
         IArchiverOptions
     {
         public LibrarianSettings(Bam.Core.Module module)
@@ -925,7 +925,7 @@ namespace Gcc
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
-            (this as C.ICommonArchiverOptions).Defaults(module);
+            (this as C.ICommonArchiverSettings).Defaults(module);
             (this as IArchiverOptions).Defaults(module);
 #endif
         }
@@ -934,10 +934,10 @@ namespace Gcc
         {
             (this as IArchiverOptions).Convert(module, commandLine);
             // output file comes last, before inputs
-            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
+            (this as C.ICommonArchiverSettings).Convert(module, commandLine);
         }
 
-        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
         {
             get;
             set;
@@ -965,62 +965,62 @@ namespace Gcc
     public class LinkerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerOptions,
-        GccCommon.ICommonLinkerOptions
+        C.ICommonLinkerSettings,
+        GccCommon.ICommonLinkerSettings
     {
         public LinkerSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
-            (this as C.ICommonLinkerOptions).Defaults(module);
-            (this as GccCommon.ICommonLinkerOptions).Defaults(module);
+            (this as C.ICommonLinkerSettings).Defaults(module);
+            (this as GccCommon.ICommonLinkerSettings).Defaults(module);
 #endif
         }
 
         void CommandLineProcessor.IConvertToCommandLine.Convert(Bam.Core.Module module, Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonLinkerOptions).Convert(module, commandLine);
-            (this as GccCommon.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
+            (this as GccCommon.ICommonLinkerSettings).Convert(module, commandLine);
         }
 
-        C.ELinkerOutput C.ICommonLinkerOptions.OutputType
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerOptions.LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonLinkerOptions.Libraries
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
             set;
         }
 
-        bool? C.ICommonLinkerOptions.DebugSymbols
+        bool? C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? ICommonLinkerOptions.CanUseOrigin
+        bool? ICommonLinkerSettings.CanUseOrigin
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray ICommonLinkerOptions.RPath
+        Bam.Core.StringArray ICommonLinkerSettings.RPath
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray ICommonLinkerOptions.RPathLink
+        Bam.Core.StringArray ICommonLinkerSettings.RPathLink
         {
             get;
             set;
@@ -1041,8 +1041,8 @@ namespace Gcc
         }
     }
 
-    [C.RegisterArchiver("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
-    [C.RegisterArchiver("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
+    [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
+    [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class Librarian :
         C.LibrarianTool
     {
@@ -1120,7 +1120,7 @@ namespace Gcc
             C.CModule executable,
             C.CModule library)
         {
-            var linker = executable.Settings as C.ICommonLinkerOptions;
+            var linker = executable.Settings as C.ICommonLinkerSettings;
             if (library is C.StaticLibrary)
             {
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
@@ -1149,7 +1149,7 @@ namespace Gcc
                 var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
                 linker.LibraryPaths.AddUnique(libraryDir);
 
-                var gccLinker = executable.Settings as GccCommon.ICommonLinkerOptions;
+                var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
                 var allDynamicDependents = FindAllDynamicDependents(library as C.DynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
@@ -1254,7 +1254,7 @@ namespace Gcc
         CompileAsShared(
             Bam.Core.Settings settings)
         {
-            var gccCompiler = settings as GccCommon.ICommonCompilerOptions;
+            var gccCompiler = settings as GccCommon.ICommonCompilerSettings;
             gccCompiler.PositionIndependentCode = true;
         }
 
@@ -1273,7 +1273,7 @@ namespace Gcc
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.C;
         }
     }
@@ -1290,7 +1290,7 @@ namespace Gcc
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
@@ -1307,9 +1307,9 @@ namespace Gcc
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var compiler = settings as C.ICommonCompilerOptions;
+            var compiler = settings as C.ICommonCompilerSettings;
             compiler.TargetLanguage = C.ETargetLanguage.ObjectiveC;
-            var cCompiler = settings as C.ICOnlyCompilerOptions;
+            var cCompiler = settings as C.ICOnlyCompilerSettings;
             cCompiler.LanguageStandard = C.ELanguageStandard.C99;
         }
     }
@@ -1326,7 +1326,7 @@ namespace Gcc
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
         }
     }

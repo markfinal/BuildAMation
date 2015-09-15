@@ -34,40 +34,40 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICCompilerOptionsOSX settings,
+            this C.ICommonCompilerSettingsOSX settings,
             Bam.Core.Module module)
         {
         }
 
         public static void
         Empty(
-            this C.ICCompilerOptionsOSX settings)
+            this C.ICommonCompilerSettingsOSX settings)
         {
             settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
 
         public static void
         SharedSettings(
-            this C.ICCompilerOptionsOSX shared,
-            C.ICCompilerOptionsOSX lhs,
-            C.ICCompilerOptionsOSX rhs)
+            this C.ICommonCompilerSettingsOSX shared,
+            C.ICommonCompilerSettingsOSX lhs,
+            C.ICommonCompilerSettingsOSX rhs)
         {
             shared.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Intersect(rhs.FrameworkSearchDirectories));
         }
 
         public static void
         Delta(
-            this C.ICCompilerOptionsOSX delta,
-            C.ICCompilerOptionsOSX lhs,
-            C.ICCompilerOptionsOSX rhs)
+            this C.ICommonCompilerSettingsOSX delta,
+            C.ICommonCompilerSettingsOSX lhs,
+            C.ICommonCompilerSettingsOSX rhs)
         {
             delta.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Except(rhs.FrameworkSearchDirectories));
         }
 
         public static void
         Clone(
-            this C.ICCompilerOptionsOSX settings,
-            C.ICCompilerOptionsOSX other)
+            this C.ICommonCompilerSettingsOSX settings,
+            C.ICommonCompilerSettingsOSX other)
         {
             foreach (var path in other.FrameworkSearchDirectories)
             {

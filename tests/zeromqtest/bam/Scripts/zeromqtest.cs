@@ -51,7 +51,7 @@ namespace zeromqtest
                 {
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
-                        var gccLinker = settings as GccCommon.ICommonLinkerOptions;
+                        var gccLinker = settings as GccCommon.ICommonLinkerSettings;
                         if (null != gccLinker)
                         {
                             gccLinker.CanUseOrigin = true;

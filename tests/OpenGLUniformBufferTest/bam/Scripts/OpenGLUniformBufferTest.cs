@@ -43,7 +43,7 @@ namespace OpenGLUniformBufferTest
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/*.cpp");
             source.PrivatePatch(settings =>
                 {
-                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
@@ -60,7 +60,7 @@ namespace OpenGLUniformBufferTest
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerSettings;
                     if (this.Linker is VisualC.LinkerBase)
                     {
                         linker.Libraries.Add("OPENGL32.lib");

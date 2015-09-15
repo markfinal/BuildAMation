@@ -29,10 +29,10 @@
 #endregion // License
 namespace C
 {
-    public sealed class RegisterArchiverAttribute :
+    public sealed class RegisterLibrarianAttribute :
         ToolRegistrationAttribute
     {
-        public RegisterArchiverAttribute(
+        public RegisterLibrarianAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform,
             EBit bitDepth)

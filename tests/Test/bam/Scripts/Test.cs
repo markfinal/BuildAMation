@@ -38,13 +38,13 @@ namespace Test
             Settings settings,
             Module module)
         {
-            var compiler = settings as C.ICommonCompilerOptions;
+            var compiler = settings as C.ICommonCompilerSettings;
             if (null != compiler)
             {
                 compiler.PreprocessorDefines.Add("GLOBALOVERRIDE");
             }
 
-            var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+            var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
             if (null != cxxCompiler)
             {
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -80,7 +80,7 @@ namespace Test
             this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main.c", this);
             this.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 compiler.DebugSymbols = false;
             });
         }
@@ -135,7 +135,7 @@ namespace Test
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     compiler.WarningsAsErrors = false;
                 });
 

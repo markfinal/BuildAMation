@@ -35,7 +35,7 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICommonCompilerOptions settings,
+            this C.ICommonCompilerSettings settings,
             Bam.Core.Module module)
         {
             settings.Bits = (module as CModule).BitDepth;
@@ -82,7 +82,7 @@ namespace C.DefaultSettings
 
         public static void
         Empty(
-            this C.ICommonCompilerOptions settings)
+            this C.ICommonCompilerSettings settings)
         {
             settings.DisableWarnings = new Bam.Core.StringArray();
             settings.IncludePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
@@ -93,9 +93,9 @@ namespace C.DefaultSettings
 
         public static void
         SharedSettings(
-            this C.ICommonCompilerOptions shared,
-            C.ICommonCompilerOptions lhs,
-            C.ICommonCompilerOptions rhs)
+            this C.ICommonCompilerSettings shared,
+            C.ICommonCompilerSettings lhs,
+            C.ICommonCompilerSettings rhs)
         {
             shared.Bits = (lhs.Bits == rhs.Bits) ? lhs.Bits : null;
             shared.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Intersect(rhs.PreprocessorDefines));
@@ -113,9 +113,9 @@ namespace C.DefaultSettings
 
         public static void
         Delta(
-            this C.ICommonCompilerOptions delta,
-            C.ICommonCompilerOptions lhs,
-            C.ICommonCompilerOptions rhs)
+            this C.ICommonCompilerSettings delta,
+            C.ICommonCompilerSettings lhs,
+            C.ICommonCompilerSettings rhs)
         {
             delta.Bits = (lhs.Bits != rhs.Bits) ? lhs.Bits : null;
             delta.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Except(rhs.PreprocessorDefines));
@@ -133,8 +133,8 @@ namespace C.DefaultSettings
 
         public static void
         Clone(
-            this C.ICommonCompilerOptions settings,
-            C.ICommonCompilerOptions other)
+            this C.ICommonCompilerSettings settings,
+            C.ICommonCompilerSettings other)
         {
             settings.Bits = other.Bits;
             foreach (var define in other.PreprocessorDefines)

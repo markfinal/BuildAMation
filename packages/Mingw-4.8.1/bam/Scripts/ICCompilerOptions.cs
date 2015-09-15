@@ -29,7 +29,7 @@
 #endregion // License
 namespace Mingw
 {
-    public interface ICommonCompilerOptions
+    public interface ICommonCompilerSettings
     {
         bool M48Common
         {
@@ -38,7 +38,7 @@ namespace Mingw
         }
     }
 
-    public interface ICOnlyCompilerOptions
+    public interface ICOnlyCompilerSettings
     {
         bool M48COnly
         {
@@ -47,7 +47,7 @@ namespace Mingw
         }
     }
 
-    public interface ICxxOnlyCompilerOptions
+    public interface ICxxOnlyCompilerSettings
     {
     }
 }

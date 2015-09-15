@@ -35,7 +35,7 @@ namespace Test14
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 if (null != compiler)
                 {
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
@@ -68,7 +68,7 @@ namespace Test14
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
         {
-            var compiler = settings as C.ICommonCompilerOptions;
+            var compiler = settings as C.ICommonCompilerSettings;
             if (null != compiler)
             {
                 compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
@@ -111,7 +111,7 @@ namespace Test14
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.ICommonLinkerOptions;
+                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
                     if (null != gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;

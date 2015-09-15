@@ -41,7 +41,7 @@ namespace OpenGLSDK
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var linker = settings as C.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerSettings;
                     if (null != linker)
                     {
                         if (linker is VisualC.LinkerSettings)
@@ -53,7 +53,7 @@ namespace OpenGLSDK
                             linker.Libraries.Add("-lopengl32");
                         }
                     }
-                    var osxLinker = settings as C.ILinkerOptionsOSX;
+                    var osxLinker = settings as C.ILinkerSettingsOSX;
                     if (null != osxLinker)
                     {
                         osxLinker.Frameworks.AddUnique(Bam.Core.TokenizedString.Create("OpenGL", null, verbatim: true));

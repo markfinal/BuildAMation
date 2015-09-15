@@ -52,7 +52,7 @@ namespace VisualC
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var linking = settings as C.ICommonLinkerOptions;
+                var linking = settings as C.ICommonLinkerSettings;
                 if (null != linking)
                 {
                     linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
@@ -121,7 +121,7 @@ namespace VisualC
             }
             var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
-            var linker = executable.Settings as C.ICommonLinkerOptions;
+            var linker = executable.Settings as C.ICommonLinkerSettings;
             linker.Libraries.AddUnique(libFilename);
             linker.LibraryPaths.AddUnique(dir);
         }

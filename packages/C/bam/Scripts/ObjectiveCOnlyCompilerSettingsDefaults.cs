@@ -32,7 +32,7 @@ namespace C.ObjC.DefaultSettings
     public static partial class DefaultSettingsExtensions
     {
         public static void Defaults(
-            this C.IObjectiveCOnlyCompilerOptions settings,
+            this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.Module module)
         {
         }

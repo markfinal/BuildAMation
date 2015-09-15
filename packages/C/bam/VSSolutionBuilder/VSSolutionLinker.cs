@@ -32,10 +32,10 @@ using C.DefaultSettings;
 namespace C
 {
     public sealed partial class VSSolutionLinker :
-        ILinkerPolicy
+        ILinkingPolicy
     {
         void
-        ILinkerPolicy.Link(
+        ILinkingPolicy.Link(
             ConsoleApplication sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString executablePath,

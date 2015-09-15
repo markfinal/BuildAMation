@@ -60,7 +60,7 @@ namespace Test12
 
                 this.PrivatePatch(settings =>
                     {
-                        var linker = settings as C.ICommonLinkerOptions;
+                        var linker = settings as C.ICommonLinkerSettings;
                         linker.Libraries.Add("USER32.lib");
                     });
             }
@@ -68,7 +68,7 @@ namespace Test12
             {
                 this.PrivatePatch(settings =>
                     {
-                        var linker = settings as C.ICommonLinkerOptions;
+                        var linker = settings as C.ICommonLinkerSettings;
                         linker.Libraries.Add("-lX11");
                     });
             }

@@ -41,7 +41,7 @@ namespace Test5
 
             this.PrivatePatch(settings =>
                 {
-                    var gccCommon = settings as GccCommon.ICommonLinkerOptions;
+                    var gccCommon = settings as GccCommon.ICommonLinkerSettings;
                     if (null != gccCommon)
                     {
                         gccCommon.CanUseOrigin = true;

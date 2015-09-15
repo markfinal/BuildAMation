@@ -30,7 +30,7 @@
 namespace VisualC
 {
     [Bam.Core.SettingsExtensions(typeof(VisualC.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
+    public interface ICommonLinkerSettings : Bam.Core.ISettingsBase
     {
         bool? NoLogo
         {

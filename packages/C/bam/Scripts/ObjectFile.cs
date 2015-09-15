@@ -136,7 +136,7 @@ namespace C
                     return;
                 }
 
-                var includeSearchPaths = (this.Settings as C.ICommonCompilerOptions).IncludePaths;
+                var includeSearchPaths = (this.Settings as C.ICommonCompilerSettings).IncludePaths;
 
                 var filesToSearch = new System.Collections.Generic.Queue<string>();
                 filesToSearch.Enqueue(sourcePath);

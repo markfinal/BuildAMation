@@ -33,7 +33,7 @@ namespace VisualC
     {
         public static void
         Convert(
-            this C.ICommonArchiverOptions options,
+            this C.ICommonArchiverSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {

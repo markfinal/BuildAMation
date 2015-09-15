@@ -30,7 +30,8 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
+    public interface ICOnlyCompilerSettings :
+        Bam.Core.ISettingsBase
     {
         C.ELanguageStandard? LanguageStandard
         {

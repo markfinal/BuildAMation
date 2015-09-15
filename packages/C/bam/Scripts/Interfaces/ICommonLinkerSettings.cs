@@ -30,7 +30,8 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
+    public interface ICommonLinkerSettings :
+        Bam.Core.ISettingsBase
     {
         C.ELinkerOutput OutputType
         {

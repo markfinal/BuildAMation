@@ -30,7 +30,7 @@
 namespace GccCommon
 {
     [Bam.Core.SettingsExtensions(typeof(GccCommon.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerOptions : Bam.Core.ISettingsBase
+    public interface ICommonLinkerSettings : Bam.Core.ISettingsBase
     {
         bool? CanUseOrigin
         {

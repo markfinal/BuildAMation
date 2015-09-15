@@ -33,31 +33,31 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICOnlyCompilerOptions settings,
+            this C.ICOnlyCompilerSettings settings,
             Bam.Core.Module module)
         {
         }
 
         public static void
         SharedSettings(
-            this C.ICOnlyCompilerOptions shared,
-            C.ICOnlyCompilerOptions lhs,
-            C.ICOnlyCompilerOptions rhs)
+            this C.ICOnlyCompilerSettings shared,
+            C.ICOnlyCompilerSettings lhs,
+            C.ICOnlyCompilerSettings rhs)
         {
         }
 
         public static void
         Delta(
-            this C.ICOnlyCompilerOptions delta,
-            C.ICOnlyCompilerOptions lhs,
-            C.ICOnlyCompilerOptions rhs)
+            this C.ICOnlyCompilerSettings delta,
+            C.ICOnlyCompilerSettings lhs,
+            C.ICOnlyCompilerSettings rhs)
         {
         }
 
         public static void
         Clone(
-            this C.ICOnlyCompilerOptions settings,
-            C.ICOnlyCompilerOptions other)
+            this C.ICOnlyCompilerSettings settings,
+            C.ICOnlyCompilerSettings other)
         {
         }
     }

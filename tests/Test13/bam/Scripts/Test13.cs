@@ -61,14 +61,14 @@ namespace Test13
                 // second item in Tuple is the C++ compilation of that generated source
                 myObjectMocTuple.Item2.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     compiler.PreprocessorDefines.Add("COMPILING_GENERATED_MOC");
                 });
             }
 
             this.PrivatePatch(settings =>
             {
-                var gccLinker = settings as GccCommon.ICommonLinkerOptions;
+                var gccLinker = settings as GccCommon.ICommonLinkerSettings;
                 if (gccLinker != null)
                 {
                     gccLinker.CanUseOrigin = true;

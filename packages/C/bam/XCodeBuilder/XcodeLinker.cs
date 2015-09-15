@@ -30,10 +30,10 @@
 namespace C
 {
     public sealed class XcodeLinker :
-        ILinkerPolicy
+        ILinkingPolicy
     {
         void
-        ILinkerPolicy.Link(
+        ILinkingPolicy.Link(
             ConsoleApplication sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString executablePath,
@@ -42,7 +42,7 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
-            var linker = sender.Settings as C.ICommonLinkerOptions;
+            var linker = sender.Settings as C.ICommonLinkerSettings;
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             var configName = sender.BuildEnvironment.Configuration.ToString();
             var macros = new Bam.Core.MacroList();

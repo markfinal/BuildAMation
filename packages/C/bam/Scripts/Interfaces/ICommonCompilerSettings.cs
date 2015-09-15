@@ -30,7 +30,8 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
+    public interface ICommonCompilerSettings :
+        Bam.Core.ISettingsBase
     {
         EBit? Bits
         {

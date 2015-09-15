@@ -38,14 +38,14 @@ namespace Cxx11Test1
             Settings settings,
             Module module)
         {
-            var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+            var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
             if (null != cxxCompiler)
             {
                 cxxCompiler.LanguageStandard = C.Cxx.ELanguageStandard.Cxx11;
                 cxxCompiler.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
             }
 
-            var cxxLinker = settings as C.ICxxOnlyLinkerOptions;
+            var cxxLinker = settings as C.ICxxOnlyLinkerSettings;
             if (null != cxxLinker)
             {
                 cxxLinker.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
@@ -67,7 +67,7 @@ namespace Cxx11Test1
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                         this.Linker is VisualC.LinkerBase)
                     {
-                        var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+                        var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                         cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                     }
                 });

@@ -30,7 +30,7 @@
 namespace VisualCCommon
 {
     [Bam.Core.SettingsExtensions(typeof(VisualCCommon.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions :
+    public interface ICommonCompilerSettings :
         Bam.Core.ISettingsBase
     {
         bool? NoLogo

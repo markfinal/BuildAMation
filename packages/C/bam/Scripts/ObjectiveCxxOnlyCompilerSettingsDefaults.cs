@@ -33,15 +33,15 @@ namespace C.ObjCxx.DefaultSettings
     {
         public static void
         Defaults(
-            this C.IObjectiveCxxOnlyCompilerOptions settings,
+            this C.IObjectiveCxxOnlyCompilerSettings settings,
             Bam.Core.Module module)
         {
         }
 
         public static void
         Clone(
-            this C.IObjectiveCxxOnlyCompilerOptions settings,
-            C.IObjectiveCxxOnlyCompilerOptions other)
+            this C.IObjectiveCxxOnlyCompilerSettings settings,
+            C.IObjectiveCxxOnlyCompilerSettings other)
         {
         }
     }

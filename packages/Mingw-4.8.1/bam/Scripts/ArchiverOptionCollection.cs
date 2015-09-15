@@ -69,7 +69,7 @@ namespace DefaultSettings
     {
         public static void
         Convert(
-            this C.ICommonArchiverOptions options,
+            this C.ICommonArchiverSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -113,7 +113,7 @@ namespace DefaultSettings
 
     public class LibrarianSettings :
         C.SettingsBase,
-        C.ICommonArchiverOptions,
+        C.ICommonArchiverSettings,
         IArchiverOptions,
         CommandLineProcessor.IConvertToCommandLine
     {
@@ -122,12 +122,12 @@ namespace DefaultSettings
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
-            (this as C.ICommonArchiverOptions).Defaults(module);
+            (this as C.ICommonArchiverSettings).Defaults(module);
             (this as IArchiverOptions).Defaults(module);
 #endif
         }
 
-        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
         {
             get;
             set;
@@ -158,11 +158,11 @@ namespace DefaultSettings
         {
             (this as IArchiverOptions).Convert(module, commandLine);
             // output file comes last, before inputs
-            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
+            (this as C.ICommonArchiverSettings).Convert(module, commandLine);
         }
     }
 
-    [C.RegisterArchiver("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    [C.RegisterLibrarian("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Librarian :
         C.LibrarianTool
     {

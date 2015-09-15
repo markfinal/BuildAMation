@@ -30,7 +30,7 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICCompilerOptionsWin :
+    public interface ICommonCompilerSettingsWin :
         Bam.Core.ISettingsBase
     {
         C.ECharacterSet? CharacterSet

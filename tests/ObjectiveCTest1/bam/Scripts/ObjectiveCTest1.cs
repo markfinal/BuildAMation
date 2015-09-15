@@ -44,17 +44,17 @@ namespace ObjectiveCTest1
             {
                 source.PrivatePatch(settings =>
                     {
-                        var compiler = settings as C.ICommonCompilerOptions;
+                        var compiler = settings as C.ICommonCompilerSettings;
                         compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("/usr/include/GNUstep", null, verbatim: true));
 
-                        var objcCompiler = settings as C.IObjectiveCOnlyCompilerOptions;
+                        var objcCompiler = settings as C.IObjectiveCOnlyCompilerSettings;
                         objcCompiler.ConstantStringClass = "NSConstantString";
                     });
             }
 
             this.PrivatePatch(settings =>
                 {
-                    var osxLinker = settings as C.ILinkerOptionsOSX;
+                    var osxLinker = settings as C.ILinkerSettingsOSX;
                     if (null != osxLinker)
                     {
                         osxLinker.Frameworks.Add(Bam.Core.TokenizedString.Create("Cocoa", null, verbatim:true));
@@ -62,7 +62,7 @@ namespace ObjectiveCTest1
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
-                        var linker = settings as C.ICommonLinkerOptions;
+                        var linker = settings as C.ICommonLinkerSettings;
                         linker.Libraries.Add("-lobjc");
                         linker.Libraries.Add("-lgnustep-base");
                     }

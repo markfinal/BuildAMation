@@ -41,7 +41,7 @@ namespace C
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.ILinkerOptionsWin;
+                    var linker = settings as C.ILinkerSettingsWin;
                     if (linker != null)
                     {
                         linker.SubSystem = ESubsystem.Windows;
@@ -51,7 +51,7 @@ namespace C
 
         protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 compiler.PreprocessorDefines.Remove("_CONSOLE");
                 compiler.PreprocessorDefines.Add("_WINDOWS");
             };

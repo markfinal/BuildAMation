@@ -33,7 +33,7 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICommonArchiverOptions settings,
+            this C.ICommonArchiverSettings settings,
             Bam.Core.Module module)
         {
             settings.OutputType = EArchiverOutput.StaticLibrary;

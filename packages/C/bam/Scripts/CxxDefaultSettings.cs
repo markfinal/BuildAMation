@@ -33,7 +33,7 @@ namespace C.Cxx.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICxxOnlyCompilerOptions settings,
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module)
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
@@ -43,9 +43,9 @@ namespace C.Cxx.DefaultSettings
 
         public static void
         SharedSettings(
-            this C.ICxxOnlyCompilerOptions shared,
-            C.ICxxOnlyCompilerOptions lhs,
-            C.ICxxOnlyCompilerOptions rhs)
+            this C.ICxxOnlyCompilerSettings shared,
+            C.ICxxOnlyCompilerSettings lhs,
+            C.ICxxOnlyCompilerSettings rhs)
         {
             shared.ExceptionHandler = (lhs.ExceptionHandler == rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
             shared.LanguageStandard = (lhs.LanguageStandard == rhs.LanguageStandard) ? lhs.LanguageStandard : null;
@@ -54,9 +54,9 @@ namespace C.Cxx.DefaultSettings
 
         public static void
         Delta(
-            this C.ICxxOnlyCompilerOptions delta,
-            C.ICxxOnlyCompilerOptions lhs,
-            C.ICxxOnlyCompilerOptions rhs)
+            this C.ICxxOnlyCompilerSettings delta,
+            C.ICxxOnlyCompilerSettings lhs,
+            C.ICxxOnlyCompilerSettings rhs)
         {
             delta.ExceptionHandler = (lhs.ExceptionHandler != rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
             delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
@@ -65,8 +65,8 @@ namespace C.Cxx.DefaultSettings
 
         public static void
         Clone(
-            this C.ICxxOnlyCompilerOptions settings,
-            C.ICxxOnlyCompilerOptions other)
+            this C.ICxxOnlyCompilerSettings settings,
+            C.ICxxOnlyCompilerSettings other)
         {
             settings.ExceptionHandler = other.ExceptionHandler;
             settings.LanguageStandard = other.LanguageStandard;

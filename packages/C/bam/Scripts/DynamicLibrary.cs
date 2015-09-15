@@ -50,13 +50,13 @@ namespace C
 
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.ICommonLinkerOptions;
+                var linker = settings as C.ICommonLinkerSettings;
                 if (null != linker)
                 {
                     linker.OutputType = ELinkerOutput.DynamicLibrary;
                 }
 
-                var osxLinker = settings as C.ILinkerOptionsOSX;
+                var osxLinker = settings as C.ILinkerSettingsOSX;
                 if (null != osxLinker)
                 {
                     osxLinker.InstallName = Bam.Core.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
@@ -82,7 +82,7 @@ namespace C
             var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
                 (collection.Tool as C.CompilerTool).CompileAsShared(settings);
             });
@@ -98,7 +98,7 @@ namespace C
             var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
                 (collection.Tool as C.CompilerTool).CompileAsShared(settings);
             });

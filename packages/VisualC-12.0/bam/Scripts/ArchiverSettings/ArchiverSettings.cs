@@ -33,8 +33,8 @@ namespace VisualC
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
-        C.ICommonArchiverOptions,
-        ICommonArchiverOptions
+        C.ICommonArchiverSettings,
+        ICommonArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)
@@ -47,8 +47,8 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonArchiverOptions).Convert(module, commandLine);
-            (this as ICommonArchiverOptions).Convert(module, commandLine);
+            (this as C.ICommonArchiverSettings).Convert(module, commandLine);
+            (this as ICommonArchiverSettings).Convert(module, commandLine);
         }
 
         void
@@ -57,17 +57,17 @@ namespace VisualC
             VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.ICommonArchiverOptions).Convert(module, settings, condition);
-            (this as ICommonArchiverOptions).Convert(module, settings, condition);
+            (this as C.ICommonArchiverSettings).Convert(module, settings, condition);
+            (this as ICommonArchiverSettings).Convert(module, settings, condition);
         }
 
-        C.EArchiverOutput C.ICommonArchiverOptions.OutputType
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? ICommonArchiverOptions.NoLogo
+        bool? ICommonArchiverSettings.NoLogo
         {
             get;
             set;

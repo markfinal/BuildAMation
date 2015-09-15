@@ -35,7 +35,7 @@ namespace C
     {
         private Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
-        private ILibrarianPolicy Policy = null;
+        private IArchivingPolicy Policy = null;
 
         static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Static Library File");
 
@@ -171,7 +171,7 @@ namespace C
             string mode)
         {
             var className = "C." + mode + "Librarian";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<ILibrarianPolicy>.Create(className);
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<IArchivingPolicy>.Create(className);
         }
 
         public override void

@@ -37,13 +37,13 @@ namespace WindowsSDK
             this.Macros.Add("InstallPath", @"C:\Program Files\Microsoft SDKs\Windows\v6.0A");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compilation = settings as C.ICommonCompilerOptions;
+                    var compilation = settings as C.ICommonCompilerSettings;
                     if (null != compilation)
                     {
                         compilation.IncludePaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Include", this));
                     }
 
-                    var linking = settings as C.ICommonLinkerOptions;
+                    var linking = settings as C.ICommonLinkerSettings;
                     if (null != linking)
                     {
                         if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)

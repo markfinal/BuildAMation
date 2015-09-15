@@ -35,7 +35,7 @@ namespace Mingw
     {
         public static void
         Convert(
-            this C.ICommonCompilerOptions options,
+            this C.ICommonCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -134,7 +134,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this C.ICOnlyCompilerOptions options,
+            this C.ICOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -155,7 +155,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this C.ICxxOnlyCompilerOptions options,
+            this C.ICxxOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -191,7 +191,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this C.ICCompilerOptionsWin options,
+            this C.ICommonCompilerSettingsWin options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -204,14 +204,14 @@ namespace Mingw
 
                     case C.ECharacterSet.Unicode:
                         {
-                            var compiler = options as C.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerSettings;
                             compiler.PreprocessorDefines.Add("_UNICODE");
                         }
                         break;
 
                     case C.ECharacterSet.MultiByte:
                         {
-                            var compiler = options as C.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerSettings;
                             compiler.PreprocessorDefines.Add("_MBCS");
                         }
                         break;
@@ -221,7 +221,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this MingwCommon.ICommonCompilerOptions options,
+            this MingwCommon.ICommonCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -229,7 +229,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this MingwCommon.ICOnlyCompilerOptions options,
+            this MingwCommon.ICOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -237,7 +237,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this MingwCommon.ICxxOnlyCompilerOptions options,
+            this MingwCommon.ICxxOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -245,7 +245,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this Mingw.ICommonCompilerOptions options,
+            this Mingw.ICommonCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -253,7 +253,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this Mingw.ICOnlyCompilerOptions options,
+            this Mingw.ICOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -261,7 +261,7 @@ namespace Mingw
 
         public static void
         Convert(
-            this Mingw.ICxxOnlyCompilerOptions options,
+            this Mingw.ICxxOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -271,13 +271,13 @@ namespace Mingw
     public class CompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICCompilerOptionsWin,
-        C.ICommonCompilerOptions,
-        C.ICOnlyCompilerOptions,
-        MingwCommon.ICommonCompilerOptions,
-        MingwCommon.ICOnlyCompilerOptions,
-        Mingw.ICommonCompilerOptions,
-        Mingw.ICOnlyCompilerOptions
+        C.ICommonCompilerSettingsWin,
+        C.ICommonCompilerSettings,
+        C.ICOnlyCompilerSettings,
+        MingwCommon.ICommonCompilerSettings,
+        MingwCommon.ICOnlyCompilerSettings,
+        Mingw.ICommonCompilerSettings,
+        Mingw.ICOnlyCompilerSettings
     {
         public CompilerSettings(Bam.Core.Module module)
             : this(module, useDefaults:true)
@@ -289,10 +289,10 @@ namespace Mingw
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            (this as C.ICommonCompilerOptions).Empty();
+            (this as C.ICommonCompilerSettings).Empty();
             if (useDefaults)
             {
-                (this as C.ICommonCompilerOptions).Defaults(module);
+                (this as C.ICommonCompilerSettings).Defaults(module);
             }
 #endif
         }
@@ -302,118 +302,118 @@ namespace Mingw
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICCompilerOptionsWin).Convert(module, commandLine);
-            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.ICOnlyCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.ICOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettingsWin).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as C.ICOnlyCompilerSettings).Convert(module, commandLine);
+            (this as MingwCommon.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as MingwCommon.ICOnlyCompilerSettings).Convert(module, commandLine);
+            (this as Mingw.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as Mingw.ICOnlyCompilerSettings).Convert(module, commandLine);
         }
 
-        C.ECharacterSet? C.ICCompilerOptionsWin.CharacterSet
+        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
         {
             get;
             set;
         }
 
-        C.EBit? C.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.ELanguageStandard? C.ICOnlyCompilerOptions.LanguageStandard
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-        bool MingwCommon.ICommonCompilerOptions.MCommonCommon
+        bool MingwCommon.ICommonCompilerSettings.MCommonCommon
         {
             get;
             set;
         }
 
-        bool MingwCommon.ICOnlyCompilerOptions.MCommonCOnly
+        bool MingwCommon.ICOnlyCompilerSettings.MCommonCOnly
         {
             get;
             set;
         }
 
-        bool ICommonCompilerOptions.M48Common
+        bool ICommonCompilerSettings.M48Common
         {
             get;
             set;
         }
 
-        bool ICOnlyCompilerOptions.M48COnly
+        bool ICOnlyCompilerSettings.M48COnly
         {
             get;
             set;
@@ -423,13 +423,13 @@ namespace Mingw
     public sealed class CxxCompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICCompilerOptionsWin,
-        C.ICommonCompilerOptions,
-        C.ICxxOnlyCompilerOptions,
-        MingwCommon.ICommonCompilerOptions,
-        MingwCommon.ICxxOnlyCompilerOptions,
-        Mingw.ICommonCompilerOptions,
-        Mingw.ICxxOnlyCompilerOptions
+        C.ICommonCompilerSettingsWin,
+        C.ICommonCompilerSettings,
+        C.ICxxOnlyCompilerSettings,
+        MingwCommon.ICommonCompilerSettings,
+        MingwCommon.ICxxOnlyCompilerSettings,
+        Mingw.ICommonCompilerSettings,
+        Mingw.ICxxOnlyCompilerSettings
     {
         public CxxCompilerSettings(Bam.Core.Module module)
             : this(module, useDefaults:true)
@@ -441,12 +441,12 @@ namespace Mingw
 #if true
             this.InitializeAllInterfaces(module, true, useDefaults);
 #else
-            (this as C.ICommonCompilerOptions).Empty();
-            (this as C.ICxxOnlyCompilerOptions).Empty();
+            (this as C.ICommonCompilerSettings).Empty();
+            (this as C.ICxxOnlyCompilerSettings).Empty();
             if (useDefaults)
             {
-                (this as C.ICommonCompilerOptions).Defaults(module);
-                (this as C.ICxxOnlyCompilerOptions).Defaults(module);
+                (this as C.ICommonCompilerSettings).Defaults(module);
+                (this as C.ICxxOnlyCompilerSettings).Defaults(module);
             }
 #endif
         }
@@ -456,124 +456,124 @@ namespace Mingw
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICCompilerOptionsWin).Convert(module, commandLine);
-            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as MingwCommon.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as Mingw.ICxxOnlyCompilerOptions).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettingsWin).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as C.ICxxOnlyCompilerSettings).Convert(module, commandLine);
+            (this as MingwCommon.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as MingwCommon.ICxxOnlyCompilerSettings).Convert(module, commandLine);
+            (this as Mingw.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as Mingw.ICxxOnlyCompilerSettings).Convert(module, commandLine);
         }
 
-        C.ECharacterSet? C.ICCompilerOptionsWin.CharacterSet
+        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
         {
             get;
             set;
         }
 
-        C.EBit? C.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
         {
             get;
             set;
         }
 
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerOptions.LanguageStandard
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerOptions.StandardLibrary
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;
             set;
         }
 
-        bool MingwCommon.ICommonCompilerOptions.MCommonCommon
+        bool MingwCommon.ICommonCompilerSettings.MCommonCommon
         {
             get;
             set;
         }
 
-        bool MingwCommon.ICxxOnlyCompilerOptions.MCommonCxxOnly
+        bool MingwCommon.ICxxOnlyCompilerSettings.MCommonCxxOnly
         {
             get;
             set;
         }
 
-        bool ICommonCompilerOptions.M48Common
+        bool ICommonCompilerSettings.M48Common
         {
             get;
             set;
@@ -648,7 +648,7 @@ namespace Mingw
     {
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.ThirtyTwo;
         }
     }
@@ -665,7 +665,7 @@ namespace Mingw
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
@@ -676,7 +676,7 @@ namespace Mingw
     {
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.SixtyFour;
         }
     }

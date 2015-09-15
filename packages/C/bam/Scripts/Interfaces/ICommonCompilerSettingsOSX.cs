@@ -30,7 +30,7 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICCompilerOptionsOSX :
+    public interface ICommonCompilerSettingsOSX :
         Bam.Core.ISettingsBase
     {
         Bam.Core.Array<Bam.Core.TokenizedString> FrameworkSearchDirectories

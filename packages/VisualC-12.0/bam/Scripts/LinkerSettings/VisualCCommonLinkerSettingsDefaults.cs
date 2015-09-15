@@ -35,7 +35,7 @@ namespace VisualC
         {
             public static void
             Defaults(
-                this VisualC.ICommonLinkerOptions settings,
+                this VisualC.ICommonLinkerSettings settings,
                 Bam.Core.Module module)
             {
                 settings.NoLogo = true;

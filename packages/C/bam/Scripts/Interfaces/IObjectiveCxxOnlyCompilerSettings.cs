@@ -30,7 +30,8 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.ObjCxx.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IObjectiveCxxOnlyCompilerOptions : Bam.Core.ISettingsBase
+    public interface IObjectiveCxxOnlyCompilerSettings :
+        Bam.Core.ISettingsBase
     {
     }
 }

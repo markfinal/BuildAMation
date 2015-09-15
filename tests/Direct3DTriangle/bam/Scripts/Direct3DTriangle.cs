@@ -42,7 +42,7 @@ namespace Direct3DTriangle
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/*.cpp");
             source.PrivatePatch(settings =>
                 {
-                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
@@ -54,7 +54,7 @@ namespace Direct3DTriangle
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerSettings;
                     linker.Libraries.Add("USER32.lib");
                     linker.Libraries.Add("d3d9.lib");
                     linker.Libraries.Add("dxerr.lib");

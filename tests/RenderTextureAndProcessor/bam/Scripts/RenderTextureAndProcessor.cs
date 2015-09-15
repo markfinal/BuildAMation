@@ -46,10 +46,10 @@ namespace RenderTextureAndProcessor
             source.AddFiles("$(packagedir)/source/rendertexture/*.cpp");
             source.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/source/common", this));
 
-                var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+                var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             });
 
@@ -62,7 +62,7 @@ namespace RenderTextureAndProcessor
 
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.ICommonLinkerOptions;
+                var linker = settings as C.ICommonLinkerSettings;
                 if (this.Linker is VisualC.LinkerBase)
                 {
                     linker.Libraries.Add("WS2_32.lib");
@@ -96,10 +96,10 @@ namespace RenderTextureAndProcessor
             source.AddFiles("$(packagedir)/source/textureprocessor/*.cpp");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/source/common", this));
 
-                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
@@ -111,7 +111,7 @@ namespace RenderTextureAndProcessor
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerSettings;
                     if (this.Linker is VisualC.LinkerBase)
                     {
                         linker.Libraries.Add("WS2_32.lib");

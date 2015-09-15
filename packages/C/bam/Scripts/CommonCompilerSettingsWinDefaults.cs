@@ -33,7 +33,7 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICCompilerOptionsWin settings,
+            this C.ICommonCompilerSettingsWin settings,
             Bam.Core.Module module)
         {
             settings.CharacterSet = ECharacterSet.NotSet;
@@ -41,32 +41,32 @@ namespace C.DefaultSettings
 
         public static void
         Empty(
-            this C.ICCompilerOptionsWin settings)
+            this C.ICommonCompilerSettingsWin settings)
         {
         }
 
         public static void
         SharedSettings(
-            this C.ICCompilerOptionsWin shared,
-            C.ICCompilerOptionsWin lhs,
-            C.ICCompilerOptionsWin rhs)
+            this C.ICommonCompilerSettingsWin shared,
+            C.ICommonCompilerSettingsWin lhs,
+            C.ICommonCompilerSettingsWin rhs)
         {
             shared.CharacterSet = (lhs.CharacterSet == rhs.CharacterSet) ? lhs.CharacterSet : null;
         }
 
         public static void
         Delta(
-            this C.ICCompilerOptionsWin delta,
-            C.ICCompilerOptionsWin lhs,
-            C.ICCompilerOptionsWin rhs)
+            this C.ICommonCompilerSettingsWin delta,
+            C.ICommonCompilerSettingsWin lhs,
+            C.ICommonCompilerSettingsWin rhs)
         {
             delta.CharacterSet = (lhs.CharacterSet != rhs.CharacterSet) ? lhs.CharacterSet : null;
         }
 
         public static void
         Clone(
-            this C.ICCompilerOptionsWin settings,
-            C.ICCompilerOptionsWin other)
+            this C.ICommonCompilerSettingsWin settings,
+            C.ICommonCompilerSettingsWin other)
         {
             settings.CharacterSet = other.CharacterSet;
         }

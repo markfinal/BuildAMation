@@ -35,9 +35,9 @@ namespace VisualC
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
-        C.ILinkerOptionsWin,
-        C.ICommonLinkerOptions,
-        ICommonLinkerOptions
+        C.ILinkerSettingsWin,
+        C.ICommonLinkerSettings,
+        ICommonLinkerSettings
     {
         public LinkerSettings(
             Bam.Core.Module module)
@@ -50,9 +50,9 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ILinkerOptionsWin).Convert(module, commandLine);
-            (this as C.ICommonLinkerOptions).Convert(module, commandLine);
-            (this as ICommonLinkerOptions).Convert(module, commandLine);
+            (this as C.ILinkerSettingsWin).Convert(module, commandLine);
+            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
+            (this as ICommonLinkerSettings).Convert(module, commandLine);
         }
 
         void
@@ -61,42 +61,42 @@ namespace VisualC
             VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.ILinkerOptionsWin).Convert(module, settings, condition);
-            (this as C.ICommonLinkerOptions).Convert(module, settings, condition);
-            (this as ICommonLinkerOptions).Convert(module, settings, condition);
+            (this as C.ILinkerSettingsWin).Convert(module, settings, condition);
+            (this as C.ICommonLinkerSettings).Convert(module, settings, condition);
+            (this as ICommonLinkerSettings).Convert(module, settings, condition);
         }
 
-        C.ESubsystem? C.ILinkerOptionsWin.SubSystem
+        C.ESubsystem? C.ILinkerSettingsWin.SubSystem
         {
             get;
             set;
         }
 
-        C.ELinkerOutput C.ICommonLinkerOptions.OutputType
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerOptions.LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonLinkerOptions.Libraries
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
             set;
         }
 
-        bool? C.ICommonLinkerOptions.DebugSymbols
+        bool? C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? ICommonLinkerOptions.NoLogo
+        bool? ICommonLinkerSettings.NoLogo
         {
             get;
             set;

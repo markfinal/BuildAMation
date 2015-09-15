@@ -30,10 +30,10 @@
 namespace C
 {
     public sealed class VSSolutionLibrarian :
-        ILibrarianPolicy
+        IArchivingPolicy
     {
         void
-        ILibrarianPolicy.Archive(
+        IArchivingPolicy.Archive(
             StaticLibrary sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString libraryPath,

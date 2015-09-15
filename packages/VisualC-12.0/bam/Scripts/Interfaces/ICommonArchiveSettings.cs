@@ -30,7 +30,7 @@
 namespace VisualC
 {
     [Bam.Core.SettingsExtensions(typeof(VisualC.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
+    public interface ICommonArchiverSettings : Bam.Core.ISettingsBase
     {
         bool? NoLogo
         {

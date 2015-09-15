@@ -41,7 +41,7 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     if (null != compiler)
                     {
                         compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));

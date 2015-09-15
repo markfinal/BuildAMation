@@ -56,14 +56,14 @@ namespace Qt5Test1
                 // second item in Tuple is the C++ compilation of that generated source
                 myObjectMocTuple.Item2.PrivatePatch(settings =>
                     {
-                        var compiler = settings as C.ICommonCompilerOptions;
+                        var compiler = settings as C.ICommonCompilerSettings;
                         compiler.PreprocessorDefines.Add("COMPILING_GENERATED_MOC");
                     });
             }
 
             source.PrivatePatch(settings =>
                 {
-                    var gccCompiler = settings as GccCommon.ICommonCompilerOptions;
+                    var gccCompiler = settings as GccCommon.ICommonCompilerSettings;
                     if (null != gccCompiler)
                     {
                         gccCompiler.PositionIndependentCode = true;
@@ -72,7 +72,7 @@ namespace Qt5Test1
 
             this.PrivatePatch(settings =>
             {
-                var gccLinker = settings as GccCommon.ICommonLinkerOptions;
+                var gccLinker = settings as GccCommon.ICommonLinkerSettings;
                 if (gccLinker != null)
                 {
                     gccLinker.CanUseOrigin = true;

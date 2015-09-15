@@ -33,7 +33,7 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICommonLinkerOptions settings,
+            this C.ICommonLinkerSettings settings,
             Bam.Core.Module module)
         {
             settings.OutputType = ELinkerOutput.Executable;
@@ -44,7 +44,7 @@ namespace C.DefaultSettings
 
         public static void
         Defaults(
-            this C.ICxxOnlyLinkerOptions settings,
+            this C.ICxxOnlyLinkerSettings settings,
             Bam.Core.Module module)
         {
             settings.StandardLibrary = C.Cxx.EStandardLibrary.NotSet;

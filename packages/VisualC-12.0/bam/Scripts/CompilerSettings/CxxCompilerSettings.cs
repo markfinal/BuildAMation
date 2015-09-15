@@ -33,10 +33,10 @@ namespace VisualC
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
-        C.ICCompilerOptionsWin,
-        C.ICommonCompilerOptions,
-        C.ICxxOnlyCompilerOptions,
-        VisualCCommon.ICommonCompilerOptions
+        C.ICommonCompilerSettingsWin,
+        C.ICommonCompilerSettings,
+        C.ICxxOnlyCompilerSettings,
+        VisualCCommon.ICommonCompilerSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
@@ -57,10 +57,10 @@ namespace VisualC
             Bam.Core.StringArray commandLine)
         {
             // TODO: iterate in reflection, in a well defined static class
-            (this as C.ICCompilerOptionsWin).Convert(module, commandLine);
-            (this as C.ICommonCompilerOptions).Convert(module, commandLine);
-            (this as C.ICxxOnlyCompilerOptions).Convert(module, commandLine);
-            (this as VisualCCommon.ICommonCompilerOptions).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettingsWin).Convert(module, commandLine);
+            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
+            (this as C.ICxxOnlyCompilerSettings).Convert(module, commandLine);
+            (this as VisualCCommon.ICommonCompilerSettings).Convert(module, commandLine);
         }
 
         void
@@ -69,109 +69,109 @@ namespace VisualC
             VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.ICCompilerOptionsWin).Convert(module, settings, condition);
-            (this as C.ICommonCompilerOptions).Convert(module, settings, condition);
-            (this as C.ICxxOnlyCompilerOptions).Convert(module, settings, condition);
-            (this as VisualCCommon.ICommonCompilerOptions).Convert(module, settings, condition);
+            (this as C.ICommonCompilerSettingsWin).Convert(module, settings, condition);
+            (this as C.ICommonCompilerSettings).Convert(module, settings, condition);
+            (this as C.ICxxOnlyCompilerSettings).Convert(module, settings, condition);
+            (this as VisualCCommon.ICommonCompilerSettings).Convert(module, settings, condition);
         }
 
-        C.ECharacterSet? C.ICCompilerOptionsWin.CharacterSet
+        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
         {
             get;
             set;
         }
 
-        C.EBit? C.ICommonCompilerOptions.Bits
+        C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerOptions.PreprocessorDefines
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.IncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerOptions.SystemIncludePaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-        C.ECompilerOutput? C.ICommonCompilerOptions.OutputType
+        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.DebugSymbols
+        bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.WarningsAsErrors
+        bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-        C.EOptimization? C.ICommonCompilerOptions.Optimization
+        C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-        C.ETargetLanguage? C.ICommonCompilerOptions.TargetLanguage
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-        bool? C.ICommonCompilerOptions.OmitFramePointer
+        bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.DisableWarnings
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonCompilerOptions.PreprocessorUndefines
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerOptions.ExceptionHandler
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
         {
             get;
             set;
         }
 
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerOptions.LanguageStandard
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerOptions.StandardLibrary
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;
             set;
         }
 
-        bool? VisualCCommon.ICommonCompilerOptions.NoLogo
+        bool? VisualCCommon.ICommonCompilerSettings.NoLogo
         {
             get;
             set;

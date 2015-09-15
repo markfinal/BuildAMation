@@ -30,7 +30,7 @@
 namespace GccCommon
 {
     [Bam.Core.SettingsExtensions(typeof(GccCommon.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerOptions : Bam.Core.ISettingsBase
+    public interface ICommonCompilerSettings : Bam.Core.ISettingsBase
     {
         bool? PositionIndependentCode
         {

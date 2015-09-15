@@ -91,7 +91,7 @@ namespace C
             DefaultToolChain = Bam.Core.CommandLineProcessor.Evaluate(new DefaultToolchainCommand());
             FindTools<RegisterCCompilerAttribute, CompilerTool>(C_Compilers);
             FindTools<RegisterCxxCompilerAttribute, CompilerTool>(Cxx_Compilers);
-            FindTools<RegisterArchiverAttribute, LibrarianTool>(Archivers);
+            FindTools<RegisterLibrarianAttribute, LibrarianTool>(Archivers);
             FindTools<RegisterCLinkerAttribute, LinkerTool>(C_Linkers);
             FindTools<RegisterCxxLinkerAttribute, LinkerTool>(Cxx_Linkers);
             FindTools<RegisterObjectiveCCompilerAttribute, CompilerTool>(ObjectiveC_Compilers);

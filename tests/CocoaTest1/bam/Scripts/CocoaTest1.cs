@@ -55,7 +55,7 @@ namespace CocoaTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.ILinkerOptionsOSX;
+                    var linker = settings as C.ILinkerSettingsOSX;
                     if (null != linker)
                     {
                         linker.Frameworks.Add(Bam.Core.TokenizedString.Create("Cocoa", null, verbatim:true));

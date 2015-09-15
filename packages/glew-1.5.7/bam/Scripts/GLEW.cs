@@ -35,7 +35,7 @@ namespace glew
     {
         private Bam.Core.Module.PublicPatchDelegate exported = (settings, appliedTo) =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 if (null != compiler)
                 {
                     compiler.PreprocessorDefines.Add("GLEW_STATIC");

@@ -75,13 +75,13 @@ namespace DirectXSDK
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     if (null != compiler)
                     {
                         compiler.IncludePaths.Add(this.Macros["IncludePath"]);
                     }
 
-                    var linker = settings as C.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerSettings;
                     if (null != linker)
                     {
                         if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)

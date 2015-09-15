@@ -49,14 +49,14 @@ namespace WindowsSDK
             this.Macros.Add("InstallPath", installPath);
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compilation = settings as C.ICommonCompilerOptions;
+                var compilation = settings as C.ICommonCompilerSettings;
                 if (null != compilation)
                 {
                     compilation.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Include\um", this));
                     compilation.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Include\shared", this));
                 }
 
-                var linking = settings as C.ICommonLinkerOptions;
+                var linking = settings as C.ICommonLinkerSettings;
                 if (null != linking)
                 {
                     if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)

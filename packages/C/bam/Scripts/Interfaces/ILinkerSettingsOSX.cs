@@ -30,7 +30,8 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerOptionsOSX : Bam.Core.ISettingsBase
+    public interface ILinkerSettingsOSX :
+        Bam.Core.ISettingsBase
     {
         Bam.Core.Array<Bam.Core.TokenizedString> Frameworks
         {

@@ -31,7 +31,7 @@ namespace VisualC.DefaultSettings
 {
     static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this ICommonArchiverOptions settings, Bam.Core.Module module)
+        public static void Defaults(this ICommonArchiverSettings settings, Bam.Core.Module module)
         {
             settings.NoLogo = true;
         }

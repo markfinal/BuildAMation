@@ -31,10 +31,10 @@ using Bam.Core;
 namespace C
 {
     public sealed class NativeLinker :
-        ILinkerPolicy
+        ILinkingPolicy
     {
         void
-        ILinkerPolicy.Link(
+        ILinkingPolicy.Link(
             ConsoleApplication sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString executablePath,
@@ -46,7 +46,7 @@ namespace C
             // any libraries added prior to here, need to be moved to the end
             // they are external dependencies, and thus all built modules (to be added now) may have
             // a dependency on them (and not vice versa)
-            var linker = sender.Settings as C.ICommonLinkerOptions;
+            var linker = sender.Settings as C.ICommonLinkerSettings;
             var externalLibs = linker.Libraries;
             linker.Libraries = new Bam.Core.StringArray();
             foreach (var library in libraries)

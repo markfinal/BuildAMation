@@ -49,7 +49,7 @@ namespace DefaultSettings
     {
         public static void
         Convert(
-            this C.ICommonLinkerOptions options,
+            this C.ICommonLinkerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -93,7 +93,7 @@ namespace DefaultSettings
     public sealed class LinkerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerOptions,
+        C.ICommonLinkerSettings,
         ILinkerOptions
     {
         public LinkerSettings(Bam.Core.Module module)
@@ -101,7 +101,7 @@ namespace DefaultSettings
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
-            (this as C.ICommonLinkerOptions).Defaults(module);
+            (this as C.ICommonLinkerSettings).Defaults(module);
             (this as ILinkerOptions).Defaults(module);
 #endif
         }
@@ -111,29 +111,29 @@ namespace DefaultSettings
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonLinkerOptions).Convert(module, commandLine);
+            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
             (this as ILinkerOptions).Convert(module, commandLine);
         }
 
-        C.ELinkerOutput C.ICommonLinkerOptions.OutputType
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerOptions.LibraryPaths
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray C.ICommonLinkerOptions.Libraries
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
             set;
         }
 
-        bool? C.ICommonLinkerOptions.DebugSymbols
+        bool? C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
@@ -226,7 +226,7 @@ namespace DefaultSettings
             }
             var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = GetLPrefixLibraryName(fullLibraryPath);
-            var linker = executable.Settings as C.ICommonLinkerOptions;
+            var linker = executable.Settings as C.ICommonLinkerSettings;
             linker.Libraries.AddUnique(libFilename);
             linker.LibraryPaths.AddUnique(dir);
         }

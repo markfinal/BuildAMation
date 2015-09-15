@@ -30,7 +30,8 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.ObjC.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IObjectiveCOnlyCompilerOptions : Bam.Core.ISettingsBase
+    public interface IObjectiveCOnlyCompilerSettings :
+        Bam.Core.ISettingsBase
     {
         string ConstantStringClass
         {

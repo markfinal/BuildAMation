@@ -33,7 +33,7 @@ namespace VisualC
     {
         public static void
         Convert(
-            this C.ICCompilerOptionsWin options,
+            this C.ICommonCompilerSettingsWin options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -46,7 +46,7 @@ namespace VisualC
 
                     case C.ECharacterSet.Unicode:
                         {
-                            var compiler = options as C.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerSettings;
                             compiler.PreprocessorDefines.Add("UNICODE");
                             compiler.PreprocessorDefines.Add("_UNICODE");
                         }
@@ -54,7 +54,7 @@ namespace VisualC
 
                     case C.ECharacterSet.MultiByte:
                         {
-                            var compiler = options as C.ICommonCompilerOptions;
+                            var compiler = options as C.ICommonCompilerSettings;
                             compiler.PreprocessorDefines.Add("_MBCS");
                         }
                         break;

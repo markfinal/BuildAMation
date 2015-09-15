@@ -53,7 +53,7 @@ namespace Test8
 
                 this.PrivatePatch(settings =>
                     {
-                        var linker = settings as C.ICommonLinkerOptions;
+                        var linker = settings as C.ICommonLinkerSettings;
                         linker.Libraries.Add("dbghelp.lib");
                     });
             }

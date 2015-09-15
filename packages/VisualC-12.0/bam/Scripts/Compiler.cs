@@ -47,7 +47,7 @@ namespace VisualC
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compilation = settings as C.ICommonCompilerOptions;
+                var compilation = settings as C.ICommonCompilerSettings;
                 compilation.SystemIncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
             });
         }
@@ -96,7 +96,7 @@ namespace VisualC
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.ThirtyTwo;
         }
     }
@@ -113,7 +113,7 @@ namespace VisualC
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
@@ -132,7 +132,7 @@ namespace VisualC
 
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.SixtyFour;
         }
     }
@@ -149,7 +149,7 @@ namespace VisualC
         protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.ICommonCompilerOptions;
+            var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }

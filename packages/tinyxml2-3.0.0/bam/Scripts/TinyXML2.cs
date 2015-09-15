@@ -35,7 +35,7 @@ namespace TinyXML2
     {
         private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
         {
-            var compiler = settings as C.ICommonCompilerOptions;
+            var compiler = settings as C.ICommonCompilerSettings;
             if (null != compiler)
             {
                 compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)", appliedTo));

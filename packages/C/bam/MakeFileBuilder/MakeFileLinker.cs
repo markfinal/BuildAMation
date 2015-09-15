@@ -31,7 +31,7 @@ using Bam.Core;
 namespace C
 {
     public sealed class MakeFileLinker :
-        ILinkerPolicy
+        ILinkingPolicy
     {
         private static string
         GetLibraryPath(Bam.Core.Module module)
@@ -73,7 +73,7 @@ namespace C
         }
 
         void
-        ILinkerPolicy.Link(
+        ILinkingPolicy.Link(
             ConsoleApplication sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString executablePath,
@@ -83,7 +83,7 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             // TODO: modify to use ProcessLibraryDependency
-            var linker = sender.Settings as C.ICommonLinkerOptions;
+            var linker = sender.Settings as C.ICommonLinkerSettings;
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             foreach (var library in libraries)
             {

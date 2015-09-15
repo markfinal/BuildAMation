@@ -29,7 +29,7 @@
 #endregion // License
 namespace C
 {
-    public interface ILinkerPolicy
+    public interface ILinkingPolicy
     {
         void
         Link(

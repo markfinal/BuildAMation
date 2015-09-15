@@ -182,13 +182,13 @@ namespace QtCommon
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var osxCompiler = settings as C.ICCompilerOptionsOSX;
+                var osxCompiler = settings as C.ICommonCompilerSettingsOSX;
                 if (null != osxCompiler)
                 {
                     osxCompiler.FrameworkSearchDirectories.AddUnique(this.Macros["QtFrameworkPath"]);
                 }
 
-                var osxLinker = settings as C.ILinkerOptionsOSX;
+                var osxLinker = settings as C.ILinkerSettingsOSX;
                 if (null != osxLinker)
                 {
                     osxLinker.Frameworks.AddUnique(Bam.Core.TokenizedString.Create("$(QtFrameworkPath)/Qt$(QtModuleName).framework", this));
@@ -246,13 +246,13 @@ namespace QtCommon
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compiler = settings as C.ICommonCompilerOptions;
+                var compiler = settings as C.ICommonCompilerSettings;
                 if (null != compiler)
                 {
                     compiler.IncludePaths.AddUnique(this.Macros["QtIncludePath"]);
                 }
 
-                var linker = settings as C.ICommonLinkerOptions;
+                var linker = settings as C.ICommonLinkerSettings;
                 if (null != linker)
                 {
                     linker.LibraryPaths.AddUnique(this.Macros["QtLibraryPath"]);

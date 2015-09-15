@@ -33,7 +33,7 @@ namespace VisualC
     {
         public static void
         Convert(
-            this ICommonArchiverOptions options,
+            this ICommonArchiverSettings options,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)

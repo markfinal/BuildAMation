@@ -29,7 +29,7 @@
 #endregion // License
 namespace C
 {
-    public interface ILibrarianPolicy
+    public interface IArchivingPolicy
     {
         void
         Archive(

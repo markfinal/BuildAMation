@@ -45,14 +45,14 @@ namespace Test6
             var source = this.CreateCSourceContainer();
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
                 });
 
             var main = source.AddFile("$(packagedir)/source/main.c");
             main.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     compiler.PreprocessorDefines.Add("MAIN_C");
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include/platform", this));
                 });

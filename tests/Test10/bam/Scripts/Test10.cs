@@ -99,7 +99,7 @@ namespace Test10
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.ICommonLinkerOptions;
+                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
                     if (gccLinker != null)
                     {
                         gccLinker.CanUseOrigin = true;

@@ -29,8 +29,8 @@
 #endregion // License
 namespace VisualC
 {
-    [C.RegisterArchiver("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    [C.RegisterArchiver("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
+    [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public sealed class Librarian :
         C.LibrarianTool
     {

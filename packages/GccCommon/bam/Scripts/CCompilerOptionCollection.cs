@@ -34,13 +34,13 @@ namespace GccCommon
         public static partial class DefaultSettingsExtensions
         {
             public static void
-            Defaults(this GccCommon.ICommonCompilerOptions settings, Bam.Core.Module module)
+            Defaults(this GccCommon.ICommonCompilerSettings settings, Bam.Core.Module module)
             {
                 settings.PositionIndependentCode = false;
             }
 
             public static void
-            Defaults(this GccCommon.ICommonLinkerOptions settings, Bam.Core.Module module)
+            Defaults(this GccCommon.ICommonLinkerSettings settings, Bam.Core.Module module)
             {
                 settings.CanUseOrigin = false;
                 settings.RPath = new Bam.Core.StringArray();
@@ -53,7 +53,7 @@ namespace GccCommon
     {
         public static void
         Convert(
-            this GccCommon.ICommonCompilerOptions options,
+            this GccCommon.ICommonCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -68,7 +68,7 @@ namespace GccCommon
 
         public static void
         Convert(
-            this GccCommon.ICommonLinkerOptions options,
+            this GccCommon.ICommonLinkerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {

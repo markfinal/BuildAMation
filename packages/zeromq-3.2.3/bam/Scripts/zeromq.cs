@@ -128,10 +128,10 @@ namespace zeromq
 
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     compiler.PreprocessorDefines.Add("DLL_EXPORT");
 
-                    var cxxCompiler = settings as C.ICxxOnlyCompilerOptions;
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -149,7 +149,7 @@ namespace zeromq
 
                 source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(config)", this));
                 });
 
@@ -157,7 +157,7 @@ namespace zeromq
                 {
                     var ipc_listener = source.Children.Where(item => (item as C.ObjectFile).InputPath.Parse().EndsWith("ipc_listener.cpp"));
                     ipc_listener.ElementAt(0).PrivatePatch(settings => {
-                        var compiler = settings as C.ICommonCompilerOptions;
+                        var compiler = settings as C.ICommonCompilerSettings;
                         compiler.DisableWarnings.Add("deprecated-declarations");
                     });
                 }
@@ -171,7 +171,7 @@ namespace zeromq
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerOptions;
+                    var compiler = settings as C.ICommonCompilerSettings;
                     if (null != compiler)
                     {
                         compiler.IncludePaths.Add(TokenizedString.Create("$(packagedir)/include", this));
@@ -180,7 +180,7 @@ namespace zeromq
 
             this.PrivatePatch(settings =>
                 {
-                    var linker = settings as C.ICommonLinkerOptions;
+                    var linker = settings as C.ICommonLinkerSettings;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
                         if (this.Linker is VisualC.LinkerBase)

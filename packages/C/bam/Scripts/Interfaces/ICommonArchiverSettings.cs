@@ -30,7 +30,8 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverOptions : Bam.Core.ISettingsBase
+    public interface ICommonArchiverSettings :
+        Bam.Core.ISettingsBase
     {
         C.EArchiverOutput OutputType
         {

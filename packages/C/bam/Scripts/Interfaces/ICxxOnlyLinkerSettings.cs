@@ -30,7 +30,7 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICxxOnlyLinkerOptions :
+    public interface ICxxOnlyLinkerSettings :
         Bam.Core.ISettingsBase
     {
         C.Cxx.EStandardLibrary? StandardLibrary

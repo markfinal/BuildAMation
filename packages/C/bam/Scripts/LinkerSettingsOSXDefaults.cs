@@ -33,7 +33,7 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ILinkerOptionsOSX settings,
+            this C.ILinkerSettingsOSX settings,
             Bam.Core.Module module)
         {
             settings.Frameworks = new Bam.Core.Array<Bam.Core.TokenizedString>();
