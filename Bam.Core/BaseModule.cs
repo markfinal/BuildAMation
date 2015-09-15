@@ -31,24 +31,6 @@ namespace Bam.Core
 {
     using System.Linq;
 
-    public interface IModuleExecution
-    {
-        void
-        Execute(
-            ExecutionContext context);
-
-        ExecuteReasoning ReasonToExecute
-        {
-            get;
-        }
-
-        System.Threading.Tasks.Task ExecutionTask
-        {
-            get;
-            set;
-        }
-    }
-
     /// <summary>
     /// Abstract concept of a module, the base class for all buildables in BAM
     /// </summary>

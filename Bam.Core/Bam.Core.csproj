@@ -72,6 +72,7 @@
     <Compile Include="Interfaces\IChildModule.cs" />
     <Compile Include="Interfaces\ICommandLineArgument.cs" />
     <Compile Include="Interfaces\IInputPath.cs" />
+    <Compile Include="Interfaces\IModuleExecution.cs" />
     <Compile Include="Interfaces\IModuleGroup.cs" />
     <Compile Include="Interfaces\IPackageMetaData.cs" />
     <Compile Include="Interfaces\ISetOperations.cs" />
