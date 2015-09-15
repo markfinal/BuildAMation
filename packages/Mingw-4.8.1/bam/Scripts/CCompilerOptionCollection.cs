@@ -639,14 +639,18 @@ namespace Mingw
             }
         }
 
-        protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
+        protected abstract void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings);
     }
 
     [C.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Compiler32 :
         CompilerBase
     {
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.ThirtyTwo;
@@ -662,7 +666,9 @@ namespace Mingw
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
             var cSettings = settings as C.ICommonCompilerSettings;
@@ -674,7 +680,9 @@ namespace Mingw
     public sealed class Compiler64 :
         CompilerBase
     {
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.SixtyFour;

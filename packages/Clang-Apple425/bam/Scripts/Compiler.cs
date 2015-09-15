@@ -86,7 +86,9 @@ namespace Clang
             }
         }
 
-        protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
+        protected abstract void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings);
     }
 
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]

@@ -82,7 +82,9 @@ namespace VisualC
             }
         }
 
-        protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
+        protected abstract void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings);
     }
 
     [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
@@ -94,7 +96,9 @@ namespace VisualC
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\cl.exe", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.ThirtyTwo;
@@ -110,7 +114,9 @@ namespace VisualC
         {
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
             var cSettings = settings as C.ICommonCompilerSettings;
@@ -130,7 +136,9 @@ namespace VisualC
             this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.Bits = C.EBit.SixtyFour;
@@ -146,7 +154,9 @@ namespace VisualC
         {
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
             var cSettings = settings as C.ICommonCompilerSettings;

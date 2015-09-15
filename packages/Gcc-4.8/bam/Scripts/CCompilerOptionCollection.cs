@@ -1258,7 +1258,9 @@ namespace Gcc
             gccCompiler.PositionIndependentCode = true;
         }
 
-        protected abstract void OverrideDefaultSettings(Bam.Core.Settings settings);
+        protected abstract void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings);
     }
 
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -1271,7 +1273,9 @@ namespace Gcc
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc-4.8", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.C;
@@ -1288,7 +1292,9 @@ namespace Gcc
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++-4.8", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
@@ -1305,7 +1311,9 @@ namespace Gcc
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc-4.8", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var compiler = settings as C.ICommonCompilerSettings;
             compiler.TargetLanguage = C.ETargetLanguage.ObjectiveC;
@@ -1324,7 +1332,9 @@ namespace Gcc
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++-4.8", this));
         }
 
-        protected override void OverrideDefaultSettings(Bam.Core.Settings settings)
+        protected override void
+        OverrideDefaultSettings(
+            Bam.Core.Settings settings)
         {
             var cSettings = settings as C.ICommonCompilerSettings;
             cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
