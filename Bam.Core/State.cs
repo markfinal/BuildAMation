@@ -32,30 +32,6 @@ namespace Bam.Core
     using System.Linq;
 
     /// <summary>
-    /// Encapsulation of all things needed to configure a build
-    /// </summary>
-    sealed public class Environment
-    {
-        public Environment()
-        {
-            this.Configuration = EConfiguration.Invalid;
-            this.Platform = State.Platform;
-        }
-
-        public EConfiguration Configuration
-        {
-            get;
-            set;
-        }
-
-        public EPlatform Platform
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
     /// Utility functions for dealing with execution policies
     /// </summary>
     public static class ExecutionPolicyUtilities<T> where T: class

@@ -29,8 +29,6 @@
 #endregion // License
 namespace Bam.Core
 {
-    using System.Linq;
-
     /// <summary>
     /// Container of key-values pairs representing macro replacement in strings (usually paths)
     /// </summary>

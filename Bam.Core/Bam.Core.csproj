@@ -67,6 +67,7 @@
     <Compile Include="Enumerations\EPlatform.cs" />
     <Compile Include="Enumerations\ETimingProfiles.cs" />
     <Compile Include="Enumerations\EVerboseLevel.cs" />
+    <Compile Include="Environment.cs" />
     <Compile Include="Exception.cs" />
     <Compile Include="ExecuteReasoning.cs" />
     <Compile Include="FileKey.cs" />
