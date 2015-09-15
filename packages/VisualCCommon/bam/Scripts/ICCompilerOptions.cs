@@ -75,24 +75,4 @@ namespace DefaultSettings
             set;
         }
     }
-
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICOnlyCompilerOptions : Bam.Core.ISettingsBase
-    {
-        int VCCommonCOnly
-        {
-            get;
-            set;
-        }
-    }
-
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICxxOnlyCompilerOptions : Bam.Core.ISettingsBase
-    {
-        string VCCommonCxxOnly
-        {
-            get;
-            set;
-        }
-    }
 }
