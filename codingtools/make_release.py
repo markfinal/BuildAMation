@@ -106,7 +106,7 @@ def MakeDistribution(version):
         tar.add(os.path.join(bamDir, "License.md"))
         tar.add(os.path.join(bamDir, "packages"))
         tar.add(os.path.join(bamDir, "tests"))
-    print >>sys.stdout, "Finished writing tar file %s", tarPath
+    print >>sys.stdout, "Finished writing tar file %s" % tarPath
     sys.stdout.flush()
 
 
