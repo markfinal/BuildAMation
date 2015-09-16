@@ -27,16 +27,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class NativeImplementation
     {
-        bool? PositionIndependentCode
+        public static void
+        Convert(
+            this GccCommon.ICommonLinkerSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
+            if (null != options.CanUseOrigin)
+            {
+                if (true == options.CanUseOrigin)
+                {
+                    commandLine.Add("-Wl,-z,origin");
+                }
+            }
+            foreach (var rpath in options.RPath)
+            {
+                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
+            }
+            foreach (var rpath in options.RPathLink)
+            {
+                commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath));
+            }
         }
     }
 }

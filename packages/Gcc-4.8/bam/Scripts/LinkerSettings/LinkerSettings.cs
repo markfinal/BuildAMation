@@ -27,13 +27,66 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public class LinkerSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonLinkerSettings,
+        GccCommon.ICommonLinkerSettings
     {
-        bool? PositionIndependentCode
+        public LinkerSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
+            (this as GccCommon.ICommonLinkerSettings).Convert(module, commandLine);
+        }
+
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool? C.ICommonLinkerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        bool? GccCommon.ICommonLinkerSettings.CanUseOrigin
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray GccCommon.ICommonLinkerSettings.RPath
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray GccCommon.ICommonLinkerSettings.RPathLink
         {
             get;
             set;

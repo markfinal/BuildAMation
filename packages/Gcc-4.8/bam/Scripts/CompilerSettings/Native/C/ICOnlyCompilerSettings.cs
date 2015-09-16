@@ -27,65 +27,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    namespace DefaultSettings
-    {
-        public static partial class DefaultSettingsExtensions
-        {
-            public static void
-            Defaults(this GccCommon.ICommonCompilerSettings settings, Bam.Core.Module module)
-            {
-                settings.PositionIndependentCode = false;
-            }
-
-            public static void
-            Defaults(this GccCommon.ICommonLinkerSettings settings, Bam.Core.Module module)
-            {
-                settings.CanUseOrigin = false;
-                settings.RPath = new Bam.Core.StringArray();
-                settings.RPathLink = new Bam.Core.StringArray();
-            }
-        }
-    }
-
     public static partial class NativeImplementation
     {
         public static void
         Convert(
-            this GccCommon.ICommonCompilerSettings options,
+            this C.ICOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.PositionIndependentCode)
+            if (null != options.LanguageStandard)
             {
-                if (true == options.PositionIndependentCode)
+                switch (options.LanguageStandard)
                 {
-                    commandLine.Add("-fPIC");
-                }
-            }
-        }
+                    case C.ELanguageStandard.C89:
+                        commandLine.Add("-std=c89");
+                        break;
 
-        public static void
-        Convert(
-            this GccCommon.ICommonLinkerSettings options,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            if (null != options.CanUseOrigin)
-            {
-                if (true == options.CanUseOrigin)
-                {
-                    commandLine.Add("-Wl,-z,origin");
+                    case C.ELanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard, '{0}'", options.LanguageStandard.ToString());
                 }
-            }
-            foreach (var rpath in options.RPath)
-            {
-                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
-            }
-            foreach (var rpath in options.RPathLink)
-            {
-                commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath));
             }
         }
     }

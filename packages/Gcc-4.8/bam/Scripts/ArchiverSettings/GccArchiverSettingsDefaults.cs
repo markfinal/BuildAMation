@@ -27,20 +27,18 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc.DefaultSettings
 {
-    public interface IArchiverOptions
+    public static partial class DefaultSettingsExtensions
     {
-        GccCommon.EArchiverCommand Command
+        public static void
+        Defaults(
+            this IArchiverSettings settings,
+            Bam.Core.Module module)
         {
-            get;
-            set;
-        }
-
-        bool DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
+            settings.Ranlib = true;
+            settings.DoNotWarnIfLibraryCreated = true;
+            settings.Command = GccCommon.EArchiverCommand.Replace;
         }
     }
 }

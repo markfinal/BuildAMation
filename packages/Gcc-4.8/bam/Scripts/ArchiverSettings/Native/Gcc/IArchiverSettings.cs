@@ -27,16 +27,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class NativeImplementation
     {
-        bool? PositionIndependentCode
+        public static void
+        Convert(
+            this IArchiverSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
+            if (options.Ranlib)
+            {
+                commandLine.Add("-s");
+            }
+            if (options.DoNotWarnIfLibraryCreated)
+            {
+                commandLine.Add("-c");
+            }
+            switch (options.Command)
+            {
+                case GccCommon.EArchiverCommand.Replace:
+                    commandLine.Add("-r");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("No such archiver command");
+            }
         }
     }
 }

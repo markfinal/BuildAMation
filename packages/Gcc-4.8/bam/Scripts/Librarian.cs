@@ -27,16 +27,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
+    [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
+    public sealed class Librarian :
+        C.LibrarianTool
     {
-        bool? PositionIndependentCode
+        public Librarian()
         {
-            get;
-            set;
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("libprefix", "lib");
+            this.Macros.Add("libext", ".a");
+            this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.Create("$(InstallPath)/ar", this));
+        }
+
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            var settings = new ArchiverSettings(module);
+            return settings;
+        }
+
+        public override Bam.Core.TokenizedString Executable
+        {
+            get
+            {
+                return this.Macros["LibrarianPath"];
+            }
         }
     }
 }

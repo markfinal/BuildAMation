@@ -27,16 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc.DefaultSettings
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class DefaultSettingsExtensions
     {
-        bool? PositionIndependentCode
+        public static void
+        Defaults(
+            this GccCommon.ICommonCompilerSettings settings,
+            Bam.Core.Module module)
         {
-            get;
-            set;
+            settings.PositionIndependentCode = false;
         }
     }
 }

@@ -27,16 +27,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static class Configure
     {
-        bool? PositionIndependentCode
+        static Configure()
+        {
+            InstallPath = Bam.Core.TokenizedString.Create(@"/usr/bin", null);
+        }
+
+        public static Bam.Core.TokenizedString InstallPath
         {
             get;
-            set;
+            private set;
         }
     }
 }

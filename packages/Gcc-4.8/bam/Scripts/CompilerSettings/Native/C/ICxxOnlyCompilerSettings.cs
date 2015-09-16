@@ -27,16 +27,53 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class NativeImplementation
     {
-        bool? PositionIndependentCode
+        public static void
+        Convert(
+            this C.ICxxOnlyCompilerSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
+            if (null != options.ExceptionHandler)
+            {
+                switch (options.ExceptionHandler)
+                {
+                case C.Cxx.EExceptionHandler.Disabled:
+                    commandLine.Add("-fno-exceptions");
+                    break;
+
+                case C.Cxx.EExceptionHandler.Asynchronous:
+                case C.Cxx.EExceptionHandler.Synchronous:
+                    commandLine.Add("-fexceptions");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.Cxx.ELanguageStandard.Cxx98:
+                        commandLine.Add("-std=c++98");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx98:
+                        commandLine.Add("-std=gnu++98");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.Cxx11:
+                        commandLine.Add("-std=c++11");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Invalid C++ language standard, '{0}'", options.LanguageStandard.ToString());
+                }
+            }
         }
     }
 }

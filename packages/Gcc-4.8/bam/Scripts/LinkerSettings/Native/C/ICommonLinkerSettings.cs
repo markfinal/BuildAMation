@@ -27,16 +27,40 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Gcc
 {
-    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class NativeImplementation
     {
-        bool? PositionIndependentCode
+        public static void
+        Convert(
+            this C.ICommonLinkerSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
+            switch (options.OutputType)
+            {
+                case C.ELinkerOutput.Executable:
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    break;
+
+                case C.ELinkerOutput.DynamicLibrary:
+                    commandLine.Add("-shared");
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    break;
+            }
+            foreach (var path in options.LibraryPaths)
+            {
+                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
+                commandLine.Add(System.String.Format(format, path.ToString()));
+            }
+            foreach (var path in options.Libraries)
+            {
+                commandLine.Add(path);
+            }
+            if (options.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-g");
+            }
         }
     }
 }

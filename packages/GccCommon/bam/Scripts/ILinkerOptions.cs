@@ -29,8 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
-    [Bam.Core.SettingsExtensions(typeof(GccCommon.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerSettings : Bam.Core.ISettingsBase
+    [Bam.Core.SettingsExtensions(typeof(Gcc.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonLinkerSettings :
+        Bam.Core.ISettingsBase
     {
         bool? CanUseOrigin
         {
