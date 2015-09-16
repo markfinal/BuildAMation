@@ -64,7 +64,7 @@ namespace Test
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 // example of switching out the tool within a module
-                this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<Mingw.Compiler32>();
+                this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<MingwCommon.Compiler32>();
             }
         }
     }

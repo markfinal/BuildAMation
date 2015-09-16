@@ -67,7 +67,7 @@ namespace OpenGLUniformBufferTest
                         linker.Libraries.Add("USER32.lib");
                         linker.Libraries.Add("GDI32.lib");
                     }
-                    else if (this.Linker is Mingw.LinkerBase)
+                    else if (this.Linker is MingwCommon.LinkerBase)
                     {
                         linker.Libraries.Add("-lopengl32");
                         linker.Libraries.Add("-lgdi32");
