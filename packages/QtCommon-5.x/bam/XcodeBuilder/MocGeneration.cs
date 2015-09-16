@@ -30,7 +30,7 @@
 namespace QtCommon
 {
     public sealed class XcodeMocGeneration :
-    IMocGenerationPolicy
+        IMocGenerationPolicy
     {
         void
         IMocGenerationPolicy.Moc(
