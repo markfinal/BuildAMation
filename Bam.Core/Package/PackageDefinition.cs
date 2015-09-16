@@ -454,7 +454,7 @@ namespace Bam.Core
                 var dir = xmlReader.GetAttribute("dir");
                 var bamDir = this.GetBamDirectory();
                 var absolutePackageRepoDir = RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
-                this.PackageRepositories.Add(absolutePackageRepoDir);
+                this.PackageRepositories.AddUnique(absolutePackageRepoDir);
             }
 
             return true;
@@ -1046,7 +1046,7 @@ namespace Bam.Core
 
             if (this.PackageRepositories.Count > 0)
             {
-                Log.MessageAll("\nExtra package repositories to search:");
+                Log.MessageAll("\nPackage repositories to search:");
                 foreach (var repo in this.PackageRepositories)
                 {
                     var absoluteRepo = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(repo);
