@@ -27,13 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
     public static class Configure
     {
         static Configure()
         {
-            InstallPath = Bam.Core.TokenizedString.Create(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0", null);
+            var visualCPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "VisualC").First();
+            var installDir = visualCPackage.MetaData["InstallDir"] as string;
+
+            InstallPath = Bam.Core.TokenizedString.Create(installDir, null);
         }
 
         public static Bam.Core.TokenizedString InstallPath

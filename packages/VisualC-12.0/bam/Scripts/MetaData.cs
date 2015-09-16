@@ -36,6 +36,8 @@ namespace VisualC
 
         public MetaData()
         {
+            // TODO: get this from the registry
+            this.Meta.Add("InstallDir", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0");
             this.Meta.Add("PlatformToolset", "v120");
         }
 
