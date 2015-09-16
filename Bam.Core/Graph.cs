@@ -112,7 +112,12 @@ namespace Bam.Core
             }
             catch (System.Reflection.TargetInvocationException ex)
             {
-                throw new Exception(ex.InnerException, "Failed to create module of type {0}", moduleType.ToString());
+                var inner = ex.InnerException;
+                while (inner.InnerException != null)
+                {
+                    inner = inner.InnerException;
+                }
+                throw new Exception(inner, "Failed to create module of type {0}", moduleType.ToString());
             }
         }
 

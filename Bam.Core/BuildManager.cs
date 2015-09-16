@@ -194,7 +194,12 @@ namespace Bam.Core
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
-                throw exception.InnerException;
+                var inner = exception.InnerException;
+                while (inner.InnerException != null)
+                {
+                    inner = inner.InnerException;
+                }
+                throw inner;
             }
         }
 
@@ -217,7 +222,12 @@ namespace Bam.Core
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
-                throw exception.InnerException;
+                var inner = exception.InnerException;
+                while (inner.InnerException != null)
+                {
+                    inner = inner.InnerException;
+                }
+                throw inner;
             }
         }
 
