@@ -34,7 +34,7 @@ namespace QtCommon
     {
         void
         IMocGenerationPolicy.Moc(
-            MocModule sender,
+            MocGeneratedSource sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.ICommandLineTool mocCompiler,
             Bam.Core.TokenizedString generatedMocSource,

@@ -27,35 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace QtCommon
 {
-    public sealed class MakeFileMocGeneration :
-        IMocGenerationPolicy
+    public static class Configure
     {
-        void
-        IMocGenerationPolicy.Moc(
-            MocGeneratedSource sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool mocCompiler,
-            Bam.Core.TokenizedString generatedMocSource,
-            C.HeaderFile source)
+        static Configure()
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.HeaderFile.Key);
+            var graph = Bam.Core.Graph.Instance;
+            var qtVersion = graph.Packages.Where(item => item.Name == "Qt").ElementAt(0).Version;
 
-            var mocOutputPath = generatedMocSource.Parse();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+            var qtInstallDir = Bam.Core.CommandLineProcessor.Evaluate(new QtInstallPath());
+            if (!System.IO.Directory.Exists(qtInstallDir))
+            {
+                throw new Bam.Core.Exception("Qt install dir, {0}, does not exist", qtInstallDir);
+            }
+            InstallPath = Bam.Core.TokenizedString.Create(qtInstallDir, null);
+        }
 
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
-            args.Add(System.String.Format("-o {0}", mocOutputPath));
-            args.Add(source.InputPath.Parse());
-            rule.AddShellCommand(args.ToString(' '));
-
-            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+        public static Bam.Core.TokenizedString InstallPath
+        {
+            get;
+            private set;
         }
     }
 }

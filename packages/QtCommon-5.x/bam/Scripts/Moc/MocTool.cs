@@ -29,33 +29,29 @@
 #endregion // License
 namespace QtCommon
 {
-    public sealed class MakeFileMocGeneration :
-        IMocGenerationPolicy
+    public sealed class MocTool :
+        Bam.Core.PreBuiltTool
     {
-        void
-        IMocGenerationPolicy.Moc(
-            MocGeneratedSource sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool mocCompiler,
-            Bam.Core.TokenizedString generatedMocSource,
-            C.HeaderFile source)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.HeaderFile.Key);
+            return new MocSettings(module);
+        }
 
-            var mocOutputPath = generatedMocSource.Parse();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+        public override Bam.Core.TokenizedString Executable
+        {
+            get
+            {
+                return Bam.Core.TokenizedString.Create(System.IO.Path.Combine(new[] { QtCommon.Configure.InstallPath.Parse(), "bin", "moc" }), null);
+            }
+        }
 
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
-            args.Add(System.String.Format("-o {0}", mocOutputPath));
-            args.Add(source.InputPath.Parse());
-            rule.AddShellCommand(args.ToString(' '));
-
-            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+        public override void
+        Evaluate()
+        {
+            // TODO: should be able to check the executable if it used a proper TokenizedString
+            this.ReasonToExecute = null;
         }
     }
 }
