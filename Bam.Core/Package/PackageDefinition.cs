@@ -89,7 +89,17 @@ namespace Bam.Core
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
             this.PackageRepositories = new StringArray();
-            this.PackageRepositories.Add(this.GetPackageRepository());
+            var packageRepo = this.GetPackageRepository();
+            this.PackageRepositories.AddUnique(packageRepo);
+            // if this is from a tests in a repository, automatically add the packages folder as another repo
+            if (System.IO.Path.GetFileName(packageRepo) == "tests")
+            {
+                var associatedPackagesRepo = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(packageRepo), "packages");
+                if (System.IO.Directory.Exists(associatedPackagesRepo))
+                {
+                    this.PackageRepositories.AddUnique(associatedPackagesRepo);
+                }
+            }
             this.Description = string.Empty;
         }
 
