@@ -62,7 +62,7 @@ namespace C
 
                 var sharedSettings = C.SettingsBase.SharedSettings(
                     objectFiles,
-                    typeof(Clang.XcodeImplementation),
+                    typeof(ClangCommon.XcodeImplementation),
                     typeof(XcodeProjectProcessor.IConvertToProject),
                     xcodeConvertParameterTypes);
                 library.SetCommonCompilationOptions(null, sharedSettings);
