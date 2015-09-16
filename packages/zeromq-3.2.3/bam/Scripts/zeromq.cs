@@ -153,7 +153,7 @@ namespace zeromq
                     compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(config)", this));
                 });
 
-                if (this.Linker is Clang.LinkerBase)
+                if (this.Linker is ClangCommon.LinkerBase)
                 {
                     var ipc_listener = source.Children.Where(item => (item as C.ObjectFile).InputPath.Parse().EndsWith("ipc_listener.cpp"));
                     ipc_listener.ElementAt(0).PrivatePatch(settings => {
