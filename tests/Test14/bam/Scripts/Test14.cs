@@ -56,7 +56,7 @@ namespace Test14
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
@@ -91,7 +91,7 @@ namespace Test14
             this.LinkAgainst<DynamicLibraryA>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
@@ -123,7 +123,7 @@ namespace Test14
             this.CompileAndLinkAgainst<DynamicLibraryB>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }

@@ -61,7 +61,7 @@ namespace CodeGenTest
             this.CreateCSourceContainer("$(packagedir)/source/codegentool/main.c");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
@@ -162,7 +162,7 @@ namespace CodeGenTest
             /*var generatedSourceTuple = */source.GenerateSource();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }

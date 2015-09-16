@@ -74,7 +74,7 @@ namespace C
 
                 var sharedSettings = C.SettingsBase.SharedSettings(
                     objectFiles,
-                    typeof(VisualC.VSSolutionImplementation),
+                    typeof(VisualCCommon.VSSolutionImplementation),
                     typeof(VisualStudioProcessor.IConvertToProject),
                     vsConvertParameterTypes);
                 (sharedSettings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);

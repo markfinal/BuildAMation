@@ -164,7 +164,7 @@ namespace zeromq
             }
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
@@ -183,7 +183,7 @@ namespace zeromq
                     var linker = settings as C.ICommonLinkerSettings;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        if (this.Linker is VisualC.LinkerBase)
+                        if (this.Linker is VisualCCommon.LinkerBase)
                         {
                             linker.Libraries.Add("Ws2_32.lib");
                             linker.Libraries.Add("Advapi32.lib");

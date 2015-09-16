@@ -55,7 +55,7 @@ namespace Test5
             this.CompileAndLinkAgainst<Test4.MyDynamicLib>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }

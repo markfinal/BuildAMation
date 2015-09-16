@@ -46,7 +46,7 @@ namespace Direct3DTriangle
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
 
-            if (this.Linker is VisualC.LinkerBase)
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<DirectXSDK.Direct3D9>(source);
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);

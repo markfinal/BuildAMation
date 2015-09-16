@@ -42,7 +42,7 @@ namespace zeromqtest
             this.CompileAndLinkAgainst<zeromq.ZMQSharedLibrary>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }

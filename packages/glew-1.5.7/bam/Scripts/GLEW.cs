@@ -63,7 +63,7 @@ namespace glew
             this.PublicPatch((settings, appliedTo) => this.exported(settings, this));
 
             this.CompileAgainst<OpenGLSDK.OpenGL>(source);
-            if (this.Librarian is VisualC.Librarian)
+            if (this.Librarian is VisualCCommon.Librarian)
             {
                 this.CompileAgainst<WindowsSDK.WindowsSDK>(source);
             }

@@ -65,7 +65,7 @@ namespace Cxx11Test1
             source.PrivatePatch(settings =>
                 {
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                        this.Linker is VisualC.LinkerBase)
+                        this.Linker is VisualCCommon.LinkerBase)
                     {
                         var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                         cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -73,7 +73,7 @@ namespace Cxx11Test1
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }

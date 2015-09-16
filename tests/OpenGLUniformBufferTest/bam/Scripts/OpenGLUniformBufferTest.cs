@@ -53,7 +53,7 @@ namespace OpenGLUniformBufferTest
             this.CompileAndLinkAgainst<glew.GLEWStatic>(rendererObj);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
@@ -61,7 +61,7 @@ namespace OpenGLUniformBufferTest
             this.PrivatePatch(settings =>
                 {
                     var linker = settings as C.ICommonLinkerSettings;
-                    if (this.Linker is VisualC.LinkerBase)
+                    if (this.Linker is VisualCCommon.LinkerBase)
                     {
                         linker.Libraries.Add("OPENGL32.lib");
                         linker.Libraries.Add("USER32.lib");

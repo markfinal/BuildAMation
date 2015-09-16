@@ -59,7 +59,7 @@ namespace Test7
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }

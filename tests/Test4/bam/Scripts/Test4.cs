@@ -58,7 +58,7 @@ namespace Test4
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 // TODO: simplify
                 var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();

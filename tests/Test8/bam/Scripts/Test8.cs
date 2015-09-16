@@ -47,7 +47,7 @@ namespace Test8
             this.Requires(dynamicLib);
             source.UsePublicPatches(dynamicLib);
 
-            if (this.Linker is VisualC.LinkerBase)
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
 

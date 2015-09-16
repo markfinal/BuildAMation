@@ -44,7 +44,7 @@ namespace Test17
             this.CompileAndLinkAgainst<Test16.StaticLibrary2>(source);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }

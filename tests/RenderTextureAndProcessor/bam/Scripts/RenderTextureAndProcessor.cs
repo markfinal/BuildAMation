@@ -54,7 +54,7 @@ namespace RenderTextureAndProcessor
             });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
@@ -63,7 +63,7 @@ namespace RenderTextureAndProcessor
             this.PrivatePatch(settings =>
             {
                 var linker = settings as C.ICommonLinkerSettings;
-                if (this.Linker is VisualC.LinkerBase)
+                if (this.Linker is VisualCCommon.LinkerBase)
                 {
                     linker.Libraries.Add("WS2_32.lib");
                     linker.Libraries.Add("GDI32.lib");
@@ -104,7 +104,7 @@ namespace RenderTextureAndProcessor
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualC.LinkerBase)
+                this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
@@ -112,7 +112,7 @@ namespace RenderTextureAndProcessor
             this.PrivatePatch(settings =>
                 {
                     var linker = settings as C.ICommonLinkerSettings;
-                    if (this.Linker is VisualC.LinkerBase)
+                    if (this.Linker is VisualCCommon.LinkerBase)
                     {
                         linker.Libraries.Add("WS2_32.lib");
                     }
