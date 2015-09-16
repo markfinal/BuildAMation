@@ -74,7 +74,7 @@ namespace Bam
 
                 if (Core.CommandLineProcessor.Evaluate(new Core.PrintVersion()))
                 {
-                    Core.Log.MessageAll(Core.State.VersionString);
+                    CommandLineArgumentHelper.PrintVersion();
                     return;
                 }
 

@@ -67,12 +67,7 @@ namespace Bam
         public static void
         PrintHelp()
         {
-            Core.State.VerbosityLevel = Core.EVerboseLevel.Info;
-            Core.Log.Info("BuildAMation (Bam) v{0}", Core.State.VersionString);
-            Core.Log.Info("(c) Mark Final, 2010-2015");
-            Core.Log.Info("Licensed under BSD 3-clause. See License file.");
-            var clrVersion = System.Environment.Version;
-            Core.Log.Info("Using C# compiler v{0}.{1}", clrVersion.Major, clrVersion.Minor);
+            PrintVersion();
             Core.Log.Info("");
             Core.Log.Info("Syntax:");
             Core.Log.Info("    bam [[option[=value]]...]");
@@ -105,6 +100,17 @@ namespace Bam
                 Core.Log.Info("========================");
                 PrintOptions(scriptArgs);
             }
+        }
+
+        public static void
+        PrintVersion()
+        {
+            Core.State.VerbosityLevel = Core.EVerboseLevel.Info;
+            Core.Log.Info("BuildAMation (Bam) v{0}", Core.State.VersionString);
+            Core.Log.Info("(c) Mark Final, 2010-2015");
+            Core.Log.Info("Licensed under BSD 3-clause. See License file.");
+            var clrVersion = System.Environment.Version;
+            Core.Log.Info("Using C# compiler v{0}.{1}", clrVersion.Major, clrVersion.Minor);
         }
     }
 }
