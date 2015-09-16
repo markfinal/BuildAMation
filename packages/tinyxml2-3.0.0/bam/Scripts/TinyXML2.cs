@@ -42,56 +42,18 @@ namespace TinyXML2
             }
         };
 
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
+            this.CreateHeaderContainer("$(packagedir)/*.h");
+            
             var source = this.CreateCxxSourceContainer("$(packagedir)/tinyxml2.cpp");
             source.PrivatePatch(settings => this.includePaths(settings, this));
 
             this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
         }
-    }
-
-    [Bam.Core.ModuleGroup("Thirdparty")]
-    class TinyXML2Static :
-        C.StaticLibrary
-    {
-        public
-        TinyXML2Static()
-        {
-            var sourceDir = this.PackageLocation.SubDirectory("tinyxml2-2.2.0");
-            this.headers.Include(sourceDir, "*.h");
-            this.UpdateOptions += new Bam.Core.UpdateOptionCollectionDelegate(TinyXML2Static_ExportIncludePath);
-        }
-
-        [C.ExportCompilerOptionsDelegate]
-        void
-        TinyXML2Static_ExportIncludePath(
-            Bam.Core.IModule module,
-            Bam.Core.Target target)
-        {
-            if (module.Options is C.ICCompilerOptions)
-            {
-                (module.Options as C.ICCompilerOptions).IncludePaths.Include(this.PackageLocation, "tinyxml2-2.2.0");
-            }
-        }
-
-        class SourceFiles :
-            C.Cxx.ObjectFileCollection
-        {
-            public
-            SourceFiles()
-            {
-                var sourceDir = this.PackageLocation.SubDirectory("tinyxml2-2.2.0");
-                this.Include(sourceDir, "tinyxml2.cpp");
-            }
-        }
-
-        [Bam.Core.SourceFiles]
-        SourceFiles source = new SourceFiles();
-
-        [C.HeaderFiles]
-        Bam.Core.FileCollection headers = new Bam.Core.FileCollection();
     }
 }

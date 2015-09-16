@@ -69,7 +69,9 @@ namespace DirectXSDK
             this.Macros.Add("LibraryPath", Bam.Core.TokenizedString.Create("$(InstallPath)/lib", this));
         }
 
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -102,12 +104,16 @@ namespace DirectXSDK
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
         {
             // do nothing
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // do nothing
         }

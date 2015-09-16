@@ -37,7 +37,8 @@ namespace zeromq
         private static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ZeroMQ platform header");
 
         protected override void
-        Init(Module parent)
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
             this.GeneratedPaths.Add(Key, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(config)/platform.hpp", this));
@@ -58,7 +59,8 @@ namespace zeromq
         }
 
         protected override void
-        ExecuteInternal(ExecutionContext context)
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
         {
             var source = Bam.Core.TokenizedString.Create("$(packagedir)/src/platform.hpp.in", this);
 
@@ -118,7 +120,9 @@ namespace zeromq
     public sealed class ZMQSharedLibrary :
         C.Cxx.DynamicLibrary
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

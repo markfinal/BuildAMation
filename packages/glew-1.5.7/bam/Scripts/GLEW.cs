@@ -43,7 +43,9 @@ namespace glew
                 }
             };
 
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

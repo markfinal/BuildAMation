@@ -67,12 +67,16 @@ namespace OpenGLSDK
             this.ReasonToExecute = null;
         }
 
-        protected override void ExecuteInternal(Bam.Core.ExecutionContext context)
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
         {
             // do nothing
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
             // do nothing
         }
