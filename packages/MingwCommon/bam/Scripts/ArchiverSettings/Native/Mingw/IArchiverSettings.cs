@@ -27,49 +27,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public sealed class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettings
+    public static partial class NativeImplementation
     {
-        public LinkerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this IArchiverSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
-        }
+            if (options.Ranlib)
+            {
+                commandLine.Add("-s");
+            }
+            if (options.DoNotWarnIfLibraryCreated)
+            {
+                commandLine.Add("-c");
+            }
+            switch (options.Command)
+            {
+                case MingwCommon.EArchiverCommand.Replace:
+                    commandLine.Add("-r");
+                    break;
 
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
+                default:
+                    throw new Bam.Core.Exception("No such archiver command");
+            }
         }
     }
 }

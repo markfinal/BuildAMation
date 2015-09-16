@@ -27,51 +27,44 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public class ArchiverSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonArchiverSettings,
-        IArchiverSettings
+    public static partial class NativeImplementation
     {
-        public ArchiverSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ICxxOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as IArchiverSettings).Convert(module, commandLine);
-            (this as C.ICommonArchiverSettings).Convert(module, commandLine);
-        }
+            if (null != options.ExceptionHandler)
+            {
+                switch (options.ExceptionHandler)
+                {
+                    case C.Cxx.EExceptionHandler.Disabled:
+                        commandLine.Add("-fno-exceptions");
+                        break;
 
-        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
-        {
-            get;
-            set;
-        }
+                    case C.Cxx.EExceptionHandler.Asynchronous:
+                    case C.Cxx.EExceptionHandler.Synchronous:
+                        commandLine.Add("-fexceptions");
+                        break;
 
-        bool IArchiverSettings.Ranlib
-        {
-            get;
-            set;
-        }
-
-        bool IArchiverSettings.DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        MingwCommon.EArchiverCommand IArchiverSettings.Command
-        {
-            get;
-            set;
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            switch (options.LanguageStandard)
+            {
+                case C.Cxx.ELanguageStandard.Cxx98:
+                    commandLine.Add("-std=c++98");
+                    break;
+                case C.Cxx.ELanguageStandard.Cxx11:
+                    commandLine.Add("-std=c++11");
+                    break;
+                default:
+                    throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
+            }
         }
     }
 }

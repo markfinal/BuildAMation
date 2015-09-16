@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
     public abstract class CompilerBase :
         C.CompilerTool
@@ -59,14 +59,14 @@ namespace Mingw
             if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
                 typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new CxxCompilerSettings(module);
+                var settings = new Mingw.CxxCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
             else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
                      typeof(C.CObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new CompilerSettings(module);
+                var settings = new Mingw.CompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }

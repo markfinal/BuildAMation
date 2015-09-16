@@ -27,44 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public static partial class NativeImplementation
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface IArchiverSettings :
+        Bam.Core.ISettingsBase
     {
-        public static void
-        Convert(
-            this C.ICxxOnlyCompilerSettings options,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+        bool Ranlib
         {
-            if (null != options.ExceptionHandler)
-            {
-                switch (options.ExceptionHandler)
-                {
-                    case C.Cxx.EExceptionHandler.Disabled:
-                        commandLine.Add("-fno-exceptions");
-                        break;
+            get;
+            set;
+        }
 
-                    case C.Cxx.EExceptionHandler.Asynchronous:
-                    case C.Cxx.EExceptionHandler.Synchronous:
-                        commandLine.Add("-fexceptions");
-                        break;
+        bool DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
 
-                    default:
-                        throw new Bam.Core.Exception("Unrecognized exception handler option");
-                }
-            }
-            switch (options.LanguageStandard)
-            {
-                case C.Cxx.ELanguageStandard.Cxx98:
-                    commandLine.Add("-std=c++98");
-                    break;
-                case C.Cxx.ELanguageStandard.Cxx11:
-                    commandLine.Add("-std=c++11");
-                    break;
-                default:
-                    throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
-            }
+        MingwCommon.EArchiverCommand Command
+        {
+            get;
+            set;
         }
     }
 }

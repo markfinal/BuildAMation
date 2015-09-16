@@ -27,28 +27,41 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    [Bam.Core.SettingsExtensions(typeof(Mingw.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IArchiverSettings :
-        Bam.Core.ISettingsBase
+    public static partial class NativeImplementation
     {
-        bool Ranlib
+        public static void
+        Convert(
+            this C.ICommonLinkerSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
-        }
+            switch (options.OutputType)
+            {
+                case C.ELinkerOutput.Executable:
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    break;
 
-        bool DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        MingwCommon.EArchiverCommand Command
-        {
-            get;
-            set;
+                case C.ELinkerOutput.DynamicLibrary:
+                    commandLine.Add("-shared");
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString()));
+                    break;
+            }
+            foreach (var path in options.LibraryPaths)
+            {
+                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
+                commandLine.Add(System.String.Format(format, path.ToString()));
+            }
+            foreach (var path in options.Libraries)
+            {
+                commandLine.Add(path);
+            }
+            if (options.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-g");
+            }
         }
     }
 }

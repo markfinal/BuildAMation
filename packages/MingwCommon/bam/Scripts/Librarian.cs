@@ -27,25 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public static partial class NativeImplementation
+    [C.RegisterLibrarian("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    public sealed class Librarian :
+        C.LibrarianTool
     {
-        public static void
-        Convert(
-            this C.ICommonArchiverSettings options,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+        public Librarian()
         {
-            switch (options.OutputType)
-            {
-                case C.EArchiverOutput.StaticLibrary:
-                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
-                    break;
+            this.Macros.Add("InstallPath", Configure.InstallPath);
+            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin\ar.exe", this));
+            this.Macros.Add("libprefix", "lib");
+            this.Macros.Add("libext", ".a");
 
-                default:
-                    throw new Bam.Core.Exception("Unsupported output type");
+            this.InheritedEnvironmentVariables.Add("TEMP");
+        }
+
+        public override Bam.Core.TokenizedString Executable
+        {
+            get
+            {
+                return this.Macros["ArchiverPath"];
             }
+        }
+
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            var settings = new Mingw.ArchiverSettings(module);
+            return settings;
         }
     }
 }

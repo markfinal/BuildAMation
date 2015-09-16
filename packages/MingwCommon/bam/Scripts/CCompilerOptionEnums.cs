@@ -27,38 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public static partial class NativeImplementation
+    public enum EVisibility
     {
-        public static void
-        Convert(
-            this C.ICommonCompilerSettingsWin options,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            if (options.CharacterSet.HasValue)
-            {
-                switch (options.CharacterSet.Value)
-                {
-                    case C.ECharacterSet.NotSet:
-                        break;
-
-                    case C.ECharacterSet.Unicode:
-                        {
-                            var compiler = options as C.ICommonCompilerSettings;
-                            compiler.PreprocessorDefines.Add("_UNICODE");
-                        }
-                        break;
-
-                    case C.ECharacterSet.MultiByte:
-                        {
-                            var compiler = options as C.ICommonCompilerSettings;
-                            compiler.PreprocessorDefines.Add("_MBCS");
-                        }
-                        break;
-                }
-            }
-        }
+        Default,
+        Internal,
+        Hidden,
+        Protected
     }
 }

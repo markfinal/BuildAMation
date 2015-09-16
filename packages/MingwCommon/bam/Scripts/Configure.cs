@@ -27,36 +27,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    [C.RegisterLibrarian("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class Librarian :
-        C.LibrarianTool
+    public static class Configure
     {
-        public Librarian()
+        static Configure()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin\ar.exe", this));
-            this.Macros.Add("libprefix", "lib");
-            this.Macros.Add("libext", ".a");
-
-            this.InheritedEnvironmentVariables.Add("TEMP");
+            InstallPath = Bam.Core.TokenizedString.Create(@"C:\MinGW", null);
         }
 
-        public override Bam.Core.TokenizedString Executable
+        public static Bam.Core.TokenizedString InstallPath
         {
-            get
-            {
-                return this.Macros["ArchiverPath"];
-            }
-        }
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new ArchiverSettings(module);
-            return settings;
+            get;
+            private set;
         }
     }
 }

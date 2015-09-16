@@ -27,25 +27,18 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using MingwCommon;
 namespace Mingw
 {
-    public class CompilerSettings :
+    public sealed class LinkerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonCompilerSettingsWin,
-        C.ICommonCompilerSettings,
-        C.ICOnlyCompilerSettings
+        C.ICommonLinkerSettings
     {
-        public CompilerSettings(
+        public LinkerSettings(
             Bam.Core.Module module)
-            : this(module, useDefaults:true)
-        {}
-
-        public CompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
         {
-            this.InitializeAllInterfaces(module, true, useDefaults);
+            this.InitializeAllInterfaces(module, false, true);
         }
 
         void
@@ -53,90 +46,28 @@ namespace Mingw
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerSettingsWin).Convert(module, commandLine);
-            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
-            (this as C.ICOnlyCompilerSettings).Convert(module, commandLine);
+            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
         }
 
-        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;
             set;
         }
 
-        C.EBit? C.ICommonCompilerSettings.Bits
+        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        C.EOptimization? C.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
-
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.OmitFramePointer
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
-        {
-            get;
-            set;
-        }
-
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
+        bool? C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;

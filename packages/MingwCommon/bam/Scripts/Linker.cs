@@ -27,7 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
     public abstract class LinkerBase :
         C.LinkerTool
@@ -60,7 +60,7 @@ namespace Mingw
         CreateDefaultSettings<T>(
             T module)
         {
-            var settings = new LinkerSettings(module);
+            var settings = new Mingw.LinkerSettings(module);
             return settings;
         }
 

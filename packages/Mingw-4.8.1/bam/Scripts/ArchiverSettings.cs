@@ -27,29 +27,52 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using MingwCommon;
 namespace Mingw
 {
-    public static partial class NativeImplementation
+    public class ArchiverSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonArchiverSettings,
+        MingwCommon.IArchiverSettings
     {
-        public static void
-        Convert(
-            this C.ICOnlyCompilerSettings options,
+        public ArchiverSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.LanguageStandard)
-            {
-                switch (options.LanguageStandard)
-                {
-                    case C.ELanguageStandard.C89:
-                        break;
-                    case C.ELanguageStandard.C99:
-                        commandLine.Add("-std=c99");
-                        break;
-                    default:
-                        throw new Bam.Core.Exception("Invalid C language standard {0}", options.LanguageStandard.ToString());
-                }
-            }
+            (this as MingwCommon.IArchiverSettings).Convert(module, commandLine);
+            (this as C.ICommonArchiverSettings).Convert(module, commandLine);
+        }
+
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        bool MingwCommon.IArchiverSettings.Ranlib
+        {
+            get;
+            set;
+        }
+
+        bool MingwCommon.IArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        MingwCommon.EArchiverCommand MingwCommon.IArchiverSettings.Command
+        {
+            get;
+            set;
         }
     }
 }

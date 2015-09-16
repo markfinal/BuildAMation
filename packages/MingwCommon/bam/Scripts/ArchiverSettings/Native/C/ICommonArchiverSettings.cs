@@ -27,19 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public static class Configure
+    public static partial class NativeImplementation
     {
-        static Configure()
+        public static void
+        Convert(
+            this C.ICommonArchiverSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            InstallPath = Bam.Core.TokenizedString.Create(@"C:\MinGW", null);
-        }
+            switch (options.OutputType)
+            {
+                case C.EArchiverOutput.StaticLibrary:
+                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
+                    break;
 
-        public static Bam.Core.TokenizedString InstallPath
-        {
-            get;
-            private set;
+                default:
+                    throw new Bam.Core.Exception("Unsupported output type");
+            }
         }
     }
 }

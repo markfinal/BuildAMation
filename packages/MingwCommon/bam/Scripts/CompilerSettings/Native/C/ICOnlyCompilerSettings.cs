@@ -27,40 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
     public static partial class NativeImplementation
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettings options,
+            this C.ICOnlyCompilerSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            switch (options.OutputType)
+            if (null != options.LanguageStandard)
             {
-                case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    break;
-
-                case C.ELinkerOutput.DynamicLibrary:
-                    commandLine.Add("-shared");
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString()));
-                    break;
-            }
-            foreach (var path in options.LibraryPaths)
-            {
-                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
-            }
-            foreach (var path in options.Libraries)
-            {
-                commandLine.Add(path);
-            }
-            if (options.DebugSymbols.GetValueOrDefault())
-            {
-                commandLine.Add("-g");
+                switch (options.LanguageStandard)
+                {
+                    case C.ELanguageStandard.C89:
+                        break;
+                    case C.ELanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard {0}", options.LanguageStandard.ToString());
+                }
             }
         }
     }
