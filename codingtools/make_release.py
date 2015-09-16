@@ -4,6 +4,7 @@ import fileinput
 import fnmatch
 from optparse import OptionParser
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -71,18 +72,21 @@ def UpdateVersionNumbers(version):
             sys.stdout.flush()
             for line in fileinput.input(os.path.join(root, filename), inplace=1):#, backup='.bk'):
                 line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)', 'AssemblyInformationalVersion("%s")'%version, line.rstrip())
-                print >>sys.stdout, "Changed: %s" % line
-                sys.stdout.flush()
+                print line
 
 
 def Build():
-    print >>sys.stdout, "Starting build"
+    print >>sys.stdout, "Starting build in %s" % os.getcwd()
     sys.stdout.flush()
-    if os.name == "nt":
+    if platform.system() == "Windows":
         print >>sys.stdout, "WARNING: build disabled on Windows"
         sys.stdout.flush()
-    else:
+    elif platform.system() == "Darwin":
+        subprocess.check_call([r"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool", "build", "--target:Build", "--configuration:Release", "BuildAMation.sln"])
+    elif platform.system() == "Linux":
         subprocess.check_call(["mdtool", "build", "--target:Build", "--configuration:Release", "BuildAMation.sln"])
+    else:
+        raise RuntimeError("Unrecognized platform, %s" % platform.system())
     print >>sys.stdout, "Finished build"
     sys.stdout.flush()
 
