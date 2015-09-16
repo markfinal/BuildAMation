@@ -29,87 +29,87 @@
 #endregion // License
 namespace Qt
 {
-    public sealed class Core :
-        QtCommon.Core
+    public sealed class CoreFramework :
+        QtCommon.CoreFramework
     { }
 
-    public sealed class DBus :
-        QtCommon.DBus
+    public sealed class DBusFramework :
+        QtCommon.DBusFramework
     { }
 
-    public sealed class Declarative :
-        QtCommon.Declarative
+    public sealed class DeclarativeFramework :
+        QtCommon.DeclarativeFramework
     { }
 
-    public sealed class Designer :
-        QtCommon.Designer
+    public sealed class DesignerFramework :
+        QtCommon.DesignerFramework
     { }
 
-    public sealed class Gui :
-        QtCommon.Gui
+    public sealed class GuiFramework :
+        QtCommon.GuiFramework
     { }
 
-    public sealed class Help :
-        QtCommon.Help
+    public sealed class HelpFramework :
+        QtCommon.HelpFramework
     { }
 
-    public sealed class Multimedia :
-        QtCommon.Multimedia
+    public sealed class MultimediaFramework :
+        QtCommon.MultimediaFramework
     { }
 
-    public sealed class Network :
-        QtCommon.Network
+    public sealed class NetworkFramework :
+        QtCommon.NetworkFramework
     { }
 
-    public sealed class OpenGL :
-        QtCommon.OpenGL
+    public sealed class OpenGLFramework :
+        QtCommon.OpenGLFramework
     { }
 
-    public sealed class OpenVG :
-        QtCommon.OpenVG
+    public sealed class OpenVGFramework :
+        QtCommon.OpenVGFramework
     { }
 
-    public sealed class Phonon :
-        QtCommon.Phonon
+    public sealed class PhononFramework :
+        QtCommon.PhononFramework
     { }
 
-    public sealed class Script :
-        QtCommon.Script
+    public sealed class ScriptFramework :
+        QtCommon.ScriptFramework
     { }
 
-    public sealed class ScriptTools :
-        QtCommon.ScriptTools
+    public sealed class ScriptToolsFramework :
+        QtCommon.ScriptToolsFramework
     { }
 
-    public sealed class Sql :
-        QtCommon.Sql
+    public sealed class SqlFramework :
+        QtCommon.SqlFramework
     { }
 
-    public sealed class Svg :
-        QtCommon.Svg
+    public sealed class SvgFramework :
+        QtCommon.SvgFramework
     { }
 
-    public sealed class Test :
-        QtCommon.Test
+    public sealed class TestFramework :
+        QtCommon.TestFramework
     { }
 
-    public sealed class UiTools :
-        QtCommon.UiTools
+    public sealed class UiToolsFramework :
+        QtCommon.UiToolsFramework
     { }
 
-    public sealed class WebKit :
-        QtCommon.WebKit
+    public sealed class WebKitFramework :
+        QtCommon.WebKitFramework
     { }
 
-    public sealed class Widgets :
-        QtCommon.Widgets
+    public sealed class WidgetsFramework :
+        QtCommon.WidgetsFramework
     { }
 
-    public sealed class Xml :
-        QtCommon.Xml
+    public sealed class XmlFramework :
+        QtCommon.XmlFramework
     { }
 
-    public sealed class XmlPatterns :
-        QtCommon.XmlPatterns
+    public sealed class XmlPatternsFramework :
+        QtCommon.XmlPatternsFramework
     { }
 }
