@@ -104,7 +104,7 @@ namespace Qt5Test1
     }
 
     sealed class RuntimePackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void
         Init(
@@ -137,7 +137,7 @@ namespace Qt5Test1
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
         }
     }
 }

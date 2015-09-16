@@ -63,7 +63,7 @@ namespace zeromqtest
     }
 
     public sealed class RuntimePackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void Init(Bam.Core.Module parent)
         {

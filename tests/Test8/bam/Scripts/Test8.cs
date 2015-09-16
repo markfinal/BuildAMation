@@ -62,7 +62,7 @@ namespace Test8
 
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     sealed class RuntimePackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void
         Init(

@@ -30,11 +30,11 @@
 using Bam.Core;
 namespace Publisher
 {
-    public abstract class Package :
+    public abstract class Collation :
         Bam.Core.Module
     {
         private System.Collections.Generic.Dictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, PackageReference>>();
-        private IPackagePolicy Policy = null;
+        private ICollationPolicy Policy = null;
         public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
 
         public enum EPublishingType
@@ -43,7 +43,7 @@ namespace Publisher
             WindowedApplication
         }
 
-        protected Package()
+        protected Collation()
         {
             this.RegisterGeneratedFile(PackageRoot, Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
         }
@@ -185,15 +185,15 @@ namespace Publisher
         {
             // TODO: the nested dictionary is not readonly - not sure how to construct this
             var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>>(this.dependents);
-            this.Policy.Package(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
+            this.Policy.Collate(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
         }
 
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-            var className = "Publisher." + mode + "Packager";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IPackagePolicy>.Create(className);
+            var className = "Publisher." + mode + "Collation";
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollationPolicy>.Create(className);
         }
     }
 }

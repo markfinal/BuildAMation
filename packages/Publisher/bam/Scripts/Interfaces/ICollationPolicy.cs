@@ -29,11 +29,11 @@
 #endregion // License
 namespace Publisher
 {
-    public interface IPackagePolicy
+    public interface ICollationPolicy
     {
         void
-        Package(
-            Package sender,
+        Collate(
+            Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects);

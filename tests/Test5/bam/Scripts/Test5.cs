@@ -63,7 +63,7 @@ namespace Test5
     }
 
     sealed class RuntimePackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void
         Init(
@@ -77,7 +77,7 @@ namespace Test5
     }
 
     sealed class SDKPackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void
         Init(
@@ -104,7 +104,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
         }
     }
 
@@ -117,7 +117,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
         }
     }
 
@@ -130,7 +130,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
         }
     }
 
@@ -143,7 +143,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Package.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
         }
     }
 }

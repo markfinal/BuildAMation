@@ -125,7 +125,7 @@ namespace RenderTextureAndProcessor
     }
 
     sealed class RuntimePackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void
         Init(

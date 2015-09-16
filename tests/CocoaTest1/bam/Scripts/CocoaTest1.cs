@@ -65,7 +65,7 @@ namespace CocoaTest1
     }
 
     public sealed class RuntimePackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void
         Init(

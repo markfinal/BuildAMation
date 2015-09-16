@@ -29,12 +29,12 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class NativePackager :
-        IPackagePolicy
+    public sealed class NativeCollation :
+        ICollationPolicy
     {
         static private void
         CopyFile(
-            Package sender,
+            Collation sender,
             Bam.Core.ExecutionContext context,
             string sourcePath,
             string destinationDir)
@@ -56,8 +56,8 @@ namespace Publisher
         }
 
         void
-        IPackagePolicy.Package(
-            Package sender,
+        ICollationPolicy.Collate(
+            Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects)

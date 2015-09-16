@@ -29,8 +29,8 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class MakeFilePackager :
-        IPackagePolicy
+    public sealed class MakeFileCollation :
+        ICollationPolicy
     {
         private static void
         CopyFileRule(
@@ -56,8 +56,8 @@ namespace Publisher
         }
 
         void
-        IPackagePolicy.Package(
-            Package sender,
+        ICollationPolicy.Collate(
+            Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module,

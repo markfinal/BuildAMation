@@ -29,12 +29,12 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class XcodePackager :
-        IPackagePolicy
+    public sealed class VSSolutionCollation :
+        ICollationPolicy
     {
         void
-        IPackagePolicy.Package(
-            Package sender,
+        ICollationPolicy.Collate(
+            Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects)
@@ -49,40 +49,38 @@ namespace Publisher
                     {
                         // no copy is needed, but as we're copying other files relative to this, record where they have to go
                         // therefore ignore any subdirectory on this module
-
-                        // this has to be the path that Xcode writes to
-                        var dir = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(config)", module.Key).Parse();
-                        path.Value.DestinationDir = dir;
-
-                        if ((path.Value.SubDirectory != null) && path.Value.SubDirectory.Contains(".app/"))
-                        {
-                            var meta = module.Key.MetaData as XcodeBuilder.XcodeMeta;
-                            meta.Target.MakeApplicationBundle();
-                        }
+                        path.Value.DestinationDir = System.IO.Path.GetDirectoryName(sourcePath);
                     }
                     else
                     {
                         var subdir = path.Value.SubDirectory;
                         foreach (var reference in path.Value.References)
                         {
-                            if (reference.Module.PackageDefinition == module.Key.PackageDefinition)
-                            {
-                                // same package has the same output folder, so don't bother copying
-                                continue;
-                            }
                             var commands = new Bam.Core.StringArray();
                             if (null != module.Key.MetaData)
                             {
                                 var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, subdir));
-                                commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
-                                commands.Add(System.String.Format("cp -v $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {0}/$EXECUTABLE_NAME", destinationDir));
-                                (module.Key.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+                                commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
+                                commands.Add(System.String.Format(@"copy /V /Y $(OutputPath)$(TargetFileName) {0}\$(TargetFileName)", destinationDir));
+#if true
+                                var project = module.Key.MetaData as VSSolutionBuilder.VSProject;
+                                var config = project.GetConfiguration(module.Key);
+                                config.AddPostBuildCommands(commands);
+#else
+                                (module.Key.MetaData as VSSolutionBuilder.VSCommonProject).AddPostBuildCommands(commands);
+#endif
                                 path.Value.DestinationDir = destinationDir;
                             }
                             else
                             {
-                                commands.Add(System.String.Format("cp -v {0} $CONFIGURATION_BUILD_DIR/{1}/{2}", sourcePath, subdir, System.IO.Path.GetFileName(sourcePath)));
-                                (reference.Module.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+                                commands.Add(System.String.Format(@"copy /V /Y {0} $(OutDir)\{1}\{2}", sourcePath, subdir, System.IO.Path.GetFileName(sourcePath)));
+#if true
+                                var project = reference.Module.MetaData as VSSolutionBuilder.VSProject;
+                                var config = project.GetConfiguration(reference.Module);
+                                config.AddPostBuildCommands(commands);
+#else
+                                (reference.Module.MetaData as VSSolutionBuilder.VSCommonProject).AddPostBuildCommands(commands);
+#endif
                             }
                         }
                     }

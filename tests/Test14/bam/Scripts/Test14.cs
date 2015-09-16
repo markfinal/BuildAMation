@@ -131,7 +131,7 @@ namespace Test14
     }
 
     public sealed class RuntimePackage :
-        Publisher.Package
+        Publisher.Collation
     {
         protected override void
         Init(
