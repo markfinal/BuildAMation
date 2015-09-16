@@ -33,19 +33,19 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this ICommonArchiverSettings options,
+            this ICommonArchiverSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (options.Ranlib)
+            if (settings.Ranlib)
             {
                 commandLine.Add("-s");
             }
-            if (options.DoNotWarnIfLibraryCreated)
+            if (settings.DoNotWarnIfLibraryCreated)
             {
                 commandLine.Add("-c");
             }
-            switch (options.Command)
+            switch (settings.Command)
             {
                 case EArchiverCommand.Replace:
                     commandLine.Add("-r");

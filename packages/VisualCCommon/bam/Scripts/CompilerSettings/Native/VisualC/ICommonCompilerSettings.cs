@@ -33,13 +33,13 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this VisualCCommon.ICommonCompilerSettings options,
+            this VisualCCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.NoLogo)
+            if (null != settings.NoLogo)
             {
-                if (options.NoLogo == true)
+                if (settings.NoLogo == true)
                 {
                     commandLine.Add("-nologo");
                 }

@@ -33,11 +33,11 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.IObjectiveCOnlyCompilerSettings options,
+            this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            if (null != options.ConstantStringClass)
+            if (null != settings.ConstantStringClass)
             {
                 // TODO
             }

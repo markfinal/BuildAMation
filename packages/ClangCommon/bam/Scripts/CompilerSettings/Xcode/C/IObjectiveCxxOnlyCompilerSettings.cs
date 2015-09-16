@@ -33,7 +33,7 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.IObjectiveCxxOnlyCompilerSettings options,
+            this C.IObjectiveCxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {

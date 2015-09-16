@@ -33,11 +33,11 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettings options,
+            this C.ICommonLinkerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            switch (options.OutputType)
+            switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
                     commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
@@ -48,16 +48,16 @@ namespace VisualCCommon
                     commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
                     break;
             }
-            foreach (var path in options.LibraryPaths)
+            foreach (var path in settings.LibraryPaths)
             {
                 var format = path.ContainsSpace ? "-LIBPATH:\"{0}\"" : "-LIBPATH:{0}";
                 commandLine.Add(System.String.Format(format, path.ToString()));
             }
-            foreach (var path in options.Libraries)
+            foreach (var path in settings.Libraries)
             {
                 commandLine.Add(path);
             }
-            if (options.DebugSymbols.GetValueOrDefault())
+            if (settings.DebugSymbols.GetValueOrDefault())
             {
                 commandLine.Add("-DEBUG");
             }

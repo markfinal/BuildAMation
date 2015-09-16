@@ -33,13 +33,13 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICxxOnlyCompilerSettings options,
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.ExceptionHandler)
+            if (null != settings.ExceptionHandler)
             {
-                switch (options.ExceptionHandler)
+                switch (settings.ExceptionHandler)
                 {
                     case C.Cxx.EExceptionHandler.Disabled:
                         // nothing

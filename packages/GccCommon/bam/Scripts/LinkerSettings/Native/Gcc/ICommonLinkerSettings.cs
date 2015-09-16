@@ -33,22 +33,22 @@ namespace GccCommon
     {
         public static void
         Convert(
-            this GccCommon.ICommonLinkerSettings options,
+            this GccCommon.ICommonLinkerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.CanUseOrigin)
+            if (null != settings.CanUseOrigin)
             {
-                if (true == options.CanUseOrigin)
+                if (true == settings.CanUseOrigin)
                 {
                     commandLine.Add("-Wl,-z,origin");
                 }
             }
-            foreach (var rpath in options.RPath)
+            foreach (var rpath in settings.RPath)
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
             }
-            foreach (var rpath in options.RPathLink)
+            foreach (var rpath in settings.RPathLink)
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath));
             }

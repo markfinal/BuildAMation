@@ -33,7 +33,7 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonCompilerSettings options,
+            this C.ICommonCompilerSettings settings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
@@ -42,31 +42,31 @@ namespace VisualCCommon
             // and reports a warning that the pdb file does not exist
             // the IDE can write None into the .vcxproj, but this has the same behaviour
             // https://connect.microsoft.com/VisualStudio/feedback/details/833494/project-with-debug-information-disabled-always-rebuilds
-            if (options.DebugSymbols.GetValueOrDefault(false))
+            if (settings.DebugSymbols.GetValueOrDefault(false))
             {
                 settingsGroup.AddSetting("DebugInformationFormat", "OldStyle", condition);
             }
 
-            if (options.DisableWarnings.Count > 0)
+            if (settings.DisableWarnings.Count > 0)
             {
-                settingsGroup.AddSetting("DisableSpecificWarnings", options.DisableWarnings, condition, inheritExisting: true);
+                settingsGroup.AddSetting("DisableSpecificWarnings", settings.DisableWarnings, condition, inheritExisting: true);
             }
 
-            if (options.IncludePaths.Count > 0)
+            if (settings.IncludePaths.Count > 0)
             {
-                settingsGroup.AddSetting("AdditionalIncludeDirectories", options.IncludePaths, condition, inheritExisting: true);
+                settingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true);
             }
 
-            if (options.OmitFramePointer.HasValue)
+            if (settings.OmitFramePointer.HasValue)
             {
-                settingsGroup.AddSetting("OmitFramePointers", options.OmitFramePointer.Value, condition);
+                settingsGroup.AddSetting("OmitFramePointers", settings.OmitFramePointer.Value, condition);
             }
 
-            if (options.Optimization.HasValue)
+            if (settings.Optimization.HasValue)
             {
                 System.Func<string> optimization = () =>
                     {
-                        switch (options.Optimization.Value)
+                        switch (settings.Optimization.Value)
                         {
                             case C.EOptimization.Off:
                                 return "Disabled";
@@ -81,27 +81,27 @@ namespace VisualCCommon
                                 return "Full";
 
                             default:
-                                throw new Bam.Core.Exception("Unknown optimization type, {0}", options.Optimization.Value.ToString());
+                                throw new Bam.Core.Exception("Unknown optimization type, {0}", settings.Optimization.Value.ToString());
                         }
                     };
                 settingsGroup.AddSetting("Optimization", optimization(), condition);
             }
 
-            if (options.PreprocessorDefines.Count > 0)
+            if (settings.PreprocessorDefines.Count > 0)
             {
-                settingsGroup.AddSetting("PreprocessorDefinitions", options.PreprocessorDefines, condition, inheritExisting: true);
+                settingsGroup.AddSetting("PreprocessorDefinitions", settings.PreprocessorDefines, condition, inheritExisting: true);
             }
 
-            if (options.PreprocessorUndefines.Count > 0)
+            if (settings.PreprocessorUndefines.Count > 0)
             {
-                settingsGroup.AddSetting("UndefinePreprocessorDefinitions", options.PreprocessorUndefines, condition, inheritExisting: true);
+                settingsGroup.AddSetting("UndefinePreprocessorDefinitions", settings.PreprocessorUndefines, condition, inheritExisting: true);
             }
 
-            if (options.TargetLanguage.HasValue)
+            if (settings.TargetLanguage.HasValue)
             {
                 System.Func<string> targetLanguage = () =>
                 {
-                    switch (options.TargetLanguage.Value)
+                    switch (settings.TargetLanguage.Value)
                     {
                         case C.ETargetLanguage.C:
                             return "CompileAsC";
@@ -113,20 +113,20 @@ namespace VisualCCommon
                             return "Default";
 
                         default:
-                            throw new Bam.Core.Exception("Unknown target language, {0}", options.TargetLanguage.Value.ToString());
+                            throw new Bam.Core.Exception("Unknown target language, {0}", settings.TargetLanguage.Value.ToString());
                     }
                 };
                 settingsGroup.AddSetting("CompileAs", targetLanguage(), condition);
             }
 
-            if (options.WarningsAsErrors.HasValue)
+            if (settings.WarningsAsErrors.HasValue)
             {
-                settingsGroup.AddSetting("TreatWarningAsError", options.WarningsAsErrors.Value, condition);
+                settingsGroup.AddSetting("TreatWarningAsError", settings.WarningsAsErrors.Value, condition);
             }
 
-            if (options.OutputType.HasValue)
+            if (settings.OutputType.HasValue)
             {
-                settingsGroup.AddSetting("PreprocessToFile", options.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
+                settingsGroup.AddSetting("PreprocessToFile", settings.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
                 if (module is C.ObjectFile)
                 {
                     settingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);

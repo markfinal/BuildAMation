@@ -33,14 +33,14 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ICommonCompilerSettings options,
+            this C.ICommonCompilerSettings settings,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
             //var objectFile = module as C.ObjectFile;
-            if (null != options.Bits)
+            if (null != settings.Bits)
             {
-                switch (options.Bits)
+                switch (settings.Bits)
                 {
                     case C.EBit.ThirtyTwo:
                         {
@@ -60,36 +60,36 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unknown bit depth");
                 }
             }
-            if (null != options.DebugSymbols)
+            if (null != settings.DebugSymbols)
             {
-                configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue((options.DebugSymbols == true) ? "YES" : "NO");
+                configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue((settings.DebugSymbols == true) ? "YES" : "NO");
             }
-            if (options.DisableWarnings.Count > 0)
+            if (settings.DisableWarnings.Count > 0)
             {
                 var warnings = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var warning in options.DisableWarnings)
+                foreach (var warning in settings.DisableWarnings)
                 {
                     warnings.Add(System.String.Format("-Wno-{0}", warning));
                 }
                 configuration["WARNING_CFLAGS"] = warnings;
             }
-            if (options.IncludePaths.Count > 0)
+            if (settings.IncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.IncludePaths)
+                foreach (var path in settings.IncludePaths)
                 {
                     paths.Add(path.ToString());
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }
-            if (null != options.OmitFramePointer)
+            if (null != settings.OmitFramePointer)
             {
-                var arg = (true == options.OmitFramePointer) ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
+                var arg = (true == settings.OmitFramePointer) ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
                 configuration["OTHER_CFLAGS"] = new XcodeBuilder.MultiConfigurationValue(arg);
             }
-            if (null != options.Optimization)
+            if (null != settings.Optimization)
             {
-                switch (options.Optimization)
+                switch (settings.Optimization)
                 {
                     case C.EOptimization.Off:
                         configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("0");
@@ -105,10 +105,10 @@ namespace ClangCommon
                         break;
                 }
             }
-            if (options.PreprocessorDefines.Count > 0)
+            if (settings.PreprocessorDefines.Count > 0)
             {
                 var defines = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var define in options.PreprocessorDefines)
+                foreach (var define in settings.PreprocessorDefines)
                 {
                     if (System.String.IsNullOrEmpty(define.Value))
                     {
@@ -121,27 +121,27 @@ namespace ClangCommon
                 }
                 configuration["GCC_PREPROCESSOR_DEFINITIONS"] = defines;
             }
-            if (options.PreprocessorUndefines.Count > 0)
+            if (settings.PreprocessorUndefines.Count > 0)
             {
                 var undefines = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var undefine in options.PreprocessorUndefines)
+                foreach (var undefine in settings.PreprocessorUndefines)
                 {
                     undefines.Add(System.String.Format("-U{0}", undefine));
                 }
                 configuration["OTHER_CFLAGS"] = undefines;
             }
-            if (options.SystemIncludePaths.Count > 0)
+            if (settings.SystemIncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.SystemIncludePaths)
+                foreach (var path in settings.SystemIncludePaths)
                 {
                     paths.Add(path.ToString());
                 }
                 configuration["HEADER_SEARCH_PATHS"] = paths;
             }
-            if (null != options.TargetLanguage)
+            if (null != settings.TargetLanguage)
             {
-                switch (options.TargetLanguage)
+                switch (settings.TargetLanguage)
                 {
                     case C.ETargetLanguage.Default:
                         configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.UniqueConfigurationValue("automatic");
@@ -162,11 +162,11 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported target language");
                 }
             }
-            if (null != options.WarningsAsErrors)
+            if (null != settings.WarningsAsErrors)
             {
-                configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.UniqueConfigurationValue((true == options.WarningsAsErrors) ? "YES" : "NO");
+                configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.UniqueConfigurationValue((true == settings.WarningsAsErrors) ? "YES" : "NO");
             }
-            if (null != options.OutputType)
+            if (null != settings.OutputType)
             {
                 // TODO: anything?
             }

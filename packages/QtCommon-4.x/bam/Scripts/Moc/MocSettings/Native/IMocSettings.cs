@@ -33,11 +33,11 @@ namespace QtCommon
     {
         public static void
         Convert(
-            this IMocSettings options,
+            this IMocSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            foreach (var define in options.PreprocessorDefinitions)
+            foreach (var define in settings.PreprocessorDefinitions)
             {
                 if (System.String.IsNullOrEmpty(define.Value))
                 {
@@ -49,24 +49,24 @@ namespace QtCommon
                 }
             }
 
-            foreach (var path in options.IncludePaths)
+            foreach (var path in settings.IncludePaths)
             {
                 commandLine.Add(System.String.Format("-I {0}", path.Parse()));
             }
 
-            if (options.DoNotGenerateIncludeStatement.HasValue && options.DoNotGenerateIncludeStatement.Value)
+            if (settings.DoNotGenerateIncludeStatement.HasValue && settings.DoNotGenerateIncludeStatement.Value)
             {
                 commandLine.Add("-i");
             }
 
-            if (options.DoNotDisplayWarnings.HasValue && options.DoNotDisplayWarnings.Value)
+            if (settings.DoNotDisplayWarnings.HasValue && settings.DoNotDisplayWarnings.Value)
             {
                 commandLine.Add("--no-warnings");
             }
 
-            if (!System.String.IsNullOrEmpty(options.PathPrefix))
+            if (!System.String.IsNullOrEmpty(settings.PathPrefix))
             {
-                commandLine.Add(System.String.Format("-p {0}", options.PathPrefix));
+                commandLine.Add(System.String.Format("-p {0}", settings.PathPrefix));
             }
         }
     }

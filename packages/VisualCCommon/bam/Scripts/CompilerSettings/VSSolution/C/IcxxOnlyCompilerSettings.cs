@@ -33,16 +33,16 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICxxOnlyCompilerSettings options,
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
-            if (options.ExceptionHandler.HasValue)
+            if (settings.ExceptionHandler.HasValue)
             {
                 System.Func<string> exceptionHandler = () =>
                 {
-                    switch (options.ExceptionHandler.Value)
+                    switch (settings.ExceptionHandler.Value)
                     {
                         case C.Cxx.EExceptionHandler.Disabled:
                             return "false";
@@ -57,7 +57,7 @@ namespace VisualCCommon
                             return "SyncCThrow";
 
                         default:
-                            throw new Bam.Core.Exception("Unknown exception handler, {0}", options.ExceptionHandler.Value.ToString());
+                            throw new Bam.Core.Exception("Unknown exception handler, {0}", settings.ExceptionHandler.Value.ToString());
                     }
                 };
                 settingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);

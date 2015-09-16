@@ -33,12 +33,12 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettings options,
+            this C.ICommonLinkerSettings settings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
-            switch (options.OutputType)
+            switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
                     {
@@ -58,10 +58,10 @@ namespace VisualCCommon
                     break;
             }
 
-            settingsGroup.AddSetting("AdditionalLibraryDirectories", options.LibraryPaths, condition);
-            settingsGroup.AddSetting("AdditionalDependencies", options.Libraries, condition);
+            settingsGroup.AddSetting("AdditionalLibraryDirectories", settings.LibraryPaths, condition);
+            settingsGroup.AddSetting("AdditionalDependencies", settings.Libraries, condition);
 
-            settingsGroup.AddSetting("GenerateDebugInformation", options.DebugSymbols.GetValueOrDefault(false), condition);
+            settingsGroup.AddSetting("GenerateDebugInformation", settings.DebugSymbols.GetValueOrDefault(false), condition);
         }
     }
 }

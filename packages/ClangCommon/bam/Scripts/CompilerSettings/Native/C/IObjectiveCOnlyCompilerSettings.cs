@@ -33,13 +33,13 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.IObjectiveCOnlyCompilerSettings options,
+            this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.ConstantStringClass)
+            if (null != settings.ConstantStringClass)
             {
-                commandLine.Add(System.String.Format("-fconstant-string-class={0}", options.ConstantStringClass));
+                commandLine.Add(System.String.Format("-fconstant-string-class={0}", settings.ConstantStringClass));
             }
         }
     }

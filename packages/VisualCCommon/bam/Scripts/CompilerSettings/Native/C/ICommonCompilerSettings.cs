@@ -33,25 +33,25 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonCompilerSettings options,
+            this C.ICommonCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             var objectFile = module as C.ObjectFile;
-            if (true == options.DebugSymbols)
+            if (true == settings.DebugSymbols)
             {
                 commandLine.Add("-Z7");
             }
-            foreach (var warning in options.DisableWarnings)
+            foreach (var warning in settings.DisableWarnings)
             {
                 commandLine.Add(System.String.Format("-wd{0}", warning));
             }
-            foreach (var path in options.IncludePaths)
+            foreach (var path in settings.IncludePaths)
             {
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            if (true == options.OmitFramePointer)
+            if (true == settings.OmitFramePointer)
             {
                 commandLine.Add("-Oy");
             }
@@ -59,7 +59,7 @@ namespace VisualCCommon
             {
                 commandLine.Add("-Oy-");
             }
-            switch (options.Optimization)
+            switch (settings.Optimization)
             {
                 case C.EOptimization.Off:
                     commandLine.Add("-Od");
@@ -74,7 +74,7 @@ namespace VisualCCommon
                     commandLine.Add("-Ox");
                     break;
             }
-            foreach (var define in options.PreprocessorDefines)
+            foreach (var define in settings.PreprocessorDefines)
             {
                 if (System.String.IsNullOrEmpty(define.Value))
                 {
@@ -85,16 +85,16 @@ namespace VisualCCommon
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, define.Value));
                 }
             }
-            foreach (var undefine in options.PreprocessorUndefines)
+            foreach (var undefine in settings.PreprocessorUndefines)
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
             }
-            foreach (var path in options.SystemIncludePaths)
+            foreach (var path in settings.SystemIncludePaths)
             {
                 var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
                 commandLine.Add(System.String.Format(formatString, path));
             }
-            switch (options.TargetLanguage)
+            switch (settings.TargetLanguage)
             {
                 case C.ETargetLanguage.C:
                     commandLine.Add(System.String.Format("-Tc {0}", objectFile.InputPath.ToString()));
@@ -105,11 +105,11 @@ namespace VisualCCommon
                 default:
                     throw new Bam.Core.Exception("Unsupported target language");
             }
-            if (true == options.WarningsAsErrors)
+            if (true == settings.WarningsAsErrors)
             {
                 commandLine.Add("-WX");
             }
-            switch (options.OutputType)
+            switch (settings.OutputType)
             {
                 case C.ECompilerOutput.CompileOnly:
                     commandLine.Add("-c");

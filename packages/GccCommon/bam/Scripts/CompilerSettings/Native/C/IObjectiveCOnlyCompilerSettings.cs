@@ -33,13 +33,13 @@ namespace GccCommon
     {
         public static void
         Convert(
-            this C.IObjectiveCOnlyCompilerSettings options,
+            this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (options.ConstantStringClass != null)
+            if (settings.ConstantStringClass != null)
             {
-                commandLine.Add(System.String.Format("-fconstant-string-class={0}", options.ConstantStringClass));
+                commandLine.Add(System.String.Format("-fconstant-string-class={0}", settings.ConstantStringClass));
             }
         }
     }

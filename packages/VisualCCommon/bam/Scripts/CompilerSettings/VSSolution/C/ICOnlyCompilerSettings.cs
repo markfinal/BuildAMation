@@ -33,7 +33,7 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICOnlyCompilerSettings options,
+            this C.ICOnlyCompilerSettings settings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)

@@ -33,13 +33,13 @@ namespace GccCommon
     {
         public static void
         Convert(
-            this GccCommon.ICommonCompilerSettings options,
+            this GccCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.PositionIndependentCode)
+            if (null != settings.PositionIndependentCode)
             {
-                if (true == options.PositionIndependentCode)
+                if (true == settings.PositionIndependentCode)
                 {
                     commandLine.Add("-fPIC");
                 }

@@ -33,11 +33,11 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this ICommonArchiverSettings options,
+            this ICommonArchiverSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (options.NoLogo.GetValueOrDefault())
+            if (settings.NoLogo.GetValueOrDefault())
             {
                 commandLine.Add("-NOLOGO");
             }

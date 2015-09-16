@@ -33,14 +33,14 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this ICommonArchiverSettings options,
+            this ICommonArchiverSettings settings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
-            if (options.NoLogo.GetValueOrDefault(false))
+            if (settings.NoLogo.GetValueOrDefault(false))
             {
-                settingsGroup.AddSetting("SuppressStartupBanner", options.NoLogo.Value, condition);
+                settingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
             }
         }
     }

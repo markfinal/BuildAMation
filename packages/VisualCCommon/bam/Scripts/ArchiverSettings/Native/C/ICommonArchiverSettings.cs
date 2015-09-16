@@ -33,11 +33,11 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonArchiverSettings options,
+            this C.ICommonArchiverSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            switch (options.OutputType)
+            switch (settings.OutputType)
             {
                 case C.EArchiverOutput.StaticLibrary:
                     commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.StaticLibrary.Key].ToString()));

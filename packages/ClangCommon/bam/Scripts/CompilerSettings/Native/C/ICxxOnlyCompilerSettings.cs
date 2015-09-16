@@ -33,13 +33,13 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ICxxOnlyCompilerSettings options,
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.ExceptionHandler)
+            if (null != settings.ExceptionHandler)
             {
-                switch (options.ExceptionHandler)
+                switch (settings.ExceptionHandler)
                 {
                 case C.Cxx.EExceptionHandler.Disabled:
                     commandLine.Add("-fno-exceptions");
@@ -54,9 +54,9 @@ namespace ClangCommon
                     throw new Bam.Core.Exception("Unrecognized exception handler option");
                 }
             }
-            if (null != options.LanguageStandard)
+            if (null != settings.LanguageStandard)
             {
-                switch (options.LanguageStandard)
+                switch (settings.LanguageStandard)
                 {
                     case C.Cxx.ELanguageStandard.Cxx98:
                         commandLine.Add("-std=c++98");
@@ -70,12 +70,12 @@ namespace ClangCommon
                         commandLine.Add("-std=c++11");
                         break;
                     default:
-                        throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
+                        throw new Bam.Core.Exception("Invalid C++ language standard {0}", settings.LanguageStandard.ToString());
                 }
             }
-            if (options.StandardLibrary.HasValue)
+            if (settings.StandardLibrary.HasValue)
             {
-                switch (options.StandardLibrary.Value)
+                switch (settings.StandardLibrary.Value)
                 {
                 case C.Cxx.EStandardLibrary.NotSet:
                     break;
@@ -89,7 +89,7 @@ namespace ClangCommon
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Invalid C++ standard library {0}", options.StandardLibrary.Value.ToString());
+                    throw new Bam.Core.Exception("Invalid C++ standard library {0}", settings.StandardLibrary.Value.ToString());
                 }
             }
         }

@@ -33,12 +33,12 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonArchiverSettings options,
+            this C.ICommonArchiverSettings settings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settingsGroup,
             string condition)
         {
-            switch (options.OutputType)
+            switch (settings.OutputType)
             {
                 case C.EArchiverOutput.StaticLibrary:
                     {
@@ -48,7 +48,7 @@ namespace VisualCCommon
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Unknown output type, {0}", options.OutputType.ToString());
+                    throw new Bam.Core.Exception("Unknown output type, {0}", settings.OutputType.ToString());
             }
         }
     }

@@ -33,13 +33,13 @@ namespace GccCommon
     {
         public static void
         Convert(
-            this C.ICxxOnlyCompilerSettings options,
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != options.ExceptionHandler)
+            if (null != settings.ExceptionHandler)
             {
-                switch (options.ExceptionHandler)
+                switch (settings.ExceptionHandler)
                 {
                 case C.Cxx.EExceptionHandler.Disabled:
                     commandLine.Add("-fno-exceptions");
@@ -54,9 +54,9 @@ namespace GccCommon
                     throw new Bam.Core.Exception("Unrecognized exception handler option");
                 }
             }
-            if (null != options.LanguageStandard)
+            if (null != settings.LanguageStandard)
             {
-                switch (options.LanguageStandard)
+                switch (settings.LanguageStandard)
                 {
                     case C.Cxx.ELanguageStandard.Cxx98:
                         commandLine.Add("-std=c++98");
@@ -71,7 +71,7 @@ namespace GccCommon
                         break;
 
                     default:
-                        throw new Bam.Core.Exception("Invalid C++ language standard, '{0}'", options.LanguageStandard.ToString());
+                        throw new Bam.Core.Exception("Invalid C++ language standard, '{0}'", settings.LanguageStandard.ToString());
                 }
             }
         }

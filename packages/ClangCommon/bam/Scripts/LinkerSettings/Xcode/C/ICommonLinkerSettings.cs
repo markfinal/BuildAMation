@@ -33,11 +33,11 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettings options,
+            this C.ICommonLinkerSettings settings,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            switch (options.OutputType)
+            switch (settings.OutputType)
             {
             case C.ELinkerOutput.Executable:
                 {
@@ -51,7 +51,7 @@ namespace ClangCommon
                     configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicprefix"].Parse());
                     configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicext"].Parse().TrimStart(new [] {'.'}));
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.UniqueConfigurationValue("mh_dylib");
-                    var osxOpts = options as C.ILinkerSettingsOSX;
+                    var osxOpts = settings as C.ILinkerSettingsOSX;
                     if (null != osxOpts.InstallName)
                     {
                         configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(osxOpts.InstallName.Parse());
@@ -61,16 +61,16 @@ namespace ClangCommon
                 }
                 break;
             }
-            if (options.LibraryPaths.Count > 0)
+            if (settings.LibraryPaths.Count > 0)
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.LibraryPaths)
+                foreach (var path in settings.LibraryPaths)
                 {
                     option.Add(path.ToString());
                 }
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
             }
-            if (options.DebugSymbols.GetValueOrDefault())
+            if (settings.DebugSymbols.GetValueOrDefault())
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 option.Add("-g");

@@ -33,19 +33,19 @@ namespace MingwCommon
     {
         public static void
         Convert(
-            this IArchiverSettings options,
+            this IArchiverSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (options.Ranlib)
+            if (settings.Ranlib)
             {
                 commandLine.Add("-s");
             }
-            if (options.DoNotWarnIfLibraryCreated)
+            if (settings.DoNotWarnIfLibraryCreated)
             {
                 commandLine.Add("-c");
             }
-            switch (options.Command)
+            switch (settings.Command)
             {
                 case MingwCommon.EArchiverCommand.Replace:
                     commandLine.Add("-r");
