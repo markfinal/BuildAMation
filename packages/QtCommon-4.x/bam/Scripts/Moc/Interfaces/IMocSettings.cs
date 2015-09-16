@@ -29,33 +29,38 @@
 #endregion // License
 namespace QtCommon
 {
-    public sealed class MakeFileMocGeneration :
-        IMocGenerationPolicy
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface IMocSettings :
+        Bam.Core.ISettingsBase
     {
-        void
-        IMocGenerationPolicy.Moc(
-            MocGeneratedSource sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool mocCompiler,
-            Bam.Core.TokenizedString generatedMocSource,
-            C.HeaderFile source)
+        C.PreprocessorDefinitions PreprocessorDefinitions
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.HeaderFile.Key);
+            get;
+            set;
+        }
 
-            var mocOutputPath = generatedMocSource.Parse();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+        Bam.Core.Array<Bam.Core.TokenizedString> IncludePaths
+        {
+            get;
+            set;
+        }
 
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
-            args.Add(System.String.Format("-o {0}", mocOutputPath));
-            args.Add(source.InputPath.Parse());
-            rule.AddShellCommand(args.ToString(' '));
+        bool? DoNotGenerateIncludeStatement
+        {
+            get;
+            set;
+        }
 
-            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+        bool? DoNotDisplayWarnings
+        {
+            get;
+            set;
+        }
+
+        string PathPrefix
+        {
+            get;
+            set;
         }
     }
 }

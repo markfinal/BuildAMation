@@ -29,33 +29,53 @@
 #endregion // License
 namespace QtCommon
 {
-    public sealed class MakeFileMocGeneration :
-        IMocGenerationPolicy
+    public sealed class MocSettings :
+        Bam.Core.Settings,
+        CommandLineProcessor.IConvertToCommandLine,
+        IMocSettings
     {
-        void
-        IMocGenerationPolicy.Moc(
-            MocGeneratedSource sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool mocCompiler,
-            Bam.Core.TokenizedString generatedMocSource,
-            C.HeaderFile source)
+        public MocSettings(
+            Bam.Core.Module module)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.HeaderFile.Key);
+            this.InitializeAllInterfaces(module, true, true);
+        }
 
-            var mocOutputPath = generatedMocSource.Parse();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            (this as IMocSettings).Convert(module, commandLine);
+        }
 
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
-            args.Add(System.String.Format("-o {0}", mocOutputPath));
-            args.Add(source.InputPath.Parse());
-            rule.AddShellCommand(args.ToString(' '));
+        C.PreprocessorDefinitions IMocSettings.PreprocessorDefinitions
+        {
+            get;
+            set;
+        }
 
-            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+        Bam.Core.Array<Bam.Core.TokenizedString> IMocSettings.IncludePaths
+        {
+            get;
+            set;
+        }
+
+        bool? IMocSettings.DoNotGenerateIncludeStatement
+        {
+            get;
+            set;
+        }
+
+        bool? IMocSettings.DoNotDisplayWarnings
+        {
+            get;
+            set;
+        }
+
+        string IMocSettings.PathPrefix
+        {
+            get;
+            set;
         }
     }
 }

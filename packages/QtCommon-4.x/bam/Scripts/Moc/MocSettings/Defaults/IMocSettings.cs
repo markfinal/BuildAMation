@@ -27,35 +27,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace QtCommon
+using System.Linq;
+namespace QtCommon.DefaultSettings
 {
-    public sealed class MakeFileMocGeneration :
-        IMocGenerationPolicy
+    public static class DefaultSettingsExtensions
     {
-        void
-        IMocGenerationPolicy.Moc(
-            MocGeneratedSource sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool mocCompiler,
-            Bam.Core.TokenizedString generatedMocSource,
-            C.HeaderFile source)
+        public static void
+        Defaults(
+            this IMocSettings settings,
+            Bam.Core.Module module)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.HeaderFile.Key);
+            var qtPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Qt").First();
+            var qtVersion = qtPackage.Version.Split('.');
+            var paddedQtVersion = System.String.Format("0x{0}{1}{2}",
+                System.Convert.ToInt32(qtVersion[0]).ToString("00"),
+                System.Convert.ToInt32(qtVersion[1]).ToString("00"),
+                System.Convert.ToInt32(qtVersion[2]).ToString("00"));
+            settings.PreprocessorDefinitions.Add("QT_VERSION", paddedQtVersion);
+        }
 
-            var mocOutputPath = generatedMocSource.Parse();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
-
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
-            args.Add(System.String.Format("-o {0}", mocOutputPath));
-            args.Add(source.InputPath.Parse());
-            rule.AddShellCommand(args.ToString(' '));
-
-            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+        public static void
+        Empty(
+            this IMocSettings settings)
+        {
+            settings.PreprocessorDefinitions = new C.PreprocessorDefinitions();
+            settings.IncludePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
         }
     }
 }

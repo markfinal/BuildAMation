@@ -27,35 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace QtCommon
+namespace QtCommon.MocExtension
 {
-    public sealed class MakeFileMocGeneration :
-        IMocGenerationPolicy
+    public static class MocExtension
     {
-        void
-        IMocGenerationPolicy.Moc(
-            MocGeneratedSource sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool mocCompiler,
-            Bam.Core.TokenizedString generatedMocSource,
-            C.HeaderFile source)
+        public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
+        MocHeader(
+            this C.Cxx.ObjectFileCollection module,
+            C.HeaderFile header)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.HeaderFile.Key);
+            // moc file
+            var mocFile = Bam.Core.Module.Create<MocGeneratedSource>(module);
+            mocFile.SourceHeader = header;
+            // TODO: reinstate this - but causes an exception in finding the encapsulating module
+            //mocFile.DependsOn(header);
 
-            var mocOutputPath = generatedMocSource.Parse();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+            // compile source
+            var objFile = module.AddFile(MocGeneratedSource.Key, mocFile);
 
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
-            args.Add(System.String.Format("-o {0}", mocOutputPath));
-            args.Add(source.InputPath.Parse());
-            rule.AddShellCommand(args.ToString(' '));
-
-            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+            return new System.Tuple<Bam.Core.Module, Bam.Core.Module>(mocFile, objFile);
         }
     }
 }

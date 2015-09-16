@@ -29,33 +29,45 @@
 #endregion // License
 namespace QtCommon
 {
-    public sealed class MakeFileMocGeneration :
-        IMocGenerationPolicy
+    public static partial class NativeImplementation
     {
-        void
-        IMocGenerationPolicy.Moc(
-            MocGeneratedSource sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool mocCompiler,
-            Bam.Core.TokenizedString generatedMocSource,
-            C.HeaderFile source)
+        public static void
+        Convert(
+            this IMocSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(generatedMocSource);
-            rule.AddPrerequisite(source, C.HeaderFile.Key);
+            foreach (var define in options.PreprocessorDefinitions)
+            {
+                if (System.String.IsNullOrEmpty(define.Value))
+                {
+                    commandLine.Add(System.String.Format("-D {0}", define.Key));
+                }
+                else
+                {
+                    commandLine.Add(System.String.Format("-D {0}={1}", define.Key, define.Value));
+                }
+            }
 
-            var mocOutputPath = generatedMocSource.Parse();
-            var mocOutputDir = System.IO.Path.GetDirectoryName(mocOutputPath);
+            foreach (var path in options.IncludePaths)
+            {
+                commandLine.Add(System.String.Format("-I {0}", path.Parse()));
+            }
 
-            var args = new Bam.Core.StringArray();
-            args.Add(mocCompiler.Executable.Parse());
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, args);
-            args.Add(System.String.Format("-o {0}", mocOutputPath));
-            args.Add(source.InputPath.Parse());
-            rule.AddShellCommand(args.ToString(' '));
+            if (options.DoNotGenerateIncludeStatement.HasValue && options.DoNotGenerateIncludeStatement.Value)
+            {
+                commandLine.Add("-i");
+            }
 
-            meta.CommonMetaData.Directories.AddUnique(mocOutputDir);
+            if (options.DoNotDisplayWarnings.HasValue && options.DoNotDisplayWarnings.Value)
+            {
+                commandLine.Add("--no-warnings");
+            }
+
+            if (!System.String.IsNullOrEmpty(options.PathPrefix))
+            {
+                commandLine.Add(System.String.Format("-p {0}", options.PathPrefix));
+            }
         }
     }
 }
