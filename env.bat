@@ -20,7 +20,7 @@ IF NOT EXIST %ExecutablePath% (
 ) ELSE (
   SET NewPath=%ExecutablePath%;!NewPath!
   SET PATH=%ExecutablePath%;!PATH!
-  bam --help
+  bam --version
 )
 
 REM Pass the local variable out to the global
