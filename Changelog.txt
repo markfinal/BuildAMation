@@ -1,1 +1,1 @@
-16-Sep-2015 Version set to 0.90.
+16-Sep-2015 Next target version set to 1.0.
