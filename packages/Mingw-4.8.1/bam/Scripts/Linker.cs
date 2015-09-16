@@ -27,119 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using C.DefaultSettings;
-using Mingw.DefaultSettings;
 namespace Mingw
 {
-namespace DefaultSettings
-{
-    public static partial class DefaultSettingsExtensions
-    {
-        public static void Defaults(this ILinkerOptions settings, Bam.Core.Module module)
-        {
-        }
-    }
-}
-    [Bam.Core.SettingsExtensions(typeof(Mingw.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerOptions : Bam.Core.ISettingsBase
-    {
-    }
-
-    public static partial class NativeImplementation
-    {
-        public static void
-        Convert(
-            this C.ICommonLinkerSettings options,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            //var applicationFile = module as C.ConsoleApplication;
-            switch (options.OutputType)
-            {
-                case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    break;
-
-                case C.ELinkerOutput.DynamicLibrary:
-                    commandLine.Add("-shared");
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString()));
-                    break;
-            }
-            foreach (var path in options.LibraryPaths)
-            {
-                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
-            }
-            foreach (var path in options.Libraries)
-            {
-                commandLine.Add(path);
-            }
-            if (options.DebugSymbols.GetValueOrDefault())
-            {
-                commandLine.Add("-g");
-            }
-        }
-
-        public static void
-        Convert(
-            this ILinkerOptions options,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-        }
-    }
-
-    public sealed class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettings,
-        ILinkerOptions
-    {
-        public LinkerSettings(Bam.Core.Module module)
-        {
-#if true
-            this.InitializeAllInterfaces(module, false, true);
-#else
-            (this as C.ICommonLinkerSettings).Defaults(module);
-            (this as ILinkerOptions).Defaults(module);
-#endif
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
-            (this as ILinkerOptions).Convert(module, commandLine);
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-    }
-
     public abstract class LinkerBase :
         C.LinkerTool
     {
@@ -167,7 +56,9 @@ namespace DefaultSettings
             }
         }
 
-        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
             var settings = new LinkerSettings(module);
             return settings;
@@ -215,7 +106,8 @@ namespace DefaultSettings
             return System.String.Format("-l{0}", libName);
         }
 
-        public override void ProcessLibraryDependency(
+        public override void
+        ProcessLibraryDependency(
             C.CModule executable,
             C.CModule library)
         {

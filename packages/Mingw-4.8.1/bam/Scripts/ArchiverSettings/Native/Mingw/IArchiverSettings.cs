@@ -29,25 +29,31 @@
 #endregion // License
 namespace Mingw
 {
-    public interface ICommonCompilerSettings
+    public static partial class NativeImplementation
     {
-        bool M48Common
+        public static void
+        Convert(
+            this IArchiverSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
-        }
-    }
+            if (options.Ranlib)
+            {
+                commandLine.Add("-s");
+            }
+            if (options.DoNotWarnIfLibraryCreated)
+            {
+                commandLine.Add("-c");
+            }
+            switch (options.Command)
+            {
+                case MingwCommon.EArchiverCommand.Replace:
+                    commandLine.Add("-r");
+                    break;
 
-    public interface ICOnlyCompilerSettings
-    {
-        bool M48COnly
-        {
-            get;
-            set;
+                default:
+                    throw new Bam.Core.Exception("No such archiver command");
+            }
         }
-    }
-
-    public interface ICxxOnlyCompilerSettings
-    {
     }
 }

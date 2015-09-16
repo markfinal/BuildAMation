@@ -27,32 +27,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace MingwCommon
+namespace Mingw
 {
-    public interface ICommonCompilerSettings
+    public static partial class NativeImplementation
     {
-        bool MCommonCommon
+        public static void
+        Convert(
+            this C.ICOnlyCompilerSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
-        }
-    }
-
-    public interface ICOnlyCompilerSettings
-    {
-        bool MCommonCOnly
-        {
-            get;
-            set;
-        }
-    }
-
-    public interface ICxxOnlyCompilerSettings
-    {
-        bool MCommonCxxOnly
-        {
-            get;
-            set;
+            if (null != options.LanguageStandard)
+            {
+                switch (options.LanguageStandard)
+                {
+                    case C.ELanguageStandard.C89:
+                        break;
+                    case C.ELanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard {0}", options.LanguageStandard.ToString());
+                }
+            }
         }
     }
 }

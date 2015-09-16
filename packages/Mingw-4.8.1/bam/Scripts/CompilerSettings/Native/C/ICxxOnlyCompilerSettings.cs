@@ -27,20 +27,44 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace MingwCommon
+namespace Mingw
 {
-    public interface IArchiverSettings
+    public static partial class NativeImplementation
     {
-        MingwCommon.EArchiverCommand Command
+        public static void
+        Convert(
+            this C.ICxxOnlyCompilerSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
-        }
+            if (null != options.ExceptionHandler)
+            {
+                switch (options.ExceptionHandler)
+                {
+                    case C.Cxx.EExceptionHandler.Disabled:
+                        commandLine.Add("-fno-exceptions");
+                        break;
 
-        bool DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
+                    case C.Cxx.EExceptionHandler.Asynchronous:
+                    case C.Cxx.EExceptionHandler.Synchronous:
+                        commandLine.Add("-fexceptions");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            switch (options.LanguageStandard)
+            {
+                case C.Cxx.ELanguageStandard.Cxx98:
+                    commandLine.Add("-std=c++98");
+                    break;
+                case C.Cxx.ELanguageStandard.Cxx11:
+                    commandLine.Add("-std=c++11");
+                    break;
+                default:
+                    throw new Bam.Core.Exception("Invalid C++ language standard {0}", options.LanguageStandard.ToString());
+            }
         }
     }
 }

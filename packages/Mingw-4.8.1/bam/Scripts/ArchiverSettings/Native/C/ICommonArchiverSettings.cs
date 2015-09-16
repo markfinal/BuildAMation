@@ -27,14 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace MingwCommon
+namespace Mingw
 {
-    public interface ILinkerOptions
+    public static partial class NativeImplementation
     {
-        bool EnableAutoImport
+        public static void
+        Convert(
+            this C.ICommonArchiverSettings options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
+            switch (options.OutputType)
+            {
+                case C.EArchiverOutput.StaticLibrary:
+                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unsupported output type");
+            }
         }
     }
 }
