@@ -35,7 +35,7 @@ namespace DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this IArchiverOptions settings, Bam.Core.Module module)
+        public static void Defaults(this IArchiverSettings settings, Bam.Core.Module module)
         {
             settings.Ranlib = true;
             settings.DoNotWarnIfLibraryCreated = true;
@@ -44,7 +44,7 @@ namespace DefaultSettings
     }
 }
     [Bam.Core.SettingsExtensions(typeof(Mingw.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IArchiverOptions : Bam.Core.ISettingsBase
+    public interface IArchiverSettings : Bam.Core.ISettingsBase
     {
         bool Ranlib
         {
@@ -87,7 +87,7 @@ namespace DefaultSettings
 
         public static void
         Convert(
-            this IArchiverOptions options,
+            this IArchiverSettings options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
@@ -111,19 +111,19 @@ namespace DefaultSettings
         }
     }
 
-    public class LibrarianSettings :
+    public class ArchiverSettings :
         C.SettingsBase,
         C.ICommonArchiverSettings,
-        IArchiverOptions,
+        IArchiverSettings,
         CommandLineProcessor.IConvertToCommandLine
     {
-        public LibrarianSettings(Bam.Core.Module module)
+        public ArchiverSettings(Bam.Core.Module module)
         {
 #if true
             this.InitializeAllInterfaces(module, false, true);
 #else
             (this as C.ICommonArchiverSettings).Defaults(module);
-            (this as IArchiverOptions).Defaults(module);
+            (this as IArchiverSettings).Defaults(module);
 #endif
         }
 
@@ -133,19 +133,19 @@ namespace DefaultSettings
             set;
         }
 
-        bool IArchiverOptions.Ranlib
+        bool IArchiverSettings.Ranlib
         {
             get;
             set;
         }
 
-        bool IArchiverOptions.DoNotWarnIfLibraryCreated
+        bool IArchiverSettings.DoNotWarnIfLibraryCreated
         {
             get;
             set;
         }
 
-        MingwCommon.EArchiverCommand IArchiverOptions.Command
+        MingwCommon.EArchiverCommand IArchiverSettings.Command
         {
             get;
             set;
@@ -156,8 +156,7 @@ namespace DefaultSettings
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as IArchiverOptions).Convert(module, commandLine);
-            // output file comes last, before inputs
+            (this as IArchiverSettings).Convert(module, commandLine);
             (this as C.ICommonArchiverSettings).Convert(module, commandLine);
         }
     }
@@ -186,7 +185,7 @@ namespace DefaultSettings
 
         public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
-            var settings = new LibrarianSettings(module);
+            var settings = new ArchiverSettings(module);
             return settings;
         }
     }

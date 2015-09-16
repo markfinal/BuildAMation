@@ -29,7 +29,7 @@
 #endregion // License
 namespace MingwCommon
 {
-    public interface IArchiverOptions
+    public interface IArchiverSettings
     {
         MingwCommon.EArchiverCommand Command
         {

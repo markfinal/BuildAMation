@@ -46,7 +46,7 @@ namespace Clang
         CreateDefaultSettings<T>(
             T module)
         {
-            var settings = new LibrarianSettings(module);
+            var settings = new ArchiverSettings(module);
             return settings;
         }
 

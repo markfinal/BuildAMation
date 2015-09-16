@@ -29,14 +29,14 @@
 #endregion // License
 namespace Clang
 {
-    public class LibrarianSettings :
+    public class ArchiverSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         // TODO: Xcode translation
         C.ICommonArchiverSettings,
         ICommonArchiverSettings
     {
-        public LibrarianSettings(
+        public ArchiverSettings(
             Bam.Core.Module module)
         {
              this.InitializeAllInterfaces(module, false, true);
@@ -48,7 +48,6 @@ namespace Clang
             Bam.Core.StringArray commandLine)
         {
             (this as ICommonArchiverSettings).Convert(module, commandLine);
-            // output file comes last, before inputs
             (this as C.ICommonArchiverSettings).Convert(module, commandLine);
         }
 

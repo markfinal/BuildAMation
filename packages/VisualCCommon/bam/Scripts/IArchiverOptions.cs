@@ -29,7 +29,7 @@
 #endregion // License
 namespace VisualCCommon
 {
-    public interface IArchiverOptions
+    public interface IArchiverSettings
     {
         bool NoLogo
         {
