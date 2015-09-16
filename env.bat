@@ -19,6 +19,7 @@ IF NOT EXIST %ExecutablePath% (
   ECHO *** ERROR: BuildAMation directory '%ExecutablePath%' does not exist ***
 ) ELSE (
   SET NewPath=%ExecutablePath%;!NewPath!
+  SET PATH=%ExecutablePath%;!PATH!
   bam --help
 )
 
