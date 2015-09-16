@@ -60,7 +60,7 @@ namespace Publisher
             Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> packageObjects)
         {
             var root = packageRoot.Parse();
             foreach (var module in packageObjects)

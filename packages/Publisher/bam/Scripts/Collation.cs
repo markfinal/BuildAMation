@@ -33,7 +33,7 @@ namespace Publisher
     public abstract class Collation :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, PackageReference>>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>>();
         private ICollationPolicy Policy = null;
         public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
 
@@ -88,7 +88,7 @@ namespace Publisher
             }
         }
 
-        public PackageReference
+        public CollatedObject
         Include<DependentModule>(
             Bam.Core.FileKey key,
             EPublishingType type,
@@ -102,7 +102,7 @@ namespace Publisher
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, PackageReference>());
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>());
             }
             var path = this.PublishingPath(dependent, type);
             string destSubDir;
@@ -121,7 +121,7 @@ namespace Publisher
                     destSubDir = path;
                 }
             }
-            var packaging = new PackageReference(dependent, destSubDir, null);
+            var packaging = new CollatedObject(dependent, destSubDir, null);
             this.dependents[dependent].Add(dependent.GeneratedPaths[key], packaging);
             return packaging;
         }
@@ -130,8 +130,8 @@ namespace Publisher
         Include<DependentModule>(
             Bam.Core.FileKey key,
             string subdir,
-            PackageReference reference,
-            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.Module, new()
+            CollatedObject reference,
+            params CollatedObject[] additionalReferences) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -141,11 +141,11 @@ namespace Publisher
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, PackageReference>());
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>());
             }
-            var refs = new Bam.Core.Array<PackageReference>(reference);
-            refs.AddRangeUnique(new Bam.Core.Array<PackageReference>(additionalReferences));
-            var packaging = new PackageReference(dependent, subdir, refs);
+            var refs = new Bam.Core.Array<CollatedObject>(reference);
+            refs.AddRangeUnique(new Bam.Core.Array<CollatedObject>(additionalReferences));
+            var packaging = new CollatedObject(dependent, subdir, refs);
             this.dependents[dependent].Add(dependent.GeneratedPaths[key], packaging);
         }
 
@@ -153,8 +153,8 @@ namespace Publisher
         IncludeFiles<DependentModule>(
             string parameterizedFilePath,
             string subdir,
-            PackageReference reference,
-            params PackageReference[] additionalReferences) where DependentModule : Bam.Core.Module, new()
+            CollatedObject reference,
+            params CollatedObject[] additionalReferences) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -164,12 +164,12 @@ namespace Publisher
             this.Requires(dependent);
             if (!this.dependents.ContainsKey(dependent))
             {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, PackageReference>());
+                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>());
             }
-            var refs = new Bam.Core.Array<PackageReference>(reference);
-            refs.AddRangeUnique(new Bam.Core.Array<PackageReference>(additionalReferences));
+            var refs = new Bam.Core.Array<CollatedObject>(reference);
+            refs.AddRangeUnique(new Bam.Core.Array<CollatedObject>(additionalReferences));
             var tokenString = Bam.Core.TokenizedString.Create(parameterizedFilePath, dependent);
-            var packaging = new PackageReference(dependent, subdir, refs);
+            var packaging = new CollatedObject(dependent, subdir, refs);
             this.dependents[dependent].Add(tokenString, packaging);
         }
 
@@ -184,7 +184,7 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
             // TODO: the nested dictionary is not readonly - not sure how to construct this
-            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, PackageReference>>(this.dependents);
+            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>>(this.dependents);
             this.Policy.Collate(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
         }
 

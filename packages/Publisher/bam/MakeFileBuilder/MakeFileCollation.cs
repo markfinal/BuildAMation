@@ -62,7 +62,7 @@ namespace Publisher
             Bam.Core.TokenizedString packageRoot,
             System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module,
             System.Collections.Generic.Dictionary<Bam.Core.TokenizedString,
-            PackageReference>> packageObjects)
+            CollatedObject>> packageObjects)
         {
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();

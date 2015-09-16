@@ -29,12 +29,12 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class PackageReference
+    public sealed class CollatedObject
     {
-        public PackageReference(
+        public CollatedObject(
             Bam.Core.Module module,
             string subdirectory,
-            Bam.Core.Array<PackageReference> references)
+            Bam.Core.Array<CollatedObject> references)
         {
             this.Module = module;
             this.SubDirectory = subdirectory;
@@ -61,7 +61,7 @@ namespace Publisher
             private set;
         }
 
-        public Bam.Core.Array<PackageReference> References
+        public Bam.Core.Array<CollatedObject> References
         {
             get;
             private set;
