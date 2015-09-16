@@ -33,7 +33,9 @@ namespace PluginTest
     public sealed class Application :
         C.Cxx.ConsoleApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -54,7 +56,9 @@ namespace PluginTest
     public sealed class Plugin :
         C.Cxx.DynamicLibrary
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -71,7 +75,9 @@ namespace PluginTest
     public sealed class RuntimePackage :
         Publisher.Collation
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

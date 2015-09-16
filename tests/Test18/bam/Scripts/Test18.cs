@@ -32,7 +32,9 @@ namespace Test18
     public sealed class Control :
         C.ConsoleApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -52,7 +54,9 @@ namespace Test18
     public sealed class X :
         C.StaticLibrary
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -69,7 +73,9 @@ namespace Test18
     public sealed class Z :
         C.StaticLibrary
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

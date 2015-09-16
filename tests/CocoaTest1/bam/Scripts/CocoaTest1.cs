@@ -33,7 +33,9 @@ namespace CocoaTest1
     sealed class CLibrary :
         C.StaticLibrary
     {
-        protected override void Init (Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init (parent);
 
@@ -45,7 +47,9 @@ namespace CocoaTest1
     sealed class CocoaTest :
         C.GUIApplication
     {
-        protected override void Init (Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init (parent);
 

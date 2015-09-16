@@ -33,7 +33,9 @@ namespace ObjectiveCTest1
     sealed class Program :
         C.ConsoleApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

@@ -37,7 +37,9 @@ namespace ProxyTest
             this.Macros["proxypkgroot"] = Bam.Core.TokenizedString.Create("$(packagedir)/../FakePackage", this);
         }
 
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -53,7 +55,9 @@ namespace ProxyTest
             this.Macros["proxypkgroot"] = Bam.Core.TokenizedString.Create("$(packagedir)/../FakePackage", this);
         }
 
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

@@ -91,7 +91,7 @@ namespace Test
     {
         protected override void
         Init(
-            Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -108,7 +108,9 @@ namespace Test
     sealed class BuildTerminalApplicationFromCxx :
         C.Cxx.ConsoleApplication
     {
-        protected override void Init(Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -128,7 +130,7 @@ namespace Test
     {
         protected override void
         Init(
-            Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

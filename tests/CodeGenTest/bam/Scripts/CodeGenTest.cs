@@ -54,7 +54,9 @@ namespace CodeGenTest
         C.ConsoleApplication,
         Bam.Core.ICommandLineTool
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -153,7 +155,9 @@ namespace CodeGenTest
     public sealed class TestApp :
         C.ConsoleApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

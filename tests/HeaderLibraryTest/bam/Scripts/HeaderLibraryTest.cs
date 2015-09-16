@@ -33,7 +33,9 @@ namespace HeaderLibraryTest
     public sealed class HeaderLibrary :
         C.HeaderLibrary
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -53,7 +55,9 @@ namespace HeaderLibraryTest
     public sealed class Application :
         C.ConsoleApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

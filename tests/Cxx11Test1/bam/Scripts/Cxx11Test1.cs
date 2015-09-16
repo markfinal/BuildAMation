@@ -56,7 +56,9 @@ namespace Cxx11Test1
     public sealed class TestProg :
         C.Cxx.ConsoleApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

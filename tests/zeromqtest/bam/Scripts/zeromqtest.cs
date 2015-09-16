@@ -33,7 +33,9 @@ namespace zeromqtest
     public sealed class Test :
         C.Cxx.ConsoleApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -65,7 +67,9 @@ namespace zeromqtest
     public sealed class RuntimePackage :
         Publisher.Collation
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

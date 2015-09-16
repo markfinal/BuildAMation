@@ -34,7 +34,9 @@ namespace OpenGLUniformBufferTest
     sealed class GLUniformBufferTest :
         C.Cxx.GUIApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 

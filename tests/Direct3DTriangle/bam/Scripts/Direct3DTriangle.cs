@@ -33,7 +33,9 @@ namespace Direct3DTriangle
     sealed class D3D9TriangleTest :
         C.Cxx.GUIApplication
     {
-        protected override void Init(Bam.Core.Module parent)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
