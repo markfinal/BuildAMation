@@ -224,7 +224,9 @@ configs["Test11"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[vi
 configs["Test12"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                               linux={"Native":[gcc64],"MakeFile":[gcc64]},
                               osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+""" Moved to bam-qt
 configs["Test13"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]})
+"""
 configs["Test14"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                               linux={"Native":[gcc64],"MakeFile":[gcc64]},
                               osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
@@ -240,29 +242,33 @@ configs["Test17"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[vi
 configs["CodeGenTest"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
                                    linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                    osx={"Native":[clang64],"MakeFile":[clang64]})
-"""
+""" Moved to bam-csharp
 configs["CodeGenTest2"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
                                     linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                     osx={"Native":[clang64],"MakeFile":[clang64]})
 """
-"""
+""" Moved to bam-csharp
 configs["CSharpTest1"] = TestSetup(win={"Native":None,"MakeFile":None,"VSSolution":None},
                                    linux={"Native":None,"MakeFile":None},
                                    osx={"Native":None,"MakeFile":None})
 """
+""" Moved to bam-graphics
 configs["Direct3DTriangle"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]})
+"""
 """
 configs["MixedModeCpp"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]})
 """
-"""
+""" Moved to bam-csharp
 configs["MixedTest"] = TestSetup(win={"Native":[visualc64],"MakeFile":[visualc64]})
 """
-"""
+""" Moved to bam-hpc
 configs["OpenCLTest1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]})
 """
+""" Moved to bam-graphicssdk
 configs["OpenGLUniformBufferTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]})
 configs["RenderTextureAndProcessor"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]})
 """
+""" Moved to bam-csharp
 configs["WPFTest"] = TestSetup(win={"VSSolution":None})
 """
 configs["CocoaTest1"] = TestSetup(osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
@@ -279,9 +285,13 @@ configs["Cxx11Test1"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution"
 configs["PluginTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+""" Moved to bam-qt
 configs["Qt5Test1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]},
                                 linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                 osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+"""
+""" Moved to bam-zeromq
 configs["zeromqtest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+"""
