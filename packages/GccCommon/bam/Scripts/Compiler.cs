@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace GccCommon
 {
     public abstract class CompilerBase :
@@ -36,6 +37,10 @@ namespace GccCommon
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("objext", ".o");
+
+            var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
+            var suffix = gccPackage.MetaData["ToolSuffix"] as string;
+            this.Macros.Add("CompilerSuffix", suffix);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -106,7 +111,7 @@ namespace GccCommon
     {
         public CCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc-4.8", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc$(CompilerSuffix)", this));
         }
 
         protected override void
@@ -125,7 +130,7 @@ namespace GccCommon
     {
         public CxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++-4.8", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++$(CompilerSuffix)", this));
         }
 
         protected override void
@@ -144,7 +149,7 @@ namespace GccCommon
     {
         public ObjectiveCCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc-4.8", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc$(CompilerSuffix)", this));
         }
 
         protected override void
@@ -165,7 +170,7 @@ namespace GccCommon
     {
         public ObjectiveCxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++-4.8", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++$(CompilerSuffix)", this));
         }
 
         protected override void

@@ -27,13 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace GccCommon
 {
     public abstract class LinkerBase :
         C.LinkerTool
     {
-        public LinkerBase(
-            string executable)
+        public LinkerBase()
         {
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create(@"$(InstallPath)", this)));
 
@@ -41,7 +41,10 @@ namespace GccCommon
             this.Macros.Add("exeext", string.Empty);
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/" + executable, this));
+
+            var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
+            var suffix = gccPackage.MetaData["ToolSuffix"] as string;
+            this.Macros.Add("LinkerSuffix", suffix);
         }
 
         private static string
@@ -144,8 +147,9 @@ namespace GccCommon
         LinkerBase
     {
         public Linker()
-            : base("gcc-4.8")
-        {}
+        {
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc$(LinkerSuffix)", this));
+        }
     }
 
     [C.RegisterCxxLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -154,7 +158,8 @@ namespace GccCommon
         LinkerBase
     {
         public LinkerCxx()
-            : base("g++-4.8")
-        {}
+        {
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++$(LinkerSuffix)", this));
+        }
     }
 }
