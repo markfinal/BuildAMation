@@ -94,7 +94,7 @@ def Build():
 
 def MakeDistribution(version):
     coDir, bamDir = os.path.split(os.getcwd())
-    tarPath = os.path.join(coDir, "BuildAMation-%s-binary.tgz"%version)
+    tarPath = os.path.join(coDir, "BuildAMation-%s.tgz"%version)
     print >>sys.stdout, "Writing tar file %s" % tarPath
     sys.stdout.flush()
     os.chdir(coDir)
