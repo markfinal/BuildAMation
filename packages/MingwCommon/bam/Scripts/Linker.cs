@@ -27,17 +27,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace MingwCommon
 {
     public abstract class LinkerBase :
         C.LinkerTool
     {
-        public LinkerBase(
-            string executable)
+        protected LinkerBase()
         {
+            var mingwPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Mingw").First();
+            var suffix = mingwPackage.MetaData["ToolSuffix"] as string;
+            this.Macros.Add("LinkerSuffix", suffix);
+
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin", this));
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\" + executable, this));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
@@ -129,8 +132,9 @@ namespace MingwCommon
         LinkerBase
     {
         public Linker()
-            : base("mingw32-gcc-4.8.1.exe")
-        {}
+        {
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe", this));
+        }
     }
 
     [C.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
@@ -138,7 +142,8 @@ namespace MingwCommon
         LinkerBase
     {
         public LinkerCxx()
-            : base("mingw32-g++.exe")
-        { }
+        {
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
+        }
     }
 }

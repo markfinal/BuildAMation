@@ -27,18 +27,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace MingwCommon
 {
     public abstract class CompilerBase :
         C.CompilerTool
     {
-        public CompilerBase()
+        protected CompilerBase()
         {
             this.InheritedEnvironmentVariables.Add("TEMP");
 
+            var mingwPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Mingw").First();
+            var suffix = mingwPackage.MetaData["ToolSuffix"] as string;
+            this.Macros.Add("CompilerSuffix", suffix);
+
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin", this));
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-gcc-4.8.1.exe", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-gcc$(CompilerSuffix).exe", this));
             this.Macros.Add("objext", ".o");
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
