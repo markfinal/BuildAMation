@@ -32,7 +32,7 @@ namespace VisualCCommon
     public abstract class LinkerBase :
         C.LinkerTool
     {
-        public LinkerBase(
+        protected LinkerBase(
             string toolPath,
             string libPath)
         {

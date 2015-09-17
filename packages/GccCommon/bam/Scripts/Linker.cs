@@ -33,7 +33,7 @@ namespace GccCommon
     public abstract class LinkerBase :
         C.LinkerTool
     {
-        public LinkerBase()
+        protected LinkerBase()
         {
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create(@"$(InstallPath)", this)));
 
