@@ -45,7 +45,8 @@ dirsToDelete=[\
 
 
 def CloneBuildAMation(dir):
-    subprocess.check_call(["git", "clone", "https://github.com/markfinal/BuildAMation", dir])
+    # TODO: specify the explicit tag too
+    subprocess.check_call(["git", "clone", "--depth", "1", "https://github.com/markfinal/BuildAMation", dir])
     print >>sys.stdout, "Cloning complete"
     sys.stdout.flush()
 
