@@ -133,7 +133,8 @@ namespace C
         }
 
         public void
-        RequiredToExist<DependentModule>() where DependentModule : CModule, new()
+        RequiredToExist<DependentModule>(
+            params CModule[] affectedSources) where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -141,6 +142,14 @@ namespace C
                 return;
             }
             this.Requires(dependent);
+            foreach (var source in affectedSources)
+            {
+                if (null == source)
+                {
+                    continue;
+                }
+                source.UsePublicPatches(dependent);
+            }
         }
 
         public void

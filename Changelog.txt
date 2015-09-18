@@ -1,2 +1,5 @@
+18-Sep-2015 C.ConsoleApplication.RequiredToExist<T> now accepts a comma separated list of modules to apply public patches of T to. This is used, for instance, for plugins that do not need to be linked against an application, but do expose a header to compile against.
+
 18-Sep-2015 Public patches on a module are now inherited by all modules that reside within it. For example, a C static library has a public patch to provide an include path; all source containers within that static library automatically use that patch.
+
 16-Sep-2015 Next target version set to 1.0.
