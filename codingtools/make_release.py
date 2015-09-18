@@ -44,9 +44,11 @@ dirsToDelete=[\
 # TODO remove .git
 
 
-def CloneBuildAMation(dir):
+def CloneBuildAMation(dir, version):
     # TODO: specify the explicit tag too
-    subprocess.check_call(["git", "clone", "--depth", "1", "https://github.com/markfinal/BuildAMation", dir])
+    args = ["git", "clone", "--depth", "1", "--branch", "v%s"%version, "https://github.com/markfinal/BuildAMation", dir]
+    print "Running: %s" % ' '.join(args)
+    subprocess.check_call(args)
     print >>sys.stdout, "Cloning complete"
     sys.stdout.flush()
 
@@ -114,7 +116,7 @@ def MakeDistribution(version):
 def Main(dir, version):
     print >>sys.stdout, "Creating BuildAMation version %s" % version
     sys.stdout.flush()
-    CloneBuildAMation(dir)
+    CloneBuildAMation(dir, version)
     cwd = os.getcwd()
     try:
         os.chdir(dir)
