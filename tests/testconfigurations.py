@@ -241,7 +241,7 @@ configs["Test17"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[vi
                               osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["CodeGenTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                    linux={"Native":[gcc64],"MakeFile":[gcc64]},
-                                   osx={"Native":[clang64],"MakeFile":[clang64]})
+                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 """ Moved to bam-csharp
 configs["CodeGenTest2"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
                                     linux={"Native":[gcc64],"MakeFile":[gcc64]},
