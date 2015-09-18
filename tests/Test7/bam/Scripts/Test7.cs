@@ -33,16 +33,6 @@ namespace Test7
     sealed class ExplicitDynamicLibrary :
         C.DynamicLibrary
     {
-        private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
-            {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null == compiler)
-                {
-                    return;
-                }
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
-            };
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -51,12 +41,17 @@ namespace Test7
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.Create("ExplicitDynamicLibrary", null);
 
-            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
-
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
-
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
-            source.PrivatePatch(settings => this.includePaths(settings, this));
+            this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null == compiler)
+                    {
+                        return;
+                    }
+                    compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)

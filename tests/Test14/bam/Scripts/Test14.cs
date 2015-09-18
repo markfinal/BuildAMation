@@ -33,15 +33,6 @@ namespace Test14
     public sealed class DynamicLibraryA :
         C.DynamicLibrary
     {
-        private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
-            {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null != compiler)
-                {
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
-                }
-            };
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -49,11 +40,15 @@ namespace Test14
             base.Init(parent);
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryA.h");
-
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryA.c");
-            source.PrivatePatch(settings => this.includePaths(settings, this));
-
-            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
+            this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryA.c");
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    }
+                });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)
@@ -66,15 +61,6 @@ namespace Test14
     public sealed class DynamicLibraryB :
         C.DynamicLibrary
     {
-        private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
-        {
-            var compiler = settings as C.ICommonCompilerSettings;
-            if (null != compiler)
-            {
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
-            }
-        };
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -82,11 +68,15 @@ namespace Test14
             base.Init(parent);
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryB.h");
-
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryB.c");
-            source.PrivatePatch(settings => this.includePaths(settings, this));
-
-            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, appliedTo));
+            this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryB.c");
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    }
+                });
 
             this.LinkAgainst<DynamicLibraryA>();
 

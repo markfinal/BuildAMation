@@ -32,15 +32,6 @@ namespace Test3
     sealed class Library2 :
         C.StaticLibrary
     {
-        public Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
-            {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null != compiler)
-                {
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
-                }
-            };
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -48,11 +39,15 @@ namespace Test3
             base.Init(parent);
 
             this.CreateHeaderContainer("$(packagedir)/include/library2.h");
-
-            var source = this.CreateCSourceContainer("$(packagedir)/source/library2.c");
-            source.PrivatePatch(settings => this.includePaths(settings, this));
-
-            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
+            this.CreateCSourceContainer("$(packagedir)/source/library2.c");
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    }
+                });
         }
     }
 }

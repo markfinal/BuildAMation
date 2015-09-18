@@ -33,15 +33,6 @@ namespace Test4
     sealed class MyDynamicLib :
         C.DynamicLibrary
     {
-        private Bam.Core.Module.PublicPatchDelegate includePaths = (settings, appliedTo) =>
-            {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null != compiler)
-                {
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", appliedTo));
-                }
-            };
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -51,20 +42,20 @@ namespace Test4
             this.LinkAgainst<MyStaticLib>();
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
-
             var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
-
-            source.PrivatePatch(settings => this.includePaths(settings, this));
-            this.PublicPatch((settings, appliedTo) => this.includePaths(settings, this));
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    }
+                });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)
             {
-                // TODO: simplify
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
-                this.Requires(windowsSDK);
-                source.UsePublicPatches(windowsSDK); // compiling
-                this.UsePublicPatches(windowsSDK); // linking
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
         }
     }
@@ -79,13 +70,11 @@ namespace Test4
             base.Init(parent);
 
             this.CreateHeaderContainer("$(packagedir)/include/staticlibrary.h");
-
             var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary.c");
-
             source.PublicPatch((settings, appliedTo) =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
             });
         }
     }
