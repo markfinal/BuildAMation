@@ -485,6 +485,19 @@ namespace Bam.Core
             var graph = Graph.Instance;
             var encapsulatingModule = this.GetEncapsulatingReferencedModule();
             this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(encapsulatingModule.GetType().Name, this.BuildEnvironment.Configuration.ToString()));
+
+            // modules that are encapsulated, have settings, and aren't a child (as their parent is also encapsulated, and thus gets this too), inherit the
+            // public patches from the encapsulating module, since this is identical behavior to 'using public patches'
+            if (encapsulatingModule != this)
+            {
+                if (this.Settings != null)
+                {
+                    if (!(this is IChildModule))
+                    {
+                        this.UsePublicPatches(encapsulatingModule);
+                    }
+                }
+            }
         }
 
         static public void
