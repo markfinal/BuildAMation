@@ -91,16 +91,8 @@ class TestSetup:
 def GetResponsePath(responseName):
   return "%s.rsp" % responseName
 
-def GetTestConfig(packageName, options):
-    try:
-        config = configs[packageName]
-    except KeyError, e:
-        if options.verbose:
-            print "No configuration for package: '%s'" % str(e)
-        return None
-    return config
-
 def TestOptionSetup(optParser):
+    # TODO: change this so that only the options shown are for the current platform
     allResponseNames = set()
     for config in configs.values():
         results = config._GetSetOfAllResponseNames()
@@ -189,6 +181,7 @@ clang64 = Clang64()
 
 
 # TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of a Bam command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
+"""
 configs = {}
 configs["Test"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                             linux={"Native":[gcc64],"MakeFile":[gcc64]},
@@ -224,8 +217,10 @@ configs["Test11"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[vi
 configs["Test12"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                               linux={"Native":[gcc64],"MakeFile":[gcc64]},
                               osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+"""
 """ Moved to bam-qt
 configs["Test13"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]})
+"""
 """
 configs["Test14"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                               linux={"Native":[gcc64],"MakeFile":[gcc64]},
@@ -242,6 +237,7 @@ configs["Test17"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[vi
 configs["CodeGenTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                    linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                    osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+"""
 """ Moved to bam-csharp
 configs["CodeGenTest2"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
                                     linux={"Native":[gcc64],"MakeFile":[gcc64]},
@@ -271,6 +267,7 @@ configs["RenderTextureAndProcessor"] = TestSetup(win={"Native":[visualc64,mingw3
 """ Moved to bam-csharp
 configs["WPFTest"] = TestSetup(win={"VSSolution":None})
 """
+"""
 configs["CocoaTest1"] = TestSetup(osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["ObjectiveCTest1"] = TestSetup(osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
 configs["ProxyTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
@@ -285,6 +282,7 @@ configs["Cxx11Test1"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution"
 configs["PluginTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+"""
 """ Moved to bam-qt
 configs["Qt5Test1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64],"MakeFile":[visualc64]},
                                 linux={"Native":[gcc64],"MakeFile":[gcc64]},

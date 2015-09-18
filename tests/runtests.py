@@ -2,12 +2,13 @@
 
 from builderactions import GetBuilderDetails
 import glob
+import imp
 from optparse import OptionParser
 import os
 import StringIO
 import subprocess
 import sys
-from testconfigurations import GetTestConfig, TestOptionSetup, GetResponsePath
+from testconfigurations import TestOptionSetup, GetResponsePath
 import time
 import xml.etree.ElementTree as ET
 
@@ -142,7 +143,6 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
     theBuilder = GetBuilderDetails(options.buildmode)
     exitCode = 0
     for variation in variationArgs:
-        currentDir = os.getcwd()
         iterations = 1
         """
         if responseName:
@@ -177,7 +177,6 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
                 print "Popen exception: '%s'" % str(e)
                 raise
             finally:
-                os.chdir(currentDir)
                 message = "Package '%s' with response file '%s'" % (package.GetDescription(), responseFile)
                 if extraArgs:
                   message += " with extra arguments '%s'" % " ".join(extraArgs)
@@ -215,9 +214,18 @@ def CleanUp(options):
     p = subprocess.Popen(argList)
     p.wait()
 
+def FindBamDefaultRepository():
+    for path in os.environ["PATH"].split(os.pathsep):
+        candidatePath = os.path.join(path, "bam")
+        if os.path.isfile(candidatePath) and os.access(candidatePath, os.X_OK):
+            return os.path.abspath(os.path.join(os.path.join(path, os.pardir), os.pardir))
+    raise RuntimeError("Unable to locate bam on the PATH")
+
 # ----------
 
 if __name__ == "__main__":
+    bamDir = FindBamDefaultRepository()
+
     optParser = OptionParser(description="BuildAMation unittests")
     #optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
     optParser.add_option("--configuration", "-c", dest="configurations", action="append", default=None, help="Configurations to test")
@@ -231,8 +239,16 @@ if __name__ == "__main__":
     optParser.add_option("--noinitialclean", "-i", dest="noInitialClean", action="store_true", default=False, help="Disable cleaning packages before running tests")
     optParser.add_option("--forcedefinitionupdate", "-f", dest="forceDefinitionUpdate", action="store_true", default=False, help="Force definition file updates")
     optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude response files")
-    TestOptionSetup(optParser)
+    optParser.add_option("--repo", "-r", dest="repos", action="append", default=[bamDir], help="Add a package repository to test")
+    optParser.add_option("--nodefaultrepo", dest="nodefaultrepo", action="store_true", default=False, help="Do not test the default repository")
+    # TODO: fix this
+    #TestOptionSetup(optParser)
     (options,args) = optParser.parse_args()
+
+    if options.nodefaultrepo:
+        options.repos.remove(bamDir)
+        if not options.repos:
+            raise RuntimeError("No package repositories to test")
 
     if options.verbose:
         print "Options are ", options
@@ -247,36 +263,43 @@ if __name__ == "__main__":
     #if not options.noInitialClean:
     #    CleanUp(options)
 
-    tests = FindAllPackagesToTest(os.getcwd(), options)
-    if not options.tests:
-        if options.verbose:
-            print "All tests will run"
-    else:
-        if options.verbose:
-            print "Tests to run are: ", options.tests
-        filteredTests = []
-        for test in options.tests:
-            found = False
-            for package in tests:
-                if package.GetId() == test:
-                    filteredTests.append(package)
-                    found = True
-                    break
-            if not found:
-                raise RuntimeError("Unrecognized package '%s'" % test)
-        tests = filteredTests
+    for repo in options.repos:
+        repoTestDir = os.path.join(repo, "tests")
+        bamtests = imp.load_source('bamtests', os.path.join(repoTestDir, 'bamtests.py'))
+        testConfigs = bamtests.ConfigureRepository()
+        tests = FindAllPackagesToTest(repoTestDir, options)
+        if not options.tests:
+            if options.verbose:
+                print "All tests will run"
+        else:
+            if options.verbose:
+                print "Tests to run are: ", options.tests
+            filteredTests = []
+            for test in options.tests:
+                found = False
+                for package in tests:
+                    if package.GetId() == test:
+                        filteredTests.append(package)
+                        found = True
+                        break
+                if not found:
+                    raise RuntimeError("Unrecognized package '%s'" % test)
+            tests = filteredTests
 
-    outputBuffer = StringIO.StringIO()
-    exitCode = 0
-    for package in tests:
-        config = GetTestConfig(package.GetId(), options)
-        if not config:
-            continue
-        exitCode += ExecuteTests(package, config, options, args, outputBuffer)
+        outputBuffer = StringIO.StringIO()
+        exitCode = 0
+        for package in tests:
+            try:
+                config = testConfigs[package.GetId()]
+            except KeyError, e:
+                if options.verbose:
+                    print "No configuration for package: '%s'" % str(e)
+                continue
+            exitCode += ExecuteTests(package, config, options, args, outputBuffer)
 
-    if not options.keepFiles:
-        # TODO: consider keeping track of all directories created instead
-        CleanUp(options)
+        if not options.keepFiles:
+            # TODO: consider keeping track of all directories created instead
+            CleanUp(options)
 
     print "--------------------"
     print "| Results summary  |"
