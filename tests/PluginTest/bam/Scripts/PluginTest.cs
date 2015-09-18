@@ -41,9 +41,7 @@ namespace PluginTest
 
             this.CreateCxxSourceContainer("$(packagedir)/source/application/main.cpp");
 
-            // TODO: required to exist
-            var plugin = Bam.Core.Graph.Instance.FindReferencedModule<Plugin>();
-            this.Requires(plugin);
+            this.RequiredToExist<Plugin>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)

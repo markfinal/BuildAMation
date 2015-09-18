@@ -78,10 +78,7 @@ namespace Test10
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)
             {
-                // TODO: simplify
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
-                this.Requires(windowsSDK);
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
@@ -112,10 +109,7 @@ namespace Test10
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)
             {
-                // TODO: simplify
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
-                this.Requires(windowsSDK);
-                this.UsePublicPatches(windowsSDK); // linking
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }

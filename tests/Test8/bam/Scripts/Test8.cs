@@ -41,11 +41,7 @@ namespace Test8
             base.Init(parent);
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
-
-            // TODO: required to exist?
-            var dynamicLib = Bam.Core.Graph.Instance.FindReferencedModule<Test7.ExplicitDynamicLibrary>();
-            this.Requires(dynamicLib);
-            source.UsePublicPatches(dynamicLib);
+            this.RequiredToExist<Test7.ExplicitDynamicLibrary>(source);
 
             if (this.Linker is VisualCCommon.LinkerBase)
             {
