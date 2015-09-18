@@ -265,7 +265,11 @@ if __name__ == "__main__":
 
     for repo in options.repos:
         repoTestDir = os.path.join(repo, "tests")
-        bamtests = imp.load_source('bamtests', os.path.join(repoTestDir, 'bamtests.py'))
+        bamTestsConfigPathname = os.path.join(repoTestDir, 'bamtests.py')
+        if not os.path.isfile(bamTestsConfigPathname):
+            print "Package repository %s has no bamtests.py file" % repo
+            continue
+        bamtests = imp.load_source('bamtests', bamTestsConfigPathname)
         testConfigs = bamtests.ConfigureRepository()
         tests = FindAllPackagesToTest(repoTestDir, options)
         if not options.tests:
@@ -301,17 +305,18 @@ if __name__ == "__main__":
             # TODO: consider keeping track of all directories created instead
             CleanUp(options)
 
-    print "--------------------"
-    print "| Results summary  |"
-    print "--------------------"
-    print outputBuffer.getvalue()
+        print "--------------------"
+        print "| Results summary  |"
+        print "--------------------"
+        print outputBuffer.getvalue()
 
-    if not os.path.exists("Logs"):
-        os.mkdir("Logs")
-    logFileName = os.path.join("Logs", "tests_" + time.strftime("%d-%m-%YT%H-%M-%S") + ".log")
-    logFile = open(logFileName, "w")
-    logFile.write(outputBuffer.getvalue())
-    logFile.close()
-    outputBuffer.close()
+        logsDir = os.path.join(repoTestDir, "Logs")
+        if not os.path.isdir(logsDir):
+            os.makedirs(logsDir)
+        logFileName = os.path.join(logsDir, "tests_" + time.strftime("%d-%m-%YT%H-%M-%S") + ".log")
+        logFile = open(logFileName, "w")
+        logFile.write(outputBuffer.getvalue())
+        logFile.close()
+        outputBuffer.close()
 
     sys.exit(exitCode)
