@@ -228,7 +228,7 @@ namespace Bam.Core
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
-                        if (State.PackageRepositories.Contains(repo))
+                        if (State.PackageRepositories.Contains(newRepo))
                         {
                             continue;
                         }
