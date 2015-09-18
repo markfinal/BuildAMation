@@ -380,6 +380,8 @@ namespace Bam.Core
             bool validateSchemaLocation,
             bool validatePackageLocations)
         {
+            Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
+
             var xmlReaderSettings = new System.Xml.XmlReaderSettings();
             xmlReaderSettings.CheckCharacters = true;
             xmlReaderSettings.CloseInput = true;
