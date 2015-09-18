@@ -1,3 +1,5 @@
+18-Sep-2015 bam --version now reports the directory containing the Bam core assembly.
+
 18-Sep-2015 Dependent package definition files did not add their package repositories into the search paths, in order to resolve all packages they reference.
 
 18-Sep-2015 C.ConsoleApplication.RequiredToExist<T> now accepts a comma separated list of modules to apply public patches of T to. This is used, for instance, for plugins that do not need to be linked against an application, but do expose a header to compile against.

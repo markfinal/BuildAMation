@@ -110,7 +110,7 @@ namespace Bam
             Core.Log.Info("(c) Mark Final, 2010-2015");
             Core.Log.Info("Licensed under BSD 3-clause. See License file.");
             var clrVersion = System.Environment.Version;
-            Core.Log.Info("Using C# compiler v{0}.{1}", clrVersion.Major, clrVersion.Minor);
+            Core.Log.Info("Using C# compiler v{0}.{1} with assemblies in {2}", clrVersion.Major, clrVersion.Minor, Core.State.ExecutableDirectory);
         }
     }
 }
