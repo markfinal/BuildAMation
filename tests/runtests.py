@@ -8,7 +8,7 @@ import os
 import StringIO
 import subprocess
 import sys
-from testconfigurations import TestOptionSetup, GetResponsePath
+from testconfigurations import TestOptionSetup
 import time
 import xml.etree.ElementTree as ET
 
@@ -144,19 +144,6 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
     exitCode = 0
     for variation in variationArgs:
         iterations = 1
-        """
-        if responseName:
-            responseFile = GetResponsePath(responseName)
-            versionName = "%s_version" % responseName
-            versionArgs = None
-            if hasattr(options, versionName):
-              versionArgs = getattr(options, versionName)
-            if versionArgs:
-              iterations = len(versionArgs)
-        else:
-            responseFile = None
-            versionArgs = None
-        """
         responseFile = None
         versionArgs = None
 
@@ -241,8 +228,7 @@ if __name__ == "__main__":
     optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude response files")
     optParser.add_option("--repo", "-r", dest="repos", action="append", default=[bamDir], help="Add a package repository to test")
     optParser.add_option("--nodefaultrepo", dest="nodefaultrepo", action="store_true", default=False, help="Do not test the default repository")
-    # TODO: fix this
-    #TestOptionSetup(optParser)
+    TestOptionSetup(optParser)
     (options,args) = optParser.parse_args()
 
     if options.nodefaultrepo:

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os
+import platform
 import sys
 
 class TestSetup:
@@ -88,43 +89,39 @@ class TestSetup:
             variations.add(i)
         return variations
 
-def GetResponsePath(responseName):
-  return "%s.rsp" % responseName
-
 def TestOptionSetup(optParser):
-    # TODO: change this so that only the options shown are for the current platform
-    allResponseNames = set()
-    for config in configs.values():
-        results = config._GetSetOfAllResponseNames()
-        allResponseNames.update(results)
-    allOptions = set()
-    for response in allResponseNames:
-        for opt in response.GetOptions():
-            allOptions.add(opt)
-    for opt,help in allOptions:
+    for opt, help in ConfigOptions.GetOptions():
         optName = "--%s" % opt
         variable = opt.replace('.', '_')
         optParser.add_option(optName, dest=variable, action="append", default=None, help=help)
 
 
 class ConfigOptions(object):
+    _allOptions = {}
+
     def __init__(self):
         self._argList = []
-        self._options = []
 
     def GetArguments(self):
         return self._argList
 
-    def GetOptions(self):
-        return self._options
+    @staticmethod
+    def RegisterOption(platform, optionTuple):
+        if not ConfigOptions._allOptions.has_key(platform):
+            ConfigOptions._allOptions[platform] = set()
+        ConfigOptions._allOptions[platform].add(optionTuple)
+
+    @staticmethod
+    def GetOptions():
+        return ConfigOptions._allOptions.get(platform.system(), [])
 
 
 class VisualCCommon(ConfigOptions):
     def __init__(self):
         super(VisualCCommon, self).__init__()
         self._argList.append("--C.toolchain=VisualC")
-        self._options.append(("VisualC.version", "Set the VisualC version"))
-        self._options.append(("WindowsSDK.version", "Set the WindowsSDK version"))
+        ConfigOptions.RegisterOption("Windows", ("VisualC.version", "Set the VisualC version"))
+        ConfigOptions.RegisterOption("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
 
 
 class VisualC64(VisualCCommon):
@@ -144,13 +141,13 @@ class Mingw32(ConfigOptions):
         super(Mingw32, self).__init__()
         self._argList.append("--C.bitdepth=32")
         self._argList.append("--C.toolchain=Mingw")
-        self._options.append(("Mingw.version", "Set the Mingw version"))
+        ConfigOptions.RegisterOption("Windows", ("Mingw.version", "Set the Mingw version"))
 
 
 class GccCommon(ConfigOptions):
     def __init__(self):
         super(GccCommon, self).__init__()
-        self._options.append(("GCC.version", "Set the GCC version"))
+        ConfigOptions.RegisterOption("Linux", ("GCC.version", "Set the GCC version"))
 
 
 class Gcc64(GccCommon):
@@ -169,7 +166,7 @@ class Clang64(ConfigOptions):
     def __init__(self):
         super(Clang64, self).__init__()
         self._argList.append("--Xcode.generateSchemes"); # TODO: this is only for the Xcode build mode
-        self._options.append(("Clang.version", "Set the Clang version"))
+        ConfigOptions.RegisterOption("Darwin", ("Clang.version", "Set the Clang version"))
 
 
 visualc64 = VisualC64()

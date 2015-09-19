@@ -1,3 +1,5 @@
+19-Sep-2015 The Bam test harness can now specify other package repositories to test, as well as the default in Bam. There is a requirement of a bamtests.py in the tests folder of each repository, naming each valid Test, and the build modes in which it can be run.
+
 18-Sep-2015 bam --version now reports the directory containing the Bam core assembly.
 
 18-Sep-2015 Dependent package definition files did not add their package repositories into the search paths, in order to resolve all packages they reference.
