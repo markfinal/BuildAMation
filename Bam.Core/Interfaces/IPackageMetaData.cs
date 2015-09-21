@@ -35,5 +35,9 @@ namespace Bam.Core
         {
             get;
         }
+
+        bool
+        Contains(
+            string index);
     }
 }

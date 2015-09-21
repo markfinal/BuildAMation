@@ -1,3 +1,5 @@
+21-Sep-2015 Fixes #8. PATH is now searched for gcc, and versions checked, rather than assuming installation directories, and naming conventions.
+
 21-Sep-2015 Check whether a C source directory exists before enumerating it for files.
 
 21-Sep-2015 Fixes #6. Wrapped Module creation in a try catch, which will throw a new exception type, Bam.Core.ModuleCreationException, capturing the module type in the inner most module creation call, so that accurate module information can be provided when reporting the error.

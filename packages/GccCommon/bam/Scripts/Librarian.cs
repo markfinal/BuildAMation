@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace GccCommon
 {
     [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -36,7 +37,12 @@ namespace GccCommon
     {
         public Librarian()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
+            var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
+            var gccMetaData = gccPackage.MetaData as Gcc.MetaData;
+            gccMetaData.ValidateInstallPath();
+            gccMetaData.ValidateVersion();
+            
+            this.Macros.Add("InstallPath", gccMetaData.InstallPath);
             this.Macros.Add("libprefix", "lib");
             this.Macros.Add("libext", ".a");
             this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.Create("$(InstallPath)/ar", this));

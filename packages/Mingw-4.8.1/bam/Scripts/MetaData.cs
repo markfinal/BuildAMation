@@ -47,5 +47,11 @@ namespace Mingw
                 return this.Meta[index];
             }
         }
+
+        bool Bam.Core.IPackageMetaData.Contains(
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
+        }
     }
 }

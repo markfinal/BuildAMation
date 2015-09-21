@@ -36,8 +36,26 @@ namespace Gcc
 
         public MetaData()
         {
-            // TODO: some installations may not have a suffix - need to confirm
-            this.Meta.Add("ToolSuffix", "-4.8");
+            this.Meta.Add("ExpectedMajorVersion", 4);
+            this.Meta.Add("ExpectedMinorVersion", 8);
+
+            var gccLocation = GccCommon.ConfigureUtilities.GetInstallLocation("gcc");
+            if (null == gccLocation)
+            {
+                return;
+            }
+
+            this.Meta.Add("InstallPath", System.IO.Path.GetDirectoryName(gccLocation));
+            this.Meta.Add("GccPath", gccLocation);
+            var gccVersion = GccCommon.ConfigureUtilities.RunExecutable(gccLocation, "-dumpversion").Split(new [] {'.'});
+            this.Meta.Add("GccVersion", gccVersion);
+
+            var gxxLocation = GccCommon.ConfigureUtilities.RunExecutable("which", "g++");
+            if (null == gxxLocation)
+            {
+                return;
+            }
+            this.Meta.Add("G++Path", gxxLocation);
         }
 
         object Bam.Core.IPackageMetaData.this[string index]
@@ -45,6 +63,60 @@ namespace Gcc
             get
             {
                 return this.Meta[index];
+            }
+        }
+
+        bool Bam.Core.IPackageMetaData.Contains(
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
+        }
+
+        public void
+        ValidateInstallPath()
+        {
+            if (!this.Meta.ContainsKey("InstallPath"))
+            {
+                throw new Bam.Core.Exception("Could not find gcc. Was the package installed?");
+            }
+        }
+
+        public void
+        ValidateVersion()
+        {
+            var gccLocation = this.GccPath;
+            var gccVersion = this.Meta["GccVersion"] as string[];
+            if (System.Convert.ToInt32(gccVersion[0]) != (int)this.Meta["ExpectedMajorVersion"])
+            {
+                throw new Bam.Core.Exception ("{0} reports version {1}", gccLocation, gccVersion.ToString ());
+            }
+            if (System.Convert.ToInt32 (gccVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
+            {
+                throw new Bam.Core.Exception ("{0} reports version {1}", gccLocation, gccVersion.ToString ());
+            }
+        }
+
+        public string InstallPath
+        {
+            get
+            {
+                return this.Meta["InstallPath"] as string;
+            }
+        }
+
+        public string GccPath
+        {
+            get
+            {
+                return this.Meta["GccPath"] as string;
+            }
+        }
+
+        public string GxxPath
+        {
+            get
+            {
+                return this.Meta["G++Path"] as string;
             }
         }
     }
