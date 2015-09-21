@@ -1,8 +1,12 @@
+21-Sep-2015 Check whether a C source directory exists before enumerating it for files.
+
+21-Sep-2015 Fixes #6. Wrapped Module creation in a try catch, which will throw a new exception type, Bam.Core.ModuleCreationException, capturing the module type in the inner most module creation call, so that accurate module information can be provided when reporting the error.
+
 21-Sep-2015 First check whether a package repository exists before enumerating it for packages.
 
 21-Sep-2015 Fixes #7. Unhandled exceptions fell through the bam executable. Now catch and report them, for a cleaner exit.
 
-19-Sep-2015 The Bam test harness can now specify other package repositories to test, as well as the default in Bam. There is a requirement of a bamtests.py in the tests folder of each repository, naming each valid Test, and the build modes in which it can be run.
+19-Sep-2015 Fixes #2. The Bam test harness can now specify other package repositories to test, as well as the default in Bam. There is a requirement of a bamtests.py in the tests folder of each repository, naming each valid Test, and the build modes in which it can be run.
 
 18-Sep-2015 bam --version now reports the directory containing the Bam core assembly.
 

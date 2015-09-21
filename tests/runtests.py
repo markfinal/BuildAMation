@@ -79,11 +79,9 @@ def _preExecute(builder, options):
     if builder.preAction:
         builder.preAction()
 
-def _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, errorMessages):
+def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages):
     argList = []
     argList.append("bam")
-    if responseFile:
-        argList.append("@" + os.path.join(os.getcwd(), responseFile))
     argList.append("-o=%s" % options.buildRoot)
     argList.append("-b=%s" % options.buildmode)
     for config in options.configurations:
@@ -144,7 +142,6 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
     exitCode = 0
     for variation in variationArgs:
         iterations = 1
-        responseFile = None
         versionArgs = None
 
         for it in range(0,iterations):
@@ -157,14 +154,14 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
               outputMessages = StringIO.StringIO()
               errorMessages = StringIO.StringIO()
               _preExecute(theBuilder, options)
-              returncode, argList = _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, errorMessages)
+              returncode, argList = _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
               if returncode == 0:
                 returncode = _postExecute(theBuilder, options, package, outputMessages, errorMessages)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise
             finally:
-                message = "Package '%s' with response file '%s'" % (package.GetDescription(), responseFile)
+                message = "Package '%s'" % package.GetDescription()
                 if extraArgs:
                   message += " with extra arguments '%s'" % " ".join(extraArgs)
                 if returncode == 0:
@@ -178,7 +175,8 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
                             outputBuffer.write(errorMessages.getvalue())
                 else:
                     outputBuffer.write("* FAILURE *: %s\n" % message)
-                    outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
+                    outputBuffer.write("Command was: %s\n" % " ".join(argList))
+                    outputBuffer.write("Executed in: %s\n" % package.GetPath())
                     if len(outputMessages.getvalue()) > 0:
                         outputBuffer.write("Messages:\n")
                         outputBuffer.write(outputMessages.getvalue())
@@ -249,6 +247,7 @@ if __name__ == "__main__":
     #if not options.noInitialClean:
     #    CleanUp(options)
 
+    exitCode = 0
     for repo in options.repos:
         repoTestDir = os.path.join(repo, "tests")
         bamTestsConfigPathname = os.path.join(repoTestDir, 'bamtests.py')
@@ -277,7 +276,6 @@ if __name__ == "__main__":
             tests = filteredTests
 
         outputBuffer = StringIO.StringIO()
-        exitCode = 0
         for package in tests:
             try:
                 config = testConfigs[package.GetId()]

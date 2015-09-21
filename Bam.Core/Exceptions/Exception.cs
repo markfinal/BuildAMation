@@ -100,8 +100,8 @@ namespace Bam.Core
                 return false;
             }
 
-            var anyInnerExceptions = DisplayException(exception.InnerException);
             Log.ErrorMessage("({0}) {1}", exception.GetType().ToString(), exception.Message);
+            var anyInnerExceptions = DisplayException(exception.InnerException, "Additional details:");
             if (!anyInnerExceptions)
             {
                 Log.ErrorMessage("{0}{1}", System.Environment.NewLine, exception.StackTrace.ToString());
@@ -110,14 +110,14 @@ namespace Bam.Core
             return true;
         }
 
-        public static void
+        public static bool
         DisplayException(
             System.Exception exception,
             string prefix,
             params object[] args)
         {
             Log.ErrorMessage(prefix, args);
-            DisplayException(exception);
+            return DisplayException(exception);
         }
     }
 }

@@ -131,14 +131,9 @@ namespace Bam
 
                 Core.EntryPoint.Execute(configs);
             }
-            catch (Bam.Core.Exception exception)
+            catch (Core.Exception exception)
             {
-                Core.Log.ErrorMessage(exception.Message);
-                if (null != exception.InnerException)
-                {
-                    Core.Log.ErrorMessage("Additional details:");
-                    Core.Log.ErrorMessage(exception.InnerException.Message);
-                }
+                Core.Exception.DisplayException(exception);
                 System.Environment.ExitCode = -1;
             }
             catch (System.Exception exception)
