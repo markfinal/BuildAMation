@@ -249,6 +249,7 @@ if __name__ == "__main__":
     #if not options.noInitialClean:
     #    CleanUp(options)
 
+    exitCode = 0
     for repo in options.repos:
         repoTestDir = os.path.join(repo, "tests")
         bamTestsConfigPathname = os.path.join(repoTestDir, 'bamtests.py')
@@ -277,7 +278,6 @@ if __name__ == "__main__":
             tests = filteredTests
 
         outputBuffer = StringIO.StringIO()
-        exitCode = 0
         for package in tests:
             try:
                 config = testConfigs[package.GetId()]
