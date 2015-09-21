@@ -88,11 +88,11 @@ namespace Gcc
             var gccVersion = this.Meta["GccVersion"] as string[];
             if (System.Convert.ToInt32(gccVersion[0]) != (int)this.Meta["ExpectedMajorVersion"])
             {
-                throw new Bam.Core.Exception ("{0} reports version {1}", gccLocation, gccVersion.ToString ());
+                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
             }
-            if (System.Convert.ToInt32 (gccVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
+            if (System.Convert.ToInt32(gccVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
             {
-                throw new Bam.Core.Exception ("{0} reports version {1}", gccLocation, gccVersion.ToString ());
+                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
             }
         }
 
