@@ -36,6 +36,11 @@ namespace Gcc
 
         public MetaData()
         {
+            if (!Bam.Core.OSUtilities.IsLinuxHosting)
+            {
+                return;
+            }
+
             this.Meta.Add("ExpectedMajorVersion", 4);
             this.Meta.Add("ExpectedMinorVersion", 8);
 
