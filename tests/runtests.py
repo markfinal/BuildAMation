@@ -79,11 +79,9 @@ def _preExecute(builder, options):
     if builder.preAction:
         builder.preAction()
 
-def _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, errorMessages):
+def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages):
     argList = []
     argList.append("bam")
-    if responseFile:
-        argList.append("@" + os.path.join(os.getcwd(), responseFile))
     argList.append("-o=%s" % options.buildRoot)
     argList.append("-b=%s" % options.buildmode)
     for config in options.configurations:
@@ -144,7 +142,6 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
     exitCode = 0
     for variation in variationArgs:
         iterations = 1
-        responseFile = None
         versionArgs = None
 
         for it in range(0,iterations):
@@ -157,14 +154,14 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
               outputMessages = StringIO.StringIO()
               errorMessages = StringIO.StringIO()
               _preExecute(theBuilder, options)
-              returncode, argList = _runBuildAMation(options, package, responseFile, extraArgs, outputMessages, errorMessages)
+              returncode, argList = _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
               if returncode == 0:
                 returncode = _postExecute(theBuilder, options, package, outputMessages, errorMessages)
             except Exception, e:
                 print "Popen exception: '%s'" % str(e)
                 raise
             finally:
-                message = "Package '%s' with response file '%s'" % (package.GetDescription(), responseFile)
+                message = "Package '%s'" % package.GetDescription()
                 if extraArgs:
                   message += " with extra arguments '%s'" % " ".join(extraArgs)
                 if returncode == 0:
