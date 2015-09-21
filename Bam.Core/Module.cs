@@ -115,24 +115,36 @@ namespace Bam.Core
             Module parent = null,
             ModulePreInitDelegate preInitCallback = null) where T : Module, new()
         {
-            if (!CanCreate(typeof(T)))
+            try
             {
-                return null;
-            }
+                if (!CanCreate(typeof(T)))
+                {
+                    return null;
+                }
 
-            if (null == Graph.Instance.Mode)
-            {
-                throw new Exception("Building mode has not been set");
+                if (null == Graph.Instance.Mode)
+                {
+                    throw new Exception("Building mode has not been set");
+                }
+                var module = new T();
+                if (preInitCallback != null)
+                {
+                    preInitCallback(module);
+                }
+                module.Init(parent);
+                module.GetExecutionPolicy(Graph.Instance.Mode);
+                AllModules.Add(module);
+                return module;
             }
-            var module = new T();
-            if (preInitCallback != null)
+            catch (ModuleCreationException exception)
             {
-                preInitCallback(module);
+                // persist the module type from the inner-most module creation call
+                throw exception;
             }
-            module.Init(parent);
-            module.GetExecutionPolicy(Graph.Instance.Mode);
-            AllModules.Add(module);
-            return module;
+            catch (System.Exception exception)
+            {
+                throw new ModuleCreationException(typeof(T), exception);
+            }
         }
 
         protected void
