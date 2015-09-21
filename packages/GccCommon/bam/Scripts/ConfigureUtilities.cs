@@ -27,19 +27,43 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace GccCommon
 {
-    public static class Configure
+    public static class ConfigureUtilities
     {
-        static Configure()
+        public static string
+        RunExecutable(
+            string executable,
+            string arguments)
         {
-            InstallPath = Bam.Core.TokenizedString.Create(@"/usr/bin", null);
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            processStartInfo.FileName = executable;
+            processStartInfo.Arguments = arguments;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.UseShellExecute = false;
+            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
+            process.WaitForExit();
+            if (process.ExitCode == 0)
+            {
+                return process.StandardOutput.ReadToEnd ().TrimEnd (new [] { System.Environment.NewLine [0] });
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public static Bam.Core.TokenizedString InstallPath
+        public static string
+        GetInstallLocation(
+            string executable)
         {
-            get;
-            private set;
+            var location = RunExecutable("which", executable);
+            if (null == location)
+            {
+                return null;
+            }
+            return location;
         }
     }
 }

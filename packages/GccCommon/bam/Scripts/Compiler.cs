@@ -35,12 +35,19 @@ namespace GccCommon
     {
         protected CompilerBase()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("objext", ".o");
-
             var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
-            var suffix = gccPackage.MetaData["ToolSuffix"] as string;
-            this.Macros.Add("CompilerSuffix", suffix);
+            this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
+            this.GccMetaData.ValidateInstallPath();
+            this.GccMetaData.ValidateVersion();
+
+            this.Macros.Add("InstallPath", Bam.Core.TokenizedString.Create(this.GccMetaData.InstallPath, null));
+            this.Macros.Add("objext", ".o");
+        }
+
+        protected Gcc.MetaData GccMetaData
+        {
+            get;
+            private set;
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -111,7 +118,7 @@ namespace GccCommon
     {
         public CCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc$(CompilerSuffix)", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GccPath, null));
         }
 
         protected override void
@@ -130,7 +137,7 @@ namespace GccCommon
     {
         public CxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++$(CompilerSuffix)", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GxxPath, null));
         }
 
         protected override void
@@ -149,7 +156,7 @@ namespace GccCommon
     {
         public ObjectiveCCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc$(CompilerSuffix)", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GccPath, null));
         }
 
         protected override void
@@ -170,7 +177,7 @@ namespace GccCommon
     {
         public ObjectiveCxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++$(CompilerSuffix)", this));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GxxPath, null));
         }
 
         protected override void

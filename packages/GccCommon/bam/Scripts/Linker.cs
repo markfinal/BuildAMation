@@ -35,16 +35,25 @@ namespace GccCommon
     {
         protected LinkerBase()
         {
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create(@"$(InstallPath)", this)));
-
-            this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("exeext", string.Empty);
-            this.Macros.Add("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", ".so");
-
             var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
-            var suffix = gccPackage.MetaData["ToolSuffix"] as string;
-            this.Macros.Add("LinkerSuffix", suffix);
+            this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
+            this.GccMetaData.ValidateInstallPath();
+            this.GccMetaData.ValidateVersion();
+
+            var installPath = Bam.Core.TokenizedString.Create(this.GccMetaData.InstallPath, null);
+            
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(installPath));
+
+            this.Macros.Add("InstallPath", installPath);
+                    this.Macros.Add("exeext", string.Empty);
+                    this.Macros.Add("dynamicprefix", "lib");
+                    this.Macros.Add("dynamicext", ".so");
+        }
+
+        protected Gcc.MetaData GccMetaData
+        {
+            get;
+            private set;
         }
 
         private static string
@@ -148,7 +157,7 @@ namespace GccCommon
     {
         public Linker()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/gcc$(LinkerSuffix)", this));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GccPath, null));
         }
     }
 
@@ -159,7 +168,7 @@ namespace GccCommon
     {
         public LinkerCxx()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/g++$(LinkerSuffix)", this));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GxxPath, null));
         }
     }
 }

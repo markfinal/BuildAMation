@@ -36,6 +36,11 @@ namespace Mingw
 
         public MetaData()
         {
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                return;
+            }
+
             // TODO: some installations may not have a suffix - need to confirm
             this.Meta.Add("ToolSuffix", "-4.8.1");
         }
@@ -46,6 +51,12 @@ namespace Mingw
             {
                 return this.Meta[index];
             }
+        }
+
+        bool Bam.Core.IPackageMetaData.Contains(
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
         }
     }
 }
