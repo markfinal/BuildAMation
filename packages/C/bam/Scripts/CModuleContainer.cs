@@ -65,6 +65,10 @@ namespace C
             var wildcardPath = Bam.Core.TokenizedString.Create(path, macroModule).Parse();
 
             var dir = System.IO.Path.GetDirectoryName(wildcardPath);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                throw new Bam.Core.Exception("The directory {0} does not exist", dir);
+            }
             var leafname = System.IO.Path.GetFileName(wildcardPath);
             var files = System.IO.Directory.GetFiles(dir, leafname, System.IO.SearchOption.TopDirectoryOnly);
             if (filter != null)
