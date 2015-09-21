@@ -178,7 +178,8 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
                             outputBuffer.write(errorMessages.getvalue())
                 else:
                     outputBuffer.write("* FAILURE *: %s\n" % message)
-                    outputBuffer.write("Command was: '%s'\n" % " ".join(argList))
+                    outputBuffer.write("Command was: %s\n" % " ".join(argList))
+                    outputBuffer.write("Executed in: %s\n" % package.GetPath())
                     if len(outputMessages.getvalue()) > 0:
                         outputBuffer.write("Messages:\n")
                         outputBuffer.write(outputMessages.getvalue())
