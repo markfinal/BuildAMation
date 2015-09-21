@@ -207,6 +207,10 @@ namespace Bam.Core
             while (packageRepos.Count > 0)
             {
                 var repo = packageRepos.Dequeue();
+                if (!System.IO.Directory.Exists(repo))
+                {
+                    throw new Exception("Package repository directory {0} does not exist", repo);
+                }
                 var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
 
                 State.PackageRepositories.Add(repo);

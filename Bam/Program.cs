@@ -141,6 +141,15 @@ namespace Bam
                 }
                 System.Environment.ExitCode = -1;
             }
+            catch (System.Exception exception)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("{0} not handled: {1}", exception.GetType().ToString(), exception.Message);
+                message.AppendLine();
+                message.AppendLine(exception.StackTrace);
+                Core.Log.ErrorMessage(message.ToString());
+                System.Environment.ExitCode = -2;
+            }
             finally
             {
                 if (Core.Graph.Instance.BuildEnvironments.Count > 0)
