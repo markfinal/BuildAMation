@@ -71,33 +71,22 @@ namespace Bam.Core
             bool useDefaults)
         {
             var attributeType = typeof(SettingsExtensionsAttribute);
-            var moduleType = typeof(Module);
-            var baseI = typeof(ISettingsBase);
-            foreach (var i in this.GetType().GetInterfaces())
+
+            // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
+            // although it won't then be a centralized definition, so the extension method as-is is probably better
+            if (emptyFirst)
             {
-                // is it a true settings interface?
-                if (!baseI.IsAssignableFrom(i))
+                // perform all empties first
+                foreach (var i in this.Interfaces())
                 {
-                    Log.DebugMessage("Ignored interface {0} on {1}", i.ToString(), this.GetType().ToString());
-                    continue;
-                }
-                if (i == baseI)
-                {
-                    continue;
-                }
+                    var attributeArray = i.GetCustomAttributes(attributeType, false);
+                    if (0 == attributeArray.Length)
+                    {
+                        throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                    }
 
-                var attributeArray = i.GetCustomAttributes(attributeType, false);
-                if (0 == attributeArray.Length)
-                {
-                    throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
-                }
+                    var attribute = attributeArray[0] as SettingsExtensionsAttribute;
 
-                var attribute = attributeArray[0] as SettingsExtensionsAttribute;
-
-                // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
-                // although it won't then be a centralized definition, so the extension method as-is is probably better
-                if (emptyFirst)
-                {
                     var emptyMethod = attribute.GetMethod("Empty", new[] { i });
                     if (null != emptyMethod)
                     {
@@ -109,9 +98,22 @@ namespace Bam.Core
                         Log.DebugMessage("Unable to find method {0}.Empty({1})", attribute.ClassType.ToString(), i.ToString());
                     }
                 }
+            }
 
-                if (useDefaults)
+            if (useDefaults)
+            {
+                var moduleType = typeof(Module);
+                // then perform all defaults - since empty has been called, the settings are initialized
+                foreach (var i in this.Interfaces())
                 {
+                    var attributeArray = i.GetCustomAttributes(attributeType, false);
+                    if (0 == attributeArray.Length)
+                    {
+                        throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                    }
+
+                    var attribute = attributeArray[0] as SettingsExtensionsAttribute;
+
                     var defaultMethod = attribute.GetMethod("Defaults", new[] { i, moduleType });
                     if (null == defaultMethod)
                     {
@@ -119,14 +121,12 @@ namespace Bam.Core
                     }
                     Log.DebugMessage("Executing {0}", defaultMethod.ToString());
                     defaultMethod.Invoke(null, new object[] { this, module });
-
                 }
-            }
 
-            // once all interfaces have been initialized, apply the site policy if one exists
-            if (null != LocalPolicy && useDefaults)
-            {
-                LocalPolicy.DefineLocalSettings(this, module);
+                if (null != LocalPolicy)
+                {
+                    LocalPolicy.DefineLocalSettings(this, module);
+                }
             }
         }
     }
