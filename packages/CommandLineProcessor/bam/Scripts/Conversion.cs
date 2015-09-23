@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace CommandLineProcessor
 {
     public static class Conversion
@@ -40,6 +41,7 @@ namespace CommandLineProcessor
         {
             var moduleType = typeof(Bam.Core.Module);
             var stringArrayType = typeof(Bam.Core.StringArray);
+            var commandOrder = new Bam.Core.Array<System.Tuple<int, Bam.Core.StringArray>>();
             foreach (var i in toolSettings.Interfaces())
             {
                 var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, stringArrayType });
@@ -51,7 +53,21 @@ namespace CommandLineProcessor
                         moduleType,
                         stringArrayType);
                 }
-                method.Invoke(null, new object[] { toolSettings, module, commandLine });
+                var commands = new Bam.Core.StringArray();
+                method.Invoke(null, new object[] { toolSettings, module, commands });
+
+                var precedenceAttribs = i.GetCustomAttributes(typeof(Bam.Core.SettingsPrecedenceAttribute), false);
+                int precedence = 0;
+                if (precedenceAttribs.Length > 0)
+                {
+                    precedence = (precedenceAttribs[0] as Bam.Core.SettingsPrecedenceAttribute).Order;
+                }
+                commandOrder.Add(new System.Tuple<int, Bam.Core.StringArray>(precedence, commands));
+            }
+
+            foreach (var commands in commandOrder.OrderByDescending(item => item.Item1))
+            {
+                commandLine.AddRange(commands.Item2);
             }
         }
     }

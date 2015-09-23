@@ -29,12 +29,11 @@
 #endregion // License
 namespace Gcc
 {
-    // note order of interfaces since the command line switches on the librarian are particular
     public class ArchiverSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        GccCommon.IArchiverSettings,
-        C.ICommonArchiverSettings
+        C.ICommonArchiverSettings,
+        GccCommon.IArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)
