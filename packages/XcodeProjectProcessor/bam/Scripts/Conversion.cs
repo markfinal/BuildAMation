@@ -27,49 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace XcodeProjectProcessor
 {
-    public sealed class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettings
+    public static class Conversion
     {
-        public LinkerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            System.Type conversionClass,
+            Bam.Core.Settings toolSettings,
             Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+            XcodeBuilder.Configuration configuration)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.NativeImplementation), this, module, commandLine);
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
+            var moduleType = typeof(Bam.Core.Module);
+            var xcodeConfigurationType = typeof(XcodeBuilder.Configuration);
+            foreach (var i in toolSettings.Interfaces())
+            {
+                var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, xcodeConfigurationType });
+                if (null == method)
+                {
+                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2}, {3})",
+                        conversionClass.ToString(),
+                        i.ToString(),
+                        moduleType,
+                        xcodeConfigurationType);
+                }
+                method.Invoke(null, new object[] { toolSettings, module, configuration });
+            }
         }
     }
 }

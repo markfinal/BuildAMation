@@ -58,7 +58,7 @@ namespace Publisher
             {
                 commandLine.Add("-v");
             }
-            (this as ICopyFileSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(NativeImplementation), this, module, commandLine);
         }
 
         bool ICopyFileSettings.Force

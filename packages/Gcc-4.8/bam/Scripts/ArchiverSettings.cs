@@ -27,14 +27,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using GccCommon;
 namespace Gcc
 {
+    // note order of interfaces since the command line switches on the librarian are particular
     public class ArchiverSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonArchiverSettings,
-        GccCommon.IArchiverSettings
+        GccCommon.IArchiverSettings,
+        C.ICommonArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)
@@ -47,8 +47,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as GccCommon.IArchiverSettings).Convert(module, commandLine);
-            (this as C.ICommonArchiverSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType

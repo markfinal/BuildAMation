@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using ClangCommon;
 namespace Clang
 {
     public class ArchiverSettings :
@@ -48,8 +47,7 @@ namespace Clang
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as ClangCommon.ICommonArchiverSettings).Convert(module, commandLine);
-            (this as C.ICommonArchiverSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.NativeImplementation), this, module, commandLine);
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType

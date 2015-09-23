@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using MingwCommon;
 namespace Mingw
 {
     public class CompilerSettings :
@@ -54,9 +53,7 @@ namespace Mingw
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerSettingsWin).Convert(module, commandLine);
-            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
-            (this as C.ICOnlyCompilerSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.NativeImplementation), this, module, commandLine);
         }
 
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet

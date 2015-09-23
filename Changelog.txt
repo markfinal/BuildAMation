@@ -1,3 +1,5 @@
+23-Sep-2015 Fixes #9. Each conversion package (CommandLineProcessor, VisualStudioProcessor, XcodeProjectProcessor) now uses Bam.Core.Settings.Interfaces(), and reflection, to invoke each settings interface on a Settings object. Note that order of the interfaces in the Settings class declaration now matters - they are evaluated top down. Note that the Mingw and GCC archiver settings classes illustrate a need to process interfaces in a particular order, because the underling tool requires command line arguments in a specific order.
+
 23-Sep-2015 Issue #9. Added Bam.Core.Settings.Interfaces() that returns an IEnumerable returning the interfaces on the Settings object.
 
 21-Sep-2015 ======== Version 1.0a3 Release ========

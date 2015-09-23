@@ -27,73 +27,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+namespace VisualStudioProcessor
 {
-    public class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ILinkerSettingsWin,
-        C.ICommonLinkerSettings,
-        VisualCCommon.ICommonLinkerSettings
+    public static class Conversion
     {
-        public LinkerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.NativeImplementation), this, module, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
+        public static void
+        Convert(
+            System.Type conversionClass,
+            Bam.Core.Settings toolSettings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, settings, condition);
-        }
-
-        C.ESubsystem? C.ILinkerSettingsWin.SubSystem
-        {
-            get;
-            set;
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        bool? VisualCCommon.ICommonLinkerSettings.NoLogo
-        {
-            get;
-            set;
+            var moduleType = typeof(Bam.Core.Module);
+            var vsSettingsGroupType = typeof(VSSolutionBuilder.VSSettingsGroup);
+            var stringType = typeof(string);
+            foreach (var i in toolSettings.Interfaces())
+            {
+                var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, vsSettingsGroupType, stringType });
+                if (null == method)
+                {
+                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2}, {3})",
+                        conversionClass.ToString(),
+                        i.ToString(),
+                        moduleType,
+                        vsSettingsGroupType,
+                        stringType);
+                }
+                method.Invoke(null, new object[] { toolSettings, module, settings, condition });
+            }
         }
     }
 }

@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using VisualCCommon;
 namespace VisualC
 {
     public class CompilerSettings :
@@ -57,10 +56,7 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerSettingsWin).Convert(module, commandLine);
-            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
-            (this as C.ICOnlyCompilerSettings).Convert(module, commandLine);
-            (this as VisualCCommon.ICommonCompilerSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.NativeImplementation), this, module, commandLine);
         }
 
         void
@@ -69,10 +65,7 @@ namespace VisualC
             VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.ICommonCompilerSettingsWin).Convert(module, settings, condition);
-            (this as C.ICommonCompilerSettings).Convert(module, settings, condition);
-            (this as C.ICOnlyCompilerSettings).Convert(module, settings, condition);
-            (this as VisualCCommon.ICommonCompilerSettings).Convert(module, settings, condition);
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, settings, condition);
         }
 
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
