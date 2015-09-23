@@ -177,9 +177,7 @@ namespace Bam.Core
         }
 
         public static void
-        IdentifyMainAndDependentPackages(
-            bool resolveToSinglePackageVersion,
-            bool allowUndefinedPackages)
+        IdentifyAllPackages()
         {
             var packageRepos = new System.Collections.Generic.Queue<string>();
             foreach (var repo in State.PackageRepositories)
@@ -351,7 +349,7 @@ namespace Bam.Core
             var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyMainAndDependentPackages(true, false);
+            IdentifyAllPackages();
 
             if (!System.IO.Directory.Exists(State.BuildRoot))
             {
