@@ -1,3 +1,5 @@
+23-Sep-2015 Issue #9. Added Bam.Core.Settings.Interfaces() that returns an IEnumerable returning the interfaces on the Settings object.
+
 21-Sep-2015 ======== Version 1.0a3 Release ========
 
 21-Sep-2015 Fixes #8. PATH is now searched for gcc, and versions checked, rather than assuming installation directories, and naming conventions.

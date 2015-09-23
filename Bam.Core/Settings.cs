@@ -52,6 +52,18 @@ namespace Bam.Core
             }
         }
 
+        public System.Collections.Generic.IEnumerable<System.Type>
+        Interfaces()
+        {
+            // find true interfaces
+            var baseI = typeof(ISettingsBase);
+            var interfaces = this.GetType().GetInterfaces().Where(item => (item != baseI) && baseI.IsAssignableFrom(item));
+            foreach (var i in interfaces)
+            {
+                yield return i;
+            }
+        }
+
         protected void
         InitializeAllInterfaces(
             Module module,
