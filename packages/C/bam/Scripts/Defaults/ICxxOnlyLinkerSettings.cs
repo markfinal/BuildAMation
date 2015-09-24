@@ -33,17 +33,6 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICommonLinkerSettings settings,
-            Bam.Core.Module module)
-        {
-            settings.OutputType = ELinkerOutput.Executable;
-            settings.LibraryPaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
-            settings.Libraries = new Bam.Core.StringArray();
-            settings.DebugSymbols = (module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug || module.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Profile);
-        }
-
-        public static void
-        Defaults(
             this C.ICxxOnlyLinkerSettings settings,
             Bam.Core.Module module)
         {
