@@ -1,3 +1,5 @@
+24-Sep-2015 Fixes #10. Do not assume that gcc, g++, ar, and ld, all reside on the same path. For instance, Gcc-4.8 on CentOS 6 is installed to /opt/rh/devtoolset-2, while ar and ld reside in /usr/bin.
+
 23-Sep-2015 Fixes #9. Each conversion package (CommandLineProcessor, VisualStudioProcessor, XcodeProjectProcessor) now uses Bam.Core.Settings.Interfaces(), and reflection, to invoke each settings interface on a Settings object. Fetching the interfaces through reflection does not guarantee an order, so the precedence of interfaces are queried through Bam.Core.SettingsPrecedenceAttribute. C.ICommonArchiverSettings has a very negative precedence, as some librarians (ar) require the output file to be specified as the last argument before all input files.
 
 23-Sep-2015 Issue #9. Added Bam.Core.SettingsPrecedenceAttribute, applicable to interfaces, that takes an integer value to define an order of evaluation. This is in respect of Settings interfaces (implement Bam.Core.ISettingsBase). By default, precedence is zero. A more negative value indicates that the interface is processed later, while a more positive value indicates that the interface is processed earlier.

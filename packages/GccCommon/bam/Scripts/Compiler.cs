@@ -37,10 +37,6 @@ namespace GccCommon
         {
             var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
             this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
-            this.GccMetaData.ValidateInstallPath();
-            this.GccMetaData.ValidateVersion();
-
-            this.Macros.Add("InstallPath", Bam.Core.TokenizedString.Create(this.GccMetaData.InstallPath, null));
             this.Macros.Add("objext", ".o");
         }
 
