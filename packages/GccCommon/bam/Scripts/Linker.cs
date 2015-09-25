@@ -37,17 +37,14 @@ namespace GccCommon
         {
             var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
             this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
-            this.GccMetaData.ValidateInstallPath();
-            this.GccMetaData.ValidateVersion();
 
-            var installPath = Bam.Core.TokenizedString.Create(this.GccMetaData.InstallPath, null);
-            
+            var ldPath = this.GccMetaData.LdPath;
+            var installPath = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(ldPath), null);
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(installPath));
 
-            this.Macros.Add("InstallPath", installPath);
-                    this.Macros.Add("exeext", string.Empty);
-                    this.Macros.Add("dynamicprefix", "lib");
-                    this.Macros.Add("dynamicext", ".so");
+            this.Macros.Add("exeext", string.Empty);
+            this.Macros.Add("dynamicprefix", "lib");
+            this.Macros.Add("dynamicext", ".so");
         }
 
         protected Gcc.MetaData GccMetaData
