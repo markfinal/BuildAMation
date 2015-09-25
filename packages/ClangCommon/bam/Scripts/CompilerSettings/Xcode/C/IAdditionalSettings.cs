@@ -44,7 +44,7 @@ namespace ClangCommon
             }
             if (settings is Clang.CxxCompilerSettings)
             {
-                configuration["OTHER_CXXFLAGS"] = extraSettings;
+                configuration["OTHER_CPLUSPLUSFLAGS"] = extraSettings;
             }
             else
             {
