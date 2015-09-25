@@ -33,6 +33,7 @@ namespace Gcc
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonLinkerSettings,
+        C.IAdditionalSettings,
         GccCommon.ICommonLinkerSettings
     {
         public LinkerSettings(
@@ -46,7 +47,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
@@ -68,6 +69,12 @@ namespace Gcc
         }
 
         bool? C.ICommonLinkerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

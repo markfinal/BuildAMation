@@ -33,6 +33,7 @@ namespace Gcc
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
         GccCommon.IArchiverSettings
     {
         public ArchiverSettings(
@@ -46,7 +47,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType
@@ -62,6 +63,12 @@ namespace Gcc
         }
 
         bool GccCommon.IArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

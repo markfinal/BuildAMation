@@ -36,6 +36,7 @@ namespace VisualC
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
+        C.IAdditionalSettings,
         VisualCCommon.ICommonCompilerSettings
     {
         public CxxCompilerSettings(
@@ -56,7 +57,7 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         void
@@ -159,6 +160,12 @@ namespace VisualC
         }
 
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

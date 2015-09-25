@@ -35,6 +35,7 @@ namespace Gcc
         C.ICommonCompilerSettings,
         C.ICOnlyCompilerSettings,
         C.IObjectiveCOnlyCompilerSettings,
+        C.IAdditionalSettings,
         GccCommon.ICommonCompilerSettings
     {
         public ObjectiveCCompilerSettings(
@@ -55,7 +56,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.EBit? C.ICommonCompilerSettings.Bits
@@ -137,6 +138,12 @@ namespace Gcc
         }
 
         string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

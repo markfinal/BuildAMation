@@ -36,7 +36,8 @@ namespace Clang
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
         C.IObjectiveCxxOnlyCompilerSettings,
-        C.ICommonCompilerSettingsOSX
+        C.ICommonCompilerSettingsOSX,
+        C.IAdditionalSettings
     {
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module)
@@ -55,7 +56,7 @@ namespace Clang
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineCompilerImplementation), this, module, commandLine);
         }
 
         void
@@ -63,7 +64,7 @@ namespace Clang
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeImplementation), this, module, configuration);
+            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeCompilerImplementation), this, module, configuration);
         }
 
         C.EBit? C.ICommonCompilerSettings.Bits
@@ -157,6 +158,12 @@ namespace Clang
         }
 
         Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettingsOSX.FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

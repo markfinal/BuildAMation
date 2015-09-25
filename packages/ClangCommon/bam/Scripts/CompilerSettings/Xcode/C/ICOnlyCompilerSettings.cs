@@ -29,7 +29,7 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class XcodeImplementation
+    public static partial class XcodeCompilerImplementation
     {
         public static void
         Convert(

@@ -35,7 +35,8 @@ namespace Clang
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonLinkerSettings,
         C.ICxxOnlyLinkerSettings,
-        C.ILinkerSettingsOSX
+        C.ILinkerSettingsOSX,
+        C.IAdditionalSettings
     {
         public CxxLinkerSettings(
             Bam.Core.Module module)
@@ -48,7 +49,7 @@ namespace Clang
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineLinkerImplementation), this, module, commandLine);
         }
 
         void
@@ -56,7 +57,7 @@ namespace Clang
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeImplementation), this, module, configuration);
+            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeLinkerImplementation), this, module, configuration);
         }
 
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
@@ -102,6 +103,12 @@ namespace Clang
         }
 
         Bam.Core.TokenizedString C.ILinkerSettingsOSX.InstallName
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

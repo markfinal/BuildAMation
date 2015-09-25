@@ -34,6 +34,7 @@ namespace Gcc
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
+        C.IAdditionalSettings,
         GccCommon.ICommonCompilerSettings
     {
         public CxxCompilerSettings(
@@ -53,7 +54,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.EBit? C.ICommonCompilerSettings.Bits
@@ -141,6 +142,12 @@ namespace Gcc
         }
 
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

@@ -34,7 +34,8 @@ namespace Mingw
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
-        C.ICOnlyCompilerSettings
+        C.ICOnlyCompilerSettings,
+        C.IAdditionalSettings
     {
         public CompilerSettings(
             Bam.Core.Module module)
@@ -53,7 +54,7 @@ namespace Mingw
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
@@ -135,6 +136,12 @@ namespace Mingw
         }
 
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

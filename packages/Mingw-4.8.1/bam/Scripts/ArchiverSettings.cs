@@ -33,6 +33,7 @@ namespace Mingw
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
         MingwCommon.IArchiverSettings
     {
         public ArchiverSettings(
@@ -46,7 +47,7 @@ namespace Mingw
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType
@@ -62,6 +63,12 @@ namespace Mingw
         }
 
         bool MingwCommon.IArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

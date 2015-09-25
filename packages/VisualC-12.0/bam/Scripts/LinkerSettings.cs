@@ -35,6 +35,7 @@ namespace VisualC
         VisualStudioProcessor.IConvertToProject,
         C.ILinkerSettingsWin,
         C.ICommonLinkerSettings,
+        C.IAdditionalSettings,
         VisualCCommon.ICommonLinkerSettings
     {
         public LinkerSettings(
@@ -48,7 +49,7 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         void
@@ -85,6 +86,12 @@ namespace VisualC
         }
 
         bool? C.ICommonLinkerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

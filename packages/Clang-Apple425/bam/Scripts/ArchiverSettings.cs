@@ -34,6 +34,7 @@ namespace Clang
         CommandLineProcessor.IConvertToCommandLine,
         // TODO: Xcode translation
         C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
         ClangCommon.ICommonArchiverSettings
     {
         public ArchiverSettings(
@@ -47,7 +48,7 @@ namespace Clang
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineArchiverImplementation), this, module, commandLine);
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType
@@ -63,6 +64,12 @@ namespace Clang
         }
 
         bool ClangCommon.ICommonArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
