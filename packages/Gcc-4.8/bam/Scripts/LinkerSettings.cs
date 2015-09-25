@@ -33,6 +33,7 @@ namespace Gcc
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonLinkerSettings,
+        C.IAdditionalSettings,
         GccCommon.ICommonLinkerSettings
     {
         public LinkerSettings(
@@ -68,6 +69,12 @@ namespace Gcc
         }
 
         bool? C.ICommonLinkerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

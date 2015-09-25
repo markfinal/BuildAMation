@@ -33,6 +33,7 @@ namespace Gcc
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
         GccCommon.IArchiverSettings
     {
         public ArchiverSettings(
@@ -62,6 +63,12 @@ namespace Gcc
         }
 
         bool GccCommon.IArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

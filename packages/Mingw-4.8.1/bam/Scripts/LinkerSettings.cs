@@ -32,7 +32,8 @@ namespace Mingw
     public sealed class LinkerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettings
+        C.ICommonLinkerSettings,
+        C.IAdditionalSettings
     {
         public LinkerSettings(
             Bam.Core.Module module)
@@ -67,6 +68,12 @@ namespace Mingw
         }
 
         bool? C.ICommonLinkerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

@@ -36,7 +36,8 @@ namespace Clang
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
         C.IObjectiveCxxOnlyCompilerSettings,
-        C.ICommonCompilerSettingsOSX
+        C.ICommonCompilerSettingsOSX,
+        C.IAdditionalSettings
     {
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module)
@@ -157,6 +158,12 @@ namespace Clang
         }
 
         Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettingsOSX.FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

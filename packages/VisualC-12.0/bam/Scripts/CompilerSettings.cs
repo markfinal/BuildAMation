@@ -36,6 +36,7 @@ namespace VisualC
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.ICOnlyCompilerSettings,
+        C.IAdditionalSettings,
         VisualCCommon.ICommonCompilerSettings
     {
         public CompilerSettings(
@@ -147,6 +148,12 @@ namespace VisualC
         }
 
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

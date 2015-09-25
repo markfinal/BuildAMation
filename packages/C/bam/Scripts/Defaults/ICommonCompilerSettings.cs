@@ -165,4 +165,53 @@ namespace C.DefaultSettings
             }
         }
     }
+    public static partial class DefaultSettingsExtensions
+    {
+        public static void
+        Defaults(
+            this C.IAdditionalSettings settings,
+            Bam.Core.Module module)
+        {
+            if (null == settings.AdditionalSettings)
+            {
+                settings.AdditionalSettings = new Bam.Core.StringArray();
+            }
+        }
+
+        public static void
+        Empty(
+            this C.IAdditionalSettings settings)
+        {
+            settings.AdditionalSettings = new Bam.Core.StringArray();
+        }
+
+        public static void
+        SharedSettings(
+            this C.IAdditionalSettings shared,
+            C.IAdditionalSettings lhs,
+            C.IAdditionalSettings rhs)
+        {
+            shared.AdditionalSettings = new Bam.Core.StringArray(lhs.AdditionalSettings.Intersect(rhs.AdditionalSettings));
+        }
+
+        public static void
+        Delta(
+            this C.IAdditionalSettings delta,
+            C.IAdditionalSettings lhs,
+            C.IAdditionalSettings rhs)
+        {
+            delta.AdditionalSettings = new Bam.Core.StringArray(lhs.AdditionalSettings.Except(rhs.AdditionalSettings));
+        }
+
+        public static void
+        Clone(
+            this C.IAdditionalSettings settings,
+            C.IAdditionalSettings other)
+        {
+            foreach (var path in other.AdditionalSettings)
+            {
+                settings.AdditionalSettings.AddUnique(path);
+            }
+        }
+    }
 }

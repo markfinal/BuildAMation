@@ -35,7 +35,8 @@ namespace Clang
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonLinkerSettings,
         C.ICxxOnlyLinkerSettings,
-        C.ILinkerSettingsOSX
+        C.ILinkerSettingsOSX,
+        C.IAdditionalSettings
     {
         public CxxLinkerSettings(
             Bam.Core.Module module)
@@ -102,6 +103,12 @@ namespace Clang
         }
 
         Bam.Core.TokenizedString C.ILinkerSettingsOSX.InstallName
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

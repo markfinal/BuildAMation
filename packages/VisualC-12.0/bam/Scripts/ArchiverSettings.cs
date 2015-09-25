@@ -34,6 +34,7 @@ namespace VisualC
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
         C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
         VisualCCommon.ICommonArchiverSettings
     {
         public ArchiverSettings(
@@ -60,6 +61,12 @@ namespace VisualC
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

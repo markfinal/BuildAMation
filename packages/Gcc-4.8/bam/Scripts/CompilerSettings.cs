@@ -34,6 +34,7 @@ namespace Gcc
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonCompilerSettings,
         C.ICOnlyCompilerSettings,
+        C.IAdditionalSettings,
         GccCommon.ICommonCompilerSettings
     {
         public CompilerSettings(
@@ -129,6 +130,12 @@ namespace Gcc
         }
 
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

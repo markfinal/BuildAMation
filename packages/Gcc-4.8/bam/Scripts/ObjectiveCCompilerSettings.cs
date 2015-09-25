@@ -35,6 +35,7 @@ namespace Gcc
         C.ICommonCompilerSettings,
         C.ICOnlyCompilerSettings,
         C.IObjectiveCOnlyCompilerSettings,
+        C.IAdditionalSettings,
         GccCommon.ICommonCompilerSettings
     {
         public ObjectiveCCompilerSettings(
@@ -137,6 +138,12 @@ namespace Gcc
         }
 
         string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

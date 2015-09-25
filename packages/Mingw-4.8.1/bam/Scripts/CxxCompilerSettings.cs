@@ -34,7 +34,8 @@ namespace Mingw
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
-        C.ICxxOnlyCompilerSettings
+        C.ICxxOnlyCompilerSettings,
+        C.IAdditionalSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
@@ -147,6 +148,12 @@ namespace Mingw
         }
 
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

@@ -35,7 +35,8 @@ namespace Clang
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonCompilerSettings,
         C.ICOnlyCompilerSettings,
-        C.ICommonCompilerSettingsOSX
+        C.ICommonCompilerSettingsOSX,
+        C.IAdditionalSettings
     {
         public CompilerSettings(
             Bam.Core.Module module)
@@ -145,6 +146,12 @@ namespace Clang
         }
 
         Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettingsOSX.FrameworkSearchDirectories
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

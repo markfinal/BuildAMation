@@ -36,6 +36,7 @@ namespace VisualC
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
+        C.IAdditionalSettings,
         VisualCCommon.ICommonCompilerSettings
     {
         public CxxCompilerSettings(
@@ -159,6 +160,12 @@ namespace VisualC
         }
 
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

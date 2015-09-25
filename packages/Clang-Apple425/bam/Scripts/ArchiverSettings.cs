@@ -34,6 +34,7 @@ namespace Clang
         CommandLineProcessor.IConvertToCommandLine,
         // TODO: Xcode translation
         C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
         ClangCommon.ICommonArchiverSettings
     {
         public ArchiverSettings(
@@ -63,6 +64,12 @@ namespace Clang
         }
 
         bool ClangCommon.ICommonArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

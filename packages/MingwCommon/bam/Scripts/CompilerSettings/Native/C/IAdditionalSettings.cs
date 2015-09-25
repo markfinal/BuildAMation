@@ -27,57 +27,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public class ArchiverSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonArchiverSettings,
-        C.IAdditionalSettings,
-        MingwCommon.IArchiverSettings
+    public static partial class NativeImplementation
     {
-        public ArchiverSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.IAdditionalSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.NativeImplementation), this, module, commandLine);
-        }
-
-        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool MingwCommon.IArchiverSettings.Ranlib
-        {
-            get;
-            set;
-        }
-
-        bool MingwCommon.IArchiverSettings.DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        MingwCommon.EArchiverCommand MingwCommon.IArchiverSettings.Command
-        {
-            get;
-            set;
+            foreach (var extra in settings.AdditionalSettings)
+            {
+                commandLine.Add(extra);
+            }
         }
     }
 }

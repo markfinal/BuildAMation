@@ -1,4 +1,6 @@
-25-Sep-2015 Fixed #11. C.ConsoleApplication and C.GuiApplication and C.DynamicLibrary allowed the creation of C++ source containers through class methods. These methods have been moved to the equivalent C.Cxx module types.
+25-Sep-2015 Fixes #12. To compiler, archiver and linker settings, added a new interface C.IAdditionalSettings, which allows a back door to setting arbitrary tool options, in the event of an existing interface not exposing the necessary property. This simply avoids having to modify packages to add a command line switch. VisualStudio and Xcode support provided. But note that Xcode does not expose any visible custom archiver setting.
+
+25-Sep-2015 Fixes #11. C.ConsoleApplication and C.GuiApplication and C.DynamicLibrary allowed the creation of C++ source containers through class methods. These methods have been moved to the equivalent C.Cxx module types.
 
 24-Sep-2015 Fixes #10. Do not assume that gcc, g++, ar, and ld, all reside on the same path. For instance, Gcc-4.8 on CentOS 6 is installed to /opt/rh/devtoolset-2, while ar and ld reside in /usr/bin.
 

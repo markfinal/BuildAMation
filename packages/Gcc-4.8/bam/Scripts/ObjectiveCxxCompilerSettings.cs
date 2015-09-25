@@ -35,6 +35,7 @@ namespace Gcc
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
         C.IObjectiveCxxOnlyCompilerSettings,
+        C.IAdditionalSettings,
         GccCommon.ICommonCompilerSettings
     {
         public ObjectiveCxxCompilerSettings(
@@ -143,6 +144,12 @@ namespace Gcc
         }
 
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;

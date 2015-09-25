@@ -35,6 +35,7 @@ namespace VisualC
         VisualStudioProcessor.IConvertToProject,
         C.ILinkerSettingsWin,
         C.ICommonLinkerSettings,
+        C.IAdditionalSettings,
         VisualCCommon.ICommonLinkerSettings
     {
         public LinkerSettings(
@@ -85,6 +86,12 @@ namespace VisualC
         }
 
         bool? C.ICommonLinkerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
