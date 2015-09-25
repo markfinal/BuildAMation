@@ -27,44 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+namespace MingwCommon
 {
-    public sealed class CopyFileSettings :
-        Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
-        ICopyFileSettings
+    public static partial class CommandLineImplementation
     {
-        public CopyFileSettings()
-        {}
-
-        public CopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ICommonArchiverSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            switch (settings.OutputType)
             {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
-            }
-            else
-            {
-                commandLine.Add("-v");
-            }
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
-        }
+                case C.EArchiverOutput.StaticLibrary:
+                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
+                    break;
 
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
+                default:
+                    throw new Bam.Core.Exception("Unsupported output type");
+            }
         }
     }
 }

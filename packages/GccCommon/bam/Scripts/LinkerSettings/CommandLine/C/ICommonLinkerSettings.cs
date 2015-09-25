@@ -27,44 +27,40 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+namespace GccCommon
 {
-    public sealed class CopyFileSettings :
-        Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
-        ICopyFileSettings
+    public static partial class CommandLineImplementation
     {
-        public CopyFileSettings()
-        {}
-
-        public CopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ICommonLinkerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            switch (settings.OutputType)
             {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
-            }
-            else
-            {
-                commandLine.Add("-v");
-            }
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
-        }
+                case C.ELinkerOutput.Executable:
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    break;
 
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
+                case C.ELinkerOutput.DynamicLibrary:
+                    commandLine.Add("-shared");
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    break;
+            }
+            foreach (var path in settings.LibraryPaths)
+            {
+                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
+                commandLine.Add(System.String.Format(format, path.ToString()));
+            }
+            foreach (var path in settings.Libraries)
+            {
+                commandLine.Add(path);
+            }
+            if (settings.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-g");
+            }
         }
     }
 }

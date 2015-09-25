@@ -27,44 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+namespace GccCommon
 {
-    public sealed class CopyFileSettings :
-        Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
-        ICopyFileSettings
+    public static partial class CommandLineImplementation
     {
-        public CopyFileSettings()
-        {}
-
-        public CopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ICOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            if (null != settings.LanguageStandard)
             {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
-            }
-            else
-            {
-                commandLine.Add("-v");
-            }
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
-        }
+                switch (settings.LanguageStandard)
+                {
+                    case C.ELanguageStandard.C89:
+                        commandLine.Add("-std=c89");
+                        break;
 
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
+                    case C.ELanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard, '{0}'", settings.LanguageStandard.ToString());
+                }
+            }
         }
     }
 }

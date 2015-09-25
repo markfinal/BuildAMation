@@ -56,7 +56,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.EBit? C.ICommonCompilerSettings.Bits

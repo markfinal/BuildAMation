@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Publisher
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineImplementation
     {
         public static void
         Convert(

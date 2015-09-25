@@ -57,7 +57,7 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         void

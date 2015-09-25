@@ -46,7 +46,7 @@ namespace Mingw
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.NativeImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, module, commandLine);
         }
 
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType

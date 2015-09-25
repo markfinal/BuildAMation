@@ -27,44 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+namespace VisualCCommon
 {
-    public sealed class CopyFileSettings :
-        Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
-        ICopyFileSettings
+    public static partial class CommandLineImplementation
     {
-        public CopyFileSettings()
-        {}
-
-        public CopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            if (null != settings.ExceptionHandler)
             {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
+                switch (settings.ExceptionHandler)
+                {
+                    case C.Cxx.EExceptionHandler.Disabled:
+                        // nothing
+                        break;
+                    case C.Cxx.EExceptionHandler.Asynchronous:
+                        commandLine.Add("-EHa");
+                        break;
+                    case C.Cxx.EExceptionHandler.Synchronous:
+                        commandLine.Add("-EHsc");
+                        break;
+                    case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
+                        commandLine.Add("-EHs");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
             }
-            else
-            {
-                commandLine.Add("-v");
-            }
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
-        }
-
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
         }
     }
 }

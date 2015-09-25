@@ -27,44 +27,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+namespace VisualCCommon
 {
-    public sealed class CopyFileSettings :
-        Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
-        ICopyFileSettings
+    public static partial class CommandLineImplementation
     {
-        public CopyFileSettings()
-        {}
-
-        public CopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ILinkerSettingsWin options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            switch (options.SubSystem.Value)
             {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
-            }
-            else
-            {
-                commandLine.Add("-v");
-            }
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
-        }
+                case C.ESubsystem.Console:
+                    commandLine.Add("-SUBSYSTEM:CONSOLE");
+                    break;
 
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
+                case C.ESubsystem.Windows:
+                    commandLine.Add("-SUBSYSTEM:WINDOWS");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", options.SubSystem.Value.ToString());
+            }
         }
     }
 }
