@@ -29,14 +29,50 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineCompilerImplementation
     {
         public static void
         Convert(
-            this C.ICxxOnlyLinkerSettings settings,
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
+            if (null != settings.ExceptionHandler)
+            {
+                switch (settings.ExceptionHandler)
+                {
+                case C.Cxx.EExceptionHandler.Disabled:
+                    commandLine.Add("-fno-exceptions");
+                    break;
+
+                case C.Cxx.EExceptionHandler.Asynchronous:
+                case C.Cxx.EExceptionHandler.Synchronous:
+                    commandLine.Add("-fexceptions");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized exception handler option");
+                }
+            }
+            if (null != settings.LanguageStandard)
+            {
+                switch (settings.LanguageStandard)
+                {
+                    case C.Cxx.ELanguageStandard.Cxx98:
+                        commandLine.Add("-std=c++98");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx98:
+                        commandLine.Add("-std=gnu++98");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.Cxx11:
+                        commandLine.Add("-std=c++11");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C++ language standard {0}", settings.LanguageStandard.ToString());
+                }
+            }
             if (settings.StandardLibrary.HasValue)
             {
                 switch (settings.StandardLibrary.Value)

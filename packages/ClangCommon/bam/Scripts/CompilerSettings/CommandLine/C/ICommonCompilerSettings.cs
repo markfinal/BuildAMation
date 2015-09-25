@@ -29,7 +29,7 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineCompilerImplementation
     {
         public static void
         Convert(

@@ -29,17 +29,46 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class XcodeCompilerImplementation
+    public static partial class CommandLineLinkerImplementation
     {
         public static void
         Convert(
-            this C.IObjectiveCOnlyCompilerSettings settings,
+            this C.ICommonLinkerSettings settings,
             Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration)
+            Bam.Core.StringArray commandLine)
         {
-            if (null != settings.ConstantStringClass)
+            switch (settings.OutputType)
             {
-                // TODO
+                case C.ELinkerOutput.Executable:
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    break;
+
+            case C.ELinkerOutput.DynamicLibrary:
+                {
+                    commandLine.Add("-dynamiclib");
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    var osxOpts = settings as C.ILinkerSettingsOSX;
+                    if (null != osxOpts.InstallName)
+                    {
+                        commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", osxOpts.InstallName.Parse()));
+                    }
+                    // TODO: current_version
+                    // TODO: compatability_version
+                }
+                break;
+            }
+            foreach (var path in settings.LibraryPaths)
+            {
+                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
+                commandLine.Add(System.String.Format(format, path.ToString()));
+            }
+            foreach (var path in settings.Libraries)
+            {
+                commandLine.Add(path);
+            }
+            if (settings.DebugSymbols.GetValueOrDefault())
+            {
+                commandLine.Add("-g");
             }
         }
     }

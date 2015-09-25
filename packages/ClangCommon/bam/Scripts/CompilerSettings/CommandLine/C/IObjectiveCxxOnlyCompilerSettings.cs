@@ -29,23 +29,14 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineCompilerImplementation
     {
         public static void
         Convert(
-            this C.ILinkerSettingsOSX options,
+            this C.IObjectiveCxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            foreach (var framework in options.Frameworks)
-            {
-                var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());
-                commandLine.Add(System.String.Format("-framework {0}", frameworkName));
-            }
-            foreach (var path in options.FrameworkSearchDirectories)
-            {
-                commandLine.Add(System.String.Format("-F {0}", path.Parse()));
-            }
         }
     }
 }

@@ -29,27 +29,17 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineCompilerImplementation
     {
         public static void
         Convert(
-            this C.ICOnlyCompilerSettings settings,
+            this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.LanguageStandard)
+            if (null != settings.ConstantStringClass)
             {
-                switch (settings.LanguageStandard)
-                {
-                    case C.ELanguageStandard.C89:
-                        commandLine.Add("-std=c89");
-                        break;
-                    case C.ELanguageStandard.C99:
-                        commandLine.Add("-std=c99");
-                        break;
-                    default:
-                        throw new Bam.Core.Exception("Invalid C language standard, {0}", settings.LanguageStandard.ToString());
-                }
+                commandLine.Add(System.String.Format("-fconstant-string-class={0}", settings.ConstantStringClass));
             }
         }
     }

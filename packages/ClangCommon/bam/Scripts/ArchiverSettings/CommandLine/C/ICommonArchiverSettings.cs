@@ -29,14 +29,20 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineArchiverImplementation
     {
         public static void
         Convert(
-            this C.IObjectiveCxxOnlyCompilerSettings settings,
+            this C.ICommonArchiverSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
+            switch (settings.OutputType)
+            {
+                case C.EArchiverOutput.StaticLibrary:
+                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
+                    break;
+            }
         }
     }
 }

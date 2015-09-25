@@ -29,30 +29,18 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineCompilerImplementation
     {
         public static void
         Convert(
-            this ICommonArchiverSettings settings,
+            this C.ICommonCompilerSettingsOSX options,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (settings.Ranlib)
+            foreach (var path in options.FrameworkSearchDirectories)
             {
-                commandLine.Add("-s");
-            }
-            if (settings.DoNotWarnIfLibraryCreated)
-            {
-                commandLine.Add("-c");
-            }
-            switch (settings.Command)
-            {
-                case EArchiverCommand.Replace:
-                    commandLine.Add("-r");
-                    break;
-
-                default:
-                    throw new Bam.Core.Exception("No such archiver command");
+                var formatString = path.ContainsSpace ? "-F\"{0}\"" : "-F{0}";
+                commandLine.Add(System.String.Format(formatString, path));
             }
         }
     }

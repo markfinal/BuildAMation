@@ -29,46 +29,27 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineCompilerImplementation
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettings settings,
+            this C.ICOnlyCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            switch (settings.OutputType)
+            if (null != settings.LanguageStandard)
             {
-                case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    break;
-
-            case C.ELinkerOutput.DynamicLibrary:
+                switch (settings.LanguageStandard)
                 {
-                    commandLine.Add("-dynamiclib");
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    var osxOpts = settings as C.ILinkerSettingsOSX;
-                    if (null != osxOpts.InstallName)
-                    {
-                        commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", osxOpts.InstallName.Parse()));
-                    }
-                    // TODO: current_version
-                    // TODO: compatability_version
+                    case C.ELanguageStandard.C89:
+                        commandLine.Add("-std=c89");
+                        break;
+                    case C.ELanguageStandard.C99:
+                        commandLine.Add("-std=c99");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C language standard, {0}", settings.LanguageStandard.ToString());
                 }
-                break;
-            }
-            foreach (var path in settings.LibraryPaths)
-            {
-                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
-            }
-            foreach (var path in settings.Libraries)
-            {
-                commandLine.Add(path);
-            }
-            if (settings.DebugSymbols.GetValueOrDefault())
-            {
-                commandLine.Add("-g");
             }
         }
     }

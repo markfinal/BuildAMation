@@ -29,19 +29,32 @@
 #endregion // License
 namespace ClangCommon
 {
-    public static partial class NativeImplementation
+    public static partial class CommandLineLinkerImplementation
     {
         public static void
         Convert(
-            this C.ICommonArchiverSettings settings,
+            this C.ICxxOnlyLinkerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            switch (settings.OutputType)
+            if (settings.StandardLibrary.HasValue)
             {
-                case C.EArchiverOutput.StaticLibrary:
-                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
+                switch (settings.StandardLibrary.Value)
+                {
+                case C.Cxx.EStandardLibrary.NotSet:
                     break;
+
+                case C.Cxx.EStandardLibrary.libstdcxx:
+                    commandLine.Add("-stdlib=libstdc++");
+                    break;
+
+                case C.Cxx.EStandardLibrary.libcxx:
+                    commandLine.Add("-stdlib=libc++");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Invalid C++ standard library {0}", settings.StandardLibrary.Value.ToString());
+                }
             }
         }
     }
