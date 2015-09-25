@@ -1,3 +1,5 @@
+25-Sep-2015 ======== Version 1.0a4 Release ========
+
 25-Sep-2015 Fixes #12. To compiler, archiver and linker settings, added a new interface C.IAdditionalSettings, which allows a back door to setting arbitrary tool options, in the event of an existing interface not exposing the necessary property. This simply avoids having to modify packages to add a command line switch. VisualStudio and Xcode support provided. But note that Xcode does not expose any visible custom archiver setting.
 
 25-Sep-2015 Fixes #11. C.ConsoleApplication and C.GuiApplication and C.DynamicLibrary allowed the creation of C++ source containers through class methods. These methods have been moved to the equivalent C.Cxx module types.
