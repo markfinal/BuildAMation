@@ -31,14 +31,78 @@ using Bam.Core;
 namespace C.Cxx
 {
     public class DynamicLibrary :
-        C.DynamicLibrary
+        ConsoleApplication,
+        IDynamicLibrary
     {
+        static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Import Library File");
+
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
             this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
+
+            this.GeneratedPaths[Key] = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+            this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
+            }
+
+            this.PrivatePatch(settings =>
+            {
+                var linker = settings as C.ICommonLinkerSettings;
+                if (null != linker)
+                {
+                    linker.OutputType = ELinkerOutput.DynamicLibrary;
+                }
+
+                var osxLinker = settings as C.ILinkerSettingsOSX;
+                if (null != osxLinker)
+                {
+                    osxLinker.InstallName = Bam.Core.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
+                }
+            });
+        }
+
+        public override Cxx.ObjectFileCollection
+        CreateCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
+            collection.PrivatePatch(settings =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                (collection.Tool as C.CompilerTool).CompileAsShared(settings);
+            });
+            return collection;
+        }
+
+        public void
+        CompileAgainstPublicly<DependentModule>(
+            params CModule[] affectedSources) where DependentModule : CModule, new()
+        {
+            if (0 == affectedSources.Length)
+            {
+                throw new Bam.Core.Exception("At least one source module argument must be passed to {0} in {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, this.ToString());
+            }
+
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.DependsOn(dependent);
+            foreach (var source in affectedSources)
+            {
+                if (null == source)
+                {
+                    continue;
+                }
+                source.UsePublicPatches(dependent);
+                this.UsePublicPatches(dependent);
+            }
         }
     }
 }

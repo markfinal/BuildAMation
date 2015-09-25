@@ -82,7 +82,7 @@ namespace VisualCCommon
             {
                 return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
             }
-            else if (module is C.DynamicLibrary)
+            else if (module is C.IDynamicLibrary)
             {
                 return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
             }

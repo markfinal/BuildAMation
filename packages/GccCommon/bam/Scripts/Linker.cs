@@ -67,23 +67,23 @@ namespace GccCommon
 
         private static Bam.Core.Array<C.CModule>
         FindAllDynamicDependents(
-            C.DynamicLibrary dynamicModule)
+            C.IDynamicLibrary dynamicModule)
         {
             var dynamicDeps = new Bam.Core.Array<C.CModule>();
-            if (0 == dynamicModule.Dependents.Count)
+            if (0 == (dynamicModule as C.CModule).Dependents.Count)
             {
                 return dynamicDeps;
             }
 
-            foreach (var dep in dynamicModule.Dependents)
+            foreach (var dep in (dynamicModule as C.CModule).Dependents)
             {
-                if (!(dep is C.DynamicLibrary))
+                if (!(dep is C.IDynamicLibrary))
                 {
                     continue;
                 }
-                var dynDep = dep as C.DynamicLibrary;
+                var dynDep = dep as C.CModule;
                 dynamicDeps.AddUnique(dynDep);
-                dynamicDeps.AddRangeUnique(FindAllDynamicDependents(dynDep));
+                dynamicDeps.AddRangeUnique(FindAllDynamicDependents(dynDep as C.IDynamicLibrary));
             }
             return dynamicDeps;
         }
@@ -108,7 +108,7 @@ namespace GccCommon
                 var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
                 linker.LibraryPaths.AddUnique(libraryDir);
             }
-            else if (library is C.DynamicLibrary)
+            else if (library is C.IDynamicLibrary)
             {
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
@@ -123,7 +123,7 @@ namespace GccCommon
                 linker.LibraryPaths.AddUnique(libraryDir);
 
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
-                var allDynamicDependents = FindAllDynamicDependents(library as C.DynamicLibrary);
+                var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
                     var depLibraryPath = dep.GeneratedPaths[C.DynamicLibrary.Key].Parse();

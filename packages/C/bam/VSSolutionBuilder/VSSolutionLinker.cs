@@ -53,7 +53,7 @@ namespace C
             var project = solution.EnsureProjectExists(sender);
             var config = project.GetConfiguration(sender);
 
-            config.SetType((sender is DynamicLibrary) ? VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary : VSSolutionBuilder.VSProjectConfiguration.EType.Application);
+            config.SetType((sender is IDynamicLibrary) ? VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary : VSSolutionBuilder.VSProjectConfiguration.EType.Application);
             config.SetOutputPath(executablePath);
             config.EnableIntermediatePath();
 
@@ -98,7 +98,7 @@ namespace C
             {
                 if (null != input.MetaData)
                 {
-                    if ((input is C.StaticLibrary) || (input is C.DynamicLibrary))
+                    if ((input is C.StaticLibrary) || (input is C.IDynamicLibrary))
                     {
                         project.LinkAgainstProject(solution.EnsureProjectExists(input));
                     }
@@ -122,7 +122,7 @@ namespace C
                         // TODO: probably a simplification of the DLL codepath
                         throw new System.NotImplementedException();
                     }
-                    else if (input is C.DynamicLibrary)
+                    else if (input is C.IDynamicLibrary)
                     {
                         // TODO: this might be able to shift out of the conditional
                         (sender.Tool as C.LinkerTool).ProcessLibraryDependency(sender as CModule, input as CModule);

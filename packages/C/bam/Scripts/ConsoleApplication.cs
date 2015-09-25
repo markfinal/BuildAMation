@@ -52,7 +52,7 @@ namespace C
             });
         }
 
-        private Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
+        protected Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;
                 compiler.PreprocessorDefines.Add("_CONSOLE");
@@ -69,17 +69,6 @@ namespace C
             return source;
         }
 
-        public virtual Cxx.ObjectFileCollection
-        CreateCxxSourceContainer(
-            string wildcardPath = null,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null)
-        {
-            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
-            this.sourceModules.Add(source);
-            return source;
-        }
-
         public virtual C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
@@ -87,17 +76,6 @@ namespace C
             System.Text.RegularExpressions.Regex filter = null)
         {
             var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
-            this.sourceModules.Add(source);
-            return source;
-        }
-
-        public virtual C.ObjCxx.ObjectFileCollection
-        CreateObjectiveCxxSourceContainer(
-            string wildcardPath = null,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null)
-        {
-            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
