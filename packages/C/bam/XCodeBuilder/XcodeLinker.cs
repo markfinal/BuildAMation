@@ -55,7 +55,7 @@ namespace C
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                     linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
                 }
-                else if (library is C.DynamicLibrary)
+                else if (library is C.IDynamicLibrary)
                 {
                     var fullLibraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
@@ -85,7 +85,7 @@ namespace C
             // to the project for this module
             if (null == sender.MetaData)
             {
-                if (sender is DynamicLibrary)
+                if (sender is IDynamicLibrary)
                 {
                     application = new XcodeBuilder.XcodeDynamicLibrary(sender, executablePath);
                 }
@@ -152,7 +152,7 @@ namespace C
                 {
                     application.AddStaticLibrary(library.MetaData as XcodeBuilder.XcodeStaticLibrary);
                 }
-                else if (library is C.DynamicLibrary)
+                else if (library is C.IDynamicLibrary)
                 {
                     application.AddDynamicLibrary(library.MetaData as XcodeBuilder.XcodeDynamicLibrary);
                 }

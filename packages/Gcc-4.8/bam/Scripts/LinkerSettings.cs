@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using GccCommon;
 namespace Gcc
 {
     public class LinkerSettings :
@@ -47,8 +46,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
-            (this as GccCommon.ICommonLinkerSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
         }
 
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType

@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using ClangCommon;
 namespace Clang
 {
     public sealed class CxxCompilerSettings :
@@ -55,9 +54,7 @@ namespace Clang
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
-            (this as C.ICxxOnlyCompilerSettings).Convert(module, commandLine);
-            (this as C.ICommonCompilerSettingsOSX).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.NativeImplementation), this, module, commandLine);
         }
 
         void
@@ -65,8 +62,7 @@ namespace Clang
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            (this as C.ICommonCompilerSettings).Convert(module, configuration);
-            (this as C.ICxxOnlyCompilerSettings).Convert(module, configuration);
+            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeImplementation), this, module, configuration);
         }
 
         C.EBit? C.ICommonCompilerSettings.Bits

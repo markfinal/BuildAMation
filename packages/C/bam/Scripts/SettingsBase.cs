@@ -38,14 +38,11 @@ namespace C
             Bam.Core.Settings sharedSettings,
             Bam.Core.Module module)
         {
-            var settingsType = module.Settings.GetType();
-            var moduleSpecificSettings = System.Activator.CreateInstance(settingsType, module, false) as SettingsBase;
-
             var attributeType = typeof(Bam.Core.SettingsExtensionsAttribute);
 
-            var interfaces = settingsType.GetInterfaces().Where(item => (item != typeof(Bam.Core.ISettingsBase)) && typeof(Bam.Core.ISettingsBase).IsAssignableFrom(item));
-            var sharedInterfaces = sharedSettings.GetType().GetInterfaces().Where(item => (item != typeof(Bam.Core.ISettingsBase)) && typeof(Bam.Core.ISettingsBase).IsAssignableFrom(item));
-            foreach (var i in interfaces)
+            var moduleSpecificSettings = System.Activator.CreateInstance(module.Settings.GetType(), module, false) as SettingsBase;
+            var sharedInterfaces = sharedSettings.Interfaces();
+            foreach (var i in module.Settings.Interfaces())
             {
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
                 if (0 == attributeArray.Length)
@@ -55,6 +52,8 @@ namespace C
 
                 var attribute = attributeArray[0] as Bam.Core.SettingsExtensionsAttribute;
 
+                // if we match any of the shared interfaces, get a delta
+                // otherwise, just clone the interface
                 if (sharedInterfaces.Any(item => item == i))
                 {
                     var deltaMethod = attribute.GetMethod("Delta", new[] { i, i, i });

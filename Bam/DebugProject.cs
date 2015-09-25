@@ -247,7 +247,7 @@ namespace Bam
         public static void
         Create()
         {
-            Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
+            Core.PackageUtilities.IdentifyAllPackages();
 
             var masterPackage = Core.Graph.Instance.MasterPackage;
             var masterPackageName = masterPackage.Name;

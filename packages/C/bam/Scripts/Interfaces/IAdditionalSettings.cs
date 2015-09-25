@@ -27,48 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace C.Cxx
+namespace C
 {
-    public class GUIApplication :
-        ConsoleApplication
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MinValue + 1)]
+    public interface IAdditionalSettings :
+        Bam.Core.ISettingsBase
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        Bam.Core.StringArray AdditionalSettings
         {
-            base.Init(parent);
-            this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
-
-            this.PrivatePatch(settings =>
-            {
-                var linker = settings as C.ILinkerSettingsWin;
-                if (linker != null)
-                {
-                    linker.SubSystem = ESubsystem.Windows;
-                }
-            });
-        }
-
-        protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
-        {
-            var compiler = settings as C.ICommonCompilerSettings;
-            compiler.PreprocessorDefines.Remove("_CONSOLE");
-            compiler.PreprocessorDefines.Add("_WINDOWS");
-        };
-
-        public override Cxx.ObjectFileCollection
-        CreateCxxSourceContainer(
-            string wildcardPath = null,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null)
-        {
-            var container = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                container.PrivatePatch(this.WindowsPreprocessor);
-            }
-            return container;
+            get;
+            set;
         }
     }
 }

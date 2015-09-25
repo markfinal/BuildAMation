@@ -33,7 +33,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(__GNUC__)
 #define UNUSEDARG(_ARGUMENT) _ARGUMENT __attribute__ ((unused))
 #else
-#define UNUSEDARG(_ARGUMENT) /* do nothing */
+#if defined(__cplusplus )
+#define UNUSEDARG(_ARGUMENT) /* remove _ARGUMENT */
+#else
+#define UNUSEDARG(_ARGUMENT) _ARGUMENT
+#endif
 #endif
 
 #endif /* UNUSED_MACROS_H */

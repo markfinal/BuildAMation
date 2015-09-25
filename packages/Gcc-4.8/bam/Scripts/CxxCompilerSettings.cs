@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using GccCommon;
 namespace Gcc
 {
     public sealed class CxxCompilerSettings :
@@ -54,9 +53,7 @@ namespace Gcc
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ICommonCompilerSettings).Convert(module, commandLine);
-            (this as C.ICxxOnlyCompilerSettings).Convert(module, commandLine);
-            (this as GccCommon.ICommonCompilerSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.NativeImplementation), this, module, commandLine);
         }
 
         C.EBit? C.ICommonCompilerSettings.Bits

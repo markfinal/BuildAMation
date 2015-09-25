@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using VisualCCommon;
 namespace VisualC
 {
     public class LinkerSettings :
@@ -49,9 +48,7 @@ namespace VisualC
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            (this as C.ILinkerSettingsWin).Convert(module, commandLine);
-            (this as C.ICommonLinkerSettings).Convert(module, commandLine);
-            (this as VisualCCommon.ICommonLinkerSettings).Convert(module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.NativeImplementation), this, module, commandLine);
         }
 
         void
@@ -60,9 +57,7 @@ namespace VisualC
             VSSolutionBuilder.VSSettingsGroup settings,
             string condition)
         {
-            (this as C.ILinkerSettingsWin).Convert(module, settings, condition);
-            (this as C.ICommonLinkerSettings).Convert(module, settings, condition);
-            (this as VisualCCommon.ICommonLinkerSettings).Convert(module, settings, condition);
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, settings, condition);
         }
 
         C.ESubsystem? C.ILinkerSettingsWin.SubSystem

@@ -61,7 +61,7 @@ namespace HeaderLibraryTest
         {
             base.Init(parent);
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
             this.CompileAgainst<HeaderLibrary>(source);
 

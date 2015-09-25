@@ -27,48 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace C.Cxx
+namespace XcodeProjectProcessor
 {
-    public class GUIApplication :
-        ConsoleApplication
+    public static class Conversion
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        public static void
+        Convert(
+            System.Type conversionClass,
+            Bam.Core.Settings toolSettings,
+            Bam.Core.Module module,
+            XcodeBuilder.Configuration configuration)
         {
-            base.Init(parent);
-            this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
-
-            this.PrivatePatch(settings =>
+            var moduleType = typeof(Bam.Core.Module);
+            var xcodeConfigurationType = typeof(XcodeBuilder.Configuration);
+            foreach (var i in toolSettings.Interfaces())
             {
-                var linker = settings as C.ILinkerSettingsWin;
-                if (linker != null)
+                var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, xcodeConfigurationType });
+                if (null == method)
                 {
-                    linker.SubSystem = ESubsystem.Windows;
+                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2}, {3})",
+                        conversionClass.ToString(),
+                        i.ToString(),
+                        moduleType,
+                        xcodeConfigurationType);
                 }
-            });
-        }
-
-        protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
-        {
-            var compiler = settings as C.ICommonCompilerSettings;
-            compiler.PreprocessorDefines.Remove("_CONSOLE");
-            compiler.PreprocessorDefines.Add("_WINDOWS");
-        };
-
-        public override Cxx.ObjectFileCollection
-        CreateCxxSourceContainer(
-            string wildcardPath = null,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null)
-        {
-            var container = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                container.PrivatePatch(this.WindowsPreprocessor);
+                method.Invoke(null, new object[] { toolSettings, module, configuration });
             }
-            return container;
         }
     }
 }

@@ -182,7 +182,7 @@ namespace Test9
     }
 
     sealed class CppDynamicLibaryFromCollection :
-        C.DynamicLibrary
+        C.Cxx.DynamicLibrary
     {
         protected override void
         Init(

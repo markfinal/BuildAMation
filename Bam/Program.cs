@@ -98,7 +98,7 @@ namespace Bam
 
                 if (Core.CommandLineProcessor.Evaluate(new Core.ShowDefinitionFile()))
                 {
-                    Core.PackageUtilities.IdentifyMainAndDependentPackages(true, false);
+                    Core.PackageUtilities.IdentifyAllPackages();
                     Core.Graph.Instance.MasterPackage.Show();
                     return;
                 }

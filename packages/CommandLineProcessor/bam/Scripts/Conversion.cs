@@ -27,44 +27,48 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+using System.Linq;
+namespace CommandLineProcessor
 {
-    public sealed class CopyFileSettings :
-        Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
-        ICopyFileSettings
+    public static class Conversion
     {
-        public CopyFileSettings()
-        {}
-
-        public CopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            System.Type conversionClass,
+            Bam.Core.Settings toolSettings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            var moduleType = typeof(Bam.Core.Module);
+            var stringArrayType = typeof(Bam.Core.StringArray);
+            var commandOrder = new Bam.Core.Array<System.Tuple<int, Bam.Core.StringArray>>();
+            foreach (var i in toolSettings.Interfaces())
             {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
-            }
-            else
-            {
-                commandLine.Add("-v");
-            }
-            CommandLineProcessor.Conversion.Convert(typeof(NativeImplementation), this, module, commandLine);
-        }
+                var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, stringArrayType });
+                if (null == method)
+                {
+                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2}, {3})",
+                        conversionClass.ToString(),
+                        i.ToString(),
+                        moduleType,
+                        stringArrayType);
+                }
+                var commands = new Bam.Core.StringArray();
+                method.Invoke(null, new object[] { toolSettings, module, commands });
 
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
+                var precedenceAttribs = i.GetCustomAttributes(typeof(Bam.Core.SettingsPrecedenceAttribute), false);
+                int precedence = 0;
+                if (precedenceAttribs.Length > 0)
+                {
+                    precedence = (precedenceAttribs[0] as Bam.Core.SettingsPrecedenceAttribute).Order;
+                }
+                commandOrder.Add(new System.Tuple<int, Bam.Core.StringArray>(precedence, commands));
+            }
+
+            foreach (var commands in commandOrder.OrderByDescending(item => item.Item1))
+            {
+                commandLine.AddRange(commands.Item2);
+            }
         }
     }
 }

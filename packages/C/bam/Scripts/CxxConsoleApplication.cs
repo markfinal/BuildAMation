@@ -39,5 +39,27 @@ namespace C.Cxx
             base.Init(parent);
             this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
         }
+
+        public virtual Cxx.ObjectFileCollection
+        CreateCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        public virtual C.ObjCxx.ObjectFileCollection
+        CreateObjectiveCxxSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
+            this.sourceModules.Add(source);
+            return source;
+        }
     }
 }

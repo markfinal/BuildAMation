@@ -44,7 +44,7 @@ namespace Bam.Core
 
             if (null != packageAssembly)
             {
-                PackageUtilities.IdentifyMainAndDependentPackages(true, false);
+                PackageUtilities.IdentifyAllPackages();
                 State.ScriptAssembly = packageAssembly;
                 State.ScriptAssemblyPathname = packageAssembly.Location;
             }

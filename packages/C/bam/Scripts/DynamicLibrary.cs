@@ -31,7 +31,8 @@ using Bam.Core;
 namespace C
 {
     public class DynamicLibrary :
-        ConsoleApplication
+        ConsoleApplication,
+        IDynamicLibrary
     {
         static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Import Library File");
 
@@ -80,22 +81,6 @@ namespace C
             System.Text.RegularExpressions.Regex filter = null)
         {
             var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
-            collection.PrivatePatch(settings =>
-            {
-                var compiler = settings as C.ICommonCompilerSettings;
-                compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
-                (collection.Tool as C.CompilerTool).CompileAsShared(settings);
-            });
-            return collection;
-        }
-
-        public override Cxx.ObjectFileCollection
-        CreateCxxSourceContainer(
-            string wildcardPath = null,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null)
-        {
-            var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;

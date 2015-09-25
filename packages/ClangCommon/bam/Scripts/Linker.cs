@@ -65,7 +65,7 @@ namespace ClangCommon
                 var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
                 linker.LibraryPaths.AddUnique(libraryDir);
             }
-            else if (library is C.DynamicLibrary)
+            else if (library is C.IDynamicLibrary)
             {
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));

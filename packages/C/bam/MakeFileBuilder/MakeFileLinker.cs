@@ -40,7 +40,7 @@ namespace C
             {
                 return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
             }
-            else if (module is C.DynamicLibrary)
+            else if (module is C.IDynamicLibrary)
             {
                 if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
@@ -112,7 +112,7 @@ namespace C
                 {
                     rule.AddPrerequisite(module, C.StaticLibrary.Key);
                 }
-                else if (module is DynamicLibrary)
+                else if (module is IDynamicLibrary)
                 {
                     if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
