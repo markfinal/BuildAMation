@@ -34,6 +34,7 @@ namespace Publisher
         Bam.Core.Module
     {
         private System.Collections.Generic.Dictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>>();
+        private System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject> looseDependents = new System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>();
         private ICollationPolicy Policy = null;
         public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
 
@@ -173,6 +174,30 @@ namespace Publisher
             this.dependents[dependent].Add(tokenString, packaging);
         }
 
+        public void
+        IncludeFile(
+            string parameterizedFilePath,
+            string subdir,
+            CollatedObject reference,
+            params CollatedObject[] additionalReferences)
+        {
+            var tokenString = Bam.Core.TokenizedString.Create(parameterizedFilePath, this);
+            this.IncludeFile(tokenString, subdir, reference, additionalReferences);
+        }
+
+        public void
+        IncludeFile(
+            Bam.Core.TokenizedString parameterizedFilePath,
+            string subdir,
+            CollatedObject reference,
+            params CollatedObject[] additionalReferences)
+        {
+            var refs = new Bam.Core.Array<CollatedObject>(reference);
+            refs.AddRangeUnique(new Bam.Core.Array<CollatedObject>(additionalReferences));
+            var packaging = new CollatedObject(null, subdir, refs);
+            this.looseDependents.Add(parameterizedFilePath, packaging);
+        }
+
         public override void
         Evaluate()
         {
@@ -185,7 +210,8 @@ namespace Publisher
         {
             // TODO: the nested dictionary is not readonly - not sure how to construct this
             var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>>(this.dependents);
-            this.Policy.Collate(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
+            var looseFiles = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.TokenizedString, CollatedObject>(this.looseDependents);
+            this.Policy.Collate(this, context, this.GeneratedPaths[PackageRoot], packageObjects, looseFiles);
         }
 
         protected override void

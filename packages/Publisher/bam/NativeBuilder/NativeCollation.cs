@@ -36,7 +36,7 @@ namespace Publisher
         CopyFile(
             Collation sender,
             Bam.Core.ExecutionContext context,
-            string sourcePath,
+            Bam.Core.TokenizedString sourcePath,
             string destinationDir)
         {
             // TODO: convert this to a command line tool as well
@@ -45,12 +45,12 @@ namespace Publisher
             {
                 System.IO.Directory.CreateDirectory(destinationDir);
             }
-            var destinationPath = System.IO.Path.Combine(destinationDir, System.IO.Path.GetFileName(sourcePath));
+            var destinationPath = System.IO.Path.Combine(destinationDir, System.IO.Path.GetFileName(sourcePath.Parse()));
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
-            commandLine.Add(sourcePath);
+            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
             commandLine.Add(destinationPath);
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
@@ -60,14 +60,15 @@ namespace Publisher
             Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> packageObjects,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.TokenizedString, CollatedObject> looseFiles)
         {
             var root = packageRoot.Parse();
             foreach (var module in packageObjects)
             {
                 foreach (var path in module.Value)
                 {
-                    var sourcePath = path.Key.ToString();
+                    var sourcePath = path.Key;
                     if (path.Value.IsMarker)
                     {
                         var destinationDir = root;
@@ -88,6 +89,17 @@ namespace Publisher
                             path.Value.DestinationDir = destinationDir;
                         }
                     }
+                }
+            }
+            foreach (var obj in looseFiles)
+            {
+                var sourcePath = obj.Key;
+                var subdir = obj.Value.SubDirectory;
+                foreach (var reference in obj.Value.References)
+                {
+                    var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, obj.Value.SubDirectory));
+                    CopyFile(sender, context, sourcePath, destinationDir);
+                    obj.Value.DestinationDir = destinationDir;
                 }
             }
         }

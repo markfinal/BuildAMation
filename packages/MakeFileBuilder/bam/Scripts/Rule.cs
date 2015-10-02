@@ -174,7 +174,7 @@ namespace MakeFileBuilder
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
-                    rules.AppendFormat("{0} ", pre);
+                    rules.AppendFormat("{0} ", pre.ParseAndQuoteIfNecessary());
                 }
                 foreach (var pre in this.PrerequisiteTargets)
                 {

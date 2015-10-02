@@ -35,7 +35,7 @@ namespace Publisher
         private static void
         CopyFileRule(
             MakeFileBuilder.MakeFileMeta meta,
-            MakeFileBuilder.MakeFileMeta sourceMeta,
+            MakeFileBuilder.MakeFileMeta sourceMeta, // TODO: unused?
             MakeFileBuilder.Rule parentRule,
             string outputDirectory,
             Bam.Core.TokenizedString sourcePath)
@@ -60,9 +60,8 @@ namespace Publisher
             Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module,
-            System.Collections.Generic.Dictionary<Bam.Core.TokenizedString,
-            CollatedObject>> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> packageObjects,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.TokenizedString, CollatedObject> looseFiles)
         {
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
@@ -94,6 +93,17 @@ namespace Publisher
                             path.Value.DestinationDir = destinationDir;
                         }
                     }
+                }
+            }
+            foreach (var obj in looseFiles)
+            {
+                var sourcePath = obj.Key.ToString();
+                var subdir = obj.Value.SubDirectory;
+                foreach (var reference in obj.Value.References)
+                {
+                    var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, obj.Value.SubDirectory));
+                    CopyFileRule(meta, null, rule, destinationDir, obj.Key);
+                    obj.Value.DestinationDir = destinationDir;
                 }
             }
         }

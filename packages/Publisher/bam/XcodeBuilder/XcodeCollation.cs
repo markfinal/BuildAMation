@@ -37,7 +37,8 @@ namespace Publisher
             Collation sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> packageObjects)
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> packageObjects,
+            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.TokenizedString, CollatedObject> looseFiles)
         {
             // instead of copying to the package root, modules are copied next to their dependees
             foreach (var module in packageObjects)
@@ -86,6 +87,17 @@ namespace Publisher
                             }
                         }
                     }
+                }
+            }
+            foreach (var obj in looseFiles)
+            {
+                var sourcePath = obj.Key;
+                var subdir = obj.Value.SubDirectory;
+                foreach (var reference in obj.Value.References)
+                {
+                    var commands = new Bam.Core.StringArray();
+                    commands.Add(System.String.Format("cp -v {0} $CONFIGURATION_BUILD_DIR/{1}/{2}", sourcePath.ParseAndQuoteIfNecessary(), subdir, System.IO.Path.GetFileName(sourcePath.Parse())));
+                    (reference.Module.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
                 }
             }
         }
