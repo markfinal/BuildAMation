@@ -88,21 +88,6 @@ namespace VSSolutionBuilder
         public void
         AddSetting(
             string name,
-            int value,
-            string condition = null)
-        {
-            var stringValue = value.ToString().ToLower();
-            if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
-            {
-                throw new Bam.Core.Exception("Cannot change the value of existing integer option {0} to {1}", name, value);
-            }
-
-            this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
-        }
-
-        public void
-        AddSetting(
-            string name,
             string value,
             string condition = null)
         {

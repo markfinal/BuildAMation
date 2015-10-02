@@ -45,7 +45,7 @@ namespace VisualCCommon
 
             if (settings.RuntimeLibrary.HasValue)
             {
-                settingsGroup.AddSetting("RuntimeLibrary", (int)settings.RuntimeLibrary.Value, condition);
+                settingsGroup.AddSetting("RuntimeLibrary", settings.RuntimeLibrary.Value.ToString(), condition);
             }
         }
     }
