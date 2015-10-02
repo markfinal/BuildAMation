@@ -1,3 +1,5 @@
+02-Oct-2015 Fixes #15. Environment variables can now be used in TokenizedStrings. For example, a tokenized string can be "$(HOME)" to get the HOME environment variable.
+
 02-Oct-2015 Fixes #16. VisualC builds in Native build mode no longer default to statically linking the CRT, which was different to VSSolution build modes (dynamically linking the CRT). The default is now to dynamically link (to reduce binary size) against the non-debug CRT. This can be changed on the VisualCCommon.ICommonCompilerSettings.RuntimeLibrary property.
 
 25-Sep-2015 ======== Version 1.0a4 Release ========

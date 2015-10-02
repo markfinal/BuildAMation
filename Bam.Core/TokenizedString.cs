@@ -54,6 +54,7 @@ namespace Bam.Core
         public static readonly string TokenPrefix = @"$(";
         public static readonly string TokenSuffix = @")";
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
+        private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
         private static readonly string FunctionRegExPattern = @"(@([a-z]+)\((.+)\))";
         private static readonly string FunctionPrefix = @"@";
 
@@ -259,6 +260,7 @@ namespace Bam.Core
             foreach (int index in this.MacroIndices.Reverse<int>())
             {
                 var token = this.Tokens[index];
+                // step 1 : try to resolve with macros passed to the Parse function
                 if (null != customMacros && customMacros.Dict.ContainsKey(token))
                 {
                     var value = customMacros.Dict[token];
@@ -273,6 +275,7 @@ namespace Bam.Core
                     }
                     token = value.ToString();
                 }
+                // step 2 : try macros in the global Graph, common to all modules
                 else if (Graph.Instance.Macros.Dict.ContainsKey(token))
                 {
                     var value = Graph.Instance.Macros.Dict[token];
@@ -287,6 +290,7 @@ namespace Bam.Core
                     }
                     token = value.ToString();
                 }
+                // step 3 : try macros in the specific module
                 else if (this.ModuleWithMacros != null && this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
                 {
                     var value = this.ModuleWithMacros.Macros.Dict[token];
@@ -301,6 +305,7 @@ namespace Bam.Core
                     }
                     token = value.ToString();
                 }
+                // step 4 : try macros in the Tool attached to the specific module
                 else if (this.ModuleWithMacros != null && null != this.ModuleWithMacros.Tool && this.ModuleWithMacros.Tool.Macros.Dict.ContainsKey(token))
                 {
                     var value = this.ModuleWithMacros.Tool.Macros.Dict[token];
@@ -317,28 +322,39 @@ namespace Bam.Core
                 }
                 else
                 {
-                    // TODO: this could be due to the user not having set a property, e.g. inputpath
-                    // is there a better error message that could be returned, other than this in those
-                    // circumstances?
-                    var message = new System.Text.StringBuilder();
-                    message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
-                    message.AppendLine();
-                    if (null != customMacros)
+                    // step 5 : try the immediate environment
+                    var strippedToken = SplitToParse(token, ExtractTokenRegExPattern).First();
+                    var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
+                    if (null != envVar)
                     {
-                        message.AppendLine("Searched in custom macros");
+                        token = envVar;
                     }
-                    message.AppendLine("Searched in global macros");
-                    if (null != this.ModuleWithMacros)
+                    // step 6 : fail
+                    else
                     {
-                        message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                        // TODO: this could be due to the user not having set a property, e.g. inputpath
+                        // is there a better error message that could be returned, other than this in those
+                        // circumstances?
+                        var message = new System.Text.StringBuilder();
+                        message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
                         message.AppendLine();
-                        if (null != this.ModuleWithMacros.Tool)
+                        if (null != customMacros)
                         {
-                            message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
-                            message.AppendLine();
+                            message.AppendLine("Searched in custom macros");
                         }
+                        message.AppendLine("Searched in global macros");
+                        if (null != this.ModuleWithMacros)
+                        {
+                            message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                            message.AppendLine();
+                            if (null != this.ModuleWithMacros.Tool)
+                            {
+                                message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
+                                message.AppendLine();
+                            }
+                        }
+                        throw new System.Exception(message.ToString());
                     }
-                    throw new System.Exception(message.ToString());
                 }
                 if (null == token)
                 {
