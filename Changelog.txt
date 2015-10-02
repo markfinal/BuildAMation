@@ -1,3 +1,5 @@
+02-Oct-2015 Fixes #16. VisualC builds in Native build mode no longer default to statically linking the CRT, which was different to VSSolution build modes (dynamically linking the CRT). The default is now to dynamically link (to reduce binary size) against the non-debug CRT. This can be changed on the VisualCCommon.ICommonCompilerSettings.RuntimeLibrary property.
+
 25-Sep-2015 ======== Version 1.0a4 Release ========
 
 25-Sep-2015 Fixes #12. To compiler, archiver and linker settings, added a new interface C.IAdditionalSettings, which allows a back door to setting arbitrary tool options, in the event of an existing interface not exposing the necessary property. This simply avoids having to modify packages to add a command line switch. VisualStudio and Xcode support provided. But note that Xcode does not expose any visible custom archiver setting.

@@ -29,24 +29,11 @@
 #endregion // License
 namespace VisualCCommon
 {
-    public static partial class VSSolutionImplementation
+    public enum ERuntimeLibrary
     {
-        public static void
-        Convert(
-            this VisualCCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
-            string condition)
-        {
-            if (settings.NoLogo.GetValueOrDefault(false))
-            {
-                settingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
-            }
-
-            if (settings.RuntimeLibrary.HasValue)
-            {
-                settingsGroup.AddSetting("RuntimeLibrary", (int)settings.RuntimeLibrary.Value, condition);
-            }
-        }
+        MultiThreaded = 0,
+        MultiThreadedDebug = 1,
+        MultiThreadedDLL = 2,
+        MultiThreadedDebugDLL = 3
     }
 }

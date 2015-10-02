@@ -38,5 +38,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        ERuntimeLibrary? RuntimeLibrary
+        {
+            get;
+            set;
+        }
     }
 }

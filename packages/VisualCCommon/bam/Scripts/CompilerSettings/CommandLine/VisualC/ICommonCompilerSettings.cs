@@ -44,6 +44,28 @@ namespace VisualCCommon
                     commandLine.Add("-nologo");
                 }
             }
+
+            if (settings.RuntimeLibrary.HasValue)
+            {
+                switch (settings.RuntimeLibrary.Value)
+                {
+                    case ERuntimeLibrary.MultiThreaded:
+                        commandLine.Add("-MT");
+                        break;
+
+                    case ERuntimeLibrary.MultiThreadedDebug:
+                        commandLine.Add("-MTd");
+                        break;
+
+                    case ERuntimeLibrary.MultiThreadedDebugDLL:
+                        commandLine.Add("-MDd");
+                        break;
+
+                    case ERuntimeLibrary.MultiThreadedDLL:
+                        commandLine.Add("-MD");
+                        break;
+                }
+            }
         }
     }
 }

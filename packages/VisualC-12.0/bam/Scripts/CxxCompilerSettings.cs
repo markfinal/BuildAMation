@@ -176,5 +176,11 @@ namespace VisualC
             get;
             set;
         }
+
+        VisualCCommon.ERuntimeLibrary? VisualCCommon.ICommonCompilerSettings.RuntimeLibrary
+        {
+            get;
+            set;
+        }
     }
 }

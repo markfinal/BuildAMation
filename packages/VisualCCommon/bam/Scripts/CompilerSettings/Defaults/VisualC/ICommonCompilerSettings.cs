@@ -37,6 +37,7 @@ namespace VisualCCommon.DefaultSettings
             Bam.Core.Module module)
         {
             settings.NoLogo = true;
+            settings.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
         }
 
         public static void
@@ -46,6 +47,7 @@ namespace VisualCCommon.DefaultSettings
             VisualCCommon.ICommonCompilerSettings rhs)
         {
             shared.NoLogo = (lhs.NoLogo == rhs.NoLogo) ? lhs.NoLogo : null;
+            shared.RuntimeLibrary = (lhs.RuntimeLibrary == rhs.RuntimeLibrary) ? lhs.RuntimeLibrary : null;
         }
 
         public static void
@@ -55,6 +57,7 @@ namespace VisualCCommon.DefaultSettings
             VisualCCommon.ICommonCompilerSettings rhs)
         {
             delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
+            delta.RuntimeLibrary = (lhs.RuntimeLibrary != rhs.RuntimeLibrary) ? lhs.RuntimeLibrary : null;
         }
 
         public static void
@@ -63,6 +66,7 @@ namespace VisualCCommon.DefaultSettings
             VisualCCommon.ICommonCompilerSettings other)
         {
             settings.NoLogo = other.NoLogo;
+            settings.RuntimeLibrary = other.RuntimeLibrary;
         }
     }
 }
