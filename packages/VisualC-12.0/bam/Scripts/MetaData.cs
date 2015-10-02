@@ -30,7 +30,8 @@
 namespace VisualC
 {
     public class MetaData :
-        Bam.Core.IPackageMetaData
+        Bam.Core.IPackageMetaData,
+        VisualCCommon.IRuntimeLibraryPathMeta
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
 
@@ -58,6 +59,38 @@ namespace VisualC
             string index)
         {
             return this.Meta.ContainsKey(index);
+        }
+
+        Bam.Core.TokenizedString
+        VisualCCommon.IRuntimeLibraryPathMeta.MSVCR(
+            C.EBit depth)
+        {
+            switch (depth)
+            {
+                case C.EBit.ThirtyTwo:
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcr120.dll", null);
+
+                case C.EBit.SixtyFour:
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcr120.dll", null);
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+            }
+        }
+
+        Bam.Core.TokenizedString VisualCCommon.IRuntimeLibraryPathMeta.MSVCP(C.EBit depth)
+        {
+            switch (depth)
+            {
+                case C.EBit.ThirtyTwo:
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcp120.dll", null);
+
+                case C.EBit.SixtyFour:
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcp120.dll", null);
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+            }
         }
     }
 }
