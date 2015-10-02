@@ -477,6 +477,17 @@ namespace Bam.Core
         {
             return base.GetHashCode();
         }
+
+        public string ParseAndQuoteIfNecessary(
+            MacroList customMacros = null)
+        {
+            var parsed = this.Parse(customMacros);
+            if (!this.ContainsSpace)
+            {
+                return parsed;
+            }
+            return System.String.Format("\"{0}\"", parsed);
+        }
     }
 
     public sealed class TokenizedStringArray :
