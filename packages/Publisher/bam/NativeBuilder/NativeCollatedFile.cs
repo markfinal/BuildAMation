@@ -27,28 +27,42 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public static partial class CommandLineImplementation
+    public sealed class NativeCollatedFile :
+        ICollatedFilePolicy
     {
-        public static void
-        Convert(
-            this ICopyFileSettings settings,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+        void
+        ICollatedFilePolicy.Collate(
+            CollatedFile sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot)
         {
-            if (settings.Force)
+            var sourcePath = sender.SourcePath;
+
+            var destinationPath = (sender.Reference != null) ? sender.Reference.DestinationDirectory : packageRoot.Parse();
+            if (null != sender.SubDirectory)
             {
-                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
+            }
+            destinationPath += System.IO.Path.DirectorySeparatorChar;
+            sender.DestinationDirectory = destinationPath;
+
+            // synchronize, so that multiple modules don't try to create the same directories simultaneously
+            lock ((sender.Reference != null) ? sender.Reference : sender)
+            {
+                if (!System.IO.Directory.Exists(destinationPath))
                 {
-                    commandLine.Add("/Y");
-                }
-                else
-                {
-                    commandLine.Add("-f");
+                    System.IO.Directory.CreateDirectory(destinationPath);
                 }
             }
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+
+            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
+            commandLine.Add(destinationPath);
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 }

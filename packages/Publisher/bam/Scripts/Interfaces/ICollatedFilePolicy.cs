@@ -29,48 +29,12 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class CollatedObject
+    public interface ICollatedFilePolicy
     {
-        public CollatedObject(
-            Bam.Core.Module module,
-            string subdirectory,
-            Bam.Core.Array<CollatedObject> references)
-        {
-            this.Module = module;
-            this.SubDirectory = subdirectory;
-            this.References = references;
-        }
-
-        public bool IsMarker
-        {
-            get
-            {
-                return (null == this.References);
-            }
-        }
-
-        public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
-
-        public string SubDirectory
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.Array<CollatedObject> References
-        {
-            get;
-            private set;
-        }
-
-        public string DestinationDir
-        {
-            get;
-            set;
-        }
+        void
+        Collate(
+            CollatedFile sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot);
     }
 }

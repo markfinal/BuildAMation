@@ -37,6 +37,7 @@ namespace Publisher.DefaultSettings
             Bam.Core.Module module)
         {
             settings.Force = true;
+            settings.Verbose = true;
         }
     }
 }

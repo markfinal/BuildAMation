@@ -78,11 +78,11 @@ namespace Test5
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.BuildEnvironment.Configuration != EConfiguration.Debug &&
-                (app.Module as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
+                (app.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
             {
                 var visualCPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "VisualC").First();
                 var runtimeLibrary = visualCPackage.MetaData as VisualCCommon.IRuntimeLibraryPathMeta;
-                this.IncludeFile(runtimeLibrary.MSVCR((app.Module as MyDynamicLibTestApp).BitDepth), ".", app);
+                this.IncludeFile(runtimeLibrary.MSVCR((app.SourceModule as MyDynamicLibTestApp).BitDepth), ".", app);
             }
         }
     }

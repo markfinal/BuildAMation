@@ -32,78 +32,21 @@ namespace Publisher
     public sealed class MakeFileCollation :
         ICollationPolicy
     {
-        private static void
-        CopyFileRule(
-            MakeFileBuilder.MakeFileMeta meta,
-            MakeFileBuilder.MakeFileMeta sourceMeta, // TODO: unused?
-            MakeFileBuilder.Rule parentRule,
-            string outputDirectory,
-            Bam.Core.TokenizedString sourcePath)
-        {
-            var copyRule = meta.AddRule();
-            var target = copyRule.AddTarget(Bam.Core.TokenizedString.Create(outputDirectory + "/" + System.IO.Path.GetFileName(sourcePath.Parse()), null));
-
-            // TODO: there needs to be a mapping from this path to any existing targets so that the target variable names can be used
-            copyRule.AddPrerequisite(sourcePath);
-
-            var command = new System.Text.StringBuilder();
-            command.AppendFormat("cp -fv $< $@");
-            copyRule.AddShellCommand(command.ToString());
-
-            parentRule.AddPrerequisite(target);
-
-            meta.CommonMetaData.Directories.AddUnique(outputDirectory);
-        }
-
         void
         ICollationPolicy.Collate(
             Collation sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString packageRoot,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> packageObjects,
-            System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.TokenizedString, CollatedObject> looseFiles)
+            Bam.Core.ExecutionContext context)
         {
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
-            rule.AddTarget(Bam.Core.TokenizedString.Create("publish", null, verbatim:true), isPhony:true);
+            rule.AddTarget(Bam.Core.TokenizedString.Create("publish", null, verbatim: true), isPhony: true);
 
-            foreach (var module in packageObjects)
+            foreach (var required in sender.Requirements)
             {
-                var moduleMeta = module.Key.MetaData as MakeFileBuilder.MakeFileMeta;
-                foreach (var path in module.Value)
+                foreach (var rules in (required.MetaData as MakeFileBuilder.MakeFileMeta).Rules)
                 {
-                    if (path.Value.IsMarker)
-                    {
-                        var outputDir = packageRoot.Parse();
-                        if (null != path.Value.SubDirectory)
-                        {
-                            outputDir = System.IO.Path.Combine(outputDir, path.Value.SubDirectory);
-                        }
-
-                        CopyFileRule(meta, moduleMeta, rule, outputDir, path.Key);
-                        path.Value.DestinationDir = outputDir;
-                    }
-                    else
-                    {
-                        var subdir = path.Value.SubDirectory;
-                        foreach (var reference in path.Value.References)
-                        {
-                            var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, path.Value.SubDirectory));
-                            CopyFileRule(meta, moduleMeta, rule, destinationDir, path.Key);
-                            path.Value.DestinationDir = destinationDir;
-                        }
-                    }
-                }
-            }
-            foreach (var obj in looseFiles)
-            {
-                var sourcePath = obj.Key.ToString();
-                var subdir = obj.Value.SubDirectory;
-                foreach (var reference in obj.Value.References)
-                {
-                    var destinationDir = System.IO.Path.GetFullPath(System.IO.Path.Combine(reference.DestinationDir, obj.Value.SubDirectory));
-                    CopyFileRule(meta, null, rule, destinationDir, obj.Key);
-                    obj.Value.DestinationDir = destinationDir;
+                    // TODO: only the first?
+                    rule.AddPrerequisite(rules.Targets[0]);
                 }
             }
         }

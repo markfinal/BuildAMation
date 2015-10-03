@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
     public sealed class CopyFileSettings :
@@ -49,19 +48,16 @@ namespace Publisher
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                commandLine.Add("/C");
-                commandLine.Add("copy");
-            }
-            else
-            {
-                commandLine.Add("-v");
-            }
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
         }
 
         bool ICopyFileSettings.Force
+        {
+            get;
+            set;
+        }
+
+        bool ICopyFileSettings.Verbose
         {
             get;
             set;

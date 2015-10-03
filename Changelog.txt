@@ -1,3 +1,5 @@
+03-Oct-2015 Fixes #21. Each file published is now a separate module, which enables both parallelism and that tools can be assigned to each published object.
+
 03-Oct-2015 Running command line tools no longer leaves the standard input stream open. This avoids tools that request user input from indefinitely pausing the build - instead they will fail because there will never be any input.
 
 03-Oct-2015 Fixes #20. Exceptions thrown during a threaded build are now displayed with full details and stack trace to the user.

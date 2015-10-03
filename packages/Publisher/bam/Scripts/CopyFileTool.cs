@@ -72,7 +72,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("cmd", null, verbatim: true);
+                return Bam.Core.TokenizedString.Create("xcopy", null, verbatim: true);
             }
         }
     }

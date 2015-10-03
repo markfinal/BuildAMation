@@ -29,20 +29,37 @@
 #endregion // License
 namespace Publisher
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICopyFileSettings :
-        Bam.Core.ISettingsBase
+    public sealed class MakeFileCollatedFile :
+        ICollatedFilePolicy
     {
-        bool Force
+        void
+        ICollatedFilePolicy.Collate(
+            CollatedFile sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot)
         {
-            get;
-            set;
-        }
+            var sourcePath = sender.SourcePath;
+            var sourceFilename = System.IO.Path.GetFileName(sourcePath.Parse());
 
-        bool Verbose
-        {
-            get;
-            set;
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
+            var rule = meta.AddRule();
+
+            var destinationPath = (sender.Reference != null) ? sender.Reference.DestinationDirectory : packageRoot.Parse();
+            if (null != sender.SubDirectory)
+            {
+                destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
+            }
+            destinationPath += System.IO.Path.DirectorySeparatorChar;
+            sender.DestinationDirectory = destinationPath;
+            meta.CommonMetaData.Directories.AddUnique(destinationPath);
+
+            rule.AddTarget(Bam.Core.TokenizedString.Create(destinationPath + sourceFilename, null, verbatim: true), variableName: "CopyFile_" + sourceFilename);
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+
+            rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' ')));
+            rule.AddPrerequisite(sourcePath);
         }
     }
 }

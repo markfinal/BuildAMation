@@ -27,22 +27,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Publisher
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICopyFileSettings :
-        Bam.Core.ISettingsBase
+    public static partial class CommandLineImplementation
     {
-        bool Force
+        public static void
+        Convert(
+            this ICopyFileSettings settings,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
-        }
-
-        bool Verbose
-        {
-            get;
-            set;
+            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                if (settings.Force)
+                {
+                    commandLine.Add("/Y");
+                }
+                if (settings.Verbose)
+                {
+                    commandLine.Add("/F");
+                }
+            }
+            else
+            {
+                if (settings.Force)
+                {
+                    commandLine.Add("-f");
+                }
+                if (settings.Verbose)
+                {
+                    commandLine.Add("-v");
+                }
+            }
         }
     }
 }
