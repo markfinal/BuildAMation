@@ -89,6 +89,7 @@ namespace CommandLineProcessor
             processStartInfo.UseShellExecute = false;
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.RedirectStandardError = true;
+            processStartInfo.RedirectStandardInput = true;
 
             processStartInfo.Arguments += commandLine.ToString(' ');
 
@@ -109,6 +110,7 @@ namespace CommandLineProcessor
             try
             {
                 process = System.Diagnostics.Process.Start(processStartInfo);
+                process.StandardInput.Close();
             }
             catch (System.ComponentModel.Win32Exception ex)
             {
