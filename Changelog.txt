@@ -1,3 +1,5 @@
+03-Oct-2015 Fixes #20. Exceptions thrown during a threaded build are now displayed with full details and stack trace to the user.
+
 03-Oct-2015 Fixes #19. Bam executed with -d/--debug did not use debug symbols in Mono.
 
 02-Oct-2015 Added VisualCCommon.IRuntimeLibraryPathMeta interface, implemented by VisualC.MetaData class, to return the paths for the C and C++ runtime libraries for the version of VisualC. 32 or 64-bit versions are requested by the argument to the interface functions, MSVCR (C runtime) and MSVCP (C++ runtime).
