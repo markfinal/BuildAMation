@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace CommandLineProcessor
 {
     public static class Processor
@@ -61,14 +62,41 @@ namespace CommandLineProcessor
             // first get the inherited environment variables from the system environment
             if (null != tool.InheritedEnvironmentVariables)
             {
-                foreach (var envVar in tool.InheritedEnvironmentVariables)
+                int envVarCount;
+                if (tool.InheritedEnvironmentVariables.Count == 1 &&
+                    tool.InheritedEnvironmentVariables[0] == "*")
                 {
-                    if (!processStartInfo.EnvironmentVariables.ContainsKey(envVar))
+                    foreach (System.Collections.DictionaryEntry envVar in processStartInfo.EnvironmentVariables)
                     {
-                        Bam.Core.Log.Info("Environment variable '{0}' does not exist", envVar);
-                        continue;
+                        cachedEnvVars.Add(envVar.Key as string, envVar.Value as string);
                     }
-                    cachedEnvVars.Add(envVar, processStartInfo.EnvironmentVariables[envVar]);
+                }
+                else if (tool.InheritedEnvironmentVariables.Count == 1 &&
+                         System.Int32.TryParse(tool.InheritedEnvironmentVariables[0], out envVarCount) &&
+                         envVarCount < 0)
+                {
+                    envVarCount += processStartInfo.EnvironmentVariables.Count;
+                    foreach (var envVar in processStartInfo.EnvironmentVariables.Cast<System.Collections.DictionaryEntry>().OrderBy(item => item.Key))
+                    {
+                        cachedEnvVars.Add(envVar.Key as string, envVar.Value as string);
+                        --envVarCount;
+                        if (0 == envVarCount)
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var envVar in tool.InheritedEnvironmentVariables)
+                    {
+                        if (!processStartInfo.EnvironmentVariables.ContainsKey(envVar))
+                        {
+                            Bam.Core.Log.Info("Environment variable '{0}' does not exist", envVar);
+                            continue;
+                        }
+                        cachedEnvVars.Add(envVar, processStartInfo.EnvironmentVariables[envVar]);
+                    }
                 }
             }
 
