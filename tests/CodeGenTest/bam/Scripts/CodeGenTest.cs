@@ -118,11 +118,14 @@ namespace CodeGenTest
         private Bam.Core.ICommandLineTool Compiler;
         private IGeneratedSourcePolicy Policy;
 
-        public GeneratedSourceModule()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(buildroot)/Generated.c", this));
+            base.Init(parent);
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
             this.Requires(this.Compiler as Bam.Core.Module);
+            this.GeneratedPaths[Key].Assign(this.CreateTokenizedString("$(buildroot)/Generated.c"));
         }
 
         public override void

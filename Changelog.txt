@@ -1,3 +1,5 @@
+06-Oct-2015 C.ObjectFile no longer defines an inputpath macro, for interaction with the corresponding source file. Instead, the source file's TokenizedString path is referened directly, via positional tokens.
+
 06-Oct-2015 Bam.Core.Module now has a utility function to create TokenizedStrings that reference macros in that module, CreateTokenizedString. Also, a new function, MakePlaceholderPath(), which is a TokenizedString on the module intended for replacement at a later time (e.g. create a module empty, then set the source path). This is so that other modules can reference this placeholder before the path is set.
 
 06-Oct-2015 Fixes #22. TokenizedString creation now accepts an optional list of TokenizedStrings. This is to allow references to strings other than those in macro lists, e.g. source/output paths of modules. These are referred to as positional tokens, and may be referenced by a zero-based numeric index as a token (usual token notation), e.g. "$(0)" refers to the first string in that list.
