@@ -117,6 +117,7 @@ namespace Publisher
             set
             {
                 this.ReferenceFile = value;
+                this.Requires(value);
             }
         }
 
