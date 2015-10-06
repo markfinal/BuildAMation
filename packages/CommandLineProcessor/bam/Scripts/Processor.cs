@@ -100,9 +100,9 @@ namespace CommandLineProcessor
             if (processStartInfo.EnvironmentVariables.Count > 0)
             {
                 Bam.Core.Log.DebugMessage("Environment variables:");
-                foreach (string envVar in processStartInfo.EnvironmentVariables.Keys)
+                foreach (var envVar in processStartInfo.EnvironmentVariables.Cast<System.Collections.DictionaryEntry>().OrderBy(item => item.Key))
                 {
-                    Bam.Core.Log.DebugMessage("\t{0} = {1}", envVar, processStartInfo.EnvironmentVariables[envVar]);
+                    Bam.Core.Log.DebugMessage("\t{0} = {1}", envVar.Key, envVar.Value);
                 }
             }
 
