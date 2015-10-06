@@ -65,7 +65,17 @@ namespace Publisher
             CollatedFile reference = null)
         {
             // TODO: 'this' passed as the Parent - used later
-            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(this);
+            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(this, preInitCallback: module =>
+                {
+                    if (reference != null)
+                    {
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))", reference.GeneratedPaths[CollatedFile.CopiedFileKey]);
+                    }
+                    else
+                    {
+                        module.Macros["CopyDir"] = this.GeneratedPaths[PackageRoot];
+                    }
+                });
             this.Requires(copyFileModule);
             if (null != reference)
             {

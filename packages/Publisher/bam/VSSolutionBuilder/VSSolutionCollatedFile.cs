@@ -43,17 +43,16 @@ namespace Publisher
             {
                 // no copy is needed, but as we're copying other files relative to this, record where they have to go
                 // therefore ignore any subdirectory on this module
-                sender.DestinationDirectory = System.IO.Path.GetDirectoryName(sourcePath.Parse());
+                sender.GeneratedPaths[CollatedFile.CopiedFileKey].Assign(sourcePath);
                 return;
             }
 
-            var destinationPath = sender.Reference.DestinationDirectory;
+            var destinationPath = sender.Macros["CopyDir"].Parse();
             if (null != sender.SubDirectory)
             {
                 destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
             }
             destinationPath += System.IO.Path.DirectorySeparatorChar;
-            sender.DestinationDirectory = destinationPath;
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);

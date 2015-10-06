@@ -45,7 +45,7 @@ namespace Publisher
                 // therefore ignore any subdirectory on this module
 
                 // this has to be the path that Xcode writes to
-                sender.DestinationDirectory = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(config)", sender).Parse();
+                sender.GeneratedPaths[CollatedFile.CopiedFileKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/@filename($(0))", sourcePath));
 
                 // make an app bundle if required
                 if ((sender.SubDirectory != null) && sender.SubDirectory.Contains(".app/"))
@@ -64,13 +64,12 @@ namespace Publisher
                 return;
             }
 
-            var destinationPath = sender.Reference.DestinationDirectory;
+            var destinationPath = sender.Macros["CopyDir"].Parse();
             if (null != sender.SubDirectory)
             {
                 destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
             }
             destinationPath += System.IO.Path.DirectorySeparatorChar;
-            sender.DestinationDirectory = destinationPath;
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);

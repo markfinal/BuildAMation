@@ -47,12 +47,6 @@ namespace Publisher
             get;
         }
 
-        string DestinationDirectory
-        {
-            get;
-            set;
-        }
-
         Bam.Core.TokenizedString SourcePath
         {
             get;

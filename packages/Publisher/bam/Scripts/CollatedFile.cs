@@ -34,6 +34,8 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
+        public static Bam.Core.FileKey CopiedFileKey = Bam.Core.FileKey.Generate("Copied File");
+
         private Bam.Core.Module Parent = null;
         private ICollatedFilePolicy Policy = null;
 
@@ -121,12 +123,6 @@ namespace Publisher
             }
         }
 
-        public string DestinationDirectory
-        {
-            get;
-            set;
-        }
-
         public TokenizedString SourcePath
         {
             get
@@ -137,6 +133,7 @@ namespace Publisher
             set
             {
                 this.RealSourcePath = value;
+                this.GeneratedPaths[CopiedFileKey] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
             }
         }
     }
