@@ -401,7 +401,7 @@ namespace Bam.Core
                 }
                 if (null == token)
                 {
-                    throw new Exception("Token replacement for {0} was null - something went wrong during parsing", tokens[index]);
+                    throw new Exception("Token replacement for {0} was null - something went wrong during parsing of the string '{1}'", tokens[index], this.OriginalString);
                 }
                 tokens[index] = token;
                 macroIndices.Remove(index);
