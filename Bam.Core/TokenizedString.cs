@@ -56,7 +56,7 @@ namespace Bam.Core
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
         private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
         private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
-        private static readonly string FunctionRegExPattern = @"(@([a-z]+)\((.+)\))";
+        private static readonly string FunctionRegExPattern = @"(@([a-z]+)\(([^)]+)\))";
         private static readonly string FunctionPrefix = @"@";
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();

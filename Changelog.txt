@@ -1,3 +1,5 @@
+06-Oct-2015 Fixes #23. Fixed the regular expression tokenizing a string for functions, when multiple functions are present.
+
 06-Oct-2015 Bam.Core.TokenizedString.Create will return null if the format string passed in is null. To create an empty tokenized string, use string.Empty, or Bam.Core.Module.MakePlaceholderPath.
 
 06-Oct-2015 Bam.Core.TokenizedString now understands the @dir(<path>) function, returning the parent directory of the argument.
