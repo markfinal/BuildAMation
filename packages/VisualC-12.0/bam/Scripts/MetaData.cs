@@ -68,10 +68,10 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcr120.dll", null);
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcr120.dll", null, verbatim: true);
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcr120.dll", null);
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcr120.dll", null, verbatim: true);
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
@@ -83,10 +83,10 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcp120.dll", null);
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcp120.dll", null, verbatim: true);
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcp120.dll", null);
+                    return Bam.Core.TokenizedString.Create(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcp120.dll", null, verbatim: true);
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
