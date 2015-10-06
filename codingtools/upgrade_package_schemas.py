@@ -8,9 +8,10 @@ import sys
 def upgradeSchema(packageDir, failed_packages):
     current_dir = os.getcwd()
     try:
-        print "Update '%s'" % packageDir
+        print >>sys.stdout, "Updating '%s'" % packageDir
+        sys.stdout.flush()
         os.chdir(packageDir)
-        args = [ 'bam', '-showdefinition', '-forcedefinitionupdate' ]
+        args = [ 'bam', '--showdefinition', '--forceupdates' ]
         process = subprocess.Popen(args)
         process.wait()
         if process.returncode:
@@ -19,8 +20,8 @@ def upgradeSchema(packageDir, failed_packages):
         os.chdir(current_dir)
 
 def getPackagePathsFromRoot(packageRoot):
-    files = glob.glob('%s/*/*' % packageRoot)
-    dirs = filter(lambda f : os.path.isdir(f), files)
+    files = glob.glob('%s/*/*/bam' % packageRoot)
+    dirs = [os.path.split(f)[0] for f in files if os.path.isdir(f)]
     return dirs
 
 def processPath(packageRootList):
@@ -30,12 +31,14 @@ def processPath(packageRootList):
         for package in packagePaths:
             upgradeSchema(package, failed_packages)
     if failed_packages:
-        print "Failed to upgrade some packages:"
+        print >>sys.stdout, "Failed to upgrade some packages:"
+        sys.stdout.flush()
         for packageDir,exitCode in failed_packages:
-            print packageDir
+            print >>sys.stdout, packageDir
+            sys.stdout.flush()
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        processPath([sys.argv[1]])
+        processPath(sys.argv[1:])
     else:
-        processPath(['packages', 'tests'])
+        processPath(['.'])
