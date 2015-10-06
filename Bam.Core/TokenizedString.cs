@@ -81,7 +81,7 @@ namespace Bam.Core
             this.MacroIndices = other.MacroIndices;
             this.ModuleWithMacros = other.ModuleWithMacros;
             this.OriginalString = other.OriginalString;
-            this.ParsedString = other.ParsedString;
+            this.ParsedString = other.Verbatim ? other.ParsedString : null; // force reparsing
             this.Verbatim = other.Verbatim;
             this.PositionalTokens = other.PositionalTokens;
         }
@@ -222,7 +222,18 @@ namespace Bam.Core
         {
             get
             {
-                return this.Verbatim || (null != this.ParsedString);
+                if (this.Verbatim)
+                {
+                    return true;
+                }
+                foreach (var positionalToken in this.PositionalTokens)
+                {
+                    if (!positionalToken.IsExpanded)
+                    {
+                        return false;
+                    }
+                }
+                return (null != this.ParsedString);
             }
         }
 
