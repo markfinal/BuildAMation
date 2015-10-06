@@ -493,10 +493,19 @@ namespace Bam.Core
     public sealed class TokenizedStringArray :
         Array<TokenizedString>
     {
-        public TokenizedStringArray(TokenizedString input)
+        public TokenizedStringArray()
+        { }
+
+        public TokenizedStringArray(
+            TokenizedString input)
             :
-            base(new[] { input })
-        {
-        }
+            base(new [] {input})
+        { }
+
+        public TokenizedStringArray(
+            System.Collections.Generic.IEnumerable<TokenizedString> input)
+            :
+            base(input)
+        { }
     }
 }
