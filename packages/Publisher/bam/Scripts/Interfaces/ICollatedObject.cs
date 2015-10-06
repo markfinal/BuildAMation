@@ -37,7 +37,7 @@ namespace Publisher
             get;
         }
 
-        string SubDirectory
+        Bam.Core.TokenizedString SubDirectory
         {
             get;
         }

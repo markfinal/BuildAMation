@@ -41,11 +41,6 @@ namespace Publisher
             var sourcePath = sender.SourcePath;
 
             var destinationPath = sender.Macros["CopyDir"].Parse();
-            if (null != sender.SubDirectory)
-            {
-                destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
-            }
-            destinationPath += System.IO.Path.DirectorySeparatorChar;
 
             // synchronize, so that multiple modules don't try to create the same directories simultaneously
             lock ((sender.Reference != null) ? sender.Reference : sender)

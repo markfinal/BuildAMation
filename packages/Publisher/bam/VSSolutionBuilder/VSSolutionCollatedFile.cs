@@ -48,11 +48,6 @@ namespace Publisher
             }
 
             var destinationPath = sender.Macros["CopyDir"].Parse();
-            if (null != sender.SubDirectory)
-            {
-                destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
-            }
-            destinationPath += System.IO.Path.DirectorySeparatorChar;
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);

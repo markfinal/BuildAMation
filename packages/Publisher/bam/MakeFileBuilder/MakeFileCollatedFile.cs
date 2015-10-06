@@ -45,11 +45,6 @@ namespace Publisher
             var rule = meta.AddRule();
 
             var destinationPath = sender.Macros["CopyDir"].Parse();
-            if (null != sender.SubDirectory)
-            {
-                destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
-            }
-            destinationPath += System.IO.Path.DirectorySeparatorChar;
             meta.CommonMetaData.Directories.AddUnique(destinationPath);
 
             rule.AddTarget(Bam.Core.TokenizedString.Create(destinationPath + sourceFilename, null, verbatim: true), variableName: "CopyFile_" + sourceFilename);

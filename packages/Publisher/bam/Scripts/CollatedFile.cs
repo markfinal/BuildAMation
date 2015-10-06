@@ -40,7 +40,7 @@ namespace Publisher
         private ICollatedFilePolicy Policy = null;
 
         private Bam.Core.Module RealSourceModule = null;
-        private string SubDirectoryPath = null;
+        private Bam.Core.TokenizedString SubDirectoryPath = null;
         private CollatedFile ReferenceFile = null;
         private Bam.Core.TokenizedString RealSourcePath = null;
 
@@ -96,7 +96,7 @@ namespace Publisher
             }
         }
 
-        public string SubDirectory
+        public Bam.Core.TokenizedString SubDirectory
         {
             get
             {

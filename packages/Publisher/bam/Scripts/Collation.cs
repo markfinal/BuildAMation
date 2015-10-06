@@ -62,24 +62,43 @@ namespace Publisher
 
         private CollatedFile
         CreateCollatedFile(
-            CollatedFile reference = null)
+            CollatedFile reference = null,
+            Bam.Core.TokenizedString subDirectory = null)
         {
             // TODO: 'this' passed as the Parent - used later
             var copyFileModule = Bam.Core.Module.Create<CollatedFile>(this, preInitCallback: module =>
                 {
                     if (reference != null)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))", reference.GeneratedPaths[CollatedFile.CopiedFileKey]);
+                        if (null != subDirectory)
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/$(1)/", reference.GeneratedPaths[CollatedFile.CopiedFileKey], subDirectory);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/", reference.GeneratedPaths[CollatedFile.CopiedFileKey]);
+                        }
                     }
                     else
                     {
-                        module.Macros["CopyDir"] = this.GeneratedPaths[PackageRoot];
+                        if (null != subDirectory)
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/$(1)/", this.GeneratedPaths[PackageRoot], subDirectory);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/", this.GeneratedPaths[PackageRoot]);
+                        }
                     }
                 });
             this.Requires(copyFileModule);
             if (null != reference)
             {
                 copyFileModule.Reference = reference;
+            }
+            if (null != subDirectory)
+            {
+                copyFileModule.SubDirectory = subDirectory;
             }
             return copyFileModule;
         }
@@ -114,8 +133,7 @@ namespace Publisher
                 }
             }
 
-            var copyFileModule = this.CreateCollatedFile();
-            copyFileModule.SubDirectory = destSubDir;
+            var copyFileModule = this.CreateCollatedFile(subDirectory: Bam.Core.TokenizedString.Create(destSubDir, null, verbatim: true));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.GeneratedPaths[key];
 
@@ -134,8 +152,7 @@ namespace Publisher
                 return;
             }
 
-            var copyFileModule = this.CreateCollatedFile(reference);
-            copyFileModule.SubDirectory = subdir;
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.GeneratedPaths[key];
         }
@@ -152,8 +169,7 @@ namespace Publisher
                 return;
             }
 
-            var copyFileModule = this.CreateCollatedFile(reference);
-            copyFileModule.SubDirectory = subdir;
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = Bam.Core.TokenizedString.Create(parameterizedFilePath, dependent);
         }
@@ -174,8 +190,7 @@ namespace Publisher
             string subdir,
             CollatedFile reference)
         {
-            var copyFileModule = this.CreateCollatedFile(reference);
-            copyFileModule.SubDirectory = subdir;
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
             copyFileModule.SourcePath = parameterizedFilePath;
         }
 

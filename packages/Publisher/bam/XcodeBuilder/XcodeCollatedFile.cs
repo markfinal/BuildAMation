@@ -44,14 +44,19 @@ namespace Publisher
                 // no copy is needed, but as we're copying other files relative to this, record where they have to go
                 // therefore ignore any subdirectory on this module
 
-                // this has to be the path that Xcode writes to
-                sender.GeneratedPaths[CollatedFile.CopiedFileKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/@filename($(0))", sourcePath));
-
                 // make an app bundle if required
-                if ((sender.SubDirectory != null) && sender.SubDirectory.Contains(".app/"))
+                if ((sender.SubDirectory != null) && sender.SubDirectory.Parse().Contains(".app/"))
                 {
                     var meta = sender.SourceModule.MetaData as XcodeBuilder.XcodeMeta;
                     meta.Target.MakeApplicationBundle();
+
+                    // this has to be the path that Xcode writes to
+                    sender.GeneratedPaths[CollatedFile.CopiedFileKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/$(0)/@filename($(1))", sender.SubDirectory, sourcePath));
+                }
+                else
+                {
+                    // this has to be the path that Xcode writes to
+                    sender.GeneratedPaths[CollatedFile.CopiedFileKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/@filename($(0))", sourcePath));
                 }
 
                 return;
@@ -65,11 +70,6 @@ namespace Publisher
             }
 
             var destinationPath = sender.Macros["CopyDir"].Parse();
-            if (null != sender.SubDirectory)
-            {
-                destinationPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationPath, sender.SubDirectory));
-            }
-            destinationPath += System.IO.Path.DirectorySeparatorChar;
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
