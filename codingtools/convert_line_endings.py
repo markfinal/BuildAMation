@@ -27,9 +27,8 @@ def processPath(path, extensionList):
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        try:
-            extensions = [sys.argv[2:]]
-        except IndexError:
+        extensions = sys.argv[2:]
+        if not extensions:
             extensions = ['.cs']
         processPath(sys.argv[1], extensions)
     else:
