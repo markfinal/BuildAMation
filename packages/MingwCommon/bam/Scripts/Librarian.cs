@@ -41,6 +41,7 @@ namespace MingwCommon
             this.Macros.Add("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
+            this.InheritedEnvironmentVariables.Add("SYSTEMROOT");
         }
 
         public override Bam.Core.TokenizedString Executable
