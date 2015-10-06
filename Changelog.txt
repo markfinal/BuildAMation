@@ -1,3 +1,5 @@
+06-Oct-2015 Bam.Core.TokenizedString.Create will return null if the format string passed in is null. To create an empty tokenized string, use string.Empty, or Bam.Core.Module.MakePlaceholderPath.
+
 06-Oct-2015 Bam.Core.TokenizedString now understands the @dir(<path>) function, returning the parent directory of the argument.
 
 06-Oct-2015 C.ObjectFile no longer defines an inputpath macro, for interaction with the corresponding source file. Instead, the source file's TokenizedString path is referenced directly, via positional tokens.

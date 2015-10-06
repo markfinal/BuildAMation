@@ -181,6 +181,11 @@ namespace Bam.Core
             bool verbatim = false,
             TokenizedStringArray positionalTokens = null)
         {
+            if (null == tokenizedString)
+            {
+                return null;
+            }
+
             // strings can be created during the multithreaded phase
             lock (Cache)
             {
