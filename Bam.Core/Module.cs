@@ -520,5 +520,24 @@ namespace Bam.Core
                 module.Complete();
             }
         }
+
+        public TokenizedString
+        MakePlaceholderPath()
+        {
+            return TokenizedString.Create(string.Empty, this);
+        }
+
+        public TokenizedString
+        CreateTokenizedString(
+            string format,
+            params TokenizedString[] argv)
+        {
+            if (0 == argv.Length)
+            {
+                return TokenizedString.Create(format, this);
+            }
+            var positionalTokens = new TokenizedStringArray(argv);
+            return TokenizedString.Create(format, this, false, positionalTokens);
+        }
     }
 }
