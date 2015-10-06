@@ -38,6 +38,7 @@ namespace Publisher.DefaultSettings
         {
             settings.Force = true;
             settings.Verbose = true;
+            settings.Recursive = (module is CollatedDirectory);
         }
     }
 }

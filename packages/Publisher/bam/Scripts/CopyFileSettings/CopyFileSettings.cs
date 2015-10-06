@@ -62,5 +62,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool ICopyFileSettings.Recursive
+        {
+            get;
+            set;
+        }
     }
 }

@@ -29,11 +29,11 @@
 #endregion // License
 namespace Publisher
 {
-    public interface ICollatedFilePolicy
+    public interface ICollatedObjectPolicy
     {
         void
         Collate(
-            CollatedFile sender,
+            CollatedObject sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot);
     }

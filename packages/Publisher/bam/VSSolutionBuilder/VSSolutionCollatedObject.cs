@@ -29,12 +29,12 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class VSSolutionCollatedFile :
-        ICollatedFilePolicy
+    public sealed class VSSolutionCollatedObject :
+        ICollatedObjectPolicy
     {
         void
-        ICollatedFilePolicy.Collate(
-            CollatedFile sender,
+        ICollatedObjectPolicy.Collate(
+            CollatedObject sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot)
         {
@@ -43,7 +43,7 @@ namespace Publisher
             {
                 // no copy is needed, but as we're copying other files relative to this, record where they have to go
                 // therefore ignore any subdirectory on this module
-                sender.GeneratedPaths[CollatedFile.CopiedFileKey].Assign(sourcePath);
+                sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Assign(sourcePath);
                 return;
             }
 

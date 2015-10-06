@@ -29,34 +29,31 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class NativeCollatedFile :
-        ICollatedFilePolicy
+    public sealed class MakeFileCollatedObject :
+        ICollatedObjectPolicy
     {
         void
-        ICollatedFilePolicy.Collate(
-            CollatedFile sender,
+        ICollatedObjectPolicy.Collate(
+            CollatedObject sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString packageRoot)
         {
             var sourcePath = sender.SourcePath;
+            var sourceFilename = System.IO.Path.GetFileName(sourcePath.Parse());
+
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
+            var rule = meta.AddRule();
 
             var destinationPath = sender.Macros["CopyDir"].Parse();
+            meta.CommonMetaData.Directories.AddUnique(destinationPath);
 
-            // synchronize, so that multiple modules don't try to create the same directories simultaneously
-            lock ((sender.Reference != null) ? sender.Reference : sender)
-            {
-                if (!System.IO.Directory.Exists(destinationPath))
-                {
-                    System.IO.Directory.CreateDirectory(destinationPath);
-                }
-            }
+            rule.AddTarget(Bam.Core.TokenizedString.Create(destinationPath + sourceFilename, null, verbatim: true), variableName: "CopyFile_" + sourceFilename);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
-            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
-            commandLine.Add(destinationPath);
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' ')));
+            rule.AddPrerequisite(sourcePath);
         }
     }
 }

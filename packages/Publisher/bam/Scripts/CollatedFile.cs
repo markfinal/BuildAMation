@@ -30,19 +30,24 @@
 using Bam.Core;
 namespace Publisher
 {
-    public sealed class CollatedFile :
+    public abstract class CollatedObject :
         Bam.Core.Module,
         ICollatedObject
     {
-        public static Bam.Core.FileKey CopiedFileKey = Bam.Core.FileKey.Generate("Copied File");
+        public static Bam.Core.FileKey CopiedObjectKey = Bam.Core.FileKey.Generate("Copied Object");
 
         private Bam.Core.Module Parent = null;
-        private ICollatedFilePolicy Policy = null;
+        private ICollatedObjectPolicy Policy = null;
 
         private Bam.Core.Module RealSourceModule = null;
         private Bam.Core.TokenizedString SubDirectoryPath = null;
         private CollatedFile ReferenceFile = null;
-        private Bam.Core.TokenizedString RealSourcePath = null;
+        private Bam.Core.TokenizedString RealSourcePath;
+
+        public CollatedObject()
+        {
+            this.RealSourcePath = this.MakePlaceholderPath();
+        }
 
         protected override void
         Init(
@@ -65,6 +70,7 @@ namespace Publisher
         {
             // TODO
             // do nothing, always copy (currently)
+            // might be abstract
         }
 
         protected override void
@@ -78,8 +84,8 @@ namespace Publisher
         GetExecutionPolicy(
             string mode)
         {
-            var className = "Publisher." + mode + "CollatedFile";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollatedFilePolicy>.Create(className);
+            var className = "Publisher." + mode + "CollatedObject";
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
         }
 
         public Bam.Core.Module SourceModule
@@ -132,9 +138,17 @@ namespace Publisher
 
             set
             {
-                this.RealSourcePath = value;
-                this.GeneratedPaths[CopiedFileKey] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
+                this.RealSourcePath.Assign(value);
+                this.GeneratedPaths[CopiedObjectKey] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
             }
         }
     }
+
+    public sealed class CollatedFile :
+        CollatedObject
+    { }
+
+    public sealed class CollatedDirectory :
+        CollatedObject
+    { }
 }

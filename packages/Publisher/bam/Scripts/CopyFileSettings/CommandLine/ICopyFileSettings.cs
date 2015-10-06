@@ -48,6 +48,10 @@ namespace Publisher
                 {
                     commandLine.Add("/F");
                 }
+                if (settings.Recursive)
+                {
+                    commandLine.Add("/S");
+                }
             }
             else
             {
@@ -58,6 +62,10 @@ namespace Publisher
                 if (settings.Verbose)
                 {
                     commandLine.Add("-v");
+                }
+                if (settings.Recursive)
+                {
+                    commandLine.Add("-r");
                 }
             }
         }

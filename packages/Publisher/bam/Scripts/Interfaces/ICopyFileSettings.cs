@@ -44,5 +44,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool Recursive
+        {
+            get;
+            set;
+        }
     }
 }
