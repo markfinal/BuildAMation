@@ -36,7 +36,7 @@ namespace C
     {
         private Bam.Core.Module Parent = null;
         private ICompilationPolicy Policy = null;
-        public SourceFile Source = Bam.Core.Module.Create<SourceFile>();
+        public SourceFile Source = null;
 
         static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Compiled Object File");
 
@@ -46,7 +46,6 @@ namespace C
         {
             base.Init(parent);
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@basename($(0))$(objext)", Source.GeneratedPaths[SourceFile.Key]));
         }
 
         public Bam.Core.TokenizedString InputPath
@@ -61,8 +60,13 @@ namespace C
                 // of this type (generally)
                 // but this does mean there may be many instances of this 'type' of module
                 // and for multi-configuration builds there may be many instances of the same path
-                this.DependsOn(this.Source);
+                if (null == this.Source)
+                {
+                    this.Source = Bam.Core.Module.Create<SourceFile>();
+                    this.DependsOn(this.Source);
+                }
                 this.Source.InputPath = value;
+                this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@basename($(0))$(objext)", value);
             }
         }
 
