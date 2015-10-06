@@ -1,3 +1,5 @@
+03-Oct-2015 Fixes #22. TokenizedString creation now accepts an optional list of TokenizedStrings. This is to allow references to strings other than those in macro lists, e.g. source/output paths of modules. These are referred to as positional tokens, and may be referenced by a zero-based numeric index as a token (usual token notation), e.g. "$(0)" refers to the first string in that list.
+
 03-Oct-2015 Fixes #21. Each file published is now a separate module, which enables both parallelism and that tools can be assigned to each published object.
 
 03-Oct-2015 Running command line tools no longer leaves the standard input stream open. This avoids tools that request user input from indefinitely pausing the build - instead they will fail because there will never be any input.

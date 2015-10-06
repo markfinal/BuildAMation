@@ -55,6 +55,7 @@ namespace Bam.Core
         public static readonly string TokenSuffix = @")";
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
         private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
+        private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
         private static readonly string FunctionRegExPattern = @"(@([a-z]+)\((.+)\))";
         private static readonly string FunctionPrefix = @"@";
 
@@ -66,21 +67,63 @@ namespace Bam.Core
         private string OriginalString = null;
         private string ParsedString = null;
         private bool Verbatim;
+        private TokenizedStringArray PositionalTokens = new TokenizedStringArray();
+
+        public void
+        Assign(
+            TokenizedString other)
+        {
+            if (null == this.ModuleWithMacros)
+            {
+                throw new Exception("Can't switch out a TokenizedString without a module");
+            }
+            this.Tokens = other.Tokens;
+            this.MacroIndices = other.MacroIndices;
+            this.ModuleWithMacros = other.ModuleWithMacros;
+            this.OriginalString = other.OriginalString;
+            this.ParsedString = other.ParsedString;
+            this.Verbatim = other.Verbatim;
+            this.PositionalTokens = other.PositionalTokens;
+        }
 
         static private System.Collections.Generic.IEnumerable<string>
         SplitToParse(
             string original,
             string regExPattern)
         {
-            var matches = System.Text.RegularExpressions.Regex.Split(original, regExPattern);
-            var filtered = matches.Where(item => !System.String.IsNullOrEmpty(item));
+            var regExSplit = System.Text.RegularExpressions.Regex.Split(original, regExPattern);
+            var filtered = regExSplit.Where(item => !System.String.IsNullOrEmpty(item));
             return filtered;
+        }
+
+        static private System.Collections.Generic.IEnumerable<string>
+        GetMatches(
+            string original,
+            string regExPattern)
+        {
+            var matches = System.Text.RegularExpressions.Regex.Matches(original, regExPattern);
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                foreach (System.Text.RegularExpressions.Group group in match.Groups)
+                {
+                    if (group.Value == original)
+                    {
+                        continue;
+                    }
+                    yield return group.Value;
+                }
+            }
         }
 
         private TokenizedString(
             string original,
-            bool verbatim = false)
+            bool verbatim = false,
+            TokenizedStringArray positionalTokens = null)
         {
+            if (null != positionalTokens)
+            {
+                this.PositionalTokens.AddRange(positionalTokens);
+            }
             this.Verbatim = verbatim;
             this.OriginalString = original;
             if (verbatim)
@@ -106,8 +149,9 @@ namespace Bam.Core
         private TokenizedString(
             string original,
             Module moduleWithMacros,
-            bool verbatim) :
-            this(original, verbatim)
+            bool verbatim,
+            TokenizedStringArray positionalTokens) :
+            this(original, verbatim, positionalTokens)
         {
             if (null == moduleWithMacros)
             {
@@ -134,7 +178,8 @@ namespace Bam.Core
         Create(
             string tokenizedString,
             Module macroSource,
-            bool verbatim = false)
+            bool verbatim = false,
+            TokenizedStringArray positionalTokens = null)
         {
             // strings can be created during the multithreaded phase
             lock (Cache)
@@ -149,7 +194,7 @@ namespace Bam.Core
                 }
                 else
                 {
-                    var ts = new TokenizedString(tokenizedString, macroSource, verbatim);
+                    var ts = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens);
                     Cache.Add(ts);
                     return ts;
                 }
@@ -254,71 +299,58 @@ namespace Bam.Core
             {
                 throw new Exception("Tokenized string '{0}', does not appear to contain any {1}...{2} tokens", this.OriginalString, TokenPrefix, TokenSuffix);
             }
+
+            System.Func<TokenizedString, TokenizedString, string> expandTokenizedString = (source, tokenString) =>
+                {
+                    if (!tokenString.IsExpanded)
+                    {
+                        // recursive
+                        if (source == tokenString)
+                        {
+                            throw new Exception("Infinite recursion for {0}", source.OriginalString);
+                        }
+                        tokenString.Parse();
+                    }
+                    return tokenString.ToString();
+                };
+
             // take a copy of the macro indices
             var macroIndices = new System.Collections.Generic.List<int>(this.MacroIndices);
             var tokens = new System.Collections.Generic.List<string>(this.Tokens); // could just be a reserved list of strings
             foreach (int index in this.MacroIndices.Reverse<int>())
             {
                 var token = this.Tokens[index];
-                // step 1 : try to resolve with macros passed to the Parse function
-                if (null != customMacros && customMacros.Dict.ContainsKey(token))
+
+                // step 0 : is the token positional, i.e. was set up at creation time
+                var positional = GetMatches(token, PositionalTokenRegExPattern).FirstOrDefault();
+                if (!System.String.IsNullOrEmpty(positional))
                 {
-                    var value = customMacros.Dict[token];
-                    if (!value.IsExpanded)
+                    var positionalIndex = System.Convert.ToInt32(positional);
+                    if (positionalIndex > this.PositionalTokens.Count)
                     {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
+                        throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given", positionalIndex, this.PositionalTokens.Count);
                     }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, this.PositionalTokens[positionalIndex]);
+                }
+                // step 1 : try to resolve with macros passed to the Parse function
+                else if (null != customMacros && customMacros.Dict.ContainsKey(token))
+                {
+                    token = expandTokenizedString(this, customMacros.Dict[token]);
                 }
                 // step 2 : try macros in the global Graph, common to all modules
                 else if (Graph.Instance.Macros.Dict.ContainsKey(token))
                 {
-                    var value = Graph.Instance.Macros.Dict[token];
-                    if (!value.IsExpanded)
-                    {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
-                    }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, Graph.Instance.Macros.Dict[token]);
                 }
                 // step 3 : try macros in the specific module
                 else if (this.ModuleWithMacros != null && this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
                 {
-                    var value = this.ModuleWithMacros.Macros.Dict[token];
-                    if (!value.IsExpanded)
-                    {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
-                    }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, this.ModuleWithMacros.Macros.Dict[token]);
                 }
                 // step 4 : try macros in the Tool attached to the specific module
                 else if (this.ModuleWithMacros != null && null != this.ModuleWithMacros.Tool && this.ModuleWithMacros.Tool.Macros.Dict.ContainsKey(token))
                 {
-                    var value = this.ModuleWithMacros.Tool.Macros.Dict[token];
-                    if (!value.IsExpanded)
-                    {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
-                    }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, this.ModuleWithMacros.Tool.Macros.Dict[token]);
                 }
                 else
                 {
