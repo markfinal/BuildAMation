@@ -467,8 +467,11 @@ namespace Bam.Core
                 case "filename":
                     return System.IO.Path.GetFileName(argument);
 
+                case "dir":
+                    return System.IO.Path.GetDirectoryName(argument);
+
                 default:
-                    throw new Exception("Unknown function, {0}", functionName);
+                    throw new Exception("Unknown TokenizedString function, {0}", functionName);
             }
         }
 
