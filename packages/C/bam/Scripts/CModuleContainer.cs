@@ -47,8 +47,15 @@ namespace C
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.Module.Create<ChildModuleType>(this);
-            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            child.InputPath = Bam.Core.TokenizedString.Create(path, macroModule, verbatim);
+            if (verbatim)
+            {
+                child.InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
+            }
+            else
+            {
+                var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+                child.InputPath = macroModule.CreateTokenizedString(path);
+            }
             (child as Bam.Core.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);

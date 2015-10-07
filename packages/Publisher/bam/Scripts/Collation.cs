@@ -203,7 +203,7 @@ namespace Publisher
                 }
             }
 
-            var copyFileModule = this.CreateCollatedFile(subDirectory: Bam.Core.TokenizedString.Create(destSubDir, null, verbatim: true));
+            var copyFileModule = this.CreateCollatedFile(subDirectory: Bam.Core.TokenizedString.CreateVerbatim(destSubDir));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.GeneratedPaths[key];
 
@@ -222,7 +222,7 @@ namespace Publisher
                 return;
             }
 
-            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.GeneratedPaths[key];
         }
@@ -239,7 +239,7 @@ namespace Publisher
                 return;
             }
 
-            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = Bam.Core.TokenizedString.Create(parameterizedFilePath, dependent);
         }
@@ -260,7 +260,7 @@ namespace Publisher
             string subdir,
             CollatedFile reference)
         {
-            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourcePath = parameterizedFilePath;
         }
 
@@ -270,7 +270,7 @@ namespace Publisher
             string subdir,
             CollatedFile reference)
         {
-            var copyFileModule = this.CreateCollatedDirectory(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim: true));
+            var copyFileModule = this.CreateCollatedDirectory(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourcePath = parameterizedPath;
         }
 

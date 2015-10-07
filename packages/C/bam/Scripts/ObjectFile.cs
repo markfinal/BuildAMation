@@ -180,7 +180,9 @@ namespace C
                                 // early out - header is newer than generated object file
                                 if (headerWriteTime > objectFileWriteTime)
                                 {
-                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], Bam.Core.TokenizedString.Create(potentialPath, null, verbatim:true));
+                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                        this.GeneratedPaths[Key],
+                                        Bam.Core.TokenizedString.CreateVerbatim(potentialPath));
                                     return;
                                 }
 

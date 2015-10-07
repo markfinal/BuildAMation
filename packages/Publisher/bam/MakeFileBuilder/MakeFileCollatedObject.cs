@@ -46,7 +46,7 @@ namespace Publisher
             var destinationPath = sender.Macros["CopyDir"].Parse();
             meta.CommonMetaData.Directories.AddUnique(destinationPath);
 
-            rule.AddTarget(Bam.Core.TokenizedString.Create(destinationPath + sourceFilename, null, verbatim: true), variableName: "CopyFile_" + sourceFilename);
+            rule.AddTarget(Bam.Core.TokenizedString.CreateVerbatim(destinationPath + sourceFilename), variableName: "CopyFile_" + sourceFilename);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);

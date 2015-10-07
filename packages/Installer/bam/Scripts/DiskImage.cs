@@ -48,7 +48,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("hdiutil", null);
+                return Bam.Core.TokenizedString.CreateVerbatim("hdiutil");
             }
         }
     }

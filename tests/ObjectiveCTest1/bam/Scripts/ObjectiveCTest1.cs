@@ -47,7 +47,7 @@ namespace ObjectiveCTest1
                 source.PrivatePatch(settings =>
                     {
                         var compiler = settings as C.ICommonCompilerSettings;
-                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("/usr/include/GNUstep", null, verbatim: true));
+                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.CreateVerbatim("/usr/include/GNUstep"));
 
                         var objcCompiler = settings as C.IObjectiveCOnlyCompilerSettings;
                         objcCompiler.ConstantStringClass = "NSConstantString";
@@ -59,7 +59,7 @@ namespace ObjectiveCTest1
                     var osxLinker = settings as C.ILinkerSettingsOSX;
                     if (null != osxLinker)
                     {
-                        osxLinker.Frameworks.Add(Bam.Core.TokenizedString.Create("Cocoa", null, verbatim:true));
+                        osxLinker.Frameworks.Add(Bam.Core.TokenizedString.CreateVerbatim("Cocoa"));
                     }
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))

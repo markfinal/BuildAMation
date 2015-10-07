@@ -129,7 +129,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create(@"C:\Program Files (x86)\NSIS\makensis.exe", null);
+                return Bam.Core.TokenizedString.CreateVerbatim(@"C:\Program Files (x86)\NSIS\makensis.exe");
             }
         }
     }

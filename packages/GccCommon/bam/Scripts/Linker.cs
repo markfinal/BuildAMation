@@ -39,7 +39,7 @@ namespace GccCommon
             this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
 
             var ldPath = this.GccMetaData.LdPath;
-            var installPath = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(ldPath), null);
+            var installPath = Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.GetDirectoryName(ldPath));
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(installPath));
 
             this.Macros.Add("exeext", string.Empty);
@@ -154,7 +154,7 @@ namespace GccCommon
     {
         public Linker()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GccPath, null));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
         }
     }
 
@@ -165,7 +165,7 @@ namespace GccCommon
     {
         public LinkerCxx()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GxxPath, null));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
         }
     }
 }

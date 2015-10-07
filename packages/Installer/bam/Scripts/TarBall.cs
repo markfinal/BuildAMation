@@ -143,7 +143,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("tar", null);
+                return Bam.Core.TokenizedString.CreateVerbatim("tar");
             }
         }
     }

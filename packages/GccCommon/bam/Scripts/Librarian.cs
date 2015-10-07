@@ -42,7 +42,7 @@ namespace GccCommon
 
             this.Macros.Add("libprefix", "lib");
             this.Macros.Add("libext", ".a");
-            this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.Create(gccMetaData.ArPath, null));
+            this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.CreateVerbatim(gccMetaData.ArPath));
         }
 
         public override Bam.Core.Settings

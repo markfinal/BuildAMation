@@ -93,7 +93,7 @@ namespace C
                     continue;
                 }
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                linker.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(dir, null));
+                linker.LibraryPaths.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(dir));
             }
 
             var commandLineArgs = new Bam.Core.StringArray();

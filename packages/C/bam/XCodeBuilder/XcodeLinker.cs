@@ -46,7 +46,7 @@ namespace C
             // TODO: could the lib search paths be in the staticlibrary base class as a patch?
             var configName = sender.BuildEnvironment.Configuration.ToString();
             var macros = new Bam.Core.MacroList();
-            macros.Add("moduleoutputdir", Bam.Core.TokenizedString.Create(configName, null));
+            macros.Add("moduleoutputdir", Bam.Core.TokenizedString.CreateVerbatim(configName));
             foreach (var library in libraries)
             {
                 if (library is C.StaticLibrary)
