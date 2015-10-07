@@ -56,8 +56,9 @@ namespace Bam.Core
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
         private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
         private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
-        private static readonly string FunctionRegExPattern = @"(@([a-z]+)\(([^)]+)\))";
+        private static readonly string FunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^()]*)\))";
         private static readonly string FunctionPrefix = @"@";
+        private static readonly string FunctionSuffix = @")";
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
@@ -443,35 +444,39 @@ namespace Bam.Core
             System.Collections.Generic.List<string> tokens)
         {
             var joined = JoinTokens(tokens);
-            var tokenized = SplitToParse(joined, FunctionRegExPattern);
-            var matchCount = tokenized.Count();
-            if (1 == matchCount)
+            // function calls may be nested, so the reg ex gets the inner most calls
+            // and so iterate until all functions have been found
+            for (;;)
             {
-                return joined;
-            }
-            // triplets of matches
-            int matchIndex = 0;
-            while (matchIndex < matchCount)
-            {
-                var index = matchIndex++;
-                var expr = tokenized.ElementAt(index);
-                // look for an expression containing the entire function call first (the regex expression)
-                if (!(expr.StartsWith(FunctionPrefix) && expr.EndsWith(")")))
+                var tokenized = SplitToParse(joined, FunctionRegExPattern);
+                var matchCount = tokenized.Count();
+                if (1 == matchCount)
                 {
-                    continue;
+                    break;
                 }
-
-                // then the match is the function name
-                var functionName = tokenized.ElementAt(matchIndex++);
-                if (!functionName.All(char.IsLetter))
+                // triplets of matches (entire expression, function name, argument)
+                int matchIndex = 0;
+                while (matchIndex < matchCount)
                 {
-                    continue;
-                }
+                    var matchedExpression = tokenized.ElementAt(matchIndex++);
+                    // does the first match constitute a function call?
+                    if (!matchedExpression.StartsWith(FunctionPrefix))
+                    {
+                        continue;
+                    }
+                    if (!matchedExpression.EndsWith(FunctionSuffix))
+                    {
+                        // nested function call - this is the outer call, ignore
+                        continue;
+                    }
 
-                // then the match is the argument
-                var argument = tokenized.ElementAt(matchIndex++);
-                var result = this.FunctionExpression(functionName, argument);
-                joined = joined.Replace(expr, result);
+                    // if it was a function call, the next match is the function name
+                    var functionName = tokenized.ElementAt(matchIndex++);
+                    // and after that is the argument expression
+                    var expression = tokenized.ElementAt(matchIndex++);
+                    var expandedExpression = this.FunctionExpression(functionName, expression);
+                    joined = joined.Replace(matchedExpression, expandedExpression);
+                }
             }
             return joined;
         }
