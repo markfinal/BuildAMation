@@ -72,22 +72,22 @@ namespace Publisher
                     {
                         if (null != subDirectory)
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/$(1)/", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
                         }
                         else
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
                         }
                     }
                     else
                     {
                         if (null != subDirectory)
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/$(1)/", this.GeneratedPaths[PackageRoot], subDirectory);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
                         }
                         else
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/", this.GeneratedPaths[PackageRoot]);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
                         }
                     }
                 });
@@ -115,22 +115,22 @@ namespace Publisher
                 {
                     if (null != subDirectory)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/$(1)/@filename($(2))/", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, (module as CollatedDirectory).SourcePath);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, (module as CollatedDirectory).SourcePath);
                     }
                     else
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/@filename($(1))/", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], (module as CollatedDirectory).SourcePath);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], (module as CollatedDirectory).SourcePath);
                     }
                 }
                 else
                 {
                     if (null != subDirectory)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/$(1)/@filename($(2))/", this.GeneratedPaths[PackageRoot], subDirectory, (module as CollatedDirectory).SourcePath);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/@filename($(2))/)", this.GeneratedPaths[PackageRoot], subDirectory, (module as CollatedDirectory).SourcePath);
                     }
                     else
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/@filename($(1))/", this.GeneratedPaths[PackageRoot], (module as CollatedDirectory).SourcePath);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/@filename($(1))/)", this.GeneratedPaths[PackageRoot], (module as CollatedDirectory).SourcePath);
                     }
                 }
             });
