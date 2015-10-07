@@ -65,8 +65,7 @@ namespace Publisher
             CollatedFile reference = null,
             Bam.Core.TokenizedString subDirectory = null)
         {
-            // TODO: 'this' passed as the Parent - used later
-            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(this, preInitCallback: module =>
+            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
                 {
                     if (reference != null)
                     {
@@ -108,8 +107,7 @@ namespace Publisher
             CollatedFile reference = null,
             Bam.Core.TokenizedString subDirectory = null)
         {
-            // TODO: 'this' passed as the Parent - used later
-            var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(this, preInitCallback: module =>
+            var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
             {
                 // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
                 if (reference != null)

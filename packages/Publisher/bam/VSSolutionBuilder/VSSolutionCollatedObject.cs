@@ -35,8 +35,7 @@ namespace Publisher
         void
         ICollatedObjectPolicy.Collate(
             CollatedObject sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString packageRoot)
+            Bam.Core.ExecutionContext context)
         {
             var sourcePath = sender.SourcePath;
             if (null == sender.Reference)

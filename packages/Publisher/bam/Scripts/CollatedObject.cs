@@ -36,7 +36,6 @@ namespace Publisher
     {
         public static Bam.Core.FileKey CopiedObjectKey = Bam.Core.FileKey.Generate("Copied Object");
 
-        private Bam.Core.Module Parent = null;
         private ICollatedObjectPolicy Policy = null;
 
         private Bam.Core.Module RealSourceModule = null;
@@ -54,7 +53,6 @@ namespace Publisher
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Parent = parent;
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFileWin>();
@@ -77,7 +75,7 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            this.Policy.Collate(this, context, this.Parent.GeneratedPaths[Collation.PackageRoot]);
+            this.Policy.Collate(this, context);
         }
 
         protected override void

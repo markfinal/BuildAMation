@@ -34,7 +34,6 @@ namespace Publisher
         void
         Collate(
             CollatedObject sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString packageRoot);
+            Bam.Core.ExecutionContext context);
     }
 }
