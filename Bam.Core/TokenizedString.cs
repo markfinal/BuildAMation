@@ -68,6 +68,7 @@ namespace Bam.Core
         private string ParsedString = null;
         private bool Verbatim;
         private TokenizedStringArray PositionalTokens = new TokenizedStringArray();
+        private string CreationStackTrace = null;
 
         public void
         Assign(
@@ -120,6 +121,7 @@ namespace Bam.Core
             bool verbatim = false,
             TokenizedStringArray positionalTokens = null)
         {
+            this.CreationStackTrace = System.Environment.StackTrace;
             if (null != positionalTokens)
             {
                 this.PositionalTokens.AddRange(positionalTokens);
@@ -313,7 +315,7 @@ namespace Bam.Core
             }
             if (null == this.MacroIndices)
             {
-                throw new Exception("Tokenized string '{0}', does not appear to contain any {1}...{2} tokens", this.OriginalString, TokenPrefix, TokenSuffix);
+                throw new Exception("Tokenized string '{0}', does not appear to contain any {1}...{2} tokens. Created at {3}", this.OriginalString, TokenPrefix, TokenSuffix, this.CreationStackTrace);
             }
 
             System.Func<TokenizedString, TokenizedString, string> expandTokenizedString = (source, tokenString) =>
@@ -323,7 +325,7 @@ namespace Bam.Core
                         // recursive
                         if (source == tokenString)
                         {
-                            throw new Exception("Infinite recursion for {0}", source.OriginalString);
+                            throw new Exception("Infinite recursion for {0}. Created at {3}", source.OriginalString, source.CreationStackTrace);
                         }
                         tokenString.Parse();
                     }
@@ -344,7 +346,7 @@ namespace Bam.Core
                     var positionalIndex = System.Convert.ToInt32(positional);
                     if (positionalIndex > this.PositionalTokens.Count)
                     {
-                        throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given", positionalIndex, this.PositionalTokens.Count);
+                        throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given. Created at {2}.", positionalIndex, this.PositionalTokens.Count, this.CreationStackTrace);
                     }
                     token = expandTokenizedString(this, this.PositionalTokens[positionalIndex]);
                 }
@@ -401,12 +403,14 @@ namespace Bam.Core
                                 message.AppendLine();
                             }
                         }
+                        message.AppendLine("Created at");
+                        message.AppendLine(this.CreationStackTrace);
                         throw new System.Exception(message.ToString());
                     }
                 }
                 if (null == token)
                 {
-                    throw new Exception("Token replacement for {0} was null - something went wrong during parsing of the string '{1}'", tokens[index], this.OriginalString);
+                    throw new Exception("Token replacement for {0} was null - something went wrong during parsing of the string '{1}'. Created at {2}", tokens[index], this.OriginalString, this.CreationStackTrace);
                 }
                 tokens[index] = token;
                 macroIndices.Remove(index);
@@ -421,6 +425,8 @@ namespace Bam.Core
                     message.AppendFormat("\t{0}", this.Tokens[index]);
                     message.AppendLine();
                 }
+                message.AppendLine("Created at");
+                message.AppendLine(this.CreationStackTrace);
                 throw new System.Exception(message.ToString());
             }
             var joined = this.EvaluateFunctions(tokens);
