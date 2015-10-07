@@ -54,7 +54,14 @@ namespace VisualStudioProcessor
                         vsSettingsGroupType,
                         stringType);
                 }
-                method.Invoke(null, new object[] { toolSettings, module, settings, condition });
+                try
+                {
+                    method.Invoke(null, new object[] { toolSettings, module, settings, condition });
+                }
+                catch (System.Reflection.TargetInvocationException exception)
+                {
+                    throw exception.InnerException;
+                }
             }
         }
     }
