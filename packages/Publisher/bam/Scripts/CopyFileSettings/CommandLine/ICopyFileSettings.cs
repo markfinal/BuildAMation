@@ -65,7 +65,7 @@ namespace Publisher
                 }
                 if (settings.Recursive)
                 {
-                    commandLine.Add("-r");
+                    commandLine.Add("-R");
                 }
             }
         }
