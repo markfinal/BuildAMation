@@ -492,6 +492,9 @@ namespace Bam.Core
                 case "dir":
                     return System.IO.Path.GetDirectoryName(argument);
 
+                case "normalize":
+                    return System.IO.Path.GetFullPath(argument);
+
                 default:
                     throw new Exception("Unknown TokenizedString function, {0}", functionName);
             }

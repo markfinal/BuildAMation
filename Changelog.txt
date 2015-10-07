@@ -1,3 +1,5 @@
+07-Oct-2015 Bam.Core.TokenizedString now understands the @normalize(<path>) function, returning the full normalized path of the argument.
+
 06-Oct-2015 Fixes #24. Added function to publish whole directories, IncludeDirectory() on the Collation object.
 
 06-Oct-2015 Fixes #23. Fixed the regular expression tokenizing a string for functions, when multiple functions are present.
