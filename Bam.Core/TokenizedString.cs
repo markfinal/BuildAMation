@@ -209,6 +209,13 @@ namespace Bam.Core
             }
         }
 
+        public static TokenizedString
+        CreateVerbatim(
+            string verboseString)
+        {
+            return Create(verboseString, null, verbatim: true);
+        }
+
         private string this[int index]
         {
             get
