@@ -417,7 +417,7 @@ namespace Bam.Core
                 {
                     if (!(exception.InnerException is System.Threading.Tasks.TaskCanceledException))
                     {
-                        throw exception;
+                        throw new Exception(exception, "Error during threaded build");
                     }
                 }
             }

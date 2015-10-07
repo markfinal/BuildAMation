@@ -34,6 +34,7 @@ namespace MakeFileBuilder
         public Target(
             Bam.Core.TokenizedString nameOrOutput,
             bool isPhony,
+            string variableName,
             Bam.Core.Module module,
             int count)
         {
@@ -47,10 +48,17 @@ namespace MakeFileBuilder
             {
                 return;
             }
-            if (Bam.Core.Graph.Instance.IsReferencedModule(module))
+            if (Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName))
             {
                 // make the target names unique across configurations
-                this.VariableName = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
+                if (System.String.IsNullOrEmpty(variableName))
+                {
+                    this.VariableName = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
+                }
+                else
+                {
+                    this.VariableName = System.String.Format("{0}_{1}", variableName, module.BuildEnvironment.Configuration.ToString());
+                }
             }
         }
 

@@ -1,3 +1,41 @@
+07-Oct-2015 Fixes #25. Nested function calls in TokenizedStrings are now supported.
+
+07-Oct-2015 Bam.Core.TokenizedString now understands the @normalize(<path>) function, returning the full normalized path of the argument.
+
+06-Oct-2015 Fixes #24. Added function to publish whole directories, IncludeDirectory() on the Collation object.
+
+06-Oct-2015 Fixes #23. Fixed the regular expression tokenizing a string for functions, when multiple functions are present.
+
+06-Oct-2015 Bam.Core.TokenizedString.Create will return null if the format string passed in is null. To create an empty tokenized string, use string.Empty, or Bam.Core.Module.MakePlaceholderPath.
+
+06-Oct-2015 Bam.Core.TokenizedString now understands the @dir(<path>) function, returning the parent directory of the argument.
+
+06-Oct-2015 C.ObjectFile no longer defines an inputpath macro, for interaction with the corresponding source file. Instead, the source file's TokenizedString path is referenced directly, via positional tokens.
+
+06-Oct-2015 Bam.Core.Module now has a utility function to create TokenizedStrings that reference macros in that module, CreateTokenizedString. Also, a new function, MakePlaceholderPath(), which is a TokenizedString on the module intended for replacement at a later time (e.g. create a module empty, then set the source path). This is so that other modules can reference this placeholder before the path is set.
+
+06-Oct-2015 Fixes #22. TokenizedString creation now accepts an optional list of TokenizedStrings. This is to allow references to strings other than those in macro lists, e.g. source/output paths of modules. These are referred to as positional tokens, and may be referenced by a zero-based numeric index as a token (usual token notation), e.g. "$(0)" refers to the first string in that list.
+
+03-Oct-2015 Fixes #21. Each file published is now a separate module, which enables both parallelism and that tools can be assigned to each published object.
+
+03-Oct-2015 Running command line tools no longer leaves the standard input stream open. This avoids tools that request user input from indefinitely pausing the build - instead they will fail because there will never be any input.
+
+03-Oct-2015 Fixes #20. Exceptions thrown during a threaded build are now displayed with full details and stack trace to the user.
+
+03-Oct-2015 Fixes #19. Bam executed with -d/--debug did not use debug symbols in Mono.
+
+02-Oct-2015 Added VisualCCommon.IRuntimeLibraryPathMeta interface, implemented by VisualC.MetaData class, to return the paths for the C and C++ runtime libraries for the version of VisualC. 32 or 64-bit versions are requested by the argument to the interface functions, MSVCR (C runtime) and MSVCP (C++ runtime).
+
+02-Oct-2015 Fixes #18. Added Publisher.Collation.IncludeFile function(s), so that files not associated with modules can be published.
+
+02-Oct-2015 Added Bam.Core.TokenizedString.ParseAndQuoteIfNecessary. If the parsed string contains a space, the returned string from this function is wrapped in (double) quotes. Otherwise, the parsed string is returned.
+
+02-Oct-2015 Fixes #15. Environment variables can now be used in TokenizedStrings. For example, a tokenized string can be "$(HOME)" to get the HOME environment variable.
+
+02-Oct-2015 Fixes #16. VisualC builds in Native build mode no longer default to statically linking the CRT, which was different to VSSolution build modes (dynamically linking the CRT). The default is now to dynamically link (to reduce binary size) against the non-debug CRT. This can be changed on the VisualCCommon.ICommonCompilerSettings.RuntimeLibrary property.
+
+25-Sep-2015 ======== Version 1.0a4 Release ========
+
 25-Sep-2015 Fixes #12. To compiler, archiver and linker settings, added a new interface C.IAdditionalSettings, which allows a back door to setting arbitrary tool options, in the event of an existing interface not exposing the necessary property. This simply avoids having to modify packages to add a command line switch. VisualStudio and Xcode support provided. But note that Xcode does not expose any visible custom archiver setting.
 
 25-Sep-2015 Fixes #11. C.ConsoleApplication and C.GuiApplication and C.DynamicLibrary allowed the creation of C++ source containers through class methods. These methods have been moved to the equivalent C.Cxx module types.

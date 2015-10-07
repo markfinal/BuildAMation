@@ -63,15 +63,18 @@ namespace MakeFileBuilder
         ExtendEnvironmentVariables(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> import)
         {
-            foreach (var env in import)
+            lock (this)
             {
-                if (!this.Environment.ContainsKey(env.Key))
+                foreach (var env in import)
                 {
-                    this.Environment.Add(env.Key, new Bam.Core.StringArray());
-                }
-                foreach (var path in env.Value)
-                {
-                    this.Environment[env.Key].AddUnique(path.ToString());
+                    if (!this.Environment.ContainsKey(env.Key))
+                    {
+                        this.Environment.Add(env.Key, new Bam.Core.StringArray());
+                    }
+                    foreach (var path in env.Value)
+                    {
+                        this.Environment[env.Key].AddUnique(path.ToString());
+                    }
                 }
             }
         }

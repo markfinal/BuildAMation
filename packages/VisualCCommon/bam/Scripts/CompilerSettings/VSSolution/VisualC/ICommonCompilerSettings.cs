@@ -42,6 +42,11 @@ namespace VisualCCommon
             {
                 settingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
             }
+
+            if (settings.RuntimeLibrary.HasValue)
+            {
+                settingsGroup.AddSetting("RuntimeLibrary", settings.RuntimeLibrary.Value.ToString(), condition);
+            }
         }
     }
 }

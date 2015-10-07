@@ -27,28 +27,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public static partial class CommandLineImplementation
+    public sealed class MakeFileCollatedObject :
+        ICollatedObjectPolicy
     {
-        public static void
-        Convert(
-            this ICopyFileSettings settings,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+        void
+        ICollatedObjectPolicy.Collate(
+            CollatedObject sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot)
         {
-            if (settings.Force)
-            {
-                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    commandLine.Add("/Y");
-                }
-                else
-                {
-                    commandLine.Add("-f");
-                }
-            }
+            var sourcePath = sender.SourcePath;
+            var sourceFilename = System.IO.Path.GetFileName(sourcePath.Parse());
+
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
+            var rule = meta.AddRule();
+
+            var destinationPath = sender.Macros["CopyDir"].Parse();
+            meta.CommonMetaData.Directories.AddUnique(destinationPath);
+
+            rule.AddTarget(Bam.Core.TokenizedString.Create(destinationPath + sourceFilename, null, verbatim: true), variableName: "CopyFile_" + sourceFilename);
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+
+            rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' ')));
+            rule.AddPrerequisite(sourcePath);
         }
     }
 }

@@ -29,26 +29,34 @@
 #endregion // License
 namespace Publisher
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICopyFileSettings :
-        Bam.Core.ISettingsBase
+    public sealed class NativeCollatedObject :
+        ICollatedObjectPolicy
     {
-        bool Force
+        void
+        ICollatedObjectPolicy.Collate(
+            CollatedObject sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot)
         {
-            get;
-            set;
-        }
+            var sourcePath = sender.SourcePath;
 
-        bool Verbose
-        {
-            get;
-            set;
-        }
+            var destinationPath = sender.Macros["CopyDir"].Parse();
 
-        bool Recursive
-        {
-            get;
-            set;
+            // synchronize, so that multiple modules don't try to create the same directories simultaneously
+            lock ((sender.Reference != null) ? sender.Reference : sender)
+            {
+                if (!System.IO.Directory.Exists(destinationPath))
+                {
+                    System.IO.Directory.CreateDirectory(destinationPath);
+                }
+            }
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+
+            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
+            commandLine.Add(destinationPath);
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 }

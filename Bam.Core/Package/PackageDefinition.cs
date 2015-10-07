@@ -76,6 +76,23 @@ namespace Bam.Core
             }
         }
 
+        private string
+        GetAssociatedPackageDirectoryForTests()
+        {
+            // package repositories have a 'package' folder and a 'tests' folder
+            // if this package is from the 'tests' folder, automatically add the 'packages' folder as another place to search for packages
+            var thisRepo = this.GetPackageRepository();
+            if (System.IO.Path.GetFileName(thisRepo) == "tests")
+            {
+                var associatedPackagesRepo = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(thisRepo), "packages");
+                if (System.IO.Directory.Exists(associatedPackagesRepo))
+                {
+                    return associatedPackagesRepo;
+                }
+            }
+            return null;
+        }
+
         private void
         Initialize(
             string xmlFilename,
@@ -88,17 +105,11 @@ namespace Bam.Core
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
-            this.PackageRepositories = new StringArray();
-            var packageRepo = this.GetPackageRepository();
-            this.PackageRepositories.AddUnique(packageRepo);
-            // if this is from a tests in a repository, automatically add the packages folder as another repo
-            if (System.IO.Path.GetFileName(packageRepo) == "tests")
+            this.PackageRepositories = new StringArray(this.GetPackageRepository());
+            var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
+            if (null != associatedRepo)
             {
-                var associatedPackagesRepo = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(packageRepo), "packages");
-                if (System.IO.Directory.Exists(associatedPackagesRepo))
-                {
-                    this.PackageRepositories.AddUnique(associatedPackagesRepo);
-                }
+                this.PackageRepositories.AddUnique(associatedRepo);
             }
             this.Description = string.Empty;
         }
@@ -193,9 +204,17 @@ namespace Bam.Core
                 packageDefinition.AppendChild(descriptionElement);
             }
 
-            // package repositories - don't write out the repo that this package resides in
+            // package repositories
             var packageRepos = new StringArray(this.PackageRepositories);
+            // TODO: could these be marked as transient?
+            // don't write out the repo that this package resides in
             packageRepos.Remove(this.GetPackageRepository());
+            // nor an associated repo for tests
+            var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
+            if (null != associatedRepo)
+            {
+                packageRepos.Remove(associatedRepo);
+            }
             if (packageRepos.Count > 0)
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);

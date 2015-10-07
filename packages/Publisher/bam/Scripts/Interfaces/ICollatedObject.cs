@@ -27,28 +27,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Publisher
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICopyFileSettings :
-        Bam.Core.ISettingsBase
+    public interface ICollatedObject
     {
-        bool Force
+        Bam.Core.Module SourceModule
         {
             get;
-            set;
         }
 
-        bool Verbose
+        Bam.Core.TokenizedString SubDirectory
         {
             get;
-            set;
         }
 
-        bool Recursive
+        CollatedFile Reference
         {
             get;
-            set;
+        }
+
+        Bam.Core.TokenizedString SourcePath
+        {
+            get;
         }
     }
 }

@@ -468,11 +468,11 @@ namespace Bam.Core
             }
             if (this.DependeesList.Count > 1)
             {
-                throw new Exception("More than one dependee attached to {0}, to uniquely identify the encapsulating module", this.ToString());
+                Log.DebugMessage("More than one dependee attached to {0}, so taking the first as the encapsulating module. This may be incorrect.", this.ToString());
             }
             if (this.RequiredDependeesList.Count > 1)
             {
-                throw new Exception("More than one requiree attached to {0}, to uniquely identify the encapsulating module", this.ToString());
+                Log.DebugMessage("More than one requiree attached to {0}, so taking the first as the encapsulating module. This may be incorrect.", this.ToString());
             }
             Module encapsulating;
             if (0 == this.DependeesList.Count)
@@ -519,6 +519,25 @@ namespace Bam.Core
             {
                 module.Complete();
             }
+        }
+
+        public TokenizedString
+        MakePlaceholderPath()
+        {
+            return TokenizedString.Create(string.Empty, this);
+        }
+
+        public TokenizedString
+        CreateTokenizedString(
+            string format,
+            params TokenizedString[] argv)
+        {
+            if (0 == argv.Length)
+            {
+                return TokenizedString.Create(format, this);
+            }
+            var positionalTokens = new TokenizedStringArray(argv);
+            return TokenizedString.Create(format, this, false, positionalTokens);
         }
     }
 }

@@ -35,6 +35,14 @@ namespace C
     {
         static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Source File");
 
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.RegisterGeneratedFile(Key, this.MakePlaceholderPath());
+        }
+
         public override void
         Evaluate()
         {
@@ -64,7 +72,7 @@ namespace C
             }
             set
             {
-                this.GeneratedPaths[Key] = value;
+                this.GeneratedPaths[Key].Assign(value);
             }
         }
     }

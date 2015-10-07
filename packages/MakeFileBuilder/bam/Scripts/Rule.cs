@@ -49,9 +49,10 @@ namespace MakeFileBuilder
         public Target
         AddTarget(
             Bam.Core.TokenizedString targetNameOrOutput,
-            bool isPhony = false)
+            bool isPhony = false,
+            string variableName = null)
         {
-            var target = new Target(targetNameOrOutput, isPhony, this.Module, this.RuleCount);
+            var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleCount);
             this.Targets.Add(target);
             return target;
         }
@@ -174,7 +175,7 @@ namespace MakeFileBuilder
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
-                    rules.AppendFormat("{0} ", pre);
+                    rules.AppendFormat("{0} ", pre.ParseAndQuoteIfNecessary());
                 }
                 foreach (var pre in this.PrerequisiteTargets)
                 {

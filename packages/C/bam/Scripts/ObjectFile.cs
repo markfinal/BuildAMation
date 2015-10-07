@@ -46,7 +46,6 @@ namespace C
         {
             base.Init(parent);
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/@basename($(inputpath))$(objext)", this));
         }
 
         public Bam.Core.TokenizedString InputPath
@@ -57,17 +56,17 @@ namespace C
             }
             set
             {
+                // this cannot be a referenced module, since there will be more than one object
+                // of this type (generally)
+                // but this does mean there may be many instances of this 'type' of module
+                // and for multi-configuration builds there may be many instances of the same path
                 if (null == this.Source)
                 {
-                    // this cannot be a referenced module, since there will be more than one object
-                    // of this type (generally)
-                    // but this does mean there may be many instances of this 'type' of module
-                    // and for multi-configuration builds there may be many instances of the same path
                     this.Source = Bam.Core.Module.Create<SourceFile>();
                     this.DependsOn(this.Source);
                 }
                 this.Source.InputPath = value;
-                this.Macros.Add("inputpath", value);
+                this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@basename($(0))$(objext)", value);
             }
         }
 

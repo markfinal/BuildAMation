@@ -27,50 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace VisualCCommon
 {
-    public sealed class CollatedObject
+    public enum ERuntimeLibrary
     {
-        public CollatedObject(
-            Bam.Core.Module module,
-            string subdirectory,
-            Bam.Core.Array<CollatedObject> references)
-        {
-            this.Module = module;
-            this.SubDirectory = subdirectory;
-            this.References = references;
-        }
-
-        public bool IsMarker
-        {
-            get
-            {
-                return (null == this.References);
-            }
-        }
-
-        public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
-
-        public string SubDirectory
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.Array<CollatedObject> References
-        {
-            get;
-            private set;
-        }
-
-        public string DestinationDir
-        {
-            get;
-            set;
-        }
+        MultiThreaded = 0,
+        MultiThreadedDebug = 1,
+        MultiThreadedDLL = 2,
+        MultiThreadedDebugDLL = 3
     }
 }

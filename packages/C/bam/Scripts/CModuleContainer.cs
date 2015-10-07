@@ -126,17 +126,24 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
-            foreach (var child in this.children)
+            try
             {
-                if (null != child.EvaluationTask)
+                foreach (var child in this.children)
                 {
-                    child.EvaluationTask.Wait();
+                    if (null != child.EvaluationTask)
+                    {
+                        child.EvaluationTask.Wait();
+                    }
+                    if (null != child.ReasonToExecute)
+                    {
+                        this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
+                        return;
+                    }
                 }
-                if (null != child.ReasonToExecute)
-                {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
-                    return;
-                }
+            }
+            catch (System.AggregateException exception)
+            {
+                throw new Bam.Core.Exception(exception, "Failed to evaluate modules");
             }
         }
     }

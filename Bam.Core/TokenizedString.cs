@@ -54,8 +54,11 @@ namespace Bam.Core
         public static readonly string TokenPrefix = @"$(";
         public static readonly string TokenSuffix = @")";
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
-        private static readonly string FunctionRegExPattern = @"(@([a-z]+)\((.+)\))";
+        private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
+        private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
+        private static readonly string FunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^()]*)\))";
         private static readonly string FunctionPrefix = @"@";
+        private static readonly string FunctionSuffix = @")";
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
@@ -65,21 +68,65 @@ namespace Bam.Core
         private string OriginalString = null;
         private string ParsedString = null;
         private bool Verbatim;
+        private TokenizedStringArray PositionalTokens = new TokenizedStringArray();
+        private string CreationStackTrace = null;
+
+        public void
+        Assign(
+            TokenizedString other)
+        {
+            if (null == this.ModuleWithMacros)
+            {
+                throw new Exception("Can't switch out a TokenizedString without a module");
+            }
+            this.Tokens = other.Tokens;
+            this.MacroIndices = other.MacroIndices;
+            this.ModuleWithMacros = other.ModuleWithMacros;
+            this.OriginalString = other.OriginalString;
+            this.ParsedString = other.Verbatim ? other.ParsedString : null; // force reparsing
+            this.Verbatim = other.Verbatim;
+            this.PositionalTokens = other.PositionalTokens;
+        }
 
         static private System.Collections.Generic.IEnumerable<string>
         SplitToParse(
             string original,
             string regExPattern)
         {
-            var matches = System.Text.RegularExpressions.Regex.Split(original, regExPattern);
-            var filtered = matches.Where(item => !System.String.IsNullOrEmpty(item));
+            var regExSplit = System.Text.RegularExpressions.Regex.Split(original, regExPattern);
+            var filtered = regExSplit.Where(item => !System.String.IsNullOrEmpty(item));
             return filtered;
+        }
+
+        static private System.Collections.Generic.IEnumerable<string>
+        GetMatches(
+            string original,
+            string regExPattern)
+        {
+            var matches = System.Text.RegularExpressions.Regex.Matches(original, regExPattern);
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                foreach (System.Text.RegularExpressions.Group group in match.Groups)
+                {
+                    if (group.Value == original)
+                    {
+                        continue;
+                    }
+                    yield return group.Value;
+                }
+            }
         }
 
         private TokenizedString(
             string original,
-            bool verbatim = false)
+            bool verbatim = false,
+            TokenizedStringArray positionalTokens = null)
         {
+            this.CreationStackTrace = System.Environment.StackTrace;
+            if (null != positionalTokens)
+            {
+                this.PositionalTokens.AddRange(positionalTokens);
+            }
             this.Verbatim = verbatim;
             this.OriginalString = original;
             if (verbatim)
@@ -105,8 +152,9 @@ namespace Bam.Core
         private TokenizedString(
             string original,
             Module moduleWithMacros,
-            bool verbatim) :
-            this(original, verbatim)
+            bool verbatim,
+            TokenizedStringArray positionalTokens) :
+            this(original, verbatim, positionalTokens)
         {
             if (null == moduleWithMacros)
             {
@@ -133,8 +181,14 @@ namespace Bam.Core
         Create(
             string tokenizedString,
             Module macroSource,
-            bool verbatim = false)
+            bool verbatim = false,
+            TokenizedStringArray positionalTokens = null)
         {
+            if (null == tokenizedString)
+            {
+                return null;
+            }
+
             // strings can be created during the multithreaded phase
             lock (Cache)
             {
@@ -148,7 +202,7 @@ namespace Bam.Core
                 }
                 else
                 {
-                    var ts = new TokenizedString(tokenizedString, macroSource, verbatim);
+                    var ts = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens);
                     Cache.Add(ts);
                     return ts;
                 }
@@ -176,7 +230,18 @@ namespace Bam.Core
         {
             get
             {
-                return this.Verbatim || (null != this.ParsedString);
+                if (this.Verbatim)
+                {
+                    return true;
+                }
+                foreach (var positionalToken in this.PositionalTokens)
+                {
+                    if (!positionalToken.IsExpanded)
+                    {
+                        return false;
+                    }
+                }
+                return (null != this.ParsedString);
             }
         }
 
@@ -251,98 +316,102 @@ namespace Bam.Core
             }
             if (null == this.MacroIndices)
             {
-                throw new Exception("Tokenized string '{0}', does not appear to contain any {1}...{2} tokens", this.OriginalString, TokenPrefix, TokenSuffix);
+                throw new Exception("Tokenized string '{0}', does not appear to contain any {1}...{2} tokens. Created at {3}", this.OriginalString, TokenPrefix, TokenSuffix, this.CreationStackTrace);
             }
+
+            System.Func<TokenizedString, TokenizedString, string> expandTokenizedString = (source, tokenString) =>
+                {
+                    if (!tokenString.IsExpanded)
+                    {
+                        // recursive
+                        if (source == tokenString)
+                        {
+                            throw new Exception("Infinite recursion for {0}. Created at {3}", source.OriginalString, source.CreationStackTrace);
+                        }
+                        tokenString.Parse();
+                    }
+                    return tokenString.ToString();
+                };
+
             // take a copy of the macro indices
             var macroIndices = new System.Collections.Generic.List<int>(this.MacroIndices);
             var tokens = new System.Collections.Generic.List<string>(this.Tokens); // could just be a reserved list of strings
             foreach (int index in this.MacroIndices.Reverse<int>())
             {
                 var token = this.Tokens[index];
-                if (null != customMacros && customMacros.Dict.ContainsKey(token))
+
+                // step 0 : is the token positional, i.e. was set up at creation time
+                var positional = GetMatches(token, PositionalTokenRegExPattern).FirstOrDefault();
+                if (!System.String.IsNullOrEmpty(positional))
                 {
-                    var value = customMacros.Dict[token];
-                    if (!value.IsExpanded)
+                    var positionalIndex = System.Convert.ToInt32(positional);
+                    if (positionalIndex > this.PositionalTokens.Count)
                     {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
+                        throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given. Created at {2}.", positionalIndex, this.PositionalTokens.Count, this.CreationStackTrace);
                     }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, this.PositionalTokens[positionalIndex]);
                 }
+                // step 1 : try to resolve with macros passed to the Parse function
+                else if (null != customMacros && customMacros.Dict.ContainsKey(token))
+                {
+                    token = expandTokenizedString(this, customMacros.Dict[token]);
+                }
+                // step 2 : try macros in the global Graph, common to all modules
                 else if (Graph.Instance.Macros.Dict.ContainsKey(token))
                 {
-                    var value = Graph.Instance.Macros.Dict[token];
-                    if (!value.IsExpanded)
-                    {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
-                    }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, Graph.Instance.Macros.Dict[token]);
                 }
+                // step 3 : try macros in the specific module
                 else if (this.ModuleWithMacros != null && this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
                 {
-                    var value = this.ModuleWithMacros.Macros.Dict[token];
-                    if (!value.IsExpanded)
-                    {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
-                    }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, this.ModuleWithMacros.Macros.Dict[token]);
                 }
+                // step 4 : try macros in the Tool attached to the specific module
                 else if (this.ModuleWithMacros != null && null != this.ModuleWithMacros.Tool && this.ModuleWithMacros.Tool.Macros.Dict.ContainsKey(token))
                 {
-                    var value = this.ModuleWithMacros.Tool.Macros.Dict[token];
-                    if (!value.IsExpanded)
-                    {
-                        // recursive
-                        if (this == value)
-                        {
-                            throw new Exception("Infinite recursion for {0}", this.OriginalString);
-                        }
-                        value.Parse();
-                    }
-                    token = value.ToString();
+                    token = expandTokenizedString(this, this.ModuleWithMacros.Tool.Macros.Dict[token]);
                 }
                 else
                 {
-                    // TODO: this could be due to the user not having set a property, e.g. inputpath
-                    // is there a better error message that could be returned, other than this in those
-                    // circumstances?
-                    var message = new System.Text.StringBuilder();
-                    message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
-                    message.AppendLine();
-                    if (null != customMacros)
+                    // step 5 : try the immediate environment
+                    var strippedToken = SplitToParse(token, ExtractTokenRegExPattern).First();
+                    var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
+                    if (null != envVar)
                     {
-                        message.AppendLine("Searched in custom macros");
+                        token = envVar;
                     }
-                    message.AppendLine("Searched in global macros");
-                    if (null != this.ModuleWithMacros)
+                    // step 6 : fail
+                    else
                     {
-                        message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                        // TODO: this could be due to the user not having set a property, e.g. inputpath
+                        // is there a better error message that could be returned, other than this in those
+                        // circumstances?
+                        var message = new System.Text.StringBuilder();
+                        message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
                         message.AppendLine();
-                        if (null != this.ModuleWithMacros.Tool)
+                        if (null != customMacros)
                         {
-                            message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
-                            message.AppendLine();
+                            message.AppendLine("Searched in custom macros");
                         }
+                        message.AppendLine("Searched in global macros");
+                        if (null != this.ModuleWithMacros)
+                        {
+                            message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                            message.AppendLine();
+                            if (null != this.ModuleWithMacros.Tool)
+                            {
+                                message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
+                                message.AppendLine();
+                            }
+                        }
+                        message.AppendLine("Created at");
+                        message.AppendLine(this.CreationStackTrace);
+                        throw new System.Exception(message.ToString());
                     }
-                    throw new System.Exception(message.ToString());
                 }
                 if (null == token)
                 {
-                    throw new Exception("Token replacement for {0} was null - something went wrong during parsing", tokens[index]);
+                    throw new Exception("Token replacement for {0} was null - something went wrong during parsing of the string '{1}'. Created at {2}", tokens[index], this.OriginalString, this.CreationStackTrace);
                 }
                 tokens[index] = token;
                 macroIndices.Remove(index);
@@ -357,6 +426,8 @@ namespace Bam.Core
                     message.AppendFormat("\t{0}", this.Tokens[index]);
                     message.AppendLine();
                 }
+                message.AppendLine("Created at");
+                message.AppendLine(this.CreationStackTrace);
                 throw new System.Exception(message.ToString());
             }
             var joined = this.EvaluateFunctions(tokens);
@@ -373,35 +444,39 @@ namespace Bam.Core
             System.Collections.Generic.List<string> tokens)
         {
             var joined = JoinTokens(tokens);
-            var tokenized = SplitToParse(joined, FunctionRegExPattern);
-            var matchCount = tokenized.Count();
-            if (1 == matchCount)
+            // function calls may be nested, so the reg ex gets the inner most calls
+            // and so iterate until all functions have been found
+            for (;;)
             {
-                return joined;
-            }
-            // triplets of matches
-            int matchIndex = 0;
-            while (matchIndex < matchCount)
-            {
-                var index = matchIndex++;
-                var expr = tokenized.ElementAt(index);
-                // look for an expression containing the entire function call first (the regex expression)
-                if (!(expr.StartsWith(FunctionPrefix) && expr.EndsWith(")")))
+                var tokenized = SplitToParse(joined, FunctionRegExPattern);
+                var matchCount = tokenized.Count();
+                if (1 == matchCount)
                 {
-                    continue;
+                    break;
                 }
-
-                // then the match is the function name
-                var functionName = tokenized.ElementAt(matchIndex++);
-                if (!functionName.All(char.IsLetter))
+                // triplets of matches (entire expression, function name, argument)
+                int matchIndex = 0;
+                while (matchIndex < matchCount)
                 {
-                    continue;
-                }
+                    var matchedExpression = tokenized.ElementAt(matchIndex++);
+                    // does the first match constitute a function call?
+                    if (!matchedExpression.StartsWith(FunctionPrefix))
+                    {
+                        continue;
+                    }
+                    if (!matchedExpression.EndsWith(FunctionSuffix))
+                    {
+                        // nested function call - this is the outer call, ignore
+                        continue;
+                    }
 
-                // then the match is the argument
-                var argument = tokenized.ElementAt(matchIndex++);
-                var result = this.FunctionExpression(functionName, argument);
-                joined = joined.Replace(expr, result);
+                    // if it was a function call, the next match is the function name
+                    var functionName = tokenized.ElementAt(matchIndex++);
+                    // and after that is the argument expression
+                    var expression = tokenized.ElementAt(matchIndex++);
+                    var expandedExpression = this.FunctionExpression(functionName, expression);
+                    joined = joined.Replace(matchedExpression, expandedExpression);
+                }
             }
             return joined;
         }
@@ -419,8 +494,14 @@ namespace Bam.Core
                 case "filename":
                     return System.IO.Path.GetFileName(argument);
 
+                case "dir":
+                    return System.IO.Path.GetDirectoryName(argument);
+
+                case "normalize":
+                    return System.IO.Path.GetFullPath(argument);
+
                 default:
-                    throw new Exception("Unknown function, {0}", functionName);
+                    throw new Exception("Unknown TokenizedString function, {0}", functionName);
             }
         }
 
@@ -461,15 +542,35 @@ namespace Bam.Core
         {
             return base.GetHashCode();
         }
+
+        public string ParseAndQuoteIfNecessary(
+            MacroList customMacros = null)
+        {
+            var parsed = this.Parse(customMacros);
+            if (!this.ContainsSpace)
+            {
+                return parsed;
+            }
+            return System.String.Format("\"{0}\"", parsed);
+        }
     }
 
     public sealed class TokenizedStringArray :
         Array<TokenizedString>
     {
-        public TokenizedStringArray(TokenizedString input)
+        public TokenizedStringArray()
+        { }
+
+        public TokenizedStringArray(
+            TokenizedString input)
             :
-            base(new[] { input })
-        {
-        }
+            base(new [] {input})
+        { }
+
+        public TokenizedStringArray(
+            System.Collections.Generic.IEnumerable<TokenizedString> input)
+            :
+            base(input)
+        { }
     }
 }

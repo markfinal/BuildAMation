@@ -27,28 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace VisualCCommon
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICopyFileSettings :
-        Bam.Core.ISettingsBase
+    public interface IRuntimeLibraryPathMeta
     {
-        bool Force
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString MSVCR(C.EBit depth);
 
-        bool Verbose
-        {
-            get;
-            set;
-        }
-
-        bool Recursive
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString MSVCP(C.EBit depth);
     }
 }

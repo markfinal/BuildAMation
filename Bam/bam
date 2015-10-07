@@ -8,11 +8,17 @@ exec $curPath/bam.exe $@
 
 else
 
-# need to call mono with --debug in order to get proper line numbers etc. when an exception is thrown
-case $* in
-*-debugsymbols*) monoargs=--debug;;
-esac
+# save the original (quoted) args
+args=$@
 
-exec mono $monoargs $curPath/bam.exe $@
+# need to call mono with --debug in order to get proper line numbers etc. when an exception is thrown
+while [ "$1" != "" ]; do
+    case $1 in
+        --debug | -d) monoargs=--debug;;
+    esac
+    shift
+done
+
+exec mono $monoargs $curPath/bam.exe $args
 
 fi

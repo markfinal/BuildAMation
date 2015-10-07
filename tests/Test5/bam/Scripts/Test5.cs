@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace Test5
 {
     sealed class MyDynamicLibTestApp :
@@ -73,6 +74,16 @@ namespace Test5
 
             var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);
+
+            // copy the required runtime library next to the binary
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.BuildEnvironment.Configuration != EConfiguration.Debug &&
+                (app.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
+            {
+                var visualCPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "VisualC").First();
+                var runtimeLibrary = visualCPackage.MetaData as VisualCCommon.IRuntimeLibraryPathMeta;
+                this.IncludeFile(runtimeLibrary.MSVCR((app.SourceModule as MyDynamicLibTestApp).BitDepth), ".", app);
+            }
         }
     }
 

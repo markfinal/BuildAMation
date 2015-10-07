@@ -29,26 +29,12 @@
 #endregion // License
 namespace Publisher
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICopyFileSettings :
-        Bam.Core.ISettingsBase
+    public interface ICollatedObjectPolicy
     {
-        bool Force
-        {
-            get;
-            set;
-        }
-
-        bool Verbose
-        {
-            get;
-            set;
-        }
-
-        bool Recursive
-        {
-            get;
-            set;
-        }
+        void
+        Collate(
+            CollatedObject sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString packageRoot);
     }
 }

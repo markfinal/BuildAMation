@@ -12,6 +12,7 @@ import sys
 import tarfile
 import tempfile
 import time
+import zipfile
 
 filesToDelete=[\
 ".gitignore"
@@ -94,7 +95,7 @@ def Build():
     sys.stdout.flush()
 
 
-def MakeDistribution(version):
+def MakeTarDistribution(version):
     coDir, bamDir = os.path.split(os.getcwd())
     tarPath = os.path.join(coDir, "BuildAMation-%s.tgz"%version)
     print >>sys.stdout, "Writing tar file %s" % tarPath
@@ -113,6 +114,29 @@ def MakeDistribution(version):
     sys.stdout.flush()
 
 
+def MakeZipDistribution(version):
+    coDir, bamDir = os.path.split(os.getcwd())
+    zipPath = os.path.join(coDir, "BuildAMation-%s.zip"%version)
+    print >>sys.stdout, "Writing zip file %s" % zipPath
+    sys.stdout.flush()
+    os.chdir(coDir)
+    def RecursiveWrite(zip, dirToAdd):
+        for root, dirs, files in os.walk(dirToAdd):
+            for file in files:
+                zip.write(os.path.join(root, file))
+    with zipfile.ZipFile(zipPath, "w") as zip:
+        if os.path.isdir(os.path.join(bamDir, "bin")):
+          RecursiveWrite(zip, os.path.join(bamDir, "bin"))
+        zip.write(os.path.join(bamDir, "Changelog.txt"))
+        zip.write(os.path.join(bamDir, "env.bat"))
+        zip.write(os.path.join(bamDir, "env.sh"))
+        zip.write(os.path.join(bamDir, "License.md"))
+        RecursiveWrite(zip, os.path.join(bamDir, "packages"))
+        RecursiveWrite(zip, os.path.join(bamDir, "tests"))
+    print >>sys.stdout, "Finished writing zip file %s" % zipPath
+    sys.stdout.flush()
+
+
 def Main(dir, version):
     print >>sys.stdout, "Creating BuildAMation version %s" % version
     sys.stdout.flush()
@@ -123,7 +147,8 @@ def Main(dir, version):
         CleanClone()
         UpdateVersionNumbers(version)
         Build()
-        MakeDistribution(version)
+        MakeTarDistribution(version)
+        MakeZipDistribution(version)
     finally:
         os.chdir(cwd)
 

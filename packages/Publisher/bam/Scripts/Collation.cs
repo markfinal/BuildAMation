@@ -33,7 +33,6 @@ namespace Publisher
     public abstract class Collation :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>> dependents = new System.Collections.Generic.Dictionary<Module, System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>>();
         private ICollationPolicy Policy = null;
         public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
 
@@ -48,47 +47,135 @@ namespace Publisher
             this.RegisterGeneratedFile(PackageRoot, Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
         }
 
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFileWin>();
-            }
-            else
-            {
-                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFilePosix>();
-            }
-        }
-
         private string
         PublishingPath(
             Bam.Core.Module module,
             EPublishingType type)
         {
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX) &&
+                (EPublishingType.WindowedApplication == type))
             {
-                switch (type)
-                {
-                case EPublishingType.ConsoleApplication:
-                    return null;
-
-                case EPublishingType.WindowedApplication:
-                    return Bam.Core.TokenizedString.Create("$(OutputName).app/Contents/MacOS", module).Parse();
-
-                default:
-                    return null;
-                }
+                return Bam.Core.TokenizedString.Create("$(OutputName).app/Contents/MacOS", module).Parse();
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
-        public CollatedObject
+        private CollatedFile
+        CreateCollatedFile(
+            CollatedFile reference = null,
+            Bam.Core.TokenizedString subDirectory = null)
+        {
+            // TODO: 'this' passed as the Parent - used later
+            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(this, preInitCallback: module =>
+                {
+                    if (reference != null)
+                    {
+                        if (null != subDirectory)
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
+                        }
+                    }
+                    else
+                    {
+                        if (null != subDirectory)
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
+                        }
+                    }
+                });
+            this.Requires(copyFileModule);
+            if (null != reference)
+            {
+                copyFileModule.Reference = reference;
+            }
+            if (null != subDirectory)
+            {
+                copyFileModule.SubDirectory = subDirectory;
+            }
+            return copyFileModule;
+        }
+
+        private CollatedDirectory
+        CreateCollatedDirectory(
+            CollatedFile reference = null,
+            Bam.Core.TokenizedString subDirectory = null)
+        {
+            // TODO: 'this' passed as the Parent - used later
+            var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(this, preInitCallback: module =>
+            {
+                // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+                if (reference != null)
+                {
+                    if (null != subDirectory)
+                    {
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
+                        }
+                    }
+                    else
+                    {
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
+                        }
+                    }
+                }
+                else
+                {
+                    if (null != subDirectory)
+                    {
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/@filename($(2))/)", this.GeneratedPaths[PackageRoot], subDirectory, (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
+                        }
+                    }
+                    else
+                    {
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/@filename($(1))/)", this.GeneratedPaths[PackageRoot], (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
+                        }
+                    }
+                }
+            });
+            this.Requires(copyDirectoryModule);
+            if (null != reference)
+            {
+                copyDirectoryModule.Reference = reference;
+            }
+            if (null != subDirectory)
+            {
+                copyDirectoryModule.SubDirectory = subDirectory;
+            }
+            return copyDirectoryModule;
+        }
+
+        public CollatedFile
         Include<DependentModule>(
             Bam.Core.FileKey key,
             EPublishingType type,
@@ -99,11 +186,7 @@ namespace Publisher
             {
                 return null;
             }
-            this.Requires(dependent);
-            if (!this.dependents.ContainsKey(dependent))
-            {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>());
-            }
+
             var path = this.PublishingPath(dependent, type);
             string destSubDir;
             if (null == path)
@@ -121,56 +204,76 @@ namespace Publisher
                     destSubDir = path;
                 }
             }
-            var packaging = new CollatedObject(dependent, destSubDir, null);
-            this.dependents[dependent].Add(dependent.GeneratedPaths[key], packaging);
-            return packaging;
+
+            var copyFileModule = this.CreateCollatedFile(subDirectory: Bam.Core.TokenizedString.Create(destSubDir, null, verbatim: true));
+            copyFileModule.SourceModule = dependent;
+            copyFileModule.SourcePath = dependent.GeneratedPaths[key];
+
+            return copyFileModule;
         }
 
         public void
         Include<DependentModule>(
             Bam.Core.FileKey key,
             string subdir,
-            CollatedObject reference,
-            params CollatedObject[] additionalReferences) where DependentModule : Bam.Core.Module, new()
+            CollatedFile reference) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
             }
-            this.Requires(dependent);
-            if (!this.dependents.ContainsKey(dependent))
-            {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>());
-            }
-            var refs = new Bam.Core.Array<CollatedObject>(reference);
-            refs.AddRangeUnique(new Bam.Core.Array<CollatedObject>(additionalReferences));
-            var packaging = new CollatedObject(dependent, subdir, refs);
-            this.dependents[dependent].Add(dependent.GeneratedPaths[key], packaging);
+
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
+            copyFileModule.SourceModule = dependent;
+            copyFileModule.SourcePath = dependent.GeneratedPaths[key];
         }
 
         public void
         IncludeFiles<DependentModule>(
             string parameterizedFilePath,
             string subdir,
-            CollatedObject reference,
-            params CollatedObject[] additionalReferences) where DependentModule : Bam.Core.Module, new()
+            CollatedFile reference) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
             }
-            this.Requires(dependent);
-            if (!this.dependents.ContainsKey(dependent))
-            {
-                this.dependents.Add(dependent, new System.Collections.Generic.Dictionary<TokenizedString, CollatedObject>());
-            }
-            var refs = new Bam.Core.Array<CollatedObject>(reference);
-            refs.AddRangeUnique(new Bam.Core.Array<CollatedObject>(additionalReferences));
-            var tokenString = Bam.Core.TokenizedString.Create(parameterizedFilePath, dependent);
-            var packaging = new CollatedObject(dependent, subdir, refs);
-            this.dependents[dependent].Add(tokenString, packaging);
+
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
+            copyFileModule.SourceModule = dependent;
+            copyFileModule.SourcePath = Bam.Core.TokenizedString.Create(parameterizedFilePath, dependent);
+        }
+
+        public void
+        IncludeFile(
+            string parameterizedFilePath,
+            string subdir,
+            CollatedFile reference)
+        {
+            var tokenString = Bam.Core.TokenizedString.Create(parameterizedFilePath, this);
+            this.IncludeFile(tokenString, subdir, reference);
+        }
+
+        public void
+        IncludeFile(
+            Bam.Core.TokenizedString parameterizedFilePath,
+            string subdir,
+            CollatedFile reference)
+        {
+            var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim:true));
+            copyFileModule.SourcePath = parameterizedFilePath;
+        }
+
+        public void
+        IncludeDirectory(
+            Bam.Core.TokenizedString parameterizedPath,
+            string subdir,
+            CollatedFile reference)
+        {
+            var copyFileModule = this.CreateCollatedDirectory(reference, Bam.Core.TokenizedString.Create(subdir, null, verbatim: true));
+            copyFileModule.SourcePath = parameterizedPath;
         }
 
         public override void
@@ -183,17 +286,26 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            // TODO: the nested dictionary is not readonly - not sure how to construct this
-            var packageObjects = new System.Collections.ObjectModel.ReadOnlyDictionary<Bam.Core.Module, System.Collections.Generic.Dictionary<Bam.Core.TokenizedString, CollatedObject>>(this.dependents);
-            this.Policy.Collate(this, context, this.GeneratedPaths[PackageRoot], packageObjects);
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.Collate(this, context);
         }
 
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-            var className = "Publisher." + mode + "Collation";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollationPolicy>.Create(className);
+            switch (mode)
+            {
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "Collation";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollationPolicy>.Create(className);
+                    }
+                    break;
+            }
         }
     }
 }
