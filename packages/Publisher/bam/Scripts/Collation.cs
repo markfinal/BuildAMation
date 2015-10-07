@@ -115,7 +115,7 @@ namespace Publisher
                 {
                     if (null != subDirectory)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/@filename($(1))/$(2)/", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], (module as CollatedDirectory).SourcePath, subDirectory);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@dir($(0))/$(1)/@filename($(2))/", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, (module as CollatedDirectory).SourcePath);
                     }
                     else
                     {
@@ -126,7 +126,7 @@ namespace Publisher
                 {
                     if (null != subDirectory)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/@filename($(1))/$(2)/", this.GeneratedPaths[PackageRoot], (module as CollatedDirectory).SourcePath, subDirectory);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("$(0)/$(1)/@filename($(2))/", this.GeneratedPaths[PackageRoot], subDirectory, (module as CollatedDirectory).SourcePath);
                     }
                     else
                     {
