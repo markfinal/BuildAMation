@@ -158,17 +158,7 @@ namespace Bam.Core
         {
             if (null == moduleWithMacros)
             {
-                if (null != this.MacroIndices)
-                {
-                    foreach (var tokenIndex in this.MacroIndices)
-                    {
-                        if (!Graph.Instance.Macros.Contains(this.Tokens[tokenIndex]))
-                        {
-                            throw new Exception("Cannot have a tokenized string without a module");
-                        }
-                    }
-                }
-                else
+                if (null == this.MacroIndices)
                 {
                     // consider the string parsed, as there is no work to do
                     this.ParsedString = this.OriginalString;
@@ -177,12 +167,12 @@ namespace Bam.Core
             this.ModuleWithMacros = moduleWithMacros;
         }
 
-        public static TokenizedString
-        Create(
+        private static TokenizedString
+        CreateInternal(
             string tokenizedString,
             Module macroSource,
-            bool verbatim = false,
-            TokenizedStringArray positionalTokens = null)
+            bool verbatim,
+            TokenizedStringArray positionalTokens)
         {
             if (null == tokenizedString)
             {
@@ -193,9 +183,9 @@ namespace Bam.Core
             lock (Cache)
             {
                 var search = Cache.Where((ts) =>
-                    {
-                        return ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource;
-                    });
+                {
+                    return ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource;
+                });
                 if (search.Count() > 0)
                 {
                     return search.ElementAt(0);
@@ -210,10 +200,19 @@ namespace Bam.Core
         }
 
         public static TokenizedString
+        Create(
+            string tokenizedString,
+            Module macroSource,
+            TokenizedStringArray positionalTokens = null)
+        {
+            return CreateInternal(tokenizedString, macroSource, false, positionalTokens);
+        }
+
+        public static TokenizedString
         CreateVerbatim(
             string verboseString)
         {
-            return Create(verboseString, null, verbatim: true);
+            return CreateInternal(verboseString, null, true, null);
         }
 
         private string this[int index]

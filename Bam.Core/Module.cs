@@ -537,7 +537,7 @@ namespace Bam.Core
                 return TokenizedString.Create(format, this);
             }
             var positionalTokens = new TokenizedStringArray(argv);
-            return TokenizedString.Create(format, this, false, positionalTokens);
+            return TokenizedString.Create(format, this, positionalTokens);
         }
     }
 }

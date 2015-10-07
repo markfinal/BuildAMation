@@ -50,7 +50,7 @@ namespace ClangCommon
                     if (!isAbsolute)
                     {
                         // assume it's a system framework
-                        frameworkFileRefPath = Bam.Core.TokenizedString.Create("/System/Library/Frameworks/" + framework.Parse() + ".framework", null, verbatim:true);
+                        frameworkFileRefPath = Bam.Core.TokenizedString.Create("/System/Library/Frameworks/$(0).framework", null, new Bam.Core.TokenizedStringArray(framework));
                     }
 
                     var fileRef = project.FindOrCreateFileReference(
