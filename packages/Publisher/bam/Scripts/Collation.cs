@@ -111,26 +111,55 @@ namespace Publisher
             // TODO: 'this' passed as the Parent - used later
             var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(this, preInitCallback: module =>
             {
+                // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
                 if (reference != null)
                 {
                     if (null != subDirectory)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, (module as CollatedDirectory).SourcePath);
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
+                        }
                     }
                     else
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], (module as CollatedDirectory).SourcePath);
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
+                        }
                     }
                 }
                 else
                 {
                     if (null != subDirectory)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/@filename($(2))/)", this.GeneratedPaths[PackageRoot], subDirectory, (module as CollatedDirectory).SourcePath);
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/@filename($(2))/)", this.GeneratedPaths[PackageRoot], subDirectory, (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
+                        }
                     }
                     else
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/@filename($(1))/)", this.GeneratedPaths[PackageRoot], (module as CollatedDirectory).SourcePath);
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/@filename($(1))/)", this.GeneratedPaths[PackageRoot], (module as CollatedDirectory).SourcePath);
+                        }
+                        else
+                        {
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
+                        }
                     }
                 }
             });
