@@ -587,7 +587,7 @@ namespace Bam.Core
         DumpCache()
         {
             Log.DebugMessage("Tokenized string cache");
-            foreach (var item in Cache.OrderBy(item => item.RefCount))
+            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim))
             {
                 Log.DebugMessage("#{0} {1}'{2}'{3} {4}",
                     item.RefCount,
