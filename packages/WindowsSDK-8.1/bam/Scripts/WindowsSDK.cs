@@ -46,7 +46,7 @@ namespace WindowsSDK
                 Bam.Core.Log.DebugMessage("Windows 8.1 SDK installation folder is {0}", installPath);
             }
 
-            this.Macros.Add("InstallPath", installPath);
+            this.Macros.AddVerbatim("InstallPath", installPath);
             this.PublicPatch((settings, appliedTo) =>
             {
                 var compilation = settings as C.ICommonCompilerSettings;
