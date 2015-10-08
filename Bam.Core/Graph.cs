@@ -55,7 +55,7 @@ namespace Bam.Core
             this.Macros = new MacroList();
             if (null != State.BuildMode)
             {
-                this.Macros.Add("buildroot", State.BuildRoot);
+                this.Macros.AddVerbatim("buildroot", State.BuildRoot);
             }
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
@@ -452,7 +452,7 @@ namespace Bam.Core
             Array<PackageDefinition> packages)
         {
             this.PackageDefinitions = packages;
-            this.Macros.Add("masterpackagename", this.MasterPackage.Name);
+            this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
         }
 
         public System.Collections.Generic.IEnumerable<PackageDefinition> Packages

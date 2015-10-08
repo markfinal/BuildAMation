@@ -70,16 +70,16 @@ namespace Bam.Core
                 }
             }
             this.PackageDefinition = packageDefinition;
-            this.Macros.Add("packagedir", packageDefinition.GetPackageDirectory());
-            this.Macros.Add("packagename", packageDefinition.Name);
-            this.Macros.Add("packagebuilddir", packageDefinition.GetBuildDirectory());
-            this.Macros.Add("modulename", this.GetType().Name);
+            this.Macros.AddVerbatim("packagedir", packageDefinition.GetPackageDirectory());
+            this.Macros.AddVerbatim("packagename", packageDefinition.Name);
+            this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
+            this.Macros.AddVerbatim("modulename", this.GetType().Name);
 
             this.OwningRank = null;
             this.Tool = null;
             this.MetaData = null;
             this.BuildEnvironment = graph.BuildEnvironment;
-            this.Macros.Add("config", this.BuildEnvironment.Configuration.ToString());
+            this.Macros.AddVerbatim("config", this.BuildEnvironment.Configuration.ToString());
             this.ReasonToExecute = ExecuteReasoning.Undefined();
         }
 
