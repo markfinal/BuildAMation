@@ -82,6 +82,14 @@ namespace Bam.Core
             this.Add(key, TokenizedString.Create(value, null));
         }
 
+        public void
+        AddVerbatim(
+            string key,
+            string value)
+        {
+            this.Add(key, TokenizedString.CreateVerbatim(value));
+        }
+
         private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal
         {
             get;
