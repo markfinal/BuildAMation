@@ -43,12 +43,12 @@ namespace Bam.Core
         {
             Log.Info("\nBuildAMation Statistics");
             Log.Info("Memory Usage");
-            Log.Info("Peak working set size: {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakWorkingSet64));
-            Log.Info("Peak virtual size    : {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakVirtualMemorySize64));
-            Log.Info("GC total memory      : {0:N2}MB (after GC, {1:N2}MB)", BytesToMegaBytes(System.GC.GetTotalMemory(false)), BytesToMegaBytes(System.GC.GetTotalMemory(true)));
-            Log.Info("Object counts");
-            Log.Info("Tokenized strings    : {0}", TokenizedString.Count);
-            Log.Info("Modules              : {0}", Module.Count);
+            Log.Info("Peak working set size : {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakWorkingSet64));
+            Log.Info("Peak virtual size     : {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakVirtualMemorySize64));
+            Log.Info("GC total memory       : {0:N2}MB (after GC, {1:N2}MB)", BytesToMegaBytes(System.GC.GetTotalMemory(false)), BytesToMegaBytes(System.GC.GetTotalMemory(true)));
+            Log.Info("\nObject counts");
+            Log.Info("Tokenized strings     : {0} ({1} unshared)", TokenizedString.Count, TokenizedString.UnsharedCount);
+            Log.Info("Modules               : {0}", Module.Count);
             TimingProfileUtilities.DumpProfiles();
         }
     }
