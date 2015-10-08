@@ -186,7 +186,30 @@ namespace Bam.Core
             {
                 var search = Cache.Where((ts) =>
                 {
-                    return ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource;
+                    // first check the simple states for equivalence
+                    if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource && ts.Verbatim == verbatim)
+                    {
+                        // and then check the positional tokens, if they exist
+                        var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
+                                                ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
+                        if (!samePosTokenCount)
+                        {
+                            return false;
+                        }
+                        for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
+                        {
+                            // because positional tokens are TokenizedStrings, they will refer to the same object
+                            if (ts.PositionalTokens[i] != positionalTokens[i])
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 });
                 if (search.Count() > 0)
                 {
