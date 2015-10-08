@@ -496,7 +496,12 @@ namespace Bam.Core
         {
             var graph = Graph.Instance;
             var encapsulatingModule = this.GetEncapsulatingReferencedModule();
-            this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(encapsulatingModule.GetType().Name, this.BuildEnvironment.Configuration.ToString()));
+            // TODO: there may have to be a more general module type for something that is not built, as this affects modules referred to prebuilts too
+            // note that this cannot be a class, as modules already are derived from another base class (generally)
+            if (!(encapsulatingModule is PreBuiltTool))
+            {
+                this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(encapsulatingModule.GetType().Name, this.BuildEnvironment.Configuration.ToString()));
+            }
 
             // modules that are encapsulated, have settings, and aren't a child (as their parent is also encapsulated, and thus gets this too), inherit the
             // public patches from the encapsulating module, since this is identical behavior to 'using public patches'
