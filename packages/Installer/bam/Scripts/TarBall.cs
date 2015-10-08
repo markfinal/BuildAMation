@@ -95,7 +95,7 @@ namespace Installer
                     }
                     else
                     {
-                        scriptWriter.WriteLine("-C {0}", fileDir);
+                        scriptWriter.WriteLine("-C{0}", fileDir);
                     }
                     scriptWriter.WriteLine(System.IO.Path.GetFileName(filePath));
                 }
@@ -109,7 +109,7 @@ namespace Installer
                     }
                     else
                     {
-                        scriptWriter.WriteLine("-C {0}", fileDir);
+                        scriptWriter.WriteLine("-C{0}", fileDir);
                     }
                     scriptWriter.WriteLine(".");
                 }
