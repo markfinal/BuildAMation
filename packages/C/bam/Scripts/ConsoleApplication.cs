@@ -43,7 +43,7 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)", this));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             this.PrivatePatch(settings =>
             {

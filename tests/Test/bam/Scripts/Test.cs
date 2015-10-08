@@ -60,7 +60,7 @@ namespace Test
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main.c", this);
+            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 // example of switching out the tool within a module
@@ -77,7 +77,7 @@ namespace Test
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main.c", this);
+            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
             this.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;

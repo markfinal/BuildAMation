@@ -44,7 +44,7 @@ namespace Publisher
 
         protected Collation()
         {
-            this.RegisterGeneratedFile(PackageRoot, Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)-$(config)", this));
+            this.RegisterGeneratedFile(PackageRoot, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
         }
 
         private string
@@ -55,7 +55,7 @@ namespace Publisher
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX) &&
                 (EPublishingType.WindowedApplication == type))
             {
-                return Bam.Core.TokenizedString.Create("$(OutputName).app/Contents/MacOS", module).Parse();
+                return module.CreateTokenizedString("$(OutputName).app/Contents/MacOS").Parse();
             }
             return null;
         }
@@ -241,7 +241,7 @@ namespace Publisher
 
             var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourceModule = dependent;
-            copyFileModule.SourcePath = Bam.Core.TokenizedString.Create(parameterizedFilePath, dependent);
+            copyFileModule.SourcePath = dependent.CreateTokenizedString(parameterizedFilePath);
         }
 
         public void
@@ -250,7 +250,7 @@ namespace Publisher
             string subdir,
             CollatedFile reference)
         {
-            var tokenString = Bam.Core.TokenizedString.Create(parameterizedFilePath, this);
+            var tokenString = this.CreateTokenizedString(parameterizedFilePath);
             this.IncludeFile(tokenString, subdir, reference);
         }
 

@@ -39,15 +39,15 @@ namespace XcodeBuilder
         {
             this.IsA = "PBXProject";
             this.Name = name;
-            var projectDir = Bam.Core.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj", module);
+            var projectDir = module.CreateTokenizedString("$(buildroot)/$(packagename).xcodeproj");
             module.Macros.Add("xcodeprojectdir", projectDir);
             this.ProjectDir = projectDir.Parse();
 
-            var projectPath = Bam.Core.TokenizedString.Create("$(xcodeprojectdir)/project.pbxproj", module);
+            var projectPath = module.CreateTokenizedString("$(xcodeprojectdir)/project.pbxproj");
             this.ProjectPath = projectPath.Parse();
 
-            this.SourceRoot = Bam.Core.TokenizedString.Create("$(packagedir)", module).Parse();
-            this.BuildRoot = Bam.Core.TokenizedString.Create("$(buildroot)", module).Parse();
+            this.SourceRoot = module.CreateTokenizedString("$(packagedir)").Parse();
+            this.BuildRoot = module.CreateTokenizedString("$(buildroot)").Parse();
 
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();

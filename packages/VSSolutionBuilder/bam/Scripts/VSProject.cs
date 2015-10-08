@@ -37,7 +37,7 @@ namespace VSSolutionBuilder
             Bam.Core.Module module)
         {
             this.Solution = solution;
-            this.ProjectPath = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(modulename).vcxproj", module).Parse();
+            this.ProjectPath = module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse();
             this.Guid = new DeterministicGuid(this.ProjectPath).Guid;
             this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();

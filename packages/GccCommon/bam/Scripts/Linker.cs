@@ -102,6 +102,7 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
+                // TODO: do something with @dir()
                 var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
                 linker.LibraryPaths.AddUnique(libraryDir);
             }
@@ -116,6 +117,7 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
+                // TODO: do something with @dir()
                 var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
                 linker.LibraryPaths.AddUnique(libraryDir);
 
@@ -123,6 +125,7 @@ namespace GccCommon
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
+                    // TODO: do something with @dir()
                     var depLibraryPath = dep.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                     var depLibraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(depLibraryPath), null);
                     gccLinker.RPathLink.AddUnique(depLibraryDir.Parse());

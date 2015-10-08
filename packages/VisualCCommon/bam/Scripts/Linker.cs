@@ -36,9 +36,10 @@ namespace VisualCCommon
             string toolPath,
             string libPath)
         {
+            // TODO: positional tokens?
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)" + toolPath, this));
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
+            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(InstallPath)" + toolPath));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", string.Empty);
             this.Macros.Add("dynamicext", ".dll");
@@ -53,7 +54,7 @@ namespace VisualCCommon
                 var linking = settings as C.ICommonLinkerSettings;
                 if (null != linking)
                 {
-                    linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
+                    linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)" + libPath));
                 }
             });
         }
@@ -117,6 +118,7 @@ namespace VisualCCommon
             {
                 return;
             }
+            // TODO: @dir?
             var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
             var linker = executable.Settings as C.ICommonLinkerSettings;

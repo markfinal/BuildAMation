@@ -51,12 +51,14 @@ namespace C
             {
                 if (library is C.StaticLibrary)
                 {
+                    // TODO: do something with @dir() here
                     var fullLibraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                     linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
                 }
                 else if (library is C.IDynamicLibrary)
                 {
+                    // TODO: do something with @dir() here
                     var fullLibraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse(macros);
                     var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
                     linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));

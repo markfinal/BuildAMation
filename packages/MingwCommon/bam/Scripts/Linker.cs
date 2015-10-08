@@ -40,7 +40,7 @@ namespace MingwCommon
             this.Macros.Add("LinkerSuffix", suffix);
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin", this));
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
             this.Macros.Add("exeext", ".exe");
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".so");
@@ -119,6 +119,7 @@ namespace MingwCommon
             {
                 return;
             }
+            // TODO: do something with @dir()?
             var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
             var libFilename = GetLPrefixLibraryName(fullLibraryPath);
             var linker = executable.Settings as C.ICommonLinkerSettings;
@@ -133,7 +134,7 @@ namespace MingwCommon
     {
         public Linker()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe", this));
+            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe"));
         }
     }
 
@@ -143,7 +144,7 @@ namespace MingwCommon
     {
         public LinkerCxx()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
+            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
         }
     }
 }

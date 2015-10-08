@@ -69,7 +69,7 @@ namespace C
             System.Text.RegularExpressions.Regex filter = null)
         {
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            var wildcardPath = Bam.Core.TokenizedString.Create(path, macroModule).Parse();
+            var wildcardPath = macroModule.CreateTokenizedString(path).Parse();
 
             var dir = System.IO.Path.GetDirectoryName(wildcardPath);
             if (!System.IO.Directory.Exists(dir))

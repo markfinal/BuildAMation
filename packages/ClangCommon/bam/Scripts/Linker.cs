@@ -39,6 +39,7 @@ namespace ClangCommon
             this.Macros.Add("exeext", string.Empty);
             this.Macros.Add("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", ".dylib");
+            // TODO: pass executablePath as a tokenized string (verbatim) and use as a positional token
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/" + executablePath, this));
         }
 
@@ -59,6 +60,7 @@ namespace ClangCommon
             var linker = executable.Settings as C.ICommonLinkerSettings;
             if (library is C.StaticLibrary)
             {
+                // TODO: use @dir() here
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
@@ -67,6 +69,7 @@ namespace ClangCommon
             }
             else if (library is C.IDynamicLibrary)
             {
+                // TODO: use @dir() here
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 

@@ -65,7 +65,7 @@ namespace Installer
 
         public DiskImage()
         {
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(buildroot)/installer.dmg", this));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/installer.dmg"));
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
             this.Requires(this.Compiler);

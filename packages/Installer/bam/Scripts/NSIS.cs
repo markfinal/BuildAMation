@@ -37,7 +37,7 @@ namespace Installer
 
         public NSISScript()
         {
-            this.ScriptPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)/script.nsi", this);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/script.nsi");
         }
 
         public Bam.Core.TokenizedString ScriptPath

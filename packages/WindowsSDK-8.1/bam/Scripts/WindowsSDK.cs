@@ -52,8 +52,8 @@ namespace WindowsSDK
                 var compilation = settings as C.ICommonCompilerSettings;
                 if (null != compilation)
                 {
-                    compilation.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Include\um", this));
-                    compilation.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Include\shared", this));
+                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Include\um"));
+                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Include\shared"));
                 }
 
                 var linking = settings as C.ICommonLinkerSettings;
@@ -61,11 +61,11 @@ namespace WindowsSDK
                 {
                     if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
                     {
-                        linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x86", this));
+                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Lib\winv6.3\um\x86"));
                     }
                     else
                     {
-                        linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)Lib\winv6.3\um\x64", this));
+                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Lib\winv6.3\um\x64"));
                     }
                 }
             });

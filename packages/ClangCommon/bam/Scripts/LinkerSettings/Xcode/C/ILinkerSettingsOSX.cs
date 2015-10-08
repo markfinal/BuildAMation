@@ -49,6 +49,7 @@ namespace ClangCommon
 
                     if (!isAbsolute)
                     {
+                        // TODO: change to a positional token
                         // assume it's a system framework
                         frameworkFileRefPath = Bam.Core.TokenizedString.Create("/System/Library/Frameworks/$(0).framework", null, new Bam.Core.TokenizedStringArray(framework));
                     }

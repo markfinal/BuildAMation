@@ -39,7 +39,7 @@ namespace ClangCommon
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("libprefix", "lib");
             this.Macros.Add("libext", ".a");
-            this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.Create("$(InstallPath)/ar", this));
+            this.Macros.Add("LibrarianPath", this.CreateTokenizedString("$(InstallPath)/ar"));
         }
 
         public override Bam.Core.Settings

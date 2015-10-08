@@ -50,7 +50,7 @@ namespace Test7
                     {
                         return;
                     }
-                    compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

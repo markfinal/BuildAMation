@@ -98,7 +98,7 @@ namespace ClangCommon
     {
         public CCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/clang", this));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang"));
         }
 
         protected override void
@@ -117,7 +117,7 @@ namespace ClangCommon
     {
         public CxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/clang++", this));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang++"));
         }
 
         protected override void
@@ -136,7 +136,7 @@ namespace ClangCommon
     {
         public ObjectiveCCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/clang", this));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang"));
         }
 
         protected override void
@@ -155,7 +155,7 @@ namespace ClangCommon
     {
         public ObjectiveCxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/clang++", this));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang++"));
         }
 
         protected override void
