@@ -70,6 +70,7 @@ namespace Bam.Core
         private bool Verbatim;
         private TokenizedStringArray PositionalTokens = new TokenizedStringArray();
         private string CreationStackTrace = null;
+        private int RefCount = 1;
 
         public void
         Assign(
@@ -86,6 +87,7 @@ namespace Bam.Core
             this.ParsedString = other.Verbatim ? other.ParsedString : null; // force reparsing
             this.Verbatim = other.Verbatim;
             this.PositionalTokens = other.PositionalTokens;
+            this.RefCount = other.RefCount + 1;
         }
 
         static private System.Collections.Generic.IEnumerable<string>
@@ -188,7 +190,9 @@ namespace Bam.Core
                 });
                 if (search.Count() > 0)
                 {
-                    return search.ElementAt(0);
+                    var ts = search.ElementAt(0);
+                    ++ts.RefCount;
+                    return ts;
                 }
                 else
                 {
@@ -566,6 +570,15 @@ namespace Bam.Core
             get
             {
                 return Cache.Count();
+            }
+        }
+
+        public static int
+        UnsharedCount
+        {
+            get
+            {
+                return Cache.Where(item => item.RefCount == 1).Count();
             }
         }
     }
