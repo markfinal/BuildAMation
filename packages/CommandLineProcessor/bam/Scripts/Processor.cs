@@ -40,7 +40,7 @@ namespace CommandLineProcessor
             string hostApplication = null,
             string workingDirectory = null)
         {
-            var executablePath = tool.Executable.ToString();
+            var executablePath = tool.Executable.Parse();
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
             if (null != hostApplication)
             {
