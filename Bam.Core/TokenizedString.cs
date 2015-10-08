@@ -581,6 +581,22 @@ namespace Bam.Core
                 return Cache.Where(item => item.RefCount == 1).Count();
             }
         }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        public static void
+        DumpCache()
+        {
+            Log.DebugMessage("Tokenized string cache");
+            foreach (var item in Cache.OrderBy(item => item.RefCount))
+            {
+                Log.DebugMessage("#{0} {1}'{2}'{3} {4}",
+                    item.RefCount,
+                    item.Verbatim ? "<verbatim>" : string.Empty,
+                    item.OriginalString,
+                    item.Verbatim ? "</verbatim>" : string.Empty,
+                    item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
+            }
+        }
     }
 
     public sealed class TokenizedStringArray :
