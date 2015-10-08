@@ -29,18 +29,27 @@
 #endregion // License
 namespace Bam.Core
 {
-    public enum ETimingProfiles
+    public static class Statistics
     {
-        ProcessCommandLine = 0,
-        GatherSource,
-        AssemblyCompilation,
-        LoadAssembly,
-        PackageMetaData,
-        IdentifyBuildableModules,
-        PopulateGraph,
-        CreatePatches,
-        ParseTokenizedStrings,
-        GraphExecution,
-        TimedTotal
+        private static double
+        BytesToMegaBytes(
+            long bytes)
+        {
+            return bytes / 1024.0 / 1024.0;
+        }
+
+        public static void
+        Display()
+        {
+            Log.Info("\nBuildAMation Statistics");
+            Log.Info("Memory Usage");
+            Log.Info("Peak working set size: {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakWorkingSet64));
+            Log.Info("Peak virtual size    : {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakVirtualMemorySize64));
+            Log.Info("GC total memory      : {0:N2}MB (after GC, {1:N2}MB)", BytesToMegaBytes(System.GC.GetTotalMemory(false)), BytesToMegaBytes(System.GC.GetTotalMemory(true)));
+            Log.Info("Object counts");
+            Log.Info("Tokenized strings    : {0}", TokenizedString.Count);
+            Log.Info("Modules              : {0}", Module.Count);
+            TimingProfileUtilities.DumpProfiles();
+        }
     }
 }

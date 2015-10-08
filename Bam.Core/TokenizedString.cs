@@ -559,6 +559,15 @@ namespace Bam.Core
             }
             return System.String.Format("\"{0}\"", parsed);
         }
+
+        public static int
+        Count
+        {
+            get
+            {
+                return Cache.Count();
+            }
+        }
     }
 
     public sealed class TokenizedStringArray :

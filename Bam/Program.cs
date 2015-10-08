@@ -50,6 +50,12 @@ namespace Bam
 
             try
             {
+                var totalTimeProfile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
+                var processCommandLineProfile = new Core.TimeProfile(Core.ETimingProfiles.ProcessCommandLine);
+
+                totalTimeProfile.StartProfile();
+                processCommandLineProfile.StartProfile();
+
                 var verbosityLevel = (Core.EVerboseLevel)Core.CommandLineProcessor.Evaluate(new Core.VerbosityLevel());
                 switch (verbosityLevel)
                 {
@@ -129,7 +135,11 @@ namespace Bam
                     }
                 }
 
+                processCommandLineProfile.StopProfile();
+
                 Core.EntryPoint.Execute(configs);
+
+                totalTimeProfile.StopProfile();
             }
             catch (Core.Exception exception)
             {
@@ -150,6 +160,12 @@ namespace Bam
                 if (Core.Graph.Instance.BuildEnvironments.Count > 0)
                 {
                     Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
+
+                    if (Core.CommandLineProcessor.Evaluate(new Core.PrintStatistics()))
+                    {
+                        Core.Statistics.Display();
+                    }
+
                     Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
                 }
             }

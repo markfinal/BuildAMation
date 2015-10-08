@@ -58,6 +58,9 @@ namespace Bam.Core
                 PackageUtilities.LoadPackageAssembly();
             }
 
+            var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
+            packageMetaDataProfile.StartProfile();
+
             // packages can have meta data - instantiate where they exist
             foreach (var package in Graph.Instance.Packages)
             {
@@ -69,10 +72,15 @@ namespace Bam.Core
                 }
             }
 
+            packageMetaDataProfile.StopProfile();
+
             var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
 
             var graph = Graph.Instance;
             graph.Mode = State.BuildMode;
+
+            var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
+            findBuildableModulesProfile.StartProfile();
 
             // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
             Log.Detail("Creating modules");
@@ -81,6 +89,10 @@ namespace Bam.Core
                 graph.CreateTopLevelModules(State.ScriptAssembly, env, topLevelNamespace);
             }
 
+            findBuildableModulesProfile.StopProfile();
+
+            var populateGraphProfile = new TimeProfile(ETimingProfiles.PopulateGraph);
+            populateGraphProfile.StartProfile();
             // Phase 2: Graph now has a linear list of modules; create a dependency graph
             // NB: all those modules with 0 dependees are the top-level modules
             // NB: default settings have already been defined here
@@ -89,6 +101,7 @@ namespace Bam.Core
             graph.SortDependencies();
             // TODO: make validation optional, if it starts showing on profiles
             graph.Validate();
+            populateGraphProfile.StopProfile();
 
             // Phase 3: (Create default settings, and ) apply patches (build + shared) to each module
             // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
@@ -97,19 +110,28 @@ namespace Bam.Core
             // the Settings object can be inspected, and a hash generated. This hash can be written to disk, and compared.
             // If a 'verbose' mode is enabled, then more work can be done to figure out what has changed. This would also require
             // serializing the binary Settings object
+            var createPatchesProfile = new TimeProfile(ETimingProfiles.CreatePatches);
+            createPatchesProfile.StartProfile();
             graph.ApplySettingsPatches();
+            createPatchesProfile.StopProfile();
 
             // expand paths after patching settings, because some of the patches may contain tokenized strings
             // TODO: a thread can be spawned, to check for whether files were in date or not, which will
             // be ready in time for graph execution
+            var parseStringsProfile = new TimeProfile(ETimingProfiles.ParseTokenizedStrings);
+            parseStringsProfile.StartProfile();
             TokenizedString.ParseAll();
+            parseStringsProfile.StopProfile();
 
             graph.Dump();
 
             // Phase 4: Execute dependency graph
             // N.B. all paths (including those with macros) have been delayed expansion until now
+            var graphExecutionProfile = new TimeProfile(ETimingProfiles.GraphExecution);
+            graphExecutionProfile.StartProfile();
             var executor = new Executor();
             executor.Run();
+            graphExecutionProfile.StopProfile();
         }
     }
 }

@@ -29,18 +29,31 @@
 #endregion // License
 namespace Bam.Core
 {
-    public enum ETimingProfiles
+    public sealed class PrintStatistics :
+        IBooleanCommandLineArgument
     {
-        ProcessCommandLine = 0,
-        GatherSource,
-        AssemblyCompilation,
-        LoadAssembly,
-        PackageMetaData,
-        IdentifyBuildableModules,
-        PopulateGraph,
-        CreatePatches,
-        ParseTokenizedStrings,
-        GraphExecution,
-        TimedTotal
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--stats";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Display statistics at the end of the build";
+            }
+        }
     }
 }

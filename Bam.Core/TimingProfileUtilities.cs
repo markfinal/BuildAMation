@@ -97,6 +97,7 @@ namespace Bam.Core
                                      new string(' ', maxTimeLength - stopTimeHeader.Length),
                                      stopTimeHeader);
             var horizontalRule = new string('-', header.Length);
+            Log.Info("Task timing");
             Log.Info(horizontalRule);
             Log.Info(header);
             Log.Info(horizontalRule);

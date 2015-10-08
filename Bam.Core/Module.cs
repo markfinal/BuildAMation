@@ -539,5 +539,14 @@ namespace Bam.Core
             var positionalTokens = new TokenizedStringArray(argv);
             return TokenizedString.Create(format, this, positionalTokens);
         }
+
+        public static int
+        Count
+        {
+            get
+            {
+                return AllModules.Count;
+            }
+        }
     }
 }
