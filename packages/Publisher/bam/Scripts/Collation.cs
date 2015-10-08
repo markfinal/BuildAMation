@@ -270,8 +270,8 @@ namespace Publisher
             string subdir,
             CollatedFile reference)
         {
-            var copyFileModule = this.CreateCollatedDirectory(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
-            copyFileModule.SourcePath = parameterizedPath;
+            var copyDirectoryModule = this.CreateCollatedDirectory(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
+            copyDirectoryModule.SourcePath = parameterizedPath;
         }
 
         public override void
