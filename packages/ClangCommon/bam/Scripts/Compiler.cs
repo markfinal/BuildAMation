@@ -35,7 +35,7 @@ namespace ClangCommon
         protected CompilerBase()
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("objext", ".o");
+            this.Macros.AddVerbatim("objext", ".o");
         }
 
         public override Bam.Core.TokenizedString Executable

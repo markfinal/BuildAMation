@@ -44,7 +44,7 @@ namespace MingwCommon
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(CompilerSuffix).exe"));
-            this.Macros.Add("objext", ".o");
+            this.Macros.AddVerbatim("objext", ".o");
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }

@@ -40,11 +40,11 @@ namespace VisualCCommon
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
             this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(InstallPath)" + toolPath));
-            this.Macros.Add("exeext", ".exe");
-            this.Macros.Add("dynamicprefix", string.Empty);
-            this.Macros.Add("dynamicext", ".dll");
-            this.Macros.Add("libprefix", string.Empty);
-            this.Macros.Add("libext", ".lib");
+            this.Macros.AddVerbatim("exeext", ".exe");
+            this.Macros.AddVerbatim("dynamicprefix", string.Empty);
+            this.Macros.AddVerbatim("dynamicext", ".dll");
+            this.Macros.AddVerbatim("libprefix", string.Empty);
+            this.Macros.AddVerbatim("libext", ".lib");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");

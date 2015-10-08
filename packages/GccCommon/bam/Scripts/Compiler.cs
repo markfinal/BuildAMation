@@ -37,7 +37,7 @@ namespace GccCommon
         {
             var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
             this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
-            this.Macros.Add("objext", ".o");
+            this.Macros.AddVerbatim("objext", ".o");
         }
 
         protected Gcc.MetaData GccMetaData

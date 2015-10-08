@@ -37,8 +37,8 @@ namespace MingwCommon
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(InstallPath)\bin\ar.exe"));
-            this.Macros.Add("libprefix", "lib");
-            this.Macros.Add("libext", ".a");
+            this.Macros.AddVerbatim("libprefix", "lib");
+            this.Macros.AddVerbatim("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("SYSTEMROOT");

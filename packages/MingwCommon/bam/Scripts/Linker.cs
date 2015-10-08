@@ -37,15 +37,15 @@ namespace MingwCommon
         {
             var mingwPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Mingw").First();
             var suffix = mingwPackage.MetaData["ToolSuffix"] as string;
-            this.Macros.Add("LinkerSuffix", suffix);
+            this.Macros.AddVerbatim("LinkerSuffix", suffix);
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
-            this.Macros.Add("exeext", ".exe");
-            this.Macros.Add("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", ".so");
-            this.Macros.Add("libprefix", "lib");
-            this.Macros.Add("libext", ".a");
+            this.Macros.AddVerbatim("exeext", ".exe");
+            this.Macros.AddVerbatim("dynamicprefix", "lib");
+            this.Macros.AddVerbatim("dynamicext", ".so");
+            this.Macros.AddVerbatim("libprefix", "lib");
+            this.Macros.AddVerbatim("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
