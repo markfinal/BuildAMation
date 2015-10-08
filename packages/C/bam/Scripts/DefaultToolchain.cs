@@ -39,8 +39,7 @@ namespace C
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Cxx_Linkers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveC_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveCxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
-        // TODO: slightly confusing there is a class and a variable almost identically named
-        private static string DefaultToolChain = null;
+        private static string UserToolchainOverride = null;
 
         private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
         GetToolsFromMetaData<T>()
@@ -88,7 +87,7 @@ namespace C
 
         static DefaultToolchain()
         {
-            DefaultToolChain = Bam.Core.CommandLineProcessor.Evaluate(SelectDefaultToolChainCommand);
+            UserToolchainOverride = Bam.Core.CommandLineProcessor.Evaluate(SelectDefaultToolChainCommand);
             FindTools<RegisterCCompilerAttribute, CompilerTool>(C_Compilers);
             FindTools<RegisterCxxCompilerAttribute, CompilerTool>(Cxx_Compilers);
             FindTools<RegisterLibrarianAttribute, LibrarianTool>(Archivers);
@@ -112,12 +111,12 @@ namespace C
             var candidates = collection[bitDepth];
             if (candidates.Count > 1)
             {
-                if (null != DefaultToolChain)
+                if (null != UserToolchainOverride)
                 {
                     foreach (var toolType in candidates)
                     {
                         var attr = toolType.GetCustomAttributes(false);
-                        if ((attr[0] as ToolRegistrationAttribute).ToolsetName == DefaultToolChain)
+                        if ((attr[0] as ToolRegistrationAttribute).ToolsetName == UserToolchainOverride)
                         {
                             return Bam.Core.Graph.Instance.MakeModuleOfType<ToolType>(toolType);
                         }
@@ -140,9 +139,9 @@ namespace C
             }
             var toolTypeToUse = candidates[0];
             var toolToolSet = (toolTypeToUse.GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName;
-            if ((null != DefaultToolChain) && (toolToolSet != DefaultToolChain))
+            if ((null != UserToolchainOverride) && (toolToolSet != UserToolchainOverride))
             {
-                throw new Bam.Core.Exception("{0}-bit {1} identified is from toolchain {2}, not from {3} as requested", (int)bitDepth, toolDescription, toolToolSet, DefaultToolChain);
+                throw new Bam.Core.Exception("{0}-bit {1} identified is from toolchain {2}, not from {3} as requested", (int)bitDepth, toolDescription, toolToolSet, UserToolchainOverride);
             }
             return Bam.Core.Graph.Instance.MakeModuleOfType<ToolType>(toolTypeToUse);
         }
