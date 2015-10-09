@@ -144,7 +144,7 @@ namespace MakeFileBuilder
                 }
 
                 // simply expanded variable
-                variables.AppendFormat("{0}:={1}", name, target.Path);
+                variables.AppendFormat("{0}:={1}", name, target.Path.Parse());
                 variables.AppendLine();
             }
         }
