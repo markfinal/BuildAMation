@@ -27,58 +27,66 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+using Bam.Core;
+namespace Publisher
 {
-    public abstract class ExternalFramework :
-        CModule
+    public sealed class IdNameOSX :
+        Bam.Core.Module
     {
-        protected ExternalFramework()
-        {
-            this.Macros["FrameworkLibraryPath"] = this.MakePlaceholderPath();
-        }
+        private CollatedFile CopiedFileModule = null;
 
-        private void
-        GetIDName()
+        protected override void
+        ExecuteInternal(
+            ExecutionContext context)
         {
+            var framework = this.CopiedFileModule.SourceModule as C.ExternalFramework;
+            if (null == framework)
+            {
+                throw new Bam.Core.Exception("Changing the ID name only works on an external framework");
+            }
+
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = "otool";
-            processStartInfo.Arguments = "-DX " + this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse();
+            processStartInfo.FileName = "install_name_tool";
+            processStartInfo.Arguments = framework.CreateTokenizedString("-id @executable_path/../Frameworks/$(0) $(1)",
+                framework.Macros["FrameworkLibraryPath"],
+                this.CopiedFileModule.GeneratedPaths[CollatedObject.CopiedObjectKey]).Parse();
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.UseShellExecute = false;
+
+            Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
+
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
-                throw new Bam.Core.Exception("Unable to get id name of '{0}'", this.Macros["FrameworkLibraryPath"].Parse());
+                throw new Bam.Core.Exception("Unable to change the id name of '{0}'", framework.Macros["FrameworkLibraryPath"].Parse());
             }
-            var idName = process.StandardOutput.ReadToEnd().TrimEnd (new [] { System.Environment.NewLine[0] });
-            this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
         }
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        GetExecutionPolicy(
+            string mode)
         {
-            base.Init(parent);
-            this.GetIDName();
+            // do nothing
         }
 
-        public abstract Bam.Core.TokenizedString FrameworkPath
+        public override void
+        Evaluate()
         {
-            get;
+            // do nothing
         }
 
-        public abstract Bam.Core.TokenizedStringArray DirectoriesToPublish
+        public CollatedFile Source
         {
-            get;
-        }
-        public abstract Bam.Core.TokenizedStringArray FilesToPublish
-        {
-            get;
-        }
-        public abstract Bam.Core.TokenizedStringArray SymlinksToPublish
-        {
-            get;
+            get
+            {
+                return this.CopiedFileModule;
+            }
+            set
+            {
+                this.CopiedFileModule = value;
+                this.DependsOn(value);
+            }
         }
     }
 }

@@ -358,6 +358,13 @@ namespace Publisher
                         copyFile.Requires(publishedDir);
                     }
                     filePublishedModules.Add(copyFile);
+
+                    if (file == framework.Macros["FrameworkLibraryPath"])
+                    {
+                        var updateIDName = Bam.Core.Module.Create<IdNameOSX>();
+                        updateIDName.Source = copyFile;
+                        this.Requires(updateIDName);
+                    }
                 }
             }
             if (null != framework.SymlinksToPublish)
