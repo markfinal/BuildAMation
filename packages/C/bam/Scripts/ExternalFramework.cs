@@ -32,15 +32,20 @@ namespace C
     public abstract class ExternalFramework :
         CModule
     {
-        public abstract System.Tuple<Bam.Core.TokenizedString,Bam.Core.TokenizedStringArray> DirectoriesToPublish
+        public abstract Bam.Core.TokenizedString FrameworkPath
         {
             get;
         }
-        public abstract System.Tuple<Bam.Core.TokenizedString,Bam.Core.TokenizedStringArray> FilesToPublish
+
+        public abstract Bam.Core.TokenizedStringArray DirectoriesToPublish
         {
             get;
         }
-        public abstract System.Tuple<Bam.Core.TokenizedString,Bam.Core.TokenizedStringArray> SymlinksToPublish
+        public abstract Bam.Core.TokenizedStringArray FilesToPublish
+        {
+            get;
+        }
+        public abstract Bam.Core.TokenizedStringArray SymlinksToPublish
         {
             get;
         }

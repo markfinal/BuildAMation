@@ -330,41 +330,51 @@ namespace Publisher
             var subdirTS = Bam.Core.TokenizedString.CreateVerbatim(subdir);
 
             var framework = dependent as C.ExternalFramework;
+            if (null == framework)
+            {
+                throw new Bam.Core.Exception("Module {0} did not derive from {1}", dependent.GetType().ToString(), typeof(C.ExternalFramework).ToString());
+            }
+            var frameworkPath = framework.FrameworkPath;
+
             var dirPublishedModules = new Bam.Core.Array<CollatedDirectory>();
-            var dirsToPublish = framework.DirectoriesToPublish;
-            foreach (var dir in dirsToPublish.Item2)
+            if (null != framework.DirectoriesToPublish)
+            foreach (var dir in framework.DirectoriesToPublish)
             {
                 var copyDir = this.CreateCollatedDirectory(reference, this.CreateTokenizedString("$(0)/$(1)", subdirTS, dir));
                 copyDir.SourceModule = dependent;
-                copyDir.SourcePath = this.CreateTokenizedString("$(0)/$(1)", dirsToPublish.Item1, dir);
+                copyDir.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, dir);
                 dirPublishedModules.Add(copyDir);
             }
             var filePublishedModules = new Bam.Core.Array<CollatedFile>();
-            var filesToPublish = framework.FilesToPublish;
-            foreach (var file in filesToPublish.Item2)
+            if (null != framework.FilesToPublish)
             {
-                var copyFile = this.CreateCollatedFile(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, file));
-                copyFile.SourceModule = dependent;
-                copyFile.SourcePath = this.CreateTokenizedString("$(0)/$(1)", filesToPublish.Item1, file);
-                foreach (var publishedDir in dirPublishedModules)
+                foreach (var file in framework.FilesToPublish)
                 {
-                    copyFile.Requires(publishedDir);
+                    var copyFile = this.CreateCollatedFile(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, file));
+                    copyFile.SourceModule = dependent;
+                    copyFile.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, file);
+                    foreach (var publishedDir in dirPublishedModules)
+                    {
+                        copyFile.Requires(publishedDir);
+                    }
+                    filePublishedModules.Add(copyFile);
                 }
-                filePublishedModules.Add(copyFile);
             }
-            var symlinksToPublish = framework.SymlinksToPublish;
-            foreach (var symlink in symlinksToPublish.Item2)
+            if (null != framework.SymlinksToPublish)
             {
-                var copySymlink = this.CreateCollatedSymbolicLink(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
-                copySymlink.SourceModule = dependent;
-                copySymlink.SourcePath = this.CreateTokenizedString("$(0)/$(1)", symlinksToPublish.Item1, symlink);
-                foreach (var publishedDir in dirPublishedModules)
+                foreach (var symlink in framework.SymlinksToPublish)
                 {
-                    copySymlink.Requires(publishedDir);
-                }
-                foreach (var publishedFile in filePublishedModules)
-                {
-                    copySymlink.Requires(publishedFile);
+                    var copySymlink = this.CreateCollatedSymbolicLink(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
+                    copySymlink.SourceModule = dependent;
+                    copySymlink.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, symlink);
+                    foreach (var publishedDir in dirPublishedModules)
+                    {
+                        copySymlink.Requires(publishedDir);
+                    }
+                    foreach (var publishedFile in filePublishedModules)
+                    {
+                        copySymlink.Requires(publishedFile);
+                    }
                 }
             }
         }
