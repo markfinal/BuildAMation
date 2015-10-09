@@ -27,39 +27,18 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace Publisher.DefaultSettings
 {
-    public sealed class NativeCollatedObject :
-        ICollatedObjectPolicy
+    public static partial class DefaultSettingsExtensions
     {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
+        public static void
+        Defaults(
+            this IMakeLinkSettings settings,
+            Bam.Core.Module module)
         {
-            var isSymLink = (sender is CollatedSymbolicLink);
-            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
-
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse() : sender.Macros["CopyDir"].Parse();
-
-            if (!isSymLink)
-            {
-                // synchronize, so that multiple modules don't try to create the same directories simultaneously
-                lock ((sender.Reference != null) ? sender.Reference : sender)
-                {
-                    if (!System.IO.Directory.Exists(destinationPath))
-                    {
-                        System.IO.Directory.CreateDirectory(destinationPath);
-                    }
-                }
-            }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
-
-            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
-            commandLine.Add(destinationPath);
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            settings.Force = true;
+            settings.Verbose = true;
+            settings.SymbolicLink = true;
         }
     }
 }

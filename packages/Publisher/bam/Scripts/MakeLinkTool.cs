@@ -29,37 +29,51 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class NativeCollatedObject :
-        ICollatedObjectPolicy
+    public abstract class MakeLinkTool :
+        Bam.Core.PreBuiltTool
     {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
+        public override void
+        Evaluate()
         {
-            var isSymLink = (sender is CollatedSymbolicLink);
-            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
+            this.ReasonToExecute = null;
+        }
+    }
 
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse() : sender.Macros["CopyDir"].Parse();
+    public sealed class MakeLinkPosix :
+        MakeLinkTool
+    {
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            return new MakeLinkSettings(module);
+        }
 
-            if (!isSymLink)
+        public override Bam.Core.TokenizedString Executable
+        {
+            get
             {
-                // synchronize, so that multiple modules don't try to create the same directories simultaneously
-                lock ((sender.Reference != null) ? sender.Reference : sender)
-                {
-                    if (!System.IO.Directory.Exists(destinationPath))
-                    {
-                        System.IO.Directory.CreateDirectory(destinationPath);
-                    }
-                }
+                return Bam.Core.TokenizedString.CreateVerbatim("ln");
             }
+        }
+    }
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+    public sealed class MakeLinkWin :
+        MakeLinkTool
+    {
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            return new MakeLinkSettings(module);
+        }
 
-            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
-            commandLine.Add(destinationPath);
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+        public override Bam.Core.TokenizedString Executable
+        {
+            get
+            {
+                return Bam.Core.TokenizedString.CreateVerbatim("mklink");
+            }
         }
     }
 }

@@ -1,3 +1,5 @@
+09-Oct-2015 Fixes #28. Added support for publishing symbolic links.
+
 08-Oct-2015 Added Bam.Core.MacroList.AddVerbatim.
 
 08-Oct-2015 Fixes #26. Added command line option, --stats, which displays memory, object count, and timing information at the end of a build.

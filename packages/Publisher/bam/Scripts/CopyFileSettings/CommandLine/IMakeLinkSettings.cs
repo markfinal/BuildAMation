@@ -27,39 +27,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Publisher
 {
-    public sealed class NativeCollatedObject :
-        ICollatedObjectPolicy
+    public static partial class CommandLineImplementation
     {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
+        public static void
+        Convert(
+            this IMakeLinkSettings settings,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var isSymLink = (sender is CollatedSymbolicLink);
-            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
-
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse() : sender.Macros["CopyDir"].Parse();
-
-            if (!isSymLink)
+            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                // synchronize, so that multiple modules don't try to create the same directories simultaneously
-                lock ((sender.Reference != null) ? sender.Reference : sender)
+                if (settings.Force)
                 {
-                    if (!System.IO.Directory.Exists(destinationPath))
-                    {
-                        System.IO.Directory.CreateDirectory(destinationPath);
-                    }
+                    // no switch
+                }
+                if (settings.Verbose)
+                {
+                    // no switch
+                }
+                if (settings.SymbolicLink)
+                {
+                    // no switch
                 }
             }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
-
-            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
-            commandLine.Add(destinationPath);
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            else
+            {
+                if (settings.Force)
+                {
+                    commandLine.Add("-f");
+                }
+                if (settings.Verbose)
+                {
+                    commandLine.Add("-v");
+                }
+                if (settings.SymbolicLink)
+                {
+                    commandLine.Add("-s");
+                }
+            }
         }
     }
 }

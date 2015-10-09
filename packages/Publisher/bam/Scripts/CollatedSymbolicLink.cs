@@ -27,39 +27,44 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Publisher
 {
-    public sealed class NativeCollatedObject :
-        ICollatedObjectPolicy
+    public sealed class CollatedSymbolicLink :
+        CollatedObject
     {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            var isSymLink = (sender is CollatedSymbolicLink);
-            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
-
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse() : sender.Macros["CopyDir"].Parse();
-
-            if (!isSymLink)
+            base.Init(parent);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                // synchronize, so that multiple modules don't try to create the same directories simultaneously
-                lock ((sender.Reference != null) ? sender.Reference : sender)
-                {
-                    if (!System.IO.Directory.Exists(destinationPath))
-                    {
-                        System.IO.Directory.CreateDirectory(destinationPath);
-                    }
-                }
+                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<MakeLinkWin>();
+            }
+            else
+            {
+                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<MakeLinkPosix>();
+            }
+        }
+
+        public override TokenizedString SourcePath
+        {
+            get
+            {
+                return base.SourcePath;
             }
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
-
-            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
-            commandLine.Add(destinationPath);
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+            set
+            {
+                base.SourcePath = value;
+#if __MonoCS__
+                var symlink = new Mono.Unix.UnixSymbolicLinkInfo(value.Parse());
+                this.Macros["LinkTarget"] = Bam.Core.TokenizedString.CreateVerbatim(symlink.ContentsPath);
+#else
+                throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
+#endif
+            }
         }
     }
 }

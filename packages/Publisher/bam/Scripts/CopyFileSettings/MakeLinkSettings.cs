@@ -29,37 +29,44 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class NativeCollatedObject :
-        ICollatedObjectPolicy
+    public sealed class MakeLinkSettings :
+        Bam.Core.Settings,
+        CommandLineProcessor.IConvertToCommandLine,
+        IMakeLinkSettings
     {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
+        public MakeLinkSettings()
+        {}
+
+        public MakeLinkSettings(
+            Bam.Core.Module module)
         {
-            var isSymLink = (sender is CollatedSymbolicLink);
-            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse() : sender.Macros["CopyDir"].Parse();
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
+        }
 
-            if (!isSymLink)
-            {
-                // synchronize, so that multiple modules don't try to create the same directories simultaneously
-                lock ((sender.Reference != null) ? sender.Reference : sender)
-                {
-                    if (!System.IO.Directory.Exists(destinationPath))
-                    {
-                        System.IO.Directory.CreateDirectory(destinationPath);
-                    }
-                }
-            }
+        bool IMakeLinkSettings.Force
+        {
+            get;
+            set;
+        }
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+        bool IMakeLinkSettings.Verbose
+        {
+            get;
+            set;
+        }
 
-            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
-            commandLine.Add(destinationPath);
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+        bool IMakeLinkSettings.SymbolicLink
+        {
+            get;
+            set;
         }
     }
 }

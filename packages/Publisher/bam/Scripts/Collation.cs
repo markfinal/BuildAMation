@@ -173,6 +173,48 @@ namespace Publisher
             return copyDirectoryModule;
         }
 
+        private CollatedSymbolicLink
+        CreateCollatedSymbolicLink(
+            CollatedFile reference = null,
+            Bam.Core.TokenizedString subDirectory = null)
+        {
+            var copySymlinkModule = Bam.Core.Module.Create<CollatedSymbolicLink>(preInitCallback: module =>
+            {
+                if (reference != null)
+                {
+                    if (null != subDirectory)
+                    {
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
+                    }
+                    else
+                    {
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
+                    }
+                }
+                else
+                {
+                    if (null != subDirectory)
+                    {
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
+                    }
+                    else
+                    {
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
+                    }
+                }
+            });
+            this.Requires(copySymlinkModule);
+            if (null != reference)
+            {
+                copySymlinkModule.Reference = reference;
+            }
+            if (null != subDirectory)
+            {
+                copySymlinkModule.SubDirectory = subDirectory;
+            }
+            return copySymlinkModule;
+        }
+
         public CollatedFile
         Include<DependentModule>(
             Bam.Core.FileKey key,

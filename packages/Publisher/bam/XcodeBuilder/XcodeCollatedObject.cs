@@ -77,13 +77,42 @@ namespace Publisher
             {
                 var commands = new Bam.Core.StringArray();
                 commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
-                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2}", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), destinationPath));
+                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2}",
+                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    commandLine.ToString(' '),
+                    destinationPath));
                 (sender.SourceModule.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
             }
             else
             {
+                var isSymlink = (sender is CollatedSymbolicLink);
                 var commands = new Bam.Core.StringArray();
-                commands.Add(System.String.Format("{0} {1} {2} $CONFIGURATION_BUILD_DIR/{3}/", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), sourcePath, sender.SubDirectory));
+
+                var destinationFolder = "$CONFIGURATION_BUILD_DIR";
+                if (sender.SourceModule is C.ExternalFramework)
+                {
+                    destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
+                    if (isSymlink)
+                    {
+                        commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}",
+                            sender.CreateTokenizedString("@dir($CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$(0))",
+                                sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath)).Parse()));
+                    }
+                    else
+                    {
+                        commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}",
+                            sender.CreateTokenizedString("$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$(0)",
+                                sender.SubDirectory).Parse()));
+                    }
+                }
+
+                commands.Add(System.String.Format("{0} {1} {2} {3}/{4}{5}",
+                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    commandLine.ToString(' '),
+                    isSymlink ? sender.Macros["LinkTarget"].Parse() : sourcePath.Parse(),
+                    destinationFolder,
+                    isSymlink ? sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse() : sender.SubDirectory.Parse(),
+                    isSymlink ? string.Empty : "/"));
                 (sender.Reference.SourceModule.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
             }
         }

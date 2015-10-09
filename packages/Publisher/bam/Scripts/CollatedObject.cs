@@ -127,7 +127,7 @@ namespace Publisher
             }
         }
 
-        public TokenizedString SourcePath
+        public virtual TokenizedString SourcePath
         {
             get
             {
@@ -141,12 +141,4 @@ namespace Publisher
             }
         }
     }
-
-    public sealed class CollatedFile :
-        CollatedObject
-    { }
-
-    public sealed class CollatedDirectory :
-        CollatedObject
-    { }
 }
