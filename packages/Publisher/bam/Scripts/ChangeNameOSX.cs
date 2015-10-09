@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Publisher
 {
-    public sealed class IdNameOSX :
+    public sealed class ChangeNameOSX :
         Bam.Core.Module
     {
         private CollatedFile CopiedFileModule = null;
@@ -39,29 +39,25 @@ namespace Publisher
         ExecuteInternal(
             ExecutionContext context)
         {
-            var framework = this.CopiedFileModule.SourceModule as C.ExternalFramework;
-            if (null == framework)
+            foreach (var framework in this.Frameworks)
             {
-                throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
-            }
+                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+                processStartInfo.FileName = "install_name_tool";
+                processStartInfo.Arguments = framework.CreateTokenizedString("-change $(0) $(1) $(2)",
+                    framework.SourceModule.Macros["IDName"],
+                    framework.Macros["IDName"],
+                    this.CopiedFileModule.GeneratedPaths[CollatedObject.CopiedObjectKey]).Parse();
+                processStartInfo.RedirectStandardOutput = true;
+                processStartInfo.UseShellExecute = false;
 
-            this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
+                Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
 
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = "install_name_tool";
-            processStartInfo.Arguments = framework.CreateTokenizedString("-id $(0) $(1)",
-                this.CopiedFileModule.Macros["IDName"],
-                this.CopiedFileModule.GeneratedPaths[CollatedObject.CopiedObjectKey]).Parse();
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.UseShellExecute = false;
-
-            Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
-
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                throw new Bam.Core.Exception("Unable to change the id name of '{0}'", framework.Macros["FrameworkLibraryPath"].Parse());
+                System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
+                process.WaitForExit();
+                if (process.ExitCode != 0)
+                {
+                    throw new Bam.Core.Exception("Unable to change the id name of '{0}'", framework.Macros["FrameworkLibraryPath"].Parse());
+                }
             }
         }
 
@@ -89,6 +85,12 @@ namespace Publisher
                 this.CopiedFileModule = value;
                 this.DependsOn(value);
             }
+        }
+
+        public Bam.Core.Array<CollatedFile> Frameworks
+        {
+            get;
+            set;
         }
     }
 }

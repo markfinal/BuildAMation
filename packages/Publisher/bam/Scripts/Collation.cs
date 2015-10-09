@@ -35,6 +35,8 @@ namespace Publisher
     {
         private ICollationPolicy Policy = null;
         public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
+        private Bam.Core.Array<CollatedFile> CopiedFrameworks = new Bam.Core.Array<CollatedFile>();
+        private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
 
         public enum EPublishingType
         {
@@ -215,6 +217,33 @@ namespace Publisher
             return copySymlinkModule;
         }
 
+        private void
+        AddOSXChangeIDNameForBinary(
+            CollatedFile copyFileModule)
+        {
+            if (!this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                return;
+            }
+            var changeIDName = Bam.Core.Module.Create<ChangeNameOSX>();
+            changeIDName.Source = copyFileModule;
+            changeIDName.Frameworks = this.CopiedFrameworks;
+            this.ChangedNamedBinaries.Add(changeIDName);
+            this.Requires(changeIDName);
+
+            foreach (var framework in this.CopiedFrameworks)
+            {
+                changeIDName.Requires(framework);
+            }
+        }
+
+        private bool
+        IsReferenceAWindowedApp(
+            CollatedFile reference)
+        {
+            return reference.SubDirectory.Parse().Contains(".app");
+        }
+
         public CollatedFile
         Include<DependentModule>(
             Bam.Core.FileKey key,
@@ -249,6 +278,14 @@ namespace Publisher
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.GeneratedPaths[key];
 
+            if (EPublishingType.WindowedApplication == type)
+            {
+                if (C.ConsoleApplication.Key == key)
+                {
+                    this.AddOSXChangeIDNameForBinary(copyFileModule);
+                }
+            }
+
             return copyFileModule;
         }
 
@@ -267,6 +304,14 @@ namespace Publisher
             var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.GeneratedPaths[key];
+
+            if (this.IsReferenceAWindowedApp(reference))
+            {
+                if (C.ConsoleApplication.Key == key)
+                {
+                    this.AddOSXChangeIDNameForBinary(copyFileModule);
+                }
+            }
         }
 
         public void
@@ -327,6 +372,8 @@ namespace Publisher
                 return;
             }
 
+            // TODO: confirm that reference was created in WindowedApplication mode
+
             var subdirTS = Bam.Core.TokenizedString.CreateVerbatim(subdir);
 
             var framework = dependent as C.ExternalFramework;
@@ -364,6 +411,17 @@ namespace Publisher
                         var updateIDName = Bam.Core.Module.Create<IdNameOSX>();
                         updateIDName.Source = copyFile;
                         this.Requires(updateIDName);
+                        this.CopiedFrameworks.Add(copyFile);
+
+                        foreach (var changedName in this.ChangedNamedBinaries)
+                        {
+                            changedName.Requires(updateIDName);
+                        }
+
+                        if (this.IsReferenceAWindowedApp(reference))
+                        {
+                            this.AddOSXChangeIDNameForBinary(copyFile);
+                        }
                     }
                 }
             }
