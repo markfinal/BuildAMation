@@ -318,7 +318,8 @@ namespace Publisher
         IncludeFiles<DependentModule>(
             string parameterizedFilePath,
             string subdir,
-            CollatedFile reference) where DependentModule : Bam.Core.Module, new()
+            CollatedFile reference,
+            bool isExecutable = false) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -329,26 +330,44 @@ namespace Publisher
             var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.CreateTokenizedString(parameterizedFilePath);
+
+            if (isExecutable)
+            {
+                if (this.IsReferenceAWindowedApp(reference))
+                {
+                    this.AddOSXChangeIDNameForBinary(copyFileModule);
+                }
+            }
         }
 
         public void
         IncludeFile(
             string parameterizedFilePath,
             string subdir,
-            CollatedFile reference)
+            CollatedFile reference,
+            bool isExecutable = false)
         {
-            var tokenString = this.CreateTokenizedString(parameterizedFilePath);
-            this.IncludeFile(tokenString, subdir, reference);
+            var tokenString = Bam.Core.TokenizedString.CreateVerbatim(parameterizedFilePath);
+            this.IncludeFile(tokenString, subdir, reference, isExecutable);
         }
 
         public void
         IncludeFile(
             Bam.Core.TokenizedString parameterizedFilePath,
             string subdir,
-            CollatedFile reference)
+            CollatedFile reference,
+            bool isExecutable = false)
         {
             var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
             copyFileModule.SourcePath = parameterizedFilePath;
+
+            if (isExecutable)
+            {
+                if (this.IsReferenceAWindowedApp(reference))
+                {
+                    this.AddOSXChangeIDNameForBinary(copyFileModule);
+                }
+            }
         }
 
         public void
