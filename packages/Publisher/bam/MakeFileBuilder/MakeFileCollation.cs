@@ -43,7 +43,12 @@ namespace Publisher
 
             foreach (var required in sender.Requirements)
             {
-                foreach (var rules in (required.MetaData as MakeFileBuilder.MakeFileMeta).Rules)
+                var requiredMeta = required.MetaData as MakeFileBuilder.MakeFileMeta;
+                if (null == requiredMeta)
+                {
+                    continue;
+                }
+                foreach (var rules in requiredMeta.Rules)
                 {
                     // TODO: only the first?
                     rule.AddPrerequisite(rules.Targets[0]);
