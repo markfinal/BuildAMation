@@ -115,7 +115,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PublishingRoot);
         }
     }
 
@@ -128,7 +128,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PublishingRoot);
         }
     }
 
@@ -141,7 +141,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PublishingRoot);
         }
     }
 
@@ -154,7 +154,7 @@ namespace Test5
         {
             base.Init(parent);
 
-            this.SourceFolder<RuntimePackage>(Publisher.Collation.PackageRoot);
+            this.SourceFolder<RuntimePackage>(Publisher.Collation.PublishingRoot);
         }
     }
 }

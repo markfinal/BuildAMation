@@ -34,7 +34,7 @@ namespace Publisher
         Bam.Core.Module
     {
         private ICollationPolicy Policy = null;
-        public static Bam.Core.FileKey PackageRoot = Bam.Core.FileKey.Generate("Package Root");
+        public static Bam.Core.FileKey PublishingRoot = Bam.Core.FileKey.Generate("Publishing Root");
         private Bam.Core.Array<CollatedFile> CopiedFrameworks = new Bam.Core.Array<CollatedFile>();
         private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
 
@@ -46,7 +46,7 @@ namespace Publisher
 
         protected Collation()
         {
-            this.RegisterGeneratedFile(PackageRoot, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            this.RegisterGeneratedFile(PublishingRoot, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
         }
 
         private string
@@ -84,11 +84,11 @@ namespace Publisher
                     {
                         if (null != subDirectory)
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PublishingRoot], subDirectory);
                         }
                         else
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PublishingRoot]);
                         }
                     }
                 });
@@ -143,22 +143,22 @@ namespace Publisher
                     {
                         if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/@filename($(2))/)", this.GeneratedPaths[PackageRoot], subDirectory, (module as CollatedDirectory).SourcePath);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/@filename($(2))/)", this.GeneratedPaths[PublishingRoot], subDirectory, (module as CollatedDirectory).SourcePath);
                         }
                         else
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PublishingRoot], subDirectory);
                         }
                     }
                     else
                     {
                         if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/@filename($(1))/)", this.GeneratedPaths[PackageRoot], (module as CollatedDirectory).SourcePath);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/@filename($(1))/)", this.GeneratedPaths[PublishingRoot], (module as CollatedDirectory).SourcePath);
                         }
                         else
                         {
-                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
+                            module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PublishingRoot]);
                         }
                     }
                 }
@@ -197,11 +197,11 @@ namespace Publisher
                 {
                     if (null != subDirectory)
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PackageRoot], subDirectory);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PublishingRoot], subDirectory);
                     }
                     else
                     {
-                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PackageRoot]);
+                        module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PublishingRoot]);
                     }
                 }
             });
