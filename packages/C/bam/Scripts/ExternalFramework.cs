@@ -32,6 +32,29 @@ namespace C
     public abstract class ExternalFramework :
         CModule
     {
+        public class Path
+        {
+            public Path(
+                Bam.Core.TokenizedString source,
+                Bam.Core.TokenizedString destination =  null)
+            {
+                this.SourcePath = source;
+                this.DestinationPath = destination;
+            }
+
+            public Bam.Core.TokenizedString SourcePath
+            {
+                get;
+                private set;
+            }
+
+            public Bam.Core.TokenizedString DestinationPath
+            {
+                get;
+                private set;
+            }
+        }
+
         protected ExternalFramework()
         {
             this.Macros["FrameworkLibraryPath"] = this.MakePlaceholderPath();
@@ -68,15 +91,17 @@ namespace C
             get;
         }
 
-        public abstract Bam.Core.TokenizedStringArray DirectoriesToPublish
+        public abstract Bam.Core.Array<Path> DirectoriesToPublish
         {
             get;
         }
-        public abstract Bam.Core.TokenizedStringArray FilesToPublish
+
+        public abstract Bam.Core.Array<Path> FilesToPublish
         {
             get;
         }
-        public abstract Bam.Core.TokenizedStringArray SymlinksToPublish
+
+        public abstract Bam.Core.Array<Path> SymlinksToPublish
         {
             get;
         }

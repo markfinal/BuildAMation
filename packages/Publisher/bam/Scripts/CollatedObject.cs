@@ -127,7 +127,7 @@ namespace Publisher
             }
         }
 
-        public virtual TokenizedString SourcePath
+        public TokenizedString SourcePath
         {
             get
             {

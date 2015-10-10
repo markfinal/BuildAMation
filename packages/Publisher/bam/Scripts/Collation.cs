@@ -408,9 +408,10 @@ namespace Publisher
 
             var dirPublishedModules = new Bam.Core.Array<CollatedDirectory>();
             if (null != framework.DirectoriesToPublish)
-            foreach (var dir in framework.DirectoriesToPublish)
+            foreach (var dirData in framework.DirectoriesToPublish)
             {
-                var copyDir = this.CreateCollatedDirectory(reference, this.CreateTokenizedString("$(0)/$(1)", subdirTS, dir));
+                var dir = dirData.SourcePath;
+                var copyDir = this.CreateCollatedDirectory(reference, this.CreateTokenizedString("$(0)/$(1)", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
                 copyDir.SourceModule = dependent;
                 copyDir.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, dir);
                 dirPublishedModules.Add(copyDir);
@@ -418,9 +419,10 @@ namespace Publisher
             var filePublishedModules = new Bam.Core.Array<CollatedFile>();
             if (null != framework.FilesToPublish)
             {
-                foreach (var file in framework.FilesToPublish)
+                foreach (var fileData in framework.FilesToPublish)
                 {
-                    var copyFile = this.CreateCollatedFile(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, file));
+                    var file = fileData.SourcePath;
+                    var copyFile = this.CreateCollatedFile(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, fileData.DestinationPath != null ? fileData.DestinationPath : file));
                     copyFile.SourceModule = dependent;
                     copyFile.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, file);
                     foreach (var publishedDir in dirPublishedModules)
@@ -450,11 +452,13 @@ namespace Publisher
             }
             if (null != framework.SymlinksToPublish)
             {
-                foreach (var symlink in framework.SymlinksToPublish)
+                foreach (var symlinkData in framework.SymlinksToPublish)
                 {
+                    var symlink = symlinkData.SourcePath;
                     var copySymlink = this.CreateCollatedSymbolicLink(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
                     copySymlink.SourceModule = dependent;
                     copySymlink.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, symlink);
+                    copySymlink.LinkTarget(symlinkData.DestinationPath);
                     foreach (var publishedDir in dirPublishedModules)
                     {
                         copySymlink.Requires(publishedDir);

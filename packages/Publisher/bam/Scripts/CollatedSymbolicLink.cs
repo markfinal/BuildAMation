@@ -48,23 +48,23 @@ namespace Publisher
             }
         }
 
-        public override TokenizedString SourcePath
+        public void
+        LinkTarget(
+            TokenizedString path = null)
         {
-            get
-            {
-                return base.SourcePath;
-            }
-
-            set
-            {
-                base.SourcePath = value;
 #if __MonoCS__
-                var symlink = new Mono.Unix.UnixSymbolicLinkInfo(value.Parse());
+            if (path == null)
+            {
+                var symlink = new Mono.Unix.UnixSymbolicLinkInfo(this.SourcePath.Parse());
                 this.Macros["LinkTarget"] = Bam.Core.TokenizedString.CreateVerbatim(symlink.ContentsPath);
-#else
-                throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
-#endif
             }
+            else
+            {
+                this.Macros["LinkTarget"] = path;
+            }
+#else
+            throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
+#endif
         }
     }
 }
