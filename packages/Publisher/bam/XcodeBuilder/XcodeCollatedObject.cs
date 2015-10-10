@@ -90,7 +90,7 @@ namespace Publisher
                 var commands = new Bam.Core.StringArray();
 
                 var destinationFolder = "$CONFIGURATION_BUILD_DIR";
-                if (sender.SourceModule is C.ExternalFramework)
+                if (sender.Reference != null)
                 {
                     destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
                     if (isSymlink)
