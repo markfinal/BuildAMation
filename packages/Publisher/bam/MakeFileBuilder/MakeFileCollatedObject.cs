@@ -44,7 +44,7 @@ namespace Publisher
             var sourceFilename = System.IO.Path.GetFileName(sourcePath.Parse());
 
             var senderType = sender.GetType().Name;
-            var sourceType = sender.SourceModule.GetType().FullName;
+            var sourceType = (null != sender.SourceModule) ? sender.SourceModule.GetType().FullName : "publishroot";
 
             var isSymLink = (sender is CollatedSymbolicLink);
             var targetName = isSymLink ?
