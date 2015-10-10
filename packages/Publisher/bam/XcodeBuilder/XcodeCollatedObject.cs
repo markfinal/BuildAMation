@@ -61,7 +61,8 @@ namespace Publisher
                 return;
             }
 
-            if (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition)
+            if ((null != sender.Reference) && (null != sender.SourceModule) &&
+                (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition))
             {
                 // same package has the same output folder, so don't bother copying
                 // TODO: does the destination directory need to be set?
