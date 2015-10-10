@@ -241,6 +241,10 @@ namespace Publisher
         IsReferenceAWindowedApp(
             CollatedFile reference)
         {
+            if (null == reference.SubDirectory)
+            {
+                return false;
+            }
             return reference.SubDirectory.Parse().Contains(".app");
         }
 
