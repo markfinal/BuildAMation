@@ -30,26 +30,45 @@
 using Bam.Core;
 namespace Publisher
 {
-    public sealed class IdNameOSX :
-        InstallNameModule
+    public abstract class InstallNameModule :
+        Bam.Core.Module
     {
+        protected CollatedFile CopiedFileModule = null;
+        protected IInstallNameToolPolicy Policy = null;
+
         protected override void
-        ExecuteInternal(
-            ExecutionContext context)
+        Init(
+            Bam.Core.Module parent)
         {
-            var framework = this.CopiedFileModule.SourceModule as C.ExternalFramework;
-            if (null == framework)
+            base.Init(parent);
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<InstallNameTool>();
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            var className = "Publisher." + mode + this.GetType().Name;
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<IInstallNameToolPolicy>.Create(className);
+        }
+
+        public override void
+        Evaluate()
+        {
+            // do nothing
+        }
+
+        public CollatedFile Source
+        {
+            get
             {
-                throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
+                return this.CopiedFileModule;
             }
-
-            this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
-
-            this.Policy.InstallName(
-                this,
-                context,
-                null,
-                this.CopiedFileModule.Macros["IDName"]);
+            set
+            {
+                this.CopiedFileModule = value;
+                this.DependsOn(value);
+            }
         }
     }
 }

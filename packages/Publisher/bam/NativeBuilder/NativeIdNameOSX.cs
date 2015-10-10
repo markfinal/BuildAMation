@@ -27,29 +27,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public sealed class IdNameOSX :
-        InstallNameModule
+    public sealed class NativeIdNameOSX :
+        IInstallNameToolPolicy
     {
-        protected override void
-        ExecuteInternal(
-            ExecutionContext context)
+        void
+        IInstallNameToolPolicy.InstallName(
+            InstallNameModule sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString oldName,
+            Bam.Core.TokenizedString newName)
         {
-            var framework = this.CopiedFileModule.SourceModule as C.ExternalFramework;
-            if (null == framework)
-            {
-                throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
-            }
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
-            this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
-
-            this.Policy.InstallName(
-                this,
-                context,
-                null,
-                this.CopiedFileModule.Macros["IDName"]);
+            commandLine.Add(newName.Parse());
+            commandLine.Add(sender.Source.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse());
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 }

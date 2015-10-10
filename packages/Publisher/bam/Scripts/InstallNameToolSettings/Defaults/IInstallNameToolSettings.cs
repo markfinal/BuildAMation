@@ -27,29 +27,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+namespace Publisher.DefaultSettings
 {
-    public sealed class IdNameOSX :
-        InstallNameModule
+    public static partial class DefaultSettingsExtensions
     {
-        protected override void
-        ExecuteInternal(
-            ExecutionContext context)
+        public static void
+        Defaults(
+            this IInstallNameToolSettings settings,
+            Bam.Core.Module module)
         {
-            var framework = this.CopiedFileModule.SourceModule as C.ExternalFramework;
-            if (null == framework)
+            if (module is IdNameOSX)
             {
-                throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
+                settings.Mode = EInstallNameToolMode.UpdateIDName;
             }
-
-            this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
-
-            this.Policy.InstallName(
-                this,
-                context,
-                null,
-                this.CopiedFileModule.Macros["IDName"]);
+            else
+            {
+                settings.Mode = EInstallNameToolMode.ChangeIDName;
+            }
         }
     }
 }

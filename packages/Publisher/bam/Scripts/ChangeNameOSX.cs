@@ -31,59 +31,19 @@ using Bam.Core;
 namespace Publisher
 {
     public sealed class ChangeNameOSX :
-        Bam.Core.Module
+        InstallNameModule
     {
-        private CollatedFile CopiedFileModule = null;
-
         protected override void
         ExecuteInternal(
             ExecutionContext context)
         {
             foreach (var framework in this.Frameworks)
             {
-                var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-                processStartInfo.FileName = "install_name_tool";
-                processStartInfo.Arguments = framework.CreateTokenizedString("-change $(0) $(1) $(2)",
+                this.Policy.InstallName(
+                    this,
+                    context,
                     framework.SourceModule.Macros["IDName"],
-                    framework.Macros["IDName"],
-                    this.CopiedFileModule.GeneratedPaths[CollatedObject.CopiedObjectKey]).Parse();
-                processStartInfo.RedirectStandardOutput = true;
-                processStartInfo.UseShellExecute = false;
-
-                Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
-
-                System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-                process.WaitForExit();
-                if (process.ExitCode != 0)
-                {
-                    throw new Bam.Core.Exception("Unable to change the id name of '{0}'", framework.Macros["FrameworkLibraryPath"].Parse());
-                }
-            }
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
-        }
-
-        public override void
-        Evaluate()
-        {
-            // do nothing
-        }
-
-        public CollatedFile Source
-        {
-            get
-            {
-                return this.CopiedFileModule;
-            }
-            set
-            {
-                this.CopiedFileModule = value;
-                this.DependsOn(value);
+                    framework.Macros["IDName"]);
             }
         }
 

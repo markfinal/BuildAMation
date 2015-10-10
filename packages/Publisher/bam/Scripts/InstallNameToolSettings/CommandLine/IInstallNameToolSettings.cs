@@ -30,26 +30,24 @@
 using Bam.Core;
 namespace Publisher
 {
-    public sealed class IdNameOSX :
-        InstallNameModule
+    public static partial class CommandLineImplementation
     {
-        protected override void
-        ExecuteInternal(
-            ExecutionContext context)
+        public static void
+        Convert(
+            this IInstallNameToolSettings settings,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            var framework = this.CopiedFileModule.SourceModule as C.ExternalFramework;
-            if (null == framework)
+            switch (settings.Mode)
             {
-                throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
+            case EInstallNameToolMode.UpdateIDName:
+                commandLine.Add("-id");
+                break;
+
+            case EInstallNameToolMode.ChangeIDName:
+                commandLine.Add("-change");
+                break;
             }
-
-            this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
-
-            this.Policy.InstallName(
-                this,
-                context,
-                null,
-                this.CopiedFileModule.Macros["IDName"]);
         }
     }
 }
