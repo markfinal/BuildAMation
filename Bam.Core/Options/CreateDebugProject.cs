@@ -36,7 +36,7 @@ namespace Bam.Core
         {
             get
             {
-                return null;
+                return "-p";
             }
         }
 

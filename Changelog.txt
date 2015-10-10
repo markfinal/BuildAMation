@@ -1,3 +1,5 @@
+10-Oct-2015 Added short version of option --createdebugproject, -p.
+
 10-Oct-2015 Renamed FileKey from Publisher.Collation.PackageRoot to Publisher.Collation.PublishingRoot.
 
 09-Oct-2015 Fixes #1. Added function to publish OSX frameworks, IncludeFramework. This requires that the module to be published derives from C.ExternalFramework, and implements the properties indicating which files, directories and symbolic links need to be published from that framework.
