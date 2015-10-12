@@ -321,5 +321,11 @@ namespace Bam.Core
             }
             return newArray;
         }
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<T>
+        ToReadOnlyCollection()
+        {
+            return new System.Collections.ObjectModel.ReadOnlyCollection<T>(this.list);
+        }
     }
 }
