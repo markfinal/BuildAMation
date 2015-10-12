@@ -45,50 +45,6 @@ namespace ClangCommon
                 return this.Macros["CompilerPath"];
             }
         }
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            // NOTE: note that super classes need to be checked last in order to
-            // honour the class hierarchy
-            if (typeof(C.ObjCxx.ObjectFile).IsInstanceOfType(module) ||
-                typeof(C.ObjCxx.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Clang.ObjectiveCxxCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.ObjC.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.ObjC.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Clang.ObjectiveCCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Clang.CxxCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.CObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Clang.CompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else
-            {
-                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
-            }
-        }
-
-        protected abstract void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings);
     }
 
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -101,12 +57,12 @@ namespace ClangCommon
             this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang"));
         }
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.C;
+            var settings = new Clang.CompilerSettings(module);
+            return settings;
         }
     }
 
@@ -120,12 +76,12 @@ namespace ClangCommon
             this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang++"));
         }
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
+            var settings = new Clang.CxxCompilerSettings(module);
+            return settings;
         }
     }
 
@@ -139,12 +95,12 @@ namespace ClangCommon
             this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang"));
         }
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveC;
+            var settings = new Clang.ObjectiveCCompilerSettings(module);
+            return settings;
         }
     }
 
@@ -158,12 +114,12 @@ namespace ClangCommon
             this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang++"));
         }
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+            var settings = new Clang.ObjectiveCxxCompilerSettings(module);
+            return settings;
         }
     }
 }

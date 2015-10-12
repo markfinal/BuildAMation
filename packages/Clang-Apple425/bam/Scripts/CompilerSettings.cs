@@ -42,6 +42,7 @@ namespace Clang
             Bam.Core.Module module)
             : this(module, true)
         {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.C;
         }
 
         public CompilerSettings(
