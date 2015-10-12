@@ -38,6 +38,7 @@ namespace Bam.Core
         PackageMetaData,
         IdentifyBuildableModules,
         PopulateGraph,
+        ValidateGraph,
         CreatePatches,
         ParseTokenizedStrings,
         GraphExecution,

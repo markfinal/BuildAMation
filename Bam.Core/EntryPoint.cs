@@ -98,9 +98,13 @@ namespace Bam.Core
             // NB: default settings have already been defined here
             // not only does this generate the dependency graph, but also creates the default settings for each module, and completes them
             graph.SortDependencies();
-            // TODO: make validation optional, if it starts showing on profiles
-            graph.Validate();
             populateGraphProfile.StopProfile();
+
+            // TODO: make validation optional, if it starts showing on profiles
+            var validateGraphProfile = new TimeProfile(ETimingProfiles.ValidateGraph);
+            validateGraphProfile.StartProfile();
+            graph.Validate();
+            validateGraphProfile.StopProfile();
 
             // Phase 3: (Create default settings, and ) apply patches (build + shared) to each module
             // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
