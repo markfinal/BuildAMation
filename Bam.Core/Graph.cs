@@ -264,7 +264,6 @@ namespace Bam.Core
             int rank)
         {
             // predicate required, because eventually there will be a module without a Tool, e.g. a Tool itself
-            // TODO: should a Tool on a module actually be an interface to formalize this?
             if (m.Tool != null)
             {
                 m.Requires(m.Tool);
