@@ -191,6 +191,17 @@ namespace Bam.Core
             }
         }
 
+        public void
+        DependsOn(
+            System.Collections.Generic.IEnumerable<Module> modules)
+        {
+            this.DependentsList.AddRangeUnique(modules);
+            foreach (var module in modules)
+            {
+                module.DependeesList.Add(this);
+            }
+        }
+
         private void
         InternalRequires(
             Module module)
@@ -212,6 +223,17 @@ namespace Bam.Core
             foreach (var m in moreModules)
             {
                 this.InternalRequires(m);
+            }
+        }
+
+        public void
+        Requires(
+            System.Collections.Generic.IEnumerable<Module> modules)
+        {
+            this.RequiredDependentsList.AddRangeUnique(modules);
+            foreach (var module in modules)
+            {
+                module.RequiredDependeesList.Add(this);
             }
         }
 
@@ -267,7 +289,7 @@ namespace Bam.Core
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList);
+                return this.DependentsList.ToReadOnlyCollection();
             }
         }
 
@@ -283,7 +305,7 @@ namespace Bam.Core
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.RequiredDependentsList);
+                return this.RequiredDependentsList.ToReadOnlyCollection();
             }
         }
 
@@ -295,10 +317,10 @@ namespace Bam.Core
             }
         }
 
-        private System.Collections.Generic.List<Module> DependentsList = new System.Collections.Generic.List<Module>();
+        private Array<Module> DependentsList = new Array<Module>();
         private System.Collections.Generic.List<Module> DependeesList = new System.Collections.Generic.List<Module>();
 
-        private System.Collections.Generic.List<Module> RequiredDependentsList = new System.Collections.Generic.List<Module>();
+        private Array<Module> RequiredDependentsList = new Array<Module>();
         private System.Collections.Generic.List<Module> RequiredDependeesList = new System.Collections.Generic.List<Module>();
 
         private System.Collections.Generic.List<PrivatePatchDelegate> PrivatePatches = new System.Collections.Generic.List<PrivatePatchDelegate>();
