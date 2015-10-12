@@ -382,7 +382,7 @@ namespace Bam.Core
                 {
                     throw new System.Exception("Module collection found more than once in graph");
                 }
-                var childRank = found.ElementAt(0).Key;
+                var childRank = found.First().Key;
                 if (childRank <= parentRank)
                 {
                     throw new System.Exception(System.String.Format("Dependent module {0} found at a lower rank than the dependee", c));

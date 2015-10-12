@@ -61,7 +61,7 @@ namespace Bam.Core
                     throw new Exception("Too many site policies exist in the package assembly");
                 }
 
-                LocalPolicy = System.Activator.CreateInstance(localPolicies.ElementAt(0)) as ISitePolicy;
+                LocalPolicy = System.Activator.CreateInstance(localPolicies.First()) as ISitePolicy;
             }
         }
 
