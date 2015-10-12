@@ -240,20 +240,10 @@ namespace Bam.Core
             System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
-            var nonChildDependents = new System.Collections.Generic.List<Module>();
-            foreach (var c in dependencies)
+            var nonChildDependents = dependencies.Where(item => !(item is IChildModule));
+            foreach (var c in children)
             {
-                if (!(c is IChildModule))
-                {
-                    nonChildDependents.Add(c);
-                }
-            }
-            foreach (var d in nonChildDependents)
-            {
-                foreach (var c in children)
-                {
-                    c.DependsOn(d);
-                }
+                c.DependsOn(nonChildDependents);
             }
         }
 
@@ -261,20 +251,10 @@ namespace Bam.Core
             System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
-            var nonChildDependents = new System.Collections.Generic.List<Module>();
-            foreach (var c in dependencies)
+            var nonChildDependents = dependencies.Where(item => !(item is IChildModule));
+            foreach (var c in children)
             {
-                if (!(c is IChildModule))
-                {
-                    nonChildDependents.Add(c);
-                }
-            }
-            foreach (var d in nonChildDependents)
-            {
-                foreach (var c in children)
-                {
-                    c.Requires(d);
-                }
+                c.Requires(nonChildDependents);
             }
         }
 
