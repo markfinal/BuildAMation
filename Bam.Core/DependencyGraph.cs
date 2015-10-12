@@ -54,10 +54,11 @@ namespace Bam.Core
         {
             get
             {
-                var pair = this.graph.Where(item => item.Value == collection);
-                if (pair.Count() > 0)
+                var pairs = this.graph.Where(item => item.Value == collection);
+                var first = pairs.FirstOrDefault();
+                if (!first.Equals(default(System.Collections.Generic.Dictionary<int, ModuleCollection>)))
                 {
-                    return pair.ElementAt(0).Key;
+                    return first.Key;
                 }
                 return -1;
             }
