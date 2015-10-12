@@ -267,10 +267,6 @@ namespace Bam.Core
             // TODO: should a Tool on a module actually be an interface to formalize this?
             if (m.Tool != null)
             {
-                if (!typeof(ITool).IsAssignableFrom(m.Tool.GetType()))
-                {
-                    throw new Exception("Tool {0} does not implement {1}", m.Tool.GetType().ToString(), typeof(ITool).ToString());
-                }
                 m.Requires(m.Tool);
                 var child = m as IChildModule;
                 if ((null == child) || (null == child.Parent))

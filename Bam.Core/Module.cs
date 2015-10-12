@@ -388,10 +388,22 @@ namespace Bam.Core
         GetExecutionPolicy(
             string mode);
 
+        private Module TheTool;
         public Module Tool
         {
-            get;
-            protected set;
+            get
+            {
+                return this.TheTool;
+            }
+
+            protected set
+            {
+                if ((null != value) && !(value is ITool))
+                {
+                    throw new Exception("Tool {0} does not implement {1}", value.GetType().ToString(), typeof(ITool).ToString());
+                }
+                this.TheTool = value;
+            }
         }
 
         public void
