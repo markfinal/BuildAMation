@@ -351,7 +351,7 @@ namespace Publisher
             CollatedFile reference,
             bool isExecutable = false)
         {
-            var tokenString = Bam.Core.TokenizedString.CreateVerbatim(parameterizedFilePath);
+            var tokenString = this.CreateTokenizedString(parameterizedFilePath);
             this.IncludeFile(tokenString, subdir, reference, isExecutable);
         }
 
