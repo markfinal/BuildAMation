@@ -96,7 +96,6 @@ namespace Bam.Core
             // Phase 2: Graph now has a linear list of modules; create a dependency graph
             // NB: all those modules with 0 dependees are the top-level modules
             // NB: default settings have already been defined here
-            var topLevelModules = graph.TopLevelModules;
             // not only does this generate the dependency graph, but also creates the default settings for each module, and completes them
             graph.SortDependencies();
             // TODO: make validation optional, if it starts showing on profiles
