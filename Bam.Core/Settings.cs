@@ -127,11 +127,10 @@ namespace Bam.Core
                         i.defaultMethod.Invoke(null, new object[] { this, module });
                     }
                 }
-
-                if (null != LocalPolicy)
-                {
-                    LocalPolicy.DefineLocalSettings(this, module);
-                }
+            }
+            if (useDefaults && (null != LocalPolicy))
+            {
+                LocalPolicy.DefineLocalSettings(this, module);
             }
         }
     }
