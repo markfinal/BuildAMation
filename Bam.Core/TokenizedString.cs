@@ -211,18 +211,15 @@ namespace Bam.Core
                         return false;
                     }
                 });
-                if (search.Count() > 0)
+                var foundTS = search.FirstOrDefault();
+                if (null != foundTS)
                 {
-                    var ts = search.ElementAt(0);
-                    ++ts.RefCount;
-                    return ts;
+                    ++foundTS.RefCount;
+                    return foundTS;
                 }
-                else
-                {
-                    var ts = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens);
-                    Cache.Add(ts);
-                    return ts;
-                }
+                var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens);
+                Cache.Add(newTS);
+                return newTS;
             }
         }
 
