@@ -82,10 +82,10 @@ namespace Bam.Core
         {
             var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
             var matches = referencedModules.Where(item => item.GetType() == typeof(T));
-            if (matches.Count() > 0)
+            var matchedModule = matches.FirstOrDefault();
+            if (null != matchedModule)
             {
-                var module = matches.ElementAt(0) as T;
-                return module;
+                return matchedModule as T;
             }
             this.CommonModuleType.Push(typeof(T));
             var newModule = Module.Create<T>(preInitCallback: module =>
