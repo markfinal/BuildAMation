@@ -110,6 +110,20 @@ namespace Bam.Core
         }
 
         public void
+        AddRangeUnique(
+            System.Collections.Generic.IEnumerable<T> list)
+        {
+            foreach (var item in list)
+            {
+                if (this.list.Contains(item))
+                {
+                    continue;
+                }
+                this.list.Add(item);
+            }
+        }
+
+        public void
         Insert(
             int index,
             T item)
