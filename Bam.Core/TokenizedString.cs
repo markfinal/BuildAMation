@@ -51,6 +51,13 @@ namespace Bam.Core
     /// </summary>
     public sealed class TokenizedString
     {
+        [System.Flags]
+        public enum EFlags
+        {
+            None = 0,
+            DeferredExpansion = 0x1
+        }
+
         public static readonly string TokenPrefix = @"$(";
         public static readonly string TokenSuffix = @")";
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
@@ -71,6 +78,7 @@ namespace Bam.Core
         private TokenizedStringArray PositionalTokens = new TokenizedStringArray();
         private string CreationStackTrace = null;
         private int RefCount = 1;
+        private EFlags Flags = EFlags.None;
 
         public void
         Assign(
@@ -88,6 +96,7 @@ namespace Bam.Core
             this.Verbatim = other.Verbatim;
             this.PositionalTokens = other.PositionalTokens;
             this.RefCount = other.RefCount + 1;
+            this.Flags = other.Flags;
         }
 
         static private System.Collections.Generic.IEnumerable<string>
@@ -122,7 +131,8 @@ namespace Bam.Core
         private TokenizedString(
             string original,
             bool verbatim = false,
-            TokenizedStringArray positionalTokens = null)
+            TokenizedStringArray positionalTokens = null,
+            EFlags flags = EFlags.None)
         {
             this.CreationStackTrace = System.Environment.StackTrace;
             if (null != positionalTokens)
@@ -130,6 +140,7 @@ namespace Bam.Core
                 this.PositionalTokens.AddRange(positionalTokens);
             }
             this.Verbatim = verbatim;
+            this.Flags |= flags;
             this.OriginalString = original;
             if (verbatim)
             {
@@ -155,8 +166,9 @@ namespace Bam.Core
             string original,
             Module moduleWithMacros,
             bool verbatim,
-            TokenizedStringArray positionalTokens) :
-            this(original, verbatim, positionalTokens)
+            TokenizedStringArray positionalTokens,
+            EFlags flags) :
+            this(original, verbatim, positionalTokens, flags)
         {
             if (null == moduleWithMacros)
             {
@@ -174,7 +186,8 @@ namespace Bam.Core
             string tokenizedString,
             Module macroSource,
             bool verbatim,
-            TokenizedStringArray positionalTokens)
+            TokenizedStringArray positionalTokens,
+            EFlags flags)
         {
             if (null == tokenizedString)
             {
@@ -217,7 +230,7 @@ namespace Bam.Core
                     ++foundTS.RefCount;
                     return foundTS;
                 }
-                var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens);
+                var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
                 Cache.Add(newTS);
                 return newTS;
             }
@@ -227,16 +240,17 @@ namespace Bam.Core
         Create(
             string tokenizedString,
             Module macroSource,
-            TokenizedStringArray positionalTokens = null)
+            TokenizedStringArray positionalTokens = null,
+            EFlags flags = EFlags.None)
         {
-            return CreateInternal(tokenizedString, macroSource, false, positionalTokens);
+            return CreateInternal(tokenizedString, macroSource, false, positionalTokens, flags);
         }
 
         public static TokenizedString
         CreateVerbatim(
             string verboseString)
         {
-            return CreateInternal(verboseString, null, true, null);
+            return CreateInternal(verboseString, null, true, null, EFlags.None);
         }
 
         private string this[int index]
@@ -263,6 +277,10 @@ namespace Bam.Core
                 if (this.Verbatim)
                 {
                     return true;
+                }
+                if (EFlags.DeferredExpansion == (this.Flags & EFlags.DeferredExpansion))
+                {
+                    return false;
                 }
                 foreach (var positionalToken in this.PositionalTokens)
                 {
@@ -326,7 +344,7 @@ namespace Bam.Core
             Log.Detail("Parsing tokenized strings");
             foreach (var t in Cache)
             {
-                t.ParsedString = t.Parse();
+                t.Parse();
             }
         }
 
@@ -358,7 +376,15 @@ namespace Bam.Core
                         {
                             throw new Exception("Infinite recursion for {0}. Created at {3}", source.OriginalString, source.CreationStackTrace);
                         }
-                        tokenString.Parse();
+                        if (0 == (tokenString.Flags & EFlags.DeferredExpansion))
+                        {
+                            tokenString.Parse(null);
+                        }
+                        else
+                        {
+                            tokenString.Flags &= ~EFlags.DeferredExpansion;
+                            tokenString.ParsedString = tokenString.Parse((this.ModuleWithMacros != null) ? this.ModuleWithMacros.Macros : null);
+                        }
                     }
                     return tokenString.ToString();
                 };
@@ -410,33 +436,36 @@ namespace Bam.Core
                     {
                         token = envVar;
                     }
-                    // step 6 : fail
+                    // step 6 : fail (if not deferred)
                     else
                     {
-                        // TODO: this could be due to the user not having set a property, e.g. inputpath
-                        // is there a better error message that could be returned, other than this in those
-                        // circumstances?
-                        var message = new System.Text.StringBuilder();
-                        message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
-                        message.AppendLine();
-                        if (null != customMacros)
+                        if (0 == (this.Flags & EFlags.DeferredExpansion))
                         {
-                            message.AppendLine("Searched in custom macros");
-                        }
-                        message.AppendLine("Searched in global macros");
-                        if (null != this.ModuleWithMacros)
-                        {
-                            message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                            // TODO: this could be due to the user not having set a property, e.g. inputpath
+                            // is there a better error message that could be returned, other than this in those
+                            // circumstances?
+                            var message = new System.Text.StringBuilder();
+                            message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
                             message.AppendLine();
-                            if (null != this.ModuleWithMacros.Tool)
+                            if (null != customMacros)
                             {
-                                message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
-                                message.AppendLine();
+                                message.AppendLine("Searched in custom macros");
                             }
+                            message.AppendLine("Searched in global macros");
+                            if (null != this.ModuleWithMacros)
+                            {
+                                message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                                message.AppendLine();
+                                if (null != this.ModuleWithMacros.Tool)
+                                {
+                                    message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
+                                    message.AppendLine();
+                                }
+                            }
+                            message.AppendLine("TokenizedString created with this stack trace:");
+                            message.AppendLine(this.CreationStackTrace);
+                            throw new Exception(message.ToString());
                         }
-                        message.AppendLine("TokenizedString created with this stack trace:");
-                        message.AppendLine(this.CreationStackTrace);
-                        throw new Exception(message.ToString());
                     }
                 }
                 if (null == token)
@@ -444,41 +473,57 @@ namespace Bam.Core
                     throw new Exception("Token replacement for {0} was null - something went wrong during parsing of the string '{1}'. Created at {2}", tokens[index], this.OriginalString, this.CreationStackTrace);
                 }
                 tokens[index] = token;
-                macroIndices.Remove(index);
+                if (0 == (this.Flags & EFlags.DeferredExpansion))
+                {
+                    macroIndices.Remove(index);
+                }
             }
+            var skipFunctionEvaluation = false;
             if (macroIndices.Count > 0)
             {
-                var message = new System.Text.StringBuilder();
-                message.AppendFormat("Input string '{0}' could not be fully expanded. Could not identify tokens", this.OriginalString);
-                message.AppendLine();
-                foreach (var index in macroIndices)
+                if (0 == (this.Flags & EFlags.DeferredExpansion))
                 {
-                    message.AppendFormat("\t{0}", this.Tokens[index]);
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("Input string '{0}' could not be fully expanded. Could not identify tokens", this.OriginalString);
                     message.AppendLine();
+                    foreach (var index in macroIndices)
+                    {
+                        message.AppendFormat("\t{0}", this.Tokens[index]);
+                        message.AppendLine();
+                    }
+                    message.AppendLine("TokenizedString created with this stack trace:");
+                    message.AppendLine(this.CreationStackTrace);
+                    throw new Exception(message.ToString());
                 }
-                message.AppendLine("TokenizedString created with this stack trace:");
-                message.AppendLine(this.CreationStackTrace);
-                throw new Exception(message.ToString());
+                else
+                {
+                    skipFunctionEvaluation = true;
+                }
             }
-            var joined = this.EvaluateFunctions(tokens);
+            var joined = JoinTokens(tokens);
+            if (skipFunctionEvaluation)
+            {
+                Log.DebugMessage("Skipped function evaluation of '{0}' (may not be fully expanded)", this.OriginalString);
+                return joined;
+            }
+            var functionEvaluated = this.EvaluateFunctions(joined);
             if (null == customMacros)
             {
-                this.ParsedString = joined;
+                this.ParsedString = functionEvaluated;
+                Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
             }
-            Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
-            return joined;
+            return functionEvaluated;
         }
 
         private string
         EvaluateFunctions(
-            System.Collections.Generic.List<string> tokens)
+            string sourceExpression)
         {
-            var joined = JoinTokens(tokens);
             // function calls may be nested, so the reg ex gets the inner most calls
             // and so iterate until all functions have been found
             for (;;)
             {
-                var tokenized = SplitToParse(joined, FunctionRegExPattern);
+                var tokenized = SplitToParse(sourceExpression, FunctionRegExPattern);
                 var matchCount = tokenized.Count();
                 if (1 == matchCount)
                 {
@@ -505,10 +550,10 @@ namespace Bam.Core
                     // and after that is the argument expression
                     var expression = tokenized.ElementAt(matchIndex++);
                     var expandedExpression = this.FunctionExpression(functionName, expression);
-                    joined = joined.Replace(matchedExpression, expandedExpression);
+                    sourceExpression = sourceExpression.Replace(matchedExpression, expandedExpression);
                 }
             }
-            return joined;
+            return sourceExpression;
         }
 
         private string

@@ -1,3 +1,5 @@
+13-Oct-2015 Bam.Core.TokenizedString.Create now accepts an optional flags parameter. One of these flags is EFlags.DeferredExpansion, which allows macro expansion to be deferred for one level. For example, if a Tool uses a Macro, which is defined in the Module using the tool, this now expands properly.
+
 10-Oct-2015 Added short version of option --createdebugproject, -p.
 
 10-Oct-2015 Renamed FileKey from Publisher.Collation.PackageRoot to Publisher.Collation.PublishingRoot.
