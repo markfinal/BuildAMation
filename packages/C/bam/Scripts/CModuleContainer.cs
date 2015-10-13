@@ -103,7 +103,7 @@ namespace C
         {
             if (!module.GeneratedPaths.ContainsKey(generatedFileKey))
             {
-                throw new System.Exception(System.String.Format("No generated path found with key '{0}'", generatedFileKey.Id));
+                throw new Bam.Core.Exception("No generated path found with key '{0}'", generatedFileKey.Id);
             }
             var child = Bam.Core.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
             child.InputPath = module.GeneratedPaths[generatedFileKey];

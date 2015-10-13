@@ -436,7 +436,7 @@ namespace Bam.Core
                         }
                         message.AppendLine("Created at");
                         message.AppendLine(this.CreationStackTrace);
-                        throw new System.Exception(message.ToString());
+                        throw new Exception(message.ToString());
                     }
                 }
                 if (null == token)
@@ -458,7 +458,7 @@ namespace Bam.Core
                 }
                 message.AppendLine("Created at");
                 message.AppendLine(this.CreationStackTrace);
-                throw new System.Exception(message.ToString());
+                throw new Exception(message.ToString());
             }
             var joined = this.EvaluateFunctions(tokens);
             if (null == customMacros)

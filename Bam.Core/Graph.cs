@@ -346,21 +346,21 @@ namespace Bam.Core
                 var childCollection = c.OwningRank;
                 if (null == childCollection)
                 {
-                    throw new System.Exception("Dependency has no rank");
+                    throw new Exception("Dependency has no rank");
                 }
                 var found = this.DependencyGraph.Where(item => item.Value == childCollection);
                 if (0 == found.Count())
                 {
-                    throw new System.Exception("Module collection not found in graph");
+                    throw new Exception("Module collection not found in graph");
                 }
                 if (found.Count() > 1)
                 {
-                    throw new System.Exception("Module collection found more than once in graph");
+                    throw new Exception("Module collection found more than once in graph");
                 }
                 var childRank = found.First().Key;
                 if (childRank <= parentRank)
                 {
-                    throw new System.Exception(System.String.Format("Dependent module {0} found at a lower rank than the dependee", c));
+                    throw new Exception("Dependent module {0} found at a lower rank than the dependee", c);
                 }
             }
         }

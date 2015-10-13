@@ -65,11 +65,11 @@ namespace Bam.Core
         {
             if (key.StartsWith(TokenizedString.TokenPrefix) || key.EndsWith(TokenizedString.TokenSuffix))
             {
-                throw new System.Exception(System.String.Format("Invalid macro key: {0}", key));
+                throw new Exception("Invalid macro key: {0}", key);
             }
             if (null == value)
             {
-                throw new System.Exception("Macro value cannot be null");
+                throw new Exception("Macro value cannot be null");
             }
             this.DictInternal[FormattedKey(key)] = value;
         }
