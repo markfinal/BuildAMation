@@ -1,3 +1,5 @@
+13-Oct-2015 Added Bam.Core.MacroList.Remove(), with an argument with no token markup. Use this function cautiously, as it can cause TokenizedStrings to fail to parse.
+
 13-Oct-2015 Bam.Core.MacroList.Contains now expects the argument to have no token markup (i.e. no $( prefix and no ) suffix). Note that this is because the macros are internally stored in a format for fast lookups for TokenizedStrings.
 
 13-Oct-2015 Added macros to C.CModule, MajorVersion (defaults to "1") and MinorVersion (defaults to "0"), but can be overridden in Module's Init functions. Some platforms support writing this data natively into the generated binaries, or including into the filenames.

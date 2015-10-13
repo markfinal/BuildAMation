@@ -90,6 +90,13 @@ namespace Bam.Core
             this.Add(key, TokenizedString.CreateVerbatim(value));
         }
 
+        public void
+        Remove(
+            string key)
+        {
+            this.DictInternal.Remove(FormattedKey(key));
+        }
+
         private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal
         {
             get;
