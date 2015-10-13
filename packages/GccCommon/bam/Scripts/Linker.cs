@@ -44,7 +44,11 @@ namespace GccCommon
 
             this.Macros.Add("exeext", string.Empty);
             this.Macros.Add("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", ".so");
+            // TODO: should be able to build these up cumulatively, but the deferred expansion only
+            // works for a single depth (up to the Module using this Tool) so this needs looking into
+            this.Macros.Add("linkernameext", Bam.Core.TokenizedString.CreateVerbatim(".so"));
+            this.Macros.Add("sonameext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion).$(MinorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
         }
 
         protected Gcc.MetaData GccMetaData
@@ -109,8 +113,8 @@ namespace GccCommon
             else if (library is C.IDynamicLibrary)
             {
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
+                var libraryName = GetLPrefixLibraryName(library.Macros["LinkerName"].Parse());
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
-                var libraryName = GetLPrefixLibraryName(libraryPath);
                 if (linker.Libraries.Contains(libraryName))
                 {
                     linker.Libraries.Remove(libraryName);

@@ -36,6 +36,9 @@ namespace C
     {
         static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Import Library File");
 
+        private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
+        private SharedObjectSymbolicLinkTool SymlinkTool;
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -47,6 +50,11 @@ namespace C
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.RegisterGeneratedFile(ImportLibraryKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)"));
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
+                this.Macros.Add("LinkerName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
             }
 
             this.PrivatePatch(settings =>
@@ -109,6 +117,32 @@ namespace C
                 }
                 source.UsePublicPatches(dependent);
                 this.UsePublicPatches(dependent);
+            }
+        }
+
+        protected override void
+        ExecuteInternal(
+            ExecutionContext context)
+        {
+            base.ExecuteInternal(context);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                var executable = this.GeneratedPaths[Key];
+                this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["SOName"], executable);
+                this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["LinkerName"], executable);
+            }
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            base.GetExecutionPolicy(mode);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                var className = "C." + mode + "SharedObjectSymbolicLink";
+                this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
+                this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
             }
         }
     }

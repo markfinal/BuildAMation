@@ -27,45 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+using Bam.Core;
+namespace C
 {
-    public static partial class CommandLineImplementation
+    public interface ISharedObjectSymbolicLinkPolicy
     {
-        public static void
-        Convert(
-            this C.ICommonLinkerSettings settings,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            switch (settings.OutputType)
-            {
-                case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].Parse()));
-                    break;
-
-                case C.ELinkerOutput.DynamicLibrary:
-                    {
-                        commandLine.Add("-shared");
-                        var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
-                        commandLine.Add(System.String.Format("-o {0}", outputName));
-                        var soName = module.Macros["SOName"].Parse();
-                        commandLine.Add(System.String.Format("-Wl,-soname,{0}", soName));
-                    }
-                    break;
-            }
-            foreach (var path in settings.LibraryPaths)
-            {
-                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
-            }
-            foreach (var path in settings.Libraries)
-            {
-                commandLine.Add(path);
-            }
-            if (settings.DebugSymbols.GetValueOrDefault())
-            {
-                commandLine.Add("-g");
-            }
-        }
+        void
+        Symlink(
+            ConsoleApplication sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.PreBuiltTool tool,
+            Bam.Core.TokenizedString linkname,
+            Bam.Core.TokenizedString target);
     }
 }
