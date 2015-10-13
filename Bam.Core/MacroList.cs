@@ -108,7 +108,7 @@ namespace Bam.Core
         Contains(
             string token)
         {
-            return this.Dict.ContainsKey(token);
+            return this.Dict.ContainsKey(FormattedKey(token));
         }
     }
 }

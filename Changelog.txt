@@ -1,3 +1,5 @@
+13-Oct-2015 Bam.Core.MacroList.Contains now expects the argument to have no token markup (i.e. no $( prefix and no ) suffix). Note that this is because the macros are internally stored in a format for fast lookups for TokenizedStrings.
+
 13-Oct-2015 Added macros to C.CModule, MajorVersion (defaults to "1") and MinorVersion (defaults to "0"), but can be overridden in Module's Init functions. Some platforms support writing this data natively into the generated binaries, or including into the filenames.
 
 13-Oct-2015 Bam.Core.TokenizedString.Create now accepts an optional flags parameter. One of these flags is EFlags.DeferredExpansion, which allows macro expansion to be deferred for one level. For example, if a Tool uses a Macro, which is defined in the Module using the tool, this now expands properly.
