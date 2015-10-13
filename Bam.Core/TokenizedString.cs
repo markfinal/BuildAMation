@@ -434,7 +434,7 @@ namespace Bam.Core
                                 message.AppendLine();
                             }
                         }
-                        message.AppendLine("Created at");
+                        message.AppendLine("TokenizedString created with this stack trace:");
                         message.AppendLine(this.CreationStackTrace);
                         throw new Exception(message.ToString());
                     }
@@ -456,7 +456,7 @@ namespace Bam.Core
                     message.AppendFormat("\t{0}", this.Tokens[index]);
                     message.AppendLine();
                 }
-                message.AppendLine("Created at");
+                message.AppendLine("TokenizedString created with this stack trace:");
                 message.AppendLine(this.CreationStackTrace);
                 throw new Exception(message.ToString());
             }
