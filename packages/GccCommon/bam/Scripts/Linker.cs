@@ -113,7 +113,9 @@ namespace GccCommon
             else if (library is C.IDynamicLibrary)
             {
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
-                var libraryName = GetLPrefixLibraryName(library.Macros["LinkerName"].Parse());
+                var libraryName = library.Macros.Contains("LinkerName") ?
+                    GetLPrefixLibraryName(library.Macros["LinkerName"].Parse()) :
+                    GetLPrefixLibraryName(libraryPath);
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 if (linker.Libraries.Contains(libraryName))
                 {

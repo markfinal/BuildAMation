@@ -48,8 +48,11 @@ namespace GccCommon
                         commandLine.Add("-shared");
                         var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
                         commandLine.Add(System.String.Format("-o {0}", outputName));
-                        var soName = module.Macros["SOName"].Parse();
-                        commandLine.Add(System.String.Format("-Wl,-soname,{0}", soName));
+                        if (module.Macros.Contains("SOName"))
+                        {
+                            var soName = module.Macros["SOName"].Parse();
+                            commandLine.Add(System.String.Format("-Wl,-soname,{0}", soName));
+                        }
                     }
                     break;
             }
