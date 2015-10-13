@@ -37,6 +37,8 @@ namespace C
         public CModule()
         {
             this.Macros.Add("OutputName", this.Macros["modulename"]);
+            this.Macros.Add("MajorVersion", Bam.Core.TokenizedString.CreateVerbatim("1"));
+            this.Macros.Add("MinorVersion", Bam.Core.TokenizedString.CreateVerbatim("0"));
             // default bit depth
             this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new DefaultBitDepth());
         }
