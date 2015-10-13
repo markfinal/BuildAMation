@@ -196,8 +196,8 @@ namespace MakeFileBuilder
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)
                 {
-                    // look for text like $ORIGIN, which needs a double $ prefix to avoid being interpreted as an environment variable by Make
-                    var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"$$$$$1");
+                    // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
+                    var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
                     rules.AppendFormat("\t{0}", escapedCommand);
                     rules.AppendLine();
                 }
