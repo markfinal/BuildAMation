@@ -128,8 +128,14 @@ namespace C
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var executable = this.GeneratedPaths[Key];
-                this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["SOName"], executable);
-                this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["LinkerName"], executable);
+                if (this.Macros.Contains("SOName"))
+                {
+                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["SOName"], executable);
+                }
+                if (this.Macros.Contains("LinkerName"))
+                {
+                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["LinkerName"], executable);
+                }
             }
         }
 
