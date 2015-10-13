@@ -38,7 +38,7 @@ namespace ClangCommon
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("exeext", string.Empty);
             this.Macros.Add("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", ".dylib");
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".$(MajorVersion).dylib", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
             // TODO: pass executablePath as a tokenized string (verbatim) and use as a positional token
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/" + executablePath, this));
         }
