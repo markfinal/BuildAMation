@@ -101,7 +101,7 @@ namespace Bam.Core
             }
 
             Log.ErrorMessage("({0}) {1}", exception.GetType().ToString(), exception.Message);
-            var anyInnerExceptions = DisplayException(exception.InnerException, "Additional details:");
+            var anyInnerExceptions = DisplayException(exception.InnerException);
             if (!anyInnerExceptions)
             {
                 Log.ErrorMessage("{0}{1}", System.Environment.NewLine, exception.StackTrace.ToString());
