@@ -42,13 +42,15 @@ namespace GccCommon
             var installPath = Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.GetDirectoryName(ldPath));
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(installPath));
 
-            this.Macros.Add("exeext", string.Empty);
-            this.Macros.Add("dynamicprefix", "lib");
+            this.Macros.AddVerbatim("exeext", string.Empty);
+            this.Macros.AddVerbatim("dynamicprefix", "lib");
             // TODO: should be able to build these up cumulatively, but the deferred expansion only
             // works for a single depth (up to the Module using this Tool) so this needs looking into
-            this.Macros.Add("linkernameext", Bam.Core.TokenizedString.CreateVerbatim(".so"));
+            this.Macros.AddVerbatim("linkernameext", ".so");
             this.Macros.Add("sonameext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
             this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion).$(MinorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.AddVerbatim("pluginprefix", "lib");
+            this.Macros.AddVerbatim("pluginext", ".so");
         }
 
         protected Gcc.MetaData GccMetaData

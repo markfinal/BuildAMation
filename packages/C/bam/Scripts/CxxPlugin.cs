@@ -38,10 +38,7 @@ namespace C.Cxx
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                this.Macros.Remove("SOName");
-            }
+            this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(pluginprefix)$(OutputName)$(pluginext)");
         }
     }
 }

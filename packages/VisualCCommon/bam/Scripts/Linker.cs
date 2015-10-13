@@ -43,6 +43,8 @@ namespace VisualCCommon
             this.Macros.AddVerbatim("exeext", ".exe");
             this.Macros.AddVerbatim("dynamicprefix", string.Empty);
             this.Macros.AddVerbatim("dynamicext", ".dll");
+            this.Macros.AddVerbatim("pluginprefix", string.Empty);
+            this.Macros.AddVerbatim("pluginext", ".dll");
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");
 

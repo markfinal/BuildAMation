@@ -44,6 +44,8 @@ namespace MingwCommon
             this.Macros.AddVerbatim("exeext", ".exe");
             this.Macros.AddVerbatim("dynamicprefix", "lib");
             this.Macros.AddVerbatim("dynamicext", ".so");
+            this.Macros.AddVerbatim("pluginprefix", "lib");
+            this.Macros.AddVerbatim("pluginext", ".so");
             this.Macros.AddVerbatim("libprefix", "lib");
             this.Macros.AddVerbatim("libext", ".a");
 
