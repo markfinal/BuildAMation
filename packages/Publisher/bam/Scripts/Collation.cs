@@ -237,6 +237,20 @@ namespace Publisher
             }
         }
 
+        private void
+        CopySONameSymlink(
+            CollatedFile copyFileModule)
+        {
+            if (!this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                return;
+            }
+            var copySymlink = this.CreateCollatedSymbolicLink(copyFileModule.Reference, copyFileModule.SubDirectory);
+            copySymlink.SourceModule = copyFileModule.SourceModule;
+            copySymlink.SourcePath = copyFileModule.SourceModule.Macros["SOName"];
+            copySymlink.LinkTarget(copySymlink.CreateTokenizedString("@filename($(0))", copyFileModule.SourcePath));
+        }
+
         private bool
         IsReferenceAWindowedApp(
             CollatedFile reference)
@@ -314,6 +328,13 @@ namespace Publisher
                 if (C.ConsoleApplication.Key == key)
                 {
                     this.AddOSXChangeIDNameForBinary(copyFileModule);
+                }
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                if ((dependent is C.IDynamicLibrary) && dependent.Macros.Contains("SOName"))
+                {
+                    this.CopySONameSymlink(copyFileModule);
                 }
             }
         }
