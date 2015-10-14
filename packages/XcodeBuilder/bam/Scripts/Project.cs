@@ -346,11 +346,12 @@ namespace XcodeBuilder
         public Configuration
         AddNewTargetConfiguration(
             Bam.Core.Module module,
+            Bam.Core.TokenizedString productName,
             Target target)
         {
             // add configuration to target
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
-            config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
+            config["PRODUCT_NAME"] = new UniqueConfigurationValue(productName.Parse());
 
             target.ConfigurationList.AddConfiguration(config);
             this.AllConfigurations.Add(config);
