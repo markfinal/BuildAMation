@@ -67,7 +67,7 @@ namespace ClangCommon
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.LibraryPaths)
                 {
-                    option.Add(path.ToString());
+                    option.Add(path.Parse());
                 }
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
             }
