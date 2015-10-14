@@ -198,8 +198,7 @@ namespace XcodeBuilder
             Bam.Core.Module currentModule,
             Bam.Core.Module encapsulatingModule)
         {
-            // TODO: change this for what works for Xcode projects
-            return Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.Combine(encapsulatingModule.GetType().Name, currentModule.BuildEnvironment.Configuration.ToString()));
+            return Bam.Core.TokenizedString.CreateVerbatim(currentModule.BuildEnvironment.Configuration.ToString());
         }
     }
 }

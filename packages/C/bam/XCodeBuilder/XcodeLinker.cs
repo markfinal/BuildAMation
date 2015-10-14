@@ -43,10 +43,6 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             var linker = sender.Settings as C.ICommonLinkerSettings;
-            // TODO: could the lib search paths be in the staticlibrary base class as a patch?
-            var configName = sender.BuildEnvironment.Configuration.ToString();
-            var macros = new Bam.Core.MacroList();
-            macros.Add("moduleoutputdir", Bam.Core.TokenizedString.CreateVerbatim(configName));
             foreach (var library in libraries)
             {
                 if (library is C.StaticLibrary)
