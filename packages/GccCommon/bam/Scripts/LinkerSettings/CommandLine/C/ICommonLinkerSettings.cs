@@ -40,18 +40,25 @@ namespace GccCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].Parse()));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
-                    commandLine.Add("-shared");
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    {
+                        commandLine.Add("-shared");
+                        var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
+                        commandLine.Add(System.String.Format("-o {0}", outputName));
+                        if (module.Macros.Contains("SOName"))
+                        {
+                            var soName = module.Macros["SOName"].Parse();
+                            commandLine.Add(System.String.Format("-Wl,-soname,{0}", soName));
+                        }
+                    }
                     break;
             }
             foreach (var path in settings.LibraryPaths)
             {
-                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
+                commandLine.Add(System.String.Format("-L{0}", path.ParseAndQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {

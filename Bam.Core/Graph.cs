@@ -55,7 +55,7 @@ namespace Bam.Core
             this.Macros = new MacroList();
             if (null != State.BuildMode)
             {
-                this.Macros.Add("buildroot", State.BuildRoot);
+                this.Macros.AddVerbatim("buildroot", State.BuildRoot);
             }
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
@@ -82,10 +82,10 @@ namespace Bam.Core
         {
             var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
             var matches = referencedModules.Where(item => item.GetType() == typeof(T));
-            if (matches.Count() > 0)
+            var matchedModule = matches.FirstOrDefault();
+            if (null != matchedModule)
             {
-                var module = matches.ElementAt(0) as T;
-                return module;
+                return matchedModule as T;
             }
             this.CommonModuleType.Push(typeof(T));
             var newModule = Module.Create<T>(preInitCallback: module =>
@@ -240,20 +240,10 @@ namespace Bam.Core
             System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
-            var nonChildDependents = new System.Collections.Generic.List<Module>();
-            foreach (var c in dependencies)
+            var nonChildDependents = dependencies.Where(item => !(item is IChildModule));
+            foreach (var c in children)
             {
-                if (!(c is IChildModule))
-                {
-                    nonChildDependents.Add(c);
-                }
-            }
-            foreach (var d in nonChildDependents)
-            {
-                foreach (var c in children)
-                {
-                    c.DependsOn(d);
-                }
+                c.DependsOn(nonChildDependents);
             }
         }
 
@@ -261,20 +251,10 @@ namespace Bam.Core
             System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
-            var nonChildDependents = new System.Collections.Generic.List<Module>();
-            foreach (var c in dependencies)
+            var nonChildDependents = dependencies.Where(item => !(item is IChildModule));
+            foreach (var c in children)
             {
-                if (!(c is IChildModule))
-                {
-                    nonChildDependents.Add(c);
-                }
-            }
-            foreach (var d in nonChildDependents)
-            {
-                foreach (var c in children)
-                {
-                    c.Requires(d);
-                }
+                c.Requires(nonChildDependents);
             }
         }
 
@@ -284,13 +264,8 @@ namespace Bam.Core
             int rank)
         {
             // predicate required, because eventually there will be a module without a Tool, e.g. a Tool itself
-            // TODO: should a Tool on a module actually be an interface to formalize this?
             if (m.Tool != null)
             {
-                if (!typeof(ITool).IsAssignableFrom(m.Tool.GetType()))
-                {
-                    throw new Exception("Tool {0} does not implement {1}", m.Tool.GetType().ToString(), typeof(ITool).ToString());
-                }
                 m.Requires(m.Tool);
                 var child = m as IChildModule;
                 if ((null == child) || (null == child.Parent))
@@ -371,21 +346,21 @@ namespace Bam.Core
                 var childCollection = c.OwningRank;
                 if (null == childCollection)
                 {
-                    throw new System.Exception("Dependency has no rank");
+                    throw new Exception("Dependency has no rank");
                 }
                 var found = this.DependencyGraph.Where(item => item.Value == childCollection);
                 if (0 == found.Count())
                 {
-                    throw new System.Exception("Module collection not found in graph");
+                    throw new Exception("Module collection not found in graph");
                 }
                 if (found.Count() > 1)
                 {
-                    throw new System.Exception("Module collection found more than once in graph");
+                    throw new Exception("Module collection found more than once in graph");
                 }
-                var childRank = found.ElementAt(0).Key;
+                var childRank = found.First().Key;
                 if (childRank <= parentRank)
                 {
-                    throw new System.Exception(System.String.Format("Dependent module {0} found at a lower rank than the dependee", c));
+                    throw new Exception("Dependent module {0} found at a lower rank than the dependee", c);
                 }
             }
         }
@@ -452,7 +427,7 @@ namespace Bam.Core
             Array<PackageDefinition> packages)
         {
             this.PackageDefinitions = packages;
-            this.Macros.Add("masterpackagename", this.MasterPackage.Name);
+            this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
         }
 
         public System.Collections.Generic.IEnumerable<PackageDefinition> Packages
@@ -464,6 +439,13 @@ namespace Bam.Core
                     yield return package;
                 }
             }
+        }
+
+        public IBuildModeMetaData
+        BuildModeMetaData
+        {
+            get;
+            set;
         }
     }
 }

@@ -286,7 +286,7 @@ namespace Bam.Core
 
                             if (!resolvedDuplicate)
                             {
-                                toRemove.Add(packageDefinitions.Where(item => item.Name == masterDep.Item1 && item.Version == masterDep.Item2).ElementAt(0));
+                                toRemove.Add(packageDefinitions.Where(item => item.Name == masterDep.Item1 && item.Version == masterDep.Item2).First());
                             }
                         }
                     }
@@ -298,7 +298,7 @@ namespace Bam.Core
                     else
                     {
                         var message = new System.Text.StringBuilder();
-                        message.AppendFormat("Unable resolve to a single version of package {0}", duplicates.ElementAt(0).Name);
+                        message.AppendFormat("Unable resolve to a single version of package {0}", duplicates.First().Name);
                         message.AppendLine();
                         foreach (var dup in duplicates)
                         {

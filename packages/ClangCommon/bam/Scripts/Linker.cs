@@ -36,9 +36,13 @@ namespace ClangCommon
             string executablePath)
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("exeext", string.Empty);
-            this.Macros.Add("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", ".dylib");
+            this.Macros.AddVerbatim("exeext", string.Empty);
+            this.Macros.AddVerbatim("dynamicprefix", "lib");
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".$(MajorVersion).dylib", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.AddVerbatim("pluginprefix", "lib");
+            this.Macros.AddVerbatim("pluginext", ".dylib");
+
+            // TODO: pass executablePath as a tokenized string (verbatim) and use as a positional token
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/" + executablePath, this));
         }
 
@@ -59,19 +63,19 @@ namespace ClangCommon
             var linker = executable.Settings as C.ICommonLinkerSettings;
             if (library is C.StaticLibrary)
             {
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
             }
             else if (library is C.IDynamicLibrary)
             {
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
             }
         }
 

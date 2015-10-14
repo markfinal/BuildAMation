@@ -93,7 +93,7 @@ namespace C
                     continue;
                 }
                 var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                linker.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(dir, null));
+                linker.LibraryPaths.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(dir));
             }
 
             var commandLineArgs = new Bam.Core.StringArray();
@@ -139,7 +139,7 @@ namespace C
 
             var tool = sender.Tool as Bam.Core.PreBuiltTool;
             var commands = new System.Text.StringBuilder();
-            commands.AppendFormat(tool.Executable.ContainsSpace ? "\"{0}\" $^ {1}" : "{0} $^ {1}", tool.Executable, commandLineArgs.ToString(' '));
+            commands.AppendFormat("{0} $^ {1}", tool.Executable.ParseAndQuoteIfNecessary(), commandLineArgs.ToString(' '));
             rule.AddShellCommand(commands.ToString());
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());

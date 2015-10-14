@@ -39,12 +39,12 @@ namespace MingwCommon
 
             var mingwPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Mingw").First();
             var suffix = mingwPackage.MetaData["ToolSuffix"] as string;
-            this.Macros.Add("CompilerSuffix", suffix);
+            this.Macros.AddVerbatim("CompilerSuffix", suffix);
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin", this));
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-gcc$(CompilerSuffix).exe", this));
-            this.Macros.Add("objext", ".o");
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(CompilerSuffix).exe"));
+            this.Macros.AddVerbatim("objext", ".o");
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
@@ -105,7 +105,7 @@ namespace MingwCommon
     {
         public Compiler32Cxx()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
         }
 
         protected override void

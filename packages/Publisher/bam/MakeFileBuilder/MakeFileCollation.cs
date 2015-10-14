@@ -39,11 +39,16 @@ namespace Publisher
         {
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
-            rule.AddTarget(Bam.Core.TokenizedString.Create("publish", null, verbatim: true), isPhony: true);
+            rule.AddTarget(Bam.Core.TokenizedString.CreateVerbatim("publish"), isPhony: true);
 
             foreach (var required in sender.Requirements)
             {
-                foreach (var rules in (required.MetaData as MakeFileBuilder.MakeFileMeta).Rules)
+                var requiredMeta = required.MetaData as MakeFileBuilder.MakeFileMeta;
+                if (null == requiredMeta)
+                {
+                    continue;
+                }
+                foreach (var rules in requiredMeta.Rules)
                 {
                     // TODO: only the first?
                     rule.AddPrerequisite(rules.Targets[0]);

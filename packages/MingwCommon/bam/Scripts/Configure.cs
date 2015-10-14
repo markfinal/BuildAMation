@@ -33,7 +33,7 @@ namespace MingwCommon
     {
         static Configure()
         {
-            InstallPath = Bam.Core.TokenizedString.Create(@"C:\MinGW", null);
+            InstallPath = Bam.Core.TokenizedString.CreateVerbatim(@"C:\MinGW");
         }
 
         public static Bam.Core.TokenizedString InstallPath

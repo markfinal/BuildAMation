@@ -35,19 +35,22 @@ namespace Publisher
         void
         ICollatedObjectPolicy.Collate(
             CollatedObject sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString packageRoot)
+            Bam.Core.ExecutionContext context)
         {
-            var sourcePath = sender.SourcePath;
+            var isSymLink = (sender is CollatedSymbolicLink);
+            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
 
-            var destinationPath = sender.Macros["CopyDir"].Parse();
+            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse() : sender.Macros["CopyDir"].Parse();
 
-            // synchronize, so that multiple modules don't try to create the same directories simultaneously
-            lock ((sender.Reference != null) ? sender.Reference : sender)
+            if (!isSymLink)
             {
-                if (!System.IO.Directory.Exists(destinationPath))
+                // synchronize, so that multiple modules don't try to create the same directories simultaneously
+                lock ((sender.Reference != null) ? sender.Reference : sender)
                 {
-                    System.IO.Directory.CreateDirectory(destinationPath);
+                    if (!System.IO.Directory.Exists(destinationPath))
+                    {
+                        System.IO.Directory.CreateDirectory(destinationPath);
+                    }
                 }
             }
 

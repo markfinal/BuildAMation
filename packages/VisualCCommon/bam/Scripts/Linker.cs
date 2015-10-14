@@ -36,14 +36,17 @@ namespace VisualCCommon
             string toolPath,
             string libPath)
         {
+            // TODO: positional tokens?
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)" + toolPath, this));
-            this.Macros.Add("exeext", ".exe");
-            this.Macros.Add("dynamicprefix", string.Empty);
-            this.Macros.Add("dynamicext", ".dll");
-            this.Macros.Add("libprefix", string.Empty);
-            this.Macros.Add("libext", ".lib");
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
+            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(InstallPath)" + toolPath));
+            this.Macros.AddVerbatim("exeext", ".exe");
+            this.Macros.AddVerbatim("dynamicprefix", string.Empty);
+            this.Macros.AddVerbatim("dynamicext", ".dll");
+            this.Macros.AddVerbatim("pluginprefix", string.Empty);
+            this.Macros.AddVerbatim("pluginext", ".dll");
+            this.Macros.AddVerbatim("libprefix", string.Empty);
+            this.Macros.AddVerbatim("libext", ".lib");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
@@ -53,7 +56,7 @@ namespace VisualCCommon
                 var linking = settings as C.ICommonLinkerSettings;
                 if (null != linking)
                 {
-                    linking.LibraryPaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)" + libPath, this));
+                    linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)" + libPath));
                 }
             });
         }
@@ -74,17 +77,17 @@ namespace VisualCCommon
             }
         }
 
-        private static string
+        private static Bam.Core.TokenizedString
         GetLibraryPath(
             Bam.Core.Module module)
         {
             if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key];
             }
             else if (module is C.IDynamicLibrary)
             {
-                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
+                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
             }
             else if (module is C.CSDKModule)
             {
@@ -117,10 +120,10 @@ namespace VisualCCommon
             {
                 return;
             }
-            var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
-            var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
+            var dir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
+            var libFilename = library.CreateTokenizedString("@filename($(0))", fullLibraryPath);
             var linker = executable.Settings as C.ICommonLinkerSettings;
-            linker.Libraries.AddUnique(libFilename);
+            linker.Libraries.AddUnique(libFilename.Parse());
             linker.LibraryPaths.AddUnique(dir);
         }
     }

@@ -37,7 +37,7 @@ namespace Installer
 
         public InnoSetupScript()
         {
-            this.ScriptPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)/script.iss", this);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/script.iss");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -132,7 +132,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create(@"C:\Program Files (x86)\Inno Setup 5\ISCC.exe", null);
+                return Bam.Core.TokenizedString.CreateVerbatim(@"C:\Program Files (x86)\Inno Setup 5\ISCC.exe");
             }
         }
     }

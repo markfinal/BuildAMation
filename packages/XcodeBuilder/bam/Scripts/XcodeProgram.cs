@@ -45,7 +45,7 @@ namespace XcodeBuilder
             this.Output = application;
             this.Project.ProductRefGroup.AddReference(application);
             this.Target = this.Project.FindOrCreateTarget(module, application, Target.EProductType.Executable);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"), this.Target);
             this.PullInProjectPreOrPostBuildSteps();
         }
     }

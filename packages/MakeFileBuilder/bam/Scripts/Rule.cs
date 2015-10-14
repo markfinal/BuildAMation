@@ -62,12 +62,10 @@ namespace MakeFileBuilder
             Bam.Core.Module module,
             Bam.Core.FileKey key)
         {
-            if (this.Prequisities.ContainsKey(module))
+            if (!this.Prequisities.ContainsKey(module))
             {
-                throw new Bam.Core.Exception("Module {0} is already a prerequisite", module.ToString());
+                this.Prequisities.Add(module, key);
             }
-
-            this.Prequisities.Add(module, key);
         }
 
         public void
@@ -144,7 +142,7 @@ namespace MakeFileBuilder
                 }
 
                 // simply expanded variable
-                variables.AppendFormat("{0}:={1}", name, target.Path);
+                variables.AppendFormat("{0}:={1}", name, target.Path.Parse());
                 variables.AppendLine();
             }
         }
@@ -196,8 +194,8 @@ namespace MakeFileBuilder
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)
                 {
-                    // look for text like $ORIGIN, which needs a double $ prefix to avoid being interpreted as an environment variable by Make
-                    var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"$$$$$1");
+                    // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
+                    var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
                     rules.AppendFormat("\t{0}", escapedCommand);
                     rules.AppendLine();
                 }

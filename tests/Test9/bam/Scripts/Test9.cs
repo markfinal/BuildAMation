@@ -39,7 +39,7 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main_c.c", this);
+            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_c.c");
         }
     }
 
@@ -65,7 +65,7 @@ namespace Test9
         {
             base.Init(parent);
 
-            this.InputPath = Bam.Core.TokenizedString.Create("$(packagedir)/source/main_cpp.c", this);
+            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_cpp.c");
             this.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICxxOnlyCompilerSettings;
@@ -90,7 +90,7 @@ namespace Test9
             cSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
             var cxxSource = this.CreateCxxSourceContainer();
@@ -99,7 +99,7 @@ namespace Test9
             cxxSource.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                     var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
@@ -127,7 +127,7 @@ namespace Test9
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
         }
     }
@@ -147,7 +147,7 @@ namespace Test9
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
 
                 var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -170,7 +170,7 @@ namespace Test9
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
@@ -196,7 +196,7 @@ namespace Test9
             source.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;
-                compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
 
                 var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;

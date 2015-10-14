@@ -65,11 +65,11 @@ namespace Bam.Core
         {
             if (key.StartsWith(TokenizedString.TokenPrefix) || key.EndsWith(TokenizedString.TokenSuffix))
             {
-                throw new System.Exception(System.String.Format("Invalid macro key: {0}", key));
+                throw new Exception("Invalid macro key: {0}", key);
             }
             if (null == value)
             {
-                throw new System.Exception("Macro value cannot be null");
+                throw new Exception("Macro value cannot be null");
             }
             this.DictInternal[FormattedKey(key)] = value;
         }
@@ -80,6 +80,21 @@ namespace Bam.Core
             string value)
         {
             this.Add(key, TokenizedString.Create(value, null));
+        }
+
+        public void
+        AddVerbatim(
+            string key,
+            string value)
+        {
+            this.Add(key, TokenizedString.CreateVerbatim(value));
+        }
+
+        public void
+        Remove(
+            string key)
+        {
+            this.DictInternal.Remove(FormattedKey(key));
         }
 
         private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal
@@ -100,7 +115,7 @@ namespace Bam.Core
         Contains(
             string token)
         {
-            return this.Dict.ContainsKey(token);
+            return this.Dict.ContainsKey(FormattedKey(token));
         }
     }
 }

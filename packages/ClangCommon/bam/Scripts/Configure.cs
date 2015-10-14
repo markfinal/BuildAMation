@@ -33,7 +33,7 @@ namespace ClangCommon
     {
         static Configure()
         {
-            InstallPath = Bam.Core.TokenizedString.Create(@"/usr/bin", null);
+            InstallPath = Bam.Core.TokenizedString.CreateVerbatim(@"/usr/bin");
         }
 
         public static Bam.Core.TokenizedString InstallPath

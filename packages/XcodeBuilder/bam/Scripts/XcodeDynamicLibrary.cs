@@ -45,7 +45,7 @@ namespace XcodeBuilder
             this.Output = dynamicLibrary;
             this.Project.ProductRefGroup.AddReference(dynamicLibrary);
             this.Target = this.Project.FindOrCreateTarget(module, dynamicLibrary, Target.EProductType.DynamicLibrary);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, this.Target);
+            this.Configuration = this.Project.AddNewTargetConfiguration(module, module.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)"), this.Target);
             this.PullInProjectPreOrPostBuildSteps();
         }
     }

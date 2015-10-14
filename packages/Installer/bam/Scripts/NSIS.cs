@@ -37,7 +37,7 @@ namespace Installer
 
         public NSISScript()
         {
-            this.ScriptPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)/script.nsi", this);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/script.nsi");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -129,7 +129,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create(@"C:\Program Files (x86)\NSIS\makensis.exe", null);
+                return Bam.Core.TokenizedString.CreateVerbatim(@"C:\Program Files (x86)\NSIS\makensis.exe");
             }
         }
     }

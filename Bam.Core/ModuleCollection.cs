@@ -66,7 +66,7 @@ namespace Bam.Core
         {
             if (null == m.OwningRank)
             {
-                throw new System.Exception("Cannot move a module that has not been assigned");
+                throw new Exception("Cannot move a module that has not been assigned");
             }
             m.OwningRank.Modules.Remove(m);
             m.OwningRank = null;

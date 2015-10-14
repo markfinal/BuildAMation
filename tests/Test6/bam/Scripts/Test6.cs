@@ -46,7 +46,7 @@ namespace Test6
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
             var main = source.AddFile("$(packagedir)/source/main.c");
@@ -54,7 +54,7 @@ namespace Test6
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.PreprocessorDefines.Add("MAIN_C");
-                    compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include/platform", this));
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/platform"));
                 });
 
             var platformPath = (this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ?

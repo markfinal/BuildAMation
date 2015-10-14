@@ -110,6 +110,20 @@ namespace Bam.Core
         }
 
         public void
+        AddRangeUnique(
+            System.Collections.Generic.IEnumerable<T> list)
+        {
+            foreach (var item in list)
+            {
+                if (this.list.Contains(item))
+                {
+                    continue;
+                }
+                this.list.Add(item);
+            }
+        }
+
+        public void
         Insert(
             int index,
             T item)
@@ -320,6 +334,12 @@ namespace Bam.Core
                 newArray.Add(this[index]);
             }
             return newArray;
+        }
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<T>
+        ToReadOnlyCollection()
+        {
+            return new System.Collections.ObjectModel.ReadOnlyCollection<T>(this.list);
         }
     }
 }

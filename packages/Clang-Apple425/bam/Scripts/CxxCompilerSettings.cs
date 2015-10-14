@@ -41,7 +41,9 @@ namespace Clang
         public CxxCompilerSettings(
             Bam.Core.Module module)
             : this(module, true)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
+        }
 
         public CxxCompilerSettings(
             Bam.Core.Module module,

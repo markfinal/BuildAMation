@@ -31,7 +31,8 @@ using System.Linq;
 namespace VSSolutionBuilder
 {
     // although this is project related data, it needs to be named after the builder, VSSolution
-    public abstract class VSSolutionMeta
+    public class VSSolutionMeta :
+        Bam.Core.IBuildModeMetaData
     {
         public static void
         PreExecution()
@@ -108,6 +109,14 @@ namespace VSSolutionBuilder
             Bam.Core.Log.DebugMessage(solutionContents.ToString());
 
             Bam.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", graph.MasterPackage.Name, solutionPath);
+        }
+
+        Bam.Core.TokenizedString
+        Bam.Core.IBuildModeMetaData.ModuleOutputDirectory(
+            Bam.Core.Module currentModule,
+            Bam.Core.Module encapsulatingModule)
+        {
+            return Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.Combine(encapsulatingModule.GetType().Name, currentModule.BuildEnvironment.Configuration.ToString()));
         }
     }
 }

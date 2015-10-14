@@ -35,25 +35,37 @@ namespace Publisher
         void
         ICollatedObjectPolicy.Collate(
             CollatedObject sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString packageRoot)
+            Bam.Core.ExecutionContext context)
         {
-            var sourcePath = sender.SourcePath;
-            var sourceFilename = System.IO.Path.GetFileName(sourcePath.Parse());
-
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
 
-            var destinationPath = sender.Macros["CopyDir"].Parse();
-            meta.CommonMetaData.Directories.AddUnique(destinationPath);
+            var sourcePath = sender.SourcePath;
+            var sourceFilename = System.IO.Path.GetFileName(sourcePath.Parse());
 
-            rule.AddTarget(Bam.Core.TokenizedString.Create(destinationPath + sourceFilename, null, verbatim: true), variableName: "CopyFile_" + sourceFilename);
+            var senderType = sender.GetType().Name;
+            var sourceType = (null != sender.SourceModule) ? sender.SourceModule.GetType().FullName : "publishroot";
+
+            var isSymLink = (sender is CollatedSymbolicLink);
+            var targetName = isSymLink ?
+                sender.GeneratedPaths[CollatedObject.CopiedObjectKey] :
+                sender.CreateTokenizedString("$(0)/@filename($(1))", sender.Macros["CopyDir"], sourcePath);
+            rule.AddTarget(targetName, variableName: sourceType + "_" + senderType + "_" + sourceFilename, isPhony: isSymLink);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' ')));
-            rule.AddPrerequisite(sourcePath);
+            if (isSymLink)
+            {
+                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), sender.Macros["LinkTarget"].Parse()));
+            }
+            else
+            {
+                meta.CommonMetaData.Directories.AddUnique(sender.Macros["CopyDir"].Parse());
+
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' ')));
+                rule.AddPrerequisite(sourcePath);
+            }
         }
     }
 }

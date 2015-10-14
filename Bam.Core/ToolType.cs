@@ -51,9 +51,10 @@ namespace Bam.Core
             string id)
         {
             var matches = List.Where((item) => { return item.Id == id; });
-            if (matches.Count() > 0)
+            var first = matches.FirstOrDefault();
+            if (null != first)
             {
-                return matches.ElementAt(0);
+                return first;
             }
             var tooltype = new ToolType(id);
             List.Add(tooltype);

@@ -39,12 +39,18 @@ namespace GccCommon
             this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
 
             var ldPath = this.GccMetaData.LdPath;
-            var installPath = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(ldPath), null);
+            var installPath = Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.GetDirectoryName(ldPath));
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(installPath));
 
-            this.Macros.Add("exeext", string.Empty);
-            this.Macros.Add("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", ".so");
+            this.Macros.AddVerbatim("exeext", string.Empty);
+            this.Macros.AddVerbatim("dynamicprefix", "lib");
+            // TODO: should be able to build these up cumulatively, but the deferred expansion only
+            // works for a single depth (up to the Module using this Tool) so this needs looking into
+            this.Macros.AddVerbatim("linkernameext", ".so");
+            this.Macros.Add("sonameext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion).$(MinorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.AddVerbatim("pluginprefix", "lib");
+            this.Macros.AddVerbatim("pluginext", ".so");
         }
 
         protected Gcc.MetaData GccMetaData
@@ -93,6 +99,7 @@ namespace GccCommon
             var linker = executable.Settings as C.ICommonLinkerSettings;
             if (library is C.StaticLibrary)
             {
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 var libraryName = GetLPrefixLibraryName(libraryPath);
@@ -102,30 +109,29 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
             }
             else if (library is C.IDynamicLibrary)
             {
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
+                var libraryName = library.Macros.Contains("LinkerName") ?
+                    GetLPrefixLibraryName(library.Macros["LinkerName"].Parse()) :
+                    GetLPrefixLibraryName(libraryPath);
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
-                var libraryName = GetLPrefixLibraryName(libraryPath);
                 if (linker.Libraries.Contains(libraryName))
                 {
                     linker.Libraries.Remove(libraryName);
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
 
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
-                    var depLibraryPath = dep.GeneratedPaths[C.DynamicLibrary.Key].Parse();
-                    var depLibraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(depLibraryPath), null);
-                    gccLinker.RPathLink.AddUnique(depLibraryDir.Parse());
+                    gccLinker.RPathLink.AddUnique(dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]).Parse());
                 }
             }
         }
@@ -154,7 +160,7 @@ namespace GccCommon
     {
         public Linker()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GccPath, null));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
         }
     }
 
@@ -165,7 +171,7 @@ namespace GccCommon
     {
         public LinkerCxx()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GxxPath, null));
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
         }
     }
 }

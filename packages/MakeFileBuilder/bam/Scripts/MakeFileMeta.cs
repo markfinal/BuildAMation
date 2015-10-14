@@ -30,8 +30,12 @@
 using System.Linq;
 namespace MakeFileBuilder
 {
-    public sealed class MakeFileMeta
+    public sealed class MakeFileMeta :
+        Bam.Core.IBuildModeMetaData
     {
+        public MakeFileMeta()
+        { }
+
         public MakeFileMeta(
             Bam.Core.Module module)
         {
@@ -173,6 +177,14 @@ namespace MakeFileBuilder
             }
 
             Bam.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", graph.MasterPackage.Name, makeFilePath);
+        }
+
+        Bam.Core.TokenizedString
+        Bam.Core.IBuildModeMetaData.ModuleOutputDirectory(
+            Bam.Core.Module currentModule,
+            Bam.Core.Module encapsulatingModule)
+        {
+            return Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.Combine(encapsulatingModule.GetType().Name, currentModule.BuildEnvironment.Configuration.ToString()));
         }
     }
 }

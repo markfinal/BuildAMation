@@ -29,7 +29,8 @@
 #endregion // License
 namespace XcodeBuilder
 {
-    public abstract class XcodeMeta
+    public class XcodeMeta :
+        Bam.Core.IBuildModeMetaData
     {
         public enum Type
         {
@@ -39,7 +40,12 @@ namespace XcodeBuilder
             DynamicLibrary
         }
 
-        protected XcodeMeta(Bam.Core.Module module, Type type)
+        public XcodeMeta()
+        { }
+
+        protected XcodeMeta(
+            Bam.Core.Module module,
+            Type type)
         {
             var graph = Bam.Core.Graph.Instance;
             var isReferenced = graph.IsReferencedModule(module);
@@ -82,12 +88,14 @@ namespace XcodeBuilder
             protected set;
         }
 
-        public static void PreExecution()
+        public static void
+        PreExecution()
         {
             Bam.Core.Graph.Instance.MetaData = new WorkspaceMeta();
         }
 
-        public static void PostExecution()
+        public static void
+        PostExecution()
         {
             // TODO: some alternatives
             // all modules in the same namespace -> targets in the .xcodeproj
@@ -183,6 +191,14 @@ namespace XcodeBuilder
             workspaceSettings.Serialize();
 
             Bam.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Bam.Core.Graph.Instance.MasterPackage.Name, workspaceDir);
+        }
+
+        Bam.Core.TokenizedString
+        Bam.Core.IBuildModeMetaData.ModuleOutputDirectory(
+            Bam.Core.Module currentModule,
+            Bam.Core.Module encapsulatingModule)
+        {
+            return Bam.Core.TokenizedString.CreateVerbatim(currentModule.BuildEnvironment.Configuration.ToString());
         }
     }
 }

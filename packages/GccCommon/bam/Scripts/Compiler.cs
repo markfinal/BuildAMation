@@ -37,7 +37,7 @@ namespace GccCommon
         {
             var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
             this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
-            this.Macros.Add("objext", ".o");
+            this.Macros.AddVerbatim("objext", ".o");
         }
 
         protected Gcc.MetaData GccMetaData
@@ -114,7 +114,7 @@ namespace GccCommon
     {
         public CCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GccPath, null));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
         }
 
         protected override void
@@ -133,7 +133,7 @@ namespace GccCommon
     {
         public CxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GxxPath, null));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
         }
 
         protected override void
@@ -152,7 +152,7 @@ namespace GccCommon
     {
         public ObjectiveCCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GccPath, null));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
         }
 
         protected override void
@@ -173,7 +173,7 @@ namespace GccCommon
     {
         public ObjectiveCxxCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(this.GccMetaData.GxxPath, null));
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
         }
 
         protected override void

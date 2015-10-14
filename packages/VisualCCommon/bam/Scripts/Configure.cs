@@ -37,7 +37,7 @@ namespace VisualCCommon
             var visualCPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "VisualC").First();
             var installDir = visualCPackage.MetaData["InstallDir"] as string;
 
-            InstallPath = Bam.Core.TokenizedString.Create(installDir, null);
+            InstallPath = Bam.Core.TokenizedString.CreateVerbatim(installDir);
         }
 
         public static Bam.Core.TokenizedString InstallPath

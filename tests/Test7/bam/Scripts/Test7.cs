@@ -39,7 +39,7 @@ namespace Test7
         {
             base.Init(parent);
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.Create("ExplicitDynamicLibrary", null);
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("ExplicitDynamicLibrary");
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
             this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
@@ -50,7 +50,7 @@ namespace Test7
                     {
                         return;
                     }
-                    compiler.IncludePaths.AddUnique(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

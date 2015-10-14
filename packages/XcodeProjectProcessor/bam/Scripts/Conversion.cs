@@ -51,7 +51,14 @@ namespace XcodeProjectProcessor
                         moduleType,
                         xcodeConfigurationType);
                 }
-                method.Invoke(null, new object[] { toolSettings, module, configuration });
+                try
+                {
+                    method.Invoke(null, new object[] { toolSettings, module, configuration });
+                }
+                catch (System.Reflection.TargetInvocationException exception)
+                {
+                    throw exception.InnerException;
+                }
             }
         }
     }

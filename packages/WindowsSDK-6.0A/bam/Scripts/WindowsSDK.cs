@@ -40,7 +40,7 @@ namespace WindowsSDK
                     var compilation = settings as C.ICommonCompilerSettings;
                     if (null != compilation)
                     {
-                        compilation.IncludePaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Include", this));
+                        compilation.IncludePaths.Add(this.CreateTokenizedString(@"$(InstallPath)\Include"));
                     }
 
                     var linking = settings as C.ICommonLinkerSettings;
@@ -48,11 +48,11 @@ namespace WindowsSDK
                     {
                         if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
                         {
-                            linking.LibraryPaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Lib", this));
+                            linking.LibraryPaths.Add(this.CreateTokenizedString(@"$(InstallPath)\Lib"));
                         }
                         else
                         {
-                            linking.LibraryPaths.Add(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Lib\x64", this));
+                            linking.LibraryPaths.Add(this.CreateTokenizedString(@"$(InstallPath)\Lib\x64"));
                         }
                     }
                 });

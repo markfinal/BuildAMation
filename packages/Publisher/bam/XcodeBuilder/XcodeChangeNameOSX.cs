@@ -29,12 +29,39 @@
 #endregion // License
 namespace Publisher
 {
-    public interface ICollatedObjectPolicy
+    public sealed class XcodeChangeNameOSX :
+        IInstallNameToolPolicy
     {
         void
-        Collate(
-            CollatedObject sender,
+        IInstallNameToolPolicy.InstallName(
+            InstallNameModule sender,
             Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString packageRoot);
+            Bam.Core.TokenizedString oldName,
+            Bam.Core.TokenizedString newName)
+        {
+            var originalModule = sender.Source.SourceModule;
+            var metadata = (sender.Source.Reference != null) ? sender.Source.Reference.SourceModule.MetaData : sender.Source.SourceModule.MetaData;
+            if (originalModule != null)
+            {
+                var commandLine = new Bam.Core.StringArray();
+                (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+
+                var destinationFolder = "$CONFIGURATION_BUILD_DIR";
+                if (sender.Source.Reference != null)
+                {
+                    destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
+                }
+
+                var commands = new Bam.Core.StringArray();
+                commands.Add(System.String.Format("{0} {1} {2} {3} {4}/{5}",
+                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    commandLine.ToString(' '),
+                    oldName.Parse(),
+                    newName.Parse(),
+                    destinationFolder,
+                    sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath).Parse()));
+                (metadata as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+            }
+        }
     }
 }

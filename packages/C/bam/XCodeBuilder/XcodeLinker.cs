@@ -43,23 +43,15 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
             var linker = sender.Settings as C.ICommonLinkerSettings;
-            // TODO: could the lib search paths be in the staticlibrary base class as a patch?
-            var configName = sender.BuildEnvironment.Configuration.ToString();
-            var macros = new Bam.Core.MacroList();
-            macros.Add("moduleoutputdir", Bam.Core.TokenizedString.Create(configName, null));
             foreach (var library in libraries)
             {
                 if (library is C.StaticLibrary)
                 {
-                    var fullLibraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse(macros);
-                    var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                    linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
+                    linker.LibraryPaths.Add(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
                 }
                 else if (library is C.IDynamicLibrary)
                 {
-                    var fullLibraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse(macros);
-                    var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                    linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
+                    linker.LibraryPaths.Add(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
                 }
                 else if (library is C.CSDKModule)
                 {

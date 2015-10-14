@@ -47,8 +47,15 @@ namespace C
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.Module.Create<ChildModuleType>(this);
-            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            child.InputPath = Bam.Core.TokenizedString.Create(path, macroModule, verbatim);
+            if (verbatim)
+            {
+                child.InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
+            }
+            else
+            {
+                var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+                child.InputPath = macroModule.CreateTokenizedString(path);
+            }
             (child as Bam.Core.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);
@@ -62,7 +69,7 @@ namespace C
             System.Text.RegularExpressions.Regex filter = null)
         {
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            var wildcardPath = Bam.Core.TokenizedString.Create(path, macroModule).Parse();
+            var wildcardPath = macroModule.CreateTokenizedString(path).Parse();
 
             var dir = System.IO.Path.GetDirectoryName(wildcardPath);
             if (!System.IO.Directory.Exists(dir))
@@ -96,7 +103,7 @@ namespace C
         {
             if (!module.GeneratedPaths.ContainsKey(generatedFileKey))
             {
-                throw new System.Exception(System.String.Format("No generated path found with key '{0}'", generatedFileKey.Id));
+                throw new Bam.Core.Exception("No generated path found with key '{0}'", generatedFileKey.Id);
             }
             var child = Bam.Core.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
             child.InputPath = module.GeneratedPaths[generatedFileKey];

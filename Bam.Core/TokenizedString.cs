@@ -51,6 +51,13 @@ namespace Bam.Core
     /// </summary>
     public sealed class TokenizedString
     {
+        [System.Flags]
+        public enum EFlags
+        {
+            None = 0,
+            DeferredExpansion = 0x1
+        }
+
         public static readonly string TokenPrefix = @"$(";
         public static readonly string TokenSuffix = @")";
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
@@ -70,6 +77,8 @@ namespace Bam.Core
         private bool Verbatim;
         private TokenizedStringArray PositionalTokens = new TokenizedStringArray();
         private string CreationStackTrace = null;
+        private int RefCount = 1;
+        private EFlags Flags = EFlags.None;
 
         public void
         Assign(
@@ -86,6 +95,8 @@ namespace Bam.Core
             this.ParsedString = other.Verbatim ? other.ParsedString : null; // force reparsing
             this.Verbatim = other.Verbatim;
             this.PositionalTokens = other.PositionalTokens;
+            this.RefCount = other.RefCount + 1;
+            this.Flags = other.Flags;
         }
 
         static private System.Collections.Generic.IEnumerable<string>
@@ -120,7 +131,8 @@ namespace Bam.Core
         private TokenizedString(
             string original,
             bool verbatim = false,
-            TokenizedStringArray positionalTokens = null)
+            TokenizedStringArray positionalTokens = null,
+            EFlags flags = EFlags.None)
         {
             this.CreationStackTrace = System.Environment.StackTrace;
             if (null != positionalTokens)
@@ -128,10 +140,11 @@ namespace Bam.Core
                 this.PositionalTokens.AddRange(positionalTokens);
             }
             this.Verbatim = verbatim;
+            this.Flags |= flags;
             this.OriginalString = original;
             if (verbatim)
             {
-                this.ParsedString = original;
+                this.ParsedString = NormalizeDirectorySeparators(original);
                 return;
             }
             var tokenized = SplitToParse(original, TokenRegExPattern);
@@ -153,36 +166,20 @@ namespace Bam.Core
             string original,
             Module moduleWithMacros,
             bool verbatim,
-            TokenizedStringArray positionalTokens) :
-            this(original, verbatim, positionalTokens)
+            TokenizedStringArray positionalTokens,
+            EFlags flags) :
+            this(original, verbatim, positionalTokens, flags)
         {
-            if (null == moduleWithMacros)
-            {
-                if (null != this.MacroIndices)
-                {
-                    foreach (var tokenIndex in this.MacroIndices)
-                    {
-                        if (!Graph.Instance.Macros.Contains(this.Tokens[tokenIndex]))
-                        {
-                            throw new Exception("Cannot have a tokenized string without a module");
-                        }
-                    }
-                }
-                else
-                {
-                    // consider the string parsed, as there is no work to do
-                    this.ParsedString = this.OriginalString;
-                }
-            }
             this.ModuleWithMacros = moduleWithMacros;
         }
 
-        public static TokenizedString
-        Create(
+        private static TokenizedString
+        CreateInternal(
             string tokenizedString,
             Module macroSource,
-            bool verbatim = false,
-            TokenizedStringArray positionalTokens = null)
+            bool verbatim,
+            TokenizedStringArray positionalTokens,
+            EFlags flags)
         {
             if (null == tokenizedString)
             {
@@ -193,20 +190,59 @@ namespace Bam.Core
             lock (Cache)
             {
                 var search = Cache.Where((ts) =>
+                {
+                    // first check the simple states for equivalence
+                    if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource && ts.Verbatim == verbatim)
                     {
-                        return ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource;
-                    });
-                if (search.Count() > 0)
+                        // and then check the positional tokens, if they exist
+                        var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
+                                                ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
+                        if (!samePosTokenCount)
+                        {
+                            return false;
+                        }
+                        for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
+                        {
+                            // because positional tokens are TokenizedStrings, they will refer to the same object
+                            if (ts.PositionalTokens[i] != positionalTokens[i])
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                });
+                var foundTS = search.FirstOrDefault();
+                if (null != foundTS)
                 {
-                    return search.ElementAt(0);
+                    ++foundTS.RefCount;
+                    return foundTS;
                 }
-                else
-                {
-                    var ts = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens);
-                    Cache.Add(ts);
-                    return ts;
-                }
+                var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
+                Cache.Add(newTS);
+                return newTS;
             }
+        }
+
+        public static TokenizedString
+        Create(
+            string tokenizedString,
+            Module macroSource,
+            TokenizedStringArray positionalTokens = null,
+            EFlags flags = EFlags.None)
+        {
+            return CreateInternal(tokenizedString, macroSource, false, positionalTokens, flags);
+        }
+
+        public static TokenizedString
+        CreateVerbatim(
+            string verboseString)
+        {
+            return CreateInternal(verboseString, null, true, null, EFlags.None);
         }
 
         private string this[int index]
@@ -234,6 +270,10 @@ namespace Bam.Core
                 {
                     return true;
                 }
+                if (EFlags.DeferredExpansion == (this.Flags & EFlags.DeferredExpansion))
+                {
+                    return false;
+                }
                 foreach (var positionalToken in this.PositionalTokens)
                 {
                     if (!positionalToken.IsExpanded)
@@ -246,6 +286,14 @@ namespace Bam.Core
         }
 
         private static string
+        NormalizeDirectorySeparators(
+            string path)
+        {
+            var normalized = OSUtilities.IsWindowsHosting ? path.Replace('/', '\\') : path.Replace('\\', '/');
+            return normalized;
+        }
+
+        private static string
         JoinTokens(
             System.Collections.Generic.List<string> tokens)
         {
@@ -253,33 +301,18 @@ namespace Bam.Core
             {
                 return tokens[0];
             }
-            var join = System.String.Join(string.Empty, tokens);
-            if (OSUtilities.IsWindowsHosting)
-            {
-                join = join.Replace('/', '\\');
-            }
-            else
-            {
-                join = join.Replace('\\', '/');
-            }
+            var join = NormalizeDirectorySeparators(System.String.Join(string.Empty, tokens));
             return join;
         }
 
         public override string
         ToString()
         {
-            if (this.Verbatim)
+            if (!this.Verbatim && !this.IsExpanded)
             {
-                return this.OriginalString;
+                throw new Exception("TokenizedString {0} was not expanded", this.OriginalString);
             }
-            else
-            {
-                if (!this.IsExpanded)
-                {
-                    throw new Exception("TokenizedString {0} was not expanded", this.OriginalString);
-                }
-                return this.ParsedString;
-            }
+            return this.ParsedString;
         }
 
         public bool Empty
@@ -296,7 +329,7 @@ namespace Bam.Core
             Log.Detail("Parsing tokenized strings");
             foreach (var t in Cache)
             {
-                t.ParsedString = t.Parse();
+                t.Parse();
             }
         }
 
@@ -328,7 +361,21 @@ namespace Bam.Core
                         {
                             throw new Exception("Infinite recursion for {0}. Created at {3}", source.OriginalString, source.CreationStackTrace);
                         }
-                        tokenString.Parse();
+                        if (0 == (tokenString.Flags & EFlags.DeferredExpansion))
+                        {
+                            tokenString.Parse(null);
+                        }
+                        else
+                        {
+                            // temporarily remove the deferred expansion flag to get a result - but don't commit this back as the parsed string
+                            // or it may not be useful in multiple scenarios, e.g. if a Tool has a deferred expansion string, with the Module using the Tool
+                            // defining one of the macros, then each Module may have a unique value for that macro - if the Tool had the value written back
+                            // as the parsed string, then the string will be considered expanded, and the same value will be used for all Modules
+                            tokenString.Flags &= ~EFlags.DeferredExpansion;
+                            var result = tokenString.Parse((this.ModuleWithMacros != null) ? this.ModuleWithMacros.Macros : null);
+                            tokenString.Flags |= EFlags.DeferredExpansion;
+                            return result;
+                        }
                     }
                     return tokenString.ToString();
                 };
@@ -380,33 +427,36 @@ namespace Bam.Core
                     {
                         token = envVar;
                     }
-                    // step 6 : fail
+                    // step 6 : fail (if not deferred)
                     else
                     {
-                        // TODO: this could be due to the user not having set a property, e.g. inputpath
-                        // is there a better error message that could be returned, other than this in those
-                        // circumstances?
-                        var message = new System.Text.StringBuilder();
-                        message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
-                        message.AppendLine();
-                        if (null != customMacros)
+                        if (0 == (this.Flags & EFlags.DeferredExpansion))
                         {
-                            message.AppendLine("Searched in custom macros");
-                        }
-                        message.AppendLine("Searched in global macros");
-                        if (null != this.ModuleWithMacros)
-                        {
-                            message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                            // TODO: this could be due to the user not having set a property, e.g. inputpath
+                            // is there a better error message that could be returned, other than this in those
+                            // circumstances?
+                            var message = new System.Text.StringBuilder();
+                            message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
                             message.AppendLine();
-                            if (null != this.ModuleWithMacros.Tool)
+                            if (null != customMacros)
                             {
-                                message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
-                                message.AppendLine();
+                                message.AppendLine("Searched in custom macros");
                             }
+                            message.AppendLine("Searched in global macros");
+                            if (null != this.ModuleWithMacros)
+                            {
+                                message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                                message.AppendLine();
+                                if (null != this.ModuleWithMacros.Tool)
+                                {
+                                    message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
+                                    message.AppendLine();
+                                }
+                            }
+                            message.AppendLine("TokenizedString created with this stack trace:");
+                            message.AppendLine(this.CreationStackTrace);
+                            throw new Exception(message.ToString());
                         }
-                        message.AppendLine("Created at");
-                        message.AppendLine(this.CreationStackTrace);
-                        throw new System.Exception(message.ToString());
                     }
                 }
                 if (null == token)
@@ -414,41 +464,57 @@ namespace Bam.Core
                     throw new Exception("Token replacement for {0} was null - something went wrong during parsing of the string '{1}'. Created at {2}", tokens[index], this.OriginalString, this.CreationStackTrace);
                 }
                 tokens[index] = token;
-                macroIndices.Remove(index);
+                if (0 == (this.Flags & EFlags.DeferredExpansion))
+                {
+                    macroIndices.Remove(index);
+                }
             }
+            var skipFunctionEvaluation = false;
             if (macroIndices.Count > 0)
             {
-                var message = new System.Text.StringBuilder();
-                message.AppendFormat("Input string '{0}' could not be fully expanded. Could not identify tokens", this.OriginalString);
-                message.AppendLine();
-                foreach (var index in macroIndices)
+                if (0 == (this.Flags & EFlags.DeferredExpansion))
                 {
-                    message.AppendFormat("\t{0}", this.Tokens[index]);
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("Input string '{0}' could not be fully expanded. Could not identify tokens", this.OriginalString);
                     message.AppendLine();
+                    foreach (var index in macroIndices)
+                    {
+                        message.AppendFormat("\t{0}", this.Tokens[index]);
+                        message.AppendLine();
+                    }
+                    message.AppendLine("TokenizedString created with this stack trace:");
+                    message.AppendLine(this.CreationStackTrace);
+                    throw new Exception(message.ToString());
                 }
-                message.AppendLine("Created at");
-                message.AppendLine(this.CreationStackTrace);
-                throw new System.Exception(message.ToString());
+                else
+                {
+                    skipFunctionEvaluation = true;
+                }
             }
-            var joined = this.EvaluateFunctions(tokens);
+            var joined = JoinTokens(tokens);
+            if (skipFunctionEvaluation)
+            {
+                Log.DebugMessage("Skipped function evaluation of '{0}' (may not be fully expanded)", this.OriginalString);
+                return joined;
+            }
+            var functionEvaluated = this.EvaluateFunctions(joined);
             if (null == customMacros)
             {
-                this.ParsedString = joined;
+                this.ParsedString = functionEvaluated;
+                Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
             }
-            Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
-            return joined;
+            return functionEvaluated;
         }
 
         private string
         EvaluateFunctions(
-            System.Collections.Generic.List<string> tokens)
+            string sourceExpression)
         {
-            var joined = JoinTokens(tokens);
             // function calls may be nested, so the reg ex gets the inner most calls
             // and so iterate until all functions have been found
             for (;;)
             {
-                var tokenized = SplitToParse(joined, FunctionRegExPattern);
+                var tokenized = SplitToParse(sourceExpression, FunctionRegExPattern);
                 var matchCount = tokenized.Count();
                 if (1 == matchCount)
                 {
@@ -475,10 +541,10 @@ namespace Bam.Core
                     // and after that is the argument expression
                     var expression = tokenized.ElementAt(matchIndex++);
                     var expandedExpression = this.FunctionExpression(functionName, expression);
-                    joined = joined.Replace(matchedExpression, expandedExpression);
+                    sourceExpression = sourceExpression.Replace(matchedExpression, expandedExpression);
                 }
             }
-            return joined;
+            return sourceExpression;
         }
 
         private string
@@ -552,6 +618,40 @@ namespace Bam.Core
                 return parsed;
             }
             return System.String.Format("\"{0}\"", parsed);
+        }
+
+        public static int
+        Count
+        {
+            get
+            {
+                return Cache.Count();
+            }
+        }
+
+        public static int
+        UnsharedCount
+        {
+            get
+            {
+                return Cache.Where(item => item.RefCount == 1).Count();
+            }
+        }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        public static void
+        DumpCache()
+        {
+            Log.DebugMessage("Tokenized string cache");
+            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim))
+            {
+                Log.DebugMessage("#{0} {1}'{2}'{3} {4}",
+                    item.RefCount,
+                    item.Verbatim ? "<verbatim>" : string.Empty,
+                    item.OriginalString,
+                    item.Verbatim ? "</verbatim>" : string.Empty,
+                    item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
+            }
         }
     }
 

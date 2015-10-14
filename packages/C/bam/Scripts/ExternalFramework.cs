@@ -31,5 +31,79 @@ namespace C
 {
     public abstract class ExternalFramework :
         CModule
-    { }
+    {
+        public class Path
+        {
+            public Path(
+                Bam.Core.TokenizedString source,
+                Bam.Core.TokenizedString destination =  null)
+            {
+                this.SourcePath = source;
+                this.DestinationPath = destination;
+            }
+
+            public Bam.Core.TokenizedString SourcePath
+            {
+                get;
+                private set;
+            }
+
+            public Bam.Core.TokenizedString DestinationPath
+            {
+                get;
+                private set;
+            }
+        }
+
+        protected ExternalFramework()
+        {
+            this.Macros["FrameworkLibraryPath"] = this.MakePlaceholderPath();
+        }
+
+        private void
+        GetIDName()
+        {
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            processStartInfo.FileName = "otool";
+            processStartInfo.Arguments = "-DX " + this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse();
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.UseShellExecute = false;
+            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                throw new Bam.Core.Exception("Unable to get id name of '{0}'", this.Macros["FrameworkLibraryPath"].Parse());
+            }
+            var idName = process.StandardOutput.ReadToEnd().TrimEnd (new [] { System.Environment.NewLine[0] });
+            this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
+        }
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.GetIDName();
+        }
+
+        public abstract Bam.Core.TokenizedString FrameworkPath
+        {
+            get;
+        }
+
+        public abstract Bam.Core.Array<Path> DirectoriesToPublish
+        {
+            get;
+        }
+
+        public abstract Bam.Core.Array<Path> FilesToPublish
+        {
+            get;
+        }
+
+        public abstract Bam.Core.Array<Path> SymlinksToPublish
+        {
+            get;
+        }
+    }
 }

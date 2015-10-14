@@ -54,7 +54,14 @@ namespace CommandLineProcessor
                         stringArrayType);
                 }
                 var commands = new Bam.Core.StringArray();
-                method.Invoke(null, new object[] { toolSettings, module, commands });
+                try
+                {
+                    method.Invoke(null, new object[] { toolSettings, module, commands });
+                }
+                catch (System.Reflection.TargetInvocationException exception)
+                {
+                    throw exception.InnerException;
+                }
 
                 var precedenceAttribs = i.GetCustomAttributes(typeof(Bam.Core.SettingsPrecedenceAttribute), false);
                 int precedence = 0;

@@ -262,14 +262,9 @@ namespace XcodeBuilder
                             (this.LinkedTo.Project.BuiltProductsDir != this.Project.BuiltProductsDir))
                         {
                             // product is in a different BUILT_PRODUCTS_DIR - make a relative path
-                            // but must use the definition of CONFIGURATION_BUILD_DIR to denote where it will end up
-                            // cannot use the real path
                             var configName = this.Project.Module.BuildEnvironment.Configuration.ToString();
-                            var macros = new Bam.Core.MacroList();
-                            macros.Add("moduleoutputdir", Bam.Core.TokenizedString.Create(configName, null));
-                            var fully = this.Path.Parse(macros);
                             var configurationBuildDir = this.Project.BuiltProductsDir + "/" + configName + "/";
-                            path = Bam.Core.RelativePathUtilities.GetPath(fully, configurationBuildDir);
+                            path = Bam.Core.RelativePathUtilities.GetPath(this.Path.Parse(), configurationBuildDir);
                         }
                         else
                         {

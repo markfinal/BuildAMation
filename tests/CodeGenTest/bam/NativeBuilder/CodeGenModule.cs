@@ -41,7 +41,7 @@ namespace CodeGenTest
         {
             var args = new Bam.Core.StringArray();
             // TODO: change this to a configuration directory really
-            args.Add(Bam.Core.TokenizedString.Create("$(buildroot)", sender).Parse());
+            args.Add(Bam.Core.TokenizedString.Create("$(buildroot)", null).Parse());
             args.Add("Generated");
             CommandLineProcessor.Processor.Execute(context, compiler, args);
         }

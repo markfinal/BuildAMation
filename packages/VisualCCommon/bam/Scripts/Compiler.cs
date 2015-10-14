@@ -40,15 +40,15 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TMP");
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\bin", this));
-            this.Macros.Add("objext", ".obj");
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
+            this.Macros.AddVerbatim("objext", ".obj");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create(@"$(InstallPath)\Common7\IDE", this)));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString(@"$(InstallPath)\Common7\IDE")));
 
             this.PublicPatch((settings, appliedTo) =>
             {
                 var compilation = settings as C.ICommonCompilerSettings;
-                compilation.SystemIncludePaths.AddUnique(Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\include", this));
+                compilation.SystemIncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
             });
         }
 
@@ -93,7 +93,7 @@ namespace VisualCCommon
     {
         public Compiler32()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\cl.exe", this));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\cl.exe"));
         }
 
         protected override void
@@ -131,7 +131,7 @@ namespace VisualCCommon
         public Compiler64()
             : base()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\x86_amd64\cl.exe", this));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\x86_amd64\cl.exe"));
             // some DLLs exist only in the 32-bit bin folder
             this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
         }

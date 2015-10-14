@@ -32,14 +32,15 @@ namespace Bam.Core
     public enum ETimingProfiles
     {
         ProcessCommandLine = 0,
-        PreambleCommandExecution,
         GatherSource,
         AssemblyCompilation,
         LoadAssembly,
-        AdditionalArgumentProcessing,
+        PackageMetaData,
         IdentifyBuildableModules,
         PopulateGraph,
-        CreateOptionCollections,
+        ValidateGraph,
+        CreatePatches,
+        ParseTokenizedStrings,
         GraphExecution,
         TimedTotal
     }

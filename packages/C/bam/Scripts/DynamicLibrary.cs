@@ -36,17 +36,28 @@ namespace C
     {
         static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Import Library File");
 
+        private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
+        private SharedObjectSymbolicLinkTool SymlinkTool;
+
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths[Key] = Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)", this);
+            this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)");
             this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.RegisterGeneratedFile(ImportLibraryKey, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
+                this.RegisterGeneratedFile(ImportLibraryKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)"));
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                if (!(this is Plugin))
+                {
+                    this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
+                    this.Macros.Add("LinkerName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
+                }
             }
 
             this.PrivatePatch(settings =>
@@ -60,7 +71,7 @@ namespace C
                 var osxLinker = settings as C.ILinkerSettingsOSX;
                 if (null != osxLinker)
                 {
-                    osxLinker.InstallName = Bam.Core.TokenizedString.Create("@executable_path/@filename($(LinkOutput))", this);
+                    osxLinker.InstallName = this.CreateTokenizedString("@executable_path/@filename($(LinkOutput))");
                 }
             });
         }
@@ -109,6 +120,38 @@ namespace C
                 }
                 source.UsePublicPatches(dependent);
                 this.UsePublicPatches(dependent);
+            }
+        }
+
+        protected override void
+        ExecuteInternal(
+            ExecutionContext context)
+        {
+            base.ExecuteInternal(context);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                var executable = this.GeneratedPaths[Key];
+                if (this.Macros.Contains("SOName"))
+                {
+                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["SOName"], executable);
+                }
+                if (this.Macros.Contains("LinkerName"))
+                {
+                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["LinkerName"], executable);
+                }
+            }
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            base.GetExecutionPolicy(mode);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                var className = "C." + mode + "SharedObjectSymbolicLink";
+                this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
+                this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
             }
         }
     }

@@ -42,7 +42,9 @@ namespace Clang
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module)
             : this(module, true)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+        }
 
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module,

@@ -37,9 +37,9 @@ namespace VisualCCommon
         public Librarian()
         {
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\VC\bin\lib.exe", this));
-            this.Macros.Add("libprefix", string.Empty);
-            this.Macros.Add("libext", ".lib");
+            this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin\lib.exe"));
+            this.Macros.AddVerbatim("libprefix", string.Empty);
+            this.Macros.AddVerbatim("libext", ".lib");
         }
 
         public override Bam.Core.Settings

@@ -907,7 +907,7 @@ namespace Bam.Core
                     throw new Exception(message.ToString());
                 }
 
-                ResolveDependencies(candidates.ElementAt(0), authenticated, candidatePackageDefinitions);
+                ResolveDependencies(candidates.First(), authenticated, candidatePackageDefinitions);
             }
         }
 
@@ -1007,7 +1007,7 @@ namespace Bam.Core
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
             {
-                var dep = Graph.Instance.Packages.Where(item => item.Name == dependent.Item1 && item.Version == dependent.Item2).ElementAt(0);
+                var dep = Graph.Instance.Packages.Where(item => item.Name == dependent.Item1 && item.Version == dependent.Item2).First();
                 if (visitedPackages.Contains(dep))
                 {
                     continue;

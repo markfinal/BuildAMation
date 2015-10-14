@@ -29,7 +29,7 @@
 #endregion // License
 namespace Publisher.DefaultSettings
 {
-    public static class DefaultSettingsExtensions
+    public static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

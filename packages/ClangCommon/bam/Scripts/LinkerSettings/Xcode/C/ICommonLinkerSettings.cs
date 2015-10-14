@@ -49,15 +49,16 @@ namespace ClangCommon
             case C.ELinkerOutput.DynamicLibrary:
                 {
                     configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicprefix"].Parse());
-                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicext"].Parse().TrimStart(new [] {'.'}));
+                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(System.IO.Path.GetExtension(module.Tool.Macros["dynamicext"].Parse()).TrimStart(new [] {'.'}));
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.UniqueConfigurationValue("mh_dylib");
                     var osxOpts = settings as C.ILinkerSettingsOSX;
                     if (null != osxOpts.InstallName)
                     {
                         configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(osxOpts.InstallName.Parse());
                     }
-                    // TODO: current_version
-                    // TODO: compatability_version
+                    var version = System.String.Format("{0}.{1}", module.Macros["MajorVersion"].Parse(), module.Macros["MinorVersion"].Parse());
+                    configuration["DYLIB_CURRENT_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(version);
+                    configuration["DYLIB_COMPATIBILITY_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(version);
                 }
                 break;
             }
@@ -66,7 +67,7 @@ namespace ClangCommon
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.LibraryPaths)
                 {
-                    option.Add(path.ToString());
+                    option.Add(path.Parse());
                 }
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
             }

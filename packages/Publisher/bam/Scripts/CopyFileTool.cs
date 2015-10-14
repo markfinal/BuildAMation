@@ -53,7 +53,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("cp", null, verbatim: true);
+                return Bam.Core.TokenizedString.CreateVerbatim("cp");
             }
         }
     }
@@ -72,7 +72,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("xcopy", null, verbatim: true);
+                return Bam.Core.TokenizedString.CreateVerbatim("xcopy");
             }
         }
     }

@@ -52,15 +52,17 @@ namespace ClangCommon
                     {
                         commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", osxOpts.InstallName.Parse()));
                     }
-                    // TODO: current_version
-                    // TODO: compatability_version
+
+                    var version = System.String.Format("{0}.{1}", module.Macros["MajorVersion"].Parse(), module.Macros["MinorVersion"].Parse());
+                    commandLine.Add(System.String.Format("-current_version {0}", version));
+                    // TODO: offer an option of setting the compatibility version differently
+                    commandLine.Add(System.String.Format("-compatibility_version {0}", version));
                 }
                 break;
             }
             foreach (var path in settings.LibraryPaths)
             {
-                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
+                commandLine.Add(System.String.Format("-L{0}", path.ParseAndQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {

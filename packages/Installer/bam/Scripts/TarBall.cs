@@ -38,7 +38,7 @@ namespace Installer
 
         public TarInputFiles()
         {
-            this.ScriptPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(modulename)/tarinput.txt", this);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/tarinput.txt");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -95,7 +95,7 @@ namespace Installer
                     }
                     else
                     {
-                        scriptWriter.WriteLine("-C {0}", fileDir);
+                        scriptWriter.WriteLine("-C{0}", fileDir);
                     }
                     scriptWriter.WriteLine(System.IO.Path.GetFileName(filePath));
                 }
@@ -109,7 +109,7 @@ namespace Installer
                     }
                     else
                     {
-                        scriptWriter.WriteLine("-C {0}", fileDir);
+                        scriptWriter.WriteLine("-C{0}", fileDir);
                     }
                     scriptWriter.WriteLine(".");
                 }
@@ -143,7 +143,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("tar", null);
+                return Bam.Core.TokenizedString.CreateVerbatim("tar");
             }
         }
     }
@@ -160,7 +160,7 @@ namespace Installer
 
         public TarBall()
         {
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(buildroot)/installer.tar", this));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/installer.tar"));
 
             // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
             // need to find a way to instantiate a non-abstract instance of an abstract class

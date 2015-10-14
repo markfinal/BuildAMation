@@ -54,11 +54,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
     <Compile Include="Array.cs" />
+    <Compile Include="Attributes\EvaluationRequiredAttribute.cs" />
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
     <Compile Include="Attributes\PlatformFilterAttribute.cs" />
     <Compile Include="Attributes\SettingsExtensionsAttribute.cs" />
     <Compile Include="Attributes\SettingsPrecedenceAttribute.cs" />
-    <Compile Include="BuildManager.cs" />
     <Compile Include="BuildModeUtilities.cs" />
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="Configuration.cs" />
@@ -74,8 +74,10 @@
     <Compile Include="ExecuteReasoning.cs" />
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="ExecutionPolicyUtilities.cs" />
+    <Compile Include="Executor.cs" />
     <Compile Include="FileKey.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Interfaces\IBuildModeMetaData.cs" />
     <Compile Include="Interfaces\IChildModule.cs" />
     <Compile Include="Interfaces\ICommandLineArgument.cs" />
     <Compile Include="Interfaces\ICommandLineTool.cs" />
@@ -105,6 +107,7 @@
     <Compile Include="Options\PackageName.cs" />
     <Compile Include="Options\PackageVersion.cs" />
     <Compile Include="Options\PrintHelp.cs" />
+    <Compile Include="Options\PrintStatistics.cs" />
     <Compile Include="Options\PrintVersion.cs" />
     <Compile Include="Options\ShowDefinitionFile.cs" />
     <Compile Include="Options\UseDebugSymbols.cs" />
@@ -122,6 +125,7 @@
     <Compile Include="RelativePathUtilities.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="State.cs" />
+    <Compile Include="Statistics.cs" />
     <Compile Include="StringArray.cs" />
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />

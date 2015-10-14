@@ -37,15 +37,17 @@ namespace MingwCommon
         {
             var mingwPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Mingw").First();
             var suffix = mingwPackage.MetaData["ToolSuffix"] as string;
-            this.Macros.Add("LinkerSuffix", suffix);
+            this.Macros.AddVerbatim("LinkerSuffix", suffix);
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", Bam.Core.TokenizedString.Create(@"$(InstallPath)\bin", this));
-            this.Macros.Add("exeext", ".exe");
-            this.Macros.Add("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", ".so");
-            this.Macros.Add("libprefix", "lib");
-            this.Macros.Add("libext", ".a");
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
+            this.Macros.AddVerbatim("exeext", ".exe");
+            this.Macros.AddVerbatim("dynamicprefix", "lib");
+            this.Macros.AddVerbatim("dynamicext", ".so");
+            this.Macros.AddVerbatim("pluginprefix", "lib");
+            this.Macros.AddVerbatim("pluginext", ".so");
+            this.Macros.AddVerbatim("libprefix", "lib");
+            this.Macros.AddVerbatim("libext", ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
@@ -67,17 +69,17 @@ namespace MingwCommon
             return settings;
         }
 
-        private static string
+        private static Bam.Core.TokenizedString
         GetLibraryPath(
             Bam.Core.Module module)
         {
             if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key];
             }
             else if (module is C.IDynamicLibrary)
             {
-                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
+                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
             }
             else if (module is C.CSDKModule)
             {
@@ -119,11 +121,11 @@ namespace MingwCommon
             {
                 return;
             }
-            var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
-            var libFilename = GetLPrefixLibraryName(fullLibraryPath);
+            // TODO: use @filenamenoext
+            var libFilename = GetLPrefixLibraryName(fullLibraryPath.Parse());
             var linker = executable.Settings as C.ICommonLinkerSettings;
             linker.Libraries.AddUnique(libFilename);
-            linker.LibraryPaths.AddUnique(dir);
+            linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", fullLibraryPath));
         }
     }
 
@@ -133,7 +135,7 @@ namespace MingwCommon
     {
         public Linker()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe", this));
+            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe"));
         }
     }
 
@@ -143,7 +145,7 @@ namespace MingwCommon
     {
         public LinkerCxx()
         {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create(@"$(BinPath)\mingw32-g++.exe", this));
+            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
         }
     }
 }

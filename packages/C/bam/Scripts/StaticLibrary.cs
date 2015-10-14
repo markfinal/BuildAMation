@@ -45,7 +45,7 @@ namespace C
         {
             base.Init(parent);
             this.Librarian = DefaultToolchain.Librarian(this.BitDepth);
-            this.RegisterGeneratedFile(Key, Bam.Core.TokenizedString.Create("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)", this));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)"));
         }
 
         // TODO: what is this for?

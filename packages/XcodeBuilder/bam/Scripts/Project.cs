@@ -39,15 +39,15 @@ namespace XcodeBuilder
         {
             this.IsA = "PBXProject";
             this.Name = name;
-            var projectDir = Bam.Core.TokenizedString.Create("$(buildroot)/$(packagename).xcodeproj", module);
+            var projectDir = module.CreateTokenizedString("$(buildroot)/$(packagename).xcodeproj");
             module.Macros.Add("xcodeprojectdir", projectDir);
             this.ProjectDir = projectDir.Parse();
 
-            var projectPath = Bam.Core.TokenizedString.Create("$(xcodeprojectdir)/project.pbxproj", module);
+            var projectPath = module.CreateTokenizedString("$(xcodeprojectdir)/project.pbxproj");
             this.ProjectPath = projectPath.Parse();
 
-            this.SourceRoot = Bam.Core.TokenizedString.Create("$(packagedir)", module).Parse();
-            this.BuildRoot = Bam.Core.TokenizedString.Create("$(buildroot)", module).Parse();
+            this.SourceRoot = module.CreateTokenizedString("$(packagedir)").Parse();
+            this.BuildRoot = module.CreateTokenizedString("$(buildroot)").Parse();
 
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
@@ -346,11 +346,12 @@ namespace XcodeBuilder
         public Configuration
         AddNewTargetConfiguration(
             Bam.Core.Module module,
+            Bam.Core.TokenizedString productName,
             Target target)
         {
             // add configuration to target
             var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
-            config["PRODUCT_NAME"] = new UniqueConfigurationValue("$(TARGET_NAME)");
+            config["PRODUCT_NAME"] = new UniqueConfigurationValue(productName.Parse());
 
             target.ConfigurationList.AddConfiguration(config);
             this.AllConfigurations.Add(config);

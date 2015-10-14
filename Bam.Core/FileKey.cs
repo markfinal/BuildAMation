@@ -44,9 +44,10 @@ namespace Bam.Core
             string key)
         {
             var matches = GeneratedKeys.Where(item => (item.Id == key));
-            if (1 == matches.Count())
+            var first = matches.FirstOrDefault();
+            if (null != first)
             {
-                return matches.ElementAt(0);
+                return first;
             }
             var newKey = new FileKey(key);
             GeneratedKeys.Add(newKey);

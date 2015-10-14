@@ -231,7 +231,6 @@ namespace Bam
                 writer.WriteLine("{0}Core.Log.ErrorMessage(exception.Message);", indent(4));
                 writer.WriteLine("{0}if (null != exception.InnerException)", indent(4));
                 writer.WriteLine("{0}{{", indent(4));
-                writer.WriteLine("{0}Core.Log.ErrorMessage(\"Additional details:\");", indent(5));
                 writer.WriteLine("{0}Core.Log.ErrorMessage(exception.InnerException.Message);", indent(5));
                 writer.WriteLine("{0}}}", indent(4));
                 writer.WriteLine("{0}System.Environment.ExitCode = -1;", indent(4));

@@ -27,10 +27,30 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace NativeBuilder
+namespace Publisher
 {
-    [Bam.Core.EvaluationRequired(true)]
-    public sealed class NativeMeta
+    public sealed class MakeFileChangeNameOSX :
+        IInstallNameToolPolicy
     {
+        void
+        IInstallNameToolPolicy.InstallName(
+            InstallNameModule sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString oldName,
+            Bam.Core.TokenizedString newName)
+        {
+            // add another shell command to the rule for copying the file
+            var meta = sender.Source.MetaData as MakeFileBuilder.MakeFileMeta;
+            var rule = meta.Rules[0];
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+
+            rule.AddShellCommand(System.String.Format(@"{0} {1} {2} {3} $@",
+                (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                commandLine.ToString(' '),
+                oldName.Parse(),
+                newName.Parse()));
+        }
     }
 }

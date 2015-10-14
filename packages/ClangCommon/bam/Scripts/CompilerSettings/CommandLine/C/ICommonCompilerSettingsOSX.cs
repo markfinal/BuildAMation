@@ -39,8 +39,7 @@ namespace ClangCommon
         {
             foreach (var path in options.FrameworkSearchDirectories)
             {
-                var formatString = path.ContainsSpace ? "-F\"{0}\"" : "-F{0}";
-                commandLine.Add(System.String.Format(formatString, path));
+                commandLine.Add(System.String.Format("-F{0}", path.ParseAndQuoteIfNecessary()));
             }
         }
     }

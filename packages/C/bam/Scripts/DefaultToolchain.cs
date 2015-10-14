@@ -31,15 +31,15 @@ namespace C
 {
     public static class DefaultToolchain
     {
-        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  C_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
-        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  Cxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
-        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LibrarianTool>> Archivers     = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LibrarianTool>>();
-        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>    C_Linkers     = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>();
-        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>    Cxx_Linkers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<LinkerTool>>();
-        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  ObjectiveC_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
-        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>  ObjectiveCxx_Compilers   = new System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<CompilerTool>>();
-        // TODO: slightly confusing there is a class and a variable almost identically named
-        private static string DefaultToolChain = null;
+        private static DefaultToolchainCommand SelectDefaultToolChainCommand = new DefaultToolchainCommand();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> C_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Cxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Archivers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> C_Linkers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Cxx_Linkers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveC_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveCxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static string UserToolchainOverride = null;
 
         private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
         GetToolsFromMetaData<T>()
@@ -66,29 +66,28 @@ namespace C
 
         private static void
         FindTools<AttributeType, ToolType>(
-            System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<ToolType>> collection)
+            System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> collection)
             where AttributeType : ToolRegistrationAttribute
             where ToolType : Bam.Core.PreBuiltTool
         {
             var graph = Bam.Core.Graph.Instance;
             foreach (var toolData in GetToolsFromMetaData<AttributeType>())
             {
-                var tool = graph.MakeModuleOfType<ToolType>(toolData.Item1);
                 var bits = toolData.Item2.BitDepth;
                 if (!collection.ContainsKey(bits))
                 {
-                    collection[bits] = new Bam.Core.Array<ToolType>(tool);
+                    collection[bits] = new Bam.Core.TypeArray(toolData.Item1);
                 }
                 else
                 {
-                    collection[bits].AddUnique(tool);
+                    collection[bits].AddUnique(toolData.Item1);
                 }
             }
         }
 
         static DefaultToolchain()
         {
-            DefaultToolChain = Bam.Core.CommandLineProcessor.Evaluate(new DefaultToolchainCommand());
+            UserToolchainOverride = Bam.Core.CommandLineProcessor.Evaluate(SelectDefaultToolChainCommand);
             FindTools<RegisterCCompilerAttribute, CompilerTool>(C_Compilers);
             FindTools<RegisterCxxCompilerAttribute, CompilerTool>(Cxx_Compilers);
             FindTools<RegisterLibrarianAttribute, LibrarianTool>(Archivers);
@@ -100,7 +99,7 @@ namespace C
 
         private static ToolType
         GetTool<ToolType>(
-            System.Collections.Generic.Dictionary<EBit, Bam.Core.Array<ToolType>> collection,
+            System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> collection,
             EBit bitDepth,
             string toolDescription)
             where ToolType : Bam.Core.PreBuiltTool
@@ -112,35 +111,39 @@ namespace C
             var candidates = collection[bitDepth];
             if (candidates.Count > 1)
             {
-                if (null != DefaultToolChain)
+                if (null != UserToolchainOverride)
                 {
-                    foreach (var tool in candidates)
+                    foreach (var toolType in candidates)
                     {
-                        var attr = tool.GetType().GetCustomAttributes(false);
-                        if ((attr[0] as ToolRegistrationAttribute).ToolsetName == DefaultToolChain)
+                        var attr = toolType.GetCustomAttributes(false);
+                        if ((attr[0] as ToolRegistrationAttribute).ToolsetName == UserToolchainOverride)
                         {
-                            return tool;
+                            return Bam.Core.Graph.Instance.MakeModuleOfType<ToolType>(toolType);
                         }
                     }
                 }
 
                 var tooManyInstance = new System.Text.StringBuilder();
-                tooManyInstance.AppendFormat("There are {0} {1}s available for this platform in {2}-bits:", candidates.Count, toolDescription, (int)bitDepth);
+                tooManyInstance.AppendFormat("There are {0} {1}s available for this platform in {2}-bits. Resolve using the command line option {3}=<choice>",
+                    candidates.Count,
+                    toolDescription,
+                    (int)bitDepth,
+                    (SelectDefaultToolChainCommand as Bam.Core.ICommandLineArgument).LongName);
                 tooManyInstance.AppendLine();
                 foreach (var tool in candidates)
                 {
-                    tooManyInstance.AppendFormat("\t{0}", tool.GetType().ToString());
+                    tooManyInstance.AppendFormat("\t{0}", tool.ToString());
                     tooManyInstance.AppendLine();
                 }
                 throw new Bam.Core.Exception(tooManyInstance.ToString());
             }
-            var toolToUse = candidates[0];
-            var toolToolSet = (toolToUse.GetType().GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName;
-            if ((null != DefaultToolChain) && (toolToolSet != DefaultToolChain))
+            var toolTypeToUse = candidates[0];
+            var toolToolSet = (toolTypeToUse.GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName;
+            if ((null != UserToolchainOverride) && (toolToolSet != UserToolchainOverride))
             {
-                throw new Bam.Core.Exception("{0}-bit {1} identified is from toolchain {2}, not from {3} as requested", (int)bitDepth, toolDescription, toolToolSet, DefaultToolChain);
+                throw new Bam.Core.Exception("{0}-bit {1} identified is from toolchain {2}, not from {3} as requested", (int)bitDepth, toolDescription, toolToolSet, UserToolchainOverride);
             }
-            return toolToUse;
+            return Bam.Core.Graph.Instance.MakeModuleOfType<ToolType>(toolTypeToUse);
         }
 
         public static CompilerTool

@@ -35,7 +35,20 @@ namespace Bam.Core
     /// </summary>
     public abstract class Settings
     {
+        private class InterfaceData
+        {
+            public System.Type InterfaceType;
+            public System.Reflection.MethodInfo emptyMethod;
+            public System.Reflection.MethodInfo defaultMethod;
+        }
+
+        private class SettingsInterfaces
+        {
+            public Bam.Core.Array<InterfaceData> Data = new Array<InterfaceData>();
+        }
+
         private static ISitePolicy LocalPolicy = null;
+        private static System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces> Cache = new System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces>();
 
         static Settings()
         {
@@ -48,7 +61,7 @@ namespace Bam.Core
                     throw new Exception("Too many site policies exist in the package assembly");
                 }
 
-                LocalPolicy = System.Activator.CreateInstance(localPolicies.ElementAt(0)) as ISitePolicy;
+                LocalPolicy = System.Activator.CreateInstance(localPolicies.First()) as ISitePolicy;
             }
         }
 
@@ -70,13 +83,11 @@ namespace Bam.Core
             bool emptyFirst,
             bool useDefaults)
         {
-            var attributeType = typeof(SettingsExtensionsAttribute);
-
-            // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
-            // although it won't then be a centralized definition, so the extension method as-is is probably better
-            if (emptyFirst)
+            var settingsType = this.GetType();
+            if (!Cache.ContainsKey(settingsType))
             {
-                // perform all empties first
+                var attributeType = typeof(SettingsExtensionsAttribute);
+                var interfaces = new SettingsInterfaces();
                 foreach (var i in this.Interfaces())
                 {
                     var attributeArray = i.GetCustomAttributes(attributeType, false);
@@ -85,48 +96,41 @@ namespace Bam.Core
                         throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
                     }
 
-                    var attribute = attributeArray[0] as SettingsExtensionsAttribute;
+                    var newData = new InterfaceData();
+                    newData.InterfaceType = i;
 
-                    var emptyMethod = attribute.GetMethod("Empty", new[] { i });
-                    if (null != emptyMethod)
+                    var attribute = attributeArray[0] as SettingsExtensionsAttribute;
+                    // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
+                    // although it won't then be a centralized definition, so the extension method as-is is probably better
+                    newData.emptyMethod = attribute.GetMethod("Empty", new[] { i });
+                    newData.defaultMethod = attribute.GetMethod("Defaults", new[] { i, typeof(Module) });
+                    interfaces.Data.Add(newData);
+                }
+                Cache.Add(settingsType, interfaces);
+            }
+
+            var data = Cache[settingsType];
+
+            foreach (var i in data.Data)
+            {
+                if (emptyFirst)
+                {
+                    if (null != i.emptyMethod)
                     {
-                        Log.DebugMessage("Executing {0}", emptyMethod.ToString());
-                        emptyMethod.Invoke(null, new[] { this });
+                        i.emptyMethod.Invoke(null, new[] { this });
                     }
-                    else
+                }
+                if (useDefaults)
+                {
+                    if (null != i.defaultMethod)
                     {
-                        Log.DebugMessage("Unable to find method {0}.Empty({1})", attribute.ClassType.ToString(), i.ToString());
+                        i.defaultMethod.Invoke(null, new object[] { this, module });
                     }
                 }
             }
-
-            if (useDefaults)
+            if (useDefaults && (null != LocalPolicy))
             {
-                var moduleType = typeof(Module);
-                // then perform all defaults - since empty has been called, the settings are initialized
-                foreach (var i in this.Interfaces())
-                {
-                    var attributeArray = i.GetCustomAttributes(attributeType, false);
-                    if (0 == attributeArray.Length)
-                    {
-                        throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
-                    }
-
-                    var attribute = attributeArray[0] as SettingsExtensionsAttribute;
-
-                    var defaultMethod = attribute.GetMethod("Defaults", new[] { i, moduleType });
-                    if (null == defaultMethod)
-                    {
-                        throw new Exception("Unable to find method {0}.Defaults({1}, {2})", attribute.ClassType.ToString(), i.ToString(), moduleType.ToString());
-                    }
-                    Log.DebugMessage("Executing {0}", defaultMethod.ToString());
-                    defaultMethod.Invoke(null, new object[] { this, module });
-                }
-
-                if (null != LocalPolicy)
-                {
-                    LocalPolicy.DefineLocalSettings(this, module);
-                }
+                LocalPolicy.DefineLocalSettings(this, module);
             }
         }
     }

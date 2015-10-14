@@ -46,7 +46,7 @@ namespace HeaderLibraryTest
                     var compiler = settings as C.ICommonCompilerSettings;
                     if (null != compiler)
                     {
-                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.Create("$(packagedir)/include", this));
+                        compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
         }
