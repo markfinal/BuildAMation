@@ -534,7 +534,7 @@ namespace Bam.Core
             // note that this cannot be a class, as modules already are derived from another base class (generally)
             if (!(encapsulatingModule is PreBuiltTool))
             {
-                this.Macros.Add("moduleoutputdir", System.IO.Path.Combine(encapsulatingModule.GetType().Name, this.BuildEnvironment.Configuration.ToString()));
+                this.Macros.AddVerbatim("moduleoutputdir", System.IO.Path.Combine(encapsulatingModule.GetType().Name, this.BuildEnvironment.Configuration.ToString()));
             }
 
             // modules that are encapsulated, have settings, and aren't a child (as their parent is also encapsulated, and thus gets this too), inherit the

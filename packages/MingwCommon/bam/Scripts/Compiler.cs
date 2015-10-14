@@ -39,7 +39,7 @@ namespace MingwCommon
 
             var mingwPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Mingw").First();
             var suffix = mingwPackage.MetaData["ToolSuffix"] as string;
-            this.Macros.Add("CompilerSuffix", suffix);
+            this.Macros.AddVerbatim("CompilerSuffix", suffix);
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
