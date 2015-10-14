@@ -58,11 +58,28 @@ namespace Bam.Core
                 PackageUtilities.LoadPackageAssembly();
             }
 
+            var graph = Graph.Instance;
+            graph.Mode = State.BuildMode;
+
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();
 
+            // get the metadata from the build mode package
+            var metaName = System.String.Format("{0}Builder.{0}Meta", graph.Mode);
+            var metaDataType = State.ScriptAssembly.GetType(metaName);
+            if (null == metaDataType)
+            {
+                throw new Exception("No build mode {0} meta data type {1}", graph.Mode, metaName);
+            }
+
+            if (!typeof(IBuildModeMetaData).IsAssignableFrom(metaDataType))
+            {
+                throw new Exception("Build mode package meta data type {0} does not implement the interface {1}", metaDataType.ToString(), typeof(IBuildModeMetaData).ToString());
+            }
+            graph.BuildModeMetaData = System.Activator.CreateInstance(metaDataType) as IBuildModeMetaData;
+
             // packages can have meta data - instantiate where they exist
-            foreach (var package in Graph.Instance.Packages)
+            foreach (var package in graph.Packages)
             {
                 var ns = package.Name;
                 var metaType = State.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(IPackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
@@ -75,9 +92,6 @@ namespace Bam.Core
             packageMetaDataProfile.StopProfile();
 
             var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
-
-            var graph = Graph.Instance;
-            graph.Mode = State.BuildMode;
 
             var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
             findBuildableModulesProfile.StartProfile();
