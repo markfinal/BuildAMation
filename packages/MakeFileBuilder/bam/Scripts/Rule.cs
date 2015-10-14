@@ -62,12 +62,10 @@ namespace MakeFileBuilder
             Bam.Core.Module module,
             Bam.Core.FileKey key)
         {
-            if (this.Prequisities.ContainsKey(module))
+            if (!this.Prequisities.ContainsKey(module))
             {
-                throw new Bam.Core.Exception("Module {0} is already a prerequisite", module.ToString());
+                this.Prequisities.Add(module, key);
             }
-
-            this.Prequisities.Add(module, key);
         }
 
         public void
