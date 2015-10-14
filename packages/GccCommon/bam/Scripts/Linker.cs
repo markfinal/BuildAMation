@@ -99,6 +99,7 @@ namespace GccCommon
             var linker = executable.Settings as C.ICommonLinkerSettings;
             if (library is C.StaticLibrary)
             {
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 var libraryName = GetLPrefixLibraryName(libraryPath);
@@ -108,12 +109,11 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                // TODO: do something with @dir()
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
             }
             else if (library is C.IDynamicLibrary)
             {
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                 var libraryName = library.Macros.Contains("LinkerName") ?
                     GetLPrefixLibraryName(library.Macros["LinkerName"].Parse()) :
@@ -125,18 +125,13 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                // TODO: do something with @dir()
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
 
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
-                    // TODO: do something with @dir()
-                    var depLibraryPath = dep.GeneratedPaths[C.DynamicLibrary.Key].Parse();
-                    var depLibraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(depLibraryPath), null);
-                    gccLinker.RPathLink.AddUnique(depLibraryDir.Parse());
+                    gccLinker.RPathLink.AddUnique(dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]).Parse());
                 }
             }
         }

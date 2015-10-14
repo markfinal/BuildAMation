@@ -77,17 +77,17 @@ namespace VisualCCommon
             }
         }
 
-        private static string
+        private static Bam.Core.TokenizedString
         GetLibraryPath(
             Bam.Core.Module module)
         {
             if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key];
             }
             else if (module is C.IDynamicLibrary)
             {
-                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
+                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
             }
             else if (module is C.CSDKModule)
             {
@@ -120,11 +120,10 @@ namespace VisualCCommon
             {
                 return;
             }
-            // TODO: @dir?
-            var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
-            var libFilename = System.IO.Path.GetFileName(fullLibraryPath);
+            var dir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
+            var libFilename = library.CreateTokenizedString("@filename($(0))", fullLibraryPath);
             var linker = executable.Settings as C.ICommonLinkerSettings;
-            linker.Libraries.AddUnique(libFilename);
+            linker.Libraries.AddUnique(libFilename.Parse());
             linker.LibraryPaths.AddUnique(dir);
         }
     }

@@ -51,17 +51,11 @@ namespace C
             {
                 if (library is C.StaticLibrary)
                 {
-                    // TODO: do something with @dir() here
-                    var fullLibraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse(macros);
-                    var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                    linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
+                    linker.LibraryPaths.Add(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
                 }
                 else if (library is C.IDynamicLibrary)
                 {
-                    // TODO: do something with @dir() here
-                    var fullLibraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse(macros);
-                    var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                    linker.LibraryPaths.Add(Bam.Core.TokenizedString.Create(dir, null));
+                    linker.LibraryPaths.Add(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
                 }
                 else if (library is C.CSDKModule)
                 {

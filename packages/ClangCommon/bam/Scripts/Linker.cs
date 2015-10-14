@@ -63,21 +63,19 @@ namespace ClangCommon
             var linker = executable.Settings as C.ICommonLinkerSettings;
             if (library is C.StaticLibrary)
             {
-                // TODO: use @dir() here
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
             }
             else if (library is C.IDynamicLibrary)
             {
-                // TODO: use @dir() here
+                // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libraryDir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(libraryPath), null);
-                linker.LibraryPaths.AddUnique(libraryDir);
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
             }
         }
 

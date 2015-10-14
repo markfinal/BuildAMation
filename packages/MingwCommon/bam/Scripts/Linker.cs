@@ -69,17 +69,17 @@ namespace MingwCommon
             return settings;
         }
 
-        private static string
+        private static Bam.Core.TokenizedString
         GetLibraryPath(
             Bam.Core.Module module)
         {
             if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key];
             }
             else if (module is C.IDynamicLibrary)
             {
-                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
+                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
             }
             else if (module is C.CSDKModule)
             {
@@ -121,12 +121,11 @@ namespace MingwCommon
             {
                 return;
             }
-            // TODO: do something with @dir()?
-            var dir = Bam.Core.TokenizedString.Create(System.IO.Path.GetDirectoryName(fullLibraryPath), null);
-            var libFilename = GetLPrefixLibraryName(fullLibraryPath);
+            // TODO: use @filenamenoext
+            var libFilename = GetLPrefixLibraryName(fullLibraryPath.Parse());
             var linker = executable.Settings as C.ICommonLinkerSettings;
             linker.Libraries.AddUnique(libFilename);
-            linker.LibraryPaths.AddUnique(dir);
+            linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", fullLibraryPath));
         }
     }
 
