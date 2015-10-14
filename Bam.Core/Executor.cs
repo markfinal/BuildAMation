@@ -177,7 +177,7 @@ namespace Bam.Core
                 {
                     inner = inner.InnerException;
                 }
-                throw inner;
+                throw new Exception(inner, "Pre-build error:");
             }
         }
 
@@ -201,7 +201,7 @@ namespace Bam.Core
                 {
                     inner = inner.InnerException;
                 }
-                throw inner;
+                throw new Exception(inner, "Post-build error:");
             }
         }
 

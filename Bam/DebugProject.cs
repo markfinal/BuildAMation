@@ -228,11 +228,7 @@ namespace Bam
                 writer.WriteLine("{0}}}", indent(3));
                 writer.WriteLine("{0}catch (Bam.Core.Exception exception)", indent(3));
                 writer.WriteLine("{0}{{", indent(3));
-                writer.WriteLine("{0}Core.Log.ErrorMessage(exception.Message);", indent(4));
-                writer.WriteLine("{0}if (null != exception.InnerException)", indent(4));
-                writer.WriteLine("{0}{{", indent(4));
-                writer.WriteLine("{0}Core.Log.ErrorMessage(exception.InnerException.Message);", indent(5));
-                writer.WriteLine("{0}}}", indent(4));
+                writer.WriteLine("{0}Core.Exception.DisplayException(exception);", indent(4));
                 writer.WriteLine("{0}System.Environment.ExitCode = -1;", indent(4));
                 writer.WriteLine("{0}}}", indent(3));
                 writer.WriteLine(@"{0}Core.Log.Info((0 == System.Environment.ExitCode) ? ""\nBuild Succeeded"" : ""\nBuild Failed"");", indent(3));
