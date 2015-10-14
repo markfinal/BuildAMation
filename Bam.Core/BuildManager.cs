@@ -179,10 +179,6 @@ namespace Bam.Core
         ExecutePreBuild(
             System.Type metaType)
         {
-            if (null == metaType)
-            {
-                return;
-            }
             var method = metaType.GetMethod("PreExecution");
             if (null == method)
             {
@@ -207,10 +203,6 @@ namespace Bam.Core
         ExecutePostBuild(
             System.Type metaType)
         {
-            if (null == metaType)
-            {
-                return;
-            }
             var method = metaType.GetMethod("PostExecution");
             if (null == method)
             {
@@ -235,12 +227,6 @@ namespace Bam.Core
         CheckIfModulesNeedRebuilding(
             System.Type metaType)
         {
-            if (null == metaType)
-            {
-                Log.DebugMessage("No build mode metadata, assume rebuilds necessary");
-                return false;
-            }
-
             // not all build modes need to determine if modules are up-to-date
             var evaluationRequiredAttr =
                 metaType.GetCustomAttributes(typeof(EvaluationRequiredAttribute), false) as EvaluationRequiredAttribute[];
@@ -307,12 +293,20 @@ namespace Bam.Core
             }
 
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
+
+            var graph = Graph.Instance;
             var metaName = System.String.Format("{0}Builder.{0}Meta", State.BuildMode);
             var metaDataType = State.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)
             {
-                Log.DebugMessage("No build mode {0} meta data type {1}", State.BuildMode, metaName);
+                throw new Exception("No build mode {0} meta data type {1}", State.BuildMode, metaName);
             }
+
+            if (!typeof(IBuildModeMetaData).IsAssignableFrom(metaDataType))
+            {
+                throw new Exception("Build mode package meta data type {0} does not implement the interface {1}", metaDataType.ToString(), typeof(IBuildModeMetaData).ToString());
+            }
+            graph.BuildModeMetaData = System.Activator.CreateInstance(metaDataType) as IBuildModeMetaData;
 
             var useEvaluation = CheckIfModulesNeedRebuilding(metaDataType);
             var explainRebuild = CommandLineProcessor.Evaluate(new ExplainBuildReason());
@@ -349,7 +343,6 @@ namespace Bam.Core
                         scheduler);
 
                 var tasks = new Array<System.Threading.Tasks.Task>();
-                var graph = Graph.Instance;
                 foreach (var rank in graph.Reverse())
                 {
                     foreach (var module in rank)
@@ -423,7 +416,6 @@ namespace Bam.Core
             }
             else
             {
-                var graph = Graph.Instance;
                 foreach (var rank in graph.Reverse())
                 {
                     if (null != abortException)

@@ -76,6 +76,7 @@
     <Compile Include="ExecutionPolicyUtilities.cs" />
     <Compile Include="FileKey.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Interfaces\IBuildModeMetaData.cs" />
     <Compile Include="Interfaces\IChildModule.cs" />
     <Compile Include="Interfaces\ICommandLineArgument.cs" />
     <Compile Include="Interfaces\ICommandLineTool.cs" />

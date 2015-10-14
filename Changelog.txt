@@ -1,3 +1,5 @@
+14-Oct-2015 Each package representing a build mode (e.g. NativeBuilder) has a class for metadata (named <buildmode>Meta). This must now implement a new interface, Bam.Core.IBuildModeMetaData, which requires a function to return the module output directory TokenizedString used for each module. This allows different build modes to write to different locations under the build root, should their use require it. Most have a module output directory of 'encapsulating module name'/'configuration'.
+
 13-Oct-2015 Added Bam.Core.MacroList.Remove(), with an argument with no token markup. Use this function cautiously, as it can cause TokenizedStrings to fail to parse.
 
 13-Oct-2015 Bam.Core.MacroList.Contains now expects the argument to have no token markup (i.e. no $( prefix and no ) suffix). Note that this is because the macros are internally stored in a format for fast lookups for TokenizedStrings.

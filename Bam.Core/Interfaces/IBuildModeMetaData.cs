@@ -27,10 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace NativeBuilder
+namespace Bam.Core
 {
-    [Bam.Core.EvaluationRequired(true)]
-    public sealed class NativeMeta
+    public interface IBuildModeMetaData
     {
+        TokenizedString
+        ModuleOutputDirectory(
+            Module currentModule,
+            Module encapsulatingModule);
     }
 }

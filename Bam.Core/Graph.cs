@@ -440,5 +440,12 @@ namespace Bam.Core
                 }
             }
         }
+
+        public IBuildModeMetaData
+        BuildModeMetaData
+        {
+            get;
+            set;
+        }
     }
 }
