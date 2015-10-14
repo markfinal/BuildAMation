@@ -27,27 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
-    using System.Linq;
-
-    [System.AttributeUsage(System.AttributeTargets.Class)]
-    public sealed class EvaluationRequiredAttribute :
-        System.Attribute
-    {
-        public EvaluationRequiredAttribute(
-            bool enabled)
-        {
-            this.Enabled = enabled;
-        }
-
-        public bool Enabled
-        {
-            get;
-            private set;
-        }
-    }
-
     /// <summary>
     /// Management of the graph execution
     /// </summary>
