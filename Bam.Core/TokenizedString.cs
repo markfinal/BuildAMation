@@ -382,8 +382,14 @@ namespace Bam.Core
                         }
                         else
                         {
+                            // temporarily remove the deferred expansion flag to get a result - but don't commit this back as the parsed string
+                            // or it may not be useful in multiple scenarios, e.g. if a Tool has a deferred expansion string, with the Module using the Tool
+                            // defining one of the macros, then each Module may have a unique value for that macro - if the Tool had the value written back
+                            // as the parsed string, then the string will be considered expanded, and the same value will be used for all Modules
                             tokenString.Flags &= ~EFlags.DeferredExpansion;
-                            tokenString.ParsedString = tokenString.Parse((this.ModuleWithMacros != null) ? this.ModuleWithMacros.Macros : null);
+                            var result = tokenString.Parse((this.ModuleWithMacros != null) ? this.ModuleWithMacros.Macros : null);
+                            tokenString.Flags |= EFlags.DeferredExpansion;
+                            return result;
                         }
                     }
                     return tokenString.ToString();
