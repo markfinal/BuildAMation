@@ -307,7 +307,7 @@ namespace Publisher
             return copyFileModule;
         }
 
-        public void
+        public CollatedFile
         Include<DependentModule>(
             Bam.Core.FileKey key,
             string subdir,
@@ -316,7 +316,7 @@ namespace Publisher
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
-                return;
+                return null;
             }
 
             var copyFileModule = this.CreateCollatedFile(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
@@ -337,6 +337,8 @@ namespace Publisher
                     this.CopySONameSymlink(copyFileModule);
                 }
             }
+
+            return copyFileModule;
         }
 
         public void
@@ -490,6 +492,17 @@ namespace Publisher
                     }
                 }
             }
+        }
+
+        public void
+        ChangeRPath(
+            CollatedFile source,
+            string newRPath)
+        {
+            var change = Bam.Core.Module.Create<ChangeRPathModule>();
+            change.Source = source;
+            change.NewRPath = newRPath;
+            this.Requires(change);
         }
 
         public override void

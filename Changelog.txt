@@ -1,3 +1,5 @@
+14-Oct-2015 Added Publisher.Collation.ChangeRPath utility function, that will alter the RPath for a copied (ELF) file to that path specified. This is so that published files, e.g. plugins, can locate shared objects wherever they may get published to.
+
 14-Oct-2015 Each package representing a build mode (e.g. NativeBuilder) has a class for metadata (named <buildmode>Meta). This must now implement a new interface, Bam.Core.IBuildModeMetaData, which requires a function to return the module output directory TokenizedString used for each module. This allows different build modes to write to different locations under the build root, should their use require it. Most have a module output directory of 'encapsulating module name'/'configuration'.
 
 13-Oct-2015 Added Bam.Core.MacroList.Remove(), with an argument with no token markup. Use this function cautiously, as it can cause TokenizedStrings to fail to parse.
