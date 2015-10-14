@@ -51,8 +51,7 @@ namespace MingwCommon
             }
             foreach (var path in settings.LibraryPaths)
             {
-                var format = path.ContainsSpace ? "-L\"{0}\"" : "-L{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
+                commandLine.Add(System.String.Format("-L{0}", path.ParseAndQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {

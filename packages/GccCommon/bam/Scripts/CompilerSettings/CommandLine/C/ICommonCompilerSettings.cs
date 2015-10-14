@@ -62,8 +62,7 @@ namespace GccCommon
             }
             foreach (var path in settings.IncludePaths)
             {
-                var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
-                commandLine.Add(System.String.Format(formatString, path));
+                commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
             if (null != settings.OmitFramePointer)
             {
@@ -111,8 +110,7 @@ namespace GccCommon
             }
             foreach (var path in settings.SystemIncludePaths)
             {
-                var formatString = path.ContainsSpace ? "-I\"{0}\"" : "-I{0}";
-                commandLine.Add(System.String.Format(formatString, path));
+                commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
             if (null != settings.TargetLanguage)
             {

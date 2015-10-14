@@ -50,8 +50,7 @@ namespace VisualCCommon
             }
             foreach (var path in settings.LibraryPaths)
             {
-                var format = path.ContainsSpace ? "-LIBPATH:\"{0}\"" : "-LIBPATH:{0}";
-                commandLine.Add(System.String.Format(format, path.ToString()));
+                commandLine.Add(System.String.Format("-LIBPATH:{0}", path.ParseAndQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {

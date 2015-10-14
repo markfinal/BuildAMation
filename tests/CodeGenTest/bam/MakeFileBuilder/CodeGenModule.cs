@@ -52,7 +52,7 @@ namespace CodeGenTest
             commandLineArgs.Add("Generated");
 
             var command = new System.Text.StringBuilder();
-            command.AppendFormat(compiler.Executable.ContainsSpace ? "\"{0}\" {1} $^" : "{0} {1} $^", compiler.Executable, commandLineArgs.ToString(' '));
+            command.AppendFormat("{0} {1} $^", compiler.Executable.ParseAndQuoteIfNecessary(), commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());
         }
     }
