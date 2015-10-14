@@ -30,7 +30,7 @@
 namespace Publisher
 {
     public sealed class InstallNameTool :
-    Bam.Core.PreBuiltTool
+        Bam.Core.PreBuiltTool
     {
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
