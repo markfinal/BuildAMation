@@ -144,7 +144,7 @@ namespace Bam.Core
             this.OriginalString = original;
             if (verbatim)
             {
-                this.ParsedString = original;
+                this.ParsedString = NormalizeDirectorySeparators(original);
                 return;
             }
             var tokenized = SplitToParse(original, TokenRegExPattern);
@@ -170,14 +170,6 @@ namespace Bam.Core
             EFlags flags) :
             this(original, verbatim, positionalTokens, flags)
         {
-            if (null == moduleWithMacros)
-            {
-                if (null == this.MacroIndices)
-                {
-                    // consider the string parsed, as there is no work to do
-                    this.ParsedString = this.OriginalString;
-                }
-            }
             this.ModuleWithMacros = moduleWithMacros;
         }
 
@@ -294,6 +286,14 @@ namespace Bam.Core
         }
 
         private static string
+        NormalizeDirectorySeparators(
+            string path)
+        {
+            var normalized = OSUtilities.IsWindowsHosting ? path.Replace('/', '\\') : path.Replace('\\', '/');
+            return normalized;
+        }
+
+        private static string
         JoinTokens(
             System.Collections.Generic.List<string> tokens)
         {
@@ -301,33 +301,18 @@ namespace Bam.Core
             {
                 return tokens[0];
             }
-            var join = System.String.Join(string.Empty, tokens);
-            if (OSUtilities.IsWindowsHosting)
-            {
-                join = join.Replace('/', '\\');
-            }
-            else
-            {
-                join = join.Replace('\\', '/');
-            }
+            var join = NormalizeDirectorySeparators(System.String.Join(string.Empty, tokens));
             return join;
         }
 
         public override string
         ToString()
         {
-            if (this.Verbatim)
+            if (!this.Verbatim && !this.IsExpanded)
             {
-                return this.OriginalString;
+                throw new Exception("TokenizedString {0} was not expanded", this.OriginalString);
             }
-            else
-            {
-                if (!this.IsExpanded)
-                {
-                    throw new Exception("TokenizedString {0} was not expanded", this.OriginalString);
-                }
-                return this.ParsedString;
-            }
+            return this.ParsedString;
         }
 
         public bool Empty
