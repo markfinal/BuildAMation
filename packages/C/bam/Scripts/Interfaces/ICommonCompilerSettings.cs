@@ -45,7 +45,7 @@ namespace C
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> IncludePaths
+        Bam.Core.TokenizedStringArray IncludePaths
         {
             get;
             set;

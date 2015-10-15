@@ -71,7 +71,7 @@ namespace Gcc
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;

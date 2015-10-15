@@ -85,7 +85,7 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettings settings)
         {
             settings.DisableWarnings = new Bam.Core.StringArray();
-            settings.IncludePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
+            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
             settings.PreprocessorDefines = new PreprocessorDefinitions();
             settings.PreprocessorUndefines = new Bam.Core.StringArray();
             settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
@@ -99,7 +99,7 @@ namespace C.DefaultSettings
         {
             shared.Bits = (lhs.Bits == rhs.Bits) ? lhs.Bits : null;
             shared.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Intersect(rhs.PreprocessorDefines));
-            shared.IncludePaths = lhs.IncludePaths.Intersect(rhs.IncludePaths);
+            shared.IncludePaths = new Bam.Core.TokenizedStringArray(lhs.IncludePaths.Intersect(rhs.IncludePaths));
             shared.SystemIncludePaths = new Bam.Core.TokenizedStringArray(lhs.SystemIncludePaths.Intersect(rhs.SystemIncludePaths));
             shared.OutputType = (lhs.OutputType == rhs.OutputType) ? lhs.OutputType : null;
             shared.DebugSymbols = (lhs.DebugSymbols == rhs.DebugSymbols) ? lhs.DebugSymbols : null;
@@ -119,7 +119,7 @@ namespace C.DefaultSettings
         {
             delta.Bits = (lhs.Bits != rhs.Bits) ? lhs.Bits : null;
             delta.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Except(rhs.PreprocessorDefines));
-            delta.IncludePaths = new Bam.Core.Array<TokenizedString>(lhs.IncludePaths.Except(rhs.IncludePaths));
+            delta.IncludePaths = new Bam.Core.TokenizedStringArray(lhs.IncludePaths.Except(rhs.IncludePaths));
             delta.SystemIncludePaths = new Bam.Core.TokenizedStringArray(lhs.SystemIncludePaths.Except(rhs.SystemIncludePaths));
             delta.OutputType = (lhs.OutputType != rhs.OutputType) ? lhs.OutputType : null;
             delta.DebugSymbols = (lhs.DebugSymbols != rhs.DebugSymbols) ? lhs.DebugSymbols : null;
