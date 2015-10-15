@@ -43,7 +43,7 @@ namespace C.DefaultSettings
         Empty(
             this C.ICommonCompilerSettingsOSX settings)
         {
-            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
+            settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
         }
 
         public static void
@@ -52,7 +52,7 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsOSX lhs,
             C.ICommonCompilerSettingsOSX rhs)
         {
-            shared.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Intersect(rhs.FrameworkSearchDirectories));
+            shared.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(lhs.FrameworkSearchPaths.Intersect(rhs.FrameworkSearchPaths));
         }
 
         public static void
@@ -61,7 +61,7 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsOSX lhs,
             C.ICommonCompilerSettingsOSX rhs)
         {
-            delta.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>(lhs.FrameworkSearchDirectories.Except(rhs.FrameworkSearchDirectories));
+            delta.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(lhs.FrameworkSearchPaths.Except(rhs.FrameworkSearchPaths));
         }
 
         public static void
@@ -69,9 +69,9 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettingsOSX settings,
             C.ICommonCompilerSettingsOSX other)
         {
-            foreach (var path in other.FrameworkSearchDirectories)
+            foreach (var path in other.FrameworkSearchPaths)
             {
-                settings.FrameworkSearchDirectories.AddUnique(path);
+                settings.FrameworkSearchPaths.AddUnique(path);
             }
         }
     }

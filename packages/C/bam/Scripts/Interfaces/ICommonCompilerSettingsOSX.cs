@@ -33,7 +33,7 @@ namespace C
     public interface ICommonCompilerSettingsOSX :
         Bam.Core.ISettingsBase
     {
-        Bam.Core.Array<Bam.Core.TokenizedString> FrameworkSearchDirectories
+        Bam.Core.TokenizedStringArray FrameworkSearchPaths
         {
             get;
             set;

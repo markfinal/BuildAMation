@@ -146,7 +146,7 @@ namespace Clang
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettingsOSX.FrameworkSearchDirectories
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettingsOSX.FrameworkSearchPaths
         {
             get;
             set;
