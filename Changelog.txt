@@ -1,6 +1,6 @@
-15-Oct-2015 Changed C.ICommonLinkerSettingsOSX.Frameworks from Bam.Core.Array<Bam.Core.TokenizedString> to Bam.Core.TokenizedStringArray.
+15-Oct-2015 Changed C.ILinkerSettingsOSX.Frameworks from Bam.Core.Array<Bam.Core.TokenizedString> to Bam.Core.TokenizedStringArray.
 
-15-Oct-2015 Changed C.ICommonLinkerSettingsOSX.FrameworkSearchDirectories from Bam.Core.Array<Bam.Core.TokenizedString> to Bam.Core.TokenizedStringArray, and renamed to FrameworkSearchPaths.
+15-Oct-2015 Changed C.ILinkerSettingsOSX.FrameworkSearchDirectories from Bam.Core.Array<Bam.Core.TokenizedString> to Bam.Core.TokenizedStringArray, and renamed to FrameworkSearchPaths.
 
 15-Oct-2015 Changed C.ICommonCompilerSettingsOSX.FrameworkSearchDirectories from Bam.Core.Array<Bam.Core.TokenizedString> to Bam.Core.TokenizedStringArray, and renamed to FrameworkSearchPaths.
 
