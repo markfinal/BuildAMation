@@ -112,6 +112,8 @@ namespace Publisher
 
         private CollatedDirectory
         CreateCollatedDirectory(
+            Bam.Core.Module sourceModule,
+            Bam.Core.TokenizedString sourcePath,
             CollatedFile reference,
             Bam.Core.TokenizedString subDirectory)
         {
@@ -127,7 +129,7 @@ namespace Publisher
                 {
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, (module as CollatedDirectory).SourcePath);
+                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, sourcePath);
                     }
                     else
                     {
@@ -138,7 +140,7 @@ namespace Publisher
                 {
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], (module as CollatedDirectory).SourcePath);
+                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], sourcePath);
                     }
                     else
                     {
@@ -147,6 +149,9 @@ namespace Publisher
                 }
             });
             this.Requires(copyDirectoryModule);
+
+            copyDirectoryModule.SourceModule = sourceModule;
+            copyDirectoryModule.SourcePath = sourcePath;
             copyDirectoryModule.Reference = reference;
             copyDirectoryModule.SubDirectory = subDirectory;
             return copyDirectoryModule;
@@ -154,6 +159,8 @@ namespace Publisher
 
         private CollatedSymbolicLink
         CreateCollatedSymbolicLink(
+            Bam.Core.Module sourceModule,
+            Bam.Core.TokenizedString sourcePath,
             CollatedFile reference,
             Bam.Core.TokenizedString subDirectory)
         {
@@ -174,6 +181,9 @@ namespace Publisher
                 }
             });
             this.Requires(copySymlinkModule);
+
+            copySymlinkModule.SourceModule = sourceModule;
+            copySymlinkModule.SourcePath = sourcePath;
             copySymlinkModule.Reference = reference;
             copySymlinkModule.SubDirectory = subDirectory;
             return copySymlinkModule;
@@ -207,9 +217,11 @@ namespace Publisher
             {
                 return;
             }
-            var copySymlink = this.CreateCollatedSymbolicLink(copyFileModule.Reference, copyFileModule.SubDirectory);
-            copySymlink.SourceModule = copyFileModule.SourceModule;
-            copySymlink.SourcePath = copyFileModule.SourceModule.Macros["SOName"];
+            var copySymlink = this.CreateCollatedSymbolicLink(
+                copyFileModule.SourceModule,
+                copyFileModule.SourceModule.Macros["SOName"],
+                copyFileModule.Reference,
+                copyFileModule.SubDirectory);
             copySymlink.LinkTarget(copySymlink.CreateTokenizedString("@filename($(0))", copyFileModule.SourcePath));
         }
 
@@ -373,8 +385,7 @@ namespace Publisher
             string subdir,
             CollatedFile reference)
         {
-            var copyDirectoryModule = this.CreateCollatedDirectory(reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
-            copyDirectoryModule.SourcePath = parameterizedPath;
+            this.CreateCollatedDirectory(null, parameterizedPath, reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
         }
 
         public void
@@ -404,9 +415,11 @@ namespace Publisher
             foreach (var dirData in framework.DirectoriesToPublish)
             {
                 var dir = dirData.SourcePath;
-                var copyDir = this.CreateCollatedDirectory(reference, this.CreateTokenizedString("$(0)/$(1)", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
-                copyDir.SourceModule = dependent;
-                copyDir.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, dir);
+                var copyDir = this.CreateCollatedDirectory(
+                    dependent,
+                    this.CreateTokenizedString("$(0)/$(1)", frameworkPath, dir),
+                    reference,
+                    this.CreateTokenizedString("$(0)/$(1)", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
                 dirPublishedModules.Add(copyDir);
             }
             var filePublishedModules = new Bam.Core.Array<CollatedFile>();
@@ -450,9 +463,11 @@ namespace Publisher
                 foreach (var symlinkData in framework.SymlinksToPublish)
                 {
                     var symlink = symlinkData.SourcePath;
-                    var copySymlink = this.CreateCollatedSymbolicLink(reference, this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
-                    copySymlink.SourceModule = dependent;
-                    copySymlink.SourcePath = this.CreateTokenizedString("$(0)/$(1)", frameworkPath, symlink);
+                    var copySymlink = this.CreateCollatedSymbolicLink(
+                        dependent,
+                        this.CreateTokenizedString("$(0)/$(1)", frameworkPath, symlink),
+                        reference,
+                        this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
                     copySymlink.LinkTarget(symlinkData.DestinationPath);
                     foreach (var publishedDir in dirPublishedModules)
                     {
