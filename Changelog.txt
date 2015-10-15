@@ -1,3 +1,5 @@
+15-Oct-2015 Changed C.ICommonLinkerSettings.LibraryPaths from Bam.Core.Array<Bam.Core.TokenizedString> to Bam.Core.TokenizedStringArray.
+
 15-Oct-2015 Changed GccCommon.ICommonLinkerSettings.RPath from Bam.Core.StringArray to Bam.Core.TokenizedStringArray.
 
 15-Oct-2015 Added TokenizedStringArray Add and AddUnique functions that take string arguments - these are converted to verbatim TokenizedStrings.

@@ -39,7 +39,7 @@ namespace C
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> LibraryPaths
+        Bam.Core.TokenizedStringArray LibraryPaths
         {
             get;
             set;
