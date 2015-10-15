@@ -39,7 +39,7 @@ namespace C
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> FrameworkSearchDirectories
+        Bam.Core.TokenizedStringArray FrameworkSearchPaths
         {
             get;
             set;

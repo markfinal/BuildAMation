@@ -67,10 +67,10 @@ namespace ClangCommon
                     meta.Target.FrameworksBuildPhase.AddBuildFile(buildFile);
                 }
             }
-            if (options.FrameworkSearchDirectories.Count > 0)
+            if (options.FrameworkSearchPaths.Count > 0)
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.FrameworkSearchDirectories)
+                foreach (var path in options.FrameworkSearchPaths)
                 {
                     option.Add(path.Parse());
                 }

@@ -42,7 +42,7 @@ namespace ClangCommon
                 var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());
                 commandLine.Add(System.String.Format("-framework {0}", frameworkName));
             }
-            foreach (var path in options.FrameworkSearchDirectories)
+            foreach (var path in options.FrameworkSearchPaths)
             {
                 commandLine.Add(System.String.Format("-F {0}", path.Parse()));
             }

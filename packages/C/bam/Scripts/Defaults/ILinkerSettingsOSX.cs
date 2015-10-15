@@ -37,7 +37,7 @@ namespace C.DefaultSettings
             Bam.Core.Module module)
         {
             settings.Frameworks = new Bam.Core.Array<Bam.Core.TokenizedString>();
-            settings.FrameworkSearchDirectories = new Bam.Core.Array<Bam.Core.TokenizedString>();
+            settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
         }
     }
 }
