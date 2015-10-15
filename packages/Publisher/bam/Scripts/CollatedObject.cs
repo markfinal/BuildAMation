@@ -96,7 +96,10 @@ namespace Publisher
             set
             {
                 this.RealSourceModule = value;
-                this.Requires(value);
+                if (null != value)
+                {
+                    this.Requires(value);
+                }
             }
         }
 
@@ -123,7 +126,10 @@ namespace Publisher
             set
             {
                 this.ReferenceFile = value;
-                this.Requires(value);
+                if (null != value)
+                {
+                    this.Requires(value);
+                }
             }
         }
 

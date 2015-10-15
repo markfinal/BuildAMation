@@ -50,12 +50,12 @@ namespace Publisher
                     meta.Target.MakeApplicationBundle();
 
                     // this has to be the path that Xcode writes to
-                    sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/$(0)/@filename($(1))", sender.SubDirectory, sourcePath));
+                    sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Aliased(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/$(0)/@filename($(1))", sender.SubDirectory, sourcePath));
                 }
                 else
                 {
                     // this has to be the path that Xcode writes to
-                    sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/@filename($(0))", sourcePath));
+                    sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Aliased(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/@filename($(0))", sourcePath));
                 }
 
                 return;
