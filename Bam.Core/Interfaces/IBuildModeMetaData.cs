@@ -35,5 +35,10 @@ namespace Bam.Core
         ModuleOutputDirectory(
             Module currentModule,
             Module encapsulatingModule);
+
+        bool PublishBesideExecutable
+        {
+            get;
+        }
     }
 }

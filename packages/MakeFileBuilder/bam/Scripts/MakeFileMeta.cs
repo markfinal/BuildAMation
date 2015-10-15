@@ -186,5 +186,13 @@ namespace MakeFileBuilder
         {
             return Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.Combine(encapsulatingModule.GetType().Name, currentModule.BuildEnvironment.Configuration.ToString()));
         }
+
+        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

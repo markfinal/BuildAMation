@@ -46,7 +46,10 @@ namespace Publisher
 
         protected Collation()
         {
-            this.RegisterGeneratedFile(PublishingRoot, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                this.RegisterGeneratedFile(PublishingRoot, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
         }
 
         private string
@@ -82,6 +85,10 @@ namespace Publisher
                     }
                     else
                     {
+                        if (!this.GeneratedPaths.ContainsKey(PublishingRoot))
+                        {
+                            this.RegisterGeneratedFile(PublishingRoot, module.CreateTokenizedString("@dir($(0))", sourcePath));
+                        }
                         if (null != subDirectory)
                         {
                             module.Macros["CopyDir"] = this.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PublishingRoot], subDirectory);
