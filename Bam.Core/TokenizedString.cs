@@ -672,5 +672,19 @@ namespace Bam.Core
             :
             base(input)
         { }
+
+        public void
+        Add(
+            string item)
+        {
+            this.Add(Bam.Core.TokenizedString.CreateVerbatim(item));
+        }
+
+        public void
+        AddUnique(
+            string item)
+        {
+           this.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(item));
+        }
     }
 }

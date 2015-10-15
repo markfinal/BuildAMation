@@ -1,3 +1,5 @@
+15-Oct-2015 Added TokenizedStringArray Add and AddUnique functions that take string arguments - these are converted to verbatim TokenizedStrings.
+
 14-Oct-2015 Debuggable project files are now <modulename>-bam.csproj, to distinguish between those generated for the VSSolution build mode.
 
 14-Oct-2015 Added Publisher.Collation.ChangeRPath utility function, that will alter the RPath for a copied (ELF) file to that path specified. This is so that published files, e.g. plugins, can locate shared objects wherever they may get published to.
