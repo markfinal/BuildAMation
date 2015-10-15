@@ -87,7 +87,7 @@ namespace Clang
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
