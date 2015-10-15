@@ -1,3 +1,5 @@
+15-Oct-2015 Changed GccCommon.ICommonLinkerSettings.RPath from Bam.Core.StringArray to Bam.Core.TokenizedStringArray.
+
 15-Oct-2015 Added TokenizedStringArray Add and AddUnique functions that take string arguments - these are converted to verbatim TokenizedStrings.
 
 14-Oct-2015 Debuggable project files are now <modulename>-bam.csproj, to distinguish between those generated for the VSSolution build mode.

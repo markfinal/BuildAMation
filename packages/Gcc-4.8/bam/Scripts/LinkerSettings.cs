@@ -86,13 +86,13 @@ namespace Gcc
             set;
         }
 
-        Bam.Core.StringArray GccCommon.ICommonLinkerSettings.RPath
+        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPath
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray GccCommon.ICommonLinkerSettings.RPathLink
+        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPathLink
         {
             get;
             set;
