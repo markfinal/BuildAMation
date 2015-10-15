@@ -64,7 +64,23 @@ namespace Publisher
             else
             {
                 var commands = new Bam.Core.StringArray();
-                commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), sourcePath.ParseAndQuoteIfNecessary(), sender.SubDirectory));
+                if (sender is CollatedDirectory)
+                {
+                    // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\",
+                        (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                        commandLine.ToString(' '),
+                        sourcePath.ParseAndQuoteIfNecessary(),
+                        sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sourcePath).Parse()));
+                }
+                else
+                {
+                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\",
+                        (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                        commandLine.ToString(' '),
+                        sourcePath.ParseAndQuoteIfNecessary(),
+                        sender.SubDirectory));
+                }
 
                 var project = sender.Reference.SourceModule.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(sender.Reference.SourceModule);
