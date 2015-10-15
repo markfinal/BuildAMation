@@ -27,28 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace C.DefaultSettings
 {
-    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerSettingsOSX :
-        Bam.Core.ISettingsBase
+    public static partial class DefaultSettingsExtensions
     {
-        Bam.Core.TokenizedStringArray Frameworks
+        public static void
+        Defaults(
+            this C.ICommonLinkerSettingsOSX settings,
+            Bam.Core.Module module)
         {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray FrameworkSearchPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedString InstallName
-        {
-            get;
-            set;
+            settings.Frameworks = new Bam.Core.TokenizedStringArray();
+            settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
         }
     }
 }

@@ -70,7 +70,7 @@ namespace C.Cxx
                     linker.OutputType = ELinkerOutput.DynamicLibrary;
                 }
 
-                var osxLinker = settings as C.ILinkerSettingsOSX;
+                var osxLinker = settings as C.ICommonLinkerSettingsOSX;
                 if (null != osxLinker)
                 {
                     osxLinker.InstallName = this.CreateTokenizedString("@executable_path/@filename($(LinkOutput))");

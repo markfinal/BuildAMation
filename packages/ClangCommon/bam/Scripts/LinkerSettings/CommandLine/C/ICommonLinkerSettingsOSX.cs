@@ -27,17 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C.DefaultSettings
+namespace ClangCommon
 {
-    public static partial class DefaultSettingsExtensions
+    public static partial class CommandLineLinkerImplementation
     {
         public static void
-        Defaults(
-            this C.ILinkerSettingsOSX settings,
-            Bam.Core.Module module)
+        Convert(
+            this C.ICommonLinkerSettingsOSX options,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            settings.Frameworks = new Bam.Core.TokenizedStringArray();
-            settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
+            foreach (var framework in options.Frameworks)
+            {
+                var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());
+                commandLine.Add(System.String.Format("-framework {0}", frameworkName));
+            }
+            foreach (var path in options.FrameworkSearchPaths)
+            {
+                commandLine.Add(System.String.Format("-F {0}", path.Parse()));
+            }
         }
     }
 }

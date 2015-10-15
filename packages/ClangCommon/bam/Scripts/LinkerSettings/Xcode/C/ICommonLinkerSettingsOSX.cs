@@ -33,7 +33,7 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ILinkerSettingsOSX options,
+            this C.ICommonLinkerSettingsOSX options,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {

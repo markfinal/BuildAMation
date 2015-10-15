@@ -35,7 +35,7 @@ namespace Clang
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonLinkerSettings,
         C.ICxxOnlyLinkerSettings,
-        C.ILinkerSettingsOSX,
+        C.ICommonLinkerSettingsOSX,
         C.IAdditionalSettings
     {
         public CxxLinkerSettings(
@@ -90,19 +90,19 @@ namespace Clang
             set;
         }
 
-        Bam.Core.TokenizedStringArray C.ILinkerSettingsOSX.Frameworks
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
         {
             get;
             set;
         }
 
-        Bam.Core.TokenizedStringArray C.ILinkerSettingsOSX.FrameworkSearchPaths
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths
         {
             get;
             set;
         }
 
-        Bam.Core.TokenizedString C.ILinkerSettingsOSX.InstallName
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
         {
             get;
             set;
