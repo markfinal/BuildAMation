@@ -42,7 +42,7 @@ namespace C.Cxx
 
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.ILinkerSettingsWin;
+                var linker = settings as C.ICommonLinkerSettingsWin;
                 if (linker != null)
                 {
                     linker.SubSystem = ESubsystem.Windows;

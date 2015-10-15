@@ -1,3 +1,5 @@
+15-Oct-2015 Renamed C.ILinkerSettingsWin to C.ICommonLinkerSettingsWin for consistency.
+
 15-Oct-2015 Renamed C.ILinkerSettingsOSX to C.ICommonLinkerSettingsOSX for consistency.
 
 15-Oct-2015 Changed C.ILinkerSettingsOSX.Frameworks from Bam.Core.Array<Bam.Core.TokenizedString> to Bam.Core.TokenizedStringArray.

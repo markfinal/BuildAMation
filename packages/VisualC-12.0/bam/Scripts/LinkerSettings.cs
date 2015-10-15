@@ -33,7 +33,7 @@ namespace VisualC
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
-        C.ILinkerSettingsWin,
+        C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
         VisualCCommon.ICommonLinkerSettings
@@ -61,7 +61,7 @@ namespace VisualC
             VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, settings, condition);
         }
 
-        C.ESubsystem? C.ILinkerSettingsWin.SubSystem
+        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
         {
             get;
             set;
