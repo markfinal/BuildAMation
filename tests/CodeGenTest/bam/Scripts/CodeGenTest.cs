@@ -125,7 +125,7 @@ namespace CodeGenTest
             base.Init(parent);
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
             this.Requires(this.Compiler as Bam.Core.Module);
-            this.GeneratedPaths[Key].Assign(this.CreateTokenizedString("$(buildroot)/Generated.c"));
+            this.GeneratedPaths[Key].Aliased(this.CreateTokenizedString("$(buildroot)/Generated.c"));
         }
 
         public override void

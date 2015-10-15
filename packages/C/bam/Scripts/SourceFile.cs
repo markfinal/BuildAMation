@@ -72,7 +72,7 @@ namespace C
             }
             set
             {
-                this.GeneratedPaths[Key].Assign(value);
+                this.GeneratedPaths[Key].Aliased(value);
             }
         }
     }

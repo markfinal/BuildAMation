@@ -136,7 +136,7 @@ namespace Publisher
 
             set
             {
-                this.RealSourcePath.Assign(value);
+                this.RealSourcePath.Aliased(value);
                 this.GeneratedPaths[CopiedObjectKey] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
             }
         }
