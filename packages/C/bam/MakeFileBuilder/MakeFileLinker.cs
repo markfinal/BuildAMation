@@ -33,22 +33,22 @@ namespace C
     public sealed class MakeFileLinker :
         ILinkingPolicy
     {
-        private static string
+        private static Bam.Core.TokenizedString
         GetLibraryPath(Bam.Core.Module module)
         {
             if (module is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.StaticLibrary.Key].ToString();
+                return module.GeneratedPaths[C.StaticLibrary.Key];
             }
             else if (module is C.IDynamicLibrary)
             {
                 if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
-                    return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
+                    return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
                 }
                 else
                 {
-                    return module.GeneratedPaths[C.DynamicLibrary.Key].ToString();
+                    return module.GeneratedPaths[C.DynamicLibrary.Key];
                 }
             }
             else if (module is C.CSDKModule)
@@ -92,8 +92,7 @@ namespace C
                 {
                     continue;
                 }
-                var dir = System.IO.Path.GetDirectoryName(fullLibraryPath);
-                linker.LibraryPaths.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(dir));
+                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", fullLibraryPath));
             }
 
             var commandLineArgs = new Bam.Core.StringArray();
