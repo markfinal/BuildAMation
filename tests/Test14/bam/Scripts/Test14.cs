@@ -105,7 +105,7 @@ namespace Test14
                     if (null != gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
-                        gccLinker.RPath.Add("$ORIGIN");
+                        gccLinker.RPath.AddUnique("$ORIGIN");
                     }
                 });
 
