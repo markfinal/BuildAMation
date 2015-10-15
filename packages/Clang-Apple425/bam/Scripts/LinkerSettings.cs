@@ -83,7 +83,7 @@ namespace Clang
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ILinkerSettingsOSX.Frameworks
+        Bam.Core.TokenizedStringArray C.ILinkerSettingsOSX.Frameworks
         {
             get;
             set;

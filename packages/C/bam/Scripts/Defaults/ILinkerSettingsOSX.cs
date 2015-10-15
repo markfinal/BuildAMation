@@ -36,7 +36,7 @@ namespace C.DefaultSettings
             this C.ILinkerSettingsOSX settings,
             Bam.Core.Module module)
         {
-            settings.Frameworks = new Bam.Core.Array<Bam.Core.TokenizedString>();
+            settings.Frameworks = new Bam.Core.TokenizedStringArray();
             settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
         }
     }

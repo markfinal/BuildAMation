@@ -33,7 +33,7 @@ namespace C
     public interface ILinkerSettingsOSX :
         Bam.Core.ISettingsBase
     {
-        Bam.Core.Array<Bam.Core.TokenizedString> Frameworks
+        Bam.Core.TokenizedStringArray Frameworks
         {
             get;
             set;
