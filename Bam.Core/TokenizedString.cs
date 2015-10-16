@@ -79,24 +79,18 @@ namespace Bam.Core
         private string CreationStackTrace = null;
         private int RefCount = 1;
         private EFlags Flags = EFlags.None;
+        private TokenizedString Alias = null;
 
         public void
-        Assign(
-            TokenizedString other)
+        Aliased(
+            TokenizedString alias)
         {
-            if (null == this.ModuleWithMacros)
+            if (null != this.Alias)
             {
-                throw new Exception("Can't switch out a TokenizedString without a module");
+                throw new Exception("TokenizedString is already aliased");
             }
-            this.Tokens = other.Tokens;
-            this.MacroIndices = other.MacroIndices;
-            this.ModuleWithMacros = other.ModuleWithMacros;
-            this.OriginalString = other.OriginalString;
-            this.ParsedString = other.Verbatim ? other.ParsedString : null; // force reparsing
-            this.Verbatim = other.Verbatim;
-            this.PositionalTokens = other.PositionalTokens;
-            this.RefCount = other.RefCount + 1;
-            this.Flags = other.Flags;
+            this.Alias = alias;
+            alias.RefCount += 1;
         }
 
         static private System.Collections.Generic.IEnumerable<string>
@@ -266,6 +260,10 @@ namespace Bam.Core
         {
             get
             {
+                if (null != this.Alias)
+                {
+                    return this.Alias.IsExpanded;
+                }
                 if (this.Verbatim)
                 {
                     return true;
@@ -308,6 +306,10 @@ namespace Bam.Core
         public override string
         ToString()
         {
+            if (this.Alias != null)
+            {
+                return this.Alias.ToString();
+            }
             if (!this.Verbatim && !this.IsExpanded)
             {
                 throw new Exception("TokenizedString {0} was not expanded", this.OriginalString);
@@ -343,6 +345,10 @@ namespace Bam.Core
         Parse(
             MacroList customMacros)
         {
+            if (this.Alias != null)
+            {
+                return this.Alias.Parse(customMacros);
+            }
             if (this.IsExpanded && (null == customMacros))
             {
                 return this.ParsedString;
@@ -577,7 +583,7 @@ namespace Bam.Core
             {
                 if (!this.IsExpanded)
                 {
-                    throw new Exception("String is not yet expanded");
+                    throw new Exception("TokenizedString, '{0}', is not yet expanded", this.OriginalString);
                 }
                 if (null != this.ParsedString)
                 {
@@ -612,6 +618,10 @@ namespace Bam.Core
         public string ParseAndQuoteIfNecessary(
             MacroList customMacros = null)
         {
+            if (null != this.Alias)
+            {
+                return this.Alias.ParseAndQuoteIfNecessary(customMacros);
+            }
             var parsed = this.Parse(customMacros);
             if (!this.ContainsSpace)
             {
@@ -643,34 +653,16 @@ namespace Bam.Core
         DumpCache()
         {
             Log.DebugMessage("Tokenized string cache");
-            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim))
+            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.Alias != null))
             {
-                Log.DebugMessage("#{0} {1}'{2}'{3} {4}",
+                Log.DebugMessage("#{0} {1}'{2}'{3} {4} {5}",
                     item.RefCount,
                     item.Verbatim ? "<verbatim>" : string.Empty,
                     item.OriginalString,
                     item.Verbatim ? "</verbatim>" : string.Empty,
+                    item.Alias != null ? System.String.Format("Aliased to: '{0}'", item.Alias.OriginalString) : string.Empty,
                     item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
             }
         }
-    }
-
-    public sealed class TokenizedStringArray :
-        Array<TokenizedString>
-    {
-        public TokenizedStringArray()
-        { }
-
-        public TokenizedStringArray(
-            TokenizedString input)
-            :
-            base(new [] {input})
-        { }
-
-        public TokenizedStringArray(
-            System.Collections.Generic.IEnumerable<TokenizedString> input)
-            :
-            base(input)
-        { }
     }
 }

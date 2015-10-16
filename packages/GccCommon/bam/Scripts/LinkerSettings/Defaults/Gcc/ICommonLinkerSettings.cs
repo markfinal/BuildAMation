@@ -37,8 +37,8 @@ namespace GccCommon.DefaultSettings
             Bam.Core.Module module)
         {
             settings.CanUseOrigin = false;
-            settings.RPath = new Bam.Core.StringArray();
-            settings.RPathLink = new Bam.Core.StringArray();
+            settings.RPath = new Bam.Core.TokenizedStringArray();
+            settings.RPathLink = new Bam.Core.TokenizedStringArray();
         }
     }
 }

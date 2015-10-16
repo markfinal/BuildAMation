@@ -30,16 +30,16 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerSettingsOSX :
+    public interface ICommonLinkerSettingsOSX :
         Bam.Core.ISettingsBase
     {
-        Bam.Core.Array<Bam.Core.TokenizedString> Frameworks
+        Bam.Core.TokenizedStringArray Frameworks
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> FrameworkSearchDirectories
+        Bam.Core.TokenizedStringArray FrameworkSearchPaths
         {
             get;
             set;

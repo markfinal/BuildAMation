@@ -175,10 +175,10 @@ namespace Bam.Core
             }
         }
 
-        public System.Collections.Generic.List<Module> TopLevelModules
+        private System.Collections.Generic.List<Module> TopLevelModules
         {
             get;
-            private set;
+            set;
         }
 
         private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> Modules

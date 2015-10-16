@@ -30,7 +30,7 @@
 namespace C
 {
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ILinkerSettingsWin :
+    public interface ICommonLinkerSettingsWin :
         Bam.Core.ISettingsBase
     {
         C.ESubsystem? SubSystem

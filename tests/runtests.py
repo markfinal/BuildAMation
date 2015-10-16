@@ -14,6 +14,10 @@ import xml.etree.ElementTree as ET
 
 # ----------
 
+def PrintMessage(message):
+    print >>sys.stdout, message
+    sys.stdout.flush()
+
 class Package:
     def __init__(self, root, name, version):
         self.root = root
@@ -51,7 +55,7 @@ class Package:
 def FindAllPackagesToTest(root, options):
     """Locate packages that can be tested"""
     if options.verbose:
-        print "Locating packages under '%s'" % root
+        PrintMessage("Locating packages under '%s'" % root)
     tests = []
     dirs = os.listdir(root)
     dirs.sort()
@@ -71,7 +75,7 @@ def FindAllPackagesToTest(root, options):
           raise RuntimeError("Too many XML files found in %s to identify a package definition file" % bamDir)
         package = Package(xmlFiles[0])
         if options.verbose:
-            print "\t%s" % package.GetId()
+            PrintMessage("\t%s" % package.GetId())
         tests.append(package)
     return tests
 
@@ -99,7 +103,7 @@ def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
         argList.append("--clean")
     if extraArgs:
         argList.extend(extraArgs)
-    print " ".join(argList)
+    PrintMessage(" ".join(argList))
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
     (outputStream, errorStream) = p.communicate() # this should WAIT
     if outputStream:
@@ -115,23 +119,23 @@ def _postExecute(builder, options, package, outputMessages, errorMessages):
     return 0
 
 def ExecuteTests(package, configuration, options, args, outputBuffer):
-    print "Package           : ", package.GetId()
+    PrintMessage("Package           : %s" % package.GetId())
     if options.verbose:
-        print "Description          : ", package.GetDescription()
-        print "Available build modes:", configuration.GetBuildModes()
+        PrintMessage("Description          : %s" % package.GetDescription())
+        PrintMessage("Available build modes: %s" % configuration.GetBuildModes())
     if not options.buildmode in configuration.GetBuildModes():
         outputBuffer.write("IGNORED: Package '%s' does not support build mode '%s' in the test configuration\n" % (package.GetDescription(),options.buildmode))
-        print "\tIgnored"
+        PrintMessage("\tIgnored")
         return 0
     variationArgs = configuration.GetVariations(options.buildmode, options.excludeResponseFiles)
     if len(variationArgs) == 0:
         outputBuffer.write("IGNORED: Package '%s' has no response file with the current options\n" % package.GetDescription())
-        print "\tIgnored"
+        PrintMessage("\tIgnored")
         return 0
     if options.verbose:
-        print "Response filenames: ", variationArgs
+        PrintMessage("Response filenames: %s" % variationArgs)
         if options.excludeResponseFiles:
-          print " (excluding", options.excludeResponseFiles, ")"
+          PrintMessage(" (excluding %s)" % options.excludeResponseFiles)
     nonKWArgs = []
     for arg in args:
         if '=' in arg:
@@ -158,7 +162,7 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
               if returncode == 0:
                 returncode = _postExecute(theBuilder, options, package, outputMessages, errorMessages)
             except Exception, e:
-                print "Popen exception: '%s'" % str(e)
+                PrintMessage("Popen exception: '%s'" % str(e))
                 raise
             finally:
                 message = "Package '%s'" % package.GetDescription()
@@ -195,7 +199,7 @@ def CleanUp(options):
     else:
         argList.append(os.path.join(os.getcwd(), "removedebugprojects.sh"))
     if options.verbose:
-        print "Executing: ", argList
+        PrintMessage("Executing: %s" % argList)
     p = subprocess.Popen(argList)
     p.wait()
 
@@ -235,8 +239,8 @@ if __name__ == "__main__":
             raise RuntimeError("No package repositories to test")
 
     if options.verbose:
-        print "Options are ", options
-        print "Args    are ", args
+        PrintMessage("Options are %s" % options)
+        PrintMessage("Args    are %s" % args)
 
     #if not options.platforms:
     #    raise RuntimeError("No platforms were specified")
@@ -252,17 +256,17 @@ if __name__ == "__main__":
         repoTestDir = os.path.join(repo, "tests")
         bamTestsConfigPathname = os.path.join(repoTestDir, 'bamtests.py')
         if not os.path.isfile(bamTestsConfigPathname):
-            print "Package repository %s has no bamtests.py file" % repo
+            PrintMessage("Package repository %s has no bamtests.py file" % repo)
             continue
         bamtests = imp.load_source('bamtests', bamTestsConfigPathname)
         testConfigs = bamtests.ConfigureRepository()
         tests = FindAllPackagesToTest(repoTestDir, options)
         if not options.tests:
             if options.verbose:
-                print "All tests will run"
+                PrintMessage("All tests will run")
         else:
             if options.verbose:
-                print "Tests to run are: ", options.tests
+                PrintMessage("Tests to run are: %s" % options.tests)
             filteredTests = []
             for test in options.tests:
                 found = False
@@ -281,7 +285,7 @@ if __name__ == "__main__":
                 config = testConfigs[package.GetId()]
             except KeyError, e:
                 if options.verbose:
-                    print "No configuration for package: '%s'" % str(e)
+                    PrintMessage("No configuration for package: '%s'" % str(e))
                 continue
             exitCode += ExecuteTests(package, config, options, args, outputBuffer)
 
@@ -289,10 +293,10 @@ if __name__ == "__main__":
             # TODO: consider keeping track of all directories created instead
             CleanUp(options)
 
-        print "--------------------"
-        print "| Results summary  |"
-        print "--------------------"
-        print outputBuffer.getvalue()
+        PrintMessage("--------------------")
+        PrintMessage("| Results summary  |")
+        PrintMessage("--------------------")
+        PrintMessage(outputBuffer.getvalue())
 
         logsDir = os.path.join(repoTestDir, "Logs")
         if not os.path.isdir(logsDir):

@@ -130,6 +130,7 @@
     <Compile Include="TimeProfile.cs" />
     <Compile Include="TimingProfileUtilities.cs" />
     <Compile Include="TokenizedString.cs" />
+    <Compile Include="TokenizedStringArray.cs" />
     <Compile Include="ToolType.cs" />
     <Compile Include="TypeArray.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />

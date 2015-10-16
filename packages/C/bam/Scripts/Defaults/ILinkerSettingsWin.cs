@@ -33,7 +33,7 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ILinkerSettingsWin settings,
+            this C.ICommonLinkerSettingsWin settings,
             Bam.Core.Module module)
         {
             settings.SubSystem = ESubsystem.Console;
@@ -41,32 +41,32 @@ namespace C.DefaultSettings
 
         public static void
         Empty(
-            this C.ILinkerSettingsWin settings)
+            this C.ICommonLinkerSettingsWin settings)
         {
         }
 
         public static void
         SharedSettings(
-            this C.ILinkerSettingsWin shared,
-            C.ILinkerSettingsWin lhs,
-            C.ILinkerSettingsWin rhs)
+            this C.ICommonLinkerSettingsWin shared,
+            C.ICommonLinkerSettingsWin lhs,
+            C.ICommonLinkerSettingsWin rhs)
         {
             shared.SubSystem = (lhs.SubSystem == rhs.SubSystem) ? lhs.SubSystem : null;
         }
 
         public static void
         Delta(
-            this C.ILinkerSettingsWin delta,
-            C.ILinkerSettingsWin lhs,
-            C.ILinkerSettingsWin rhs)
+            this C.ICommonLinkerSettingsWin delta,
+            C.ICommonLinkerSettingsWin lhs,
+            C.ICommonLinkerSettingsWin rhs)
         {
             delta.SubSystem = (lhs.SubSystem != rhs.SubSystem) ? lhs.SubSystem : null;
         }
 
         public static void
         Clone(
-            this C.ILinkerSettingsWin settings,
-            C.ILinkerSettingsWin other)
+            this C.ICommonLinkerSettingsWin settings,
+            C.ICommonLinkerSettingsWin other)
         {
             settings.SubSystem = other.SubSystem;
         }

@@ -45,13 +45,13 @@ namespace C
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> IncludePaths
+        Bam.Core.TokenizedStringArray IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> SystemIncludePaths
+        Bam.Core.TokenizedStringArray SystemIncludePaths
         {
             get;
             set;

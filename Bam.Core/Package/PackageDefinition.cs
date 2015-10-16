@@ -965,7 +965,7 @@ namespace Bam.Core
         GetDebugPackageProjectPathname()
         {
             var projectDir = System.IO.Path.Combine(this.GetPackageDirectory(), "PackageDebug");
-            var projectPathname = System.IO.Path.Combine(projectDir, this.FullName) + ".csproj";
+            var projectPathname = System.IO.Path.Combine(projectDir, this.FullName) + "-bam.csproj";
             return projectPathname;
         }
 

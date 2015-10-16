@@ -60,7 +60,7 @@ namespace CommandLineProcessor
                 }
                 catch (System.Reflection.TargetInvocationException exception)
                 {
-                    throw exception.InnerException;
+                    throw new Bam.Core.Exception(exception.InnerException, "Command line conversion error:");
                 }
 
                 var precedenceAttribs = i.GetCustomAttributes(typeof(Bam.Core.SettingsPrecedenceAttribute), false);

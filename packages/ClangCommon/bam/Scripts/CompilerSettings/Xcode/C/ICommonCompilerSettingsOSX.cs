@@ -37,10 +37,10 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            if (null != options.FrameworkSearchDirectories)
+            if (null != options.FrameworkSearchPaths)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.FrameworkSearchDirectories)
+                foreach (var path in options.FrameworkSearchPaths)
                 {
                     paths.Add(path.ToString());
                 }

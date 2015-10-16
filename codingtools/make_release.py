@@ -96,45 +96,53 @@ def Build():
 
 
 def MakeTarDistribution(version):
-    coDir, bamDir = os.path.split(os.getcwd())
-    tarPath = os.path.join(coDir, "BuildAMation-%s.tgz"%version)
-    print >>sys.stdout, "Writing tar file %s" % tarPath
-    sys.stdout.flush()
-    os.chdir(coDir)
-    with tarfile.open(tarPath, "w:gz") as tar:
-        if os.path.isdir(os.path.join(bamDir, "bin")):
-          tar.add(os.path.join(bamDir, "bin"))
-        tar.add(os.path.join(bamDir, "Changelog.txt"))
-        tar.add(os.path.join(bamDir, "env.bat"))
-        tar.add(os.path.join(bamDir, "env.sh"))
-        tar.add(os.path.join(bamDir, "License.md"))
-        tar.add(os.path.join(bamDir, "packages"))
-        tar.add(os.path.join(bamDir, "tests"))
-    print >>sys.stdout, "Finished writing tar file %s" % tarPath
-    sys.stdout.flush()
+    cwd = os.getcwd()
+    try:
+        coDir, bamDir = os.path.split(cwd)
+        tarPath = os.path.join(coDir, "BuildAMation-%s.tgz"%version)
+        print >>sys.stdout, "Writing tar file %s" % tarPath
+        sys.stdout.flush()
+        os.chdir(coDir)
+        with tarfile.open(tarPath, "w:gz") as tar:
+            if os.path.isdir(os.path.join(bamDir, "bin")):
+                tar.add(os.path.join(bamDir, "bin"))
+            tar.add(os.path.join(bamDir, "Changelog.txt"))
+            tar.add(os.path.join(bamDir, "env.bat"))
+            tar.add(os.path.join(bamDir, "env.sh"))
+            tar.add(os.path.join(bamDir, "License.md"))
+            tar.add(os.path.join(bamDir, "packages"))
+            tar.add(os.path.join(bamDir, "tests"))
+        print >>sys.stdout, "Finished writing tar file %s" % tarPath
+        sys.stdout.flush()
+    finally:
+        os.chdir(cwd)
 
 
 def MakeZipDistribution(version):
-    coDir, bamDir = os.path.split(os.getcwd())
-    zipPath = os.path.join(coDir, "BuildAMation-%s.zip"%version)
-    print >>sys.stdout, "Writing zip file %s" % zipPath
-    sys.stdout.flush()
-    os.chdir(coDir)
-    def RecursiveWrite(zip, dirToAdd):
-        for root, dirs, files in os.walk(dirToAdd):
-            for file in files:
-                zip.write(os.path.join(root, file))
-    with zipfile.ZipFile(zipPath, "w") as zip:
-        if os.path.isdir(os.path.join(bamDir, "bin")):
-          RecursiveWrite(zip, os.path.join(bamDir, "bin"))
-        zip.write(os.path.join(bamDir, "Changelog.txt"))
-        zip.write(os.path.join(bamDir, "env.bat"))
-        zip.write(os.path.join(bamDir, "env.sh"))
-        zip.write(os.path.join(bamDir, "License.md"))
-        RecursiveWrite(zip, os.path.join(bamDir, "packages"))
-        RecursiveWrite(zip, os.path.join(bamDir, "tests"))
-    print >>sys.stdout, "Finished writing zip file %s" % zipPath
-    sys.stdout.flush()
+    cwd = os.getcwd()
+    try:
+        coDir, bamDir = os.path.split(cwd)
+        zipPath = os.path.join(coDir, "BuildAMation-%s.zip"%version)
+        print >>sys.stdout, "Writing zip file %s" % zipPath
+        sys.stdout.flush()
+        os.chdir(coDir)
+        def RecursiveWrite(zip, dirToAdd):
+            for root, dirs, files in os.walk(dirToAdd):
+                for file in files:
+                    zip.write(os.path.join(root, file))
+        with zipfile.ZipFile(zipPath, "w", zipfile.ZIP_DEFLATED) as zip:
+            if os.path.isdir(os.path.join(bamDir, "bin")):
+              RecursiveWrite(zip, os.path.join(bamDir, "bin"))
+            zip.write(os.path.join(bamDir, "Changelog.txt"))
+            zip.write(os.path.join(bamDir, "env.bat"))
+            zip.write(os.path.join(bamDir, "env.sh"))
+            zip.write(os.path.join(bamDir, "License.md"))
+            RecursiveWrite(zip, os.path.join(bamDir, "packages"))
+            RecursiveWrite(zip, os.path.join(bamDir, "tests"))
+        print >>sys.stdout, "Finished writing zip file %s" % zipPath
+        sys.stdout.flush()
+    finally:
+        os.chdir(cwd)
 
 
 def Main(dir, version):

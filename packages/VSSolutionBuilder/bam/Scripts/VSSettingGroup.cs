@@ -118,7 +118,7 @@ namespace VSSolutionBuilder
         public void
         AddSetting(
             string name,
-            Bam.Core.Array<Bam.Core.TokenizedString> value,
+            Bam.Core.TokenizedStringArray value,
             string condition = null,
             bool inheritExisting = false)
         {

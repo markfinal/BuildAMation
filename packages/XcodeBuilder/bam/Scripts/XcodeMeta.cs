@@ -200,5 +200,13 @@ namespace XcodeBuilder
         {
             return Bam.Core.TokenizedString.CreateVerbatim(currentModule.BuildEnvironment.Configuration.ToString());
         }
+
+        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }

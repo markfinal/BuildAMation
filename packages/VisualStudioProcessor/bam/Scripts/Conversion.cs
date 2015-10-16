@@ -60,7 +60,7 @@ namespace VisualStudioProcessor
                 }
                 catch (System.Reflection.TargetInvocationException exception)
                 {
-                    throw exception.InnerException;
+                    throw new Bam.Core.Exception(exception.InnerException, "VisualStudio conversion error:");
                 }
             }
         }

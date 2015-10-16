@@ -40,7 +40,7 @@ namespace MakeFileBuilder
             this.Targets = new Bam.Core.Array<Target>();
             this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
-            this.PrerequisitePaths = new Bam.Core.Array<Bam.Core.TokenizedString>();
+            this.PrerequisitePaths = new Bam.Core.TokenizedStringArray();
             this.ShellCommands = new Bam.Core.StringArray();
             this.OrderOnlyDependencies = new Bam.Core.StringArray();
             this.OrderOnlyDependencies.Add("$(DIRS)");
@@ -232,7 +232,7 @@ namespace MakeFileBuilder
             set;
         }
 
-        private Bam.Core.Array<Bam.Core.TokenizedString> PrerequisitePaths
+        private Bam.Core.TokenizedStringArray PrerequisitePaths
         {
             get;
             set;

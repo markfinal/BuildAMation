@@ -40,22 +40,15 @@ namespace Publisher
             var sourcePath = sender.SourcePath;
             if (null == sender.Reference)
             {
-                // no copy is needed, but as we're copying other files relative to this, record where they have to go
-                // therefore ignore any subdirectory on this module
+                // the main file is not copied anywhere, as we copy required files around it where Xcode wrote the main file
+                // this is managed by the Collation class, querying the build mode for where publishing is relative to
+                // ignore any subdirectory on this module
 
-                // make an app bundle if required
+                // convert the executable into an app bundle, if EPublishingType.WindowedApplication has been used as the type
                 if ((sender.SubDirectory != null) && sender.SubDirectory.Parse().Contains(".app/"))
                 {
                     var meta = sender.SourceModule.MetaData as XcodeBuilder.XcodeMeta;
                     meta.Target.MakeApplicationBundle();
-
-                    // this has to be the path that Xcode writes to
-                    sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/$(0)/@filename($(1))", sender.SubDirectory, sourcePath));
-                }
-                else
-                {
-                    // this has to be the path that Xcode writes to
-                    sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Assign(sender.CreateTokenizedString("$(packagebuilddir)/$(config)/@filename($(0))", sourcePath));
                 }
 
                 return;
@@ -65,7 +58,6 @@ namespace Publisher
                 (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition))
             {
                 // same package has the same output folder, so don't bother copying
-                // TODO: does the destination directory need to be set?
                 return;
             }
 

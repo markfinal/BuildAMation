@@ -34,7 +34,7 @@ namespace Clang
         CommandLineProcessor.IConvertToCommandLine,
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonLinkerSettings,
-        C.ILinkerSettingsOSX,
+        C.ICommonLinkerSettingsOSX,
         C.IAdditionalSettings
     {
         public LinkerSettings(
@@ -65,7 +65,7 @@ namespace Clang
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
@@ -83,19 +83,19 @@ namespace Clang
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ILinkerSettingsOSX.Frameworks
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ILinkerSettingsOSX.FrameworkSearchDirectories
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths
         {
             get;
             set;
         }
 
-        Bam.Core.TokenizedString C.ILinkerSettingsOSX.InstallName
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
         {
             get;
             set;

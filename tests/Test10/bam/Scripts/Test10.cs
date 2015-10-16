@@ -100,7 +100,7 @@ namespace Test10
                     if (gccLinker != null)
                     {
                         gccLinker.CanUseOrigin = true;
-                        gccLinker.RPath.Add("$ORIGIN");
+                        gccLinker.RPath.AddUnique("$ORIGIN");
                     }
                 });
 

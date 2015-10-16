@@ -27,25 +27,38 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace ClangCommon
+namespace Bam.Core
 {
-    public static partial class CommandLineLinkerImplementation
+    public sealed class TokenizedStringArray :
+        Array<TokenizedString>
     {
-        public static void
-        Convert(
-            this C.ILinkerSettingsOSX options,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+        public TokenizedStringArray()
+        { }
+
+        public TokenizedStringArray(
+            TokenizedString input)
+            :
+            base(new [] {input})
+        { }
+
+        public TokenizedStringArray(
+            System.Collections.Generic.IEnumerable<TokenizedString> input)
+            :
+            base(input)
+        { }
+
+        public void
+        Add(
+            string item)
         {
-            foreach (var framework in options.Frameworks)
-            {
-                var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());
-                commandLine.Add(System.String.Format("-framework {0}", frameworkName));
-            }
-            foreach (var path in options.FrameworkSearchDirectories)
-            {
-                commandLine.Add(System.String.Format("-F {0}", path.Parse()));
-            }
+            this.Add(Bam.Core.TokenizedString.CreateVerbatim(item));
+        }
+
+        public void
+        AddUnique(
+            string item)
+        {
+           this.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(item));
         }
     }
 }

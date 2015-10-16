@@ -80,13 +80,13 @@ namespace Clang
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.IncludePaths
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettings.SystemIncludePaths
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
@@ -146,7 +146,7 @@ namespace Clang
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonCompilerSettingsOSX.FrameworkSearchDirectories
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettingsOSX.FrameworkSearchPaths
         {
             get;
             set;

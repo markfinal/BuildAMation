@@ -40,19 +40,19 @@ namespace Publisher
             var sourcePath = sender.SourcePath;
             if (null == sender.Reference)
             {
-                // no copy is needed, but as we're copying other files relative to this, record where they have to go
-                // therefore ignore any subdirectory on this module
-                sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Assign(sourcePath);
+                // the main file is not copied anywhere, as we copy required files around it where VS wrote the main file
+                // this is managed by the Collation class, querying the build mode for where publishing is relative to
+                // ignore any subdirectory on this module
                 return;
             }
-
-            var destinationPath = sender.Macros["CopyDir"].Parse();
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
             if (sender.SourceModule != null && sender.SourceModule.MetaData != null)
             {
+                var destinationPath = sender.Macros["CopyDir"].Parse();
+
                 var commands = new Bam.Core.StringArray();
                 commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationPath));
                 commands.Add(System.String.Format(@"{0} {1} $(OutputPath)$(TargetFileName) {2}", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), destinationPath));
@@ -64,7 +64,23 @@ namespace Publisher
             else
             {
                 var commands = new Bam.Core.StringArray();
-                commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), sourcePath.ParseAndQuoteIfNecessary(), sender.SubDirectory));
+                if (sender is CollatedDirectory)
+                {
+                    // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\",
+                        (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                        commandLine.ToString(' '),
+                        sourcePath.ParseAndQuoteIfNecessary(),
+                        sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sourcePath).Parse()));
+                }
+                else
+                {
+                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\",
+                        (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                        commandLine.ToString(' '),
+                        sourcePath.ParseAndQuoteIfNecessary(),
+                        sender.SubDirectory));
+                }
 
                 var project = sender.Reference.SourceModule.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(sender.Reference.SourceModule);

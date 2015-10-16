@@ -56,7 +56,7 @@ namespace Gcc
             set;
         }
 
-        Bam.Core.Array<Bam.Core.TokenizedString> C.ICommonLinkerSettings.LibraryPaths
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
@@ -86,13 +86,13 @@ namespace Gcc
             set;
         }
 
-        Bam.Core.StringArray GccCommon.ICommonLinkerSettings.RPath
+        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPath
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray GccCommon.ICommonLinkerSettings.RPathLink
+        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPathLink
         {
             get;
             set;

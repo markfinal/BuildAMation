@@ -39,13 +39,13 @@ namespace GccCommon
             set;
         }
 
-        Bam.Core.StringArray RPath
+        Bam.Core.TokenizedStringArray RPath
         {
             get;
             set;
         }
 
-        Bam.Core.StringArray RPathLink
+        Bam.Core.TokenizedStringArray RPathLink
         {
             get;
             set;

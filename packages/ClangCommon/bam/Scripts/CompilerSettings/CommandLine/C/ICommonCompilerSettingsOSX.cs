@@ -37,7 +37,7 @@ namespace ClangCommon
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            foreach (var path in options.FrameworkSearchDirectories)
+            foreach (var path in options.FrameworkSearchPaths)
             {
                 commandLine.Add(System.String.Format("-F{0}", path.ParseAndQuoteIfNecessary()));
             }

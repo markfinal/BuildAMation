@@ -96,7 +96,10 @@ namespace Publisher
             set
             {
                 this.RealSourceModule = value;
-                this.Requires(value);
+                if (null != value)
+                {
+                    this.Requires(value);
+                }
             }
         }
 
@@ -123,7 +126,10 @@ namespace Publisher
             set
             {
                 this.ReferenceFile = value;
-                this.Requires(value);
+                if (null != value)
+                {
+                    this.Requires(value);
+                }
             }
         }
 
@@ -136,7 +142,7 @@ namespace Publisher
 
             set
             {
-                this.RealSourcePath.Assign(value);
+                this.RealSourcePath.Aliased(value);
                 this.GeneratedPaths[CopiedObjectKey] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
             }
         }

@@ -107,21 +107,30 @@ namespace MakeFileBuilder
             // all rule
             makeRules.Append("all:");
             var allPrerequisites = new Bam.Core.StringArray();
-            foreach (var module in graph.TopLevelModules)
+            // loop over all ranks, until the top-most modules with Make metadata are added to 'all'
+            // this allows skipping over any upper modules without Make policies
+            foreach (var rank in graph)
             {
-                var metadata = module.MetaData as MakeFileMeta;
-                if (null == metadata)
+                foreach (var module in rank)
                 {
-                    throw new Bam.Core.Exception("Top level module, {0}, did not have any Make metadata", module.ToString());
-                }
-                foreach (var rule in metadata.Rules)
-                {
-                    // TODO: could just exit from the loop after the first iteration
-                    if (!rule.IsFirstRule)
+                    var metadata = module.MetaData as MakeFileMeta;
+                    if (null == metadata)
                     {
                         continue;
                     }
-                    rule.AppendTargetNames(allPrerequisites);
+                    foreach (var rule in metadata.Rules)
+                    {
+                        // TODO: could just exit from the loop after the first iteration
+                        if (!rule.IsFirstRule)
+                        {
+                            continue;
+                        }
+                        rule.AppendTargetNames(allPrerequisites);
+                    }
+                }
+                if (allPrerequisites.Any())
+                {
+                    break;
                 }
             }
             makeRules.AppendLine(allPrerequisites.ToString(' '));
@@ -185,6 +194,14 @@ namespace MakeFileBuilder
             Bam.Core.Module encapsulatingModule)
         {
             return Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.Combine(encapsulatingModule.GetType().Name, currentModule.BuildEnvironment.Configuration.ToString()));
+        }
+
+        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable
+        {
+            get
+            {
+                return false;
+            }
         }
     }
 }

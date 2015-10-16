@@ -27,53 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace C.DefaultSettings
 {
-    public class SourceFile :
-        Bam.Core.Module,
-        Bam.Core.IInputPath
+    public static partial class DefaultSettingsExtensions
     {
-        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Source File");
-
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        public static void
+        Defaults(
+            this C.ICommonLinkerSettingsOSX settings,
+            Bam.Core.Module module)
         {
-            base.Init(parent);
-            this.RegisterGeneratedFile(Key, this.MakePlaceholderPath());
-        }
-
-        public override void
-        Evaluate()
-        {
-            this.ReasonToExecute = null;
-            // TODO: could do a hash check of the contents?
-        }
-
-        protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
-        {
-            // TODO: exception to this is generated source, but there ought to be an override for that
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // there is no execution policy
-        }
-
-        public virtual Bam.Core.TokenizedString InputPath
-        {
-            get
-            {
-                return this.GeneratedPaths[Key];
-            }
-            set
-            {
-                this.GeneratedPaths[Key].Aliased(value);
-            }
+            settings.Frameworks = new Bam.Core.TokenizedStringArray();
+            settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
         }
     }
 }
