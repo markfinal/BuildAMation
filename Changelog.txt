@@ -1,6 +1,6 @@
 16-Oct-2015 ======== Version 1.0a5 Release ========
 
-15-Oct-2015 Bam.Core.IBuildModeMetaData now requires implementing the propert PublishBesideExecutable. This is because some build modes (i.e. those with IDE projects), should publish binary and data dependencies next to the debuggable executable. Whereas other build modes can publish to a standalone directory.
+15-Oct-2015 Bam.Core.IBuildModeMetaData now requires implementing the property PublishBesideExecutable. This is because some build modes (i.e. those with IDE projects), should publish binary and data dependencies next to the debuggable executable. Whereas other build modes can publish to a standalone directory.
 
 15-Oct-2015 TokenizedStrings can be aliased to other TokenizedStrings, see the Aliased function(). This enables TokenizedStrings to be referenced externally from point of creation (e.g. as a module generated path), and switched later to another TokenizedString.
 
