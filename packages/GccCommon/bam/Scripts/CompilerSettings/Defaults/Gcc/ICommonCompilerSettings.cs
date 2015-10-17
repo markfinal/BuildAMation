@@ -37,6 +37,9 @@ namespace GccCommon.DefaultSettings
             Bam.Core.Module module)
         {
             settings.PositionIndependentCode = false;
+            settings.AllWarnings = false;
+            settings.ExtraWarnings = false;
+            settings.Pedantic = false;
         }
     }
 }

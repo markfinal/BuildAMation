@@ -146,5 +146,23 @@ namespace Gcc
             get;
             set;
         }
+
+        bool? GccCommon.ICommonCompilerSettings.AllWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? GccCommon.ICommonCompilerSettings.ExtraWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? GccCommon.ICommonCompilerSettings.Pedantic
+        {
+            get;
+            set;
+        }
     }
 }

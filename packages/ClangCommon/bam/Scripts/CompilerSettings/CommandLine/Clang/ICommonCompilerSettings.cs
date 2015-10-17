@@ -27,33 +27,37 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace ClangCommon
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class CommandLineCompilerImplementation
     {
-        bool? PositionIndependentCode
+        public static void
+        Convert(
+            this ClangCommon.ICommonCompilerSettings settings,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
-        }
-        bool? AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? ExtraWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? Pedantic
-        {
-            get;
-            set;
+            if (settings.AllWarnings.HasValue)
+            {
+                if (settings.AllWarnings.Value)
+                {
+                    commandLine.Add("-Wall");
+                }
+            }
+            if (settings.ExtraWarnings.HasValue)
+            {
+                if (settings.AllWarnings.Value)
+                {
+                    commandLine.Add("-Wextra");
+                }
+            }
+            if (settings.Pedantic.HasValue)
+            {
+                if (settings.Pedantic.Value)
+                {
+                    commandLine.Add("-pedantic");
+                }
+            }
         }
     }
 }

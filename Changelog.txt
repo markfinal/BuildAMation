@@ -1,3 +1,5 @@
+17-Oct-2015 Added GccCommon and ClangCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic.
+
 17-Oct-2015 Added VisualCCommon.ICommonCompilerSettings.WarningLevel setting. Defaults to Level1 as per the Microsoft documentation.
 
 16-Oct-2015 ======== Version 1.0a5 Release ========

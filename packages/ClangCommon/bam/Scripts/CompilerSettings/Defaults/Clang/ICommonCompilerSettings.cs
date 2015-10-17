@@ -27,33 +27,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace ClangCommon.DefaultSettings
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class DefaultSettingsExtensions
     {
-        bool? PositionIndependentCode
+        public static void
+        Defaults(
+            this ClangCommon.ICommonCompilerSettings settings,
+            Bam.Core.Module module)
         {
-            get;
-            set;
-        }
-        bool? AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? ExtraWarnings
-        {
-            get;
-            set;
+            settings.AllWarnings = false;
+            settings.ExtraWarnings = false;
+            settings.Pedantic = false;
         }
 
-        bool? Pedantic
+        public static void
+        SharedSettings(
+            this ClangCommon.ICommonCompilerSettings shared,
+            ClangCommon.ICommonCompilerSettings lhs,
+            ClangCommon.ICommonCompilerSettings rhs)
         {
-            get;
-            set;
+            shared.AllWarnings = (lhs.AllWarnings == rhs.AllWarnings) ? lhs.AllWarnings : null;
+            shared.ExtraWarnings = (lhs.ExtraWarnings == rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
+            shared.Pedantic = (lhs.Pedantic == rhs.Pedantic) ? lhs.Pedantic : null;
+        }
+
+        public static void
+        Delta(
+            this ClangCommon.ICommonCompilerSettings delta,
+            ClangCommon.ICommonCompilerSettings lhs,
+            ClangCommon.ICommonCompilerSettings rhs)
+        {
+            delta.AllWarnings = (lhs.AllWarnings != rhs.AllWarnings) ? lhs.AllWarnings : null;
+            delta.ExtraWarnings = (lhs.ExtraWarnings != rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
+            delta.Pedantic = (lhs.Pedantic != rhs.Pedantic) ? lhs.Pedantic : null;
+        }
+
+        public static void
+        Clone(
+            this ClangCommon.ICommonCompilerSettings settings,
+            ClangCommon.ICommonCompilerSettings other)
+        {
+            settings.AllWarnings = other.AllWarnings;
+            settings.ExtraWarnings = other.ExtraWarnings;
+            settings.Pedantic = other.Pedantic;
         }
     }
 }

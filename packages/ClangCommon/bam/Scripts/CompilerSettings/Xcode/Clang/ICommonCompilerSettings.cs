@@ -27,33 +27,34 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace ClangCommon
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public static partial class XcodeCompilerImplementation
     {
-        bool? PositionIndependentCode
+        public static void
+        Convert(
+            this ClangCommon.ICommonCompilerSettings settings,
+            Bam.Core.Module module,
+            XcodeBuilder.Configuration configuration)
         {
-            get;
-            set;
-        }
-        bool? AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? ExtraWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? Pedantic
-        {
-            get;
-            set;
+            if (settings.AllWarnings.HasValue)
+            {
+                if (settings.AllWarnings.Value)
+                {
+                }
+            }
+            if (settings.ExtraWarnings.HasValue)
+            {
+                if (settings.AllWarnings.Value)
+                {
+                }
+            }
+            if (settings.Pedantic.HasValue)
+            {
+                if (settings.Pedantic.Value)
+                {
+                }
+            }
         }
     }
 }
