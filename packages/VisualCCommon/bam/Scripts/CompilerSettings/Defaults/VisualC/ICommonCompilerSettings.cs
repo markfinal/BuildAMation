@@ -38,6 +38,7 @@ namespace VisualCCommon.DefaultSettings
         {
             settings.NoLogo = true;
             settings.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
+            settings.WarningLevel = EWarningLevel.Level1;
         }
 
         public static void
@@ -48,6 +49,7 @@ namespace VisualCCommon.DefaultSettings
         {
             shared.NoLogo = (lhs.NoLogo == rhs.NoLogo) ? lhs.NoLogo : null;
             shared.RuntimeLibrary = (lhs.RuntimeLibrary == rhs.RuntimeLibrary) ? lhs.RuntimeLibrary : null;
+            shared.WarningLevel = (lhs.WarningLevel == rhs.WarningLevel) ? lhs.WarningLevel : null;
         }
 
         public static void
@@ -58,6 +60,7 @@ namespace VisualCCommon.DefaultSettings
         {
             delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
             delta.RuntimeLibrary = (lhs.RuntimeLibrary != rhs.RuntimeLibrary) ? lhs.RuntimeLibrary : null;
+            delta.WarningLevel = (lhs.WarningLevel != rhs.WarningLevel) ? lhs.WarningLevel : null;
         }
 
         public static void
@@ -67,6 +70,7 @@ namespace VisualCCommon.DefaultSettings
         {
             settings.NoLogo = other.NoLogo;
             settings.RuntimeLibrary = other.RuntimeLibrary;
+            settings.WarningLevel = other.WarningLevel;
         }
     }
 }

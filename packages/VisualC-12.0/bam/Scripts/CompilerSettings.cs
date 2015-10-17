@@ -170,5 +170,11 @@ namespace VisualC
             get;
             set;
         }
+
+        VisualCCommon.EWarningLevel? VisualCCommon.ICommonCompilerSettings.WarningLevel
+        {
+            get;
+            set;
+        }
     }
 }

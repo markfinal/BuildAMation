@@ -1,3 +1,5 @@
+17-Oct-2015 Added VisualCCommon.ICommonCompilerSettings.WarningLevel setting. Defaults to Level1 as per the Microsoft documentation.
+
 16-Oct-2015 ======== Version 1.0a5 Release ========
 
 15-Oct-2015 Bam.Core.IBuildModeMetaData now requires implementing the property PublishBesideExecutable. This is because some build modes (i.e. those with IDE projects), should publish binary and data dependencies next to the debuggable executable. Whereas other build modes can publish to a standalone directory.

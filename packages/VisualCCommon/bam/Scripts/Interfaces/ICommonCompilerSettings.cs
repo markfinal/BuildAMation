@@ -44,5 +44,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        VisualCCommon.EWarningLevel? WarningLevel
+        {
+            get;
+            set;
+        }
     }
 }
