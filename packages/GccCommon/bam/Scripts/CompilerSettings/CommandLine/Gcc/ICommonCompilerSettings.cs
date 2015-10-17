@@ -53,7 +53,7 @@ namespace GccCommon
             }
             if (settings.ExtraWarnings.HasValue)
             {
-                if (settings.AllWarnings.Value)
+                if (settings.ExtraWarnings.Value)
                 {
                     commandLine.Add("-Wextra");
                 }
