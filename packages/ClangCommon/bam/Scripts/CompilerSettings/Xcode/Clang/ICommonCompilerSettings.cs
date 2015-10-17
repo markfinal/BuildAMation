@@ -41,19 +41,23 @@ namespace ClangCommon
             {
                 if (settings.AllWarnings.Value)
                 {
+                    var warnings = new XcodeBuilder.MultiConfigurationValue();
+                    warnings.Add("-Wall");
+                    configuration["WARNING_CFLAGS"] = warnings;
                 }
             }
             if (settings.ExtraWarnings.HasValue)
             {
-                if (settings.AllWarnings.Value)
+                if (settings.ExtraWarnings.Value)
                 {
+                    var warnings = new XcodeBuilder.MultiConfigurationValue();
+                    warnings.Add("-Wextra");
+                    configuration["WARNING_CFLAGS"] = warnings;
                 }
             }
             if (settings.Pedantic.HasValue)
             {
-                if (settings.Pedantic.Value)
-                {
-                }
+                configuration["GCC_WARN_PEDANTIC"] = new XcodeBuilder.UniqueConfigurationValue(settings.Pedantic.Value ? "YES" : "NO");
             }
         }
     }
