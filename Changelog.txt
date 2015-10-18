@@ -1,3 +1,5 @@
+18-Oct-2015 Fixes #33. C.ICOnlyCompilerSettings.LanguageStandard now has a default set of c89. Previously this command line switch never appeared on supporting toolchain compilation lines.
+
 17-Oct-2015 Added GccCommon and ClangCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic.
 
 17-Oct-2015 Added VisualCCommon.ICommonCompilerSettings.WarningLevel setting. Defaults to Level1 as per the Microsoft documentation.
