@@ -44,10 +44,10 @@ namespace XcodeBuilder
             dependency.Project.TargetDependencies.AddUnique(this);
         }
 
-        private Target Dependency
+        public Target Dependency
         {
             get;
-            set;
+            private set;
         }
 
         private ContainerItemProxy Proxy
@@ -82,4 +82,4 @@ namespace XcodeBuilder
             text.AppendLine();
         }
     }
-    }
+}

@@ -29,56 +29,142 @@
 #endregion // License
 namespace XcodeBuilder
 {
-    public sealed class WorkspaceMeta :
-        System.Collections.Generic.IEnumerable<Project>
+    public sealed class WorkspaceMeta
     {
-        public WorkspaceMeta()
-        {
-            this.Projects = new System.Collections.Generic.Dictionary<Bam.Core.PackageDefinition, Project>();
-        }
+        private bool ProjectPerModule = false;
+        private System.Collections.Generic.Dictionary<string, Project> ProjectMap = new System.Collections.Generic.Dictionary<string, Project>();
+        private System.Collections.Generic.Dictionary<System.Type, Target> TargetMap = new System.Collections.Generic.Dictionary<System.Type, Target>();
 
-        private System.Collections.Generic.Dictionary<Bam.Core.PackageDefinition, Project> Projects
-        {
-            get;
-            set;
-        }
-
-        public Project
-        FindOrCreateProject(
+        private Project
+        EnsureProjectExists(
             Bam.Core.Module module,
-            XcodeMeta.Type projectType)
+            string key)
         {
-            lock(this)
+            lock (this.ProjectMap)
             {
-                // Note: if you want a Xcode project per module, change this from keying off of the package
-                // to the module type
-                var package = module.PackageDefinition;
-                if (this.Projects.ContainsKey(package))
+                if (!this.ProjectMap.ContainsKey(key))
                 {
-                    var project = this.Projects[package];
-                    project.AddNewProjectConfiguration(module);
-                    return project;
+                    var newProject = new Project(module, key);
+                    this.ProjectMap.Add(key, newProject);
                 }
-                else
-                {
-                    var project = new Project(module, package.Name);
-                    this.Projects[package] = project;
-                    return project;
-                }
+                var project = this.ProjectMap[key];
+                project.EnsureProjectConfigurationExists(module);
+                return project;
             }
         }
 
-        public System.Collections.Generic.IEnumerator<Project> GetEnumerator()
+        public Target
+        EnsureTargetExists(
+            Bam.Core.Module module)
         {
-            foreach (var project in this.Projects)
+            var moduleType = module.GetType();
+            lock (this.TargetMap)
             {
-                yield return project.Value;
+                if (!this.TargetMap.ContainsKey(moduleType))
+                {
+                    Project project = null;
+                    // TODO: remember projects, both by a Module or by a Package
+                    if (this.ProjectPerModule)
+                    {
+                        throw new System.NotSupportedException();
+                    }
+                    else
+                    {
+                        project = this.EnsureProjectExists(module, module.PackageDefinition.FullName);
+                    }
+
+                    var target = new Target(module, project);
+                    this.TargetMap.Add(moduleType, target);
+
+                    project.Targets.Add(moduleType, target);
+                }
             }
+            if (null == module.MetaData)
+            {
+                module.MetaData = this.TargetMap[moduleType];
+            }
+            return module.MetaData as Target;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        public string
+        Serialize()
         {
-            return this.GetEnumerator();
+            var workspaceDoc = new System.Xml.XmlDocument();
+            var workspaceEl = workspaceDoc.CreateElement("Workspace");
+            workspaceEl.SetAttribute("version", "1.0");
+            workspaceDoc.AppendChild(workspaceEl);
+
+            var generateProjectSchemes = Bam.Core.CommandLineProcessor.Evaluate(new GenerateXcodeSchemes());
+            foreach (var project in this.ProjectMap.Values)
+            {
+                project.FixupPerConfigurationData();
+
+                var text = new System.Text.StringBuilder();
+                text.AppendLine("// !$*UTF8*$!");
+                text.AppendLine("{");
+                var indentLevel = 1;
+                var indent = new string('\t', indentLevel);
+                text.AppendFormat("{0}archiveVersion = 1;", indent);
+                text.AppendLine();
+                text.AppendFormat("{0}classes = {{", indent);
+                text.AppendLine();
+                text.AppendFormat("{0}}};", indent);
+                text.AppendLine();
+                text.AppendFormat("{0}objectVersion = 46;", indent);
+                text.AppendLine();
+                text.AppendFormat("{0}objects = {{", indent);
+                text.AppendLine();
+                project.Serialize(text, indentLevel + 1);
+                text.AppendFormat("{0}}};", indent);
+                text.AppendLine();
+                text.AppendFormat("{0}rootObject = {1} /* Project object */;", indent, project.GUID);
+                text.AppendLine();
+                text.AppendLine("}");
+
+                var projectDir = project.ProjectDir;
+                if (!System.IO.Directory.Exists(projectDir))
+                {
+                    System.IO.Directory.CreateDirectory(projectDir);
+                }
+
+                //Bam.Core.Log.DebugMessage(text.ToString());
+                using (var writer = new System.IO.StreamWriter(project.ProjectPath))
+                {
+                    writer.Write(text.ToString());
+                }
+
+                if (generateProjectSchemes)
+                {
+                    var projectSchemeCache = new ProjectSchemeCache(project);
+                    projectSchemeCache.Serialize();
+                }
+
+                var workspaceFileRef = workspaceDoc.CreateElement("FileRef");
+                workspaceFileRef.SetAttribute("location", System.String.Format("group:{0}", projectDir));
+                workspaceEl.AppendChild(workspaceFileRef);
+            }
+
+            var workspacePath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
+            var workspaceDir = Bam.Core.TokenizedString.Create("@dir($(0))", null, positionalTokens: new Bam.Core.TokenizedStringArray(workspacePath));
+            var workspaceDirectory = workspaceDir.Parse();
+            if (!System.IO.Directory.Exists(workspaceDirectory))
+            {
+                System.IO.Directory.CreateDirectory(workspaceDirectory);
+            }
+
+            var settings = new System.Xml.XmlWriterSettings();
+            settings.OmitXmlDeclaration = false;
+            settings.Encoding = new System.Text.UTF8Encoding(false); // no BOM
+            settings.NewLineChars = System.Environment.NewLine;
+            settings.Indent = true;
+            settings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
+
+            using (var xmlwriter = System.Xml.XmlWriter.Create(workspacePath.Parse(), settings))
+            {
+                workspaceDoc.WriteTo(xmlwriter);
+            }
+
+            return workspaceDirectory;
         }
     }
 }

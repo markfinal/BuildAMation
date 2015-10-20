@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace XcodeBuilder
 {
     public sealed class Target :
@@ -34,56 +35,44 @@ namespace XcodeBuilder
     {
         public enum EProductType
         {
+            NA,
             StaticLibrary,
             Executable,
             DynamicLibrary,
-            ApplicationBundle
+            ApplicationBundle,
+            ObjFile
         }
 
         public Target(
             Bam.Core.Module module,
-            Project project,
-            FileReference fileRef,
-            EProductType type)
+            Project project)
         {
             this.IsA = "PBXNativeTarget";
             this.Name = module.GetType().Name;
-            this.FileReference = fileRef;
-            this.Type = type;
+            this.Module = module;
+            this.Project = project;
+            this.Type = EProductType.NA;
 
             var configList = new ConfigurationList(this);
-            project.ConfigurationLists.Add(configList);
             this.ConfigurationList = configList;
-
-            this.BuildPhases = new System.Collections.Generic.List<BuildPhase>();
-            this.SourcesBuildPhase = new SourcesBuildPhase();
-            this.BuildPhases.Add(this.SourcesBuildPhase);
+            project.ConfigurationLists.Add(configList);
 
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
-
-            this.Project = project;
-            this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
         }
 
-        public SourcesBuildPhase SourcesBuildPhase
+        private Bam.Core.Module Module
+        {
+            get;
+            set;
+        }
+
+        public Project Project
         {
             get;
             private set;
         }
 
-        public FrameworksBuildPhase FrameworksBuildPhase
-        {
-            get;
-            set;
-        }
-
-        public ShellScriptBuildPhase PreBuildBuildPhase
-        {
-            get;
-            set;
-        }
-
-        public ShellScriptBuildPhase PostBuildBuildPhase
+        public EProductType Type
         {
             get;
             set;
@@ -101,58 +90,244 @@ namespace XcodeBuilder
             private set;
         }
 
-        public EProductType Type
-        {
-            get;
-            private set;
-        }
-
-        public Project Project
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<BuildPhase> BuildPhases
-        {
-            get;
-            private set;
-        }
-
         public Bam.Core.Array<TargetDependency> TargetDependencies
         {
             get;
             private set;
         }
 
-        public void
-        SetCommonCompilationOptions(
-            Bam.Core.Module module,
-            Configuration configuration,
-            Bam.Core.Settings settings)
+        public Bam.Core.Array<BuildPhase> BuildPhases
         {
-            (settings as XcodeProjectProcessor.IConvertToProject).Convert(module, configuration);
+            get;
+            private set;
         }
 
-        private string
-        ProductTypeToString()
+        public SourcesBuildPhase SourcesBuildPhase
         {
-            switch (this.Type)
+            get;
+            private set;
+        }
+
+        public FrameworksBuildPhase FrameworksBuildPhase
+        {
+            get;
+            set;
+        }
+
+        public ShellScriptBuildPhase PreBuildBuildPhase
+        {
+            get;
+            private set;
+        }
+
+        public ShellScriptBuildPhase PostBuildBuildPhase
+        {
+            get;
+            private set;
+        }
+
+        private void
+        SetProductType(
+            EProductType type)
+        {
+            if ((this.Type != EProductType.NA) && (this.Type != type))
             {
-                case EProductType.StaticLibrary:
-                    return "com.apple.product-type.library.static";
-
-                case EProductType.Executable:
-                    return "com.apple.product-type.tool";
-
-                case EProductType.DynamicLibrary:
-                    return "com.apple.product-type.library.dynamic";
-
-                case EProductType.ApplicationBundle:
-                    return "com.apple.product-type.application";
+                throw new Bam.Core.Exception("Product type has already been set to {0}. Cannot change it", this.Type.ToString());
             }
 
-            throw new Bam.Core.Exception("Unrecognized product type");
+            this.Type = type;
+        }
+
+        public Configuration
+        GetConfiguration(
+            Bam.Core.Module module)
+        {
+            var moduleConfig = module.BuildEnvironment.Configuration;
+            var existingConfig = this.ConfigurationList.Where(item => item.Config == moduleConfig).FirstOrDefault();
+            if (null != existingConfig)
+            {
+                return existingConfig;
+            }
+            var config = this.Project.EnsureTargetConfigurationExists(module, this.ConfigurationList);
+            return config;
+        }
+
+        public void
+        EnsureOutputFileReferenceExists(
+            Bam.Core.TokenizedString path,
+            FileReference.EFileType type,
+            Target.EProductType productType)
+        {
+            this.SetProductType(productType);
+
+            var fileRef = this.Project.EnsureFileReferenceExists(path, type, sourceTree: FileReference.ESourceTree.BuiltProductsDir);
+            if (null == this.FileReference)
+            {
+                this.FileReference = fileRef;
+                this.Project.ProductRefGroup.AddReference(fileRef);
+            }
+        }
+
+        private BuildFile
+        EnsureBuildFileExists(
+            Bam.Core.TokenizedString path,
+            FileReference.EFileType type)
+        {
+            var fileRef = this.Project.EnsureFileReferenceExists(
+                path,
+                type,
+                sourceTree: FileReference.ESourceTree.Absolute);
+            var buildFile = this.Project.EnsureBuildFileExists(fileRef);
+            return buildFile;
+        }
+
+        public BuildFile
+        EnsureSourceBuildFileExists(
+            Bam.Core.TokenizedString path,
+            FileReference.EFileType type)
+        {
+            if (null == this.SourcesBuildPhase)
+            {
+                this.SourcesBuildPhase = new SourcesBuildPhase();
+                if (null == this.BuildPhases)
+                {
+                    this.BuildPhases = new Bam.Core.Array<BuildPhase>();
+                }
+                this.BuildPhases.Add(this.SourcesBuildPhase);
+                this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
+            }
+
+            var buildFile = this.EnsureBuildFileExists(path, type);
+            this.Project.SourceFilesGroup.AddReference(buildFile.FileRef);
+            this.SourcesBuildPhase.AddBuildFile(buildFile);
+            return buildFile;
+        }
+
+        private void
+        EnsureFrameworksBuildPhaseExists()
+        {
+            if (null != this.FrameworksBuildPhase)
+            {
+                return;
+            }
+            var frameworks = new FrameworksBuildPhase();
+            this.Project.FrameworksBuildPhases.Add(frameworks);
+            this.BuildPhases.Add(frameworks);
+            this.FrameworksBuildPhase = frameworks;
+        }
+
+        public BuildFile
+        EnsureFrameworksBuildFileExists(
+            Bam.Core.TokenizedString path,
+            FileReference.EFileType type)
+        {
+            this.EnsureFrameworksBuildPhaseExists();
+
+            var buildFile = this.EnsureBuildFileExists(path, type);
+            this.FrameworksBuildPhase.AddBuildFile(buildFile);
+            return buildFile;
+        }
+
+        public void
+        EnsureHeaderFileExists(
+            Bam.Core.TokenizedString path)
+        {
+            var fileRef = this.Project.EnsureFileReferenceExists(
+                path,
+                FileReference.EFileType.HeaderFile,
+                sourceTree: FileReference.ESourceTree.Absolute);
+            this.Project.HeaderFilesGroup.AddReference(fileRef);
+        }
+
+        public void
+        DependsOn(
+            Target other)
+        {
+            this.EnsureFrameworksBuildPhaseExists();
+            if (this.Project == other.Project)
+            {
+                var linkedBuildFile = this.Project.EnsureBuildFileExists(other.FileReference);
+                this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
+            }
+            else
+            {
+                var fileRefAlias = other.FileReference.MakeLinkableAlias(this.Module, this.Project);
+                var linkedBuildFile = this.Project.EnsureBuildFileExists(fileRefAlias);
+                this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
+            }
+        }
+
+        public void
+        Requires(
+            Target other)
+        {
+            var existingTargetDep = this.TargetDependencies.Where(item => item.Dependency == other).FirstOrDefault();
+            if (null != existingTargetDep)
+            {
+                return;
+            }
+            // TODO: if projects are different, requires a PBXReferenceProxy
+            var proxy = new ContainerItemProxy(this.Project, other);
+            var dependency = new TargetDependency(other, proxy);
+            this.TargetDependencies.AddUnique(dependency);
+        }
+
+        public void
+        AddPreBuildCommands(
+            Bam.Core.StringArray commands,
+            Configuration configuration)
+        {
+            if (null == this.PreBuildBuildPhase)
+            {
+                var preBuildBuildPhase = new ShellScriptBuildPhase(this, "Pre Build", (target) =>
+                {
+                    var content = new System.Text.StringBuilder();
+                    foreach (var config in target.ConfigurationList)
+                    {
+                        content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                        foreach (var line in config.PreBuildCommands)
+                        {
+                            content.AppendFormat("  {0}\\n", line);
+                        }
+                        content.AppendFormat("fi\\n\\n");
+                    }
+                    return content.ToString();
+                });
+                this.Project.ShellScriptsBuildPhases.Add(preBuildBuildPhase);
+                this.PreBuildBuildPhase = preBuildBuildPhase;
+                // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
+            }
+
+            configuration.PreBuildCommands.AddRange(commands);
+        }
+
+        public void
+        AddPostBuildCommands(
+            Bam.Core.StringArray commands,
+            Configuration configuration)
+        {
+            if (null == this.PostBuildBuildPhase)
+            {
+                var postBuildBuildPhase = new ShellScriptBuildPhase(this, "Post Build", (target) =>
+                {
+                    var content = new System.Text.StringBuilder();
+                    foreach (var config in target.ConfigurationList)
+                    {
+                        content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                        foreach (var line in config.PostBuildCommands)
+                        {
+                            content.AppendFormat("  {0}\\n", line);
+                        }
+                        content.AppendFormat("fi\\n\\n");
+                    }
+                    return content.ToString();
+                });
+                this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
+                this.PostBuildBuildPhase = postBuildBuildPhase;
+                // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
+            }
+
+            configuration.PostBuildCommands.AddRange(commands);
         }
 
         public void
@@ -170,7 +345,35 @@ namespace XcodeBuilder
             this.FileReference.MakeApplicationBundle();
         }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        private string
+        ProductTypeToString()
+        {
+            switch (this.Type)
+            {
+            case EProductType.StaticLibrary:
+                return "com.apple.product-type.library.static";
+
+            case EProductType.Executable:
+                return "com.apple.product-type.tool";
+
+            case EProductType.DynamicLibrary:
+                return "com.apple.product-type.library.dynamic";
+
+            case EProductType.ApplicationBundle:
+                return "com.apple.product-type.application";
+
+            case EProductType.ObjFile:
+                return "com.apple.product-type.objfile";
+
+            default:
+                throw new Bam.Core.Exception("Unrecognized product type, {0}, for module {1}", this.Type.ToString(), this.Module.ToString());
+            }
+        }
+
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
@@ -181,7 +384,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, this.ConfigurationList.GUID, this.ConfigurationList.Parent.IsA, this.ConfigurationList.Parent.Name);
             text.AppendLine();
-            if (this.BuildPhases.Count > 0)
+            if ((null != this.BuildPhases) && (this.BuildPhases.Count > 0))
             {
                 text.AppendFormat("{0}buildPhases = (", indent2);
                 text.AppendLine();
@@ -222,8 +425,11 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}productName = {1};", indent2, this.Name);
             text.AppendLine();
-            text.AppendFormat("{0}productReference = {1} /* {2} */;", indent2, this.FileReference.GUID, this.FileReference.Name);
-            text.AppendLine();
+            if (null != this.FileReference)
+            {
+                text.AppendFormat("{0}productReference = {1} /* {2} */;", indent2, this.FileReference.GUID, this.FileReference.Name);
+                text.AppendLine();
+            }
             text.AppendFormat("{0}productType = \"{1}\";", indent2, this.ProductTypeToString());
             text.AppendLine();
             text.AppendFormat("{0}}};", indent);

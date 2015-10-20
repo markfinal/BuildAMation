@@ -40,26 +40,39 @@ namespace Publisher
             Bam.Core.TokenizedString newName)
         {
             var originalModule = sender.Source.SourceModule;
-            var metadata = (sender.Source.Reference != null) ? sender.Source.Reference.SourceModule.MetaData : sender.Source.SourceModule.MetaData;
-            if (originalModule != null)
+            if (null == originalModule)
             {
-                var commandLine = new Bam.Core.StringArray();
-                (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+                return;
+            }
 
-                var destinationFolder = "$CONFIGURATION_BUILD_DIR";
-                if (sender.Source.Reference != null)
-                {
-                    destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
-                }
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
-                var commands = new Bam.Core.StringArray();
-                commands.Add(System.String.Format("{0} {1} {2} {3}/{4}",
-                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
-                    commandLine.ToString(' '),
-                    newName.Parse(),
-                    destinationFolder,
-                    sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath).Parse()));
-                (metadata as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+            var destinationFolder = "$CONFIGURATION_BUILD_DIR";
+            if (sender.Source.Reference != null)
+            {
+                destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
+            }
+
+            var commands = new Bam.Core.StringArray();
+            commands.Add(System.String.Format("{0} {1} {2} {3}/{4}",
+                (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                commandLine.ToString(' '),
+                newName.Parse(),
+                destinationFolder,
+                sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath).Parse()));
+
+            if (sender.Source.Reference != null)
+            {
+                var target = sender.Source.Reference.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.Source.Reference.SourceModule);
+                target.AddPostBuildCommands(commands, configuration);
+            }
+            else
+            {
+                var target = sender.Source.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.Source.SourceModule);
+                target.AddPostBuildCommands(commands, configuration);
             }
         }
     }

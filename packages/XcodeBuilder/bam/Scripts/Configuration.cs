@@ -33,14 +33,23 @@ namespace XcodeBuilder
     public sealed class Configuration :
         Object
     {
-        public Configuration(string name)
-            : base()
+        private System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
+
+        public Configuration(
+            Bam.Core.EConfiguration config)
         {
             this.IsA = "XCBuildConfiguration";
-            this.Name = name;
+            this.Name = config.ToString();
+            this.Config = config;
             this.PreBuildCommands = new Bam.Core.StringArray();
             this.PostBuildCommands = new Bam.Core.StringArray();
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
+        }
+
+        public Bam.Core.EConfiguration Config
+        {
+            get;
+            private set;
         }
 
         public Bam.Core.StringArray PreBuildCommands
@@ -81,9 +90,17 @@ namespace XcodeBuilder
             }
         }
 
-        private System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
+        public void
+        SetProductName(
+            Bam.Core.TokenizedString productName)
+        {
+            this["PRODUCT_NAME"] = new UniqueConfigurationValue(productName.Parse());
+        }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);

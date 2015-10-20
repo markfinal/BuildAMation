@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace XcodeBuilder
 {
     public abstract class BuildPhase :
@@ -38,17 +39,15 @@ namespace XcodeBuilder
         }
 
         public void
-        AddBuildFile(BuildFile other)
+        AddBuildFile(
+            BuildFile other)
         {
-            foreach (var build in this.BuildFiles)
+            var existingBuildFile = this.BuildFiles.Where(item => item.GUID == other.GUID).FirstOrDefault();
+            if (null == existingBuildFile)
             {
-                if (build.GUID == other.GUID)
-                {
-                    return;
-                }
+                this.BuildFiles.Add(other);
+                other.Parent = this;
             }
-            this.BuildFiles.Add(other);
-            other.Parent = this;
         }
 
         protected abstract string BuildActionMask
@@ -67,7 +66,10 @@ namespace XcodeBuilder
             protected set;
         }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);

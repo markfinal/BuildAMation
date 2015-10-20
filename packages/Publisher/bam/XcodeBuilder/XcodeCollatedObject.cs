@@ -47,8 +47,8 @@ namespace Publisher
                 // convert the executable into an app bundle, if EPublishingType.WindowedApplication has been used as the type
                 if ((sender.SubDirectory != null) && sender.SubDirectory.Parse().Contains(".app/"))
                 {
-                    var meta = sender.SourceModule.MetaData as XcodeBuilder.XcodeMeta;
-                    meta.Target.MakeApplicationBundle();
+                    var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
+                    target.MakeApplicationBundle();
                 }
 
                 return;
@@ -74,7 +74,10 @@ namespace Publisher
                     (sender.Tool as Bam.Core.ICommandLineTool).Executable,
                     commandLine.ToString(' '),
                     destinationPath));
-                (sender.SourceModule.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+
+                var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.SourceModule);
+                target.AddPostBuildCommands(commands, configuration);
             }
             else
             {
@@ -106,7 +109,10 @@ namespace Publisher
                     destinationFolder,
                     isSymlink ? sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse() : sender.SubDirectory.Parse(),
                     isSymlink ? string.Empty : "/"));
-                (sender.Reference.SourceModule.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+
+                var target = sender.Reference.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.Reference.SourceModule);
+                target.AddPostBuildCommands(commands, configuration);
             }
         }
     }

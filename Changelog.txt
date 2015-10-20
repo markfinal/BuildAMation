@@ -1,3 +1,5 @@
+20-Oct-2015 Fixes #34. Updated Xcode project generation so that adding pre build steps for Xcode Targets that have yet to be processed themselves much simpler, but also more rigorous. Follows the design for VisualStudio projects.
+
 18-Oct-2015 Fixes #33. C.ICOnlyCompilerSettings.LanguageStandard now has a default set of c89. Previously this command line switch never appeared on supporting toolchain compilation lines.
 
 17-Oct-2015 Added GccCommon and ClangCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic.

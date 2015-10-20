@@ -75,8 +75,6 @@ namespace XcodeBuilder
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
-
-            this.AddNewProjectConfiguration(module);
         }
 
         public string SourceRoot
@@ -228,85 +226,38 @@ namespace XcodeBuilder
         }
 
         public FileReference
-        FindOrCreateFileReference(
+        EnsureFileReferenceExists(
             Bam.Core.TokenizedString path,
             FileReference.EFileType type,
-            bool explicitType = false,
+            bool explicitType = true,
             FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
         {
-            foreach (var fileRef in this.FileReferences)
+            var existingFileRef = this.FileReferences.Where(item => item.Path.Equals(path)).FirstOrDefault();
+            if (null != existingFileRef)
             {
-                if (fileRef.Path.Equals(path))
-                {
-                    return fileRef;
-                }
+                return existingFileRef;
             }
-
             var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
             this.FileReferences.Add(newFileRef);
             return newFileRef;
         }
 
-        public FileReference
-        FindOrCreateFileReference(
-            FileReference other)
-        {
-            foreach (var fileRef in this.FileReferences)
-            {
-                if (null == fileRef.LinkedTo)
-                {
-                    continue;
-                }
-                if (fileRef.LinkedTo.GUID == other.GUID)
-                {
-                    return fileRef;
-                }
-            }
-
-            var newFileRef = new FileReference(other, this);
-            this.FileReferences.Add(newFileRef);
-            return newFileRef;
-        }
-
         public BuildFile
-        FindOrCreateBuildFile(
-            Bam.Core.TokenizedString path,
+        EnsureBuildFileExists(
             FileReference fileRef)
         {
-            foreach (var buildFile in this.BuildFiles)
+            var existingBuildFile = this.BuildFiles.Where(item => item.FileRef == fileRef).FirstOrDefault();
+            if (null != existingBuildFile)
             {
-                if (buildFile.Source == fileRef)
-                {
-                    return buildFile;
-                }
+                return existingBuildFile;
             }
-
-            var newBuildFile = new BuildFile(path, fileRef);
+            var newBuildFile = new BuildFile(fileRef);
             this.BuildFiles.Add(newBuildFile);
             return newBuildFile;
         }
 
-        public Target
-        FindOrCreateTarget(
-            Bam.Core.Module module,
-            FileReference fileRef,
-            Target.EProductType type)
-        {
-            foreach (var target in this.Targets)
-            {
-                if (target.Key == module.GetType())
-                {
-                    return target.Value;
-                }
-            }
-
-            var newTarget = new Target(module, this, fileRef, type);
-            this.Targets[module.GetType()] = newTarget;
-            return newTarget;
-        }
-
         public void
-        AddNewProjectConfiguration(
+        EnsureProjectConfigurationExists(
             Bam.Core.Module module)
         {
             var config = module.BuildEnvironment.Configuration;
@@ -316,7 +267,7 @@ namespace XcodeBuilder
             }
 
             // add configuration to project
-            var projectConfig = new Configuration(config.ToString());
+            var projectConfig = new Configuration(config);
             projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
             projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
@@ -344,27 +295,36 @@ namespace XcodeBuilder
         }
 
         public Configuration
-        AddNewTargetConfiguration(
+        EnsureTargetConfigurationExists(
             Bam.Core.Module module,
-            Bam.Core.TokenizedString productName,
-            Target target)
+            ConfigurationList configList)
         {
-            // add configuration to target
-            var config = new Configuration(module.BuildEnvironment.Configuration.ToString());
-            config["PRODUCT_NAME"] = new UniqueConfigurationValue(productName.Parse());
+            var config = module.BuildEnvironment.Configuration;
+            var existingConfig = configList.Where(item => item.Config == config).FirstOrDefault();
+            if (null != existingConfig)
+            {
+                return existingConfig;
+            }
 
-            target.ConfigurationList.AddConfiguration(config);
-            this.AllConfigurations.Add(config);
+            // if a new target config is needed, then a new project config is needed too
+            this.EnsureProjectConfigurationExists(module);
 
-            return config;
+            var newConfig = new Configuration(module.BuildEnvironment.Configuration);
+            this.AllConfigurations.Add(newConfig);
+            configList.AddConfiguration(newConfig);
+
+            return newConfig;
         }
 
         public void
         FixupPerConfigurationData()
         {
-            foreach (var targetPair in this.Targets)
+            foreach (var target in this.Targets.Values)
             {
-                var target = targetPair.Value;
+                if (null == target.SourcesBuildPhase)
+                {
+                    continue;
+                }
                 foreach (var config in target.ConfigurationList)
                 {
                     var diff = target.SourcesBuildPhase.BuildFiles.Complement(config.BuildFiles);
@@ -373,7 +333,7 @@ namespace XcodeBuilder
                         var excluded = new Bam.Core.StringArray();
                         foreach (var file in diff)
                         {
-                            excluded.AddUnique(file.Source.Path.Parse());
+                            excluded.AddUnique(file.FileRef.Path.Parse());
                         }
                         config["EXCLUDED_SOURCE_FILE_NAMES"] = new UniqueConfigurationValue(excluded.ToString(" "));
                     }
@@ -381,7 +341,10 @@ namespace XcodeBuilder
             }
         }
 
-        private void InternalSerialize(System.Text.StringBuilder text, int indentLevel)
+        private void
+        InternalSerialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
@@ -426,7 +389,10 @@ namespace XcodeBuilder
             text.AppendLine();
         }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             if (this.BuildFiles.Count > 0)
             {

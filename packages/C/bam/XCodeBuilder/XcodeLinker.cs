@@ -42,6 +42,74 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
+            if (0 == objectFiles.Count)
+            {
+                return;
+            }
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(sender);
+            target.EnsureOutputFileReferenceExists(
+                sender.CreateTokenizedString("@filename($(0))", executablePath),
+                (sender is IDynamicLibrary) ? XcodeBuilder.FileReference.EFileType.DynamicLibrary : XcodeBuilder.FileReference.EFileType.Executable,
+                (sender is IDynamicLibrary) ? XcodeBuilder.Target.EProductType.DynamicLibrary : XcodeBuilder.Target.EProductType.Executable);
+            var configuration = target.GetConfiguration(sender);
+            if (sender is IDynamicLibrary)
+            {
+                configuration.SetProductName(sender.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)"));
+            }
+            else
+            {
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+            }
+
+            foreach (var header in headers)
+            {
+                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
+            }
+
+            if (objectFiles.Count > 1)
+            {
+                var xcodeConvertParameterTypes = new Bam.Core.TypeArray
+                {
+                    typeof(Bam.Core.Module),
+                    typeof(XcodeBuilder.Configuration)
+                };
+
+                var sharedSettings = C.SettingsBase.SharedSettings(
+                    objectFiles,
+                    typeof(ClangCommon.XcodeCompilerImplementation),
+                    typeof(XcodeProjectProcessor.IConvertToProject),
+                    xcodeConvertParameterTypes);
+                (sharedSettings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
+
+                foreach (var objFile in objectFiles)
+                {
+                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
+                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    if (null != deltaSettings)
+                    {
+                        var commandLine = new Bam.Core.StringArray();
+                        (deltaSettings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+                        if (commandLine.Count > 0)
+                        {
+                            buildFile.Settings = commandLine;
+                        }
+                    }
+                    configuration.BuildFiles.Add(buildFile);
+                }
+            }
+            else
+            {
+                (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
+                foreach (var objFile in objectFiles)
+                {
+                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
+                    configuration.BuildFiles.Add(buildFile);
+                }
+            }
+
+            // add library search paths prior to converting linker settings
             var linker = sender.Settings as C.ICommonLinkerSettings;
             foreach (var library in libraries)
             {
@@ -72,81 +140,18 @@ namespace C
                 }
             }
 
-            XcodeBuilder.XcodeCommonLinkable application;
-            // TODO: this is a hack, so that modules earlier in the graph can add pre/post build commands
-            // to the project for this module
-            if (null == sender.MetaData)
-            {
-                if (sender is IDynamicLibrary)
-                {
-                    application = new XcodeBuilder.XcodeDynamicLibrary(sender, executablePath);
-                }
-                else
-                {
-                    application = new XcodeBuilder.XcodeProgram(sender, executablePath);
-                }
-            }
-            else
-            {
-                application = sender.MetaData as XcodeBuilder.XcodeCommonLinkable;
-            }
-
             // convert link settings to the Xcode project
-            (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, application.Configuration);
-
-            if (objectFiles.Count > 1)
-            {
-                var xcodeConvertParameterTypes = new Bam.Core.TypeArray
-                {
-                    typeof(Bam.Core.Module),
-                    typeof(XcodeBuilder.Configuration)
-                };
-
-                var sharedSettings = C.SettingsBase.SharedSettings(
-                    objectFiles,
-                    typeof(ClangCommon.XcodeCompilerImplementation),
-                    typeof(XcodeProjectProcessor.IConvertToProject),
-                    xcodeConvertParameterTypes);
-                application.SetCommonCompilationOptions(null, sharedSettings);
-
-                foreach (var objFile in objectFiles)
-                {
-                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
-                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
-                    application.AddSource(objFile, meta.Source, meta.Output, deltaSettings);
-                    meta.Project = application.Project;
-                }
-            }
-            else
-            {
-                application.SetCommonCompilationOptions(null, objectFiles[0].Settings);
-                foreach (var objFile in objectFiles)
-                {
-                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
-                    application.AddSource(objFile, meta.Source, meta.Output, null);
-                    meta.Project = application.Project;
-                }
-            }
-
-            foreach (var header in headers)
-            {
-                var headerMod = header as HeaderFile;
-                var headerFileRef = application.Project.FindOrCreateFileReference(
-                    headerMod.InputPath,
-                    XcodeBuilder.FileReference.EFileType.HeaderFile,
-                    sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
-                application.AddHeader(headerFileRef);
-            }
+            (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
 
             foreach (var library in libraries)
             {
                 if (library is C.StaticLibrary)
                 {
-                    application.AddStaticLibrary(library.MetaData as XcodeBuilder.XcodeStaticLibrary);
+                    target.DependsOn(library.MetaData as XcodeBuilder.Target);
                 }
                 else if (library is C.IDynamicLibrary)
                 {
-                    application.AddDynamicLibrary(library.MetaData as XcodeBuilder.XcodeDynamicLibrary);
+                    target.DependsOn(library.MetaData as XcodeBuilder.Target);
                 }
                 else if (library is C.CSDKModule)
                 {
@@ -163,6 +168,21 @@ namespace C
                 else
                 {
                     throw new Bam.Core.Exception("Don't know how to handle this module type");
+                }
+            }
+
+            // order only dependents
+            foreach (var required in sender.Requirements)
+            {
+                if (null == required.MetaData)
+                {
+                    continue;
+                }
+
+                var requiredTarget = required.MetaData as XcodeBuilder.Target;
+                if (null != requiredTarget)
+                {
+                    target.Requires(requiredTarget);
                 }
             }
         }

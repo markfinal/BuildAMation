@@ -27,14 +27,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace XcodeBuilder
 {
     public sealed class Group :
         Object
     {
         public Group(
-            string name = null)
-            : this(name, "<group>")
+            string name = null) :
+            this(name, "<group>")
         {}
 
         private Group(
@@ -60,19 +61,20 @@ namespace XcodeBuilder
         }
 
         public void
-        AddReference(Object other)
+        AddReference(
+            Object other)
         {
-            foreach (var child in this.Children)
+            var existingRef = this.Children.Where(item => item.GUID == other.GUID).FirstOrDefault();
+            if (null == existingRef)
             {
-                if (child.GUID == other.GUID)
-                {
-                    return;
-                }
+                this.Children.Add(other);
             }
-            this.Children.Add(other);
         }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);

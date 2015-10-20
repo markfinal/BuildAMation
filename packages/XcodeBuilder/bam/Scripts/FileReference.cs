@@ -35,6 +35,9 @@ namespace XcodeBuilder
         public enum EFileType
         {
             SourceCodeC,
+            SourceCodeCxx,
+            SourceCodeObjC,
+            SourceCodeObjCxx,
             HeaderFile,
             Archive,
             Executable,
@@ -73,44 +76,18 @@ namespace XcodeBuilder
             this.Project = project;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
-            this.LinkedTo = null;
         }
 
-        public FileReference(
-            FileReference other,
-            Project owningProject)
-            :
-            this()
+        public FileReference
+        MakeLinkableAlias(
+            Bam.Core.Module module,
+            Project project)
         {
-            this.Path = other.Path;
-            this.Type = other.Type;
-            this.Project = owningProject;
-            // TODO: Linked FileReferences should be <group> and non-explicit
-            this.SourceTree = other.SourceTree;
-            this.ExplicitType = other.ExplicitType;
-            this.LinkedTo = other;
-        }
-
-        /// <summary>
-        /// This generates a new GUID
-        /// or returns null if the target is in the current project
-        /// </summary>
-        /// <param name="project"></param>
-        /// <param name="configuration"></param>
-        /// <param name="originalFileRef"></param>
-        /// <returns></returns>
-        public static FileReference
-        MakeLinkedClone(
-            Project project,
-            Bam.Core.EConfiguration configuration,
-            FileReference originalFileRef)
-        {
-            if (project == originalFileRef.Project)
-            {
-                return null;
-            }
-            var clone = project.FindOrCreateFileReference(originalFileRef);
-            return clone;
+            return project.EnsureFileReferenceExists(
+                module.CreateTokenizedString("$(packagename)/$CONFIGURATION/@filename($(0))", this.Path),
+                this.Type,
+                explicitType: false,
+                sourceTree: ESourceTree.Group);
         }
 
         private Bam.Core.TokenizedString ThePath;
@@ -151,12 +128,6 @@ namespace XcodeBuilder
             set;
         }
 
-        public FileReference LinkedTo
-        {
-            get;
-            private set;
-        }
-
         public void
         MakeApplicationBundle()
         {
@@ -171,12 +142,22 @@ namespace XcodeBuilder
             this.Type = EFileType.ApplicationBundle;
         }
 
-        private string FileTypeAsString()
+        private string
+        FileTypeAsString()
         {
             switch (this.Type)
             {
                 case EFileType.SourceCodeC:
                     return "sourcecode.c.c";
+
+                case EFileType.SourceCodeCxx:
+                    return "sourcecode.cpp.cpp";
+
+                case EFileType.SourceCodeObjC:
+                    return "sourcecode.c.objc";
+
+                case EFileType.SourceCodeObjCxx:
+                    return "sourcecode.cpp.objcpp";
 
                 case EFileType.HeaderFile:
                     return "sourcecode.c.h";
@@ -200,7 +181,8 @@ namespace XcodeBuilder
             throw new Bam.Core.Exception("Unrecognized file type {0}", this.Type.ToString());
         }
 
-        private string SourceTreeAsString()
+        private string
+        SourceTreeAsString()
         {
             switch (this.SourceTree)
             {
@@ -230,7 +212,10 @@ namespace XcodeBuilder
             }
         }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var leafname = System.IO.Path.GetFileName(this.Path.ToString());
 
@@ -252,25 +237,12 @@ namespace XcodeBuilder
             {
                 case ESourceTree.NA:
                 case ESourceTree.Absolute:
-                    path = this.Path.ToString();
+                case ESourceTree.Group:
+                    path = this.Path.Parse();
                     break;
 
                 case ESourceTree.BuiltProductsDir:
-                    {
-                        if ((null != this.LinkedTo) &&
-                            (this.LinkedTo.Project.GUID != this.Project.GUID) &&
-                            (this.LinkedTo.Project.BuiltProductsDir != this.Project.BuiltProductsDir))
-                        {
-                            // product is in a different BUILT_PRODUCTS_DIR - make a relative path
-                            var configName = this.Project.Module.BuildEnvironment.Configuration.ToString();
-                            var configurationBuildDir = this.Project.BuiltProductsDir + "/" + configName + "/";
-                            path = Bam.Core.RelativePathUtilities.GetPath(this.Path.Parse(), configurationBuildDir);
-                        }
-                        else
-                        {
-                            path = System.IO.Path.GetFileName(this.Path.ToString());
-                        }
-                    }
+                    path = System.IO.Path.GetFileName(this.Path.Parse());
                     break;
 
                 default:

@@ -40,16 +40,23 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
-            XcodeBuilder.XcodeCommonProject library;
-            // TODO: this is a hack, so that modules earlier in the graph can add pre/post build commands
-            // to the project for this module
-            if (null == sender.MetaData)
+            if (0 == objectFiles.Count)
             {
-                library = new XcodeBuilder.XcodeStaticLibrary(sender, libraryPath);
+                return;
             }
-            else
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(sender);
+            target.EnsureOutputFileReferenceExists(
+                sender.CreateTokenizedString("@filename($(0))", libraryPath),
+                XcodeBuilder.FileReference.EFileType.Archive,
+                XcodeBuilder.Target.EProductType.StaticLibrary);
+            var configuration = target.GetConfiguration(sender);
+            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+
+            foreach (var header in headers)
             {
-                library = sender.MetaData as XcodeBuilder.XcodeCommonProject;
+                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
             }
 
             if (objectFiles.Count > 1)
@@ -65,35 +72,53 @@ namespace C
                     typeof(ClangCommon.XcodeCompilerImplementation),
                     typeof(XcodeProjectProcessor.IConvertToProject),
                     xcodeConvertParameterTypes);
-                library.SetCommonCompilationOptions(null, sharedSettings);
+                (sharedSettings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
 
                 foreach (var objFile in objectFiles)
                 {
+                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
-                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
-                    library.AddSource(objFile, meta.Source, meta.Output, deltaSettings);
-                    meta.Project = library.Project;
+                    if (null != deltaSettings)
+                    {
+                        var commandLine = new Bam.Core.StringArray();
+                        (deltaSettings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+                        if (commandLine.Count > 0)
+                        {
+                            buildFile.Settings = commandLine;
+                        }
+                    }
+                    configuration.BuildFiles.Add(buildFile);
                 }
             }
             else
             {
-                library.SetCommonCompilationOptions(null, objectFiles[0].Settings);
+                (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
                 foreach (var objFile in objectFiles)
                 {
-                    var meta = objFile.MetaData as XcodeBuilder.XcodeObjectFile;
-                    library.AddSource(objFile, meta.Source, meta.Output, null);
-                    meta.Project = library.Project;
+                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
+                    configuration.BuildFiles.Add(buildFile);
                 }
             }
 
-            foreach (var header in headers)
+            // convert librarian settings to the Xcode project
+            if (sender.Settings is XcodeProjectProcessor.IConvertToProject)
             {
-                var headerMod = header as HeaderFile;
-                var headerFileRef = library.Project.FindOrCreateFileReference(
-                    headerMod.InputPath,
-                    XcodeBuilder.FileReference.EFileType.HeaderFile,
-                    sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
-                library.AddHeader(headerFileRef);
+                (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
+            }
+
+            // order only dependents
+            foreach (var required in sender.Requirements)
+            {
+                if (null == required.MetaData)
+                {
+                    continue;
+                }
+
+                var requiredTarget = required.MetaData as XcodeBuilder.Target;
+                if (null != requiredTarget)
+                {
+                    target.Requires(requiredTarget);
+                }
             }
         }
     }
