@@ -56,11 +56,25 @@ namespace C
             var configuration = target.GetConfiguration(sender);
             if (sender is IDynamicLibrary && !((sender is Plugin) || (sender is C.Cxx.Plugin)))
             {
-                configuration.SetProductName(sender.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)"));
+                if (sender.Macros["OutputName"].Equals(sender.Macros["modulename"]))
+                {
+                    configuration.SetProductName(sender.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)"));
+                }
+                else
+                {
+                    configuration.SetProductName(sender.CreateTokenizedString("$(OutputName).$(MajorVersion)"));
+                }
             }
             else
             {
-                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+                if (sender.Macros["OutputName"].Equals(sender.Macros["modulename"]))
+                {
+                    configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+                }
+                else
+                {
+                    configuration.SetProductName(sender.Macros["OutputName"]);
+                }
             }
 
             foreach (var header in headers)

@@ -52,7 +52,14 @@ namespace C
                 XcodeBuilder.FileReference.EFileType.Archive,
                 XcodeBuilder.Target.EProductType.StaticLibrary);
             var configuration = target.GetConfiguration(sender);
-            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+            if (sender.Macros["OutputName"].Equals(sender.Macros["modulename"]))
+            {
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+            }
+            else
+            {
+                configuration.SetProductName(sender.Macros["OutputName"]);
+            }
 
             foreach (var header in headers)
             {
