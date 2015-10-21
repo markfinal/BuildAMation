@@ -56,7 +56,7 @@ namespace ClangCommon
                     var buildFile = target.EnsureFrameworksBuildFileExists(
                         frameworkFileRefPath,
                         XcodeBuilder.FileReference.EFileType.WrapperFramework);
-                    project.MainGroup.AddReference(buildFile.FileRef);
+                    project.MainGroup.AddChild(buildFile.FileRef);
                 }
             }
             if (options.FrameworkSearchPaths.Count > 0)

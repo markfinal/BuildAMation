@@ -164,7 +164,7 @@ namespace XcodeBuilder
             if (null == this.FileReference)
             {
                 this.FileReference = fileRef;
-                this.Project.ProductRefGroup.AddReference(fileRef);
+                this.Project.ProductRefGroup.AddChild(fileRef);
             }
         }
 
@@ -198,7 +198,7 @@ namespace XcodeBuilder
             }
 
             var buildFile = this.EnsureBuildFileExists(path, type);
-            this.Project.SourceFilesGroup.AddReference(buildFile.FileRef);
+            this.Project.SourceFilesGroup.AddChild(buildFile.FileRef);
             this.SourcesBuildPhase.AddBuildFile(buildFile);
             return buildFile;
         }
@@ -236,7 +236,7 @@ namespace XcodeBuilder
                 path,
                 FileReference.EFileType.HeaderFile,
                 sourceTree: FileReference.ESourceTree.Absolute);
-            this.Project.HeaderFilesGroup.AddReference(fileRef);
+            this.Project.HeaderFilesGroup.AddChild(fileRef);
         }
 
         public void
@@ -266,10 +266,71 @@ namespace XcodeBuilder
             {
                 return;
             }
-            // TODO: if projects are different, requires a PBXReferenceProxy
-            var proxy = new ContainerItemProxy(this.Project, other);
-            var dependency = new TargetDependency(other, proxy);
-            this.TargetDependencies.AddUnique(dependency);
+            Bam.Core.Log.MessageAll("{0} requires {1}", this.Module.ToString(), other.Module.ToString());
+            if (this.Project == other.Project)
+            {
+                var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == this.Project) && (item.Remote == other)).FirstOrDefault();
+                if (null == itemProxy)
+                {
+                    itemProxy = new ContainerItemProxy(this.Project, this.Project, other, false);
+                }
+
+                var dependency = this.TargetDependencies.Where(item => (item.Dependency == other) && (item.Proxy == itemProxy)).FirstOrDefault();
+                if (null == dependency)
+                {
+                    Bam.Core.Log.MessageAll("\tCreated dependency");
+                    dependency = new TargetDependency(this.Project, other, itemProxy);
+                    this.TargetDependencies.AddUnique(dependency);
+                }
+            }
+            else
+            {
+                var fileRef = this.Project.EnsureFileReferenceExists(
+                    other.Project.ProjectDir,
+                    FileReference.EFileType.Project,
+                    explicitType: false,
+                    sourceTree: FileReference.ESourceTree.Absolute);
+                this.Project.MainGroup.AddChild(fileRef);
+
+                var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == fileRef) && (item.Remote == other)).FirstOrDefault();
+                if (null == itemProxy)
+                {
+                    itemProxy = new ContainerItemProxy(this.Project, fileRef, other, false);
+                }
+
+                var refProxy = this.Project.ReferenceProxies.Where(item => item.RemoteRef == itemProxy).FirstOrDefault();
+                if (null == refProxy)
+                {
+                    refProxy = new ReferenceProxy(
+                        this.Project,
+                        other.FileReference.Type,
+                        other.FileReference.Path,
+                        itemProxy,
+                        other.FileReference.SourceTree);
+                }
+
+                var productRefGroup = this.Project.Groups.Where(item => item.Children.Contains(refProxy)).FirstOrDefault();
+                if (null == productRefGroup)
+                {
+                    productRefGroup = new Group("Products");
+                    productRefGroup.AddChild(refProxy);
+                    this.Project.Groups.Add(productRefGroup);
+                }
+
+                var productRef = this.Project.ProjectReferences.Where(item => item.Key == productRefGroup).FirstOrDefault();
+                if (productRef.Equals(default(System.Collections.Generic.Dictionary<Group, FileReference>)))
+                {
+                    this.Project.ProjectReferences.Add(productRefGroup, fileRef);
+                }
+
+                var dependency = this.TargetDependencies.Where(item => (item.Dependency == null) && (item.Proxy == itemProxy)).FirstOrDefault();
+                if (null == dependency)
+                {
+                    Bam.Core.Log.MessageAll("\tCreated dependency");
+                    dependency = new TargetDependency(this.Project, null, itemProxy);
+                    this.TargetDependencies.AddUnique(dependency);
+                }
+            }
         }
 
         public void

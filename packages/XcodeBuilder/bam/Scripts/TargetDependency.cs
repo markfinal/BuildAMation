@@ -33,6 +33,7 @@ namespace XcodeBuilder
         Object
     {
         public TargetDependency(
+            Project project,
             Target dependency,
             ContainerItemProxy proxy)
         {
@@ -41,7 +42,7 @@ namespace XcodeBuilder
             this.Dependency = dependency;
             this.Proxy = proxy;
 
-            dependency.Project.TargetDependencies.AddUnique(this);
+            project.TargetDependencies.AddUnique(this);
         }
 
         public Target Dependency
@@ -50,10 +51,10 @@ namespace XcodeBuilder
             private set;
         }
 
-        private ContainerItemProxy Proxy
+        public ContainerItemProxy Proxy
         {
             get;
-            set;
+            private set;
         }
 
         public override void
@@ -74,8 +75,11 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
-            text.AppendFormat("{0}target = {1} /* {2} */;", indent2, this.Dependency.GUID, this.Dependency.Name);
-            text.AppendLine();
+            if (null != this.Dependency)
+            {
+                text.AppendFormat("{0}target = {1} /* {2} */;", indent2, this.Dependency.GUID, this.Dependency.Name);
+                text.AppendLine();
+            }
             text.AppendFormat("{0}targetProxy = {1} /* {2} */;", indent2, this.Proxy.GUID, this.Proxy.Name);
             text.AppendLine();
             text.AppendFormat("{0}}};", indent);

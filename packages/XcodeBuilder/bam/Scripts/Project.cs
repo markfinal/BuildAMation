@@ -39,9 +39,8 @@ namespace XcodeBuilder
         {
             this.IsA = "PBXProject";
             this.Name = name;
-            var projectDir = module.CreateTokenizedString("$(buildroot)/$(packagename).xcodeproj");
-            module.Macros.Add("xcodeprojectdir", projectDir);
-            this.ProjectDir = projectDir.Parse();
+            this.ProjectDir = module.CreateTokenizedString("$(buildroot)/$(packagename).xcodeproj");
+            module.Macros.Add("xcodeprojectdir", this.ProjectDir);
 
             var projectPath = module.CreateTokenizedString("$(xcodeprojectdir)/project.pbxproj");
             this.ProjectPath = projectPath.Parse();
@@ -62,16 +61,18 @@ namespace XcodeBuilder
             this.ShellScriptsBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
             this.CopyFilesBuildPhases = new Bam.Core.Array<CopyFilesBuildPhase>();
             this.ContainerItemProxies = new Bam.Core.Array<ContainerItemProxy>();
+            this.ReferenceProxies = new Bam.Core.Array<ReferenceProxy>();
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
+            this.ProjectReferences = new System.Collections.Generic.Dictionary<Group, FileReference>();
 
             this.Groups.Add(new Group()); // main group
             this.Groups.Add(new Group("Products")); // product ref group
             this.Groups.Add(new Group("Source Files"));
             this.Groups.Add(new Group("Header Files"));
 
-            this.MainGroup.AddReference(this.ProductRefGroup);
-            this.MainGroup.AddReference(this.SourceFilesGroup);
-            this.MainGroup.AddReference(this.HeaderFilesGroup);
+            this.MainGroup.AddChild(this.ProductRefGroup);
+            this.MainGroup.AddChild(this.SourceFilesGroup);
+            this.MainGroup.AddChild(this.HeaderFilesGroup);
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
@@ -89,7 +90,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public string ProjectDir
+        public Bam.Core.TokenizedString ProjectDir
         {
             get;
             private set;
@@ -187,7 +188,19 @@ namespace XcodeBuilder
             private set;
         }
 
+        public Bam.Core.Array<ReferenceProxy> ReferenceProxies
+        {
+            get;
+            private set;
+        }
+
         public Bam.Core.Array<TargetDependency> TargetDependencies
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences
         {
             get;
             private set;
@@ -349,6 +362,7 @@ namespace XcodeBuilder
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
+            var indent4 = new string('\t', indentLevel + 3);
             text.AppendLine();
             text.AppendFormat("/* Begin PBXProject section */");
             text.AppendLine();
@@ -373,6 +387,26 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}productRefGroup = {1} /* {2} */;", indent2, this.ProductRefGroup.GUID, this.ProductRefGroup.Name);
             text.AppendLine();
+            text.AppendFormat("{0}projectDirPath = \"\";", indent2);
+            text.AppendLine();
+            if (this.ProjectReferences.Count > 0)
+            {
+                text.AppendFormat("{0}projectReferences = (", indent2);
+                text.AppendLine();
+                foreach (var projectRef in this.ProjectReferences)
+                {
+                    text.AppendFormat("{0}{", indent3);
+                    text.AppendLine();
+                    text.AppendFormat("{0}ProductGroup = {1} /* {2} */;", indent4, projectRef.Key.GUID, projectRef.Key.Name);
+                    text.AppendLine();
+                    text.AppendFormat("{0}ProjectRef = {1} /* {2} */;", indent4, projectRef.Value.GUID, projectRef.Value.Name);
+                    text.AppendLine();
+                    text.AppendFormat("{0}},", indent3);
+                    text.AppendLine();
+                }
+                text.AppendFormat("{0});", indent2);
+                text.AppendLine();
+            }
             text.AppendFormat("{0}targets = (", indent2);
             text.AppendLine();
             foreach (var target in this.Targets.Values)
@@ -464,6 +498,18 @@ namespace XcodeBuilder
                     group.Serialize(text, indentLevel);
                 }
                 text.AppendFormat("/* End PBXGroup section */");
+                text.AppendLine();
+            }
+            if (this.ReferenceProxies.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXReferenceProxy section */");
+                text.AppendLine();
+                foreach (var proxy in this.ReferenceProxies.OrderBy(key => key.GUID))
+                {
+                    proxy.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXReferenceProxy section */");
                 text.AppendLine();
             }
             if (this.Targets.Count > 0)

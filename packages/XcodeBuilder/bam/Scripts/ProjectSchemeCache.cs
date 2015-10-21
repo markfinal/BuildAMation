@@ -90,11 +90,11 @@ namespace XcodeBuilder
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
                 {
                     buildableReference.SetAttribute("ReferencedContainer",
-                        "container:" + System.IO.Path.GetFileName(this.Project.ProjectDir));
+                        "container:" + System.IO.Path.GetFileName(this.Project.ProjectDir.Parse()));
                 }
                 else
                 {
-                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir, this.Project.ProjectDir);
+                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir.Parse(), this.Project.ProjectDir.Parse());
                     buildableReference.SetAttribute("ReferencedContainer",
                         "container:" + relative);
                 }
@@ -170,11 +170,11 @@ namespace XcodeBuilder
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
                 {
                     buildableRefEl.SetAttribute("ReferencedContainer",
-                        "container:" + System.IO.Path.GetFileName(target.Project.ProjectDir));
+                        "container:" + System.IO.Path.GetFileName(target.Project.ProjectDir.Parse()));
                 }
                 else
                 {
-                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir, this.Project.ProjectDir);
+                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir.Parse(), this.Project.ProjectDir.Parse());
                     buildableRefEl.SetAttribute("ReferencedContainer",
                         "container:" + relative);
                 }

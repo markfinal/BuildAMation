@@ -29,6 +29,85 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    public static class EnumToStringExtensions
+    {
+        public static string
+        ToString(
+            this FileReference.EFileType type)
+        {
+            switch (type)
+            {
+            case FileReference.EFileType.SourceCodeC:
+                return "sourcecode.c.c";
+
+            case FileReference.EFileType.SourceCodeCxx:
+                return "sourcecode.cpp.cpp";
+
+            case FileReference.EFileType.SourceCodeObjC:
+                return "sourcecode.c.objc";
+
+            case FileReference.EFileType.SourceCodeObjCxx:
+                return "sourcecode.cpp.objcpp";
+
+            case FileReference.EFileType.HeaderFile:
+                return "sourcecode.c.h";
+
+            case FileReference.EFileType.Archive:
+                return "archive.ar";
+
+            case FileReference.EFileType.Executable:
+                return "compiled.mach-o.executable";
+
+            case FileReference.EFileType.DynamicLibrary:
+                return "compiled.mach-o.dylib";
+
+            case FileReference.EFileType.WrapperFramework:
+                return "wrapper.framework";
+
+            case FileReference.EFileType.ApplicationBundle:
+                return "wrapper.application";
+
+            case FileReference.EFileType.Project:
+                return "wrapper.pb-project";
+
+            default:
+                throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
+            }
+        }
+
+        public static string
+        ToString(
+            this FileReference.ESourceTree sourceTree)
+        {
+            switch (sourceTree)
+            {
+            case FileReference.ESourceTree.NA:
+                return "\"<unknown>\"";
+
+            case FileReference.ESourceTree.Absolute:
+                return "\"<absolute>\"";
+
+            case FileReference.ESourceTree.Group:
+                return "\"<group>\"";
+
+            case FileReference.ESourceTree.SourceRoot:
+                return "SOURCE_ROOT";
+
+            case FileReference.ESourceTree.DeveloperDir:
+                return "DEVELOPER_DIR";
+
+            case FileReference.ESourceTree.BuiltProductsDir:
+                return "BUILT_PRODUCTS_DIR";
+
+            case FileReference.ESourceTree.SDKRoot:
+                return "SDKROOT";
+
+            default:
+                throw new Bam.Core.Exception("Unknown source tree, {0}", sourceTree);
+            }
+        }
+    }
+
     public sealed class FileReference :
         Object
     {
@@ -43,7 +122,8 @@ namespace XcodeBuilder
             Executable,
             DynamicLibrary,
             WrapperFramework,
-            ApplicationBundle
+            ApplicationBundle,
+            Project
         }
 
         public enum ESourceTree
@@ -122,10 +202,10 @@ namespace XcodeBuilder
             set;
         }
 
-        private ESourceTree SourceTree
+        public ESourceTree SourceTree
         {
             get;
-            set;
+            private set;
         }
 
         public void
@@ -145,71 +225,13 @@ namespace XcodeBuilder
         private string
         FileTypeAsString()
         {
-            switch (this.Type)
-            {
-                case EFileType.SourceCodeC:
-                    return "sourcecode.c.c";
-
-                case EFileType.SourceCodeCxx:
-                    return "sourcecode.cpp.cpp";
-
-                case EFileType.SourceCodeObjC:
-                    return "sourcecode.c.objc";
-
-                case EFileType.SourceCodeObjCxx:
-                    return "sourcecode.cpp.objcpp";
-
-                case EFileType.HeaderFile:
-                    return "sourcecode.c.h";
-
-                case EFileType.Archive:
-                    return "archive.ar";
-
-                case EFileType.Executable:
-                    return "compiled.mach-o.executable";
-
-                case EFileType.DynamicLibrary:
-                    return "compiled.mach-o.dylib";
-
-                case EFileType.WrapperFramework:
-                    return "wrapper.framework";
-
-                case EFileType.ApplicationBundle:
-                    return "wrapper.application";
-            }
-
-            throw new Bam.Core.Exception("Unrecognized file type {0}", this.Type.ToString());
+            return this.Type.ToString();
         }
 
         private string
         SourceTreeAsString()
         {
-            switch (this.SourceTree)
-            {
-                case ESourceTree.NA:
-                    return "\"<unknown>\"";
-
-                case ESourceTree.Absolute:
-                    return "\"<absolute>\"";
-
-                case ESourceTree.Group:
-                    return "\"<group>\"";
-
-                case ESourceTree.SourceRoot:
-                    return "SOURCE_ROOT";
-
-                case ESourceTree.DeveloperDir:
-                    return "DEVELOPER_DIR";
-
-                case ESourceTree.BuiltProductsDir:
-                    return "BUILT_PRODUCTS_DIR";
-
-                case ESourceTree.SDKRoot:
-                    return "SDKROOT";
-
-                default:
-                    throw new Bam.Core.Exception("Unknown source tree");
-            }
+            return this.SourceTree.ToString();
         }
 
         public override void

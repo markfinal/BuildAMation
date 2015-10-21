@@ -122,9 +122,9 @@ namespace XcodeBuilder
                 text.AppendLine("}");
 
                 var projectDir = project.ProjectDir;
-                if (!System.IO.Directory.Exists(projectDir))
+                if (!System.IO.Directory.Exists(projectDir.Parse()))
                 {
-                    System.IO.Directory.CreateDirectory(projectDir);
+                    System.IO.Directory.CreateDirectory(projectDir.Parse());
                 }
 
                 //Bam.Core.Log.DebugMessage(text.ToString());
