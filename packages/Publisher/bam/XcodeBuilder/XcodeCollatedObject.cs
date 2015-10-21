@@ -59,6 +59,15 @@ namespace Publisher
 
             if (sender.SourceModule != null && sender.SourceModule.MetaData != null)
             {
+                if ((null != sender.Reference) &&
+                    (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition) &&
+                    (null == sender.Reference.SubDirectory) &&
+                    (sender.SubDirectory.Parse() == "."))
+                {
+                    // special case that the module output is already in the right directory at build
+                    return;
+                }
+
                 var destinationPath = sender.Macros["CopyDir"].Parse();
 
                 var commands = new Bam.Core.StringArray();
