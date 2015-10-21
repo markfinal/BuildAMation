@@ -54,20 +54,13 @@ namespace Publisher
                 return;
             }
 
-            if ((null != sender.Reference) && (null != sender.SourceModule) &&
-                (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition))
-            {
-                // same package has the same output folder, so don't bother copying
-                return;
-            }
-
-            var destinationPath = sender.Macros["CopyDir"].Parse();
-
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
             if (sender.SourceModule != null && sender.SourceModule.MetaData != null)
             {
+                var destinationPath = sender.Macros["CopyDir"].Parse();
+
                 var commands = new Bam.Core.StringArray();
                 commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
                 commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2}",
