@@ -48,30 +48,38 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
-            var destinationFolder = "$CONFIGURATION_BUILD_DIR";
-            if (sender.Source.Reference != null)
-            {
-                destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
-            }
-
             var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("{0} {1} {2} {3}/{4}",
-                (sender.Tool as Bam.Core.ICommandLineTool).Executable,
-                commandLine.ToString(' '),
-                newName.Parse(),
-                destinationFolder,
-                sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath).Parse()));
 
-            if (sender.Source.Reference != null)
+            if (sender.Source.SourceModule != null && sender.Source.SourceModule.MetaData != null)
             {
-                var target = sender.Source.Reference.SourceModule.MetaData as XcodeBuilder.Target;
-                var configuration = target.GetConfiguration(sender.Source.Reference.SourceModule);
+                commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
+                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    commandLine.ToString(' '),
+                    oldName.Parse(),
+                    newName.Parse(),
+                    sender.Source.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse()));
+
+                var target = sender.Source.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.Source.SourceModule);
                 target.AddPostBuildCommands(commands, configuration);
             }
             else
             {
-                var target = sender.Source.SourceModule.MetaData as XcodeBuilder.Target;
-                var configuration = target.GetConfiguration(sender.Source.SourceModule);
+                var destinationFolder = "$CONFIGURATION_BUILD_DIR";
+                if (sender.Source.Reference != null)
+                {
+                    destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
+                }
+
+                commands.Add(System.String.Format("{0} {1} {2} {3}/{4}",
+                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    commandLine.ToString(' '),
+                    newName.Parse(),
+                    destinationFolder,
+                    sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath).Parse()));
+
+                var target = sender.Source.Reference.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.Source.Reference.SourceModule);
                 target.AddPostBuildCommands(commands, configuration);
             }
         }
