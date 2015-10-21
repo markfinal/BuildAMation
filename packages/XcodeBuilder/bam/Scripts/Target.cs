@@ -266,7 +266,6 @@ namespace XcodeBuilder
             {
                 return;
             }
-            Bam.Core.Log.MessageAll("{0} requires {1}", this.Module.ToString(), other.Module.ToString());
             if (this.Project == other.Project)
             {
                 var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == this.Project) && (item.Remote == other)).FirstOrDefault();
@@ -278,7 +277,6 @@ namespace XcodeBuilder
                 var dependency = this.TargetDependencies.Where(item => (item.Dependency == other) && (item.Proxy == itemProxy)).FirstOrDefault();
                 if (null == dependency)
                 {
-                    Bam.Core.Log.MessageAll("\tCreated dependency");
                     dependency = new TargetDependency(this.Project, other, itemProxy);
                     this.TargetDependencies.AddUnique(dependency);
                 }
@@ -326,7 +324,6 @@ namespace XcodeBuilder
                 var dependency = this.TargetDependencies.Where(item => (item.Dependency == null) && (item.Proxy == itemProxy)).FirstOrDefault();
                 if (null == dependency)
                 {
-                    Bam.Core.Log.MessageAll("\tCreated dependency");
                     dependency = new TargetDependency(this.Project, null, itemProxy);
                     this.TargetDependencies.AddUnique(dependency);
                 }
