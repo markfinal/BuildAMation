@@ -84,7 +84,15 @@ namespace C
                         (deltaSettings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
                         if (commandLine.Count > 0)
                         {
-                            buildFile.Settings = commandLine;
+                            // Cannot set per-file-per-configuration settings, so blend them together
+                            if (null == buildFile.Settings)
+                            {
+                                buildFile.Settings = commandLine;
+                            }
+                            else
+                            {
+                                buildFile.Settings.AddRangeUnique(commandLine);
+                            }
                         }
                     }
                     configuration.BuildFiles.Add(buildFile);
