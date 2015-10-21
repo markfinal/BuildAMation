@@ -218,6 +218,7 @@ namespace C
             // now that we have an instance of the shared settings type, calculate the values of the individual settings across all object files
             // for all shared interfaces
             var commonSettings = System.Activator.CreateInstance(sharedSettingsType) as SettingsBase;
+            commonSettings.InitializeAllInterfaces(objectFiles[0], true, false);
             foreach (var i in sharedInterfaces)
             {
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
@@ -228,20 +229,27 @@ namespace C
 
                 var attribute = attributeArray[0] as Bam.Core.SettingsExtensionsAttribute;
 
-                var method = attribute.GetMethod("SharedSettings", new[] { i, i, i });
-                if (null != method)
+                var cloneSettingsMethod = attribute.GetMethod("Clone", new[] { i, i });
+                if (null == cloneSettingsMethod)
                 {
-                    Bam.Core.Log.DebugMessage("Executing {0}", method.Name);
-
-                    var objectFileCount = objectFiles.Count;
-                    for (int objIndex = 0; objIndex < objectFileCount - 1; ++objIndex)
-                    {
-                        method.Invoke(null, new[] { commonSettings, objectFiles[objIndex].Settings, objectFiles[objIndex + 1].Settings });
-                    }
+                    throw new Bam.Core.Exception("Unable to find extension method {0}.SharedSettings(this {1}, {1}, {1}, {1})",
+                        attribute.ClassType.ToString(),
+                        i.ToString());
                 }
-                else
+
+                var intersectSettingsMethod = attribute.GetMethod("Intersect", new[] { i, i });
+                if (null == intersectSettingsMethod)
                 {
-                    throw new Bam.Core.Exception("Unable to find extension method {0}.SharedSettings(this {1}, {1}, {1})", attribute.ClassType.ToString(), i.ToString());
+                    throw new Bam.Core.Exception("Unable to find extension method {0}.Intersect(this {1}, {1})",
+                        attribute.ClassType.ToString(),
+                        i.ToString());
+                }
+
+                var objectFileCount = objectFiles.Count;
+                cloneSettingsMethod.Invoke(null, new[] { commonSettings, objectFiles[0].Settings });
+                for (int objIndex = 1; objIndex < objectFileCount; ++objIndex)
+                {
+                    intersectSettingsMethod.Invoke(null, new[] { commonSettings, objectFiles[objIndex].Settings });
                 }
             }
             return commonSettings;

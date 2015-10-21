@@ -1,3 +1,5 @@
+21-Oct-2015 Fixes #36. Renamed 'SharedSettings' extension method on compiler interfaces to 'Intersect'. This now takes the 'common' settings object and one more to intersect with. This means that the common settings are always being involved in the intersection, so that it is now cumulative.
+
 20-Oct-2015 Fixes #34. Updated Xcode project generation so that adding pre build steps for Xcode Targets that have yet to be processed themselves much simpler, but also more rigorous. Follows the design for VisualStudio projects.
 
 18-Oct-2015 Fixes #33. C.ICOnlyCompilerSettings.LanguageStandard now has a default set of c89. Previously this command line switch never appeared on supporting toolchain compilation lines.

@@ -40,12 +40,14 @@ namespace C.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.ICOnlyCompilerSettings shared,
-            C.ICOnlyCompilerSettings lhs,
-            C.ICOnlyCompilerSettings rhs)
+            C.ICOnlyCompilerSettings other)
         {
-            shared.LanguageStandard = (lhs.LanguageStandard == rhs.LanguageStandard) ? lhs.LanguageStandard : null;
+            if (shared.LanguageStandard != other.LanguageStandard)
+            {
+                shared.LanguageStandard = null;
+            }
         }
 
         public static void

@@ -42,14 +42,22 @@ namespace VisualCCommon.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this VisualCCommon.ICommonCompilerSettings shared,
-            VisualCCommon.ICommonCompilerSettings lhs,
-            VisualCCommon.ICommonCompilerSettings rhs)
+            VisualCCommon.ICommonCompilerSettings other)
         {
-            shared.NoLogo = (lhs.NoLogo == rhs.NoLogo) ? lhs.NoLogo : null;
-            shared.RuntimeLibrary = (lhs.RuntimeLibrary == rhs.RuntimeLibrary) ? lhs.RuntimeLibrary : null;
-            shared.WarningLevel = (lhs.WarningLevel == rhs.WarningLevel) ? lhs.WarningLevel : null;
+            if (shared.NoLogo != other.NoLogo)
+            {
+                shared.NoLogo = null;
+            }
+            if (shared.RuntimeLibrary != other.RuntimeLibrary)
+            {
+                shared.RuntimeLibrary = null;
+            }
+            if (shared.WarningLevel != other.WarningLevel)
+            {
+                shared.WarningLevel = null;
+            }
         }
 
         public static void

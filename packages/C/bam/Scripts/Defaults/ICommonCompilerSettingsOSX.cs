@@ -47,12 +47,11 @@ namespace C.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.ICommonCompilerSettingsOSX shared,
-            C.ICommonCompilerSettingsOSX lhs,
-            C.ICommonCompilerSettingsOSX rhs)
+            C.ICommonCompilerSettingsOSX other)
         {
-            shared.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(lhs.FrameworkSearchPaths.Intersect(rhs.FrameworkSearchPaths));
+            shared.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(shared.FrameworkSearchPaths.Intersect(other.FrameworkSearchPaths));
         }
 
         public static void

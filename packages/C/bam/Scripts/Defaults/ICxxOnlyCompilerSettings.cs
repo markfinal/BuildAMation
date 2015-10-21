@@ -42,14 +42,22 @@ namespace C.Cxx.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.ICxxOnlyCompilerSettings shared,
-            C.ICxxOnlyCompilerSettings lhs,
-            C.ICxxOnlyCompilerSettings rhs)
+            C.ICxxOnlyCompilerSettings other)
         {
-            shared.ExceptionHandler = (lhs.ExceptionHandler == rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
-            shared.LanguageStandard = (lhs.LanguageStandard == rhs.LanguageStandard) ? lhs.LanguageStandard : null;
-            shared.StandardLibrary = (lhs.StandardLibrary == rhs.StandardLibrary) ? lhs.StandardLibrary : null;
+            if (shared.ExceptionHandler != other.ExceptionHandler)
+            {
+                shared.ExceptionHandler = null;
+            }
+            if (shared.LanguageStandard != other.LanguageStandard)
+            {
+                shared.LanguageStandard = null;
+            }
+            if (shared.StandardLibrary != other.StandardLibrary)
+            {
+                shared.StandardLibrary = null;
+            }
         }
 
         public static void

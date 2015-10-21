@@ -42,14 +42,22 @@ namespace ClangCommon.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this ClangCommon.ICommonCompilerSettings shared,
-            ClangCommon.ICommonCompilerSettings lhs,
-            ClangCommon.ICommonCompilerSettings rhs)
+            ClangCommon.ICommonCompilerSettings other)
         {
-            shared.AllWarnings = (lhs.AllWarnings == rhs.AllWarnings) ? lhs.AllWarnings : null;
-            shared.ExtraWarnings = (lhs.ExtraWarnings == rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
-            shared.Pedantic = (lhs.Pedantic == rhs.Pedantic) ? lhs.Pedantic : null;
+            if (shared.AllWarnings != other.AllWarnings)
+            {
+                shared.AllWarnings = null;
+            }
+            if (shared.ExtraWarnings != other.ExtraWarnings)
+            {
+                shared.ExtraWarnings = null;
+            }
+            if (shared.Pedantic != other.Pedantic)
+            {
+                shared.Pedantic = null;
+            }
         }
 
         public static void
