@@ -22,7 +22,7 @@ namespace DeltaSettingsTest1
                 item.PrivatePatch(settings =>
                     {
                         var compiler = settings as C.ICommonCompilerSettings;
-                        compiler.TargetLanguage = C.ETargetLanguage.Cxx;
+                        compiler.WarningsAsErrors = false;
                         compiler.PreprocessorDefines.Remove("D_COMMON");
                     }));
         }
