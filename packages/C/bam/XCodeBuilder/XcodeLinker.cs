@@ -54,7 +54,7 @@ namespace C
                 (sender is IDynamicLibrary) ? XcodeBuilder.FileReference.EFileType.DynamicLibrary : XcodeBuilder.FileReference.EFileType.Executable,
                 (sender is IDynamicLibrary) ? XcodeBuilder.Target.EProductType.DynamicLibrary : XcodeBuilder.Target.EProductType.Executable);
             var configuration = target.GetConfiguration(sender);
-            if (sender is IDynamicLibrary)
+            if (sender is IDynamicLibrary && !((sender is Plugin) || (sender is C.Cxx.Plugin)))
             {
                 configuration.SetProductName(sender.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)"));
             }
