@@ -27,13 +27,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace XcodeBuilder
 {
     public sealed class ConfigurationList :
         Object,
         System.Collections.Generic.IEnumerable<Configuration>
     {
-        public ConfigurationList(Object parent)
+        public ConfigurationList(
+            Object parent)
         {
             this.IsA = "XCConfigurationList";
             this.Parent = parent;
@@ -61,19 +63,21 @@ namespace XcodeBuilder
         }
 
         public void
-        AddConfiguration(Configuration config)
+        AddConfiguration(
+            Configuration config)
         {
-            foreach (var conf in this.Configurations)
+            var existingConfig = this.Configurations.Where(item => item.GUID == config.GUID).FirstOrDefault();
+            if (null != existingConfig)
             {
-                if (config.GUID == conf.GUID)
-                {
-                    return;
-                }
+                return;
             }
             this.Configurations.Add(config);
         }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
@@ -98,7 +102,8 @@ namespace XcodeBuilder
             text.AppendLine();
         }
 
-        public System.Collections.Generic.IEnumerator<Configuration> GetEnumerator()
+        public System.Collections.Generic.IEnumerator<Configuration>
+        GetEnumerator()
         {
             foreach (var config in this.Configurations)
             {
@@ -106,7 +111,8 @@ namespace XcodeBuilder
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+        System.Collections.IEnumerator
+        System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }

@@ -47,6 +47,18 @@ namespace VisualCCommon
             {
                 settingsGroup.AddSetting("RuntimeLibrary", settings.RuntimeLibrary.Value.ToString(), condition);
             }
+
+            if (settings.WarningLevel.HasValue)
+            {
+                if (EWarningLevel.Level0 == settings.WarningLevel.Value)
+                {
+                    settingsGroup.AddSetting("WarningLevel", "TurnOffAllWarnings", condition);
+                }
+                else
+                {
+                    settingsGroup.AddSetting("WarningLevel", System.String.Format("Level{0}", settings.WarningLevel.Value.ToString("D")), condition);
+                }
+            }
         }
     }
 }

@@ -38,15 +38,20 @@ namespace C
             Bam.Core.ExecutionContext context,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
-            var library = new XcodeBuilder.XcodeHeaderLibrary(sender);
+            if (0 == headers.Count)
+            {
+                return;
+            }
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(sender);
+            target.Type = XcodeBuilder.Target.EProductType.StaticLibrary; // TODO: is this the best option to avoid a link?
+            var configuration = target.GetConfiguration(sender);
+            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+
             foreach (var header in headers)
             {
-                var headerMod = header as HeaderFile;
-                var headerFileRef = library.Project.FindOrCreateFileReference(
-                    headerMod.InputPath,
-                    XcodeBuilder.FileReference.EFileType.HeaderFile,
-                    sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
-                library.AddHeader(headerFileRef);
+                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
             }
         }
     }

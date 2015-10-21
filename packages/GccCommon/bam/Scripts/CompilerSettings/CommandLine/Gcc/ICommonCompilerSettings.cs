@@ -37,11 +37,32 @@ namespace GccCommon
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.PositionIndependentCode)
+            if (settings.PositionIndependentCode.HasValue)
             {
-                if (true == settings.PositionIndependentCode)
+                if (settings.PositionIndependentCode.Value)
                 {
                     commandLine.Add("-fPIC");
+                }
+            }
+            if (settings.AllWarnings.HasValue)
+            {
+                if (settings.AllWarnings.Value)
+                {
+                    commandLine.Add("-Wall");
+                }
+            }
+            if (settings.ExtraWarnings.HasValue)
+            {
+                if (settings.ExtraWarnings.Value)
+                {
+                    commandLine.Add("-Wextra");
+                }
+            }
+            if (settings.Pedantic.HasValue)
+            {
+                if (settings.Pedantic.Value)
+                {
+                    commandLine.Add("-pedantic");
                 }
             }
         }

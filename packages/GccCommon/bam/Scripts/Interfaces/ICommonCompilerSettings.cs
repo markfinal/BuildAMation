@@ -38,5 +38,22 @@ namespace GccCommon
             get;
             set;
         }
+        bool? AllWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? ExtraWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? Pedantic
+        {
+            get;
+            set;
+        }
     }
 }

@@ -27,23 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace XcodeBuilder
+namespace ClangCommon
 {
-    public sealed class XcodeObjectFile :
-        XcodeMeta
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonCompilerSettings :
+        Bam.Core.ISettingsBase
     {
-        public XcodeObjectFile(Bam.Core.Module module) :
-            base(module, Type.NA)
-        {
-        }
-
-        public FileReference Source
+        bool? AllWarnings
         {
             get;
             set;
         }
 
-        public BuildFile Output
+        bool? ExtraWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? Pedantic
         {
             get;
             set;

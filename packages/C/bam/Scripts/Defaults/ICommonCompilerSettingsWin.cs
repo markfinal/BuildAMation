@@ -46,12 +46,14 @@ namespace C.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.ICommonCompilerSettingsWin shared,
-            C.ICommonCompilerSettingsWin lhs,
-            C.ICommonCompilerSettingsWin rhs)
+            C.ICommonCompilerSettingsWin other)
         {
-            shared.CharacterSet = (lhs.CharacterSet == rhs.CharacterSet) ? lhs.CharacterSet : null;
+            if (shared.CharacterSet != other.CharacterSet)
+            {
+                shared.CharacterSet = null;
+            }
         }
 
         public static void

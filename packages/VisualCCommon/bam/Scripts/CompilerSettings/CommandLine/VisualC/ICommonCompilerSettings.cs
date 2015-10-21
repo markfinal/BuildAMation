@@ -66,6 +66,11 @@ namespace VisualCCommon
                         break;
                 }
             }
+
+            if (settings.WarningLevel.HasValue)
+            {
+                commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.Value.ToString("D")));
+            }
         }
     }
 }

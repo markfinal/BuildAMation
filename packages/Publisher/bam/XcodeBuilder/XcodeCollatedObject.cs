@@ -47,34 +47,39 @@ namespace Publisher
                 // convert the executable into an app bundle, if EPublishingType.WindowedApplication has been used as the type
                 if ((sender.SubDirectory != null) && sender.SubDirectory.Parse().Contains(".app/"))
                 {
-                    var meta = sender.SourceModule.MetaData as XcodeBuilder.XcodeMeta;
-                    meta.Target.MakeApplicationBundle();
+                    var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
+                    target.MakeApplicationBundle();
                 }
 
                 return;
             }
-
-            if ((null != sender.Reference) && (null != sender.SourceModule) &&
-                (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition))
-            {
-                // same package has the same output folder, so don't bother copying
-                return;
-            }
-
-            var destinationPath = sender.Macros["CopyDir"].Parse();
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
             if (sender.SourceModule != null && sender.SourceModule.MetaData != null)
             {
+                if ((null != sender.Reference) &&
+                    (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition) &&
+                    (null == sender.Reference.SubDirectory) &&
+                    (sender.SubDirectory.Parse() == "."))
+                {
+                    // special case that the module output is already in the right directory at build
+                    return;
+                }
+
+                var destinationPath = sender.Macros["CopyDir"].Parse();
+
                 var commands = new Bam.Core.StringArray();
                 commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
                 commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2}",
                     (sender.Tool as Bam.Core.ICommandLineTool).Executable,
                     commandLine.ToString(' '),
                     destinationPath));
-                (sender.SourceModule.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+
+                var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.SourceModule);
+                target.AddPostBuildCommands(commands, configuration);
             }
             else
             {
@@ -106,7 +111,10 @@ namespace Publisher
                     destinationFolder,
                     isSymlink ? sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse() : sender.SubDirectory.Parse(),
                     isSymlink ? string.Empty : "/"));
-                (sender.Reference.SourceModule.MetaData as XcodeBuilder.XcodeCommonProject).AddPostBuildCommands(commands);
+
+                var target = sender.Reference.SourceModule.MetaData as XcodeBuilder.Target;
+                var configuration = target.GetConfiguration(sender.Reference.SourceModule);
+                target.AddPostBuildCommands(commands, configuration);
             }
         }
     }

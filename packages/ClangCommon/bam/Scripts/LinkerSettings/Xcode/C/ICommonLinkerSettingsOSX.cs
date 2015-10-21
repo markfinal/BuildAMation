@@ -39,9 +39,8 @@ namespace ClangCommon
         {
             if (options.Frameworks.Count > 0)
             {
-                var meta = module.MetaData as XcodeBuilder.XcodeMeta;
-                (meta as XcodeBuilder.XcodeCommonLinkable).EnsureFrameworksBuildPhaseExists();
-                var project = meta.Project;
+                var target = module.MetaData as XcodeBuilder.Target;
+                var project = target.Project;
                 foreach (var framework in options.Frameworks)
                 {
                     var frameworkFileRefPath = framework;
@@ -54,17 +53,10 @@ namespace ClangCommon
                         frameworkFileRefPath = Bam.Core.TokenizedString.Create("/System/Library/Frameworks/$(0).framework", null, new Bam.Core.TokenizedStringArray(framework));
                     }
 
-                    var fileRef = project.FindOrCreateFileReference(
+                    var buildFile = target.EnsureFrameworksBuildFileExists(
                         frameworkFileRefPath,
-                        XcodeBuilder.FileReference.EFileType.WrapperFramework,
-                        sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
-                    project.MainGroup.AddReference(fileRef);
-
-                    var buildFile = project.FindOrCreateBuildFile(
-                        frameworkFileRefPath,
-                        fileRef);
-
-                    meta.Target.FrameworksBuildPhase.AddBuildFile(buildFile);
+                        XcodeBuilder.FileReference.EFileType.WrapperFramework);
+                    project.MainGroup.AddChild(buildFile.FileRef);
                 }
             }
             if (options.FrameworkSearchPaths.Count > 0)

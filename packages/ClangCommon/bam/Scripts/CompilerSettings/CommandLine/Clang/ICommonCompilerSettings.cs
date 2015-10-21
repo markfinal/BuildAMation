@@ -27,20 +27,37 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace XcodeBuilder
+namespace ClangCommon
 {
-    public sealed class XcodeHeaderFile :
-        XcodeMeta
+    public static partial class CommandLineCompilerImplementation
     {
-        public XcodeHeaderFile(Bam.Core.Module module) :
-            base(module, Type.NA)
+        public static void
+        Convert(
+            this ClangCommon.ICommonCompilerSettings settings,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
         {
-        }
-
-        public FileReference Source
-        {
-            get;
-            set;
+            if (settings.AllWarnings.HasValue)
+            {
+                if (settings.AllWarnings.Value)
+                {
+                    commandLine.Add("-Wall");
+                }
+            }
+            if (settings.ExtraWarnings.HasValue)
+            {
+                if (settings.ExtraWarnings.Value)
+                {
+                    commandLine.Add("-Wextra");
+                }
+            }
+            if (settings.Pedantic.HasValue)
+            {
+                if (settings.Pedantic.Value)
+                {
+                    commandLine.Add("-pedantic");
+                }
+            }
         }
     }
 }

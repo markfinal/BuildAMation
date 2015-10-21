@@ -80,29 +80,24 @@ namespace XcodeBuilder
             var buildableReference = doc.CreateElement("BuildableReference");
             buildActionEntry.AppendChild(buildableReference);
             {
-                var buildable = doc.CreateAttribute("BuildableIdentifier");
-                buildable.Value = "primary";
-                var blueprint = doc.CreateAttribute("BlueprintIdentifier");
-                blueprint.Value = target.GUID;
-                var buildableName = doc.CreateAttribute("BuildableName");
-                buildableName.Value = target.FileReference.Name;
-                var blueprintName = doc.CreateAttribute("BlueprintName");
-                blueprintName.Value = target.Name;
-                var refContainer = doc.CreateAttribute("ReferencedContainer");
+                buildableReference.SetAttribute("BuildableIdentifier", "primary");
+                buildableReference.SetAttribute("BlueprintIdentifier", target.GUID);
+                if (null != target.FileReference)
+                {
+                    buildableReference.SetAttribute("BuildableName", target.FileReference.Name);
+                }
+                buildableReference.SetAttribute("BlueprintName", target.Name);
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
                 {
-                    refContainer.Value = "container:" + System.IO.Path.GetFileName(this.Project.ProjectDir);
+                    buildableReference.SetAttribute("ReferencedContainer",
+                        "container:" + System.IO.Path.GetFileName(this.Project.ProjectDir.Parse()));
                 }
                 else
                 {
-                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir, this.Project.ProjectDir);
-                    refContainer.Value = "container:" + relative;
+                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir.Parse(), this.Project.ProjectDir.Parse());
+                    buildableReference.SetAttribute("ReferencedContainer",
+                        "container:" + relative);
                 }
-                buildableReference.Attributes.Append(buildable);
-                buildableReference.Attributes.Append(blueprint);
-                buildableReference.Attributes.Append(buildableName);
-                buildableReference.Attributes.Append(blueprintName);
-                buildableReference.Attributes.Append(refContainer);
             }
 
             buildActionsCreated.Add(target);
@@ -117,13 +112,8 @@ namespace XcodeBuilder
             var buildActionEl = doc.CreateElement("BuildAction");
             schemeElement.AppendChild(buildActionEl);
             {
-                var parallelBuildsAttr = doc.CreateAttribute("parallelizeBuildables");
-                parallelBuildsAttr.Value = "YES";
-                buildActionEl.Attributes.Append(parallelBuildsAttr);
-
-                var buildImplicitDepsAttr = doc.CreateAttribute("buildImplicitDependencies");
-                buildImplicitDepsAttr.Value = "YES";
-                buildActionEl.Attributes.Append(buildImplicitDepsAttr);
+                buildActionEl.SetAttribute("parallelizeBuildables", "YES");
+                buildActionEl.SetAttribute("buildImplicitDependencies", "YES");
 
                 var buildActionEntries = doc.CreateElement("BuildActionEntries");
                 buildActionEl.AppendChild(buildActionEntries);
@@ -142,21 +132,10 @@ namespace XcodeBuilder
             var testActionEl = doc.CreateElement("TestAction");
             schemeElement.AppendChild(testActionEl);
             {
-                var selectedDebuggerAttr = doc.CreateAttribute("selectedDebuggerIdentifier");
-                selectedDebuggerAttr.Value = "Xcode.DebuggerFoundation.Debugger.LLDB";
-                testActionEl.Attributes.Append(selectedDebuggerAttr);
-
-                var selectedLauncherAttr = doc.CreateAttribute("selectedLauncherIdentifier");
-                selectedLauncherAttr.Value = "Xcode.DebuggerFoundation.Launcher.LLDB";
-                testActionEl.Attributes.Append(selectedLauncherAttr);
-
-                var useLaunchSchemeArgsAttr = doc.CreateAttribute("shouldUseLaunchSchemeArgsEnv");
-                useLaunchSchemeArgsAttr.Value = "YES";
-                testActionEl.Attributes.Append(useLaunchSchemeArgsAttr);
-
-                var buildConfigurationAttr = doc.CreateAttribute("buildConfiguration");
-                buildConfigurationAttr.Value = target.ConfigurationList.ElementAt(0).Name;
-                testActionEl.Attributes.Append(buildConfigurationAttr);
+                testActionEl.SetAttribute("selectedDebuggerIdentifier", "Xcode.DebuggerFoundation.Debugger.LLDB");
+                testActionEl.SetAttribute("selectedLauncherIdentifier", "Xcode.DebuggerFoundation.Launcher.LLDB");
+                testActionEl.SetAttribute("shouldUseLaunchSchemeArgsEnv", "YES");
+                testActionEl.SetAttribute("buildConfiguration", target.ConfigurationList.ElementAt(0).Name);
             }
         }
 
@@ -169,17 +148,9 @@ namespace XcodeBuilder
             var launchActionEl = doc.CreateElement("LaunchAction");
             schemeElement.AppendChild(launchActionEl);
             {
-                var selectedDebuggerAttr = doc.CreateAttribute("selectedDebuggerIdentifier");
-                selectedDebuggerAttr.Value = "Xcode.DebuggerFoundation.Debugger.LLDB";
-                launchActionEl.Attributes.Append(selectedDebuggerAttr);
-
-                var selectedLauncherAttr = doc.CreateAttribute("selectedLauncherIdentifier");
-                selectedLauncherAttr.Value = "Xcode.DebuggerFoundation.Launcher.LLDB";
-                launchActionEl.Attributes.Append(selectedLauncherAttr);
-
-                var buildConfigurationAttr = doc.CreateAttribute("buildConfiguration");
-                buildConfigurationAttr.Value = target.ConfigurationList.ElementAt(0).Name;
-                launchActionEl.Attributes.Append(buildConfigurationAttr);
+                launchActionEl.SetAttribute("selectedDebuggerIdentifier", "Xcode.DebuggerFoundation.Debugger.LLDB");
+                launchActionEl.SetAttribute("selectedLauncherIdentifier", "Xcode.DebuggerFoundation.Launcher.LLDB");
+                launchActionEl.SetAttribute("buildConfiguration", target.ConfigurationList.ElementAt(0).Name);
 
                 var productRunnableEl = doc.CreateElement("BuildableProductRunnable");
                 launchActionEl.AppendChild(productRunnableEl);
@@ -187,33 +158,26 @@ namespace XcodeBuilder
                 var buildableRefEl = doc.CreateElement("BuildableReference");
                 productRunnableEl.AppendChild(buildableRefEl);
 
-                var buildableIdAttr = doc.CreateAttribute("BuildableIdentifier");
-                buildableIdAttr.Value = "primary";
-                buildableRefEl.Attributes.Append(buildableIdAttr);
+                buildableRefEl.SetAttribute("BuildableIdentifier", "primary");
 
-                var blueprintIdAttr = doc.CreateAttribute("BlueprintIdentifier");
-                blueprintIdAttr.Value = target.FileReference.GUID;
-                buildableRefEl.Attributes.Append(blueprintIdAttr);
+                if (null != target.FileReference)
+                {
+                    buildableRefEl.SetAttribute("BlueprintIdentifier", target.FileReference.GUID);
+                    buildableRefEl.SetAttribute("BuildableName", target.FileReference.Name);
+                    buildableRefEl.SetAttribute("BlueprintName", target.FileReference.Name);
+                }
 
-                var buildableNameAttr = doc.CreateAttribute("BuildableName");
-                buildableNameAttr.Value = target.FileReference.Name;
-                buildableRefEl.Attributes.Append(buildableNameAttr);
-
-                var blueprintNameAttr = doc.CreateAttribute("BlueprintName");
-                blueprintNameAttr.Value = target.FileReference.Name;
-                buildableRefEl.Attributes.Append(blueprintNameAttr);
-
-                var refContainerAttr = doc.CreateAttribute("ReferencedContainer");
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
                 {
-                    refContainerAttr.Value = "container:" + System.IO.Path.GetFileName(target.Project.ProjectDir);
+                    buildableRefEl.SetAttribute("ReferencedContainer",
+                        "container:" + System.IO.Path.GetFileName(target.Project.ProjectDir.Parse()));
                 }
                 else
                 {
-                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir, this.Project.ProjectDir);
-                    refContainerAttr.Value = "container:" + relative;
+                    var relative = Bam.Core.RelativePathUtilities.GetPath(target.Project.ProjectDir.Parse(), this.Project.ProjectDir.Parse());
+                    buildableRefEl.SetAttribute("ReferencedContainer",
+                        "container:" + relative);
                 }
-                buildableRefEl.Attributes.Append(refContainerAttr);
             }
         }
 
@@ -232,27 +196,15 @@ namespace XcodeBuilder
 
             var profileActionEl = doc.CreateElement("ProfileAction");
             schemeEl.AppendChild(profileActionEl);
-            {
-                var buildConfigurationAttr = doc.CreateAttribute("buildConfiguration");
-                buildConfigurationAttr.Value = target.ConfigurationList.ElementAt(0).Name;
-                profileActionEl.Attributes.Append(buildConfigurationAttr);
-            }
+            profileActionEl.SetAttribute("buildConfiguration", target.ConfigurationList.ElementAt(0).Name);
 
             var analyzeActionEl = doc.CreateElement("AnalyzeAction");
             schemeEl.AppendChild(analyzeActionEl);
-            {
-                var buildConfigurationAttr = doc.CreateAttribute("buildConfiguration");
-                buildConfigurationAttr.Value = target.ConfigurationList.ElementAt(0).Name;
-                analyzeActionEl.Attributes.Append(buildConfigurationAttr);
-            }
+            analyzeActionEl.SetAttribute("buildConfiguration", target.ConfigurationList.ElementAt(0).Name);
 
             var archiveActionEl = doc.CreateElement("ArchiveAction");
             schemeEl.AppendChild(archiveActionEl);
-            {
-                var buildConfigurationAttr = doc.CreateAttribute("buildConfiguration");
-                buildConfigurationAttr.Value = target.ConfigurationList.ElementAt(0).Name;
-                archiveActionEl.Attributes.Append(buildConfigurationAttr);
-            }
+            archiveActionEl.SetAttribute("buildConfiguration", target.ConfigurationList.ElementAt(0).Name);
 
             return doc;
         }
@@ -269,11 +221,7 @@ namespace XcodeBuilder
                 doc.AppendChild(type);
             }
             var plistEl = doc.CreateElement("plist");
-            {
-                var versionAttr = doc.CreateAttribute("version");
-                versionAttr.Value = "1.0";
-                plistEl.Attributes.Append(versionAttr);
-            }
+            plistEl.SetAttribute("version", "1.0");
 
             var dictEl = doc.CreateElement("dict");
             plistEl.AppendChild(dictEl);

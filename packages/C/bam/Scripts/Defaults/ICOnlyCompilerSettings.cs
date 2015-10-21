@@ -36,14 +36,18 @@ namespace C.DefaultSettings
             this C.ICOnlyCompilerSettings settings,
             Bam.Core.Module module)
         {
+            settings.LanguageStandard = ELanguageStandard.C89;
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.ICOnlyCompilerSettings shared,
-            C.ICOnlyCompilerSettings lhs,
-            C.ICOnlyCompilerSettings rhs)
+            C.ICOnlyCompilerSettings other)
         {
+            if (shared.LanguageStandard != other.LanguageStandard)
+            {
+                shared.LanguageStandard = null;
+            }
         }
 
         public static void
@@ -52,6 +56,7 @@ namespace C.DefaultSettings
             C.ICOnlyCompilerSettings lhs,
             C.ICOnlyCompilerSettings rhs)
         {
+            delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
         }
 
         public static void
@@ -59,6 +64,7 @@ namespace C.DefaultSettings
             this C.ICOnlyCompilerSettings settings,
             C.ICOnlyCompilerSettings other)
         {
+            settings.LanguageStandard = other.LanguageStandard;
         }
     }
 }

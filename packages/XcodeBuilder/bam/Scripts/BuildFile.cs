@@ -33,31 +33,23 @@ namespace XcodeBuilder
         Object
     {
         public BuildFile(
-            Bam.Core.TokenizedString path,
-            FileReference source)
+            FileReference fileRef)
         {
             this.IsA = "PBXBuildFile";
-            this.Path = path;
-            this.Source = source;
+            this.FileRef = fileRef;
         }
 
-        public Bam.Core.TokenizedString Path
-        {
-            get;
-            private set;
-        }
-
-        private FileReference TheSource;
-        public FileReference Source
+        private FileReference TheFileRef;
+        public FileReference FileRef
         {
             get
             {
-                return this.TheSource;
+                return this.TheFileRef;
             }
             private set
             {
-                this.TheSource = value;
-                this.Name = System.IO.Path.GetFileName(value.Path.ToString());
+                this.TheFileRef = value;
+                this.Name = System.IO.Path.GetFileName(value.Path.Parse());
             }
         }
 
@@ -73,11 +65,14 @@ namespace XcodeBuilder
             set;
         }
 
-        public override void Serialize(System.Text.StringBuilder text, int indentLevel)
+        public override void
+        Serialize(
+            System.Text.StringBuilder text,
+            int indentLevel)
         {
             var indent = new string('\t', indentLevel);
             text.AppendFormat("{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
-                indent, this.GUID, this.Source.GUID,
+                indent, this.GUID, this.TheFileRef.GUID,
                 this.Name,
                 (null != this.Parent) ? this.Parent.Name : "Unknown",
                 this.IsA);
@@ -85,7 +80,7 @@ namespace XcodeBuilder
             {
                 text.AppendFormat("settings = {{COMPILER_FLAGS = \"{0}\"; }}; ", this.Settings.ToString(' '));
             }
-            text.AppendFormat("}};", indent, this.GUID, this.Source.GUID);
+            text.AppendFormat("}};", indent, this.GUID, this.TheFileRef.GUID);
             text.AppendLine();
         }
     }

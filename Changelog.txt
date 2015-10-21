@@ -1,3 +1,15 @@
+21-Oct-2015 Fixes #35. Added support for Xcode sub-projects, that are needed for order only Target dependencies.
+
+21-Oct-2015 Fixes #36. Renamed 'SharedSettings' extension method on compiler interfaces to 'Intersect'. This now takes the 'common' settings object and one more to intersect with. This means that the common settings are always being involved in the intersection, so that it is now cumulative.
+
+20-Oct-2015 Fixes #34. Updated Xcode project generation so that adding pre build steps for Xcode Targets that have yet to be processed themselves much simpler, but also more rigorous. Follows the design for VisualStudio projects.
+
+18-Oct-2015 Fixes #33. C.ICOnlyCompilerSettings.LanguageStandard now has a default set of c89. Previously this command line switch never appeared on supporting toolchain compilation lines.
+
+17-Oct-2015 Added GccCommon and ClangCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic.
+
+17-Oct-2015 Added VisualCCommon.ICommonCompilerSettings.WarningLevel setting. Defaults to Level1 as per the Microsoft documentation.
+
 16-Oct-2015 ======== Version 1.0a5 Release ========
 
 15-Oct-2015 Bam.Core.IBuildModeMetaData now requires implementing the property PublishBesideExecutable. This is because some build modes (i.e. those with IDE projects), should publish binary and data dependencies next to the debuggable executable. Whereas other build modes can publish to a standalone directory.

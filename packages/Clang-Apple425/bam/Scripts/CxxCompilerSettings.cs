@@ -36,7 +36,8 @@ namespace Clang
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
         C.ICommonCompilerSettingsOSX,
-        C.IAdditionalSettings
+        C.IAdditionalSettings,
+        ClangCommon.ICommonCompilerSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
@@ -165,6 +166,24 @@ namespace Clang
         }
 
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        bool? ClangCommon.ICommonCompilerSettings.AllWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? ClangCommon.ICommonCompilerSettings.ExtraWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? ClangCommon.ICommonCompilerSettings.Pedantic
         {
             get;
             set;

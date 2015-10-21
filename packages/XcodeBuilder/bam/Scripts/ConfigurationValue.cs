@@ -31,18 +31,23 @@ namespace XcodeBuilder
 {
     public abstract class ConfigurationValue
     {
-        public abstract void Merge(ConfigurationValue value);
+        public abstract void
+        Merge(
+            ConfigurationValue value);
     }
 
     public sealed class UniqueConfigurationValue :
         ConfigurationValue
     {
-        public UniqueConfigurationValue(string value)
+        public UniqueConfigurationValue(
+            string value)
         {
             this.Value = value;
         }
 
-        public override void Merge(ConfigurationValue value)
+        public override void
+        Merge(
+            ConfigurationValue value)
         {
             this.Value = (value as UniqueConfigurationValue).Value;
         }
@@ -53,7 +58,8 @@ namespace XcodeBuilder
             set;
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.Value;
         }
@@ -67,13 +73,16 @@ namespace XcodeBuilder
             this.Value = new Bam.Core.StringArray();
         }
 
-        public MultiConfigurationValue(string value)
+        public MultiConfigurationValue(
+            string value)
             : this()
         {
             this.Value.AddUnique(value);
         }
 
-        public override void Merge(ConfigurationValue value)
+        public override void
+        Merge(
+            ConfigurationValue value)
         {
             this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
         }
@@ -84,12 +93,15 @@ namespace XcodeBuilder
             set;
         }
 
-        public void Add(string value)
+        public void
+        Add(
+            string value)
         {
             this.Value.AddUnique(value);
         }
 
-        public override string ToString()
+        public override string
+        ToString()
         {
             return this.Value.ToString(' ');
         }

@@ -27,58 +27,58 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon.DefaultSettings
+namespace ClangCommon.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(
-            this VisualCCommon.ICommonCompilerSettings settings,
+            this ClangCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module)
         {
-            settings.NoLogo = true;
-            settings.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
-            settings.WarningLevel = EWarningLevel.Level1;
+            settings.AllWarnings = false;
+            settings.ExtraWarnings = false;
+            settings.Pedantic = false;
         }
 
         public static void
         Intersect(
-            this VisualCCommon.ICommonCompilerSettings shared,
-            VisualCCommon.ICommonCompilerSettings other)
+            this ClangCommon.ICommonCompilerSettings shared,
+            ClangCommon.ICommonCompilerSettings other)
         {
-            if (shared.NoLogo != other.NoLogo)
+            if (shared.AllWarnings != other.AllWarnings)
             {
-                shared.NoLogo = null;
+                shared.AllWarnings = null;
             }
-            if (shared.RuntimeLibrary != other.RuntimeLibrary)
+            if (shared.ExtraWarnings != other.ExtraWarnings)
             {
-                shared.RuntimeLibrary = null;
+                shared.ExtraWarnings = null;
             }
-            if (shared.WarningLevel != other.WarningLevel)
+            if (shared.Pedantic != other.Pedantic)
             {
-                shared.WarningLevel = null;
+                shared.Pedantic = null;
             }
         }
 
         public static void
         Delta(
-            this VisualCCommon.ICommonCompilerSettings delta,
-            VisualCCommon.ICommonCompilerSettings lhs,
-            VisualCCommon.ICommonCompilerSettings rhs)
+            this ClangCommon.ICommonCompilerSettings delta,
+            ClangCommon.ICommonCompilerSettings lhs,
+            ClangCommon.ICommonCompilerSettings rhs)
         {
-            delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
-            delta.RuntimeLibrary = (lhs.RuntimeLibrary != rhs.RuntimeLibrary) ? lhs.RuntimeLibrary : null;
-            delta.WarningLevel = (lhs.WarningLevel != rhs.WarningLevel) ? lhs.WarningLevel : null;
+            delta.AllWarnings = (lhs.AllWarnings != rhs.AllWarnings) ? lhs.AllWarnings : null;
+            delta.ExtraWarnings = (lhs.ExtraWarnings != rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
+            delta.Pedantic = (lhs.Pedantic != rhs.Pedantic) ? lhs.Pedantic : null;
         }
 
         public static void
         Clone(
-            this VisualCCommon.ICommonCompilerSettings settings,
-            VisualCCommon.ICommonCompilerSettings other)
+            this ClangCommon.ICommonCompilerSettings settings,
+            ClangCommon.ICommonCompilerSettings other)
         {
-            settings.NoLogo = other.NoLogo;
-            settings.RuntimeLibrary = other.RuntimeLibrary;
-            settings.WarningLevel = other.WarningLevel;
+            settings.AllWarnings = other.AllWarnings;
+            settings.ExtraWarnings = other.ExtraWarnings;
+            settings.Pedantic = other.Pedantic;
         }
     }
 }

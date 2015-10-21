@@ -52,7 +52,7 @@ namespace PluginTest
     }
 
     public sealed class Plugin :
-        C.Cxx.DynamicLibrary
+        C.Cxx.Plugin
     {
         protected override void
         Init(
@@ -80,7 +80,7 @@ namespace PluginTest
             base.Init(parent);
 
             var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Plugin>(C.DynamicLibrary.Key, ".", app);
+            this.Include<Plugin>(C.Plugin.Key, ".", app);
         }
     }
 }

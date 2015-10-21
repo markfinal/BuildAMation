@@ -27,26 +27,38 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace XcodeBuilder
+namespace ClangCommon
 {
-    public sealed class XcodeStaticLibrary :
-        XcodeCommonProject
+    public static partial class XcodeCompilerImplementation
     {
-        public XcodeStaticLibrary(
+        public static void
+        Convert(
+            this ClangCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module,
-            Bam.Core.TokenizedString libraryPath) :
-            base(module, libraryPath, Type.StaticLibrary)
+            XcodeBuilder.Configuration configuration)
         {
-            var library = this.Project.FindOrCreateFileReference(
-                libraryPath,
-                FileReference.EFileType.Archive,
-                explicitType:true,
-                sourceTree:FileReference.ESourceTree.BuiltProductsDir);
-            this.Output = library;
-            this.Project.ProductRefGroup.AddReference(library);
-            this.Target = this.Project.FindOrCreateTarget(module, library, Target.EProductType.StaticLibrary);
-            this.Configuration = this.Project.AddNewTargetConfiguration(module, Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"), this.Target);
-            this.PullInProjectPreOrPostBuildSteps();
+            if (settings.AllWarnings.HasValue)
+            {
+                if (settings.AllWarnings.Value)
+                {
+                    var warnings = new XcodeBuilder.MultiConfigurationValue();
+                    warnings.Add("-Wall");
+                    configuration["WARNING_CFLAGS"] = warnings;
+                }
+            }
+            if (settings.ExtraWarnings.HasValue)
+            {
+                if (settings.ExtraWarnings.Value)
+                {
+                    var warnings = new XcodeBuilder.MultiConfigurationValue();
+                    warnings.Add("-Wextra");
+                    configuration["WARNING_CFLAGS"] = warnings;
+                }
+            }
+            if (settings.Pedantic.HasValue)
+            {
+                configuration["GCC_WARN_PEDANTIC"] = new XcodeBuilder.UniqueConfigurationValue(settings.Pedantic.Value ? "YES" : "NO");
+            }
         }
     }
 }

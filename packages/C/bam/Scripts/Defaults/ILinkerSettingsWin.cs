@@ -46,12 +46,14 @@ namespace C.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.ICommonLinkerSettingsWin shared,
-            C.ICommonLinkerSettingsWin lhs,
-            C.ICommonLinkerSettingsWin rhs)
+            C.ICommonLinkerSettingsWin other)
         {
-            shared.SubSystem = (lhs.SubSystem == rhs.SubSystem) ? lhs.SubSystem : null;
+            if (shared.SubSystem != other.SubSystem)
+            {
+                shared.SubSystem = null;
+            }
         }
 
         public static void

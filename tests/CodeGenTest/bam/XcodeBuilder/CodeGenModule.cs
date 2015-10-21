@@ -41,6 +41,10 @@ namespace CodeGenTest
         {
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(encapsulating);
+            var configuration = target.GetConfiguration(encapsulating);
+
             var command = new System.Text.StringBuilder();
             // recode the executable path for Xcode
             var xcodePath = encapsulating.CreateTokenizedString("$(packagebuilddir)/$(config)").Parse();
@@ -52,15 +56,10 @@ namespace CodeGenTest
 
             var commands = new Bam.Core.StringArray();
             commands.Add(command.ToString());
-            // TODO: this is not ideal
-            // the reason this happens is that this policy is being executed prior to the encapsulating
-            // module, and thus, the Xcode meta data doesn't exist for it
-            // since I know it's an application, I can do this
-            var application = new XcodeBuilder.XcodeProgram(encapsulating, encapsulating.GeneratedPaths[C.ConsoleApplication.Key]);
-            application.AddPreBuildCommands(commands);
+            target.AddPreBuildCommands(commands, configuration);
 
-            var compilerProject = (compiler as Bam.Core.Module).MetaData as XcodeBuilder.XcodeCommonProject;
-            application.RequiresProject(compilerProject);
+            var compilerTarget = workspace.EnsureTargetExists(compiler as Bam.Core.Module);
+            target.Requires(compilerTarget);
         }
     }
 }

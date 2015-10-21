@@ -39,12 +39,43 @@ namespace C
             Bam.Core.TokenizedString objectFilePath,
             Bam.Core.Module source)
         {
-            var objectFile = new XcodeBuilder.XcodeObjectFile(sender);
-            objectFile.Source = objectFile.Project.FindOrCreateFileReference(
-                source.GeneratedPaths[C.SourceFile.Key],
-                XcodeBuilder.FileReference.EFileType.SourceCodeC,
-                sourceTree:XcodeBuilder.FileReference.ESourceTree.Absolute);
-            objectFile.Output = objectFile.Project.FindOrCreateBuildFile(objectFilePath, objectFile.Source);
+            var encapsulating = sender.GetEncapsulatingReferencedModule();
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(encapsulating);
+
+            XcodeBuilder.FileReference.EFileType fileType;
+            if (sender is C.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeC;
+            }
+            else if (sender is C.Cxx.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeCxx;
+            }
+            else if (sender is C.ObjC.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjC;
+            }
+            else if (sender is C.ObjCxx.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjCxx;
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unknown object file type, {0}", sender.GetType().ToString());
+            }
+
+            sender.MetaData = target.EnsureSourceBuildFileExists(source.GeneratedPaths[C.SourceFile.Key], fileType);
+
+            // this is for stand-alone object files
+            if (encapsulating == sender || encapsulating == (sender as Bam.Core.IChildModule).Parent)
+            {
+                target.Type = XcodeBuilder.Target.EProductType.ObjFile;
+                var configuration = target.GetConfiguration(sender);
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+                (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
+            }
         }
     }
 }

@@ -34,21 +34,23 @@ namespace XcodeBuilder
     {
         public ContainerItemProxy(
             Project project,
-            Object reference)
+            Object portal,
+            Object reference,
+            bool inThisProject)
         {
             this.IsA = "PBXContainerItemProxy";
             this.Name = "PBXContainerItemProxy";
-            this.ContainerPortal = project;
-            this.ProxyType = 1; // TODO: what does this mean?
+            this.ContainerPortal = portal;
+            this.ProxyType = inThisProject ? 1 : 2;
             this.Remote = reference;
 
             project.ContainerItemProxies.AddUnique(this);
         }
 
-        private Object ContainerPortal
+        public Object ContainerPortal
         {
             get;
-            set;
+            private set;
         }
 
         private int ProxyType
@@ -57,10 +59,10 @@ namespace XcodeBuilder
             set;
         }
 
-        private Object Remote
+        public Object Remote
         {
             get;
-            set;
+            private set;
         }
 
         public override void
@@ -81,8 +83,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
-            var typeWithoutPBX = this.ContainerPortal.IsA.Substring(3);
-            text.AppendFormat("{0}containerPortal = {1} /* {2} object */;", indent2, this.ContainerPortal.GUID, typeWithoutPBX);
+            text.AppendFormat("{0}containerPortal = {1} /* {2} */;", indent2, this.ContainerPortal.GUID, this.ContainerPortal.Name);
             text.AppendLine();
             text.AppendFormat("{0}proxyType = {1};", indent2, this.ProxyType);
             text.AppendLine();

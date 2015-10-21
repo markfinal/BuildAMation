@@ -92,23 +92,43 @@ namespace C.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.ICommonCompilerSettings shared,
-            C.ICommonCompilerSettings lhs,
-            C.ICommonCompilerSettings rhs)
+            C.ICommonCompilerSettings other)
         {
-            shared.Bits = (lhs.Bits == rhs.Bits) ? lhs.Bits : null;
-            shared.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Intersect(rhs.PreprocessorDefines));
-            shared.IncludePaths = new Bam.Core.TokenizedStringArray(lhs.IncludePaths.Intersect(rhs.IncludePaths));
-            shared.SystemIncludePaths = new Bam.Core.TokenizedStringArray(lhs.SystemIncludePaths.Intersect(rhs.SystemIncludePaths));
-            shared.OutputType = (lhs.OutputType == rhs.OutputType) ? lhs.OutputType : null;
-            shared.DebugSymbols = (lhs.DebugSymbols == rhs.DebugSymbols) ? lhs.DebugSymbols : null;
-            shared.WarningsAsErrors = (lhs.WarningsAsErrors == rhs.WarningsAsErrors) ? lhs.WarningsAsErrors : null;
-            shared.Optimization = (lhs.Optimization == rhs.Optimization) ? lhs.Optimization : null;
-            shared.TargetLanguage = (lhs.TargetLanguage == rhs.TargetLanguage) ? lhs.TargetLanguage : null;
-            shared.OmitFramePointer = (lhs.OmitFramePointer == rhs.OmitFramePointer) ? lhs.OmitFramePointer : null;
-            shared.DisableWarnings = new Bam.Core.StringArray(lhs.DisableWarnings.Intersect(rhs.DisableWarnings));
-            shared.PreprocessorUndefines = new Bam.Core.StringArray(lhs.PreprocessorUndefines.Intersect(rhs.PreprocessorUndefines));
+            if (shared.Bits != other.Bits)
+            {
+                shared.Bits = null;
+            }
+            shared.PreprocessorDefines = new PreprocessorDefinitions(shared.PreprocessorDefines.Intersect(other.PreprocessorDefines));
+            shared.IncludePaths = new Bam.Core.TokenizedStringArray(shared.IncludePaths.Intersect(other.IncludePaths));
+            shared.SystemIncludePaths = new Bam.Core.TokenizedStringArray(shared.SystemIncludePaths.Intersect(other.SystemIncludePaths));
+            if (shared.OutputType != other.OutputType)
+            {
+                shared.OutputType = null;
+            }
+            if (shared.DebugSymbols != other.DebugSymbols)
+            {
+                shared.DebugSymbols = null;
+            }
+            if (shared.WarningsAsErrors != other.WarningsAsErrors)
+            {
+                shared.WarningsAsErrors = null;
+            }
+            if (shared.Optimization != other.Optimization)
+            {
+                shared.Optimization = null;
+            }
+            if (shared.TargetLanguage != other.TargetLanguage)
+            {
+                shared.TargetLanguage = null;
+            }
+            if (shared.OmitFramePointer != other.OmitFramePointer)
+            {
+                shared.OmitFramePointer = null;
+            }
+            shared.DisableWarnings = new Bam.Core.StringArray(shared.DisableWarnings.Intersect(other.DisableWarnings));
+            shared.PreprocessorUndefines = new Bam.Core.StringArray(shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines));
         }
 
         public static void
@@ -186,12 +206,11 @@ namespace C.DefaultSettings
         }
 
         public static void
-        SharedSettings(
+        Intersect(
             this C.IAdditionalSettings shared,
-            C.IAdditionalSettings lhs,
-            C.IAdditionalSettings rhs)
+            C.IAdditionalSettings other)
         {
-            shared.AdditionalSettings = new Bam.Core.StringArray(lhs.AdditionalSettings.Intersect(rhs.AdditionalSettings));
+            shared.AdditionalSettings = new Bam.Core.StringArray(shared.AdditionalSettings.Intersect(other.AdditionalSettings));
         }
 
         public static void

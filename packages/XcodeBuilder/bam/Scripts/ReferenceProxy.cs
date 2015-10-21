@@ -27,48 +27,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace XcodeBuilder
 {
-    public sealed class Group :
+    public sealed class ReferenceProxy :
         Object
     {
-        public Group(
-            string name = null) :
-            this(name, "<group>")
-        {}
-
-        private Group(
-            string name,
-            string sourceTree)
+        public ReferenceProxy(
+            Project project,
+            FileReference.EFileType fileType,
+            Bam.Core.TokenizedString path,
+            Object remoteRef,
+            FileReference.ESourceTree sourceTree)
         {
-            this.IsA = "PBXGroup";
-            this.Name = name;
-            this.Children = new System.Collections.Generic.List<Object>();
+            this.IsA = "PBXReferenceProxy";
+            this.Name = "PBXReferenceProxy";
+            this.FileType = fileType;
+            this.Path = path;
+            this.RemoteRef = remoteRef;
             this.SourceTree = sourceTree;
+
+            project.ReferenceProxies.AddUnique(this);
         }
 
-        public string SourceTree
+        public FileReference.EFileType FileType
         {
             get;
             private set;
         }
 
-        public System.Collections.Generic.List<Object> Children
+        public Bam.Core.TokenizedString Path
         {
             get;
             private set;
         }
 
-        public void
-        AddChild(
-            Object other)
+        public Object RemoteRef
         {
-            var existingRef = this.Children.Where(item => item.GUID == other.GUID).FirstOrDefault();
-            if (null == existingRef)
-            {
-                this.Children.Add(other);
-            }
+            get;
+            private set;
+        }
+
+        public FileReference.ESourceTree SourceTree
+        {
+            get;
+            private set;
         }
 
         public override void
@@ -78,7 +80,6 @@ namespace XcodeBuilder
         {
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
-            var indent3 = new string('\t', indentLevel + 2);
             if (null != this.Name)
             {
                 text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
@@ -90,24 +91,13 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
             text.AppendLine();
-            if (this.Children.Count > 0)
-            {
-                text.AppendFormat("{0}children = (", indent2);
-                text.AppendLine();
-                foreach (var child in this.Children)
-                {
-                    text.AppendFormat("{0}{1} /* {2} */,", indent3, child.GUID, child.Name);
-                    text.AppendLine();
-                }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
-            }
-            if (null != this.Name)
-            {
-                text.AppendFormat("{0}name = \"{1}\";", indent2, this.Name);
-                text.AppendLine();
-            }
-            text.AppendFormat("{0}sourceTree = \"{1}\";", indent2, this.SourceTree);
+            text.AppendFormat("{0}fileType = {1};", indent2, this.FileType.ToString());
+            text.AppendLine();
+            text.AppendFormat("{0}path = {1};", indent2, this.Path);
+            text.AppendLine();
+            text.AppendFormat("{0}remoteRef = {1} /* {2} */;", indent2, this.RemoteRef.GUID, this.RemoteRef.Name);
+            text.AppendLine();
+            text.AppendFormat("{0}sourceTree = {1};", indent2, this.SourceTree.ToString());
             text.AppendLine();
             text.AppendFormat("{0}}};", indent);
             text.AppendLine();
