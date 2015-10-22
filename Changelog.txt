@@ -1,3 +1,5 @@
+22-Oct-2015 Fixes #32. Linking in MakeFiles now uses the linker's ProcessLibraryDependency utility function, which in turn will use any required linker switches to handle the different kinds of dependency. For example, -Wl,-rpath-link is used for shared objects that depend on shared objects.
+
 21-Oct-2015 Fixes #35. Added support for Xcode sub-projects, that are needed for order only Target dependencies.
 
 21-Oct-2015 Fixes #36. Renamed 'SharedSettings' extension method on compiler interfaces to 'Intersect'. This now takes the 'common' settings object and one more to intersect with. This means that the common settings are always being involved in the intersection, so that it is now cumulative.
