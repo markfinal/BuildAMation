@@ -143,6 +143,16 @@ namespace C
             return child;
         }
 
+        // note that this is 'new' to hide the version in Bam.Core.Module
+        // C# does not support return type covariance (https://en.wikipedia.org/wiki/Covariant_return_type)
+        public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children
+        {
+            get
+            {
+                return new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType>(base.Children.Select(item => item as ChildModuleType).ToList());
+            }
+        }
+
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
