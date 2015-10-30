@@ -36,7 +36,8 @@ namespace Publisher
         public override void
         Evaluate()
         {
-            this.ReasonToExecute = null;
+            // always copy currently
+            //this.ReasonToExecute = null;
         }
     }
 }
