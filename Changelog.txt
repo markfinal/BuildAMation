@@ -1,3 +1,5 @@
+30-Oct-2015 Added GccCommon, ClangCommon and MingwCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic.
+
 30-Oct-2015 Added Children property override to C.CModuleContainer, honouring the module type stored within the container. This eliminates the need for useful casts while using the enumeration.
 
 30-Oct-2015 Fixes #41. The checks for whether an object file is up-to-date (evaluation) needed to also check whether the source file will be updated in this build, not just whether the timestamps already vary. This resolves object files not rebuilding when source files are procedurally generated.
@@ -13,8 +15,6 @@
 20-Oct-2015 Fixes #34. Updated Xcode project generation so that adding pre build steps for Xcode Targets that have yet to be processed themselves much simpler, but also more rigorous. Follows the design for VisualStudio projects.
 
 18-Oct-2015 Fixes #33. C.ICOnlyCompilerSettings.LanguageStandard now has a default set of c89. Previously this command line switch never appeared on supporting toolchain compilation lines.
-
-17-Oct-2015 Added GccCommon and ClangCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic.
 
 17-Oct-2015 Added VisualCCommon.ICommonCompilerSettings.WarningLevel setting. Defaults to Level1 as per the Microsoft documentation.
 
