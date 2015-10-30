@@ -43,7 +43,7 @@ namespace CodeGenTest
                 var generatedSourceFile = Bam.Core.Module.Create<GeneratedSourceModule>(module);
 
                 // compile source
-                var objFile = module.AddFile(GeneratedSourceModule.Key, generatedSourceFile);
+                var objFile = module.AddFile(generatedSourceFile);
 
                 return new System.Tuple<Bam.Core.Module, Bam.Core.Module>(generatedSourceFile, objFile);
             }

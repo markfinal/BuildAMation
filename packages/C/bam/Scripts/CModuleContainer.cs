@@ -31,12 +31,33 @@ using System.Linq;
 namespace C
 {
     public abstract class CModuleContainer<ChildModuleType> :
-        CModule,
+        CModule, // TODO: should this be here? it has no headers, nor version number
         Bam.Core.IModuleGroup,
         IAddFiles
         where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     {
         private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
+
+        private SourceFileType
+        CreateSourceFile<SourceFileType>(
+            string path,
+            Bam.Core.Module macroModuleOverride,
+            bool verbatim)
+            where SourceFileType : Bam.Core.Module, Bam.Core.IInputPath, new()
+        {
+            // explicitly make a source file
+            var sourceFile = Bam.Core.Module.Create<SourceFileType>();
+            if (verbatim)
+            {
+                sourceFile.InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
+            }
+            else
+            {
+                var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+                sourceFile.InputPath = macroModule.CreateTokenizedString(path);
+            }
+            return sourceFile;
+        }
 
         public ChildModuleType
         AddFile(
@@ -47,15 +68,25 @@ namespace C
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.Module.Create<ChildModuleType>(this);
-            if (verbatim)
+
+            if (child is IRequiresSourceModule)
             {
-                child.InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
+                var source = this.CreateSourceFile<SourceFile>(path, macroModuleOverride, verbatim);
+                (child as IRequiresSourceModule).Source = source;
             }
             else
             {
-                var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-                child.InputPath = macroModule.CreateTokenizedString(path);
+                if (verbatim)
+                {
+                    child.InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
+                }
+                else
+                {
+                    var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+                    child.InputPath = macroModule.CreateTokenizedString(path);
+                }
             }
+
             (child as Bam.Core.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);
@@ -89,28 +120,26 @@ namespace C
             var modulesCreated = new Bam.Core.Array<Bam.Core.Module>();
             foreach (var filepath in files)
             {
-                var fp = filepath;
-                modulesCreated.Add(this.AddFile(fp, verbatim: true));
+                modulesCreated.Add(this.AddFile(filepath, verbatim: true));
             }
             return modulesCreated;
         }
 
         public ChildModuleType
         AddFile(
-            Bam.Core.FileKey generatedFileKey,
-            Bam.Core.Module module,
+            SourceFile sourceModule,
             Bam.Core.Module.ModulePreInitDelegate preInitDlg = null)
         {
-            if (!module.GeneratedPaths.ContainsKey(generatedFileKey))
-            {
-                throw new Bam.Core.Exception("No generated path found with key '{0}'", generatedFileKey.Id);
-            }
             var child = Bam.Core.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
-            child.InputPath = module.GeneratedPaths[generatedFileKey];
+            var requiresSource = child as IRequiresSourceModule;
+            if (null == requiresSource)
+            {
+                throw new Bam.Core.Exception("Module type {0} does not implement the interface {1}", typeof(ChildModuleType).FullName, typeof(IRequiresSourceModule).FullName);
+            }
+            requiresSource.Source = sourceModule;
             (child as Bam.Core.IChildModule).Parent = this;
             this.children.Add(child);
             this.DependsOn(child);
-            child.DependsOn(module);
             return child;
         }
 
