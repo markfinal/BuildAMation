@@ -47,6 +47,13 @@ namespace Bam.Core
             base(input)
         { }
 
+        public
+        TokenizedStringArray(
+            params TokenizedString[] input)
+            :
+            base(input)
+        { }
+
         public void
         Add(
             string item)
