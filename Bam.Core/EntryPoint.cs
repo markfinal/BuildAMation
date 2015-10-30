@@ -60,6 +60,10 @@ namespace Bam.Core
 
             var graph = Graph.Instance;
             graph.Mode = State.BuildMode;
+            if (null == graph.Mode)
+            {
+                throw new Exception("Building mode has not been set");
+            }
 
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();
