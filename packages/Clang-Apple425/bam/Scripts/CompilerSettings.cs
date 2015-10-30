@@ -176,5 +176,11 @@ namespace Clang
             get;
             set;
         }
+
+        ClangCommon.EVisibility? ClangCommon.ICommonCompilerSettings.Visibility
+        {
+            get;
+            set;
+        }
     }
 }

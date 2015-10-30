@@ -27,14 +27,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace CodeGenTest
 {
-    public interface IAddFiles
+    public interface IGeneratedSourcePolicy
     {
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            string path,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null);
+        void
+        GenerateSource(
+            GeneratedSourceModule sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString generatedFilePath);
     }
 }

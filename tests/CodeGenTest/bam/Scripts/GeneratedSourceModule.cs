@@ -27,14 +27,48 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace CodeGenTest
 {
-    public interface IAddFiles
+    public class GeneratedSourceModule :
+        C.SourceFile
     {
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            string path,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null);
+        private Bam.Core.ICommandLineTool Compiler;
+        private IGeneratedSourcePolicy Policy;
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
+            this.Requires(this.Compiler as Bam.Core.Module);
+            this.GeneratedPaths[Key].Aliased(this.CreateTokenizedString("$(buildroot)/Generated.c"));
+        }
+
+        public override void
+        Evaluate()
+        {
+            this.ReasonToExecute = Bam.Core.ExecuteReasoning.Undefined();
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+            if (null == this.Policy)
+            {
+                return;
+            }
+
+            this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[Key]);
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            var className = "CodeGenTest." + mode + "GenerateSource";
+            this.Policy = Bam.Core.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
+        }
     }
 }

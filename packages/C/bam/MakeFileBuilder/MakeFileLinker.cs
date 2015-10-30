@@ -33,45 +33,6 @@ namespace C
     public sealed class MakeFileLinker :
         ILinkingPolicy
     {
-        private static Bam.Core.TokenizedString
-        GetLibraryPath(Bam.Core.Module module)
-        {
-            if (module is C.StaticLibrary)
-            {
-                return module.GeneratedPaths[C.StaticLibrary.Key];
-            }
-            else if (module is C.IDynamicLibrary)
-            {
-                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
-                }
-                else
-                {
-                    return module.GeneratedPaths[C.DynamicLibrary.Key];
-                }
-            }
-            else if (module is C.CSDKModule)
-            {
-                // collection of libraries, none in particular
-                return null;
-            }
-            else if (module is C.HeaderLibrary)
-            {
-                // no library
-                return null;
-            }
-            else if (module is ExternalFramework)
-            {
-                // dealt with elsewhere
-                return null;
-            }
-            else
-            {
-                throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
-            }
-        }
-
         void
         ILinkingPolicy.Link(
             ConsoleApplication sender,
@@ -82,18 +43,17 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
-            // TODO: modify to use ProcessLibraryDependency
+            // any libraries added prior to here, need to be moved to the end
+            // they are external dependencies, and thus all built modules (to be added now) may have
+            // a dependency on them (and not vice versa)
             var linker = sender.Settings as C.ICommonLinkerSettings;
-            // TODO: could the lib search paths be in the staticlibrary base class as a patch?
+            var externalLibs = linker.Libraries;
+            linker.Libraries = new Bam.Core.StringArray();
             foreach (var library in libraries)
             {
-                var fullLibraryPath = GetLibraryPath(library);
-                if (null == fullLibraryPath)
-                {
-                    continue;
-                }
-                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", fullLibraryPath));
+                (sender.Tool as C.LinkerTool).ProcessLibraryDependency(sender as CModule, library as CModule);
             }
+            linker.Libraries.AddRange(externalLibs);
 
             var commandLineArgs = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLineArgs);

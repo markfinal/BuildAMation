@@ -59,6 +59,10 @@ namespace ClangCommon
             {
                 configuration["GCC_WARN_PEDANTIC"] = new XcodeBuilder.UniqueConfigurationValue(settings.Pedantic.Value ? "YES" : "NO");
             }
+            if (settings.Visibility.HasValue)
+            {
+                configuration["GCC_SYMBOLS_PRIVATE_EXTERN"] = new XcodeBuilder.UniqueConfigurationValue((settings.Visibility.Value == EVisibility.Default) ? "NO" : "YES");
+            }
         }
     }
 }

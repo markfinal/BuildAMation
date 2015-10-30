@@ -35,7 +35,8 @@ namespace Mingw
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.ICxxOnlyCompilerSettings,
-        C.IAdditionalSettings
+        C.IAdditionalSettings,
+        MingwCommon.ICommonCompilerSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
@@ -154,6 +155,30 @@ namespace Mingw
         }
 
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        bool? MingwCommon.ICommonCompilerSettings.AllWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? MingwCommon.ICommonCompilerSettings.ExtraWarnings
+        {
+            get;
+            set;
+        }
+
+        bool? MingwCommon.ICommonCompilerSettings.Pedantic
+        {
+            get;
+            set;
+        }
+
+        MingwCommon.EVisibility? MingwCommon.ICommonCompilerSettings.Visibility
         {
             get;
             set;

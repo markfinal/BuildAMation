@@ -27,14 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+using Bam.Core;
+using CodeGenTest.CodeGenExtension;
+namespace CodeGenTest
 {
-    public interface IAddFiles
+    public sealed class TestApp :
+        C.ConsoleApplication
     {
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            string path,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null);
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer("$(packagedir)/source/testapp/main.c");
+
+            /*var generatedSourceTuple = */source.GenerateSource();
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+        }
     }
 }

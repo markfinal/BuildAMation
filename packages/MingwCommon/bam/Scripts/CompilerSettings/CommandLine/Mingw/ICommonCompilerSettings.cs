@@ -27,23 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace MingwCommon
 {
     public static partial class CommandLineImplementation
     {
         public static void
         Convert(
-            this GccCommon.ICommonCompilerSettings settings,
+            this MingwCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            if (settings.PositionIndependentCode.HasValue)
-            {
-                if (settings.PositionIndependentCode.Value)
-                {
-                    commandLine.Add("-fPIC");
-                }
-            }
             if (settings.AllWarnings.HasValue)
             {
                 if (settings.AllWarnings.Value)

@@ -122,10 +122,6 @@ namespace Bam.Core
                     return null;
                 }
 
-                if (null == Graph.Instance.Mode)
-                {
-                    throw new Exception("Building mode has not been set");
-                }
                 var module = new T();
                 if (preInitCallback != null)
                 {

@@ -27,14 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace CodeGenTest
 {
-    public interface IAddFiles
+    namespace CodeGenExtension
     {
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            string path,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null);
+        public static class CodeGenExtension
+        {
+            public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
+            GenerateSource(
+                this C.CObjectFileCollection collection)
+            {
+                // generate source file
+                var generatedSourceFile = Bam.Core.Module.Create<GeneratedSourceModule>(collection);
+
+                // compile the generated source file
+                var objFile = collection.AddFile(generatedSourceFile);
+
+                // return both generated source, and the compiled object file
+                return new System.Tuple<Bam.Core.Module, Bam.Core.Module>(generatedSourceFile, objFile);
+            }
+        }
     }
 }

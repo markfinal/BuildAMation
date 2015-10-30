@@ -32,11 +32,12 @@ namespace C
     public class ObjectFile :
         CModule,
         Bam.Core.IChildModule,
-        Bam.Core.IInputPath
+        Bam.Core.IInputPath,
+        IRequiresSourceModule
     {
         private Bam.Core.Module Parent = null;
         private ICompilationPolicy Policy = null;
-        public SourceFile Source = null;
+        private SourceFile SourceModule;
 
         static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Compiled Object File");
 
@@ -48,25 +49,49 @@ namespace C
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
         }
 
+        SourceFile IRequiresSourceModule.Source
+        {
+            get
+            {
+                return this.SourceModule;
+            }
+
+            set
+            {
+                if (null != this.SourceModule)
+                {
+                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.Parse());
+                }
+                this.SourceModule = value;
+                this.DependsOn(value);
+                this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@basename($(0))$(objext)", value.GeneratedPaths[SourceFile.Key]);
+            }
+        }
+
         public Bam.Core.TokenizedString InputPath
         {
             get
             {
-                return this.Source.InputPath;
+                if (null == this.SourceModule)
+                {
+                    throw new Bam.Core.Exception("Source module not yet set on this object file");
+                }
+                return this.SourceModule.InputPath;
             }
             set
             {
+                if (null != this.SourceModule)
+                {
+                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.Parse());
+                }
+
                 // this cannot be a referenced module, since there will be more than one object
                 // of this type (generally)
                 // but this does mean there may be many instances of this 'type' of module
                 // and for multi-configuration builds there may be many instances of the same path
-                if (null == this.Source)
-                {
-                    this.Source = Bam.Core.Module.Create<SourceFile>();
-                    this.DependsOn(this.Source);
-                }
-                this.Source.InputPath = value;
-                this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@basename($(0))$(objext)", value);
+                var source = Bam.Core.Module.Create<SourceFile>();
+                source.InputPath = value;
+                (this as IRequiresSourceModule).Source = source;
             }
         }
 
@@ -98,7 +123,7 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var sourceFile = this.Source;
+            var sourceFile = this.SourceModule;
             var objectFile = this.GeneratedPaths[Key];
             this.Policy.Compile(this, context, objectFile, sourceFile);
         }
@@ -119,6 +144,7 @@ namespace C
             var factory = graph.MetaData as System.Threading.Tasks.TaskFactory;
             this.EvaluationTask = factory.StartNew(() =>
             {
+                // does the object file exist?
                 var objectFilePath = this.GeneratedPaths[Key].Parse();
                 if (!System.IO.File.Exists(objectFilePath))
                 {
@@ -127,6 +153,14 @@ namespace C
                 }
                 var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
 
+                // has the source file been evaluated to be rebuilt?
+                if ((this as IRequiresSourceModule).Source.ReasonToExecute != null)
+                {
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
+                    return;
+                }
+
+                // is the source file newer than the object file?
                 var sourcePath = this.InputPath.Parse();
                 var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
                 if (sourceWriteTime > objectFileWriteTime)

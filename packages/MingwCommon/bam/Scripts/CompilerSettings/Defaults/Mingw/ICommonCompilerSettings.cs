@@ -27,13 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace ClangCommon.DefaultSettings
+namespace MingwCommon.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(
-            this ClangCommon.ICommonCompilerSettings settings,
+            this MingwCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module)
         {
             settings.AllWarnings = false;
@@ -44,8 +44,8 @@ namespace ClangCommon.DefaultSettings
 
         public static void
         Intersect(
-            this ClangCommon.ICommonCompilerSettings shared,
-            ClangCommon.ICommonCompilerSettings other)
+            this MingwCommon.ICommonCompilerSettings shared,
+            MingwCommon.ICommonCompilerSettings other)
         {
             if (shared.AllWarnings != other.AllWarnings)
             {
@@ -67,9 +67,9 @@ namespace ClangCommon.DefaultSettings
 
         public static void
         Delta(
-            this ClangCommon.ICommonCompilerSettings delta,
-            ClangCommon.ICommonCompilerSettings lhs,
-            ClangCommon.ICommonCompilerSettings rhs)
+            this MingwCommon.ICommonCompilerSettings delta,
+            MingwCommon.ICommonCompilerSettings lhs,
+            MingwCommon.ICommonCompilerSettings rhs)
         {
             delta.AllWarnings = (lhs.AllWarnings != rhs.AllWarnings) ? lhs.AllWarnings : null;
             delta.ExtraWarnings = (lhs.ExtraWarnings != rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
@@ -79,8 +79,8 @@ namespace ClangCommon.DefaultSettings
 
         public static void
         Clone(
-            this ClangCommon.ICommonCompilerSettings settings,
-            ClangCommon.ICommonCompilerSettings other)
+            this MingwCommon.ICommonCompilerSettings settings,
+            MingwCommon.ICommonCompilerSettings other)
         {
             settings.AllWarnings = other.AllWarnings;
             settings.ExtraWarnings = other.ExtraWarnings;

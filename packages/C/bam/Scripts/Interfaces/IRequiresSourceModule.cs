@@ -29,12 +29,12 @@
 #endregion // License
 namespace C
 {
-    public interface IAddFiles
+    public interface IRequiresSourceModule
     {
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            string path,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null);
+        SourceFile Source
+        {
+            get;
+            set;
+        }
     }
 }

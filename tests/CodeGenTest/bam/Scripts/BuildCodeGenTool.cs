@@ -27,14 +27,53 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+using Bam.Core;
+namespace CodeGenTest
 {
-    public interface IAddFiles
+    public sealed class BuildCodeGenTool :
+        C.ConsoleApplication,
+        Bam.Core.ICommandLineTool
     {
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            string path,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null);
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateCSourceContainer("$(packagedir)/source/codegentool/main.c");
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+        }
+
+        public Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) where T : Bam.Core.Module
+        {
+            return new GeneratedSourceSettings();
+        }
+
+        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.List<string> InheritedEnvironmentVariables
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.TokenizedString Executable
+        {
+            get
+            {
+                return this.GeneratedPaths[C.ConsoleApplication.Key];
+            }
+        }
     }
 }

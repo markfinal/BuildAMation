@@ -91,7 +91,7 @@ namespace C
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null,
             Bam.Core.Module.PrivatePatchDelegate privatePatch = null)
-            where T : CModule, new()
+            where T : CModule, IAddFiles, new()
         {
             var source = Bam.Core.Module.Create<T>(this);
             if (null != privatePatch)
