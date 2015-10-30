@@ -1,3 +1,5 @@
+30-Oct-2015 Implemented Evaluate method on Publisher.CollatedSymbolicLink module to only make symbolic links when necessary. This will only execute when the symbolic link does not exist.
+
 30-Oct-2015 Implemented Evaluate method on Publisher.CollatedFile module to only copy files when necessary.
 
 30-Oct-2015 Added GccCommon, ClangCommon and MingwCommon ICommonCompilerSettings property: Visibility. These follow the EVisibility enumeration for the respective module, and default to EVisibility.Hidden. This means that only symbols with __attribute__((visibility("default"))) markup in shared objects will be exported. This is equivalent to the __declspec(dllexport) markup for VisualStudio.

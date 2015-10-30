@@ -71,6 +71,13 @@ namespace Publisher
         Evaluate()
         {
             this.ReasonToExecute = null;
+            var copiedPath = this.GeneratedPaths[CopiedObjectKey].Parse();
+            var exists = System.IO.File.Exists(copiedPath);
+            if (!exists)
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[CopiedObjectKey]);
+                return;
+            }
         }
     }
 }
