@@ -29,7 +29,7 @@
 #endregion // License
 namespace C
 {
-    interface IAddFiles
+    public interface IAddFiles
     {
         Bam.Core.Array<Bam.Core.Module>
         AddFiles(
