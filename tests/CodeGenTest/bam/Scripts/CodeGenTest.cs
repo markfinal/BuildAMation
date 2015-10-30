@@ -37,14 +37,15 @@ namespace CodeGenTest
         {
             public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
             GenerateSource(
-                this C.CObjectFileCollection module)
+                this C.CObjectFileCollection collection)
             {
-                // generated source file
-                var generatedSourceFile = Bam.Core.Module.Create<GeneratedSourceModule>(module);
+                // generate source file
+                var generatedSourceFile = Bam.Core.Module.Create<GeneratedSourceModule>(collection);
 
-                // compile source
-                var objFile = module.AddFile(generatedSourceFile);
+                // compile the generated source file
+                var objFile = collection.AddFile(generatedSourceFile);
 
+                // return both generated source, and the compiled object file
                 return new System.Tuple<Bam.Core.Module, Bam.Core.Module>(generatedSourceFile, objFile);
             }
         }
