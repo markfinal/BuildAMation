@@ -90,7 +90,7 @@ namespace Bam.Core
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var exists = System.IO.File.Exists(this.Executable.ToString());
+            var exists = System.IO.File.Exists(this.Executable.Parse());
             if (!exists)
             {
                 this.ReasonToExecute = ExecuteReasoning.FileDoesNotExist(this.Executable);
