@@ -144,6 +144,7 @@ namespace C
             var factory = graph.MetaData as System.Threading.Tasks.TaskFactory;
             this.EvaluationTask = factory.StartNew(() =>
             {
+                // does the object file exist?
                 var objectFilePath = this.GeneratedPaths[Key].Parse();
                 if (!System.IO.File.Exists(objectFilePath))
                 {
@@ -152,6 +153,14 @@ namespace C
                 }
                 var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
 
+                // has the source file been evaluated to be rebuilt?
+                if ((this as IRequiresSourceModule).Source.ReasonToExecute != null)
+                {
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
+                    return;
+                }
+
+                // is the source file newer than the object file?
                 var sourcePath = this.InputPath.Parse();
                 var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
                 if (sourceWriteTime > objectFileWriteTime)

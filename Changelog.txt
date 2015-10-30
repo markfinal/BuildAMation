@@ -1,3 +1,5 @@
+30-Oct-2015 Fixes #41. The checks for whether an object file is up-to-date (evaluation) needed to also check whether the source file will be updated in this build, not just whether the timestamps already vary. This resolves object files not rebuilding when source files are procedurally generated.
+
 30-Oct-2015 Adding an explicit module into a C container, now requires that module to be a C.SourceFile or derived from that. This is beneficial when the source is procedurally generated, as it simplifies the steps required. Also cleaned up the mechanism for creating C.SourceFiles when adding to a container by path.
 
 22-Oct-2015 Fixes #32. Linking in MakeFiles now uses the linker's ProcessLibraryDependency utility function, which in turn will use any required linker switches to handle the different kinds of dependency. For example, -Wl,-rpath-link is used for shared objects that depend on shared objects.
