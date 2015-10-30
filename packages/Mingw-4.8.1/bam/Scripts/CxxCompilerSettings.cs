@@ -177,5 +177,11 @@ namespace Mingw
             get;
             set;
         }
+
+        MingwCommon.EVisibility? MingwCommon.ICommonCompilerSettings.Visibility
+        {
+            get;
+            set;
+        }
     }
 }

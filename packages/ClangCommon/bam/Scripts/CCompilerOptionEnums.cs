@@ -27,34 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace MingwCommon
+namespace ClangCommon
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    public enum EVisibility
     {
-        bool? AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? ExtraWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? Pedantic
-        {
-            get;
-            set;
-        }
-
-        EVisibility? Visibility
-        {
-            get;
-            set;
-        }
+        Default,
+        Internal,
+        Hidden,
+        Protected
     }
 }

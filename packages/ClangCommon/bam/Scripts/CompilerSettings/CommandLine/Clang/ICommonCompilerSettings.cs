@@ -58,6 +58,26 @@ namespace ClangCommon
                     commandLine.Add("-pedantic");
                 }
             }
+            if (settings.Visibility.HasValue)
+            {
+                switch (settings.Visibility.Value)
+                {
+                case EVisibility.Default:
+                    commandLine.Add("-fvisibility=default");
+                    break;
+                case EVisibility.Hidden:
+                    commandLine.Add("-fvisibility=hidden");
+                    break;
+                case EVisibility.Internal:
+                    commandLine.Add("-fvisibility=internal");
+                    break;
+                case EVisibility.Protected:
+                    commandLine.Add("-fvisibility=protected");
+                    break;
+                default:
+                    throw new Bam.Core.Exception("Unrecognized visibility, {0}", settings.Visibility.Value.ToString());
+                }
+            }
         }
     }
 }

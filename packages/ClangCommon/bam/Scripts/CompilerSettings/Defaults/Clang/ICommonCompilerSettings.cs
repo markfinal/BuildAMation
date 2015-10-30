@@ -39,6 +39,7 @@ namespace ClangCommon.DefaultSettings
             settings.AllWarnings = false;
             settings.ExtraWarnings = false;
             settings.Pedantic = false;
+            settings.Visibility = EVisibility.Hidden;
         }
 
         public static void
@@ -58,6 +59,10 @@ namespace ClangCommon.DefaultSettings
             {
                 shared.Pedantic = null;
             }
+            if (shared.Visibility != other.Visibility)
+            {
+                shared.Visibility = null;
+            }
         }
 
         public static void
@@ -69,6 +74,7 @@ namespace ClangCommon.DefaultSettings
             delta.AllWarnings = (lhs.AllWarnings != rhs.AllWarnings) ? lhs.AllWarnings : null;
             delta.ExtraWarnings = (lhs.ExtraWarnings != rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
             delta.Pedantic = (lhs.Pedantic != rhs.Pedantic) ? lhs.Pedantic : null;
+            delta.Visibility = (lhs.Visibility != rhs.Visibility) ? lhs.Visibility : null;
         }
 
         public static void
@@ -79,6 +85,7 @@ namespace ClangCommon.DefaultSettings
             settings.AllWarnings = other.AllWarnings;
             settings.ExtraWarnings = other.ExtraWarnings;
             settings.Pedantic = other.Pedantic;
+            settings.Visibility = other.Visibility;
         }
     }
 }

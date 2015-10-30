@@ -40,6 +40,53 @@ namespace GccCommon.DefaultSettings
             settings.AllWarnings = false;
             settings.ExtraWarnings = false;
             settings.Pedantic = false;
+            settings.Visibility = EVisibility.Hidden;
+        }
+
+        public static void
+        Intersect(
+            this GccCommon.ICommonCompilerSettings shared,
+            GccCommon.ICommonCompilerSettings other)
+        {
+            if (shared.AllWarnings != other.AllWarnings)
+            {
+                shared.AllWarnings = null;
+            }
+            if (shared.ExtraWarnings != other.ExtraWarnings)
+            {
+                shared.ExtraWarnings = null;
+            }
+            if (shared.Pedantic != other.Pedantic)
+            {
+                shared.Pedantic = null;
+            }
+            if (shared.Visibility != other.Visibility)
+            {
+                shared.Visibility = null;
+            }
+        }
+
+        public static void
+        Delta(
+            this GccCommon.ICommonCompilerSettings delta,
+            GccCommon.ICommonCompilerSettings lhs,
+            GccCommon.ICommonCompilerSettings rhs)
+        {
+            delta.AllWarnings = (lhs.AllWarnings != rhs.AllWarnings) ? lhs.AllWarnings : null;
+            delta.ExtraWarnings = (lhs.ExtraWarnings != rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
+            delta.Pedantic = (lhs.Pedantic != rhs.Pedantic) ? lhs.Pedantic : null;
+            delta.Visibility = (lhs.Visibility != rhs.Visibility) ? lhs.Visibility : null;
+        }
+
+        public static void
+        Clone(
+            this GccCommon.ICommonCompilerSettings settings,
+            GccCommon.ICommonCompilerSettings other)
+        {
+            settings.AllWarnings = other.AllWarnings;
+            settings.ExtraWarnings = other.ExtraWarnings;
+            settings.Pedantic = other.Pedantic;
+            settings.Visibility = other.Visibility;
         }
     }
 }

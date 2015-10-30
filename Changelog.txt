@@ -1,4 +1,6 @@
-30-Oct-2015 Added GccCommon, ClangCommon and MingwCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic.
+30-Oct-2015 Added GccCommon, ClangCommon and MingwCommon ICommonCompilerSettings property: Visibility. These follow the EVisibility enumeration for the respective module, and default to EVisibility.Hidden. This means that only symbols with __attribute__((visibility("default"))) markup in shared objects will be exported. This is equivalent to the __declspec(dllexport) markup for VisualStudio.
+
+30-Oct-2015 Added GccCommon, ClangCommon and MingwCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic. These are boolean properties and default to false.
 
 30-Oct-2015 Added Children property override to C.CModuleContainer, honouring the module type stored within the container. This eliminates the need for useful casts while using the enumeration.
 

@@ -50,5 +50,11 @@ namespace ClangCommon
             get;
             set;
         }
+
+        EVisibility? Visibility
+        {
+            get;
+            set;
+        }
     }
 }

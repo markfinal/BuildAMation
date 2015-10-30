@@ -38,6 +38,7 @@ namespace GccCommon
             get;
             set;
         }
+
         bool? AllWarnings
         {
             get;
@@ -51,6 +52,12 @@ namespace GccCommon
         }
 
         bool? Pedantic
+        {
+            get;
+            set;
+        }
+
+        EVisibility? Visibility
         {
             get;
             set;

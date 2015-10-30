@@ -164,5 +164,11 @@ namespace Gcc
             get;
             set;
         }
+
+        GccCommon.EVisibility? GccCommon.ICommonCompilerSettings.Visibility
+        {
+            get;
+            set;
+        }
     }
 }
