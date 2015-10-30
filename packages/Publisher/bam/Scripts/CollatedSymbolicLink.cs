@@ -66,5 +66,11 @@ namespace Publisher
             throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
 #endif
         }
+
+        public override void
+        Evaluate()
+        {
+            this.ReasonToExecute = null;
+        }
     }
 }
