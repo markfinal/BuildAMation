@@ -45,27 +45,40 @@ namespace Publisher
                 return;
             }
             var source = this.SourceModule;
-            if (null != source.EvaluationTask)
+            if (null != source)
             {
-                source.EvaluationTask.Wait();
-            }
-            if (null != source.ReasonToExecute)
-            {
-                if (source.ReasonToExecute.OutputFilePath.Equals(this.SourcePath))
+                if (null != source.EvaluationTask)
                 {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[CopiedObjectKey], this.SourcePath);
-                    return;
+                    source.EvaluationTask.Wait();
                 }
-                else
+                if (null != source.ReasonToExecute)
                 {
-                    // there may be multiple files used as a source of a copy - not just that file which was the primary build output
-                    var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
-                    var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
-                    if (sourceLastWriteTime > destinationLastWriteTime)
+                    if (source.ReasonToExecute.OutputFilePath.Equals(this.SourcePath))
                     {
                         this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[CopiedObjectKey], this.SourcePath);
                         return;
                     }
+                    else
+                    {
+                        // there may be multiple files used as a source of a copy - not just that file which was the primary build output
+                        var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
+                        var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
+                        if (sourceLastWriteTime > destinationLastWriteTime)
+                        {
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[CopiedObjectKey], this.SourcePath);
+                            return;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
+                var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
+                if (sourceLastWriteTime > destinationLastWriteTime)
+                {
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[CopiedObjectKey], this.SourcePath);
+                    return;
                 }
             }
         }
