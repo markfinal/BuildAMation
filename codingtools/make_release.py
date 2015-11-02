@@ -69,14 +69,10 @@ def CleanClone():
 
 
 def UpdateVersionNumbers(version):
-    for root, dirnames, filenames in os.walk(os.getcwd()):
-        for filename in fnmatch.filter(filenames, "AssemblyInfo.cs"):
-            assemblyInfoPath = os.path.join(root, filename)
-            print >>sys.stdout, assemblyInfoPath
-            sys.stdout.flush()
-            for line in fileinput.input(os.path.join(root, filename), inplace=1):#, backup='.bk'):
-                line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)', 'AssemblyInformationalVersion("%s")'%version, line.rstrip())
-                print line
+    commonAssemblyInfoPath = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
+    for line in fileinput.input(commonAssemblyInfoPath, inplace=1):#, backup='.bk'):
+        line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)', 'AssemblyInformationalVersion("%s")'%version, line.rstrip())
+        print line
 
 
 def Build():
