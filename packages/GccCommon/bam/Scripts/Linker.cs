@@ -48,7 +48,7 @@ namespace GccCommon
             // works for a single depth (up to the Module using this Tool) so this needs looking into
             this.Macros.AddVerbatim("linkernameext", ".so");
             this.Macros.Add("sonameext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion).$(MinorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion).$(MinorVersion).$(PatchVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".so");
         }

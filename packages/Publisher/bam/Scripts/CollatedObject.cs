@@ -63,14 +63,6 @@ namespace Publisher
             }
         }
 
-        public override void
-        Evaluate()
-        {
-            // TODO
-            // do nothing, always copy (currently)
-            // might be abstract
-        }
-
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)

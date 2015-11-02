@@ -66,5 +66,18 @@ namespace Publisher
             throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
 #endif
         }
+
+        public override void
+        Evaluate()
+        {
+            this.ReasonToExecute = null;
+            var copiedPath = this.GeneratedPaths[CopiedObjectKey].Parse();
+            var exists = System.IO.File.Exists(copiedPath);
+            if (!exists)
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[CopiedObjectKey]);
+                return;
+            }
+        }
     }
 }

@@ -1,3 +1,11 @@
+02-Nov-2015 Fixes #37. C builds expose PatchVersion (defaults to zero) in addition to MajorVersion and MinorVersion, so that package builds support semantic versioning. Note on Linux, a symbolic link of <lib>.so.<major>.<minor> is not created, as it does not serve a purpose at either link time or for the dynamic loader.
+
+02-Nov-2015 BuildAMation now uses semantic versioning (semver.org) for its version numbers.
+
+30-Oct-2015 Implemented Evaluate method on Publisher.CollatedSymbolicLink module to only make symbolic links when necessary. This will only execute when the symbolic link does not exist.
+
+30-Oct-2015 Implemented Evaluate method on Publisher.CollatedFile module to only copy files when necessary.
+
 30-Oct-2015 Added GccCommon, ClangCommon and MingwCommon ICommonCompilerSettings property: Visibility. These follow the EVisibility enumeration for the respective module, and default to EVisibility.Hidden. This means that only symbols with __attribute__((visibility("default"))) markup in shared objects will be exported. This is equivalent to the __declspec(dllexport) markup for VisualStudio.
 
 30-Oct-2015 Added GccCommon, ClangCommon and MingwCommon ICommonCompilerSettings properties: AllWarnings, ExtraWarnings and Pedantic. These are boolean properties and default to false.

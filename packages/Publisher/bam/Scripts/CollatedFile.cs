@@ -32,5 +32,55 @@ namespace Publisher
 {
     public sealed class CollatedFile :
         CollatedObject
-    { }
+    {
+        public override void
+        Evaluate()
+        {
+            this.ReasonToExecute = null;
+            var copiedPath = this.GeneratedPaths[CopiedObjectKey].Parse();
+            var exists = System.IO.File.Exists(copiedPath);
+            if (!exists)
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[CopiedObjectKey]);
+                return;
+            }
+            var source = this.SourceModule;
+            if (null != source)
+            {
+                if (null != source.EvaluationTask)
+                {
+                    source.EvaluationTask.Wait();
+                }
+                if (null != source.ReasonToExecute)
+                {
+                    if (source.ReasonToExecute.OutputFilePath.Equals(this.SourcePath))
+                    {
+                        this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[CopiedObjectKey], this.SourcePath);
+                        return;
+                    }
+                    else
+                    {
+                        // there may be multiple files used as a source of a copy - not just that file which was the primary build output
+                        var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
+                        var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
+                        if (sourceLastWriteTime > destinationLastWriteTime)
+                        {
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[CopiedObjectKey], this.SourcePath);
+                            return;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
+                var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
+                if (sourceLastWriteTime > destinationLastWriteTime)
+                {
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[CopiedObjectKey], this.SourcePath);
+                    return;
+                }
+            }
+        }
+    }
 }
