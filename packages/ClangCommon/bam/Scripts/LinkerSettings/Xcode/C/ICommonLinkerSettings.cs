@@ -56,7 +56,10 @@ namespace ClangCommon
                     {
                         configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(osxOpts.InstallName.Parse());
                     }
-                    var version = System.String.Format("{0}.{1}", module.Macros["MajorVersion"].Parse(), module.Macros["MinorVersion"].Parse());
+                    var version = System.String.Format("{0}.{1}.{2}",
+                        module.Macros["MajorVersion"].Parse(),
+                        module.Macros["MinorVersion"].Parse(),
+                        module.Macros["PatchVersion"].Parse());
                     configuration["DYLIB_CURRENT_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(version);
                     configuration["DYLIB_COMPATIBILITY_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(version);
                 }
