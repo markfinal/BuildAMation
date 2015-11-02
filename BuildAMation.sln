@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bam.Core", "Bam.Core\Bam.Co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2DA8001E-B419-44B4-BC51-7E0651EFCC72}"
 	ProjectSection(SolutionItems) = preProject
+		Common\BuildAMation.snk = Common\BuildAMation.snk
 		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
 	EndProjectSection
 EndProject

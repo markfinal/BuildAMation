@@ -12,7 +12,7 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <AssemblyOriginatorKeyFile>Bam.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Common\BuildAMation.snk</AssemblyOriginatorKeyFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
@@ -79,6 +79,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="bam">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Common\BuildAMation.snk">
+      <Link>BuildAMation.snk</Link>
     </None>
   </ItemGroup>
   <ItemGroup>

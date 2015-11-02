@@ -10,9 +10,9 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Bam.Core.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+    <AssemblyOriginatorKeyFile>..\Common\BuildAMation.snk</AssemblyOriginatorKeyFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
@@ -140,6 +140,9 @@
     <None Include="app.config" />
     <None Include="Schema\BamPackageDefinitionV1.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Common\BuildAMation.snk">
+      <Link>BuildAMation.snk</Link>
     </None>
   </ItemGroup>
   <ItemGroup>
