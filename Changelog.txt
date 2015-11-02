@@ -1,3 +1,5 @@
+02-Nov-2015 BuildAMation now uses semantic versioning (semver.org) for its version numbers.
+
 30-Oct-2015 Implemented Evaluate method on Publisher.CollatedSymbolicLink module to only make symbolic links when necessary. This will only execute when the symbolic link does not exist.
 
 30-Oct-2015 Implemented Evaluate method on Publisher.CollatedFile module to only copy files when necessary.

@@ -50,9 +50,14 @@ using System.Runtime.InteropServices;
 // Major.Minor.Build.Revision
 //
 // You can specify all the values or you can use the default the Revision and
-// Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyInformationalVersion("1.0")]
+// Build Numbers by using the '*' as shown below to atomically increase the AssemblyFileVersion attribute.
+// The AssemblyVersion does not iterate with builds, as this is used to identify references during builds.
+// AssemblyInformationalVersion is modified by the release procedure for any alpha/beta qualifications, and is used
+// in the 'product version' detail when inspecting an assembly, and also by "bam --version".
+// Semantic versioning (http://semver.org/) is used.
+[assembly: AssemblyVersion("1.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.*")]
+[assembly: AssemblyInformationalVersion("1.0.0")]
 
 // Because it exposes externally visible types.
 [assembly: CLSCompliant(true)]
