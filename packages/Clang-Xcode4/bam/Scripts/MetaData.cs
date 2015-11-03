@@ -41,8 +41,7 @@ namespace Clang
                 return;
             }
 
-            // TODO: these expected SDKs are incorrect for this version of Xcode
-            var expectedSDKs = new Bam.Core.StringArray("macosx10.9", "macosx10.10");
+            var expectedSDKs = new Bam.Core.StringArray("macosx10.7", "macosx10.8");
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
             if (!this.Contains("MinVersion"))
             {
