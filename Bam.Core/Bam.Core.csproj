@@ -88,7 +88,7 @@
     <Compile Include="Interfaces\IInputPath.cs" />
     <Compile Include="Interfaces\IModuleExecution.cs" />
     <Compile Include="Interfaces\IModuleGroup.cs" />
-    <Compile Include="Interfaces\IPackageMetaData.cs" />
+    <Compile Include="Interfaces\IPackageMetaDataConfigure.cs" />
     <Compile Include="Interfaces\ISetOperations.cs" />
     <Compile Include="Interfaces\ISettingsBase.cs" />
     <Compile Include="Interfaces\ISitePolicy.cs" />
@@ -121,6 +121,7 @@
     <Compile Include="Package\DotNetAssemblyDescription.cs" />
     <Compile Include="Package\PackageDefinition.cs" />
     <Compile Include="Package\PackageListResourceFile.cs" />
+    <Compile Include="Package\PackageMetaData.cs" />
     <Compile Include="Package\PackageUtilities.cs" />
     <Compile Include="Package\XmlResolver.cs" />
     <Compile Include="Platform.cs" />

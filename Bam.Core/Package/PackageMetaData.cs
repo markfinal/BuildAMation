@@ -27,37 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+using System.Linq;
+namespace Bam.Core
 {
-    public class MetaData :
-        Bam.Core.PackageMetaData
+    public abstract class PackageMetaData
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public MetaData()
+        protected PackageMetaData()
         {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
+            var thisType = this.GetType();
+            var configureInterfaceType = typeof(IPackageMetaDataConfigure<>).MakeGenericType(thisType);
+            var metaType = State.ScriptAssembly.GetTypes().Where(item => configureInterfaceType.IsAssignableFrom(item)).FirstOrDefault();
+            if (null == metaType)
             {
                 return;
             }
-
-            // TODO: some installations may not have a suffix - need to confirm
-            this.Meta.Add("ToolSuffix", "-4.8.1");
+            var configureInstance = System.Activator.CreateInstance(metaType);
+            var configureMethod = configureInterfaceType.GetMethod("Configure", new[] { thisType });
+            configureMethod.Invoke(configureInstance, new[] { this });
         }
 
-        public override object this[string index]
+        public abstract object this[string index]
         {
-            get
-            {
-                return this.Meta[index];
-            }
+            get;
         }
 
-        public override bool
+        public abstract bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index);
     }
 }

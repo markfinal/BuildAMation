@@ -86,10 +86,21 @@ namespace Bam.Core
             foreach (var package in graph.Packages)
             {
                 var ns = package.Name;
-                var metaType = State.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(IPackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
+                var metaType = State.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(PackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
                 if (null != metaType)
                 {
-                    package.MetaData = System.Activator.CreateInstance(metaType) as IPackageMetaData;
+                    try
+                    {
+                        package.MetaData = System.Activator.CreateInstance(metaType) as PackageMetaData;
+                    }
+                    catch (Exception exception)
+                    {
+                        throw exception;
+                    }
+                    catch (System.Reflection.TargetInvocationException exception)
+                    {
+                        throw new Exception(exception, "Failed to create package metadata");
+                    }
                 }
             }
 

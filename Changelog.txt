@@ -1,3 +1,5 @@
+03-Nov-2015 Bam.Core.IPackageMetaData is now an abstract class called Bam.Core.PackageMetaData. This is because it now has a protected constructor, which looks for any class derived from Bam.Core.IPackageMetaDataConfigure<package meta data type>, and invokes the Configure method on it. This is to allow user packages to hook into package metadata construction, before the default implementation.
+
 02-Nov-2015 Fixes #37. C builds expose PatchVersion (defaults to zero) in addition to MajorVersion and MinorVersion, so that package builds support semantic versioning. Note on Linux, a symbolic link of <lib>.so.<major>.<minor> is not created, as it does not serve a purpose at either link time or for the dynamic loader.
 
 02-Nov-2015 BuildAMation now uses semantic versioning (semver.org) for its version numbers.

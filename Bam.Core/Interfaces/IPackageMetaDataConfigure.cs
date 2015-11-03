@@ -29,15 +29,10 @@
 #endregion // License
 namespace Bam.Core
 {
-    public interface IPackageMetaData
+    public interface IPackageMetaDataConfigure<MetaDataType>
     {
-        object this[string index]
-        {
-            get;
-        }
-
-        bool
-        Contains(
-            string index);
+        void
+        Configure(
+            MetaDataType instance);
     }
 }

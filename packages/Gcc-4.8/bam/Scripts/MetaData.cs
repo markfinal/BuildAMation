@@ -30,7 +30,7 @@
 namespace Gcc
 {
     public class MetaData :
-        Bam.Core.IPackageMetaData
+        Bam.Core.PackageMetaData
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
 
@@ -73,7 +73,7 @@ namespace Gcc
             }
         }
 
-        object Bam.Core.IPackageMetaData.this[string index]
+        public override object this[string index]
         {
             get
             {
@@ -81,7 +81,8 @@ namespace Gcc
             }
         }
 
-        bool Bam.Core.IPackageMetaData.Contains(
+        public override bool
+        Contains(
             string index)
         {
             return this.Meta.ContainsKey(index);

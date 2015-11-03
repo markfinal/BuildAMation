@@ -1088,7 +1088,7 @@ namespace Bam.Core
             }
         }
 
-        public IPackageMetaData MetaData
+        public PackageMetaData MetaData
         {
             get;
             set;
