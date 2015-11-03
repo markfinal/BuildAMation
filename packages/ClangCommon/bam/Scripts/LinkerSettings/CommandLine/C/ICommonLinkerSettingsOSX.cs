@@ -46,6 +46,29 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-F {0}", path.Parse()));
             }
+            if (null != options.InstallName)
+            {
+                if (module is C.IDynamicLibrary)
+                {
+                    commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", options.InstallName.Parse()));
+                }
+            }
+            if (options.MinimumVersionSupported != null)
+            {
+                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
+                var match = minVersionRegEx.Match(options.MinimumVersionSupported);
+                if (!match.Groups["Type"].Success)
+                {
+                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", options.MinimumVersionSupported);
+                }
+                if (!match.Groups["Version"].Success)
+                {
+                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", options.MinimumVersionSupported);
+                }
+                commandLine.Add(System.String.Format("-m{0}-version-min={1}",
+                    match.Groups["Type"].Value,
+                    match.Groups["Version"].Value));
+            }
         }
     }
 }

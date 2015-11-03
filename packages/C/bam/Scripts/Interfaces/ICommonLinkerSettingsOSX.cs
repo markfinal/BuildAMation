@@ -50,5 +50,11 @@ namespace C
             get;
             set;
         }
+
+        string MinimumVersionSupported
+        {
+            get;
+            set;
+        }
     }
 }

@@ -46,6 +46,8 @@ namespace ClangCommon
                 }
                 configuration["FRAMEWORK_SEARCH_PATHS"] = paths;
             }
+            // options.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference
+            // between compiler and linker setting in the project
         }
     }
 }

@@ -1,3 +1,5 @@
+03-Nov-2015 Fixes #43. The Clang package metadata now exposes a MinimumVersionSupported property, to define the oldest version of MacOSX the build can run on. This defaults to the SDK version if not overridden by the user in a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This value is used both for compilation and linking.
+
 03-Nov-2015 Added generic function Bam.Core.Graph.PackageMetaData<meta type>(package name) to fetch the meta data instance for the named package, if it exists. This simplifies calling code, and avoids the need for use Linq in that code.
 
 03-Nov-2015 Fixes #44. Clang packages now have metadata with an SDK property (type: string), which is the SDK name to use. The default SDK is used (from 'xcrun --show-sdk-version') if not overridden by the user, using a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This SDK name is passed to each xcrun command, which is used in turn by each command xcrun executes.

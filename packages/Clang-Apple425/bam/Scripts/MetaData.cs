@@ -44,6 +44,10 @@ namespace Clang
             // TODO: these expected SDKs are incorrect for this version of Xcode
             var expectedSDKs = new Bam.Core.StringArray("macosx10.9", "macosx10.10");
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
+            if (!this.Contains("MinVersion"))
+            {
+                this.MinimumVersionSupported = this.SDK;
+            }
         }
 
         public override object this[string index]
@@ -71,6 +75,19 @@ namespace Clang
             set
             {
                 this.Meta["SDK"] = value;
+            }
+        }
+
+        public string MinimumVersionSupported
+        {
+            get
+            {
+                return this.Meta["MinVersion"] as string;
+            }
+
+            set
+            {
+                this.Meta["MinVersion"] = value;
             }
         }
     }

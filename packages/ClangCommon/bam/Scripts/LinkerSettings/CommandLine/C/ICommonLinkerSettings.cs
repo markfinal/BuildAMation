@@ -47,11 +47,6 @@ namespace ClangCommon
                 {
                     commandLine.Add("-dynamiclib");
                     commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    var osxOpts = settings as C.ICommonLinkerSettingsOSX;
-                    if (null != osxOpts.InstallName)
-                    {
-                        commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", osxOpts.InstallName.Parse()));
-                    }
 
                     var version = System.String.Format("{0}.{1}.{2}",
                         module.Macros["MajorVersion"].Parse(),

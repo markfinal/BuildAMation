@@ -52,6 +52,10 @@ namespace Clang
             bool useDefaults)
         {
             this.InitializeAllInterfaces(module, true, useDefaults);
+
+            // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
+            (this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported =
+                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
         }
 
         void
@@ -161,6 +165,12 @@ namespace Clang
         }
 
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettingsOSX.FrameworkSearchPaths
+        {
+            get;
+            set;
+        }
+
+        string C.ICommonCompilerSettingsOSX.MinimumVersionSupported
         {
             get;
             set;

@@ -52,6 +52,10 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsOSX other)
         {
             shared.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(shared.FrameworkSearchPaths.Intersect(other.FrameworkSearchPaths));
+            if (shared.MinimumVersionSupported != other.MinimumVersionSupported)
+            {
+                shared.MinimumVersionSupported = null;
+            }
         }
 
         public static void
@@ -61,6 +65,7 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsOSX rhs)
         {
             delta.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(lhs.FrameworkSearchPaths.Except(rhs.FrameworkSearchPaths));
+            delta.MinimumVersionSupported = (lhs.MinimumVersionSupported != rhs.MinimumVersionSupported) ? lhs.MinimumVersionSupported : null;
         }
 
         public static void
@@ -72,6 +77,7 @@ namespace C.DefaultSettings
             {
                 settings.FrameworkSearchPaths.AddUnique(path);
             }
+            settings.MinimumVersionSupported = other.MinimumVersionSupported.Clone() as string;
         }
     }
 }
