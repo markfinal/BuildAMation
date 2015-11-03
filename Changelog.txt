@@ -1,3 +1,5 @@
+03-Nov-2015 Renamed Clang-Apple600 package to Clang-Xcode6, targeting SDKs 10.9 and 10.10.
+
 03-Nov-2015 Renamed Clang-Apple503 package to Clang-Xcode5, targeting SDKs 10.8 and 10.9.
 
 03-Nov-2015 Renamed Clang-Apple425 package to Clang-Xcode4.

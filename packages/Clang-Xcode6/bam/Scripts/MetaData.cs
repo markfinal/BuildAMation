@@ -27,9 +27,67 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-[assembly: Bam.Core.RegisterToolset("clang", typeof(Clang.Toolset))]
-
 namespace Clang
 {
-    // Add modules here
+    public sealed class MetaData :
+        Bam.Core.PackageMetaData
+    {
+        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+
+        public MetaData()
+        {
+            if (!Bam.Core.OSUtilities.IsOSXHosting)
+            {
+                return;
+            }
+
+            var expectedSDKs = new Bam.Core.StringArray("macosx10.9", "macosx10.10");
+            this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
+            if (!this.Contains("MinVersion"))
+            {
+                this.MinimumVersionSupported = this.SDK;
+            }
+        }
+
+        public override object this[string index]
+        {
+            get
+            {
+                return this.Meta[index];
+            }
+        }
+
+        public override bool
+        Contains(
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
+        }
+
+        public string SDK
+        {
+            get
+            {
+                return this.Meta["SDK"] as string;
+            }
+
+            set
+            {
+                this.Meta["SDK"] = value;
+            }
+        }
+
+        public string MinimumVersionSupported
+        {
+            get
+            {
+                return this.Meta["MinVersion"] as string;
+            }
+
+            set
+            {
+                this.Meta["MinVersion"] = value;
+            }
+        }
+    }
 }
