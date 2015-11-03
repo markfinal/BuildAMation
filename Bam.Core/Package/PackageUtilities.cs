@@ -262,6 +262,13 @@ namespace Bam.Core
                     var toRemove = new Array<PackageDefinition>();
                     foreach (var masterDep in masterDependency)
                     {
+                        // if the duplicate has been resolved, mark all future package versions as removed
+                        if (resolvedDuplicate)
+                        {
+                            toRemove.Add(packageDefinitions.Where(item => item.Name == masterDep.Item1 && item.Version == masterDep.Item2).First());
+                            continue;
+                        }
+
                         // guaranteed that at most one instance of the dependency is marked as default
                         if (masterDep.Item3.HasValue && masterDep.Item3.Value)
                         {
@@ -269,9 +276,6 @@ namespace Bam.Core
                         }
                         else
                         {
-                            // TODO: check whether a command line argument of
-                            // --<packagename>.Version=<default>
-                            // has been supplied
                             foreach (var specifier in packageVersionSpecifiers)
                             {
                                 if (!specifier.Contains(dupName))
@@ -285,6 +289,7 @@ namespace Bam.Core
                                 }
                             }
 
+                            // if a duplicate has not been resolved, remove this version
                             if (!resolvedDuplicate)
                             {
                                 toRemove.Add(packageDefinitions.Where(item => item.Name == masterDep.Item1 && item.Version == masterDep.Item2).First());
