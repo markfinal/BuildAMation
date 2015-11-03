@@ -3,7 +3,7 @@
   <Description>Test to exercise the logic in creating delta settings between C object files</Description>
   <Dependents>
     <Package name="C" />
-    <Package name="Clang" version="Apple425" />
+    <Package name="Clang" version="Xcode4" />
     <Package name="Gcc" version="4.8" />
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="12.0" />

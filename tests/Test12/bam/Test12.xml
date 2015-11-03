@@ -2,7 +2,7 @@
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="Test12" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
   <Dependents>
     <Package name="C" />
-    <Package name="Clang" version="Apple425" />
+    <Package name="Clang" version="Xcode4" />
     <Package name="Gcc" version="4.8" />
     <Package name="MakeFileBuilder" />
     <Package name="Mingw" version="4.8.1" />
