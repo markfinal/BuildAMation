@@ -64,8 +64,8 @@ namespace C
         GetIDName()
         {
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = "otool";
-            processStartInfo.Arguments = "-DX " + this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse();
+            processStartInfo.FileName = "xcrun";
+            processStartInfo.Arguments = "otool -DX " + this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse();
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.UseShellExecute = false;
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);

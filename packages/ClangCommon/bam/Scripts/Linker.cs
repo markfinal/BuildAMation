@@ -32,18 +32,15 @@ namespace ClangCommon
     public abstract class LinkerBase :
         C.LinkerTool
     {
-        public LinkerBase(
-            string executablePath)
+        protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+
+        protected LinkerBase()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.AddVerbatim("exeext", string.Empty);
             this.Macros.AddVerbatim("dynamicprefix", "lib");
             this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".$(MajorVersion).dylib", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".dylib");
-
-            // TODO: pass executablePath as a tokenized string (verbatim) and use as a positional token
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.Create("$(InstallPath)/" + executablePath, this));
         }
 
         private static string
@@ -83,7 +80,15 @@ namespace ClangCommon
         {
             get
             {
-                return this.Macros["LinkerPath"];
+                return Bam.Core.TokenizedString.CreateVerbatim("xcrun");
+            }
+        }
+
+        public override Bam.Core.TokenizedStringArray InitialArguments
+        {
+            get
+            {
+                return this.arguments;
             }
         }
     }
@@ -93,9 +98,10 @@ namespace ClangCommon
     public sealed class Linker :
         LinkerBase
     {
-        public Linker() :
-            base("clang")
-        {}
+        public Linker()
+        {
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
+        }
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
@@ -111,9 +117,10 @@ namespace ClangCommon
     public sealed class LinkerCxx :
         LinkerBase
     {
-        public LinkerCxx() :
-            base("clang++")
-        {}
+        public LinkerCxx()
+        {
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
+        }
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
