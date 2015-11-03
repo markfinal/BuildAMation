@@ -75,5 +75,13 @@ namespace CodeGenTest
                 return this.GeneratedPaths[C.ConsoleApplication.Key];
             }
         }
+
+        public Bam.Core.TokenizedStringArray InitialArguments
+        {
+            get
+            {
+                return null;
+            }
+        }
     }
 }

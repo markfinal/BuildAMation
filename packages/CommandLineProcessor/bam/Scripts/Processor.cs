@@ -37,21 +37,10 @@ namespace CommandLineProcessor
             Bam.Core.ExecutionContext context,
             Bam.Core.ICommandLineTool tool,
             Bam.Core.StringArray commandLine,
-            string hostApplication = null,
             string workingDirectory = null)
         {
-            var executablePath = tool.Executable.Parse();
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            if (null != hostApplication)
-            {
-                processStartInfo.Arguments = executablePath + " ";
-                executablePath = hostApplication;
-            }
-            else
-            {
-                processStartInfo.Arguments = string.Empty;
-            }
-            processStartInfo.FileName = executablePath;
+            processStartInfo.FileName = tool.Executable.Parse();
             processStartInfo.ErrorDialog = true;
             if (null != workingDirectory)
             {
@@ -119,9 +108,18 @@ namespace CommandLineProcessor
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardInput = true;
 
-            processStartInfo.Arguments += commandLine.ToString(' ');
+            var linearized = new System.Text.StringBuilder();
+            if (tool.InitialArguments != null)
+            {
+                foreach (var arg in tool.InitialArguments)
+                {
+                    linearized.AppendFormat("{0} ", arg.Parse());
+                }
+            }
+            linearized.Append(commandLine.ToString(' '));
+            processStartInfo.Arguments = linearized.ToString();
 
-            Bam.Core.Log.Detail("{0} {1}", executablePath, processStartInfo.Arguments);
+            Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
 
             // useful debugging of the command line processor
             Bam.Core.Log.DebugMessage("Working directory: '{0}'", processStartInfo.WorkingDirectory);
@@ -163,7 +161,7 @@ namespace CommandLineProcessor
             if (exitCode != 0)
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Command failed: {0} {1}", executablePath, processStartInfo.Arguments);
+                message.AppendFormat("Command failed: {0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
                 message.AppendLine();
                 message.AppendFormat("Command exit code: {0}", exitCode);
                 message.AppendLine();
