@@ -1,3 +1,5 @@
+03-Nov-2015 Renamed Clang-Apple503 package to Clang-Xcode5, targeting SDKs 10.8 and 10.9.
+
 03-Nov-2015 Renamed Clang-Apple425 package to Clang-Xcode4.
 
 03-Nov-2015 Fixes #43. The Clang package metadata now exposes a MinimumVersionSupported property, to define the oldest version of MacOSX the build can run on. This defaults to the SDK version if not overridden by the user in a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This value is used both for compilation and linking. Although these are exposed in compiler and linker settings, this is purely for ease of conversion to command lines.

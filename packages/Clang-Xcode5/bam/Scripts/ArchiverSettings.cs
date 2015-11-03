@@ -29,26 +29,56 @@
 #endregion // License
 namespace Clang
 {
-    public sealed partial class CxxCompilerOptionCollection :
-        CCompilerOptionCollection,
-        C.ICxxCompilerOptions
+    public class ArchiverSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        // TODO: Xcode translation
+        C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
+        ClangCommon.ICommonArchiverSettings
     {
-        public
-        CxxCompilerOptionCollection(
-            Bam.Core.DependencyNode owningNode) : base(owningNode)
-        {}
-
-        protected override void
-        SetDefaultOptionValues(
-            Bam.Core.DependencyNode node)
+        public ArchiverSettings(
+            Bam.Core.Module module)
         {
-            base.SetDefaultOptionValues(node);
+             this.InitializeAllInterfaces(module, false, true);
+        }
 
-            var cInterfaceOptions = this as C.ICCompilerOptions;
-            cInterfaceOptions.TargetLanguage = C.ETargetLanguage.Cxx;
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineArchiverImplementation), this, module, commandLine);
+        }
 
-            var cxxInterfaceOptions = this as C.ICxxCompilerOptions;
-            cxxInterfaceOptions.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        bool ClangCommon.ICommonArchiverSettings.Ranlib
+        {
+            get;
+            set;
+        }
+
+        bool ClangCommon.ICommonArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        ClangCommon.EArchiverCommand ClangCommon.ICommonArchiverSettings.Command
+        {
+            get;
+            set;
         }
     }
 }
