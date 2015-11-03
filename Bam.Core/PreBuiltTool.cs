@@ -66,10 +66,17 @@ namespace Bam.Core
             private set;
         }
 
-        // TODO: is this on an interface? not all tools will be based on running an executable
         public abstract TokenizedString Executable
         {
             get;
+        }
+
+        public virtual TokenizedStringArray InitialArguments
+        {
+            get
+            {
+                return null;
+            }
         }
 
         protected override void

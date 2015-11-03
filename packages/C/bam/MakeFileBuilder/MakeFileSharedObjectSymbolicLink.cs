@@ -44,13 +44,14 @@ namespace C
             var makeMeta = sender.MetaData as MakeFileBuilder.MakeFileMeta;
             var rule = makeMeta.Rules[0];
 
-            var commandLine = new Bam.Core.StringArray();
-            commandLine.Add("-s");
-            commandLine.Add("-f");
+            var commandLineArgs = new Bam.Core.StringArray();
+            commandLineArgs.Add("-s");
+            commandLineArgs.Add("-f");
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} $(notdir $@) $(dir $@)/{2}",
+            rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $(notdir $@) $(dir $@)/{3}",
                 tool.Executable,
-                commandLine.ToString(' '),
+                (tool.InitialArguments != null) ? tool.InitialArguments.ToString(' ') : string.Empty,
+                commandLineArgs.ToString(' '),
                 linkname.Parse()));
         }
     }

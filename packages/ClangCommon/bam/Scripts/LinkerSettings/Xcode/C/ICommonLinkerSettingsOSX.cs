@@ -68,6 +68,15 @@ namespace ClangCommon
                 }
                 configuration["FRAMEWORK_SEARCH_PATHS"] = option;
             }
+            if (null != options.InstallName)
+            {
+                if (module is C.IDynamicLibrary)
+                {
+                    configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(options.InstallName.Parse());
+                }
+            }
+            // options.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference
+            // between compiler and linker setting in the project
         }
     }
 }

@@ -27,27 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace ClangCommon
+using System.Linq;
+namespace Bam.Core
 {
-    public static partial class XcodeCompilerImplementation
+    public abstract class PackageMetaData
     {
-        public static void
-        Convert(
-            this C.ICommonCompilerSettingsOSX options,
-            Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration)
+        protected PackageMetaData()
         {
-            if (null != options.FrameworkSearchPaths)
+            var thisType = this.GetType();
+            var configureInterfaceType = typeof(IPackageMetaDataConfigure<>).MakeGenericType(thisType);
+            var metaType = State.ScriptAssembly.GetTypes().Where(item => configureInterfaceType.IsAssignableFrom(item)).FirstOrDefault();
+            if (null == metaType)
             {
-                var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.FrameworkSearchPaths)
-                {
-                    paths.Add(path.ToString());
-                }
-                configuration["FRAMEWORK_SEARCH_PATHS"] = paths;
+                return;
             }
-            // options.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference
-            // between compiler and linker setting in the project
+            var configureInstance = System.Activator.CreateInstance(metaType);
+            var configureMethod = configureInterfaceType.GetMethod("Configure", new[] { thisType });
+            configureMethod.Invoke(configureInstance, new[] { this });
         }
+
+        public abstract object this[string index]
+        {
+            get;
+        }
+
+        public abstract bool
+        Contains(
+            string index);
     }
 }

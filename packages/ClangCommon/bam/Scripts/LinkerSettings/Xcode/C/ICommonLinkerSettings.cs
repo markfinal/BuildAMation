@@ -51,11 +51,7 @@ namespace ClangCommon
                     configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicprefix"].Parse());
                     configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(System.IO.Path.GetExtension(module.Tool.Macros["dynamicext"].Parse()).TrimStart(new [] {'.'}));
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.UniqueConfigurationValue("mh_dylib");
-                    var osxOpts = settings as C.ICommonLinkerSettingsOSX;
-                    if (null != osxOpts.InstallName)
-                    {
-                        configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(osxOpts.InstallName.Parse());
-                    }
+
                     var version = System.String.Format("{0}.{1}.{2}",
                         module.Macros["MajorVersion"].Parse(),
                         module.Macros["MinorVersion"].Parse(),

@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace MingwCommon
 {
     public abstract class CompilerBase :
@@ -37,9 +36,8 @@ namespace MingwCommon
         {
             this.InheritedEnvironmentVariables.Add("TEMP");
 
-            var mingwPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Mingw").First();
-            var suffix = mingwPackage.MetaData["ToolSuffix"] as string;
-            this.Macros.AddVerbatim("CompilerSuffix", suffix);
+            var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+            this.Macros.AddVerbatim("CompilerSuffix", mingwMeta.ToolSuffix);
 
             this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));

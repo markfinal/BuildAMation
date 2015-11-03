@@ -30,7 +30,7 @@
 namespace VisualC
 {
     public class MetaData :
-        Bam.Core.IPackageMetaData,
+        Bam.Core.PackageMetaData,
         VisualCCommon.IRuntimeLibraryPathMeta
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
@@ -47,7 +47,7 @@ namespace VisualC
             this.Meta.Add("PlatformToolset", "v120");
         }
 
-        object Bam.Core.IPackageMetaData.this[string index]
+        public override object this[string index]
         {
             get
             {
@@ -55,10 +55,29 @@ namespace VisualC
             }
         }
 
-        bool Bam.Core.IPackageMetaData.Contains(
+        public override bool
+        Contains(
             string index)
         {
             return this.Meta.ContainsKey(index);
+        }
+
+        public string
+        InstallDir
+        {
+            get
+            {
+                return this.Meta["InstallDir"] as string;
+            }
+        }
+
+        public string
+        PlatformToolset
+        {
+            get
+            {
+                return this.Meta["PlatformToolset"] as string;
+            }
         }
 
         Bam.Core.TokenizedString

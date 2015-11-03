@@ -1,3 +1,15 @@
+03-Nov-2015 Fixes #43. The Clang package metadata now exposes a MinimumVersionSupported property, to define the oldest version of MacOSX the build can run on. This defaults to the SDK version if not overridden by the user in a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This value is used both for compilation and linking. Although these are exposed in compiler and linker settings, this is purely for ease of conversion to command lines.
+
+03-Nov-2015 Added generic function Bam.Core.Graph.PackageMetaData<meta type>(package name) to fetch the meta data instance for the named package, if it exists. This simplifies calling code, and avoids the need for use Linq in that code.
+
+03-Nov-2015 Fixes #44. Clang packages now have metadata with an SDK property (type: string), which is the SDK name to use. The default SDK is used (from 'xcrun --show-sdk-version') if not overridden by the user, using a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This SDK name is passed to each xcrun command, which is used in turn by each command xcrun executes.
+
+03-Nov-2015 OSX tools from the Xcode developer installation, e.g. clang, install_name_tool, otool, ar, ld, etc, are now executed through the use of 'xcrun'. Currently, the SDK and toolchain used, are as those set by xcode-select. This change allows for future options for using different SDKs and toolchains.
+
+03-Nov-2015 Added property InitialArguments (type: Bam.Core.TokenizedStringArray) to Bam.Core.ICommandLineTool, which is tightly coupled with the Executable property. There are instanced of some tools that are a proxy to others, e.g. on Windows, the cmd executable can take a child executable name to run. When these tools are run, the command line is '<toolname> [<initial args>] <args from settings>'.
+
+03-Nov-2015 Bam.Core.IPackageMetaData is now an abstract class called Bam.Core.PackageMetaData. This is because it now has a protected constructor, which looks for any class derived from Bam.Core.IPackageMetaDataConfigure<package meta data type>, and invokes the Configure method on it. This is to allow user packages to hook into package metadata construction, before the default implementation.
+
 02-Nov-2015 Fixes #37. C builds expose PatchVersion (defaults to zero) in addition to MajorVersion and MinorVersion, so that package builds support semantic versioning. Note on Linux, a symbolic link of <lib>.so.<major>.<minor> is not created, as it does not serve a purpose at either link time or for the dynamic loader.
 
 02-Nov-2015 BuildAMation now uses semantic versioning (semver.org) for its version numbers.

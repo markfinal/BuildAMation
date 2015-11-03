@@ -30,7 +30,7 @@
 namespace Mingw
 {
     public class MetaData :
-        Bam.Core.IPackageMetaData
+        Bam.Core.PackageMetaData
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
@@ -45,7 +45,7 @@ namespace Mingw
             this.Meta.Add("ToolSuffix", "-4.8.1");
         }
 
-        object Bam.Core.IPackageMetaData.this[string index]
+        public override object this[string index]
         {
             get
             {
@@ -53,10 +53,20 @@ namespace Mingw
             }
         }
 
-        bool Bam.Core.IPackageMetaData.Contains(
+        public override bool
+        Contains(
             string index)
         {
             return this.Meta.ContainsKey(index);
+        }
+
+        public string
+        ToolSuffix
+        {
+            get
+            {
+                return this.Meta["ToolSuffix"] as string;
+            }
         }
     }
 }

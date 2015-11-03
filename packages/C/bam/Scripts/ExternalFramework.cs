@@ -63,9 +63,13 @@ namespace C
         private void
         GetIDName()
         {
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = "otool";
-            processStartInfo.Arguments = "-DX " + this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse();
+            processStartInfo.FileName = "xcrun";
+            processStartInfo.Arguments = System.String.Format("--sdk {0} otool -DX {1}",
+                clangMeta.SDK,
+                this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse());
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.UseShellExecute = false;
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);

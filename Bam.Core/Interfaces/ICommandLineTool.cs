@@ -46,5 +46,10 @@ namespace Bam.Core
         {
             get;
         }
+
+        TokenizedStringArray InitialArguments
+        {
+            get;
+        }
     }
 }

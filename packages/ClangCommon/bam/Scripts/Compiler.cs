@@ -32,17 +32,29 @@ namespace ClangCommon
     public abstract class CompilerBase :
         C.CompilerTool
     {
+        protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+
         protected CompilerBase()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
             this.Macros.AddVerbatim("objext", ".o");
+
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
         }
 
         public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return this.Macros["CompilerPath"];
+                return Bam.Core.TokenizedString.CreateVerbatim("xcrun");
+            }
+        }
+
+        public override Bam.Core.TokenizedStringArray InitialArguments
+        {
+            get
+            {
+                return this.arguments;
             }
         }
     }
@@ -54,7 +66,7 @@ namespace ClangCommon
     {
         public CCompiler()
         {
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang"));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
         }
 
         public override Bam.Core.Settings
@@ -73,7 +85,7 @@ namespace ClangCommon
     {
         public CxxCompiler()
         {
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang++"));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
         }
 
         public override Bam.Core.Settings
@@ -92,7 +104,7 @@ namespace ClangCommon
     {
         public ObjectiveCCompiler()
         {
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang"));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
         }
 
         public override Bam.Core.Settings
@@ -111,7 +123,7 @@ namespace ClangCommon
     {
         public ObjectiveCxxCompiler()
         {
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString("$(InstallPath)/clang++"));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
         }
 
         public override Bam.Core.Settings

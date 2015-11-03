@@ -34,12 +34,16 @@ namespace ClangCommon
     public sealed class Librarian :
         C.LibrarianTool
     {
+        private Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+
         public Librarian()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("ar"));
+
             this.Macros.AddVerbatim("libprefix", "lib");
             this.Macros.AddVerbatim("libext", ".a");
-            this.Macros.Add("LibrarianPath", this.CreateTokenizedString("$(InstallPath)/ar"));
         }
 
         public override Bam.Core.Settings
@@ -54,7 +58,15 @@ namespace ClangCommon
         {
             get
             {
-                return this.Macros["LibrarianPath"];
+                return Bam.Core.TokenizedString.CreateVerbatim("xcrun");
+            }
+        }
+
+        public override Bam.Core.TokenizedStringArray InitialArguments
+        {
+            get
+            {
+                return this.arguments;
             }
         }
     }

@@ -27,19 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace ClangCommon
+namespace Bam.Core
 {
-    public static class Configure
+    public interface IPackageMetaDataConfigure<MetaDataType>
     {
-        static Configure()
-        {
-            InstallPath = Bam.Core.TokenizedString.CreateVerbatim(@"/usr/bin");
-        }
-
-        public static Bam.Core.TokenizedString InstallPath
-        {
-            get;
-            private set;
-        }
+        void
+        Configure(
+            MetaDataType instance);
     }
 }

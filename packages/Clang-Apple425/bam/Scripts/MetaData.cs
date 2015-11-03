@@ -27,17 +27,68 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Bam.Core
+namespace Clang
 {
-    public interface IPackageMetaData
+    public sealed class MetaData :
+        Bam.Core.PackageMetaData
     {
-        object this[string index]
+        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+
+        public MetaData()
         {
-            get;
+            if (!Bam.Core.OSUtilities.IsOSXHosting)
+            {
+                return;
+            }
+
+            // TODO: these expected SDKs are incorrect for this version of Xcode
+            var expectedSDKs = new Bam.Core.StringArray("macosx10.9", "macosx10.10");
+            this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
+            if (!this.Contains("MinVersion"))
+            {
+                this.MinimumVersionSupported = this.SDK;
+            }
         }
 
-        bool
+        public override object this[string index]
+        {
+            get
+            {
+                return this.Meta[index];
+            }
+        }
+
+        public override bool
         Contains(
-            string index);
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
+        }
+
+        public string SDK
+        {
+            get
+            {
+                return this.Meta["SDK"] as string;
+            }
+
+            set
+            {
+                this.Meta["SDK"] = value;
+            }
+        }
+
+        public string MinimumVersionSupported
+        {
+            get
+            {
+                return this.Meta["MinVersion"] as string;
+            }
+
+            set
+            {
+                this.Meta["MinVersion"] = value;
+            }
+        }
     }
 }

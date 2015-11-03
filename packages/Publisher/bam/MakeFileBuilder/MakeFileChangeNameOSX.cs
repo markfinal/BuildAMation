@@ -46,8 +46,10 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} {2} {3} $@",
-                (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+            var tool = sender.Tool as Bam.Core.ICommandLineTool;
+            rule.AddShellCommand(System.String.Format(@"{0} {1} {2} {3} {4} $@",
+                tool.Executable.ToString(),
+                (tool.InitialArguments != null) ? tool.InitialArguments.ToString(' ') : string.Empty,
                 commandLine.ToString(' '),
                 oldName.Parse(),
                 newName.Parse()));

@@ -53,7 +53,10 @@ namespace C
 
             var tool = sender.Tool as Bam.Core.PreBuiltTool;
             var command = new System.Text.StringBuilder();
-            command.AppendFormat("{0} {1} $^", tool.Executable.ParseAndQuoteIfNecessary(), commandLineArgs.ToString(' '));
+            command.AppendFormat("{0} {1} {2} $^",
+                tool.Executable.ParseAndQuoteIfNecessary(),
+                (tool.InitialArguments != null) ? tool.InitialArguments.ToString(' ') : string.Empty,
+                commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());

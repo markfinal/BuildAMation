@@ -42,6 +42,10 @@ namespace Clang
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
+
+            // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
+            (this as C.ICommonLinkerSettingsOSX).MinimumVersionSupported =
+                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
         }
 
         void
@@ -103,6 +107,12 @@ namespace Clang
         }
 
         Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
+        {
+            get;
+            set;
+        }
+
+        string C.ICommonLinkerSettingsOSX.MinimumVersionSupported
         {
             get;
             set;

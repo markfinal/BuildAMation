@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace VSSolutionBuilder
 {
     // abstraction of a project configuration, consisting of platform and configuration
@@ -55,8 +54,8 @@ namespace VSSolutionBuilder
 
             this.Type = EType.NA;
 
-            var visualCPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "VisualC").First();
-            this.PlatformToolset = visualCPackage.MetaData["PlatformToolset"] as string;
+            var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.PlatformToolset = visualCMeta.PlatformToolset;
             this.UseDebugLibraries = false;
             this.CharacterSet = C.ECharacterSet.NotSet;
             this.WholeProgramOptimization = (module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug);
