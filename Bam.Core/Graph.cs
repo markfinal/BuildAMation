@@ -447,5 +447,18 @@ namespace Bam.Core
             get;
             set;
         }
+
+        public MetaDataType
+        PackageMetaData<MetaDataType>(
+            string packageName)
+            where MetaDataType : PackageMetaData
+        {
+            var package = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == packageName).FirstOrDefault();
+            if (null == package)
+            {
+                throw new Exception("Unable to locate package '{0}'", packageName);
+            }
+            return package.MetaData as MetaDataType;
+        }
     }
 }

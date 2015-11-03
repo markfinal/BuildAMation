@@ -1,3 +1,5 @@
+03-Nov-2015 Added generic function Bam.Core.Graph.PackageMetaData<meta type>(package name) to fetch the meta data instance for the named package, if it exists. This simplifies calling code, and avoids the need for use Linq in that code.
+
 03-Nov-2015 Fixes #44. Clang packages now have metadata with an SDK property (type: string), which is the SDK name to use. The default SDK is used (from 'xcrun --show-sdk-version') if not overridden by the user, using a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This SDK name is passed to each xcrun command, which is used in turn by each command xcrun executes.
 
 03-Nov-2015 OSX tools from the Xcode developer installation, e.g. clang, install_name_tool, otool, ar, ld, etc, are now executed through the use of 'xcrun'. Currently, the SDK and toolchain used, are as those set by xcode-select. This change allows for future options for using different SDKs and toolchains.
