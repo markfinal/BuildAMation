@@ -451,7 +451,7 @@ namespace Bam.Core
         public MetaDataType
         PackageMetaData<MetaDataType>(
             string packageName)
-            where MetaDataType : PackageMetaData
+            where MetaDataType : class
         {
             var package = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == packageName).FirstOrDefault();
             if (null == package)
