@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace C
 {
     public abstract class ExternalFramework :
@@ -64,8 +63,7 @@ namespace C
         private void
         GetIDName()
         {
-            var clangPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Clang").First();
-            var clangMeta = clangPackage.MetaData as Clang.MetaData;
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
 
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
             processStartInfo.FileName = "xcrun";

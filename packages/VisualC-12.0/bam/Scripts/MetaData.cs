@@ -62,6 +62,24 @@ namespace VisualC
             return this.Meta.ContainsKey(index);
         }
 
+        public string
+        InstallDir
+        {
+            get
+            {
+                return this.Meta["InstallDir"] as string;
+            }
+        }
+
+        public string
+        PlatformToolset
+        {
+            get
+            {
+                return this.Meta["PlatformToolset"] as string;
+            }
+        }
+
         Bam.Core.TokenizedString
         VisualCCommon.IRuntimeLibraryPathMeta.MSVCR(
             C.EBit depth)

@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace GccCommon
 {
     public abstract class CompilerBase :
@@ -35,8 +34,7 @@ namespace GccCommon
     {
         protected CompilerBase()
         {
-            var gccPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Gcc").First();
-            this.GccMetaData = gccPackage.MetaData as Gcc.MetaData;
+            this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             this.Macros.AddVerbatim("objext", ".o");
         }
 

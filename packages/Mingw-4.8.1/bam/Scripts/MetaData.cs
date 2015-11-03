@@ -59,5 +59,14 @@ namespace Mingw
         {
             return this.Meta.ContainsKey(index);
         }
+
+        public string
+        ToolSuffix
+        {
+            get
+            {
+                return this.Meta["ToolSuffix"] as string;
+            }
+        }
     }
 }

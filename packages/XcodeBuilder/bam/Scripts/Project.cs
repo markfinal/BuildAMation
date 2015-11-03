@@ -326,8 +326,7 @@ namespace XcodeBuilder
             this.AllConfigurations.Add(newConfig);
             configList.AddConfiguration(newConfig);
 
-            var clangPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Clang").First();
-            var clangMeta = clangPackage.MetaData as Clang.MetaData;
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
 
             // set which SDK to build against
             newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
