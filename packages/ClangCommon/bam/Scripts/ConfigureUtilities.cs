@@ -119,7 +119,7 @@ namespace ClangCommon
             string sdkType)
         {
             var defaultSDK = RunExecutable("xcrun", System.String.Format("--sdk {0} --show-sdk-version", sdkType));
-            return System.String.Format("{0}{1}", defaultSDK);
+            return System.String.Format("{0}{1}", sdkType, defaultSDK);
         }
 
         private static string
