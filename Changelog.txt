@@ -1,6 +1,8 @@
+03-Nov-2015 Fixes #44. Clang packages now have metadata with an SDK property (type: string), which is the SDK name to use. The default SDK is used (from 'xcrun --show-sdk-version') if not overridden by the user, using a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This SDK name is passed to each xcrun command, which is used in turn by each command xcrun executes.
+
 03-Nov-2015 OSX tools from the Xcode developer installation, e.g. clang, install_name_tool, otool, ar, ld, etc, are now executed through the use of 'xcrun'. Currently, the SDK and toolchain used, are as those set by xcode-select. This change allows for future options for using different SDKs and toolchains.
 
-03-Nov-2015 Added property InitialArguments (type Bam.Core.TokenizedStringArray) to Bam.Core.ICommandLineTool, which is tightly coupled with the Executable property. There are instanced of some tools that are a proxy to others, e.g. on Windows, the cmd executable can take a child executable name to run. When these tools are run, the command line is '<toolname> [<initial args>] <args from settings>'.
+03-Nov-2015 Added property InitialArguments (type: Bam.Core.TokenizedStringArray) to Bam.Core.ICommandLineTool, which is tightly coupled with the Executable property. There are instanced of some tools that are a proxy to others, e.g. on Windows, the cmd executable can take a child executable name to run. When these tools are run, the command line is '<toolname> [<initial args>] <args from settings>'.
 
 03-Nov-2015 Bam.Core.IPackageMetaData is now an abstract class called Bam.Core.PackageMetaData. This is because it now has a protected constructor, which looks for any class derived from Bam.Core.IPackageMetaDataConfigure<package meta data type>, and invokes the Configure method on it. This is to allow user packages to hook into package metadata construction, before the default implementation.
 

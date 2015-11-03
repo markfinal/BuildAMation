@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace ClangCommon
 {
     public abstract class CompilerBase :
@@ -37,6 +38,10 @@ namespace ClangCommon
         protected CompilerBase()
         {
             this.Macros.AddVerbatim("objext", ".o");
+
+            var clangPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Clang").First();
+            var clangMeta = clangPackage.MetaData as Clang.MetaData;
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
         }
 
         public override Bam.Core.TokenizedString Executable

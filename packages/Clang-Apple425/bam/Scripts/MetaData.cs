@@ -27,19 +27,51 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace ClangCommon
+namespace Clang
 {
-    public static class Configure
+    public sealed class MetaData :
+        Bam.Core.PackageMetaData
     {
-        static Configure()
+        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+
+        public MetaData()
         {
-            InstallPath = Bam.Core.TokenizedString.CreateVerbatim(@"/usr/bin");
+            if (!Bam.Core.OSUtilities.IsOSXHosting)
+            {
+                return;
+            }
+
+            // TODO: these expected SDKs are incorrect for this version of Xcode
+            var expectedSDKs = new Bam.Core.StringArray("macosx10.9", "macosx10.10");
+            this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
         }
 
-        public static Bam.Core.TokenizedString InstallPath
+        public override object this[string index]
         {
-            get;
-            private set;
+            get
+            {
+                return this.Meta[index];
+            }
+        }
+
+        public override bool
+        Contains(
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
+        }
+
+        public string SDK
+        {
+            get
+            {
+                return this.Meta["SDK"] as string;
+            }
+
+            set
+            {
+                this.Meta["SDK"] = value;
+            }
         }
     }
 }

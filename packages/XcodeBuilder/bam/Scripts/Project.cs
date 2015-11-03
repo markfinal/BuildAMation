@@ -302,6 +302,10 @@ namespace XcodeBuilder
             // if these are inconsistent the IDE shows the product in red
             projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
 
+            var clangPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Clang").First();
+            var clangMeta = clangPackage.MetaData as Clang.MetaData;
+            projectConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
+
             this.ConfigurationLists[0].AddConfiguration(projectConfig);
             this.AllConfigurations.Add(projectConfig);
             this.ProjectConfigurations.Add(config, projectConfig);

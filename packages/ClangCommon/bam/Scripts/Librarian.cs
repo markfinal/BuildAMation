@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace ClangCommon
 {
     [C.RegisterLibrarian("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -38,6 +39,9 @@ namespace ClangCommon
 
         public Librarian()
         {
+            var clangPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Clang").First();
+            var clangMeta = clangPackage.MetaData as Clang.MetaData;
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("ar"));
 
             this.Macros.AddVerbatim("libprefix", "lib");

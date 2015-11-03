@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     public abstract class ExternalFramework :
@@ -63,9 +64,14 @@ namespace C
         private void
         GetIDName()
         {
+            var clangPackage = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == "Clang").First();
+            var clangMeta = clangPackage.MetaData as Clang.MetaData;
+
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
             processStartInfo.FileName = "xcrun";
-            processStartInfo.Arguments = "otool -DX " + this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse();
+            processStartInfo.Arguments = System.String.Format("--sdk {0} otool -DX {1}",
+                clangMeta.SDK,
+                this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse());
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.UseShellExecute = false;
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
