@@ -298,11 +298,12 @@ namespace Bam.Core
                     else
                     {
                         var message = new System.Text.StringBuilder();
-                        message.AppendFormat("Unable resolve to a single version of package {0}", duplicates.First().Name);
+                        message.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve. Available versions of the package are:", duplicates.First().Name);
                         message.AppendLine();
                         foreach (var dup in duplicates)
                         {
-                            message.AppendLine(dup.FullName);
+                            message.AppendFormat("\t{0}", dup.Version);
+                            message.AppendLine();
                         }
                         throw new Exception(message.ToString());
                     }
