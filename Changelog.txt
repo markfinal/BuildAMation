@@ -1,3 +1,5 @@
+04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols and create a link to them from the original binary.
+
 04-Nov-2015 Added macro 'encapsulatingmodulename' to all Modules, once completed.
 
 03-Nov-2015 Added package Clang-Xcode7, targeting SDK 10.11. (Note that Xcode 7 does not include SDK 10.10.)
