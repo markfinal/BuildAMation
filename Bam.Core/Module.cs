@@ -517,6 +517,7 @@ namespace Bam.Core
             {
                 encapsulating = this.DependeesList[0].GetEncapsulatingReferencedModule();
             }
+            this.Macros.AddVerbatim("encapsulatingmodulename", encapsulating.GetType().Name);
             this.Macros.Add("encapsulatingbuilddir", encapsulating.Macros["packagebuilddir"]);
             return encapsulating;
         }
