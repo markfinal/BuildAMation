@@ -85,6 +85,20 @@ namespace Test5
         }
     }
 
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Linux)]
+    sealed class DebugSymbols :
+        Publisher.DebugSymbolCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateSymbolsFrom<RuntimePackage>();
+        }
+    }
+
     sealed class SDKPackage :
         Publisher.Collation
     {
