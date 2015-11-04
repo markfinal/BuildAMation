@@ -572,6 +572,15 @@ namespace Bam.Core
                 case "normalize":
                     return System.IO.Path.GetFullPath(argument);
 
+                case "changeextension":
+                    {
+                        var split = argument.Split(',');
+                        var original = split[0];
+                        var extension = split[1].Trim();
+                        var changed = System.IO.Path.ChangeExtension(original, extension);
+                        return changed;
+                    }
+
                 default:
                     throw new Exception("Unknown TokenizedString function, {0}", functionName);
             }
