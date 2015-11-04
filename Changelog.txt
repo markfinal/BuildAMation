@@ -1,4 +1,4 @@
-04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols and create a link to them from the original binary.
+04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols and create a link to them from the original binary. On OSX, dsymutil is invoked to create a dSYM bundle.
 
 04-Nov-2015 Added macro 'encapsulatingmodulename' to all Modules, once completed.
 

@@ -110,7 +110,12 @@ namespace Publisher
                 }
                 else if (Bam.Core.OSUtilities.IsOSXHosting)
                 {
-                    // TODO
+                    var createDebugSymbols = Bam.Core.Module.Create<DSymUtilModule>(preInitCallback: module =>
+                        {
+                            module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+                        });
+                    this.DependsOn(createDebugSymbols);
+                    createDebugSymbols.SourceModule = req;
                 }
             }
         }
