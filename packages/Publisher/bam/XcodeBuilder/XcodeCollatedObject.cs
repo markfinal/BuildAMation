@@ -73,7 +73,7 @@ namespace Publisher
                 var commands = new Bam.Core.StringArray();
                 commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
                 commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2}",
-                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     destinationPath));
 
@@ -105,7 +105,7 @@ namespace Publisher
                 }
 
                 commands.Add(System.String.Format("{0} {1} {2} {3}/{4}{5}",
-                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     isSymlink ? sender.Macros["LinkTarget"].Parse() : sourcePath.Parse(),
                     destinationFolder,

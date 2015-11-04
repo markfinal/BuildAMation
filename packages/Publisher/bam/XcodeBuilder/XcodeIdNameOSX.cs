@@ -53,7 +53,7 @@ namespace Publisher
             if (sender.Source.SourceModule != null && sender.Source.SourceModule.MetaData != null)
             {
                 commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
-                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     oldName.Parse(),
                     newName.Parse(),
@@ -72,7 +72,7 @@ namespace Publisher
                 }
 
                 commands.Add(System.String.Format("{0} {1} {2} {3}/{4}",
-                    (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     newName.Parse(),
                     destinationFolder,

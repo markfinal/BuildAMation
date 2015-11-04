@@ -32,6 +32,22 @@ namespace CommandLineProcessor
 {
     public static class Processor
     {
+        public static string
+        StringifyTool(
+            Bam.Core.ICommandLineTool tool)
+        {
+            var linearized = new System.Text.StringBuilder();
+            linearized.AppendFormat("{0}", tool.Executable.ParseAndQuoteIfNecessary());
+            if (tool.InitialArguments != null)
+            {
+                foreach (var arg in tool.InitialArguments)
+                {
+                    linearized.AppendFormat(" {0}", arg.Parse());
+                }
+            }
+            return linearized.ToString();
+        }
+
         public static void
         Execute(
             Bam.Core.ExecutionContext context,

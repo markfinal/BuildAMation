@@ -57,13 +57,18 @@ namespace Publisher
 
             if (isSymLink)
             {
-                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), sender.Macros["LinkTarget"].Parse()));
+                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    sender.Macros["LinkTarget"].Parse()));
             }
             else
             {
                 meta.CommonMetaData.Directories.AddUnique(sender.Macros["CopyDir"].Parse());
 
-                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' ')));
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' ')));
                 rule.AddPrerequisite(sourcePath);
             }
         }
