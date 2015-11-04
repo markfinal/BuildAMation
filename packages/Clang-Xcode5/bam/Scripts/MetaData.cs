@@ -41,6 +41,8 @@ namespace Clang
                 return;
             }
 
+            this.Meta.Add("LastUpgradeCheck", "0510");
+
             var expectedSDKs = new Bam.Core.StringArray("macosx10.8", "macosx10.9");
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
             if (!this.Contains("MinVersion"))
@@ -87,6 +89,14 @@ namespace Clang
             set
             {
                 this.Meta["MinVersion"] = value;
+            }
+        }
+
+        public string LastUpgradeCheck
+        {
+            get
+            {
+                return this.Meta["LastUpgradeCheck"] as string;
             }
         }
     }
