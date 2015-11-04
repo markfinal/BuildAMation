@@ -46,11 +46,14 @@ namespace C
         {
             base.Init(parent);
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"));
+            this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.RegisterGeneratedFile(PDBKey, this.MakePlaceholderPath());
+                if (this.Linker.Macros.Contains("pdbext"))
+                {
+                    this.RegisterGeneratedFile(PDBKey, this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
+                }
             }
-            this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             this.PrivatePatch(settings =>
             {
                 var linker = settings as C.ICommonLinkerSettings;

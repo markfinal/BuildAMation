@@ -85,22 +85,10 @@ namespace VisualC
             set;
         }
 
-        private bool? _DebugSymbols;
         bool? C.ICommonLinkerSettings.DebugSymbols
         {
-            get
-            {
-                return this._DebugSymbols;
-            }
-            set
-            {
-                this._DebugSymbols = value;
-                if (value.HasValue && value.Value)
-                {
-                    this.Module.GeneratedPaths[C.ConsoleApplication.PDBKey].Aliased(
-                        this.Module.CreateTokenizedString("@changeextension($(0), $(pdbext))", this.Module.GeneratedPaths[C.ConsoleApplication.Key]));
-                }
-            }
+            get;
+            set;
         }
 
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings

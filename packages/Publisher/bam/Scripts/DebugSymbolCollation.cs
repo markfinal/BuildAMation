@@ -79,24 +79,31 @@ namespace Publisher
                 }
                 if (Bam.Core.OSUtilities.IsWindowsHosting)
                 {
-                    var copyPDBModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+                    if (req.SourceModule.Tool.Macros.Contains("pdbext"))
                     {
-                        module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
-                        if (null != req.SubDirectory)
+                        var copyPDBModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
                         {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(DebugSymbolRoot)/$(0)/)", req.SubDirectory);
-                        }
-                        else
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(DebugSymbolRoot)/)");
-                        }
-                    });
-                    this.DependsOn(copyPDBModule);
+                            module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+                            if (null != req.SubDirectory)
+                            {
+                                module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(DebugSymbolRoot)/$(0)/)", req.SubDirectory);
+                            }
+                            else
+                            {
+                                module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(DebugSymbolRoot)/)");
+                            }
+                        });
+                        this.DependsOn(copyPDBModule);
 
-                    copyPDBModule.SourceModule = req.SourceModule;
-                    // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
-                    copyPDBModule.SourcePath = req.SourceModule.GeneratedPaths[C.ConsoleApplication.PDBKey];
-                    copyPDBModule.SubDirectory = req.SubDirectory;
+                        copyPDBModule.SourceModule = req.SourceModule;
+                        // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
+                        copyPDBModule.SourcePath = req.SourceModule.GeneratedPaths[C.ConsoleApplication.PDBKey];
+                        copyPDBModule.SubDirectory = req.SubDirectory;
+                    }
+                    else
+                    {
+                        // TODO: mingw can use objcopy
+                    }
                 }
                 else if (Bam.Core.OSUtilities.IsLinuxHosting)
                 {
