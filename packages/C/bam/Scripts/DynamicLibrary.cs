@@ -34,7 +34,7 @@ namespace C
         ConsoleApplication,
         IDynamicLibrary
     {
-        static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Import Library File");
+        static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Windows Import Library File");
 
         private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
         private SharedObjectSymbolicLinkTool SymlinkTool;
