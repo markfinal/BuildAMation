@@ -85,7 +85,6 @@ namespace Test5
         }
     }
 
-    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Linux | Bam.Core.EPlatform.OSX)]
     sealed class DebugSymbols :
         Publisher.DebugSymbolCollation
     {
