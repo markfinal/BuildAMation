@@ -41,7 +41,7 @@ namespace Clang
                 return;
             }
 
-            var expectedSDKs = new Bam.Core.StringArray("macosx10.10", "macosx10.11");
+            var expectedSDKs = new Bam.Core.StringArray("macosx10.11");
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
             if (!this.Contains("MinVersion"))
             {

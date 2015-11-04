@@ -1,4 +1,4 @@
-03-Nov-2015 Added package Clang-Xcode7, targeting SDKs 10.10 and 10.11.
+03-Nov-2015 Added package Clang-Xcode7, targeting SDK 10.11. (Note that Xcode 7 does not include SDK 10.10.)
 
 03-Nov-2015 Renamed Clang-Apple600 package to Clang-Xcode6, targeting SDKs 10.9 and 10.10.
 
