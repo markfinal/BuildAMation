@@ -32,7 +32,7 @@ namespace XcodeBuilder
     public static class EnumToStringExtensions
     {
         public static string
-        ToString(
+        AsString(
             this FileReference.EFileType type)
         {
             switch (type)
@@ -76,7 +76,7 @@ namespace XcodeBuilder
         }
 
         public static string
-        ToString(
+        AsString(
             this FileReference.ESourceTree sourceTree)
         {
             switch (sourceTree)
@@ -222,18 +222,6 @@ namespace XcodeBuilder
             this.Type = EFileType.ApplicationBundle;
         }
 
-        private string
-        FileTypeAsString()
-        {
-            return this.Type.ToString();
-        }
-
-        private string
-        SourceTreeAsString()
-        {
-            return this.SourceTree.ToString();
-        }
-
         public override void
         Serialize(
             System.Text.StringBuilder text,
@@ -245,11 +233,11 @@ namespace XcodeBuilder
             text.AppendFormat("{0}{1} /* {2} */ = {{isa = {3}; ", indent, this.GUID, leafname, this.IsA);
             if (this.ExplicitType)
             {
-                text.AppendFormat("explicitFileType = {0}; ", this.FileTypeAsString());
+                text.AppendFormat("explicitFileType = {0}; ", this.Type.AsString());
             }
             else
             {
-                text.AppendFormat("lastKnownFileType = {0}; ", this.FileTypeAsString());
+                text.AppendFormat("lastKnownFileType = {0}; ", this.Type.AsString());
             }
 
             text.AppendFormat("name = \"{0}\"; ", leafname);
@@ -272,7 +260,7 @@ namespace XcodeBuilder
             }
             text.AppendFormat("path = \"{0}\"; ", path);
 
-            text.AppendFormat("sourceTree = {0}; ", this.SourceTreeAsString());
+            text.AppendFormat("sourceTree = {0}; ", this.SourceTree.AsString());
             text.AppendFormat("}};");
             text.AppendLine();
         }
