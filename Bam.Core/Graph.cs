@@ -266,14 +266,17 @@ namespace Bam.Core
             // predicate required, because eventually there will be a module without a Tool, e.g. a Tool itself
             if (m.Tool != null)
             {
-                m.Requires(m.Tool);
-                var child = m as IChildModule;
-                if ((null == child) || (null == child.Parent))
+                if (null == m.Settings)
                 {
-                    // children inherit the settings from their parents
-                    m.UsePublicPatches(m.Tool);
+                    m.Requires(m.Tool);
+                    var child = m as IChildModule;
+                    if ((null == child) || (null == child.Parent))
+                    {
+                        // children inherit the settings from their parents
+                        m.UsePublicPatches(m.Tool);
+                    }
+                    m.Settings = (m.Tool as ITool).CreateDefaultSettings(m);
                 }
-                m.Settings = (m.Tool as ITool).CreateDefaultSettings(m);
             }
             if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
             {
