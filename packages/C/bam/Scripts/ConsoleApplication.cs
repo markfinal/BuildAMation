@@ -37,6 +37,7 @@ namespace C
         private ILinkingPolicy Policy = null;
 
         static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ExecutableFile");
+        static public Bam.Core.FileKey PDBKey = Bam.Core.FileKey.Generate("Windows Program DataBase File");
 
         protected override void
         Init(

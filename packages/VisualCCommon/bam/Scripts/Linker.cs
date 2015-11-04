@@ -47,6 +47,7 @@ namespace VisualCCommon
             this.Macros.AddVerbatim("pluginext", ".dll");
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");
+            this.Macros.AddVerbatim("pdbext", ".pdb");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
