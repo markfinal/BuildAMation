@@ -92,6 +92,13 @@ namespace Bam.Core
         }
 
         public void
+        AddRange(
+            System.Collections.Generic.IEnumerable<T> items)
+        {
+            this.list.AddRange(items);
+        }
+
+        public void
         AddRangeUnique(
             Array<T> array)
         {
