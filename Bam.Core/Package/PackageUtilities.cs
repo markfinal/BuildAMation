@@ -248,8 +248,9 @@ namespace Bam.Core
             PackageDefinition.ResolveDependencies(masterDefinitionFile, packageDefinitions, candidatePackageDefinitions);
 
             // now resolve any duplicate names using defaults
+            // unless duplicates are allowed
             var duplicatePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() > 1).Select(item => item.Key);
-            if (duplicatePackageNames.Count() > 0)
+            if ((duplicatePackageNames.Count() > 0) && !allowDuplicates)
             {
                 var versionSpeciferArgs = new PackageDefaultVersion();
                 var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
@@ -301,7 +302,7 @@ namespace Bam.Core
                     {
                         packageDefinitions.RemoveAll(toRemove);
                     }
-                    else if (!allowDuplicates)
+                    else
                     {
                         var message = new System.Text.StringBuilder();
                         message.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve. Available versions of the package are:", duplicates.First().Name);
