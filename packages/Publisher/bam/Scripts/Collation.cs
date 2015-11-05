@@ -272,7 +272,7 @@ namespace Publisher
                 copyFileModule.SourceModule.Macros["SOName"],
                 copyFileModule.Reference,
                 copyFileModule.SubDirectory);
-            copySymlink.LinkTarget(copySymlink.CreateTokenizedString("@filename($(0))", copyFileModule.SourcePath));
+            copySymlink.AssignLinkTarget(copySymlink.CreateTokenizedString("@filename($(0))", copyFileModule.SourcePath));
         }
 
         private bool
@@ -518,7 +518,7 @@ namespace Publisher
                         this.CreateTokenizedString("$(0)/$(1)", frameworkPath, symlink),
                         reference,
                         this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
-                    copySymlink.LinkTarget(symlinkData.DestinationPath);
+                    copySymlink.AssignLinkTarget(symlinkData.DestinationPath);
                     foreach (var publishedDir in dirPublishedModules)
                     {
                         copySymlink.Requires(publishedDir);

@@ -49,7 +49,7 @@ namespace Publisher
         }
 
         public void
-        LinkTarget(
+        AssignLinkTarget(
             TokenizedString path = null)
         {
 #if __MonoCS__
