@@ -174,6 +174,11 @@ namespace Publisher
                 {
                     continue;
                 }
+                var moduleIsPrebuilt = (source.GetType().GetCustomAttributes(typeof(C.PrebuiltAttribute), true).Length > 0);
+                if (moduleIsPrebuilt)
+                {
+                    continue;
+                }
                 if (Bam.Core.OSUtilities.IsWindowsHosting)
                 {
                     if (req.SourceModule.Tool.Macros.Contains("pdbext"))
