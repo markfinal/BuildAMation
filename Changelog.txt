@@ -6,7 +6,7 @@
 
 04-Nov-2015 Added TokenizedString function, @changeextension(a, b), which will change the file extension of file 'a', with the extension in 'b'.
 
-04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols and create a link to them from the original binary. On OSX, dsymutil is invoked to create a dSYM bundle. On Windows, PDB files are copied.
+04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols and create a link to them from the original binary. On OSX, dsymutil is invoked to create a dSYM bundle. On Windows, PDB files are copied if generated (intended for VisualStudio), otherwise objcopy is used (intended for Mingw).
 
 04-Nov-2015 Added macro 'encapsulatingmodulename' to all Modules, once completed.
 

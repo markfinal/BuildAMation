@@ -32,6 +32,25 @@ namespace Publisher
     public sealed class ObjCopyTool :
         Bam.Core.PreBuiltTool
     {
+        private Bam.Core.TokenizedString ExecutablePath;
+
+        public ObjCopyTool()
+        {
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+                if (null == mingwMeta)
+                {
+                    throw new Bam.Core.Exception("Unable to locate Mingw");
+                }
+                this.ExecutablePath = this.CreateTokenizedString("$(0)/bin/objcopy", mingwMeta["InstallDir"] as Bam.Core.TokenizedString);
+            }
+            else
+            {
+                this.ExecutablePath = Bam.Core.TokenizedString.CreateVerbatim("objcopy");
+            }
+        }
+
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
@@ -43,7 +62,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("objcopy");
+                return this.ExecutablePath;
             }
         }
 

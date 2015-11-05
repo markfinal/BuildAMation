@@ -182,7 +182,7 @@ namespace Publisher
                     }
                     else
                     {
-                        // TODO: mingw can use objcopy
+                        this.CopyDebugSymbolsAndLinkBack(req, referenceMap);
                     }
                 }
                 else if (Bam.Core.OSUtilities.IsLinuxHosting)
