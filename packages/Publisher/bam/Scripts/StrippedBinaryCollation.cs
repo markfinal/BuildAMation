@@ -76,6 +76,45 @@ namespace Publisher
             return stripBinary;
         }
 
+        private void
+        CopyFile(
+            CollatedObject collatedFile,
+            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
+        {
+            var copyFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+            {
+                module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+
+                Bam.Core.TokenizedString referenceFilePath = null;
+                if (collatedFile.Reference != null)
+                {
+                    if (!referenceMap.ContainsKey(collatedFile.Reference))
+                    {
+                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", collatedFile.Reference.SourceModule.ToString());
+                    }
+
+                    var newRef = referenceMap[collatedFile.Reference];
+                    referenceFilePath = newRef.GeneratedPaths[CollatedObject.CopiedObjectKey];
+                }
+
+                module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
+                    this,
+                    referenceFilePath,
+                    collatedFile.SubDirectory,
+                    module.Macros["StrippedRoot"]);
+            });
+            this.DependsOn(copyFile);
+
+            copyFile.SourceModule = collatedFile.SourceModule;
+            copyFile.SourcePath = collatedFile.SourcePath;
+            copyFile.SubDirectory = collatedFile.SubDirectory;
+
+            if (collatedFile.Reference == null)
+            {
+                referenceMap.Add(collatedFile, copyFile);
+            }
+        }
+
         public void
         StripBinariesFrom<RuntimeModule, DebugSymbolModule>()
             where RuntimeModule : Collation, new()
@@ -97,30 +136,54 @@ namespace Publisher
             var referenceMap = new System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module>();
             foreach (CollatedObject req in runtimeDependent.Requirements.Where(item => item is CollatedObject))
             {
-                // TODO: deal with all types
-                if (!(req is CollatedFile))
+                if (req is CollatedSymbolicLink)
                 {
-                    continue;
+                    // TODO: copy
                 }
-                var source = req.SourceModule;
-                if (!(source is C.ConsoleApplication))
+                else if (req is CollatedDirectory)
                 {
-                    // TODO: just copy
-                    continue;
+                    // TODO: copy
                 }
-                var moduleIsPrebuilt = (source.GetType().GetCustomAttributes(typeof(C.PrebuiltAttribute), true).Length > 0);
-                if (moduleIsPrebuilt)
+                else if (req is CollatedFile)
                 {
-                    // TODO: just copy
-                    continue;
-                }
-                if (Bam.Core.OSUtilities.IsWindowsHosting)
-                {
-                    if (req.SourceModule.Tool.Macros.Contains("pdbext"))
+                    var source = req.SourceModule;
+                    if (!(source is C.ConsoleApplication))
                     {
-                        // TODO: just copy
+                        this.CopyFile(req, referenceMap);
+                        continue;
                     }
-                    else
+
+                    var moduleIsPrebuilt = (source.GetType().GetCustomAttributes(typeof(C.PrebuiltAttribute), true).Length > 0);
+                    if (moduleIsPrebuilt)
+                    {
+                        this.CopyFile(req, referenceMap);
+                        continue;
+                    }
+
+                    // the remaining files will have been built, and therefore have some data that may need stripping
+                    if (Bam.Core.OSUtilities.IsWindowsHosting)
+                    {
+                        if (req.SourceModule.Tool.Macros.Contains("pdbext"))
+                        {
+                            this.CopyFile(req, referenceMap);
+                        }
+                        else
+                        {
+                            // assume that debug symbols have been extracted into a separate file
+                            var debugSymbols = debugSymbolDependent.Dependents.Where(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req).FirstOrDefault();
+                            if (null == debugSymbols)
+                            {
+                                throw new Bam.Core.Exception("Unable to locate debug symbol generation for {0}", req.SourceModule.ToString());
+                            }
+                            // then strip the binary
+                            var stripped = this.StripBinary(req, referenceMap, debugSymbols: debugSymbols as ObjCopyModule);
+                            // and add a link back to the debug symbols on the stripped binary
+                            var linkBack = DebugSymbolCollation.LinkBackToDebugSymbols(stripped, referenceMap);
+                            linkBack.DependsOn(stripped);
+                            this.DependsOn(linkBack);
+                        }
+                    }
+                    else if (Bam.Core.OSUtilities.IsLinuxHosting)
                     {
                         // assume that debug symbols have been extracted into a separate file
                         var debugSymbols = debugSymbolDependent.Dependents.Where(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req).FirstOrDefault();
@@ -135,25 +198,14 @@ namespace Publisher
                         linkBack.DependsOn(stripped);
                         this.DependsOn(linkBack);
                     }
-                }
-                else if (Bam.Core.OSUtilities.IsLinuxHosting)
-                {
-                    // assume that debug symbols have been extracted into a separate file
-                    var debugSymbols = debugSymbolDependent.Dependents.Where(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req).FirstOrDefault();
-                    if (null == debugSymbols)
+                    else if (Bam.Core.OSUtilities.IsOSXHosting)
                     {
-                        throw new Bam.Core.Exception("Unable to locate debug symbol generation for {0}", req.SourceModule.ToString());
+                        this.StripBinary(req, referenceMap);
                     }
-                    // then strip the binary
-                    var stripped = this.StripBinary(req, referenceMap, debugSymbols: debugSymbols as ObjCopyModule);
-                    // and add a link back to the debug symbols on the stripped binary
-                    var linkBack = DebugSymbolCollation.LinkBackToDebugSymbols(stripped, referenceMap);
-                    linkBack.DependsOn(stripped);
-                    this.DependsOn(linkBack);
                 }
-                else if (Bam.Core.OSUtilities.IsOSXHosting)
+                else
                 {
-                    this.StripBinary(req, referenceMap);
+                    throw new Bam.Core.Exception("Unhandled collation module: {0}", req.ToString());
                 }
             }
         }
