@@ -150,6 +150,41 @@ namespace Publisher
             }
         }
 
+        private void
+        CloneSymbolicLink(
+            CollatedObject collatedSymlink,
+            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
+        {
+            var clonedSymLink = Bam.Core.Module.Create<CollatedSymbolicLink>(preInitCallback: module =>
+                {
+                    module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+
+                    if (!referenceMap.ContainsKey(collatedSymlink.Reference))
+                    {
+                        throw new Bam.Core.Exception("Unable to find CollatedSymbolicLink reference to {0} in the reference map", collatedSymlink.Reference.SourceModule.ToString());
+                    }
+
+                    var newRef = referenceMap[collatedSymlink.Reference];
+                    var referenceFilePath = newRef.GeneratedPaths[StripModule.Key];
+
+                    module.Macros["CopyDir"] = Collation.GenerateSymbolicLinkCopyDestination(
+                        this,
+                        referenceFilePath,
+                        collatedSymlink.SubDirectory);
+                });
+            this.DependsOn(clonedSymLink);
+
+            clonedSymLink.SourceModule = collatedSymlink.SourceModule;
+            clonedSymLink.SourcePath = collatedSymlink.SourcePath;
+            clonedSymLink.SubDirectory = collatedSymlink.SubDirectory;
+            clonedSymLink.AssignLinkTarget(collatedSymlink.Macros["LinkTarget"]);
+
+            if (collatedSymlink.Reference == null)
+            {
+                referenceMap.Add(collatedSymlink, clonedSymLink);
+            }
+        }
+
         public void
         StripBinariesFrom<RuntimeModule, DebugSymbolModule>()
             where RuntimeModule : Collation, new()
@@ -173,7 +208,7 @@ namespace Publisher
             {
                 if (req is CollatedSymbolicLink)
                 {
-                    // TODO: copy
+                    this.CloneSymbolicLink(req, referenceMap);
                 }
                 else if (req is CollatedDirectory)
                 {
