@@ -27,35 +27,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public static partial class CommandLineImplementation
+    public sealed class NativeStrip :
+        IStripToolPolicy
     {
-        public static void
-        Convert(
-            this IObjCopyToolSettings settings,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+        void
+        IStripToolPolicy.Strip(
+            StripModule sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString originalPath,
+            Bam.Core.TokenizedString strippedPath)
         {
-            var objCopy = module as ObjCopyModule;
-            switch (settings.Mode)
+            var strippedDir = System.IO.Path.GetDirectoryName(strippedPath.Parse());
+            if (!System.IO.Directory.Exists(strippedDir))
             {
-            case EObjCopyToolMode.OnlyKeepDebug:
-                commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse(),
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse()));
-                break;
-
-            case EObjCopyToolMode.AddGNUDebugLink:
-                commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse(),
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse()));
-                break;
-
-            default:
-                throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
+                System.IO.Directory.CreateDirectory(strippedDir);
             }
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+            commandLine.Add(originalPath.Parse());
+            commandLine.Add(System.String.Format("-o {0}", strippedPath.Parse()));
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 }

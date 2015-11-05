@@ -34,27 +34,28 @@ namespace Publisher
     {
         public static void
         Convert(
-            this IObjCopyToolSettings settings,
+            this IStripToolSettings settings,
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var objCopy = module as ObjCopyModule;
-            switch (settings.Mode)
+            if (settings.Verbose.HasValue && settings.Verbose.Value && !module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-            case EObjCopyToolMode.OnlyKeepDebug:
-                commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse(),
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse()));
-                break;
+                commandLine.Add("-v");
+            }
 
-            case EObjCopyToolMode.AddGNUDebugLink:
-                commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse(),
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse()));
-                break;
+            if (settings.PreserveTimestamp.HasValue && settings.PreserveTimestamp.Value && !module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                commandLine.Add("-p");
+            }
 
-            default:
-                throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
+            if (settings.StripDebugSymbols.HasValue && settings.StripDebugSymbols.Value)
+            {
+                commandLine.Add("-S");
+            }
+
+            if (settings.StripLocalSymbols.HasValue && settings.StripLocalSymbols.Value)
+            {
+                commandLine.Add("-x");
             }
         }
     }

@@ -97,7 +97,7 @@ namespace Publisher
         }
 
         private void
-        CopyDebugSymbolsAndLinkBack(
+        CopyDebugSymbols(
             CollatedObject collatedFile,
             System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
         {
@@ -117,20 +117,25 @@ namespace Publisher
             {
                 referenceMap.Add(collatedFile, createDebugSymbols);
             }
+        }
 
+        public static ObjCopyModule
+        LinkBackToDebugSymbols(
+            Bam.Core.Module source,
+            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
+        {
             var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
             {
                 module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
                 module.ReferenceMap = referenceMap;
             });
-            this.DependsOn(linkDebugSymbols);
-            linkDebugSymbols.Requires(createDebugSymbols);
-            linkDebugSymbols.SourceModule = collatedFile;
+            linkDebugSymbols.SourceModule = source;
             linkDebugSymbols.PrivatePatch(settings =>
             {
                 var objCopySettings = settings as IObjCopyToolSettings;
                 objCopySettings.Mode = EObjCopyToolMode.AddGNUDebugLink;
             });
+            return linkDebugSymbols;
         }
 
         private void
@@ -187,12 +192,12 @@ namespace Publisher
                     }
                     else
                     {
-                        this.CopyDebugSymbolsAndLinkBack(req, referenceMap);
+                        this.CopyDebugSymbols(req, referenceMap);
                     }
                 }
                 else if (Bam.Core.OSUtilities.IsLinuxHosting)
                 {
-                    this.CopyDebugSymbolsAndLinkBack(req, referenceMap);
+                    this.CopyDebugSymbols(req, referenceMap);
                 }
                 else if (Bam.Core.OSUtilities.IsOSXHosting)
                 {

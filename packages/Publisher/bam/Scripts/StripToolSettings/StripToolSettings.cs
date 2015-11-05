@@ -27,35 +27,52 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public static partial class CommandLineImplementation
+    public sealed class StripToolSettings :
+        Bam.Core.Settings,
+        CommandLineProcessor.IConvertToCommandLine,
+        IStripToolSettings
     {
-        public static void
-        Convert(
-            this IObjCopyToolSettings settings,
+        public StripToolSettings()
+        {}
+
+        public StripToolSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var objCopy = module as ObjCopyModule;
-            switch (settings.Mode)
-            {
-            case EObjCopyToolMode.OnlyKeepDebug:
-                commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse(),
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse()));
-                break;
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, module, commandLine);
+        }
 
-            case EObjCopyToolMode.AddGNUDebugLink:
-                commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse(),
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse()));
-                break;
+        bool? IStripToolSettings.Verbose
+        {
+            get;
+            set;
+        }
 
-            default:
-                throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
-            }
+        bool? IStripToolSettings.PreserveTimestamp
+        {
+            get;
+            set;
+        }
+
+        bool? IStripToolSettings.StripDebugSymbols
+        {
+            get;
+            set;
+        }
+
+        bool? IStripToolSettings.StripLocalSymbols
+        {
+            get;
+            set;
         }
     }
 }

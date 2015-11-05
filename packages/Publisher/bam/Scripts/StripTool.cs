@@ -27,35 +27,49 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public static partial class CommandLineImplementation
+    public sealed class StripTool :
+        Bam.Core.PreBuiltTool
     {
-        public static void
-        Convert(
-            this IObjCopyToolSettings settings,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
+        private Bam.Core.TokenizedString ExecutablePath;
+
+        public StripTool()
         {
-            var objCopy = module as ObjCopyModule;
-            switch (settings.Mode)
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-            case EObjCopyToolMode.OnlyKeepDebug:
-                commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse(),
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse()));
-                break;
-
-            case EObjCopyToolMode.AddGNUDebugLink:
-                commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse(),
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse()));
-                break;
-
-            default:
-                throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
+                var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+                if (null == mingwMeta)
+                {
+                    throw new Bam.Core.Exception("Unable to locate Mingw");
+                }
+                this.ExecutablePath = this.CreateTokenizedString("$(0)/bin/strip.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString);
             }
+            else
+            {
+                this.ExecutablePath = Bam.Core.TokenizedString.CreateVerbatim("strip");
+            }
+        }
+
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            return new StripToolSettings(module);
+        }
+
+        public override Bam.Core.TokenizedString Executable
+        {
+            get
+            {
+                return this.ExecutablePath;
+            }
+        }
+
+        public override void
+        Evaluate()
+        {
+            this.ReasonToExecute = null;
         }
     }
 }

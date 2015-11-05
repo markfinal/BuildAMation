@@ -1,3 +1,5 @@
+05-Nov-2015 Fixes #39. Publisher package now has a new module StrippedBinaryCollation, only supported in the Native build mode. This works with a Collation module, and a DebugSymbolCollation module, as source, and mirrors the directory structure of the former. On Linux, strip is invoked on each binary, and subsequently objcopy links the stripped binary to the debug symbols generated earlier. On Windows, the Linux approach is used for non-PDB builds.
+
 05-Nov-2015 Ignore any prebuilt modules from debug symbol collation.
 
 05-Nov-2015 Added C.PrebuiltAttribute, so that modules can be marked up as being already built. This is an attribute on a class, so place it on a module definition. This is useful for detecting cases where modules may not have available data, e.g. debug symbols.
@@ -10,7 +12,7 @@
 
 04-Nov-2015 Added TokenizedString function, @changeextension(a, b), which will change the file extension of file 'a', with the extension in 'b'.
 
-04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols and create a link to them from the original binary. On OSX, dsymutil is invoked to create a dSYM bundle. On Windows, PDB files are copied if generated (intended for VisualStudio), otherwise objcopy is used (intended for Mingw).
+04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols from the original binary. On OSX, dsymutil is invoked to create a dSYM bundle. On Windows, PDB files are copied if generated (intended for VisualStudio), otherwise objcopy is used (intended for Mingw).
 
 04-Nov-2015 Added macro 'encapsulatingmodulename' to all Modules, once completed.
 

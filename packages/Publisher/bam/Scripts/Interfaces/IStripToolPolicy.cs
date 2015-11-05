@@ -27,35 +27,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public static partial class CommandLineImplementation
+    public interface IStripToolPolicy
     {
-        public static void
-        Convert(
-            this IObjCopyToolSettings settings,
-            Bam.Core.Module module,
-            Bam.Core.StringArray commandLine)
-        {
-            var objCopy = module as ObjCopyModule;
-            switch (settings.Mode)
-            {
-            case EObjCopyToolMode.OnlyKeepDebug:
-                commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse(),
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse()));
-                break;
-
-            case EObjCopyToolMode.AddGNUDebugLink:
-                commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].Parse(),
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].Parse()));
-                break;
-
-            default:
-                throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
-            }
-        }
+        void
+        Strip(
+            StripModule sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString originalPath,
+            Bam.Core.TokenizedString strippedPath);
     }
 }
