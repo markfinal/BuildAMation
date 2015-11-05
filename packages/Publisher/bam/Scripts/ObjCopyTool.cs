@@ -38,7 +38,7 @@ namespace Publisher
         {
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+                var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
                 if (null == mingwMeta)
                 {
                     throw new Bam.Core.Exception("Unable to locate Mingw");
