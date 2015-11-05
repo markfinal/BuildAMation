@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace Publisher
 {
     public abstract class DebugSymbolCollation :
@@ -66,13 +67,14 @@ namespace Publisher
 
             this.DependsOn(dependent);
 
-            foreach (CollatedObject req in dependent.Requirements)
+            var referenceMap = new System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module>();
+            foreach (CollatedObject req in dependent.Requirements.Where(item => item is CollatedObject))
             {
-                var source = req.SourceModule;
                 if (!(req is CollatedFile))
                 {
                     continue;
                 }
+                var source = req.SourceModule;
                 if (!(source is C.ConsoleApplication))
                 {
                     continue;
@@ -82,23 +84,38 @@ namespace Publisher
                     if (req.SourceModule.Tool.Macros.Contains("pdbext"))
                     {
                         var copyPDBModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
-                        {
-                            module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
-                            if (null != req.SubDirectory)
                             {
-                                module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(DebugSymbolRoot)/$(0)/)", req.SubDirectory);
-                            }
-                            else
-                            {
-                                module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(DebugSymbolRoot)/)");
-                            }
-                        });
+                                module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+
+                                Bam.Core.TokenizedString referenceFilePath = null;
+                                if (req.Reference != null)
+                                {
+                                    if (!referenceMap.ContainsKey(req.Reference))
+                                    {
+                                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", req.Reference.SourceModule.ToString());
+                                    }
+
+                                    var newRef = referenceMap[req.Reference];
+                                    referenceFilePath = newRef.GeneratedPaths[CollatedObject.CopiedObjectKey];
+                                }
+
+                                module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
+                                    this,
+                                    referenceFilePath,
+                                    req.SubDirectory,
+                                    this.Macros["DebugSymbolRoot"]);
+                            });
                         this.DependsOn(copyPDBModule);
 
                         copyPDBModule.SourceModule = req.SourceModule;
                         // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
                         copyPDBModule.SourcePath = req.SourceModule.GeneratedPaths[C.ConsoleApplication.PDBKey];
                         copyPDBModule.SubDirectory = req.SubDirectory;
+
+                        if (req.Reference == null)
+                        {
+                            referenceMap.Add(req, copyPDBModule);
+                        }
                     }
                     else
                     {
@@ -110,6 +127,7 @@ namespace Publisher
                     var createDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
                         {
                             module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+                            module.ReferenceMap = referenceMap;
                         });
                     this.DependsOn(createDebugSymbols);
                     createDebugSymbols.SourceModule = req;
@@ -118,10 +136,15 @@ namespace Publisher
                             var objCopySettings = settings as IObjCopyToolSettings;
                             objCopySettings.Mode = EObjCopyToolMode.OnlyKeepDebug;
                         });
+                    if (req.Reference == null)
+                    {
+                        referenceMap.Add(req, createDebugSymbols);
+                    }
 
                     var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
                         {
                             module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+                            module.ReferenceMap = referenceMap;
                         });
                     this.DependsOn(linkDebugSymbols);
                     linkDebugSymbols.Requires(createDebugSymbols);
@@ -137,9 +160,14 @@ namespace Publisher
                     var createDebugSymbols = Bam.Core.Module.Create<DSymUtilModule>(preInitCallback: module =>
                         {
                             module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+                            module.ReferenceMap = referenceMap;
                         });
                     this.DependsOn(createDebugSymbols);
                     createDebugSymbols.SourceModule = req;
+                    if (req.Reference == null)
+                    {
+                        referenceMap.Add(req, createDebugSymbols);
+                    }
                 }
             }
         }

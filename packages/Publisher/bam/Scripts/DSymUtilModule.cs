@@ -75,6 +75,12 @@ namespace Publisher
             }
         }
 
+        public System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> ReferenceMap
+        {
+            get;
+            set;
+        }
+
         public CollatedObject SourceModule
         {
             get
@@ -86,18 +92,30 @@ namespace Publisher
             {
                 this.TheSourceModule = value;
                 this.DependsOn(value);
-                // Note: these paths match those in Collation.CreateCollatedFile
-                if (null != value.SubDirectory)
+
+                Bam.Core.TokenizedString referenceFilePath = null;
+                if (value.Reference != null)
                 {
-                    this.RegisterGeneratedFile(Key, this.CreateTokenizedString("@normalize($(DebugSymbolRoot)/$(0)/@filename($(1)).dSYM)",
-                        value.SubDirectory,
-                        value.GeneratedPaths[CollatedObject.CopiedObjectKey]));
+                    if (null == this.ReferenceMap)
+                    {
+                        throw new Bam.Core.Exception("Missing mapping of CollatedFiles to DSymUtilModules");
+                    }
+                    if (!this.ReferenceMap.ContainsKey(value.Reference))
+                    {
+                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", value.Reference.SourceModule.ToString());
+                    }
+
+                    var newRef = this.ReferenceMap[value.Reference];
+                    referenceFilePath = newRef.GeneratedPaths[Key];
                 }
-                else
-                {
-                    this.RegisterGeneratedFile(Key, this.CreateTokenizedString("@normalize($(DebugSymbolRoot)/@filename($(0)).dSYM)",
-                        value.GeneratedPaths[CollatedObject.CopiedObjectKey]));
-                }
+                var destinationDirectory = Collation.GenerateFileCopyDestination(
+                    this,
+                    referenceFilePath,
+                    value.SubDirectory,
+                    this.Macros["DebugSymbolRoot"]);
+                this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).dSYM",
+                    destinationDirectory,
+                    value.GeneratedPaths[CollatedObject.CopiedObjectKey]));
             }
         }
     }

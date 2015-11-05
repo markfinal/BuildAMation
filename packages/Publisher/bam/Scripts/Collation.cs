@@ -65,6 +65,43 @@ namespace Publisher
             return null;
         }
 
+        public static Bam.Core.TokenizedString
+        GenerateFileCopyDestination(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString referenceFilePath,
+            Bam.Core.TokenizedString subDirectory,
+            Bam.Core.TokenizedString unReferencedRoot)
+        {
+            if (referenceFilePath != null)
+            {
+                if (null != subDirectory)
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
+                        referenceFilePath,
+                        subDirectory);
+                }
+                else
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/)",
+                        referenceFilePath);
+                }
+            }
+            else
+            {
+                if (null != subDirectory)
+                {
+                    return module.CreateTokenizedString("@normalize($(0)/$(1)/)",
+                        unReferencedRoot,
+                        subDirectory);
+                }
+                else
+                {
+                    return module.CreateTokenizedString("@normalize($(0)/)",
+                        unReferencedRoot);
+                }
+            }
+        }
+
         private CollatedFile
         CreateCollatedFile(
             Bam.Core.Module sourceModule,
@@ -74,16 +111,10 @@ namespace Publisher
         {
             var copyFileModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
                 {
-                    if (reference != null)
+                    Bam.Core.TokenizedString referenceFilePath = null;
+                    if (null != reference)
                     {
-                        if (null != subDirectory)
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
-                        }
-                        else
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
-                        }
+                        referenceFilePath = reference.GeneratedPaths[CollatedObject.CopiedObjectKey];
                     }
                     else
                     {
@@ -91,15 +122,12 @@ namespace Publisher
                         {
                             this.RegisterGeneratedFile(PublishingRoot, module.CreateTokenizedString("@dir($(0))", sourcePath));
                         }
-                        if (null != subDirectory)
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PublishingRoot], subDirectory);
-                        }
-                        else
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PublishingRoot]);
-                        }
                     }
+                    module.Macros["CopyDir"] = GenerateFileCopyDestination(
+                        module,
+                        referenceFilePath,
+                        subDirectory,
+                        this.GeneratedPaths[PublishingRoot]);
                 });
             this.Requires(copyFileModule);
 
