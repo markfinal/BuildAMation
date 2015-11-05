@@ -50,5 +50,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool PreserveAllAttributes
+        {
+            get;
+            set;
+        }
     }
 }

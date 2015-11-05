@@ -52,6 +52,13 @@ namespace Publisher
                 {
                     commandLine.Add("/S");
                 }
+                if (settings.PreserveAllAttributes)
+                {
+                    commandLine.Add("/K"); // copy attributes
+                    // TODO: this causes 'access denied' errors, although not clear why
+                    //commandLine.Add("/O"); // copy ownership and ACL
+                    commandLine.Add("/B"); // copy symbolic link itself, not the target
+                }
             }
             else
             {
@@ -66,6 +73,10 @@ namespace Publisher
                 if (settings.Recursive)
                 {
                     commandLine.Add("-R");
+                }
+                if (settings.PreserveAllAttributes)
+                {
+                    commandLine.Add("-a");
                 }
             }
         }
