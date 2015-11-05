@@ -77,11 +77,11 @@ namespace Publisher
         }
 
         private void
-        CopyFile(
+        CloneFile(
             CollatedObject collatedFile,
             System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
         {
-            var copyFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+            var clonedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
             {
                 module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
 
@@ -103,15 +103,50 @@ namespace Publisher
                     collatedFile.SubDirectory,
                     module.Macros["StrippedRoot"]);
             });
-            this.DependsOn(copyFile);
+            this.DependsOn(clonedFile);
 
-            copyFile.SourceModule = collatedFile.SourceModule;
-            copyFile.SourcePath = collatedFile.SourcePath;
-            copyFile.SubDirectory = collatedFile.SubDirectory;
+            clonedFile.SourceModule = collatedFile.SourceModule;
+            clonedFile.SourcePath = collatedFile.SourcePath;
+            clonedFile.SubDirectory = collatedFile.SubDirectory;
 
             if (collatedFile.Reference == null)
             {
-                referenceMap.Add(collatedFile, copyFile);
+                referenceMap.Add(collatedFile, clonedFile);
+            }
+        }
+
+        private void
+        CloneDirectory(
+            CollatedObject collatedDir,
+            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
+        {
+            var clonedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
+            {
+                module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
+
+                if (!referenceMap.ContainsKey(collatedDir.Reference))
+                {
+                    throw new Bam.Core.Exception("Unable to find CollatedDirectory reference to {0} in the reference map", collatedDir.Reference.SourceModule.ToString());
+                }
+
+                var newRef = referenceMap[collatedDir.Reference];
+                var referenceFilePath = newRef.GeneratedPaths[CollatedObject.CopiedObjectKey];
+
+                module.Macros["CopyDir"] = Collation.GenerateDirectoryCopyDestination(
+                    this,
+                    referenceFilePath,
+                    collatedDir.SubDirectory,
+                    collatedDir.SourcePath);
+            });
+            this.DependsOn(clonedDir);
+
+            clonedDir.SourceModule = collatedDir.SourceModule;
+            clonedDir.SourcePath = collatedDir.SourcePath;
+            clonedDir.SubDirectory = collatedDir.SubDirectory;
+
+            if (collatedDir.Reference == null)
+            {
+                referenceMap.Add(collatedDir, clonedDir);
             }
         }
 
@@ -142,21 +177,21 @@ namespace Publisher
                 }
                 else if (req is CollatedDirectory)
                 {
-                    // TODO: copy
+                    this.CloneDirectory(req, referenceMap);
                 }
                 else if (req is CollatedFile)
                 {
                     var source = req.SourceModule;
                     if (!(source is C.ConsoleApplication))
                     {
-                        this.CopyFile(req, referenceMap);
+                        this.CloneFile(req, referenceMap);
                         continue;
                     }
 
                     var moduleIsPrebuilt = (source.GetType().GetCustomAttributes(typeof(C.PrebuiltAttribute), true).Length > 0);
                     if (moduleIsPrebuilt)
                     {
-                        this.CopyFile(req, referenceMap);
+                        this.CloneFile(req, referenceMap);
                         continue;
                     }
 
@@ -165,7 +200,7 @@ namespace Publisher
                     {
                         if (req.SourceModule.Tool.Macros.Contains("pdbext"))
                         {
-                            this.CopyFile(req, referenceMap);
+                            this.CloneFile(req, referenceMap);
                         }
                         else
                         {

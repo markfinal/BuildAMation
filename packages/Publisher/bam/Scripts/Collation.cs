@@ -102,6 +102,46 @@ namespace Publisher
             }
         }
 
+        public static Bam.Core.TokenizedString
+        GenerateDirectoryCopyDestination(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString referenceFilePath,
+            Bam.Core.TokenizedString subDirectory,
+            Bam.Core.TokenizedString sourcePath)
+        {
+            // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+            if (null != subDirectory)
+            {
+                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)",
+                        referenceFilePath,
+                        subDirectory,
+                        sourcePath);
+                }
+                else
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
+                        referenceFilePath,
+                        subDirectory);
+                }
+            }
+            else
+            {
+                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)",
+                        referenceFilePath,
+                        sourcePath);
+                }
+                else
+                {
+                    return module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)",
+                        referenceFilePath);
+                }
+            }
+        }
+
         private CollatedFile
         CreateCollatedFile(
             Bam.Core.Module sourceModule,
@@ -152,29 +192,11 @@ namespace Publisher
 
             var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
             {
-                // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
-                if (null != subDirectory)
-                {
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, sourcePath);
-                    }
-                    else
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
-                    }
-                }
-                else
-                {
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], sourcePath);
-                    }
-                    else
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
-                    }
-                }
+                module.Macros["CopyDir"] = GenerateDirectoryCopyDestination(
+                    module,
+                    reference.GeneratedPaths[CollatedObject.CopiedObjectKey],
+                    subDirectory,
+                    sourcePath);
             });
             this.Requires(copyDirectoryModule);
 

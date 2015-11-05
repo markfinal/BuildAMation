@@ -1,4 +1,4 @@
-05-Nov-2015 Fixes #39. Publisher package now has a new module StrippedBinaryCollation, only supported in the Native build mode. This works with a Collation module, and a DebugSymbolCollation module, as source, and mirrors the directory structure of the former. On Linux, strip is invoked on each binary, and subsequently objcopy links the stripped binary to the debug symbols generated earlier. On Windows, the Linux approach is used for non-PDB builds.
+05-Nov-2015 Fixes #39. Publisher package now has a new module StrippedBinaryCollation, only supported in the Native build mode. This works with a Collation module, and a DebugSymbolCollation module, as source, and mirrors the directory structure of the former. On Linux, strip is invoked on each binary, and subsequently objcopy links the stripped binary to the debug symbols generated earlier. On Windows, for binaries with PDBs, a clone of the binary is taken, while without PDBs, strip and objcopy is used. On OSX, strip is invoked on each binary. All non-built files/directories/symlinks are cloned as-is.
 
 05-Nov-2015 Ignore any prebuilt modules from debug symbol collation.
 
