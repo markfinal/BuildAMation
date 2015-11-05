@@ -103,7 +103,7 @@ namespace Publisher
                                     this,
                                     referenceFilePath,
                                     req.SubDirectory,
-                                    this.Macros["DebugSymbolRoot"]);
+                                    module.Macros["DebugSymbolRoot"]);
                             });
                         this.DependsOn(copyPDBModule);
 
