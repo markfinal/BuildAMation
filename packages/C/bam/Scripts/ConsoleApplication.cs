@@ -52,7 +52,8 @@ namespace C
             {
                 if (this.Linker.Macros.Contains("pdbext"))
                 {
-                    this.RegisterGeneratedFile(PDBKey, this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
+                    var moduleIsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
+                    this.RegisterGeneratedFile(PDBKey, moduleIsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
                 }
             }
             this.PrivatePatch(settings =>

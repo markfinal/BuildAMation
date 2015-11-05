@@ -64,7 +64,10 @@ namespace VisualCCommon
             if (settings.DebugSymbols.HasValue && settings.DebugSymbols.Value)
             {
                 settingsGroup.AddSetting("GenerateDebugInformation", true, condition);
-                settingsGroup.AddSetting("ProgramDatabaseFile", module.GeneratedPaths[C.ConsoleApplication.PDBKey], condition);
+                if (null != module.GeneratedPaths[C.ConsoleApplication.PDBKey])
+                {
+                    settingsGroup.AddSetting("ProgramDatabaseFile", module.GeneratedPaths[C.ConsoleApplication.PDBKey], condition);
+                }
             }
         }
     }
