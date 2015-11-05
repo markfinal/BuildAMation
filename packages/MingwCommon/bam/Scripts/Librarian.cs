@@ -35,8 +35,9 @@ namespace MingwCommon
     {
         public Librarian()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(InstallPath)\bin\ar.exe"));
+            var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
+
+            this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(0)\bin\ar.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.AddVerbatim("libprefix", "lib");
             this.Macros.AddVerbatim("libext", ".a");
 

@@ -41,6 +41,9 @@ namespace Mingw
                 return;
             }
 
+            // TODO: can this come from the registry?
+            this.Meta.Add("InstallDir", Bam.Core.TokenizedString.CreateVerbatim(@"C:\MinGW"));
+
             // TODO: some installations may not have a suffix - need to confirm
             this.Meta.Add("ToolSuffix", "-4.8.1");
         }

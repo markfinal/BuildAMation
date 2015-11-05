@@ -39,8 +39,7 @@ namespace MingwCommon
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
             this.Macros.AddVerbatim("CompilerSuffix", mingwMeta.ToolSuffix);
 
-            this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(0)\bin", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(CompilerSuffix).exe"));
             this.Macros.AddVerbatim("objext", ".o");
 

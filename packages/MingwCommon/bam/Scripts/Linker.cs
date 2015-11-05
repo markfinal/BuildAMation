@@ -37,8 +37,7 @@ namespace MingwCommon
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
             this.Macros.AddVerbatim("LinkerSuffix", mingwMeta.ToolSuffix);
 
-            this.Macros.Add("InstallPath", Configure.InstallPath);
-            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\bin"));
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(0)\bin", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.AddVerbatim("exeext", ".exe");
             this.Macros.AddVerbatim("dynamicprefix", "lib");
             this.Macros.AddVerbatim("dynamicext", ".so");
