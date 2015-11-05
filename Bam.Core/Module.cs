@@ -108,12 +108,12 @@ namespace Bam.Core
             return false;
         }
 
-        public delegate void ModulePreInitDelegate(Module module);
+        public delegate void PreInitDelegate<T>(T module);
 
         public static T
         Create<T>(
             Module parent = null,
-            ModulePreInitDelegate preInitCallback = null) where T : Module, new()
+            PreInitDelegate<T> preInitCallback = null) where T : Module, new()
         {
             try
             {

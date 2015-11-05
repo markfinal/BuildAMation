@@ -1,3 +1,5 @@
+05-Nov-2015 Renamed Bam.Core.Module.ModulePreInitDelegate to Bam.Core.Module.PreInitDelegate, and also made it a generic based on the type of module being created. Any lambda expression used for this delegate now accepts an argument of the real type of the new module, rather than the base class Bam.Core.Module. This avoids any need to cast.
+
 04-Nov-2015 Bam.Core.Settings now has a Module property, set in InitializeAllInterfaces, to the module the Settings instance is associated with. This can be useful to access module paths during get/set property calls in settings interfaces.
 
 04-Nov-2015 VisualC sets the PDB path when debug symbols for the linker are enabled, and records the PDB file as a generated path on the module.
