@@ -43,7 +43,7 @@ namespace Publisher
                 {
                     throw new Bam.Core.Exception("Unable to locate Mingw");
                 }
-                this.ExecutablePath = this.CreateTokenizedString("$(0)/bin/objcopy", mingwMeta["InstallDir"] as Bam.Core.TokenizedString);
+                this.ExecutablePath = this.CreateTokenizedString("$(0)/bin/objcopy.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString);
             }
             else
             {
