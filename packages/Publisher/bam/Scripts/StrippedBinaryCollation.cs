@@ -52,6 +52,12 @@ namespace Publisher
         {
         }
 
+        private Bam.Core.FileKey ReferenceKey
+        {
+            get;
+            set;
+        }
+
         private StripModule
         StripBinary(
             CollatedObject collatedFile,
@@ -72,6 +78,7 @@ namespace Publisher
             if (collatedFile.Reference == null)
             {
                 referenceMap.Add(collatedFile, stripBinary);
+                this.ReferenceKey = StripModule.Key;
             }
             return stripBinary;
         }
@@ -94,7 +101,8 @@ namespace Publisher
                     }
 
                     var newRef = referenceMap[collatedFile.Reference];
-                    referenceFilePath = newRef.GeneratedPaths[StripModule.Key];
+                    // the FileKey depends on whether the reference came straight as a clone, or after being stripped
+                    referenceFilePath = newRef.GeneratedPaths[this.ReferenceKey];
                 }
 
                 module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
@@ -112,6 +120,7 @@ namespace Publisher
             if (collatedFile.Reference == null)
             {
                 referenceMap.Add(collatedFile, clonedFile);
+                this.ReferenceKey = CollatedObject.CopiedObjectKey;
             }
         }
 
@@ -143,11 +152,6 @@ namespace Publisher
             clonedDir.SourceModule = collatedDir.SourceModule;
             clonedDir.SourcePath = collatedDir.SourcePath;
             clonedDir.SubDirectory = collatedDir.SubDirectory;
-
-            if (collatedDir.Reference == null)
-            {
-                referenceMap.Add(collatedDir, clonedDir);
-            }
         }
 
         private void
@@ -178,11 +182,6 @@ namespace Publisher
             clonedSymLink.SourcePath = collatedSymlink.SourcePath;
             clonedSymLink.SubDirectory = collatedSymlink.SubDirectory;
             clonedSymLink.AssignLinkTarget(collatedSymlink.Macros["LinkTarget"]);
-
-            if (collatedSymlink.Reference == null)
-            {
-                referenceMap.Add(collatedSymlink, clonedSymLink);
-            }
         }
 
         public void
