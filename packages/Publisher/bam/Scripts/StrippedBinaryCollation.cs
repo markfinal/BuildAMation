@@ -120,7 +120,7 @@ namespace Publisher
             if (collatedFile.Reference == null)
             {
                 referenceMap.Add(collatedFile, clonedFile);
-                this.ReferenceKey = CollatedObject.CopiedObjectKey;
+                this.ReferenceKey = CollatedObject.Key;
             }
         }
 

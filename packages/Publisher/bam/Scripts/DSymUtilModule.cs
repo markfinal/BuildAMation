@@ -61,7 +61,7 @@ namespace Publisher
             {
                 return;
             }
-            this.Policy.CreateBundle(this, context, this.TheSourceModule.GeneratedPaths[CollatedObject.CopiedObjectKey], this.GeneratedPaths[Key]);
+            this.Policy.CreateBundle(this, context, this.TheSourceModule.GeneratedPaths[CollatedObject.Key], this.GeneratedPaths[Key]);
         }
 
         protected override void
@@ -115,7 +115,7 @@ namespace Publisher
                     this.Macros["DebugSymbolRoot"]);
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).dSYM",
                     destinationDirectory,
-                    value.GeneratedPaths[CollatedObject.CopiedObjectKey]));
+                    value.GeneratedPaths[CollatedObject.Key]));
             }
         }
     }

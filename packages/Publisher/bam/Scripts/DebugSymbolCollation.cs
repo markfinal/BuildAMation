@@ -74,7 +74,7 @@ namespace Publisher
                     }
 
                     var newRef = referenceMap[collatedFile.Reference];
-                    referenceFilePath = newRef.GeneratedPaths[CollatedObject.CopiedObjectKey];
+                    referenceFilePath = newRef.GeneratedPaths[CollatedObject.Key];
                 }
 
                 module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(

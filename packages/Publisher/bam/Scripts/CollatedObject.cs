@@ -34,7 +34,7 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
-        public static Bam.Core.FileKey CopiedObjectKey = Bam.Core.FileKey.Generate("Copied Object");
+        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Copied Object");
 
         private ICollatedObjectPolicy Policy = null;
 
@@ -135,7 +135,7 @@ namespace Publisher
             set
             {
                 this.RealSourcePath.Aliased(value);
-                this.GeneratedPaths[CopiedObjectKey] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
+                this.GeneratedPaths[Key] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
             }
         }
     }

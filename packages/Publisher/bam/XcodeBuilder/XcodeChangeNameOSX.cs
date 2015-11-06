@@ -57,7 +57,7 @@ namespace Publisher
                     commandLine.ToString(' '),
                     oldName.Parse(),
                     newName.Parse(),
-                    sender.Source.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse()));
+                    sender.Source.GeneratedPaths[CollatedObject.Key].Parse()));
 
                 var target = sender.Source.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.Source.SourceModule);

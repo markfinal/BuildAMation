@@ -40,7 +40,7 @@ namespace Publisher
             var isSymLink = (sender is CollatedSymbolicLink);
             var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
 
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse() : sender.Macros["CopyDir"].Parse();
+            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.Key].Parse() : sender.Macros["CopyDir"].Parse();
 
             if (!isSymLink)
             {

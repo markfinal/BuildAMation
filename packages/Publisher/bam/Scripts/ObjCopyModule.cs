@@ -124,8 +124,8 @@ namespace Publisher
                         this.Macros["DebugSymbolRoot"]);
                     this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).debug",
                         destinationDirectory,
-                        value.GeneratedPaths[CollatedObject.CopiedObjectKey]));
-                    this.SourceKey = CollatedObject.CopiedObjectKey;
+                        value.GeneratedPaths[CollatedObject.Key]));
+                    this.SourceKey = CollatedObject.Key;
                 }
                 else if (value is StripModule)
                 {

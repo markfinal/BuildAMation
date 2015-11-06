@@ -173,7 +173,7 @@ namespace Publisher
                     Bam.Core.TokenizedString referenceFilePath = null;
                     if (null != reference)
                     {
-                        referenceFilePath = reference.GeneratedPaths[CollatedObject.CopiedObjectKey];
+                        referenceFilePath = reference.GeneratedPaths[CollatedObject.Key];
                     }
                     else
                     {
@@ -213,7 +213,7 @@ namespace Publisher
             {
                 module.Macros["CopyDir"] = GenerateDirectoryCopyDestination(
                     module,
-                    reference.GeneratedPaths[CollatedObject.CopiedObjectKey],
+                    reference.GeneratedPaths[CollatedObject.Key],
                     subDirectory,
                     sourcePath);
             });
@@ -242,7 +242,7 @@ namespace Publisher
             {
                 module.Macros["CopyDir"] = GenerateSymbolicLinkCopyDestination(
                     module,
-                    reference.GeneratedPaths[CollatedObject.CopiedObjectKey],
+                    reference.GeneratedPaths[CollatedObject.Key],
                     subDirectory);
             });
             this.Requires(copySymlinkModule);

@@ -61,7 +61,7 @@ namespace Publisher
             {
                 return;
             }
-            this.Policy.Strip(this, context, this.TheSourceModule.GeneratedPaths[CollatedObject.CopiedObjectKey], this.GeneratedPaths[Key]);
+            this.Policy.Strip(this, context, this.TheSourceModule.GeneratedPaths[CollatedObject.Key], this.GeneratedPaths[Key]);
         }
 
         protected override void
@@ -121,7 +121,7 @@ namespace Publisher
                     this.Macros["StrippedRoot"]);
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1))",
                     destinationDirectory,
-                    value.GeneratedPaths[CollatedObject.CopiedObjectKey]));
+                    value.GeneratedPaths[CollatedObject.Key]));
             }
         }
     }

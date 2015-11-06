@@ -48,7 +48,7 @@ namespace Publisher
 
             var isSymLink = (sender is CollatedSymbolicLink);
             var targetName = isSymLink ?
-                sender.GeneratedPaths[CollatedObject.CopiedObjectKey] :
+                sender.GeneratedPaths[CollatedObject.Key] :
                 sender.CreateTokenizedString("$(0)/@filename($(1))", sender.Macros["CopyDir"], sourcePath);
             rule.AddTarget(targetName, variableName: sourceType + "_" + senderType + "_" + sourceFilename, isPhony: isSymLink);
 
