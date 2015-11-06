@@ -86,7 +86,7 @@ namespace C
                 {
                     continue;
                 }
-                else if (module is ExternalFramework)
+                else if (module is OSXFramework)
                 {
                     continue;
                 }

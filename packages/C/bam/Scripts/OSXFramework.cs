@@ -29,7 +29,7 @@
 #endregion // License
 namespace C
 {
-    public abstract class ExternalFramework :
+    public abstract class OSXFramework :
         CModule
     {
         public class Path
@@ -55,7 +55,7 @@ namespace C
             }
         }
 
-        protected ExternalFramework()
+        protected OSXFramework()
         {
             this.Macros["FrameworkLibraryPath"] = this.MakePlaceholderPath();
         }

@@ -100,7 +100,7 @@ namespace VisualCCommon
                 // no library
                 return null;
             }
-            else if (module is C.ExternalFramework)
+            else if (module is C.OSXFramework)
             {
                 // dealt with elsewhere
                 return null;

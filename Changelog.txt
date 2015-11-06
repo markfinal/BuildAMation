@@ -1,3 +1,5 @@
+06-Nov-2015 Renamed C.ExternalFramework to C.OSXFramework.
+
 06-Nov-2015 Internal expressions referring to the CModule macro 'PatchVersion' (used in semantic versioning with MajorVersion and MinorVersion), now use the pre-function #valid. This is so that thirdparty builds that only support major.minor version numbers can still use Bam modules, by deleting the PatchVersion macro from their modules.
 
 06-Nov-2015 Added pre-function, #valid, which checks whether its expression is valid, i.e. is it a valid expression with valid macro references in the current context. If it is valid, the function call is replaced by its expression. If it is not valid, the function call is removed.

@@ -468,10 +468,10 @@ namespace Publisher
 
             var subdirTS = Bam.Core.TokenizedString.CreateVerbatim(subdir);
 
-            var framework = dependent as C.ExternalFramework;
+            var framework = dependent as C.OSXFramework;
             if (null == framework)
             {
-                throw new Bam.Core.Exception("Module {0} did not derive from {1}", dependent.GetType().ToString(), typeof(C.ExternalFramework).ToString());
+                throw new Bam.Core.Exception("Module {0} did not derive from {1}", dependent.GetType().ToString(), typeof(C.OSXFramework).ToString());
             }
             var frameworkPath = framework.FrameworkPath;
 

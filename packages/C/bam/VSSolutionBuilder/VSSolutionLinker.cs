@@ -106,7 +106,7 @@ namespace C
                     {
                         continue;
                     }
-                    else if (input is ExternalFramework)
+                    else if (input is OSXFramework)
                     {
                         throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
                     }
@@ -131,7 +131,7 @@ namespace C
                     {
                         continue;
                     }
-                    else if (input is ExternalFramework)
+                    else if (input is OSXFramework)
                     {
                         throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
                     }
