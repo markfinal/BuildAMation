@@ -49,7 +49,7 @@ namespace ClangCommon
             case C.ELinkerOutput.DynamicLibrary:
                 {
                     configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicprefix"].Parse());
-                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(System.IO.Path.GetExtension(module.Tool.Macros["dynamicext"].Parse()).TrimStart(new [] {'.'}));
+                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicextonly"].Parse().TrimStart(new [] {'.'}));
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.UniqueConfigurationValue("mh_dylib");
 
                     var version = System.String.Format("{0}.{1}.{2}",
