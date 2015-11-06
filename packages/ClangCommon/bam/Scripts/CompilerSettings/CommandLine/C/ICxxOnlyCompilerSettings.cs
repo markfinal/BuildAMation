@@ -34,7 +34,6 @@ namespace ClangCommon
         public static void
         Convert(
             this C.ICxxOnlyCompilerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != settings.ExceptionHandler)

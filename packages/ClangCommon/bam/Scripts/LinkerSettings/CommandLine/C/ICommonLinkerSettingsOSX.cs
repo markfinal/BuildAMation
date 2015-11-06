@@ -34,9 +34,9 @@ namespace ClangCommon
         public static void
         Convert(
             this C.ICommonLinkerSettingsOSX options,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
+            var module = (options as Bam.Core.Settings).Module;
             foreach (var framework in options.Frameworks)
             {
                 var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());

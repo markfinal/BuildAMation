@@ -34,9 +34,9 @@ namespace ClangCommon
         public static void
         Convert(
             this C.ICommonArchiverSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             switch (settings.OutputType)
             {
                 case C.EArchiverOutput.StaticLibrary:

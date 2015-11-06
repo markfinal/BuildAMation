@@ -34,7 +34,6 @@ namespace ClangCommon
         public static void
         Convert(
             this C.ICommonCompilerSettingsOSX options,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             foreach (var path in options.FrameworkSearchPaths)
