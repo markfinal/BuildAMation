@@ -31,22 +31,6 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Extension functions
-    /// </summary>
-    static class Extensions
-    {
-        // ref: http://stackoverflow.com/questions/521687/c-sharp-foreach-with-index
-        static public void
-        Each<T>(
-            this System.Collections.Generic.IEnumerable<T> ie,
-            System.Action<T, int> action)
-        {
-            var i = 0;
-            foreach (var e in ie) action(e, i++);
-        }
-    }
-
-    /// <summary>
     /// Strings can contain macros and functions, which are tokenized and evaluated in this class
     /// </summary>
     public sealed class TokenizedString
@@ -141,12 +125,6 @@ namespace Bam.Core
                 return;
             }
             var tokenized = SplitToParse(original, TokenRegExPattern);
-            tokenized.Each<string>((item, index) =>
-            {
-                if (item.StartsWith(TokenPrefix) && item.EndsWith(TokenSuffix))
-                {
-                }
-            });
             this.Tokens = tokenized.ToList<string>();
         }
 
