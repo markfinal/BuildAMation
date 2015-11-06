@@ -51,7 +51,7 @@ namespace C
                 return;
             }
 
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
+            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
             this.Policy.HeadersOnly(this, context, headers);
         }
 
@@ -75,7 +75,7 @@ namespace C
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.forwardedDeps.ToArray());
+                return this.forwardedDeps.ToReadOnlyCollection();
             }
         }
 

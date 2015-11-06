@@ -214,9 +214,9 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
-            var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.linkedModules.ToArray());
+            var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
+            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
+            var linked = this.linkedModules.ToReadOnlyCollection();
             var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, context, executable, source, headers, linked, null);
         }

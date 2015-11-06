@@ -53,7 +53,7 @@ namespace C
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.sourceModules.ToArray());
+                return this.sourceModules.ToReadOnlyCollection();
             }
         }
 
@@ -61,7 +61,7 @@ namespace C
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.forwardedDeps.ToArray());
+                return this.forwardedDeps.ToReadOnlyCollection();
             }
         }
 
@@ -160,8 +160,8 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
+            var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
+            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
             var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, context, libraryFile, source, headers);
         }

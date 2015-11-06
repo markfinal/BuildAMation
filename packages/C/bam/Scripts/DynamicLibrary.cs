@@ -79,7 +79,7 @@ namespace C
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.sourceModules.ToArray());
+                return this.sourceModules.ToReadOnlyCollection();
             }
         }
 
