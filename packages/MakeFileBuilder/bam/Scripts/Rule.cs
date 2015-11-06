@@ -84,9 +84,17 @@ namespace MakeFileBuilder
 
         public void
         AddShellCommand(
-            string command)
+            string command,
+            bool ignoreErrors = false)
         {
-            this.ShellCommands.Add(command);
+            if (ignoreErrors)
+            {
+                this.ShellCommands.Add(System.String.Format("-{0}", command));
+            }
+            else
+            {
+                this.ShellCommands.Add(command);
+            }
         }
 
         public bool
