@@ -38,7 +38,7 @@ namespace ClangCommon
         {
             this.Macros.AddVerbatim("exeext", string.Empty);
             this.Macros.AddVerbatim("dynamicprefix", "lib");
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".$(MajorVersion).dylib", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateInline(".$(MajorVersion).dylib"));
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".dylib");
 

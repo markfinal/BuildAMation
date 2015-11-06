@@ -45,8 +45,8 @@ namespace GccCommon
             // TODO: should be able to build these up cumulatively, but the deferred expansion only
             // works for a single depth (up to the Module using this Tool) so this needs looking into
             this.Macros.AddVerbatim("linkernameext", ".so");
-            this.Macros.Add("sonameext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion).$(MinorVersion).$(PatchVersion)", null, flags: Bam.Core.TokenizedString.EFlags.DeferredExpansion));
+            this.Macros.Add("sonameext", Bam.Core.TokenizedString.CreateInline(".so.$(MajorVersion)"));
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateInline(".so.$(MajorVersion).$(MinorVersion).$(PatchVersion)"));
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".so");
         }
