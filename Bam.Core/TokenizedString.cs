@@ -655,14 +655,11 @@ namespace Bam.Core
             string originalExpression,
             MacroList customMacros)
         {
-            var regex = new System.Text.RegularExpressions.Regex(PreFunctionRegExPattern);
-            var matches = regex.Matches(originalExpression);
+            var matches = System.Text.RegularExpressions.Regex.Matches(originalExpression, PreFunctionRegExPattern);
             if (0 == matches.Count)
             {
                 return originalExpression;
             }
-            var groupNames = regex.GetGroupNames();
-            Log.MessageAll(new StringArray(groupNames).ToString(' '));
             var modifiedString = originalExpression;
             foreach (System.Text.RegularExpressions.Match match in matches)
             {
