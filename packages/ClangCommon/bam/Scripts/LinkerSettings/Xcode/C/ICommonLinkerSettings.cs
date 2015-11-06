@@ -52,12 +52,9 @@ namespace ClangCommon
                     configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicextonly"].Parse().TrimStart(new [] {'.'}));
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.UniqueConfigurationValue("mh_dylib");
 
-                    var version = System.String.Format("{0}.{1}.{2}",
-                        module.Macros["MajorVersion"].Parse(),
-                        module.Macros["MinorVersion"].Parse(),
-                        module.Macros["PatchVersion"].Parse());
-                    configuration["DYLIB_CURRENT_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(version);
-                    configuration["DYLIB_COMPATIBILITY_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(version);
+                    var versionString = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse();
+                    configuration["DYLIB_CURRENT_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(versionString);
+                    configuration["DYLIB_COMPATIBILITY_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(versionString);
                 }
                 break;
             }
