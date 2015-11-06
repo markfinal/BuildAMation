@@ -415,44 +415,42 @@ namespace Bam.Core
                         continue;
                     }
                 }
+
+                // step 6 : try the immediate environment
+                var strippedToken = SplitToParse(token, ExtractTokenRegExPattern).First();
+                var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
+                if (null != envVar)
+                {
+                    parsedString.Append(envVar);
+                    continue;
+                }
+                // step 7 : fail
                 else
                 {
-                    // step 6 : try the immediate environment
-                    var strippedToken = SplitToParse(token, ExtractTokenRegExPattern).First();
-                    var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
-                    if (null != envVar)
+                    // TODO: this could be due to the user not having set a property, e.g. inputpath
+                    // is there a better error message that could be returned, other than this in those
+                    // circumstances?
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
+                    message.AppendLine();
+                    if (null != customMacros)
                     {
-                        parsedString.Append(envVar);
-                        continue;
+                        message.AppendLine("Searched in custom macros");
                     }
-                    // step 7 : fail
-                    else
+                    message.AppendLine("Searched in global macros");
+                    if (null != this.ModuleWithMacros)
                     {
-                        // TODO: this could be due to the user not having set a property, e.g. inputpath
-                        // is there a better error message that could be returned, other than this in those
-                        // circumstances?
-                        var message = new System.Text.StringBuilder();
-                        message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
+                        message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
                         message.AppendLine();
-                        if (null != customMacros)
+                        if (null != this.ModuleWithMacros.Tool)
                         {
-                            message.AppendLine("Searched in custom macros");
-                        }
-                        message.AppendLine("Searched in global macros");
-                        if (null != this.ModuleWithMacros)
-                        {
-                            message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
+                            message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
                             message.AppendLine();
-                            if (null != this.ModuleWithMacros.Tool)
-                            {
-                                message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
-                                message.AppendLine();
-                            }
                         }
-                        message.AppendLine("TokenizedString created with this stack trace:");
-                        message.AppendLine(this.CreationStackTrace);
-                        throw new Exception(message.ToString());
                     }
+                    message.AppendLine("TokenizedString created with this stack trace:");
+                    message.AppendLine(this.CreationStackTrace);
+                    throw new Exception(message.ToString());
                 }
             }
             var functionEvaluated = this.EvaluateFunctions(NormalizeDirectorySeparators(parsedString.ToString()));
