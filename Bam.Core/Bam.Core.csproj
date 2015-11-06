@@ -58,6 +58,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Array.cs" />
+    <Compile Include="Attributes\ConfigurationFilterAttribute.cs" />
     <Compile Include="Attributes\EvaluationRequiredAttribute.cs" />
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
     <Compile Include="Attributes\PlatformFilterAttribute.cs" />
