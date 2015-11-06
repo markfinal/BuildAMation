@@ -34,10 +34,6 @@ namespace Publisher
     public abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
-        protected DebugSymbolCollation()
-        {
-        }
-
         public override void
         Evaluate()
         {
