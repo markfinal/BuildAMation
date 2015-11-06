@@ -293,7 +293,7 @@ namespace Bam.Core
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependeesList);
+                return this.DependeesList.ToReadOnlyCollection();
             }
         }
 
@@ -314,7 +314,7 @@ namespace Bam.Core
         }
 
         private Array<Module> DependentsList = new Array<Module>();
-        private System.Collections.Generic.List<Module> DependeesList = new System.Collections.Generic.List<Module>();
+        private Array<Module> DependeesList = new Array<Module>();
 
         private Array<Module> RequiredDependentsList = new Array<Module>();
         private System.Collections.Generic.List<Module> RequiredDependeesList = new System.Collections.Generic.List<Module>();
