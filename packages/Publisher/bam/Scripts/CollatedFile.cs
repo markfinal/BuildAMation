@@ -33,6 +33,17 @@ namespace Publisher
     public sealed class CollatedFile :
         CollatedObject
     {
+        public CollatedFile()
+        {
+            this.FailWhenSourceDoesNotExist = true;
+        }
+
+        public bool FailWhenSourceDoesNotExist
+        {
+            get;
+            set;
+        }
+
         public override void
         Evaluate()
         {

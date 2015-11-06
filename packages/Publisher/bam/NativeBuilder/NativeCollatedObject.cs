@@ -37,6 +37,19 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
+            if (sender is CollatedFile)
+            {
+                if (!(sender as CollatedFile).FailWhenSourceDoesNotExist)
+                {
+                    var source = sender.SourcePath.Parse();
+                    if (!System.IO.File.Exists(source))
+                    {
+                        Bam.Core.Log.Detail("File {0} cannot be copied as it does not exist. Ignoring.", source);
+                        return;
+                    }
+                }
+            }
+
             var isSymLink = (sender is CollatedSymbolicLink);
             var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
 

@@ -86,6 +86,9 @@ namespace Publisher
             copyPDBModule.SourcePath = collatedFile.SourceModule.GeneratedPaths[C.ConsoleApplication.PDBKey];
             copyPDBModule.SubDirectory = collatedFile.SubDirectory;
 
+            // since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
+            copyPDBModule.FailWhenSourceDoesNotExist = false;
+
             if (collatedFile.Reference == null)
             {
                 referenceMap.Add(collatedFile, copyPDBModule);

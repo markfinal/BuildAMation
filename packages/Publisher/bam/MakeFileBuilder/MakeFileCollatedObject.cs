@@ -66,9 +66,11 @@ namespace Publisher
             {
                 meta.CommonMetaData.Directories.AddUnique(sender.Macros["CopyDir"].Parse());
 
+                var ignoreErrors = (sender is CollatedFile) && !(sender as CollatedFile).FailWhenSourceDoesNotExist;
                 rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' ')));
+                    commandLine.ToString(' ')),
+                    ignoreErrors: ignoreErrors);
                 rule.AddPrerequisite(sourcePath);
             }
         }
