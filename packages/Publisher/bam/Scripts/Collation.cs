@@ -65,6 +65,102 @@ namespace Publisher
             return null;
         }
 
+        public static Bam.Core.TokenizedString
+        GenerateFileCopyDestination(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString referenceFilePath,
+            Bam.Core.TokenizedString subDirectory,
+            Bam.Core.TokenizedString unReferencedRoot)
+        {
+            if (referenceFilePath != null)
+            {
+                if (null != subDirectory)
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
+                        referenceFilePath,
+                        subDirectory);
+                }
+                else
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/)",
+                        referenceFilePath);
+                }
+            }
+            else
+            {
+                if (null != subDirectory)
+                {
+                    return module.CreateTokenizedString("@normalize($(0)/$(1)/)",
+                        unReferencedRoot,
+                        subDirectory);
+                }
+                else
+                {
+                    return module.CreateTokenizedString("@normalize($(0)/)",
+                        unReferencedRoot);
+                }
+            }
+        }
+
+        public static Bam.Core.TokenizedString
+        GenerateDirectoryCopyDestination(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString referenceFilePath,
+            Bam.Core.TokenizedString subDirectory,
+            Bam.Core.TokenizedString sourcePath)
+        {
+            // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+            if (null != subDirectory)
+            {
+                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)",
+                        referenceFilePath,
+                        subDirectory,
+                        sourcePath);
+                }
+                else
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
+                        referenceFilePath,
+                        subDirectory);
+                }
+            }
+            else
+            {
+                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)",
+                        referenceFilePath,
+                        sourcePath);
+                }
+                else
+                {
+                    return module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)",
+                        referenceFilePath);
+                }
+            }
+        }
+
+        public static Bam.Core.TokenizedString
+        GenerateSymbolicLinkCopyDestination(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString referenceFilePath,
+            Bam.Core.TokenizedString subDirectory)
+        {
+            if (null != subDirectory)
+            {
+                return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
+                    referenceFilePath,
+                    subDirectory);
+            }
+            else
+            {
+                return module.CreateTokenizedString("@normalize(@dir($(0))/)",
+                    referenceFilePath);
+            }
+        }
+
         private CollatedFile
         CreateCollatedFile(
             Bam.Core.Module sourceModule,
@@ -74,16 +170,10 @@ namespace Publisher
         {
             var copyFileModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
                 {
-                    if (reference != null)
+                    Bam.Core.TokenizedString referenceFilePath = null;
+                    if (null != reference)
                     {
-                        if (null != subDirectory)
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
-                        }
-                        else
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
-                        }
+                        referenceFilePath = reference.GeneratedPaths[CollatedObject.Key];
                     }
                     else
                     {
@@ -91,15 +181,12 @@ namespace Publisher
                         {
                             this.RegisterGeneratedFile(PublishingRoot, module.CreateTokenizedString("@dir($(0))", sourcePath));
                         }
-                        if (null != subDirectory)
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(0)/$(1)/)", this.GeneratedPaths[PublishingRoot], subDirectory);
-                        }
-                        else
-                        {
-                            module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize($(0)/)", this.GeneratedPaths[PublishingRoot]);
-                        }
                     }
+                    module.Macros["CopyDir"] = GenerateFileCopyDestination(
+                        module,
+                        referenceFilePath,
+                        subDirectory,
+                        this.GeneratedPaths[PublishingRoot]);
                 });
             this.Requires(copyFileModule);
 
@@ -124,29 +211,11 @@ namespace Publisher
 
             var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
             {
-                // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
-                if (null != subDirectory)
-                {
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory, sourcePath);
-                    }
-                    else
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
-                    }
-                }
-                else
-                {
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], sourcePath);
-                    }
-                    else
-                    {
-                        module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
-                    }
-                }
+                module.Macros["CopyDir"] = GenerateDirectoryCopyDestination(
+                    module,
+                    reference.GeneratedPaths[CollatedObject.Key],
+                    subDirectory,
+                    sourcePath);
             });
             this.Requires(copyDirectoryModule);
 
@@ -171,14 +240,10 @@ namespace Publisher
 
             var copySymlinkModule = Bam.Core.Module.Create<CollatedSymbolicLink>(preInitCallback: module =>
             {
-                if (null != subDirectory)
-                {
-                    module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey], subDirectory);
-                }
-                else
-                {
-                    module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)", reference.GeneratedPaths[CollatedObject.CopiedObjectKey]);
-                }
+                module.Macros["CopyDir"] = GenerateSymbolicLinkCopyDestination(
+                    module,
+                    reference.GeneratedPaths[CollatedObject.Key],
+                    subDirectory);
             });
             this.Requires(copySymlinkModule);
 
@@ -222,7 +287,7 @@ namespace Publisher
                 copyFileModule.SourceModule.Macros["SOName"],
                 copyFileModule.Reference,
                 copyFileModule.SubDirectory);
-            copySymlink.LinkTarget(copySymlink.CreateTokenizedString("@filename($(0))", copyFileModule.SourcePath));
+            copySymlink.AssignLinkTarget(copySymlink.CreateTokenizedString("@filename($(0))", copyFileModule.SourcePath));
         }
 
         private bool
@@ -403,10 +468,10 @@ namespace Publisher
 
             var subdirTS = Bam.Core.TokenizedString.CreateVerbatim(subdir);
 
-            var framework = dependent as C.ExternalFramework;
+            var framework = dependent as C.OSXFramework;
             if (null == framework)
             {
-                throw new Bam.Core.Exception("Module {0} did not derive from {1}", dependent.GetType().ToString(), typeof(C.ExternalFramework).ToString());
+                throw new Bam.Core.Exception("Module {0} did not derive from {1}", dependent.GetType().ToString(), typeof(C.OSXFramework).ToString());
             }
             var frameworkPath = framework.FrameworkPath;
 
@@ -468,7 +533,7 @@ namespace Publisher
                         this.CreateTokenizedString("$(0)/$(1)", frameworkPath, symlink),
                         reference,
                         this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
-                    copySymlink.LinkTarget(symlinkData.DestinationPath);
+                    copySymlink.AssignLinkTarget(symlinkData.DestinationPath);
                     foreach (var publishedDir in dirPublishedModules)
                     {
                         copySymlink.Requires(publishedDir);

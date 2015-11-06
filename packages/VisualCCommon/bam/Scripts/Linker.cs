@@ -47,6 +47,7 @@ namespace VisualCCommon
             this.Macros.AddVerbatim("pluginext", ".dll");
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");
+            this.Macros.AddVerbatim("pdbext", ".pdb");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
@@ -99,7 +100,7 @@ namespace VisualCCommon
                 // no library
                 return null;
             }
-            else if (module is C.ExternalFramework)
+            else if (module is C.OSXFramework)
             {
                 // dealt with elsewhere
                 return null;

@@ -393,7 +393,10 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}attributes = {{", indent2);
             text.AppendLine();
-            text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, "0460"); // TODO: this is for Xcode 4
+
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+
+            text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, clangMeta.LastUpgradeCheck);
             text.AppendLine();
             text.AppendFormat("{0}}};", indent2);
             text.AppendLine();

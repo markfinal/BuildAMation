@@ -43,7 +43,7 @@ namespace Publisher
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
 
             commandLine.Add(newName.Parse());
-            commandLine.Add(sender.Source.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse());
+            commandLine.Add(sender.Source.GeneratedPaths[CollatedObject.Key].Parse());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace C
 {
     public class ConsoleApplication :
@@ -37,6 +38,8 @@ namespace C
         private ILinkingPolicy Policy = null;
 
         static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ExecutableFile");
+        static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Windows Import Library File");
+        static public Bam.Core.FileKey PDBKey = Bam.Core.FileKey.Generate("Windows Program DataBase File");
 
         protected override void
         Init(
@@ -45,6 +48,14 @@ namespace C
             base.Init(parent);
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                if (this.Linker.Macros.Contains("pdbext"))
+                {
+                    var moduleIsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
+                    this.RegisterGeneratedFile(PDBKey, moduleIsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
+                }
+            }
             this.PrivatePatch(settings =>
             {
                 var linker = settings as C.ICommonLinkerSettings;
@@ -203,9 +214,9 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var source = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.sourceModules).ToArray());
-            var headers = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(FlattenHierarchicalFileList(this.headerModules).ToArray());
-            var linked = new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.linkedModules.ToArray());
+            var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
+            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
+            var linked = this.linkedModules.ToReadOnlyCollection();
             var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, context, executable, source, headers, linked, null);
         }

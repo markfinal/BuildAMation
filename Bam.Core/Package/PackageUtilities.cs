@@ -177,7 +177,8 @@ namespace Bam.Core
         }
 
         public static void
-        IdentifyAllPackages()
+        IdentifyAllPackages(
+            bool allowDuplicates = false)
         {
             var packageRepos = new System.Collections.Generic.Queue<string>();
             foreach (var repo in State.PackageRepositories)
@@ -247,66 +248,77 @@ namespace Bam.Core
             PackageDefinition.ResolveDependencies(masterDefinitionFile, packageDefinitions, candidatePackageDefinitions);
 
             // now resolve any duplicate names using defaults
+            // unless duplicates are allowed
             var duplicatePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() > 1).Select(item => item.Key);
-            if (duplicatePackageNames.Count() > 0)
+            if ((duplicatePackageNames.Count() > 0) && !allowDuplicates)
             {
                 var versionSpeciferArgs = new PackageDefaultVersion();
                 var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
+                var toRemove = new Array<PackageDefinition>();
 
                 foreach (var dupName in duplicatePackageNames)
                 {
                     var duplicates = packageDefinitions.Where(item => item.Name == dupName);
-                    var masterDependency = masterDefinitionFile.Dependents.Where(item => item.Item1 == dupName);
-                    var resolvedDuplicate = false;
-                    var toRemove = new Array<PackageDefinition>();
-                    foreach (var masterDep in masterDependency)
+                    PackageDefinition resolvedDuplicate = null;
+                    // command line specifications take precedence to resolve a duplicate
+                    foreach (var specifier in packageVersionSpecifiers)
                     {
-                        // guaranteed that at most one instance of the dependency is marked as default
-                        if (masterDep.Item3.HasValue && masterDep.Item3.Value)
+                        if (!specifier.Contains(dupName))
                         {
-                            resolvedDuplicate = true;
+                            continue;
                         }
-                        else
+
+                        foreach (var dupPackage in duplicates)
                         {
-                            // TODO: check whether a command line argument of
-                            // --<packagename>.Version=<default>
-                            // has been supplied
-                            foreach (var specifier in packageVersionSpecifiers)
+                            if (specifier[1] == dupPackage.Version)
                             {
-                                if (!specifier.Contains(dupName))
-                                {
-                                    continue;
-                                }
-
-                                if (specifier[1] == masterDep.Item2)
-                                {
-                                    resolvedDuplicate = true;
-                                }
-                            }
-
-                            if (!resolvedDuplicate)
-                            {
-                                toRemove.Add(packageDefinitions.Where(item => item.Name == masterDep.Item1 && item.Version == masterDep.Item2).First());
+                                resolvedDuplicate = dupPackage;
+                                break;
                             }
                         }
-                    }
 
-                    if (resolvedDuplicate)
-                    {
-                        packageDefinitions.RemoveAll(toRemove);
-                    }
-                    else
-                    {
-                        var message = new System.Text.StringBuilder();
-                        message.AppendFormat("Unable resolve to a single version of package {0}", duplicates.First().Name);
-                        message.AppendLine();
+                        if (resolvedDuplicate != null)
+                        {
+                            break;
+                        }
+
+                        var noMatchMessage = new System.Text.StringBuilder();
+                        noMatchMessage.AppendFormat("Command line version specified, {0}, could not resolve to one of the available versions of package {1}:", specifier[1], duplicates.First().Name);
+                        noMatchMessage.AppendLine();
                         foreach (var dup in duplicates)
                         {
-                            message.AppendLine(dup.FullName);
+                            noMatchMessage.AppendFormat("\t{0}", dup.Version);
+                            noMatchMessage.AppendLine();
                         }
-                        throw new Exception(message.ToString());
+                        throw new Exception(noMatchMessage.ToString());
                     }
+
+                    if (resolvedDuplicate != null)
+                    {
+                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item != resolvedDuplicate)));
+                        continue;
+                    }
+
+                    // now look at the master dependency file, for any 'default' specifications
+                    var masterDependency = masterDefinitionFile.Dependents.Where(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value).FirstOrDefault();
+                    if (null != masterDependency)
+                    {
+                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item.Version != masterDependency.Item2)));
+                        continue;
+                    }
+
+                    var resolveErrorMessage = new System.Text.StringBuilder();
+                    resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve. Available versions of the package are:", duplicates.First().Name);
+                    resolveErrorMessage.AppendLine();
+                    foreach (var dup in duplicates)
+                    {
+                        resolveErrorMessage.AppendFormat("\t{0}", dup.Version);
+                        resolveErrorMessage.AppendLine();
+                    }
+                    throw new Exception(resolveErrorMessage.ToString());
                 }
+
+                packageDefinitions.RemoveAll(toRemove);
             }
 
             Graph.Instance.SetPackageDefinitions(packageDefinitions);

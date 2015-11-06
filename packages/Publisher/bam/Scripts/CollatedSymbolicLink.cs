@@ -49,7 +49,7 @@ namespace Publisher
         }
 
         public void
-        LinkTarget(
+        AssignLinkTarget(
             TokenizedString path = null)
         {
 #if __MonoCS__
@@ -71,11 +71,11 @@ namespace Publisher
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var copiedPath = this.GeneratedPaths[CopiedObjectKey].Parse();
+            var copiedPath = this.GeneratedPaths[Key].Parse();
             var exists = System.IO.File.Exists(copiedPath);
             if (!exists)
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[CopiedObjectKey]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
         }

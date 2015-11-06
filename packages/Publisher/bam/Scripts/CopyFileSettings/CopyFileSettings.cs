@@ -68,5 +68,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool ICopyFileSettings.PreserveAllAttributes
+        {
+            get;
+            set;
+        }
     }
 }

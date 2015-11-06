@@ -152,7 +152,7 @@ namespace C
                 {
                     // no library
                 }
-                else if (library is ExternalFramework)
+                else if (library is OSXFramework)
                 {
                     // frameworks are dealt with elsewhere
                 }
@@ -183,7 +183,7 @@ namespace C
                 {
                     // no library
                 }
-                else if (library is ExternalFramework)
+                else if (library is OSXFramework)
                 {
                     // frameworks are dealt with elsewhere
                 }

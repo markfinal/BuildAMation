@@ -128,7 +128,7 @@ namespace C
         public ChildModuleType
         AddFile(
             SourceFile sourceModule,
-            Bam.Core.Module.ModulePreInitDelegate preInitDlg = null)
+            Bam.Core.Module.PreInitDelegate<ChildModuleType> preInitDlg = null)
         {
             var child = Bam.Core.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
             var requiresSource = child as IRequiresSourceModule;

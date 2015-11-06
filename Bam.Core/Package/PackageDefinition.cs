@@ -1002,7 +1002,8 @@ namespace Bam.Core
         private void
         ShowDependencies(
             int depth,
-            Array<PackageDefinition> visitedPackages)
+            Array<PackageDefinition> visitedPackages,
+            string packageFormatting)
         {
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
@@ -1013,15 +1014,18 @@ namespace Bam.Core
                     continue;
                 }
 
-                Log.MessageAll("{0}{1}{2} (repo: '{3}')",
-                    new string('\t', depth),
+                var formattedName = System.String.Format("{0}{1}{2}",
+                    new string(' ', depth * 4),
                     dep.FullName,
-                    dependent.Item3.GetValueOrDefault(false) ? "*" : System.String.Empty,
+                    dependent.Item3.GetValueOrDefault(false) ? "*" : System.String.Empty);
+
+                Log.MessageAll(packageFormatting,
+                    formattedName,
                     dep.PackageRepositories[0]);
 
                 if (dep.Dependents.Count > 0)
                 {
-                    dep.ShowDependencies(depth + 1, visitedPackages);
+                    dep.ShowDependencies(depth + 1, visitedPackages, packageFormatting);
                 }
             }
         }
@@ -1079,8 +1083,10 @@ namespace Bam.Core
             if (this.Dependents.Count > 0)
             {
                 Log.MessageAll("\nDependent packages (* = default version):", packageName);
+                var packageFormatting = System.String.Format("{{0, -48}} {{1, 32}}");
+                Log.MessageAll(packageFormatting, "Package Name", "From Repository");
                 var visitedPackages = new Array<PackageDefinition>();
-                this.ShowDependencies(1, visitedPackages);
+                this.ShowDependencies(1, visitedPackages, packageFormatting);
             }
             else
             {

@@ -83,6 +83,7 @@ namespace Bam.Core
             bool emptyFirst,
             bool useDefaults)
         {
+            this.Module = module;
             var settingsType = this.GetType();
             if (!Cache.ContainsKey(settingsType))
             {
@@ -132,6 +133,12 @@ namespace Bam.Core
             {
                 LocalPolicy.DefineLocalSettings(this, module);
             }
+        }
+
+        public Module Module
+        {
+            get;
+            set;
         }
     }
 }

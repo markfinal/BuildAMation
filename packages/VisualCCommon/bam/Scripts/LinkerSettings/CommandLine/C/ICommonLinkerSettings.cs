@@ -56,9 +56,13 @@ namespace VisualCCommon
             {
                 commandLine.Add(path);
             }
-            if (settings.DebugSymbols.GetValueOrDefault())
+            if (settings.DebugSymbols.HasValue && settings.DebugSymbols.Value)
             {
                 commandLine.Add("-DEBUG");
+                if (null != module.GeneratedPaths[C.ConsoleApplication.PDBKey])
+                {
+                    commandLine.Add(System.String.Format("-PDB:{0}", module.GeneratedPaths[C.ConsoleApplication.PDBKey].Parse()));
+                }
             }
         }
     }

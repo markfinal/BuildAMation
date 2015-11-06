@@ -44,7 +44,7 @@ namespace Publisher
 
             commandLine.Add(oldName.Parse());
             commandLine.Add(newName.Parse());
-            commandLine.Add(sender.Source.GeneratedPaths[CollatedObject.CopiedObjectKey].Parse());
+            commandLine.Add(sender.Source.GeneratedPaths[CollatedObject.Key].Parse());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

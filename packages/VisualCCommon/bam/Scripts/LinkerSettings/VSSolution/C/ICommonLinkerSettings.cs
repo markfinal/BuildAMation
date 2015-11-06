@@ -61,7 +61,14 @@ namespace VisualCCommon
             settingsGroup.AddSetting("AdditionalLibraryDirectories", settings.LibraryPaths, condition);
             settingsGroup.AddSetting("AdditionalDependencies", settings.Libraries, condition);
 
-            settingsGroup.AddSetting("GenerateDebugInformation", settings.DebugSymbols.GetValueOrDefault(false), condition);
+            if (settings.DebugSymbols.HasValue && settings.DebugSymbols.Value)
+            {
+                settingsGroup.AddSetting("GenerateDebugInformation", true, condition);
+                if (null != module.GeneratedPaths[C.ConsoleApplication.PDBKey])
+                {
+                    settingsGroup.AddSetting("ProgramDatabaseFile", module.GeneratedPaths[C.ConsoleApplication.PDBKey], condition);
+                }
+            }
         }
     }
 }

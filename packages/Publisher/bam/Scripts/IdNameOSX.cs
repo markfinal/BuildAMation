@@ -37,7 +37,7 @@ namespace Publisher
         ExecuteInternal(
             ExecutionContext context)
         {
-            var framework = this.CopiedFileModule.SourceModule as C.ExternalFramework;
+            var framework = this.CopiedFileModule.SourceModule as C.OSXFramework;
             if (null == framework)
             {
                 throw new Bam.Core.Exception("Updating the ID name only works on an external framework");

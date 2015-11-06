@@ -86,7 +86,7 @@ namespace C
                 {
                     continue;
                 }
-                else if (module is ExternalFramework)
+                else if (module is OSXFramework)
                 {
                     continue;
                 }
@@ -96,11 +96,10 @@ namespace C
                 }
             }
 
-            var tool = sender.Tool as Bam.Core.PreBuiltTool;
+            var tool = sender.Tool as Bam.Core.ICommandLineTool;
             var commands = new System.Text.StringBuilder();
-            commands.AppendFormat("{0} {1} $^ {2}",
-                tool.Executable.ParseAndQuoteIfNecessary(),
-                (tool.InitialArguments != null) ? tool.InitialArguments.ToString(' ') : string.Empty,
+            commands.AppendFormat("{0} $^ {1}",
+                CommandLineProcessor.Processor.StringifyTool(tool),
                 commandLineArgs.ToString(' '));
             rule.AddShellCommand(commands.ToString());
 

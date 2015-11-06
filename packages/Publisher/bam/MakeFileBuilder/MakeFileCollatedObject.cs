@@ -48,7 +48,7 @@ namespace Publisher
 
             var isSymLink = (sender is CollatedSymbolicLink);
             var targetName = isSymLink ?
-                sender.GeneratedPaths[CollatedObject.CopiedObjectKey] :
+                sender.GeneratedPaths[CollatedObject.Key] :
                 sender.CreateTokenizedString("$(0)/@filename($(1))", sender.Macros["CopyDir"], sourcePath);
             rule.AddTarget(targetName, variableName: sourceType + "_" + senderType + "_" + sourceFilename, isPhony: isSymLink);
 
@@ -57,13 +57,20 @@ namespace Publisher
 
             if (isSymLink)
             {
-                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' '), sender.Macros["LinkTarget"].Parse()));
+                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    sender.Macros["LinkTarget"].Parse()));
             }
             else
             {
                 meta.CommonMetaData.Directories.AddUnique(sender.Macros["CopyDir"].Parse());
 
-                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)", (sender.Tool as Bam.Core.ICommandLineTool).Executable, commandLine.ToString(' ')));
+                var ignoreErrors = (sender is CollatedFile) && !(sender as CollatedFile).FailWhenSourceDoesNotExist;
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' ')),
+                    ignoreErrors: ignoreErrors);
                 rule.AddPrerequisite(sourcePath);
             }
         }

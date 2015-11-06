@@ -85,6 +85,32 @@ namespace Test5
         }
     }
 
+    sealed class DebugSymbols :
+        Publisher.DebugSymbolCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateSymbolsFrom<RuntimePackage>();
+        }
+    }
+
+    sealed class Stripped :
+        Publisher.StrippedBinaryCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
+        }
+    }
+
     sealed class SDKPackage :
         Publisher.Collation
     {

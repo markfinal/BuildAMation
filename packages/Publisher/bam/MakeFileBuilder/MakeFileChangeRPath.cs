@@ -47,7 +47,7 @@ namespace Publisher
             commandLine.Add("-r");
 
             rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@",
-                (sender.Tool as Bam.Core.ICommandLineTool).Executable,
+                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                 commandLine.ToString(' '),
                 newRPath));
         }

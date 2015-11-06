@@ -48,9 +48,8 @@ namespace C
             commandLineArgs.Add("-s");
             commandLineArgs.Add("-f");
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $(notdir $@) $(dir $@)/{3}",
-                tool.Executable,
-                (tool.InitialArguments != null) ? tool.InitialArguments.ToString(' ') : string.Empty,
+            rule.AddShellCommand(System.String.Format(@"{0} {1} $(notdir $@) $(dir $@)/{2}",
+                CommandLineProcessor.Processor.StringifyTool(tool),
                 commandLineArgs.ToString(' '),
                 linkname.Parse()));
         }

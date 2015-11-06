@@ -34,8 +34,6 @@ namespace C
         ConsoleApplication,
         IDynamicLibrary
     {
-        static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Import Library File");
-
         private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
         private SharedObjectSymbolicLinkTool SymlinkTool;
 
@@ -81,7 +79,7 @@ namespace C
         {
             get
             {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>(this.sourceModules.ToArray());
+                return this.sourceModules.ToReadOnlyCollection();
             }
         }
 

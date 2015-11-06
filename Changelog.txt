@@ -1,3 +1,39 @@
+06-Nov-2015 Renamed C.ExternalFramework to C.OSXFramework.
+
+06-Nov-2015 Internal expressions referring to the CModule macro 'PatchVersion' (used in semantic versioning with MajorVersion and MinorVersion), now use the pre-function #valid. This is so that thirdparty builds that only support major.minor version numbers can still use Bam modules, by deleting the PatchVersion macro from their modules.
+
+06-Nov-2015 Added pre-function, #valid, which checks whether its expression is valid, i.e. is it a valid expression with valid macro references in the current context. If it is valid, the function call is replaced by its expression. If it is not valid, the function call is removed.
+
+06-Nov-2015 Added 'pre-function' support to Bam.Core.TokenizedStrings, identified by the syntax #<func>(<expression>). The existing function support is for post-evaluation-functions, identified by @<func>(<expression>), i.e. only executed once all tokens have been evaluated. Pre-functions are run prior to token evaluation.
+
+06-Nov-2015 Removed optional flags from Bam.Core.TokenizedString.Create. The deferred expansion flag has been removed. In its place is the concept of an 'inline' TokenizedString, created by invoking Bam.Core.TokenizedString.CreateInline. These inline strings are never parsed themselves, but instead are embedded into strings referring to them during parsing. If Module M1 defines a TokenizedString A that refers by name to an inline TokenizedString B in module M2, then B is allowed to refer, by name, to macros in module M1, as long as M1 and M2 are 'aware' of each other. The best case use of this is where M1 is a C module, and M2 is the Tool associated with M1.
+
+05-Nov-2015 Fixes #39. Publisher package now has a new module StrippedBinaryCollation, only supported in the Native build mode. This works with a Collation module, and a DebugSymbolCollation module, as source, and mirrors the directory structure of the former. On Linux, strip is invoked on each binary, and subsequently objcopy links the stripped binary to the debug symbols generated earlier. On Windows, for binaries with PDBs, a clone of the binary is taken, while without PDBs, strip and objcopy is used. On OSX, strip is invoked on each binary. All non-built files/directories/symlinks are cloned as-is.
+
+05-Nov-2015 Ignore any prebuilt modules from debug symbol collation.
+
+05-Nov-2015 Added C.PrebuiltAttribute, so that modules can be marked up as being already built. This is an attribute on a class, so place it on a module definition. This is useful for detecting cases where modules may not have available data, e.g. debug symbols.
+
+05-Nov-2015 Renamed Bam.Core.Module.ModulePreInitDelegate to Bam.Core.Module.PreInitDelegate, and also made it a generic based on the type of module being created. Any lambda expression used for this delegate now accepts an argument of the real type of the new module, rather than the base class Bam.Core.Module. This avoids any need to cast.
+
+04-Nov-2015 Bam.Core.Settings now has a Module property, set in InitializeAllInterfaces, to the module the Settings instance is associated with. This can be useful to access module paths during get/set property calls in settings interfaces.
+
+04-Nov-2015 VisualC sets the PDB path when debug symbols for the linker are enabled, and records the PDB file as a generated path on the module.
+
+04-Nov-2015 Added TokenizedString function, @changeextension(a, b), which will change the file extension of file 'a', with the extension in 'b'.
+
+04-Nov-2015 Publisher package now has a new module DebugSymbolCollation, only supported in the Native build mode. This accepts a Collation module as source, and mirrors its directory structure. On Linux, objcopy is invoked to copy debugsymbols from the original binary. On OSX, dsymutil is invoked to create a dSYM bundle. On Windows, PDB files are copied if generated (intended for VisualStudio), otherwise objcopy is used (intended for Mingw).
+
+04-Nov-2015 Added macro 'encapsulatingmodulename' to all Modules, once completed.
+
+03-Nov-2015 Added package Clang-Xcode7, targeting SDK 10.11. (Note that Xcode 7 does not include SDK 10.10.)
+
+03-Nov-2015 Renamed Clang-Apple600 package to Clang-Xcode6, targeting SDKs 10.9 and 10.10.
+
+03-Nov-2015 Renamed Clang-Apple503 package to Clang-Xcode5, targeting SDKs 10.8 and 10.9.
+
+03-Nov-2015 Renamed Clang-Apple425 package to Clang-Xcode4, targeting SDKs 10.7 and 10.8.
+
 03-Nov-2015 Fixes #43. The Clang package metadata now exposes a MinimumVersionSupported property, to define the oldest version of MacOSX the build can run on. This defaults to the SDK version if not overridden by the user in a class deriving Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. This value is used both for compilation and linking. Although these are exposed in compiler and linker settings, this is purely for ease of conversion to command lines.
 
 03-Nov-2015 Added generic function Bam.Core.Graph.PackageMetaData<meta type>(package name) to fetch the meta data instance for the named package, if it exists. This simplifies calling code, and avoids the need for use Linq in that code.

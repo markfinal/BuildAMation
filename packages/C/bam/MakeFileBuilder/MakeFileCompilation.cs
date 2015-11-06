@@ -47,11 +47,10 @@ namespace C
             rule.AddTarget(objectFilePath);
             rule.AddPrerequisite(source, C.SourceFile.Key);
 
-            var tool = sender.Tool as Bam.Core.PreBuiltTool;
+            var tool = sender.Tool as Bam.Core.ICommandLineTool;
             var command = new System.Text.StringBuilder();
-            command.AppendFormat("{0} {1} {2}",
-                tool.Executable.ParseAndQuoteIfNecessary(),
-                (tool.InitialArguments != null) ? tool.InitialArguments.ToString(' ') : string.Empty,
+            command.AppendFormat("{0} {1}",
+                CommandLineProcessor.Processor.StringifyTool(tool),
                 commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());
 

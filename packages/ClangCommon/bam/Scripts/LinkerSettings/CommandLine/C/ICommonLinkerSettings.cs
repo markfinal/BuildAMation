@@ -48,13 +48,10 @@ namespace ClangCommon
                     commandLine.Add("-dynamiclib");
                     commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
 
-                    var version = System.String.Format("{0}.{1}.{2}",
-                        module.Macros["MajorVersion"].Parse(),
-                        module.Macros["MinorVersion"].Parse(),
-                        module.Macros["PatchVersion"].Parse());
-                    commandLine.Add(System.String.Format("-current_version {0}", version));
+                    var versionString = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse();
+                    commandLine.Add(System.String.Format("-current_version {0}", versionString));
                     // TODO: offer an option of setting the compatibility version differently
-                    commandLine.Add(System.String.Format("-compatibility_version {0}", version));
+                    commandLine.Add(System.String.Format("-compatibility_version {0}", versionString));
                 }
                 break;
             }
