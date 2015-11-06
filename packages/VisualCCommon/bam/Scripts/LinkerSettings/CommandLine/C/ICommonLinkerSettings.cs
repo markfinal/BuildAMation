@@ -34,9 +34,9 @@ namespace VisualCCommon
         public static void
         Convert(
             this C.ICommonLinkerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:

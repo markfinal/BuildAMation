@@ -34,7 +34,6 @@ namespace VisualCCommon
         public static void
         Convert(
             this C.IAdditionalSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             foreach (var extra in settings.AdditionalSettings)

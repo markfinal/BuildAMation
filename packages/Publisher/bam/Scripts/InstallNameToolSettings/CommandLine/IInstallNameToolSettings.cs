@@ -35,7 +35,6 @@ namespace Publisher
         public static void
         Convert(
             this IInstallNameToolSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             switch (settings.Mode)

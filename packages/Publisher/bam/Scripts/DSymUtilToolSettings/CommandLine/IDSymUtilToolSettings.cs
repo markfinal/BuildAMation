@@ -35,7 +35,6 @@ namespace Publisher
         public static void
         Convert(
             this IDSymUtilToolSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
         }

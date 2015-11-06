@@ -40,7 +40,7 @@ namespace C
             Bam.Core.Module source)
         {
             var commandLineArgs = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLineArgs);
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLineArgs);
 
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();

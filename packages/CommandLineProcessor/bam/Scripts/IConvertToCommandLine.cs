@@ -33,7 +33,6 @@ namespace CommandLineProcessor
     {
         void
         Convert(
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine);
     }
 }

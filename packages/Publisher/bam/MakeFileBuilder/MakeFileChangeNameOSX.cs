@@ -44,7 +44,7 @@ namespace Publisher
             var rule = meta.Rules[0];
 
             var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
             rule.AddShellCommand(System.String.Format(@"{0} {1} {2} {3} $@",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),

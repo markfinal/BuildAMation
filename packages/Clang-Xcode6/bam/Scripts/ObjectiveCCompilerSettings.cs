@@ -60,10 +60,9 @@ namespace Clang
 
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineCompilerImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineCompilerImplementation), this, commandLine);
         }
 
         void

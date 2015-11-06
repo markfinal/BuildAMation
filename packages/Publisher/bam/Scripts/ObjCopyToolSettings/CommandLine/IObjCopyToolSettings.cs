@@ -35,10 +35,9 @@ namespace Publisher
         public static void
         Convert(
             this IObjCopyToolSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var objCopy = module as ObjCopyModule;
+            var objCopy = (settings as Bam.Core.Settings).Module as ObjCopyModule;
             switch (settings.Mode)
             {
             case EObjCopyToolMode.OnlyKeepDebug:

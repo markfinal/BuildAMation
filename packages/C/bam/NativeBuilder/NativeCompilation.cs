@@ -40,7 +40,7 @@ namespace C
             Bam.Core.Module source)
         {
             var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
             if (!System.IO.Directory.Exists(objectFileDir))

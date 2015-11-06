@@ -34,7 +34,6 @@ namespace VisualCCommon
         public static void
         Convert(
             this ICommonArchiverSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (settings.NoLogo.GetValueOrDefault())

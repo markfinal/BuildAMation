@@ -54,10 +54,9 @@ namespace VisualC
 
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
         }
 
         void

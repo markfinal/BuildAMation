@@ -35,9 +35,9 @@ namespace Publisher
         public static void
         Convert(
             this ICopyFileSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 if (settings.Force)

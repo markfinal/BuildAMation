@@ -40,7 +40,7 @@ namespace Publisher
             Bam.Core.TokenizedString newName)
         {
             var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
             commandLine.Add(oldName.Parse());
             commandLine.Add(newName.Parse());

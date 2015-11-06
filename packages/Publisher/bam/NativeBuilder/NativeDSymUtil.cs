@@ -46,7 +46,7 @@ namespace Publisher
             }
 
             var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
             commandLine.Add(System.String.Format("-o {0}", copiedPath.Parse()));
             commandLine.Add(originalPath.Parse());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);

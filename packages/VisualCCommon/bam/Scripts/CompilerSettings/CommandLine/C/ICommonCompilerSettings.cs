@@ -34,10 +34,9 @@ namespace VisualCCommon
         public static void
         Convert(
             this C.ICommonCompilerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var objectFile = module as C.ObjectFile;
+            var module = (settings as Bam.Core.Settings).Module;
             if (true == settings.DebugSymbols)
             {
                 commandLine.Add("-Z7");
@@ -95,10 +94,10 @@ namespace VisualCCommon
             switch (settings.TargetLanguage)
             {
                 case C.ETargetLanguage.C:
-                    commandLine.Add(System.String.Format("-Tc {0}", objectFile.InputPath.ToString()));
+                    commandLine.Add(System.String.Format("-Tc {0}", (module as C.ObjectFile).InputPath.ToString()));
                     break;
                 case C.ETargetLanguage.Cxx:
-                    commandLine.Add(System.String.Format("-Tp {0}", objectFile.InputPath.ToString()));
+                    commandLine.Add(System.String.Format("-Tp {0}", (module as C.ObjectFile).InputPath.ToString()));
                     break;
                 default:
                     throw new Bam.Core.Exception("Unsupported target language");

@@ -34,7 +34,6 @@ namespace VisualCCommon
         public static void
         Convert(
             this C.ICommonLinkerSettingsWin options,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             switch (options.SubSystem.Value)

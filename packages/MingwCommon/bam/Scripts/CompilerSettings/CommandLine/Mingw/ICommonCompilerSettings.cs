@@ -34,7 +34,6 @@ namespace MingwCommon
         public static void
         Convert(
             this MingwCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (settings.AllWarnings.HasValue)
