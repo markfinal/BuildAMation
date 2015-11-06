@@ -33,10 +33,10 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettingsWin options,
+            this C.ICommonLinkerSettingsWin settings,
             Bam.Core.StringArray commandLine)
         {
-            switch (options.SubSystem.Value)
+            switch (settings.SubSystem.Value)
             {
                 case C.ESubsystem.Console:
                     commandLine.Add("-SUBSYSTEM:CONSOLE");
@@ -47,7 +47,7 @@ namespace VisualCCommon
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", options.SubSystem.Value.ToString());
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
             }
         }
     }

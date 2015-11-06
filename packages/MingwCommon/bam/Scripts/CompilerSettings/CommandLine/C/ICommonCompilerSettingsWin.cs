@@ -33,26 +33,26 @@ namespace MingwCommon
     {
         public static void
         Convert(
-            this C.ICommonCompilerSettingsWin options,
+            this C.ICommonCompilerSettingsWin settings,
             Bam.Core.StringArray commandLine)
         {
-            if (options.CharacterSet.HasValue)
+            if (settings.CharacterSet.HasValue)
             {
-                switch (options.CharacterSet.Value)
+                switch (settings.CharacterSet.Value)
                 {
                     case C.ECharacterSet.NotSet:
                         break;
 
                     case C.ECharacterSet.Unicode:
                         {
-                            var compiler = options as C.ICommonCompilerSettings;
+                            var compiler = settings as C.ICommonCompilerSettings;
                             compiler.PreprocessorDefines.Add("_UNICODE");
                         }
                         break;
 
                     case C.ECharacterSet.MultiByte:
                         {
-                            var compiler = options as C.ICommonCompilerSettings;
+                            var compiler = settings as C.ICommonCompilerSettings;
                             compiler.PreprocessorDefines.Add("_MBCS");
                         }
                         break;

@@ -33,20 +33,20 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ICommonCompilerSettingsOSX options,
+            this C.ICommonCompilerSettingsOSX settings,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            if (null != options.FrameworkSearchPaths)
+            if (null != settings.FrameworkSearchPaths)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.FrameworkSearchPaths)
+                foreach (var path in settings.FrameworkSearchPaths)
                 {
                     paths.Add(path.ToString());
                 }
                 configuration["FRAMEWORK_SEARCH_PATHS"] = paths;
             }
-            // options.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference
+            // settings.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference
             // between compiler and linker setting in the project
         }
     }

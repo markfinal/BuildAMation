@@ -33,15 +33,15 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettingsOSX options,
+            this C.ICommonLinkerSettingsOSX settings,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            if (options.Frameworks.Count > 0)
+            if (settings.Frameworks.Count > 0)
             {
                 var target = module.MetaData as XcodeBuilder.Target;
                 var project = target.Project;
-                foreach (var framework in options.Frameworks)
+                foreach (var framework in settings.Frameworks)
                 {
                     var frameworkFileRefPath = framework;
                     var isAbsolute = System.IO.Path.IsPathRooted(frameworkFileRefPath.Parse());
@@ -59,23 +59,23 @@ namespace ClangCommon
                     project.MainGroup.AddChild(buildFile.FileRef);
                 }
             }
-            if (options.FrameworkSearchPaths.Count > 0)
+            if (settings.FrameworkSearchPaths.Count > 0)
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in options.FrameworkSearchPaths)
+                foreach (var path in settings.FrameworkSearchPaths)
                 {
                     option.Add(path.Parse());
                 }
                 configuration["FRAMEWORK_SEARCH_PATHS"] = option;
             }
-            if (null != options.InstallName)
+            if (null != settings.InstallName)
             {
                 if (module is C.IDynamicLibrary)
                 {
-                    configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(options.InstallName.Parse());
+                    configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(settings.InstallName.Parse());
                 }
             }
-            // options.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference
+            // settings.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference
             // between compiler and linker setting in the project
         }
     }

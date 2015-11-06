@@ -33,24 +33,24 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ICommonCompilerSettingsOSX options,
+            this C.ICommonCompilerSettingsOSX settings,
             Bam.Core.StringArray commandLine)
         {
-            foreach (var path in options.FrameworkSearchPaths)
+            foreach (var path in settings.FrameworkSearchPaths)
             {
                 commandLine.Add(System.String.Format("-F{0}", path.ParseAndQuoteIfNecessary()));
             }
-            if (options.MinimumVersionSupported != null)
+            if (settings.MinimumVersionSupported != null)
             {
                 var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match(options.MinimumVersionSupported);
+                var match = minVersionRegEx.Match(settings.MinimumVersionSupported);
                 if (!match.Groups["Type"].Success)
                 {
-                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", options.MinimumVersionSupported);
+                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", settings.MinimumVersionSupported);
                 }
                 if (!match.Groups["Version"].Success)
                 {
-                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", options.MinimumVersionSupported);
+                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", settings.MinimumVersionSupported);
                 }
                 commandLine.Add(System.String.Format("-m{0}-version-min={1}",
                     match.Groups["Type"].Value,
