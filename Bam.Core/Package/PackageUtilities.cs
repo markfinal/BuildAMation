@@ -363,6 +363,20 @@ namespace Bam.Core
 
             IdentifyAllPackages();
 
+            var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
+            if (cleanFirst && System.IO.Directory.Exists(State.BuildRoot))
+            {
+                Log.Info("Deleting build root '{0}'", State.BuildRoot);
+                try
+                {
+                    System.IO.Directory.Delete(State.BuildRoot, true);
+                }
+                catch (System.IO.IOException ex)
+                {
+                    Log.Info("Failed to delete build root, because {0}. Continuing", ex.Message);
+                }
+            }
+
             if (!System.IO.Directory.Exists(State.BuildRoot))
             {
                 System.IO.Directory.CreateDirectory(State.BuildRoot);

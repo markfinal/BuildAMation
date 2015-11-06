@@ -1,3 +1,5 @@
+06-Nov-2015 Fixes #50. Moved deleting the build root (if the command line specifies it) before package compilation, so that the cached assembly remains on disk after the build. This was stopping the assembly being reused.
+
 06-Nov-2015 Renamed C.ExternalFramework to C.OSXFramework.
 
 06-Nov-2015 Internal expressions referring to the CModule macro 'PatchVersion' (used in semantic versioning with MajorVersion and MinorVersion), now use the pre-function #valid. This is so that thirdparty builds that only support major.minor version numbers can still use Bam modules, by deleting the PatchVersion macro from their modules.
