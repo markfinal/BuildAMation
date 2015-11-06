@@ -47,9 +47,15 @@ namespace Bam.Core
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
         private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
         private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
-        private static readonly string FunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^()]*)\))";
-        private static readonly string FunctionPrefix = @"@";
-        private static readonly string FunctionSuffix = @")";
+
+        // pre-functions look like: #functionname(expression)
+        // note: this is using balancing groups in order to handle nested function calls
+        private static readonly string PreFunctionRegExPattern = @"(#(?<func>[a-z]+)\((?<expression>[^\(\)]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))";
+
+        // post-functions look like: @functionname(expression)
+        private static readonly string PostFunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^()]*)\))";
+        private static readonly string PostFunctionPrefix = @"@";
+        private static readonly string PostFunctionSuffix = @")";
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
@@ -77,7 +83,7 @@ namespace Bam.Core
         }
 
         static private System.Collections.Generic.IEnumerable<string>
-        SplitToParse(
+        SplitIntoTokens(
             string original,
             string regExPattern)
         {
@@ -107,11 +113,13 @@ namespace Bam.Core
 
         private TokenizedString(
             string original,
-            bool verbatim = false,
-            TokenizedStringArray positionalTokens = null,
-            EFlags flags = EFlags.None)
+            Module moduleWithMacros,
+            bool verbatim,
+            TokenizedStringArray positionalTokens,
+            EFlags flags)
         {
             this.CreationStackTrace = System.Environment.StackTrace;
+            this.ModuleWithMacros = moduleWithMacros;
             if (null != positionalTokens)
             {
                 this.PositionalTokens.AddRange(positionalTokens);
@@ -124,19 +132,6 @@ namespace Bam.Core
                 this.ParsedString = NormalizeDirectorySeparators(original);
                 return;
             }
-            var tokenized = SplitToParse(original, TokenRegExPattern);
-            this.Tokens = tokenized.ToList<string>();
-        }
-
-        private TokenizedString(
-            string original,
-            Module moduleWithMacros,
-            bool verbatim,
-            TokenizedStringArray positionalTokens,
-            EFlags flags) :
-            this(original, verbatim, positionalTokens, flags)
-        {
-            this.ModuleWithMacros = moduleWithMacros;
         }
 
         private static TokenizedString
@@ -320,6 +315,8 @@ namespace Bam.Core
                 return this.ParsedString;
             }
 
+            this.Tokens = SplitIntoTokens(this.EvaluatePreFunctions(this.OriginalString, customMacros), TokenRegExPattern).ToList<string>();
+
             System.Func<TokenizedString, TokenizedString, int, string> expandTokenizedString = (source, tokenString, currentIndex) =>
                 {
                     if (!tokenString.IsExpanded)
@@ -332,7 +329,7 @@ namespace Bam.Core
                         if (tokenString.IsInline)
                         {
                             // current token expands to nothing, and the inline string's tokens are processed next
-                            source.Tokens.InsertRange(currentIndex + 1, tokenString.Tokens);
+                            source.Tokens.InsertRange(currentIndex + 1, SplitIntoTokens(tokenString.EvaluatePreFunctions(tokenString.OriginalString, source.ModuleWithMacros.Macros), TokenRegExPattern).ToList<string>());
                             return string.Empty;
                         }
 
@@ -395,7 +392,7 @@ namespace Bam.Core
                 }
 
                 // step 6 : try the immediate environment
-                var strippedToken = SplitToParse(token, ExtractTokenRegExPattern).First();
+                var strippedToken = SplitIntoTokens(token, ExtractTokenRegExPattern).First();
                 var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
                 if (null != envVar)
                 {
@@ -431,7 +428,7 @@ namespace Bam.Core
                     throw new Exception(message.ToString());
                 }
             }
-            var functionEvaluated = this.EvaluateFunctions(NormalizeDirectorySeparators(parsedString.ToString()));
+            var functionEvaluated = this.EvaluatePostFunctions(NormalizeDirectorySeparators(parsedString.ToString()));
             if (null == customMacros)
             {
                 this.ParsedString = functionEvaluated;
@@ -441,14 +438,14 @@ namespace Bam.Core
         }
 
         private string
-        EvaluateFunctions(
+        EvaluatePostFunctions(
             string sourceExpression)
         {
             // function calls may be nested, so the reg ex gets the inner most calls
             // and so iterate until all functions have been found
             for (;;)
             {
-                var tokenized = SplitToParse(sourceExpression, FunctionRegExPattern);
+                var tokenized = SplitIntoTokens(sourceExpression, PostFunctionRegExPattern);
                 var matchCount = tokenized.Count();
                 if (1 == matchCount)
                 {
@@ -460,11 +457,11 @@ namespace Bam.Core
                 {
                     var matchedExpression = tokenized.ElementAt(matchIndex++);
                     // does the first match constitute a function call?
-                    if (!matchedExpression.StartsWith(FunctionPrefix))
+                    if (!matchedExpression.StartsWith(PostFunctionPrefix))
                     {
                         continue;
                     }
-                    if (!matchedExpression.EndsWith(FunctionSuffix))
+                    if (!matchedExpression.EndsWith(PostFunctionSuffix))
                     {
                         // nested function call - this is the outer call, ignore
                         continue;
@@ -510,7 +507,7 @@ namespace Bam.Core
                     }
 
                 default:
-                    throw new Exception("Unknown TokenizedString function, {0}", functionName);
+                    throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
             }
         }
 
@@ -600,6 +597,122 @@ namespace Bam.Core
                     item.Alias != null ? System.String.Format("Aliased to: '{0}'", item.Alias.OriginalString) : string.Empty,
                     item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
             }
+        }
+
+        private bool
+        IsTokenValid(
+            string token,
+            MacroList customMacros)
+        {
+            // step 1 : is the token positional, i.e. was set up at creation time
+            var positional = GetMatches(token, PositionalTokenRegExPattern).FirstOrDefault();
+            if (!System.String.IsNullOrEmpty(positional))
+            {
+                var positionalIndex = System.Convert.ToInt32(positional);
+                return (positionalIndex <= this.PositionalTokens.Count);
+            }
+            // step 2 : try to resolve with custom macros passed to the Parse function
+            else if (null != customMacros && customMacros.Dict.ContainsKey(token))
+            {
+                return true;
+            }
+            // step 3 : try macros in the global Graph, common to all modules
+            else if (Graph.Instance.Macros.Dict.ContainsKey(token))
+            {
+                return true;
+            }
+            else if (this.ModuleWithMacros != null)
+            {
+                var tool = this.ModuleWithMacros.Tool;
+                // step 4 : try macros in the specific module
+                if (this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
+                {
+                    return true;
+                }
+                // step 5 : try macros in the Tool attached to the specific module
+                else if (null != tool && tool.Macros.Dict.ContainsKey(token))
+                {
+                    return true;
+                }
+            }
+
+            // step 6 : try the immediate environment
+            var strippedToken = SplitIntoTokens(token, ExtractTokenRegExPattern).First();
+            var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
+            if (null != envVar)
+            {
+                return true;
+            }
+            // step 7 : fail
+            else
+            {
+                return false;
+            }
+        }
+
+        private string
+        EvaluatePreFunctions(
+            string originalExpression,
+            MacroList customMacros)
+        {
+            var regex = new System.Text.RegularExpressions.Regex(PreFunctionRegExPattern);
+            var matches = regex.Matches(originalExpression);
+            if (0 == matches.Count)
+            {
+                return originalExpression;
+            }
+            var groupNames = regex.GetGroupNames();
+            Log.MessageAll(new StringArray(groupNames).ToString(' '));
+            var modifiedString = originalExpression;
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                var functionName = match.Groups["func"].Value;
+                // this correctly obtains the expression when nested functions are present
+                var expressionText = new System.Text.StringBuilder();
+                foreach (System.Text.RegularExpressions.Capture capture in match.Groups["expression"].Captures)
+                {
+                    expressionText.Append(capture.Value);
+                }
+                var expression = this.EvaluatePreFunctions(expressionText.ToString(), customMacros);
+                switch (functionName)
+                {
+                    case "valid":
+                        {
+                            var tokens = SplitIntoTokens(expression, TokenRegExPattern);
+                            var allTokensValid = true;
+                            foreach (var token in tokens)
+                            {
+                                if (!(token.StartsWith(TokenPrefix) && token.EndsWith(TokenSuffix)))
+                                {
+                                    continue;
+                                }
+
+                                // Note: with nested valid pre-functions, macros can be validated as many times as they are nested
+                                if (this.IsTokenValid(token, customMacros))
+                                {
+                                    continue;
+                                }
+
+                                allTokensValid = false;
+                                break;
+                            }
+
+                            if (allTokensValid)
+                            {
+                                modifiedString = modifiedString.Replace(match.Value, expression);
+                            }
+                            else
+                            {
+                                modifiedString = modifiedString.Replace(match.Value, string.Empty);
+                            }
+                        }
+                        break;
+
+                    default:
+                        throw new Exception("Unknown pre-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
+                }
+            }
+            return modifiedString;
         }
     }
 }
