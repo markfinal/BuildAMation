@@ -90,8 +90,8 @@ namespace C
                 }
             }
 
-            var settingsGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian);
-            (sender.Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, settingsGroup);
+            var vsSettingsGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian);
+            (sender.Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, vsSettingsGroup);
 
             // order only dependencies
             foreach (var required in sender.Requirements)

@@ -54,10 +54,10 @@ namespace VisualC
         void
         VisualStudioProcessor.IConvertToProject.Convert(
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
-            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, settings, condition);
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 
         C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem

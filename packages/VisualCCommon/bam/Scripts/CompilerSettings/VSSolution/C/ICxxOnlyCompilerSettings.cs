@@ -35,7 +35,7 @@ namespace VisualCCommon
         Convert(
             this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             if (settings.ExceptionHandler.HasValue)
@@ -60,7 +60,7 @@ namespace VisualCCommon
                             throw new Bam.Core.Exception("Unknown exception handler, {0}", settings.ExceptionHandler.Value.ToString());
                     }
                 };
-                settingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);
+                vsSettingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);
             }
         }
     }

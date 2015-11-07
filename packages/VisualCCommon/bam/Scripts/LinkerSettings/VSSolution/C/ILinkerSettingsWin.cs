@@ -35,14 +35,14 @@ namespace VisualCCommon
         Convert(
             this C.ICommonLinkerSettingsWin settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             switch (settings.SubSystem.Value)
             {
                 case C.ESubsystem.Console:
                 case C.ESubsystem.Windows:
-                    settingsGroup.AddSetting("SubSystem", settings.SubSystem.Value.ToString(), condition);
+                    vsSettingsGroup.AddSetting("SubSystem", settings.SubSystem.Value.ToString(), condition);
                     break;
 
                 default:

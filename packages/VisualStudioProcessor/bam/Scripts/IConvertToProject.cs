@@ -36,7 +36,7 @@ namespace VisualStudioProcessor
         void
         Convert(
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition = null);
     }
 }

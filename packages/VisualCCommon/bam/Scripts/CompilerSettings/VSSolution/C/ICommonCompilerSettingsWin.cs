@@ -35,7 +35,7 @@ namespace VisualCCommon
         Convert(
             this C.ICommonCompilerSettingsWin settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             if (settings.CharacterSet.HasValue)
