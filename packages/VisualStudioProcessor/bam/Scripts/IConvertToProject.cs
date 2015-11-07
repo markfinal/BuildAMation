@@ -31,6 +31,8 @@ namespace VisualStudioProcessor
 {
     public interface IConvertToProject
     {
+        // requires an explicit module, as common settings may be applied to the encapsulating module, and this
+        // knowledge is in the caller
         void
         Convert(
             Bam.Core.Module module,
