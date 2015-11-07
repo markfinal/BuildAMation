@@ -35,28 +35,28 @@ namespace VisualCCommon
         Convert(
             this VisualCCommon.ICommonCompilerSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             if (settings.NoLogo.GetValueOrDefault(false))
             {
-                settingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
+                vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
             }
 
             if (settings.RuntimeLibrary.HasValue)
             {
-                settingsGroup.AddSetting("RuntimeLibrary", settings.RuntimeLibrary.Value.ToString(), condition);
+                vsSettingsGroup.AddSetting("RuntimeLibrary", settings.RuntimeLibrary.Value.ToString(), condition);
             }
 
             if (settings.WarningLevel.HasValue)
             {
                 if (EWarningLevel.Level0 == settings.WarningLevel.Value)
                 {
-                    settingsGroup.AddSetting("WarningLevel", "TurnOffAllWarnings", condition);
+                    vsSettingsGroup.AddSetting("WarningLevel", "TurnOffAllWarnings", condition);
                 }
                 else
                 {
-                    settingsGroup.AddSetting("WarningLevel", System.String.Format("Level{0}", settings.WarningLevel.Value.ToString("D")), condition);
+                    vsSettingsGroup.AddSetting("WarningLevel", System.String.Format("Level{0}", settings.WarningLevel.Value.ToString("D")), condition);
                 }
             }
         }

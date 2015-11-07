@@ -35,7 +35,7 @@ namespace VisualCCommon
         Convert(
             this C.ICommonCompilerSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             // write nothing for disabled debug symbols, otherwise the source files rebuild continually
@@ -44,22 +44,22 @@ namespace VisualCCommon
             // https://connect.microsoft.com/VisualStudio/feedback/details/833494/project-with-debug-information-disabled-always-rebuilds
             if (settings.DebugSymbols.GetValueOrDefault(false))
             {
-                settingsGroup.AddSetting("DebugInformationFormat", "OldStyle", condition);
+                vsSettingsGroup.AddSetting("DebugInformationFormat", "OldStyle", condition);
             }
 
             if (settings.DisableWarnings.Count > 0)
             {
-                settingsGroup.AddSetting("DisableSpecificWarnings", settings.DisableWarnings, condition, inheritExisting: true);
+                vsSettingsGroup.AddSetting("DisableSpecificWarnings", settings.DisableWarnings, condition, inheritExisting: true);
             }
 
             if (settings.IncludePaths.Count > 0)
             {
-                settingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true);
+                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true);
             }
 
             if (settings.OmitFramePointer.HasValue)
             {
-                settingsGroup.AddSetting("OmitFramePointers", settings.OmitFramePointer.Value, condition);
+                vsSettingsGroup.AddSetting("OmitFramePointers", settings.OmitFramePointer.Value, condition);
             }
 
             if (settings.Optimization.HasValue)
@@ -84,17 +84,17 @@ namespace VisualCCommon
                                 throw new Bam.Core.Exception("Unknown optimization type, {0}", settings.Optimization.Value.ToString());
                         }
                     };
-                settingsGroup.AddSetting("Optimization", optimization(), condition);
+                vsSettingsGroup.AddSetting("Optimization", optimization(), condition);
             }
 
             if (settings.PreprocessorDefines.Count > 0)
             {
-                settingsGroup.AddSetting("PreprocessorDefinitions", settings.PreprocessorDefines, condition, inheritExisting: true);
+                vsSettingsGroup.AddSetting("PreprocessorDefinitions", settings.PreprocessorDefines, condition, inheritExisting: true);
             }
 
             if (settings.PreprocessorUndefines.Count > 0)
             {
-                settingsGroup.AddSetting("UndefinePreprocessorDefinitions", settings.PreprocessorUndefines, condition, inheritExisting: true);
+                vsSettingsGroup.AddSetting("UndefinePreprocessorDefinitions", settings.PreprocessorUndefines, condition, inheritExisting: true);
             }
 
             if (settings.TargetLanguage.HasValue)
@@ -116,20 +116,20 @@ namespace VisualCCommon
                             throw new Bam.Core.Exception("Unknown target language, {0}", settings.TargetLanguage.Value.ToString());
                     }
                 };
-                settingsGroup.AddSetting("CompileAs", targetLanguage(), condition);
+                vsSettingsGroup.AddSetting("CompileAs", targetLanguage(), condition);
             }
 
             if (settings.WarningsAsErrors.HasValue)
             {
-                settingsGroup.AddSetting("TreatWarningAsError", settings.WarningsAsErrors.Value, condition);
+                vsSettingsGroup.AddSetting("TreatWarningAsError", settings.WarningsAsErrors.Value, condition);
             }
 
             if (settings.OutputType.HasValue)
             {
-                settingsGroup.AddSetting("PreprocessToFile", settings.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
+                vsSettingsGroup.AddSetting("PreprocessToFile", settings.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
                 if (module is C.ObjectFile)
                 {
-                    settingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);
+                    vsSettingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);
                 }
             }
         }

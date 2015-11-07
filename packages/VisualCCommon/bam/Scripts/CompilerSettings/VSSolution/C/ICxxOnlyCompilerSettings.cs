@@ -27,13 +27,41 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace XcodeProjectProcessor
+namespace VisualCCommon
 {
-    public interface IConvertToProject
+    public static partial class VSSolutionImplementation
     {
-        void
+        public static void
         Convert(
+            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration);
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            if (settings.ExceptionHandler.HasValue)
+            {
+                System.Func<string> exceptionHandler = () =>
+                {
+                    switch (settings.ExceptionHandler.Value)
+                    {
+                        case C.Cxx.EExceptionHandler.Disabled:
+                            return "false";
+
+                        case C.Cxx.EExceptionHandler.Asynchronous:
+                            return "Async";
+
+                        case C.Cxx.EExceptionHandler.Synchronous:
+                            return "Sync";
+
+                        case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
+                            return "SyncCThrow";
+
+                        default:
+                            throw new Bam.Core.Exception("Unknown exception handler, {0}", settings.ExceptionHandler.Value.ToString());
+                    }
+                };
+                vsSettingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);
+            }
+        }
     }
 }

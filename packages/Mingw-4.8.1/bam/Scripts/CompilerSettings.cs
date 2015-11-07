@@ -52,10 +52,9 @@ namespace Mingw
 
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
         }
 
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet

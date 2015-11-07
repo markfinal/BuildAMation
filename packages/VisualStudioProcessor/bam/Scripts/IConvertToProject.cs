@@ -27,41 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace VisualStudioProcessor
 {
-    public static partial class VSSolutionImplementation
+    public interface IConvertToProject
     {
-        public static void
+        // requires an explicit module, as common settings may be applied to the encapsulating module, and this
+        // knowledge is in the caller
+        void
         Convert(
-            this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
-            string condition)
-        {
-            if (settings.ExceptionHandler.HasValue)
-            {
-                System.Func<string> exceptionHandler = () =>
-                {
-                    switch (settings.ExceptionHandler.Value)
-                    {
-                        case C.Cxx.EExceptionHandler.Disabled:
-                            return "false";
-
-                        case C.Cxx.EExceptionHandler.Asynchronous:
-                            return "Async";
-
-                        case C.Cxx.EExceptionHandler.Synchronous:
-                            return "Sync";
-
-                        case C.Cxx.EExceptionHandler.SyncWithCExternFunctions:
-                            return "SyncCThrow";
-
-                        default:
-                            throw new Bam.Core.Exception("Unknown exception handler, {0}", settings.ExceptionHandler.Value.ToString());
-                    }
-                };
-                settingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);
-            }
-        }
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition = null);
     }
 }

@@ -33,16 +33,16 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonCompilerSettingsWin options,
+            this C.ICommonCompilerSettingsWin settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
-            if (options.CharacterSet.HasValue)
+            if (settings.CharacterSet.HasValue)
             {
                 var project = module.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(module);
-                config.SetCharacterSet(options.CharacterSet.Value);
+                config.SetCharacterSet(settings.CharacterSet.Value);
             }
         }
     }

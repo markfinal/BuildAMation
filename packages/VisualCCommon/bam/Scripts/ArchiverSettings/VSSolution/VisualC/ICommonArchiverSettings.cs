@@ -35,12 +35,12 @@ namespace VisualCCommon
         Convert(
             this ICommonArchiverSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             if (settings.NoLogo.GetValueOrDefault(false))
             {
-                settingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
+                vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
             }
         }
     }

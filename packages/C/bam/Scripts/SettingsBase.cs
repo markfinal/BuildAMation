@@ -180,11 +180,11 @@ namespace C
                 }
             }
 
-            var vsProjectSettingsConvertMethod = sharedSettingsTypeDefn.DefineMethod("Convert",
+            var projectSettingsConvertMethod = sharedSettingsTypeDefn.DefineMethod("Convert",
                 System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Final | System.Reflection.MethodAttributes.HideBySig | System.Reflection.MethodAttributes.NewSlot | System.Reflection.MethodAttributes.Virtual,
                 null,
                 convertParameterTypes.ToArray());
-            var convertIL = vsProjectSettingsConvertMethod.GetILGenerator();
+            var convertIL = projectSettingsConvertMethod.GetILGenerator();
             foreach (var i in sharedInterfaces)
             {
                 var extConvertParameterTypes = new Bam.Core.TypeArray(i);

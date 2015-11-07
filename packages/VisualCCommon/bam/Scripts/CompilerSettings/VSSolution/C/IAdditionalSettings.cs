@@ -35,12 +35,12 @@ namespace VisualCCommon
         Convert(
             this C.IAdditionalSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             if (settings.AdditionalSettings.Count > 0)
             {
-                settingsGroup.AddSetting("AdditionalOptions", settings.AdditionalSettings, condition);
+                vsSettingsGroup.AddSetting("AdditionalOptions", settings.AdditionalSettings, condition);
             }
         }
     }

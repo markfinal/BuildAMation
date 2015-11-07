@@ -53,7 +53,7 @@ namespace Publisher
             rule.AddTarget(targetName, variableName: sourceType + "_" + senderType + "_" + sourceFilename, isPhony: isSymLink);
 
             var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
             if (isSymLink)
             {

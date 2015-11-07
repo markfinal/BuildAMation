@@ -93,19 +93,19 @@ namespace Bam.Core
         CanCreate(
             System.Type moduleType)
         {
-            var filters = moduleType.GetCustomAttributes(typeof(PlatformFilterAttribute), true) as PlatformFilterAttribute[];
-            if (0 == filters.Length)
+            var platformFilters = moduleType.GetCustomAttributes(typeof(PlatformFilterAttribute), true) as PlatformFilterAttribute[];
+            var configurationFilters = moduleType.GetCustomAttributes(typeof(ConfigurationFilterAttribute), true) as ConfigurationFilterAttribute[];
+            if (platformFilters.Length > 0 && !platformFilters[0].Platform.Includes(Graph.Instance.BuildEnvironment.Platform))
             {
-                // unconditional
-                return true;
+                Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the platform filter", moduleType.ToString());
+                return false;
             }
-            if (filters[0].Platform.Includes(Graph.Instance.BuildEnvironment.Platform))
+            if (configurationFilters.Length > 0 && 0 == (configurationFilters[0].Configuration & Graph.Instance.BuildEnvironment.Configuration))
             {
-                // platform is a match
-                return true;
+                Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the configuration filter", moduleType.ToString());
+                return false;
             }
-            Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the platform filter", moduleType.ToString());
-            return false;
+            return true;
         }
 
         public delegate void PreInitDelegate<T>(T module);

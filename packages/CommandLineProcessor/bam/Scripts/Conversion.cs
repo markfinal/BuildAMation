@@ -36,7 +36,6 @@ namespace CommandLineProcessor
         Convert(
             System.Type conversionClass,
             Bam.Core.Settings toolSettings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             var moduleType = typeof(Bam.Core.Module);
@@ -44,19 +43,18 @@ namespace CommandLineProcessor
             var commandOrder = new Bam.Core.Array<System.Tuple<int, Bam.Core.StringArray>>();
             foreach (var i in toolSettings.Interfaces())
             {
-                var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, stringArrayType });
+                var method = conversionClass.GetMethod("Convert", new[] { i, stringArrayType });
                 if (null == method)
                 {
-                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2}, {3})",
+                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2})",
                         conversionClass.ToString(),
                         i.ToString(),
-                        moduleType,
                         stringArrayType);
                 }
                 var commands = new Bam.Core.StringArray();
                 try
                 {
-                    method.Invoke(null, new object[] { toolSettings, module, commands });
+                    method.Invoke(null, new object[] { toolSettings, commands });
                 }
                 catch (System.Reflection.TargetInvocationException exception)
                 {

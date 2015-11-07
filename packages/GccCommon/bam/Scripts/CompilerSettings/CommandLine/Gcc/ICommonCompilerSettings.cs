@@ -34,7 +34,6 @@ namespace GccCommon
         public static void
         Convert(
             this GccCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (settings.PositionIndependentCode.HasValue)

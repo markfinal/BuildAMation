@@ -85,32 +85,6 @@ namespace Test5
         }
     }
 
-    sealed class DebugSymbols :
-        Publisher.DebugSymbolCollation
-    {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-
-            this.CreateSymbolsFrom<RuntimePackage>();
-        }
-    }
-
-    sealed class Stripped :
-        Publisher.StrippedBinaryCollation
-    {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-
-            this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
-        }
-    }
-
     sealed class SDKPackage :
         Publisher.Collation
     {
@@ -130,6 +104,35 @@ namespace Test5
         }
     }
 
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class DebugSymbols :
+        Publisher.DebugSymbolCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateSymbolsFrom<RuntimePackage>();
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class Stripped :
+        Publisher.StrippedBinaryCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
     sealed class WinInstallerInno :
         Installer.InnoSetupInstaller
     {
@@ -143,6 +146,7 @@ namespace Test5
         }
     }
 
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
     sealed class WinInstallerNSIS :
         Installer.NSISInstaller
     {
@@ -156,6 +160,7 @@ namespace Test5
         }
     }
 
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
     sealed class TarBallInstaller :
         Installer.TarBall
     {
@@ -169,6 +174,7 @@ namespace Test5
         }
     }
 
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
     sealed class DiskImageInstaller :
         Installer.DiskImage
     {

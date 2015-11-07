@@ -35,9 +35,9 @@ namespace Publisher
         public static void
         Convert(
             this IStripToolSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             if (settings.Verbose.HasValue && settings.Verbose.Value && !module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
                 commandLine.Add("-v");

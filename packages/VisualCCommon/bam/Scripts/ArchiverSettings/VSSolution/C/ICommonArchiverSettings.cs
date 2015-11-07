@@ -35,7 +35,7 @@ namespace VisualCCommon
         Convert(
             this C.ICommonArchiverSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             switch (settings.OutputType)
@@ -43,7 +43,7 @@ namespace VisualCCommon
                 case C.EArchiverOutput.StaticLibrary:
                     {
                         var outPath = module.GeneratedPaths[C.StaticLibrary.Key].ToString();
-                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
+                        vsSettingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
                     }
                     break;
 

@@ -34,7 +34,6 @@ namespace ClangCommon
         public static void
         Convert(
             this ClangCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (settings.AllWarnings.HasValue)

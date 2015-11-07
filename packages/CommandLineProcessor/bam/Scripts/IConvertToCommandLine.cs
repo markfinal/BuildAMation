@@ -27,14 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualStudioProcessor
+namespace CommandLineProcessor
 {
-    public interface IConvertToProject
+    public interface IConvertToCommandLine
     {
         void
         Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
-            string condition = null);
+            Bam.Core.StringArray commandLine);
     }
 }

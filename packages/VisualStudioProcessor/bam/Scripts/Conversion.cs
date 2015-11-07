@@ -34,15 +34,15 @@ namespace VisualStudioProcessor
         public static void
         Convert(
             System.Type conversionClass,
-            Bam.Core.Settings toolSettings,
+            Bam.Core.Settings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             var moduleType = typeof(Bam.Core.Module);
             var vsSettingsGroupType = typeof(VSSolutionBuilder.VSSettingsGroup);
             var stringType = typeof(string);
-            foreach (var i in toolSettings.Interfaces())
+            foreach (var i in settings.Interfaces())
             {
                 var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, vsSettingsGroupType, stringType });
                 if (null == method)
@@ -56,7 +56,7 @@ namespace VisualStudioProcessor
                 }
                 try
                 {
-                    method.Invoke(null, new object[] { toolSettings, module, settings, condition });
+                    method.Invoke(null, new object[] { settings, module, vsSettingsGroup, condition });
                 }
                 catch (System.Reflection.TargetInvocationException exception)
                 {

@@ -88,7 +88,7 @@ namespace C
                     if (null != deltaSettings)
                     {
                         var commandLine = new Bam.Core.StringArray();
-                        (deltaSettings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+                        (deltaSettings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
                         if (commandLine.Count > 0)
                         {
                             // Cannot set per-file-per-configuration settings, so blend them together

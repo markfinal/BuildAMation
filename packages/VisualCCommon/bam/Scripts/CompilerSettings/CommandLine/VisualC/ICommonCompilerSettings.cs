@@ -34,7 +34,6 @@ namespace VisualCCommon
         public static void
         Convert(
             this VisualCCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
             if (null != settings.NoLogo)

@@ -27,74 +27,22 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Gcc
+namespace Bam.Core
 {
-    public class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettings,
-        C.IAdditionalSettings,
-        GccCommon.ICommonLinkerSettings
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
+    public sealed class ConfigurationFilterAttribute :
+        System.Attribute
     {
-        public LinkerSettings(
-            Bam.Core.Module module)
+        public ConfigurationFilterAttribute(
+            EConfiguration config)
         {
-            this.InitializeAllInterfaces(module, false, true);
+            this.Configuration = config;
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
+        public EConfiguration Configuration
         {
             get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? GccCommon.ICommonLinkerSettings.CanUseOrigin
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPath
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPathLink
-        {
-            get;
-            set;
+            private set;
         }
     }
 }

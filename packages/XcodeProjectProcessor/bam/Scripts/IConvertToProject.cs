@@ -27,13 +27,15 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace CommandLineProcessor
+namespace XcodeProjectProcessor
 {
-    public interface IConvertToCommandLine
+    public interface IConvertToProject
     {
+        // requires an explicit module, as common settings may be applied to the encapsulating module, and this
+        // knowledge is in the caller
         void
         Convert(
             Bam.Core.Module module,
-            Bam.Core.StringArray commandLine);
+            XcodeBuilder.Configuration configuration);
     }
 }

@@ -41,7 +41,7 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
             var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(sender, commandLine);
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
             if (!System.IO.Directory.Exists(libraryFileDir))

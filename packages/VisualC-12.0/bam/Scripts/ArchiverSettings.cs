@@ -45,19 +45,18 @@ namespace VisualC
 
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
         }
 
         void
         VisualStudioProcessor.IConvertToProject.Convert(
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settings,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
-            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, settings, condition);
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType

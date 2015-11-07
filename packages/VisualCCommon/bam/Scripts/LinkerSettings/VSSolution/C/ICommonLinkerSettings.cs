@@ -35,7 +35,7 @@ namespace VisualCCommon
         Convert(
             this C.ICommonLinkerSettings settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
             switch (settings.OutputType)
@@ -43,30 +43,30 @@ namespace VisualCCommon
                 case C.ELinkerOutput.Executable:
                     {
                         var outPath = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
-                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
+                        vsSettingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
                     }
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     {
                         var outPath = module.GeneratedPaths[C.DynamicLibrary.Key].Parse();
-                        settingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
+                        vsSettingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
 
                         var importPath = module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();
-                        settingsGroup.AddSetting("ImportLibrary", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(importPath)), condition);
+                        vsSettingsGroup.AddSetting("ImportLibrary", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(importPath)), condition);
                     }
                     break;
             }
 
-            settingsGroup.AddSetting("AdditionalLibraryDirectories", settings.LibraryPaths, condition);
-            settingsGroup.AddSetting("AdditionalDependencies", settings.Libraries, condition);
+            vsSettingsGroup.AddSetting("AdditionalLibraryDirectories", settings.LibraryPaths, condition);
+            vsSettingsGroup.AddSetting("AdditionalDependencies", settings.Libraries, condition);
 
             if (settings.DebugSymbols.HasValue && settings.DebugSymbols.Value)
             {
-                settingsGroup.AddSetting("GenerateDebugInformation", true, condition);
+                vsSettingsGroup.AddSetting("GenerateDebugInformation", true, condition);
                 if (null != module.GeneratedPaths[C.ConsoleApplication.PDBKey])
                 {
-                    settingsGroup.AddSetting("ProgramDatabaseFile", module.GeneratedPaths[C.ConsoleApplication.PDBKey], condition);
+                    vsSettingsGroup.AddSetting("ProgramDatabaseFile", module.GeneratedPaths[C.ConsoleApplication.PDBKey], condition);
                 }
             }
         }

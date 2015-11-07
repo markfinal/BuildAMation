@@ -34,10 +34,9 @@ namespace ClangCommon
         public static void
         Convert(
             this C.ICommonCompilerSettings settings,
-            Bam.Core.Module module,
             Bam.Core.StringArray commandLine)
         {
-            var objectFile = module as C.ObjectFile;
+            var module = (settings as Bam.Core.Settings).Module;
             if (null != settings.Bits)
             {
                 if (settings.Bits == C.EBit.SixtyFour)
@@ -144,11 +143,11 @@ namespace ClangCommon
                 switch (settings.OutputType)
                 {
                     case C.ECompilerOutput.CompileOnly:
-                        commandLine.Add(System.String.Format("-c {0}", objectFile.InputPath.ToString()));
+                        commandLine.Add(System.String.Format("-c {0}", (module as C.ObjectFile).InputPath.ToString()));
                         commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                         break;
                     case C.ECompilerOutput.Preprocess:
-                        commandLine.Add(System.String.Format("-E {0}", objectFile.InputPath.ToString()));
+                        commandLine.Add(System.String.Format("-E {0}", (module as C.ObjectFile).InputPath.ToString()));
                         commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                         break;
                 }

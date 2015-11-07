@@ -33,20 +33,20 @@ namespace VisualCCommon
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettingsWin options,
+            this C.ICommonLinkerSettingsWin settings,
             Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup settingsGroup,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
-            switch (options.SubSystem.Value)
+            switch (settings.SubSystem.Value)
             {
                 case C.ESubsystem.Console:
                 case C.ESubsystem.Windows:
-                    settingsGroup.AddSetting("SubSystem", options.SubSystem.Value.ToString(), condition);
+                    vsSettingsGroup.AddSetting("SubSystem", settings.SubSystem.Value.ToString(), condition);
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", options.SubSystem.Value.ToString());
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
             }
         }
     }

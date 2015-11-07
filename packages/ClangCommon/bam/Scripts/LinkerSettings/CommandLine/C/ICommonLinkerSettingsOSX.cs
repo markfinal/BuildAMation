@@ -33,37 +33,37 @@ namespace ClangCommon
     {
         public static void
         Convert(
-            this C.ICommonLinkerSettingsOSX options,
-            Bam.Core.Module module,
+            this C.ICommonLinkerSettingsOSX settings,
             Bam.Core.StringArray commandLine)
         {
-            foreach (var framework in options.Frameworks)
+            var module = (settings as Bam.Core.Settings).Module;
+            foreach (var framework in settings.Frameworks)
             {
                 var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());
                 commandLine.Add(System.String.Format("-framework {0}", frameworkName));
             }
-            foreach (var path in options.FrameworkSearchPaths)
+            foreach (var path in settings.FrameworkSearchPaths)
             {
                 commandLine.Add(System.String.Format("-F {0}", path.Parse()));
             }
-            if (null != options.InstallName)
+            if (null != settings.InstallName)
             {
                 if (module is C.IDynamicLibrary)
                 {
-                    commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", options.InstallName.Parse()));
+                    commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", settings.InstallName.Parse()));
                 }
             }
-            if (options.MinimumVersionSupported != null)
+            if (settings.MinimumVersionSupported != null)
             {
                 var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match(options.MinimumVersionSupported);
+                var match = minVersionRegEx.Match(settings.MinimumVersionSupported);
                 if (!match.Groups["Type"].Success)
                 {
-                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", options.MinimumVersionSupported);
+                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", settings.MinimumVersionSupported);
                 }
                 if (!match.Groups["Version"].Success)
                 {
-                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", options.MinimumVersionSupported);
+                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", settings.MinimumVersionSupported);
                 }
                 commandLine.Add(System.String.Format("-m{0}-version-min={1}",
                     match.Groups["Type"].Value,
