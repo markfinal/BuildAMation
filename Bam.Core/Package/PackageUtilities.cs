@@ -491,15 +491,7 @@ namespace Bam.Core
             {
                 var compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
                 compilerParameters.TreatWarningsAsErrors = true;
-                if (!State.RunningMono)
-                {
-                    compilerParameters.WarningLevel = 4;
-                }
-                else
-                {
-                    // mono appears to be a lot fussier about warnings
-                    compilerParameters.WarningLevel = 2;
-                }
+                compilerParameters.WarningLevel = 4;
                 compilerParameters.GenerateExecutable = false;
                 compilerParameters.GenerateInMemory = false;
 
@@ -517,20 +509,12 @@ namespace Bam.Core
                 {
                     compilerParameters.IncludeDebugInformation = true;
                     compilerOptions += " /optimize-";
-                    if (State.RunningMono)
-                    {
-                        compilerOptions += " /define:DEBUG";
-                    }
                 }
                 else
                 {
                     compilerOptions += " /optimize+";
                 }
-                if (!State.RunningMono)
-                {
-                    // apparently, some versions of Mono don't support the /platform option
-                    compilerOptions += " /platform:anycpu";
-                }
+                compilerOptions += " /platform:anycpu";
 
                 // define strings
                 compilerOptions += " /define:" + definitions.ToString(';');

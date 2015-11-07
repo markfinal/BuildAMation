@@ -1,3 +1,5 @@
+07-Nov-2015 Fixes #51. Removed legacy Mono package assembly compilation flags.
+
 06-Nov-2015 Fixes #48. Removed Bam.Core.Module argument from CommandLineProcessor.IConvertToCommandLine.Convert, as its use is not always required, and if needed, can be found from the Bam.Core.Settings object on which this interface is applied.
 
 06-Nov-2015 Fixes #49. Added Bam.Core.ConfigurationFilterAttribute, applied to module classes, to indicate whether a module should be built in the current configurations.
