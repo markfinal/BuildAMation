@@ -63,7 +63,7 @@ namespace ClangCommon
             {
                 commandLine.Add(path);
             }
-            if (settings.DebugSymbols.GetValueOrDefault())
+            if (settings.DebugSymbols)
             {
                 commandLine.Add("-g");
             }

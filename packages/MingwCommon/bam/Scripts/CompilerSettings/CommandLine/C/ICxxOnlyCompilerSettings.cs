@@ -36,9 +36,9 @@ namespace MingwCommon
             this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.ExceptionHandler)
+            if (settings.ExceptionHandler.HasValue)
             {
-                switch (settings.ExceptionHandler)
+                switch (settings.ExceptionHandler.Value)
                 {
                     case C.Cxx.EExceptionHandler.Disabled:
                         commandLine.Add("-fno-exceptions");
@@ -50,19 +50,22 @@ namespace MingwCommon
                         break;
 
                     default:
-                        throw new Bam.Core.Exception("Unrecognized exception handler option");
+                        throw new Bam.Core.Exception("Unrecognized exception handler option, {0}", settings.ExceptionHandler.Value.ToString());
                 }
             }
-            switch (settings.LanguageStandard)
+            if (settings.LanguageStandard.HasValue)
             {
-                case C.Cxx.ELanguageStandard.Cxx98:
-                    commandLine.Add("-std=c++98");
-                    break;
-                case C.Cxx.ELanguageStandard.Cxx11:
-                    commandLine.Add("-std=c++11");
-                    break;
-                default:
-                    throw new Bam.Core.Exception("Invalid C++ language standard {0}", settings.LanguageStandard.ToString());
+                switch (settings.LanguageStandard.Value)
+                {
+                    case C.Cxx.ELanguageStandard.Cxx98:
+                        commandLine.Add("-std=c++98");
+                        break;
+                    case C.Cxx.ELanguageStandard.Cxx11:
+                        commandLine.Add("-std=c++11");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Invalid C++ language standard, {0}", settings.LanguageStandard.Value.ToString());
+                }
             }
         }
     }

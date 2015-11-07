@@ -38,22 +38,22 @@ namespace Publisher
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
-            if (settings.Verbose.HasValue && settings.Verbose.Value && !module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            if (settings.Verbose && !module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
                 commandLine.Add("-v");
             }
 
-            if (settings.PreserveTimestamp.HasValue && settings.PreserveTimestamp.Value && !module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            if (settings.PreserveTimestamp && !module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
                 commandLine.Add("-p");
             }
 
-            if (settings.StripDebugSymbols.HasValue && settings.StripDebugSymbols.Value)
+            if (settings.StripDebugSymbols)
             {
                 commandLine.Add("-S");
             }
 
-            if (settings.StripLocalSymbols.HasValue && settings.StripLocalSymbols.Value)
+            if (settings.StripLocalSymbols)
             {
                 commandLine.Add("-x");
             }

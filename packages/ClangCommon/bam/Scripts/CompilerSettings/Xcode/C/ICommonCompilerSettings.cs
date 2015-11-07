@@ -37,10 +37,9 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            //var objectFile = module as C.ObjectFile;
-            if (null != settings.Bits)
+            if (settings.Bits.HasValue)
             {
-                switch (settings.Bits)
+                switch (settings.Bits.Value)
                 {
                     case C.EBit.ThirtyTwo:
                         {
@@ -57,12 +56,12 @@ namespace ClangCommon
                         break;
 
                     default:
-                        throw new Bam.Core.Exception("Unknown bit depth");
+                        throw new Bam.Core.Exception("Unknown bit depth, {0}", settings.Bits.Value);
                 }
             }
-            if (null != settings.DebugSymbols)
+            if (settings.DebugSymbols.HasValue)
             {
-                configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue((settings.DebugSymbols == true) ? "YES" : "NO");
+                configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue(settings.DebugSymbols.Value ? "YES" : "NO");
             }
             if (settings.DisableWarnings.Count > 0)
             {
@@ -82,14 +81,14 @@ namespace ClangCommon
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }
-            if (null != settings.OmitFramePointer)
+            if (settings.OmitFramePointer.HasValue)
             {
-                var arg = (true == settings.OmitFramePointer) ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
+                var arg = settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
                 configuration["OTHER_CFLAGS"] = new XcodeBuilder.MultiConfigurationValue(arg);
             }
-            if (null != settings.Optimization)
+            if (settings.Optimization.HasValue)
             {
-                switch (settings.Optimization)
+                switch (settings.Optimization.Value)
                 {
                     case C.EOptimization.Off:
                         configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("0");
@@ -103,6 +102,8 @@ namespace ClangCommon
                     case C.EOptimization.Full:
                         configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("3");
                         break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported optimization, {0}", settings.Optimization.Value);
                 }
             }
             if (settings.PreprocessorDefines.Count > 0)
@@ -139,9 +140,9 @@ namespace ClangCommon
                 }
                 configuration["HEADER_SEARCH_PATHS"] = paths;
             }
-            if (null != settings.TargetLanguage)
+            if (settings.TargetLanguage.HasValue)
             {
-                switch (settings.TargetLanguage)
+                switch (settings.TargetLanguage.Value)
                 {
                     case C.ETargetLanguage.Default:
                         configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.UniqueConfigurationValue("automatic");
@@ -159,14 +160,14 @@ namespace ClangCommon
                         configuration["GCC_INPUT_FILETYPE"] = new XcodeBuilder.UniqueConfigurationValue("sourcecode.cpp.objcpp");
                         break;
                     default:
-                        throw new Bam.Core.Exception("Unsupported target language");
+                        throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value);
                 }
             }
-            if (null != settings.WarningsAsErrors)
+            if (settings.WarningsAsErrors.HasValue)
             {
-                configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.UniqueConfigurationValue((true == settings.WarningsAsErrors) ? "YES" : "NO");
+                configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.UniqueConfigurationValue(settings.WarningsAsErrors.Value ? "YES" : "NO");
             }
-            if (null != settings.OutputType)
+            if (settings.OutputType.HasValue)
             {
                 // TODO: anything?
             }

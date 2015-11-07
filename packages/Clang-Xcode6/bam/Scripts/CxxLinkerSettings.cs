@@ -81,13 +81,13 @@ namespace Clang
             set;
         }
 
-        bool? C.ICommonLinkerSettings.DebugSymbols
+        bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-        C.Cxx.EStandardLibrary? C.ICxxOnlyLinkerSettings.StandardLibrary
+        C.Cxx.EStandardLibrary C.ICxxOnlyLinkerSettings.StandardLibrary
         {
             get;
             set;

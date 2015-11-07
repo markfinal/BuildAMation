@@ -36,12 +36,9 @@ namespace GccCommon
             this GccCommon.ICommonLinkerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.CanUseOrigin)
+            if (settings.CanUseOrigin)
             {
-                if (true == settings.CanUseOrigin)
-                {
-                    commandLine.Add("-Wl,-z,origin");
-                }
+                commandLine.Add("-Wl,-z,origin");
             }
             foreach (var rpath in settings.RPath)
             {

@@ -42,9 +42,12 @@ namespace VisualCCommon
             // and reports a warning that the pdb file does not exist
             // the IDE can write None into the .vcxproj, but this has the same behaviour
             // https://connect.microsoft.com/VisualStudio/feedback/details/833494/project-with-debug-information-disabled-always-rebuilds
-            if (settings.DebugSymbols.GetValueOrDefault(false))
+            if (settings.DebugSymbols.HasValue)
             {
-                vsSettingsGroup.AddSetting("DebugInformationFormat", "OldStyle", condition);
+                if (settings.DebugSymbols.Value)
+                {
+                    vsSettingsGroup.AddSetting("DebugInformationFormat", "OldStyle", condition);
+                }
             }
 
             if (settings.DisableWarnings.Count > 0)
@@ -127,7 +130,7 @@ namespace VisualCCommon
             if (settings.OutputType.HasValue)
             {
                 vsSettingsGroup.AddSetting("PreprocessToFile", settings.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
-                if (module is C.ObjectFile)
+                if (module is C.ObjectFile) // rather than ObjectFileCollection
                 {
                     vsSettingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);
                 }

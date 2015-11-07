@@ -50,25 +50,25 @@ namespace Publisher
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
 
-        bool? IStripToolSettings.Verbose
+        bool IStripToolSettings.Verbose
         {
             get;
             set;
         }
 
-        bool? IStripToolSettings.PreserveTimestamp
+        bool IStripToolSettings.PreserveTimestamp
         {
             get;
             set;
         }
 
-        bool? IStripToolSettings.StripDebugSymbols
+        bool IStripToolSettings.StripDebugSymbols
         {
             get;
             set;
         }
 
-        bool? IStripToolSettings.StripLocalSymbols
+        bool IStripToolSettings.StripLocalSymbols
         {
             get;
             set;

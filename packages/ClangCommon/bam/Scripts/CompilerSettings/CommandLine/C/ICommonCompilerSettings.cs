@@ -36,21 +36,25 @@ namespace ClangCommon
             this C.ICommonCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            var module = (settings as Bam.Core.Settings).Module;
-            if (null != settings.Bits)
+            if (settings.Bits.HasValue)
             {
-                if (settings.Bits == C.EBit.SixtyFour)
+                switch (settings.Bits.Value)
                 {
-                    commandLine.Add("-arch x86_64");
-                }
-                else
-                {
-                    commandLine.Add("-arch i386");
+                    case C.EBit.SixtyFour:
+                        commandLine.Add("-arch x86_64");
+                        break;
+
+                    case C.EBit.ThirtyTwo:
+                        commandLine.Add("-arch i386");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unknown bit depth, {0}", settings.Bits.Value);
                 }
             }
-            if (null != settings.DebugSymbols)
+            if (settings.DebugSymbols.HasValue)
             {
-                if (true == settings.DebugSymbols)
+                if (settings.DebugSymbols.Value)
                 {
                     commandLine.Add("-g");
                 }
@@ -63,20 +67,13 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
-            if (null != settings.OmitFramePointer)
+            if (settings.OmitFramePointer.HasValue)
             {
-                if (true == settings.OmitFramePointer)
-                {
-                    commandLine.Add("-fomit-frame-pointer");
-                }
-                else
-                {
-                    commandLine.Add("-fno-omit-frame-pointer");
-                }
+                commandLine.Add(settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer");
             }
-            if (null != settings.Optimization)
+            if (settings.Optimization.HasValue)
             {
-                switch (settings.Optimization)
+                switch (settings.Optimization.Value)
                 {
                     case C.EOptimization.Off:
                         commandLine.Add("-O0");
@@ -90,6 +87,8 @@ namespace ClangCommon
                     case C.EOptimization.Full:
                         commandLine.Add("-O3");
                         break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported optimization, {0}", settings.Optimization.Value);
                 }
             }
             foreach (var define in settings.PreprocessorDefines)
@@ -111,9 +110,9 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
-            if (null != settings.TargetLanguage)
+            if (settings.TargetLanguage.HasValue)
             {
-                switch (settings.TargetLanguage)
+                switch (settings.TargetLanguage.Value)
                 {
                     case C.ETargetLanguage.C:
                         commandLine.Add("-x c");
@@ -128,19 +127,20 @@ namespace ClangCommon
                         commandLine.Add("-x objective-c++");
                         break;
                     default:
-                        throw new Bam.Core.Exception("Unsupported target language");
+                        throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value);
                 }
             }
-            if (null != settings.WarningsAsErrors)
+            if (settings.WarningsAsErrors.HasValue)
             {
-                if (true == settings.WarningsAsErrors)
+                if (settings.WarningsAsErrors.Value)
                 {
                     commandLine.Add("-Werror");
                 }
             }
-            if (null != settings.OutputType)
+            if (settings.OutputType.HasValue)
             {
-                switch (settings.OutputType)
+                var module = (settings as Bam.Core.Settings).Module;
+                switch (settings.OutputType.Value)
                 {
                     case C.ECompilerOutput.CompileOnly:
                         commandLine.Add(System.String.Format("-c {0}", (module as C.ObjectFile).InputPath.ToString()));
@@ -150,6 +150,8 @@ namespace ClangCommon
                         commandLine.Add(System.String.Format("-E {0}", (module as C.ObjectFile).InputPath.ToString()));
                         commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                         break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported output type, {0}", settings.OutputType.Value);
                 }
             }
         }

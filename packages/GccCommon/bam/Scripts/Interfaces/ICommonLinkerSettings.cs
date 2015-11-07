@@ -33,7 +33,7 @@ namespace GccCommon
     public interface ICommonLinkerSettings :
         Bam.Core.ISettingsBase
     {
-        bool? CanUseOrigin
+        bool CanUseOrigin
         {
             get;
             set;

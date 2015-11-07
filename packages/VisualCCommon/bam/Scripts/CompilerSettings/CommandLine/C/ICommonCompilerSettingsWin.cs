@@ -57,6 +57,8 @@ namespace VisualCCommon
                             compiler.PreprocessorDefines.Add("_MBCS");
                         }
                         break;
+                    default:
+                        throw new Bam.Core.Exception("Unknown character set, {0}", settings.CharacterSet.Value.ToString());
                 }
             }
         }

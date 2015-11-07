@@ -37,9 +37,12 @@ namespace VisualCCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
-            if (true == settings.DebugSymbols)
+            if (settings.DebugSymbols.HasValue)
             {
-                commandLine.Add("-Z7");
+                if (settings.DebugSymbols.Value)
+                {
+                    commandLine.Add("-Z7");
+                }
             }
             foreach (var warning in settings.DisableWarnings)
             {
@@ -49,28 +52,29 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
-            if (true == settings.OmitFramePointer)
+            if (settings.OmitFramePointer.HasValue)
             {
-                commandLine.Add("-Oy");
+                commandLine.Add(settings.OmitFramePointer.Value ? "-Oy" : "-Oy-");
             }
-            else
+            if (settings.Optimization.HasValue)
             {
-                commandLine.Add("-Oy-");
-            }
-            switch (settings.Optimization)
-            {
-                case C.EOptimization.Off:
-                    commandLine.Add("-Od");
-                    break;
-                case C.EOptimization.Size:
-                    commandLine.Add("-Os");
-                    break;
-                case C.EOptimization.Speed:
-                    commandLine.Add("-O1");
-                    break;
-                case C.EOptimization.Full:
-                    commandLine.Add("-Ox");
-                    break;
+                switch (settings.Optimization.Value)
+                {
+                    case C.EOptimization.Off:
+                        commandLine.Add("-Od");
+                        break;
+                    case C.EOptimization.Size:
+                        commandLine.Add("-Os");
+                        break;
+                    case C.EOptimization.Speed:
+                        commandLine.Add("-O1");
+                        break;
+                    case C.EOptimization.Full:
+                        commandLine.Add("-Ox");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unknown optimization level, {0}", settings.Optimization.Value.ToString());
+                }
             }
             foreach (var define in settings.PreprocessorDefines)
             {
@@ -91,31 +95,42 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
-            switch (settings.TargetLanguage)
+            if (settings.TargetLanguage.HasValue)
             {
-                case C.ETargetLanguage.C:
-                    commandLine.Add(System.String.Format("-Tc {0}", (module as C.ObjectFile).InputPath.ToString()));
-                    break;
-                case C.ETargetLanguage.Cxx:
-                    commandLine.Add(System.String.Format("-Tp {0}", (module as C.ObjectFile).InputPath.ToString()));
-                    break;
-                default:
-                    throw new Bam.Core.Exception("Unsupported target language");
+                switch (settings.TargetLanguage.Value)
+                {
+                    case C.ETargetLanguage.C:
+                        commandLine.Add(System.String.Format("-Tc {0}", (module as C.ObjectFile).InputPath.ToString()));
+                        break;
+                    case C.ETargetLanguage.Cxx:
+                        commandLine.Add(System.String.Format("-Tp {0}", (module as C.ObjectFile).InputPath.ToString()));
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value.ToString());
+                }
             }
-            if (true == settings.WarningsAsErrors)
+            if (settings.WarningsAsErrors.HasValue)
             {
-                commandLine.Add("-WX");
+                if (settings.WarningsAsErrors.Value)
+                {
+                    commandLine.Add("-WX");
+                }
             }
-            switch (settings.OutputType)
+            if (settings.OutputType.HasValue)
             {
-                case C.ECompilerOutput.CompileOnly:
-                    commandLine.Add("-c");
-                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
-                    break;
-                case C.ECompilerOutput.Preprocess:
-                    commandLine.Add("-E");
-                    commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
-                    break;
+                switch (settings.OutputType.Value)
+                {
+                    case C.ECompilerOutput.CompileOnly:
+                        commandLine.Add("-c");
+                        commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        break;
+                    case C.ECompilerOutput.Preprocess:
+                        commandLine.Add("-E");
+                        commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unknown output type, {0}", settings.OutputType.Value.ToString());
+                }
             }
         }
     }

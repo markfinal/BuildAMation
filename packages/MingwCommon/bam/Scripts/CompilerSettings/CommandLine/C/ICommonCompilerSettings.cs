@@ -37,17 +37,28 @@ namespace MingwCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
-            if (settings.Bits == C.EBit.ThirtyTwo)
+            if (settings.Bits.HasValue)
             {
-                commandLine.Add("-m32");
+                switch (settings.Bits.Value)
+                {
+                    case C.EBit.ThirtyTwo:
+                        commandLine.Add("-m32");
+                        break;
+
+                    case C.EBit.SixtyFour:
+                        commandLine.Add("-m64");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unknown machine bit depth, {0}", settings.Bits.Value.ToString());
+                }
             }
-            else
+            if (settings.DebugSymbols.HasValue)
             {
-                commandLine.Add("-m64");
-            }
-            if (true == settings.DebugSymbols)
-            {
-                commandLine.Add("-g");
+                if (settings.DebugSymbols.Value)
+                {
+                    commandLine.Add("-g");
+                }
             }
             foreach (var warning in settings.DisableWarnings)
             {
@@ -57,28 +68,29 @@ namespace MingwCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
-            if (true == settings.OmitFramePointer)
+            if (settings.OmitFramePointer.HasValue)
             {
-                commandLine.Add("-fomit-frame-pointer");
+                commandLine.Add(settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer");
             }
-            else
+            if (settings.Optimization.HasValue)
             {
-                commandLine.Add("-fno-omit-frame-pointer");
-            }
-            switch (settings.Optimization)
-            {
-                case C.EOptimization.Off:
-                    commandLine.Add("-O0");
-                    break;
-                case C.EOptimization.Size:
-                    commandLine.Add("-Os");
-                    break;
-                case C.EOptimization.Speed:
-                    commandLine.Add("-O1");
-                    break;
-                case C.EOptimization.Full:
-                    commandLine.Add("-O3");
-                    break;
+                switch (settings.Optimization.Value)
+                {
+                    case C.EOptimization.Off:
+                        commandLine.Add("-O0");
+                        break;
+                    case C.EOptimization.Size:
+                        commandLine.Add("-Os");
+                        break;
+                    case C.EOptimization.Speed:
+                        commandLine.Add("-O1");
+                        break;
+                    case C.EOptimization.Full:
+                        commandLine.Add("-O3");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unknown optimization level, {0}", settings.Optimization.Value.ToString());
+                }
             }
             foreach (var define in settings.PreprocessorDefines)
             {
@@ -99,31 +111,40 @@ namespace MingwCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
             }
-            switch (settings.TargetLanguage)
+            if (settings.TargetLanguage.HasValue)
             {
-                case C.ETargetLanguage.C:
-                    commandLine.Add("-x c");
-                    break;
-                case C.ETargetLanguage.Cxx:
-                    commandLine.Add("-x c++");
-                    break;
-                default:
-                    throw new Bam.Core.Exception("Unsupported target language");
+                switch (settings.TargetLanguage.Value)
+                {
+                    case C.ETargetLanguage.C:
+                        commandLine.Add("-x c");
+                        break;
+                    case C.ETargetLanguage.Cxx:
+                        commandLine.Add("-x c++");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value.ToString());
+                }
             }
-            if (true == settings.WarningsAsErrors)
+            if (settings.WarningsAsErrors.HasValue)
             {
-                commandLine.Add("-Werror");
+                if (settings.WarningsAsErrors.Value)
+                {
+                    commandLine.Add("-Werror");
+                }
             }
-            switch (settings.OutputType)
+            if (settings.OutputType.HasValue)
             {
-                case C.ECompilerOutput.CompileOnly:
-                    commandLine.Add(System.String.Format("-c {0}", (module as C.ObjectFile).InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
-                    break;
-                case C.ECompilerOutput.Preprocess:
-                    commandLine.Add(System.String.Format("-E {0}", (module as C.ObjectFile).InputPath.ToString()));
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
-                    break;
+                switch (settings.OutputType.Value)
+                {
+                    case C.ECompilerOutput.CompileOnly:
+                        commandLine.Add(System.String.Format("-c {0}", (module as C.ObjectFile).InputPath.ToString()));
+                        commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        break;
+                    case C.ECompilerOutput.Preprocess:
+                        commandLine.Add(System.String.Format("-E {0}", (module as C.ObjectFile).InputPath.ToString()));
+                        commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        break;
+                }
             }
         }
     }

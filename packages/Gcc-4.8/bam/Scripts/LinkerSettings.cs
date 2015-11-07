@@ -67,7 +67,7 @@ namespace Gcc
             set;
         }
 
-        bool? C.ICommonLinkerSettings.DebugSymbols
+        bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
@@ -79,7 +79,7 @@ namespace Gcc
             set;
         }
 
-        bool? GccCommon.ICommonLinkerSettings.CanUseOrigin
+        bool GccCommon.ICommonLinkerSettings.CanUseOrigin
         {
             get;
             set;

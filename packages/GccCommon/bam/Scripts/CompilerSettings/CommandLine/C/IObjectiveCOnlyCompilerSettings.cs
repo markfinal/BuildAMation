@@ -36,7 +36,7 @@ namespace GccCommon
             this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (settings.ConstantStringClass != null)
+            if (!System.String.IsNullOrEmpty(settings.ConstantStringClass))
             {
                 commandLine.Add(System.String.Format("-fconstant-string-class={0}", settings.ConstantStringClass));
             }
