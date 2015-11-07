@@ -37,9 +37,9 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            if (null != settings.LanguageStandard)
+            if (settings.LanguageStandard.HasValue)
             {
-                switch (settings.LanguageStandard)
+                switch (settings.LanguageStandard.Value)
                 {
                     case C.ELanguageStandard.C89:
                         configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("c89");
@@ -50,7 +50,7 @@ namespace ClangCommon
                         break;
 
                     default:
-                        throw new Bam.Core.Exception("Invalid C language standard, {0}", settings.LanguageStandard.ToString());
+                        throw new Bam.Core.Exception("Invalid C language standard, {0}", settings.LanguageStandard.Value.ToString());
                 }
             }
         }

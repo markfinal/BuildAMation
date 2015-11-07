@@ -36,9 +36,9 @@ namespace MingwCommon
             this C.ICOnlyCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.LanguageStandard)
+            if (settings.LanguageStandard.HasValue)
             {
-                switch (settings.LanguageStandard)
+                switch (settings.LanguageStandard.Value)
                 {
                     case C.ELanguageStandard.C89:
                         break;
@@ -46,7 +46,7 @@ namespace MingwCommon
                         commandLine.Add("-std=c99");
                         break;
                     default:
-                        throw new Bam.Core.Exception("Invalid C language standard {0}", settings.LanguageStandard.ToString());
+                        throw new Bam.Core.Exception("Invalid C language standard, {0}", settings.LanguageStandard.Value.ToString());
                 }
             }
         }

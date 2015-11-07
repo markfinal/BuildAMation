@@ -33,7 +33,7 @@ namespace C
     public interface ICxxOnlyLinkerSettings :
         Bam.Core.ISettingsBase
     {
-        C.Cxx.EStandardLibrary? StandardLibrary
+        C.Cxx.EStandardLibrary StandardLibrary
         {
             get;
             set;

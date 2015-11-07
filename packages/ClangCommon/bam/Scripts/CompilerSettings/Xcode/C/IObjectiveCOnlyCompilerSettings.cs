@@ -37,7 +37,7 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            if (null != settings.ConstantStringClass)
+            if (!System.String.IsNullOrEmpty(settings.ConstantStringClass))
             {
                 // TODO
             }

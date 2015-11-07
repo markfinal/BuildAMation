@@ -32,7 +32,7 @@ namespace VisualCCommon
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonArchiverSettings : Bam.Core.ISettingsBase
     {
-        bool? NoLogo
+        bool NoLogo
         {
             get;
             set;

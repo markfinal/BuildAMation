@@ -37,7 +37,7 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            switch (settings.StandardLibrary.Value)
+            switch (settings.StandardLibrary)
             {
             case C.Cxx.EStandardLibrary.NotSet:
                 break;
@@ -51,7 +51,7 @@ namespace ClangCommon
                 break;
 
             default:
-                throw new Bam.Core.Exception("Invalid C++ standard library {0}", settings.StandardLibrary.Value.ToString());
+                throw new Bam.Core.Exception("Invalid C++ standard library {0}", settings.StandardLibrary.ToString());
             }
         }
     }

@@ -50,7 +50,7 @@ namespace Publisher
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
 
-        EObjCopyToolMode? IObjCopyToolSettings.Mode
+        EObjCopyToolMode IObjCopyToolSettings.Mode
         {
             get;
             set;

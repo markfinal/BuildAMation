@@ -36,9 +36,9 @@ namespace VisualCCommon
             this VisualCCommon.ICommonCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.NoLogo)
+            if (settings.NoLogo.HasValue)
             {
-                if (settings.NoLogo == true)
+                if (settings.NoLogo.Value)
                 {
                     commandLine.Add("-nologo");
                 }
@@ -63,6 +63,9 @@ namespace VisualCCommon
                     case ERuntimeLibrary.MultiThreadedDLL:
                         commandLine.Add("-MD");
                         break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unknown runtime library, {0}", settings.RuntimeLibrary.Value.ToString());
                 }
             }
 

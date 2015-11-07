@@ -71,7 +71,7 @@ namespace VisualC
             set;
         }
 
-        bool? VisualCCommon.ICommonArchiverSettings.NoLogo
+        bool VisualCCommon.ICommonArchiverSettings.NoLogo
         {
             get;
             set;

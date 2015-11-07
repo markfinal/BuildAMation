@@ -38,10 +38,7 @@ namespace VisualCCommon
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
-            if (settings.NoLogo.GetValueOrDefault(false))
-            {
-                vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
-            }
+            vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo, condition);
         }
     }
 }

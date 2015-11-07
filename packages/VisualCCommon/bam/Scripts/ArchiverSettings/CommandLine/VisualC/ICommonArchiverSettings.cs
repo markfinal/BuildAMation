@@ -36,7 +36,7 @@ namespace VisualCCommon
             this ICommonArchiverSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (settings.NoLogo.GetValueOrDefault())
+            if (settings.NoLogo)
             {
                 commandLine.Add("-NOLOGO");
             }

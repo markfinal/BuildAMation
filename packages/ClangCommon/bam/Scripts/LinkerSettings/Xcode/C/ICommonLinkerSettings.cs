@@ -67,7 +67,7 @@ namespace ClangCommon
                 }
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
             }
-            if (settings.DebugSymbols.GetValueOrDefault())
+            if (settings.DebugSymbols)
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 option.Add("-g");

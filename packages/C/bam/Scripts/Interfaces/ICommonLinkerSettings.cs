@@ -51,7 +51,7 @@ namespace C
             set;
         }
 
-        bool? DebugSymbols
+        bool DebugSymbols
         {
             get;
             set;

@@ -36,24 +36,21 @@ namespace ClangCommon
             this C.ICxxOnlyLinkerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (settings.StandardLibrary.HasValue)
+            switch (settings.StandardLibrary)
             {
-                switch (settings.StandardLibrary.Value)
-                {
-                case C.Cxx.EStandardLibrary.NotSet:
-                    break;
+            case C.Cxx.EStandardLibrary.NotSet:
+                break;
 
-                case C.Cxx.EStandardLibrary.libstdcxx:
-                    commandLine.Add("-stdlib=libstdc++");
-                    break;
+            case C.Cxx.EStandardLibrary.libstdcxx:
+                commandLine.Add("-stdlib=libstdc++");
+                break;
 
-                case C.Cxx.EStandardLibrary.libcxx:
-                    commandLine.Add("-stdlib=libc++");
-                    break;
+            case C.Cxx.EStandardLibrary.libcxx:
+                commandLine.Add("-stdlib=libc++");
+                break;
 
-                default:
-                    throw new Bam.Core.Exception("Invalid C++ standard library {0}", settings.StandardLibrary.Value.ToString());
-                }
+            default:
+                throw new Bam.Core.Exception("Invalid C++ standard library {0}", settings.StandardLibrary.ToString());
             }
         }
     }

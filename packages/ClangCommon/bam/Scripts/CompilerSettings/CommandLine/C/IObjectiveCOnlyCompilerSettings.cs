@@ -36,7 +36,7 @@ namespace ClangCommon
             this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.ConstantStringClass)
+            if (!System.String.IsNullOrEmpty(settings.ConstantStringClass))
             {
                 commandLine.Add(System.String.Format("-fconstant-string-class={0}", settings.ConstantStringClass));
             }

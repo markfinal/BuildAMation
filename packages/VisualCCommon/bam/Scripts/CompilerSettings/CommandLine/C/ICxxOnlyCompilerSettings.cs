@@ -36,9 +36,9 @@ namespace VisualCCommon
             this C.ICxxOnlyCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (null != settings.ExceptionHandler)
+            if (settings.ExceptionHandler.HasValue)
             {
-                switch (settings.ExceptionHandler)
+                switch (settings.ExceptionHandler.Value)
                 {
                     case C.Cxx.EExceptionHandler.Disabled:
                         // nothing
@@ -53,7 +53,7 @@ namespace VisualCCommon
                         commandLine.Add("-EHs");
                         break;
                     default:
-                        throw new Bam.Core.Exception("Unrecognized exception handler option");
+                        throw new Bam.Core.Exception("Unrecognized exception handler option, {0}", settings.ExceptionHandler.Value.ToString());
                 }
             }
         }

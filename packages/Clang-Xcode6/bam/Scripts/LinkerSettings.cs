@@ -80,7 +80,7 @@ namespace Clang
             set;
         }
 
-        bool? C.ICommonLinkerSettings.DebugSymbols
+        bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;

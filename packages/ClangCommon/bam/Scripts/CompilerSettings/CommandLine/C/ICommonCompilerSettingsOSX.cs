@@ -40,7 +40,7 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-F{0}", path.ParseAndQuoteIfNecessary()));
             }
-            if (settings.MinimumVersionSupported != null)
+            if (!System.String.IsNullOrEmpty(settings.MinimumVersionSupported))
             {
                 var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
                 var match = minVersionRegEx.Match(settings.MinimumVersionSupported);

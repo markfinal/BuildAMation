@@ -84,7 +84,7 @@ namespace VisualC
             set;
         }
 
-        bool? C.ICommonLinkerSettings.DebugSymbols
+        bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
@@ -96,7 +96,7 @@ namespace VisualC
             set;
         }
 
-        bool? VisualCCommon.ICommonLinkerSettings.NoLogo
+        bool VisualCCommon.ICommonLinkerSettings.NoLogo
         {
             get;
             set;
