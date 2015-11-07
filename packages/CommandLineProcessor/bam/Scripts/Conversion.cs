@@ -38,7 +38,6 @@ namespace CommandLineProcessor
             Bam.Core.Settings toolSettings,
             Bam.Core.StringArray commandLine)
         {
-            var moduleType = typeof(Bam.Core.Module);
             var stringArrayType = typeof(Bam.Core.StringArray);
             var commandOrder = new Bam.Core.Array<System.Tuple<int, Bam.Core.StringArray>>();
             foreach (var i in toolSettings.Interfaces())
