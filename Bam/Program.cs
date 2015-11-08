@@ -112,8 +112,8 @@ namespace Bam
                 // configure
                 Core.Graph.Instance.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
                 Core.State.CompileWithDebugSymbols = Core.CommandLineProcessor.Evaluate(new Core.UseDebugSymbols());
-                Core.State.BuildMode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
-                if (null == Core.State.BuildMode)
+                Core.Graph.Instance.Mode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
+                if (null == Core.Graph.Instance.Mode)
                 {
                     throw new Core.Exception("No build mode specified");
                 }

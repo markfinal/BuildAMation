@@ -58,7 +58,6 @@ namespace Bam.Core
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
-            this.Mode = null;
             this.MetaData = null;
         }
 

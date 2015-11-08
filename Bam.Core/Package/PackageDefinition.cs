@@ -948,7 +948,7 @@ namespace Bam.Core
             }
             else
             {
-                builderNames.AddUnique(System.String.Format("{0}Builder", State.BuildMode));
+                builderNames.AddUnique(System.String.Format("{0}Builder", Graph.Instance.Mode));
             }
             foreach (var builderName in builderNames)
             {

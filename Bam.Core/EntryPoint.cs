@@ -73,17 +73,11 @@ namespace Bam.Core
                 PackageUtilities.LoadPackageAssembly();
             }
 
-            var graph = Graph.Instance;
-            graph.Mode = State.BuildMode;
-            if (null == graph.Mode)
-            {
-                throw new Exception("Building mode has not been set");
-            }
-
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();
 
             // get the metadata from the build mode package
+            var graph = Graph.Instance;
             var metaName = System.String.Format("{0}Builder.{0}Meta", graph.Mode);
             var metaDataType = State.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)

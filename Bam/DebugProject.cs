@@ -215,7 +215,7 @@ namespace Bam
                 writer.WriteLine("{0}Core.Graph.Instance.BuildRoot = \"debug_build\";", indent(3));
                 writer.WriteLine("{0}Core.Graph.Instance.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
                 writer.WriteLine("{0}Core.State.CompileWithDebugSymbols = true;", indent(3));
-                writer.WriteLine("{0}Core.State.BuildMode = \"Native\";", indent(3));
+                writer.WriteLine("{0}Core.Graph.Instance.BuildMode = \"Native\";", indent(3));
                 writer.WriteLine("{0}var debug = new Core.Environment();", indent(3));
                 writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
                 writer.WriteLine("{0}var optimized = new Core.Environment();", indent(3));
