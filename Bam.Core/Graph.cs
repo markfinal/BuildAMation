@@ -59,6 +59,10 @@ namespace Bam.Core
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
             this.MetaData = null;
+
+            this.PackageRepositories = new StringArray();
+            var primaryPackageRepo = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(State.ExecutableDirectory).FullName).FullName, "packages");
+            this.PackageRepositories.AddUnique(primaryPackageRepo);
         }
 
         public void
@@ -484,6 +488,12 @@ namespace Bam.Core
         {
             get;
             set;
+        }
+
+        public StringArray PackageRepositories
+        {
+            get;
+            private set;
         }
     }
 }

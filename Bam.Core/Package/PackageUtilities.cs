@@ -181,7 +181,7 @@ namespace Bam.Core
             bool allowDuplicates = false)
         {
             var packageRepos = new System.Collections.Generic.Queue<string>();
-            foreach (var repo in State.PackageRepositories)
+            foreach (var repo in Graph.Instance.PackageRepositories)
             {
                 if (packageRepos.Contains(repo))
                 {
@@ -212,7 +212,7 @@ namespace Bam.Core
                 }
                 var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
 
-                State.PackageRepositories.Add(repo);
+                Graph.Instance.PackageRepositories.Add(repo);
 
                 foreach (var bamDir in candidatePackageDirs)
                 {
@@ -231,7 +231,7 @@ namespace Bam.Core
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
-                        if (State.PackageRepositories.Contains(newRepo))
+                        if (Graph.Instance.PackageRepositories.Contains(newRepo))
                         {
                             continue;
                         }

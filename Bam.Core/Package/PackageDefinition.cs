@@ -881,7 +881,7 @@ namespace Bam.Core
                     }
                     message.AppendLine();
                     var packageRepos = new StringArray();
-                    State.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
+                    Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
                     message.AppendLine("Searched in the package repositories:");
                     message.AppendLine(packageRepos.ToString("\n"));
                     throw new Exception(message.ToString());
@@ -901,7 +901,7 @@ namespace Bam.Core
                         message.AppendLine();
                     }
                     var packageRepos = new StringArray();
-                    State.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
+                    Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
                     message.AppendLine("Found in the package repositories:");
                     message.AppendLine(packageRepos.ToString("\n"));
                     throw new Exception(message.ToString());

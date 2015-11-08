@@ -124,11 +124,6 @@ namespace Bam.Core
 
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
 
-            var primaryPackageRepo = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(assemblyDirectory).FullName).FullName, "packages");
-            var packageRepos = new StringArray();
-            packageRepos.Add(primaryPackageRepo);
-            Add<StringArray>("System", "PackageRepositories", packageRepos);
-
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<bool>("System", "ShowTimingStatistics", false);
@@ -342,18 +337,6 @@ namespace Bam.Core
             get
             {
                 return Get("System", "WorkingDirectory") as string;
-            }
-        }
-
-        public static StringArray PackageRepositories
-        {
-            set
-            {
-                Set("System", "PackageRepositories", value);
-            }
-            get
-            {
-                return Get("System", "PackageRepositories") as StringArray;
             }
         }
 
