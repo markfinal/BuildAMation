@@ -443,7 +443,12 @@ namespace Bam.Core
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
             string thisHashCode = null;
 
-            if (!State.CompileWithDebugSymbols)
+            string compileReason = null;
+            if (State.CompileWithDebugSymbols)
+            {
+                compileReason = "debug symbols were enabled";
+            }
+            else
             {
                 // can an existing assembly be reused?
                 thisHashCode = GetPackageHash(sourceCode, definitions, Graph.Instance.MasterPackage.BamAssemblies);
@@ -466,10 +471,18 @@ namespace Bam.Core
                             }
                             else
                             {
-                                Log.DebugMessage("Assembly hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
+                                compileReason = "package source has changed since the last compile";
                             }
                         }
                     }
+                    else
+                    {
+                        compileReason = "no previously compiled package assembly exists";
+                    }
+                }
+                else
+                {
+                    compileReason = "user has disabled package assembly caching";
                 }
             }
 
@@ -477,7 +490,7 @@ namespace Bam.Core
             var clrVersion = System.Environment.Version;
             var compilerVersion = System.String.Format("v{0}.{1}", clrVersion.Major, clrVersion.Minor);
 
-            Log.Detail("Compiling package assembly, using C# compiler {0}", compilerVersion);
+            Log.Detail("Compiling package assembly, using C# compiler {0}, because {1}.", compilerVersion, compileReason);
 
             var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", compilerVersion);
