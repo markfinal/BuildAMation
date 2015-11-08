@@ -182,10 +182,7 @@ namespace Bam
             {
                 allDefines.AddRange(package.Definitions);
             }
-            // command line definitions
-            allDefines.AddRange(Core.State.PackageCompilationDefines);
             allDefines.Sort();
-            allDefines.RemoveAll(Core.State.PackageCompilationUndefines);
 
             return allDefines.ToString(';');
         }

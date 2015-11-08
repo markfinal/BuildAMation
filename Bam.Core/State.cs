@@ -127,8 +127,6 @@ namespace Bam.Core
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<bool>("System", "ShowTimingStatistics", false);
-            Add<StringArray>("System", "CompilerDefines", new StringArray());
-            Add<StringArray>("System", "CompilerUndefines", new StringArray());
             Add<bool>("System", "CacheAssembly", true);
 
             AddCategory("Build");
@@ -412,32 +410,6 @@ namespace Bam.Core
             get
             {
                 return (bool)Get("System", "ShowTimingStatistics");
-            }
-        }
-
-        public static StringArray PackageCompilationDefines
-        {
-            set
-            {
-                Set("System", "CompilerDefines", value);
-            }
-
-            get
-            {
-                return Get("System", "CompilerDefines") as StringArray;
-            }
-        }
-
-        public static StringArray PackageCompilationUndefines
-        {
-            set
-            {
-                Set("System", "CompilerUndefines", value);
-            }
-
-            get
-            {
-                return Get("System", "CompilerUndefines") as StringArray;
             }
         }
 

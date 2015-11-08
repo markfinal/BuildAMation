@@ -427,9 +427,6 @@ namespace Bam.Core
             // add/remove other definitions
             definitions.Add(VersionDefineForCompiler);
             definitions.Add(HostPlatformDefineForCompiler);
-            // command line definitions
-            definitions.AddRange(State.PackageCompilationDefines);
-            definitions.RemoveAll(State.PackageCompilationUndefines);
             definitions.Sort();
 
             gatherSourceProfile.StopProfile();
