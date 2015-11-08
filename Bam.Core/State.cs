@@ -121,7 +121,6 @@ namespace Bam.Core
 
             AddCategory("System");
             OSUtilities.SetupPlatform();
-            Add<TimeProfile[]>("System", "Profiling", new TimeProfile[System.Enum.GetValues(typeof(ETimingProfiles)).Length]);
             Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
 
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
@@ -434,14 +433,6 @@ namespace Bam.Core
             get
             {
                 return (bool)Get("Build", "IncludeDebugSymbols");
-            }
-        }
-
-        public static TimeProfile[] TimingProfiles
-        {
-            get
-            {
-                return Get("System", "Profiling") as TimeProfile[];
             }
         }
 
