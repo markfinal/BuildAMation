@@ -126,9 +126,6 @@ namespace Bam.Core
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<bool>("System", "CacheAssembly", true);
-
-            AddCategory("Build");
-            Add("Build", "JobCount", 1);
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -339,19 +336,6 @@ namespace Bam.Core
             get
             {
                 return Get("System", "ScriptAssembly") as System.Reflection.Assembly;
-            }
-        }
-
-        public static int JobCount
-        {
-            set
-            {
-                Set("Build", "JobCount", value);
-            }
-
-            get
-            {
-                return (int)Get("Build", "JobCount");
             }
         }
 
