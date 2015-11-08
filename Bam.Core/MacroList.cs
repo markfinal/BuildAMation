@@ -69,7 +69,7 @@ namespace Bam.Core
             }
             if (null == value)
             {
-                throw new Exception("Macro value cannot be null");
+                throw new Exception("Cannot assign null to macro '{0}'", key);
             }
             this.DictInternal[FormattedKey(key)] = value;
         }
