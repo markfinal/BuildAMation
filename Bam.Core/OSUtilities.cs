@@ -151,8 +151,7 @@ namespace Bam.Core
                     throw new Exception("Unrecognized platform");
             }
 
-            var isLittleEndian = System.BitConverter.IsLittleEndian;
-            State.Add<bool>("System", "IsLittleEndian", isLittleEndian);
+            IsLittleEndian = System.BitConverter.IsLittleEndian;
         }
 
         public static bool
@@ -250,6 +249,13 @@ namespace Bam.Core
                         throw new Exception("Unknown platform");
                 }
             }
+        }
+
+        public static bool
+        IsLittleEndian
+        {
+            get;
+            private set;
         }
     }
 }
