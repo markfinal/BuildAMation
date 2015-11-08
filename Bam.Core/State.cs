@@ -125,7 +125,6 @@ namespace Bam.Core
 
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
-            Add<bool>("System", "ShowTimingStatistics", false);
             Add<bool>("System", "CacheAssembly", true);
 
             AddCategory("Build");
@@ -367,19 +366,6 @@ namespace Bam.Core
             get
             {
                 return (bool)Get("Build", "IncludeDebugSymbols");
-            }
-        }
-
-        public static bool ShowTimingStatistics
-        {
-            set
-            {
-                Set("System", "ShowTimingStatistics", value);
-            }
-
-            get
-            {
-                return (bool)Get("System", "ShowTimingStatistics");
             }
         }
 
