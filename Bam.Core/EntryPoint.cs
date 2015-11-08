@@ -33,9 +33,16 @@ namespace Bam.Core
     public static class EntryPoint
     {
         public static void
+        PrintVersion(
+            EVerboseLevel level)
+        {
+            Core.Log.Message(level, "BuildAMation (Bam) v{0} (c) Mark Final, 2010-2015. Licensed under BSD 3-clause. See License file.", Core.State.VersionString);
+        }
+
+        public static void
         PrintVersion()
         {
-            Core.Log.Info("BuildAMation (Bam) v{0} (c) Mark Final, 2010-2015. Licensed under BSD 3-clause. See License file.", Core.State.VersionString);
+            PrintVersion(Graph.Instance.VerbosityLevel);
         }
 
         public static void

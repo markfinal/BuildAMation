@@ -36,7 +36,7 @@ namespace Bam.Core
             bool explainRebuild)
         {
             this.Evaluate = useEvaluation;
-            this.ExplainLoggingLevel = explainRebuild ? State.VerbosityLevel : EVerboseLevel.Full;
+            this.ExplainLoggingLevel = explainRebuild ? Graph.Instance.VerbosityLevel : EVerboseLevel.Full;
             this.OutputStringBuilder = new System.Text.StringBuilder();
             this.ErrorStringBuilder = new System.Text.StringBuilder();
         }

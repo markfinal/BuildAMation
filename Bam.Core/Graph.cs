@@ -479,5 +479,12 @@ namespace Bam.Core
                 this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
             }
         }
+
+        public EVerboseLevel
+        VerbosityLevel
+        {
+            get;
+            set;
+        }
     }
 }

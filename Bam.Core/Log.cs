@@ -91,7 +91,7 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (State.VerbosityLevel >= level)
+            if (Graph.Instance.VerbosityLevel >= level)
             {
                 if (args.Length > 0)
                 {
@@ -128,7 +128,7 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (State.VerbosityLevel >= EVerboseLevel.Info)
+            if (Graph.Instance.VerbosityLevel >= EVerboseLevel.Info)
             {
                 if (args.Length > 0)
                 {
@@ -148,7 +148,7 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (State.VerbosityLevel >= EVerboseLevel.Detail)
+            if (Graph.Instance.VerbosityLevel >= EVerboseLevel.Detail)
             {
                 if (args.Length > 0)
                 {
@@ -168,7 +168,7 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (EVerboseLevel.Full == State.VerbosityLevel)
+            if (EVerboseLevel.Full == Graph.Instance.VerbosityLevel)
             {
                 if (args.Length > 0)
                 {
@@ -206,7 +206,7 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (State.VerbosityLevel > EVerboseLevel.Detail)
+            if (Graph.Instance.VerbosityLevel > EVerboseLevel.Detail)
             {
                 if (args.Length > 0)
                 {

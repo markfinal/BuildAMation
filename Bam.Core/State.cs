@@ -121,7 +121,6 @@ namespace Bam.Core
 
             AddCategory("System");
             OSUtilities.SetupPlatform();
-            Add<EVerboseLevel>("System", "Verbosity", EVerboseLevel.Info);
 
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
 
@@ -418,19 +417,6 @@ namespace Bam.Core
             get
             {
                 return (bool)Get("Build", "IncludeDebugSymbols");
-            }
-        }
-
-        public static EVerboseLevel VerbosityLevel
-        {
-            set
-            {
-                Set("System", "Verbosity", value);
-            }
-
-            get
-            {
-                return (EVerboseLevel)Get("System", "Verbosity");
             }
         }
 

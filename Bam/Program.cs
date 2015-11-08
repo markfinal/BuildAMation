@@ -63,7 +63,7 @@ namespace Bam
                     case Core.EVerboseLevel.Info:
                     case Core.EVerboseLevel.Detail:
                     case Core.EVerboseLevel.Full:
-                        Core.State.VerbosityLevel = verbosityLevel;
+                        Core.Graph.Instance.VerbosityLevel = verbosityLevel;
                         break;
 
                     default:
