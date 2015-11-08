@@ -79,7 +79,7 @@ namespace Bam
             {
                 if (Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory))
                 {
-                    Core.State.BuildRoot = System.IO.Path.GetTempPath();
+                    Core.Graph.Instance.BuildRoot = System.IO.Path.GetTempPath();
                     Core.PackageUtilities.IdentifyAllPackages();
                     Core.PackageUtilities.CompilePackageAssembly();
                     Core.PackageUtilities.LoadPackageAssembly();

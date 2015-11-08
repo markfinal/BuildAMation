@@ -133,7 +133,6 @@ namespace Bam.Core
             Add<string>("System", "ScriptAssemblyPathname", null);
             Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<string>("System", "BuildMode", null);
-            Add<string>("System", "BuildRoot", null);
             Add<bool>("System", "ShowTimingStatistics", false);
             Add<StringArray>("System", "CompilerDefines", new StringArray());
             Add<StringArray>("System", "CompilerUndefines", new StringArray());
@@ -393,20 +392,6 @@ namespace Bam.Core
             get
             {
                 return Get("System", "BuildMode") as string;
-            }
-        }
-
-        public static string BuildRoot
-        {
-            set
-            {
-                var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
-
-                Set("System", "BuildRoot", absoluteBuildRootPath);
-            }
-            get
-            {
-                return Get("System", "BuildRoot") as string;
             }
         }
 

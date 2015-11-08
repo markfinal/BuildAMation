@@ -996,7 +996,7 @@ namespace Bam.Core
         public string
         GetBuildDirectory()
         {
-            return System.IO.Path.Combine(State.BuildRoot, this.FullName);
+            return System.IO.Path.Combine(Graph.Instance.BuildRoot, this.FullName);
         }
 
         private void

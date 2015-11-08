@@ -353,7 +353,7 @@ namespace Bam.Core
         CompilePackageAssembly()
         {
             // validate build root
-            if (null == State.BuildRoot)
+            if (null == Graph.Instance.BuildRoot)
             {
                 throw new Exception("Build root has not been specified");
             }
@@ -364,12 +364,12 @@ namespace Bam.Core
             IdentifyAllPackages();
 
             var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
-            if (cleanFirst && System.IO.Directory.Exists(State.BuildRoot))
+            if (cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
             {
-                Log.Info("Deleting build root '{0}'", State.BuildRoot);
+                Log.Info("Deleting build root '{0}'", Graph.Instance.BuildRoot);
                 try
                 {
-                    System.IO.Directory.Delete(State.BuildRoot, true);
+                    System.IO.Directory.Delete(Graph.Instance.BuildRoot, true);
                 }
                 catch (System.IO.IOException ex)
                 {
@@ -377,9 +377,9 @@ namespace Bam.Core
                 }
             }
 
-            if (!System.IO.Directory.Exists(State.BuildRoot))
+            if (!System.IO.Directory.Exists(Graph.Instance.BuildRoot))
             {
-                System.IO.Directory.CreateDirectory(State.BuildRoot);
+                System.IO.Directory.CreateDirectory(Graph.Instance.BuildRoot);
             }
 
             BuildModeUtilities.SetBuildModePackage();
@@ -438,7 +438,7 @@ namespace Bam.Core
             assemblyCompileProfile.StartProfile();
 
             // assembly is written to the build root
-            var cachedAssemblyPathname = System.IO.Path.Combine(State.BuildRoot, "CachedPackageAssembly");
+            var cachedAssemblyPathname = System.IO.Path.Combine(Graph.Instance.BuildRoot, "CachedPackageAssembly");
             cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, Graph.Instance.MasterPackage.Name) + ".dll";
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
             string thisHashCode = null;

@@ -270,9 +270,9 @@ namespace Bam.Core
 
             ExecutePreBuild(metaDataType);
 
-            if (!System.IO.Directory.Exists(State.BuildRoot))
+            if (!System.IO.Directory.Exists(graph.BuildRoot))
             {
-                System.IO.Directory.CreateDirectory(State.BuildRoot);
+                System.IO.Directory.CreateDirectory(graph.BuildRoot);
             }
 
             var threadCount = CommandLineProcessor.Evaluate(new MultiThreaded());

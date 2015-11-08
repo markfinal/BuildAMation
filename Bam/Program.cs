@@ -110,7 +110,7 @@ namespace Bam
                 }
 
                 // configure
-                Core.State.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
+                Core.Graph.Instance.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
                 Core.State.CompileWithDebugSymbols = Core.CommandLineProcessor.Evaluate(new Core.UseDebugSymbols());
                 Core.State.BuildMode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
                 if (null == Core.State.BuildMode)

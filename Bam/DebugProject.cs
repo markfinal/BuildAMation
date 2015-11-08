@@ -212,7 +212,7 @@ namespace Bam
                 writer.WriteLine("{0}static void Main(string[] args)", indent(2));
                 writer.WriteLine("{0}{{", indent(2));
                 writer.WriteLine("{0}// configure", indent(3));
-                writer.WriteLine("{0}Core.State.BuildRoot = \"debug_build\";", indent(3));
+                writer.WriteLine("{0}Core.Graph.Instance.BuildRoot = \"debug_build\";", indent(3));
                 writer.WriteLine("{0}Core.State.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
                 writer.WriteLine("{0}Core.State.CompileWithDebugSymbols = true;", indent(3));
                 writer.WriteLine("{0}Core.State.BuildMode = \"Native\";", indent(3));

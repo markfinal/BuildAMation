@@ -36,6 +36,8 @@ namespace Bam.Core
     public sealed class Graph :
         System.Collections.Generic.IEnumerable<ModuleCollection>
     {
+        private string TheBuildRoot;
+
         static Graph()
         {
             Instance = new Graph();
@@ -53,10 +55,6 @@ namespace Bam.Core
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
-            if (null != State.BuildMode)
-            {
-                this.Macros.AddVerbatim("buildroot", State.BuildRoot);
-            }
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
@@ -462,6 +460,24 @@ namespace Bam.Core
                 throw new Exception("Unable to locate package '{0}'", packageName);
             }
             return package.MetaData as MetaDataType;
+        }
+
+        public string BuildRoot
+        {
+            get
+            {
+                return this.TheBuildRoot;
+            }
+            set
+            {
+                if (null != this.TheBuildRoot)
+                {
+                    throw new Exception("The build root has already been set");
+                }
+                var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
+                this.TheBuildRoot = absoluteBuildRootPath;
+                this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
+            }
         }
     }
 }
