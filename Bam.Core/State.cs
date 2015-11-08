@@ -387,19 +387,6 @@ namespace Bam.Core
             }
         }
 
-        public static System.Collections.Generic.Dictionary<string,string> LazyArguments
-        {
-            set
-            {
-                Set("Build", "LazyArguments", value);
-            }
-
-            get
-            {
-                return Get("Build", "LazyArguments") as System.Collections.Generic.Dictionary<string, string>;
-            }
-        }
-
         public static bool ShowTimingStatistics
         {
             set
