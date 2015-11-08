@@ -33,10 +33,18 @@ namespace Bam.Core
     public static class EntryPoint
     {
         public static void
+        PrintVersion()
+        {
+            Core.Log.Info("BuildAMation (Bam) v{0} (c) Mark Final, 2010-2015. Licensed under BSD 3-clause. See License file.", Core.State.VersionString);
+        }
+
+        public static void
         Execute(
             Array<Environment> environments,
             System.Reflection.Assembly packageAssembly = null)
         {
+            PrintVersion();
+
             if (0 == environments.Count)
             {
                 throw new Exception("No build configurations were specified");
