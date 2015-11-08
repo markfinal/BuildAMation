@@ -117,8 +117,6 @@ namespace Bam.Core
             Add<string>("BuildAMation", "CSharpCompilerVersion", targetFrameworkNameSplit[1]);
 #endif
 
-            Add<string>("BuildAMation", "PackageDefinitionSchemaRelativePath", "./Schema/BamPackageDefinitionV1.xsd");
-
             AddCategory("System");
 
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
@@ -298,14 +296,6 @@ namespace Bam.Core
             }
         }
 #endif
-
-        public static string PackageDefinitionSchemaRelativePath
-        {
-            get
-            {
-                return Get("BuildAMation", "PackageDefinitionSchemaRelativePath") as string;
-            }
-        }
 
         public static string WorkingDirectory
         {

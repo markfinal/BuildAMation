@@ -185,7 +185,7 @@ namespace Bam.Core
             {
                 var xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 var schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
-                var mostRecentSchemaRelativePath = State.PackageDefinitionSchemaRelativePath;
+                var mostRecentSchemaRelativePath = "./Schema/BamPackageDefinitionV1.xsd";
                 schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, mostRecentSchemaRelativePath);
                 packageDefinition.Attributes.Append(schemaAttribute);
                 packageDefinition.SetAttribute("name", this.Name);
