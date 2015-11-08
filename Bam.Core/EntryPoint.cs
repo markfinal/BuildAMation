@@ -115,7 +115,7 @@ namespace Bam.Core
 
             packageMetaDataProfile.StopProfile();
 
-            var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
+            var topLevelNamespace = graph.MasterPackage.Name;
 
             var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
             findBuildableModulesProfile.StartProfile();
