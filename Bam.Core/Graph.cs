@@ -67,6 +67,7 @@ namespace Bam.Core
             this.PackageRepositories.AddUnique(primaryPackageRepo);
 
             this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new ForceDefinitionFileUpdate());
+            this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new UseDebugSymbols());
         }
 
         public void
@@ -504,6 +505,12 @@ namespace Bam.Core
         {
             get;
             private set;
+        }
+
+        public bool CompileWithDebugSymbols
+        {
+            get;
+            set;
         }
     }
 }

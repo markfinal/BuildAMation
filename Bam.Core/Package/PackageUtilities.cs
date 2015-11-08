@@ -394,7 +394,7 @@ namespace Bam.Core
 
                 // to compile with debug information, you must compile the files
                 // to compile without, we need to file contents to hash the source
-                if (State.CompileWithDebugSymbols)
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     var scripts = package.GetScriptFiles();
                     sourceCode.AddRange(scripts);
@@ -440,7 +440,7 @@ namespace Bam.Core
             string thisHashCode = null;
 
             string compileReason = null;
-            if (State.CompileWithDebugSymbols)
+            if (Graph.Instance.CompileWithDebugSymbols)
             {
                 compileReason = "debug symbols were enabled";
             }
@@ -504,7 +504,7 @@ namespace Bam.Core
                 compilerParameters.GenerateExecutable = false;
                 compilerParameters.GenerateInMemory = false;
 
-                if (State.CompileWithDebugSymbols)
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
                 }
@@ -514,7 +514,7 @@ namespace Bam.Core
                 }
 
                 var compilerOptions = "/checked+ /unsafe-";
-                if (State.CompileWithDebugSymbols)
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     compilerParameters.IncludeDebugInformation = true;
                     compilerOptions += " /optimize-";
@@ -560,7 +560,7 @@ namespace Bam.Core
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
-                var results = State.CompileWithDebugSymbols ?
+                var results = Graph.Instance.CompileWithDebugSymbols ?
                     provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :
                     provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
 
@@ -574,7 +574,7 @@ namespace Bam.Core
                     return false;
                 }
 
-                if (!State.CompileWithDebugSymbols)
+                if (!Graph.Instance.CompileWithDebugSymbols)
                 {
                     if (State.CacheAssembly)
                     {
@@ -612,7 +612,7 @@ namespace Bam.Core
                 // this code works from an untrusted location, and debugging IS available when
                 // the pdb (.NET)/mdb (Mono) resides beside the assembly
                 byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
-                if (State.CompileWithDebugSymbols)
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     var debugInfoFilename = State.RunningMono ?
                         State.ScriptAssemblyPathname + ".mdb" :

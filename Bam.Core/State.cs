@@ -128,7 +128,6 @@ namespace Bam.Core
             Add<bool>("System", "CacheAssembly", true);
 
             AddCategory("Build");
-            Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
         }
 
@@ -353,19 +352,6 @@ namespace Bam.Core
             get
             {
                 return (int)Get("Build", "JobCount");
-            }
-        }
-
-        public static bool CompileWithDebugSymbols
-        {
-            set
-            {
-                Set("Build", "IncludeDebugSymbols", value);
-            }
-
-            get
-            {
-                return (bool)Get("Build", "IncludeDebugSymbols");
             }
         }
 
