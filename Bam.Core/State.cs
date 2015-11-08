@@ -120,7 +120,6 @@ namespace Bam.Core
             Add<string>("BuildAMation", "PackageDefinitionSchemaRelativePath", "./Schema/BamPackageDefinitionV1.xsd");
 
             AddCategory("System");
-            OSUtilities.SetupPlatform();
 
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
 
@@ -310,14 +309,6 @@ namespace Bam.Core
             get
             {
                 return Get("BuildAMation", "PackageDefinitionSchemaRelativePath") as string;
-            }
-        }
-
-        public static EPlatform Platform
-        {
-            get
-            {
-                return (EPlatform)Get("System", "Platform");
             }
         }
 

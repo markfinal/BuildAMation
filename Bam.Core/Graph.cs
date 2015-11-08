@@ -51,6 +51,8 @@ namespace Bam.Core
 
         private Graph()
         {
+            OSUtilities.SetupPlatform();
+
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();

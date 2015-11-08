@@ -117,8 +117,7 @@ namespace Bam.Core
         {
             get
             {
-                var platform = State.Platform;
-                var platformString = Platform.ToString(platform, '\0', "BAM_HOST_", true);
+                var platformString = Platform.ToString(OSUtilities.CurrentPlatform, '\0', "BAM_HOST_", true);
                 return platformString;
             }
         }

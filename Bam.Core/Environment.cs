@@ -37,7 +37,7 @@ namespace Bam.Core
         public Environment()
         {
             this.Configuration = EConfiguration.Invalid;
-            this.Platform = State.Platform;
+            this.Platform = OSUtilities.CurrentPlatform;
         }
 
         public EConfiguration Configuration
