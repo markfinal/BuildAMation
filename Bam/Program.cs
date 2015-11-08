@@ -70,8 +70,6 @@ namespace Bam
                         throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
                 }
 
-                Core.State.ForceDefinitionFileUpdate = Core.CommandLineProcessor.Evaluate(new Core.ForceDefinitionFileUpdate());
-
                 if (Core.CommandLineProcessor.Evaluate(new Core.PrintHelp()))
                 {
                     CommandLineArgumentHelper.PrintHelp();

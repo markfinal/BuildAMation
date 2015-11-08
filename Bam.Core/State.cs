@@ -134,7 +134,6 @@ namespace Bam.Core
             AddCategory("Build");
             Add<bool>("Build", "IncludeDebugSymbols", false);
             Add("Build", "JobCount", 1);
-            Add<bool>("Build", "ForceDefinitionFileUpdate", false);
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -452,19 +451,6 @@ namespace Bam.Core
             get
             {
                 return (bool)Get("System", "CacheAssembly");
-            }
-        }
-
-        public static bool ForceDefinitionFileUpdate
-        {
-            set
-            {
-                Set("Build", "ForceDefinitionFileUpdate", value);
-            }
-
-            get
-            {
-                return (bool)Get("Build", "ForceDefinitionFileUpdate");
             }
         }
     }

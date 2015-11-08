@@ -171,7 +171,7 @@ namespace Bam.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
+            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !Graph.Instance.ForceDefinitionFileUpdate);
             masterDefinitionFile.Read(true);
             return masterDefinitionFile;
         }
@@ -225,7 +225,7 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var definitionFile = new PackageDefinition(packageDefinitionPath, !State.ForceDefinitionFileUpdate);
+                    var definitionFile = new PackageDefinition(packageDefinitionPath, !Graph.Instance.ForceDefinitionFileUpdate);
                     definitionFile.Read(true);
                     candidatePackageDefinitions.Add(definitionFile);
 

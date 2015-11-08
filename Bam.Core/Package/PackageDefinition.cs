@@ -417,7 +417,7 @@ namespace Bam.Core
             // try reading the current schema version first
             if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations))
             {
-                if (State.ForceDefinitionFileUpdate)
+                if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
                     Log.DebugMessage("Forced writing of package definition file '{0}'", this.XMLFilename);
                     this.Write();

@@ -63,6 +63,8 @@ namespace Bam.Core
             this.PackageRepositories = new StringArray();
             var primaryPackageRepo = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(State.ExecutableDirectory).FullName).FullName, "packages");
             this.PackageRepositories.AddUnique(primaryPackageRepo);
+
+            this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new ForceDefinitionFileUpdate());
         }
 
         public void
@@ -491,6 +493,12 @@ namespace Bam.Core
         }
 
         public StringArray PackageRepositories
+        {
+            get;
+            private set;
+        }
+
+        public bool ForceDefinitionFileUpdate
         {
             get;
             private set;
