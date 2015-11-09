@@ -341,11 +341,11 @@ namespace Bam.Core
             {
                 hashCode ^= define.GetHashCode();
             }
-            foreach (var assemblyPath in bamAssemblies)
+            foreach (var assemblyName in bamAssemblies)
             {
-                var assembly = System.Reflection.Assembly.Load(assemblyPath);
-                var version = assembly.GetName().Version.ToString();
-                hashCode ^= version.GetHashCode();
+                var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assemblyName) + ".dll";
+                var lastModifiedDate = System.IO.File.GetLastWriteTime(assemblyPath);
+                hashCode ^= lastModifiedDate.GetHashCode();
             }
             var hash = hashCode.ToString();
             return hash;
