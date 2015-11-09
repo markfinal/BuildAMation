@@ -47,7 +47,7 @@ namespace Clang
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineArchiverImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineArchiverImplementation), this, commandLine);
         }
 
         C.EArchiverOutput C.ICommonArchiverSettings.OutputType

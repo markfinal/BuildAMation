@@ -51,7 +51,7 @@ namespace Clang
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineLinkerImplementation), this, module, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineLinkerImplementation), this, commandLine);
         }
 
         void
@@ -80,7 +80,7 @@ namespace Clang
             set;
         }
 
-        bool? C.ICommonLinkerSettings.DebugSymbols
+        bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
