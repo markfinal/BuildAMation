@@ -27,41 +27,31 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace WindowsSDK
 {
-    public sealed class NativeCompilation :
-        ICompilationPolicy
+    public class WinResourceCompilerSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonWinResourceCompilerSettings,
+        C.IAdditionalSettings
     {
-        void
-        ICompilationPolicy.Compile(
-            ObjectFile sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString objectFilePath,
-            Bam.Core.Module source)
+        public WinResourceCompilerSettings(
+            Bam.Core.Module module)
         {
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            if (!System.IO.Directory.Exists(objectFileDir))
-            {
-                System.IO.Directory.CreateDirectory(objectFileDir);
-            }
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
+        }
 
-            // TODO: Special case, which ought to be handled in settings
-            if (sender is WinResource)
-            {
-#if true
-                commandLine.Add(System.String.Format("-Fo{0}", objectFilePath.ParseAndQuoteIfNecessary()));
-                commandLine.Add((source as C.SourceFile).InputPath.ParseAndQuoteIfNecessary());
-#else
-                commandLine.Add(System.String.Format("-i {0}", (source as C.SourceFile).InputPath.ParseAndQuoteIfNecessary()));
-                commandLine.Add(System.String.Format("-o {0}", objectFilePath.ParseAndQuoteIfNecessary()));
-                commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
-#endif
-            }
-
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
         }
     }
 }
