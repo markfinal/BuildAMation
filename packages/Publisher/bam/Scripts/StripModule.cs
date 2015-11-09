@@ -118,7 +118,7 @@ namespace Publisher
                     this,
                     referenceFilePath,
                     value.SubDirectory,
-                    this.GeneratedPaths[Key]);
+                    this.Dependees[0].GeneratedPaths[StrippedBinaryCollation.Key]); // path of the debug symbol collation root
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1))",
                     destinationDirectory,
                     value.GeneratedPaths[CollatedObject.Key]));
