@@ -610,12 +610,12 @@ namespace Bam.Core
                     }
                     else
                     {
-                        this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName, major));
+                        this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName, major, bamVersion.Minor));
                     }
                 }
                 else
                 {
-                    this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName));
+                    this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName, bamVersion.Major, bamVersion.Minor));
                 }
             }
 
