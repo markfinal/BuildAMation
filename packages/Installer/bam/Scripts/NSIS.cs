@@ -35,9 +35,12 @@ namespace Installer
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
-        public NSISScript()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/script.nsi");
+            base.Init(parent);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/script.nsi");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -144,10 +147,7 @@ namespace Installer
 
         public NSISInstaller()
         {
-            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
-            // need to find a way to instantiate a non-abstract instance of an abstract class
-            // looks like emit is needed
-            this.ScriptModule = Bam.Core.Graph.Instance.FindReferencedModule<NSISScript>();
+            this.ScriptModule = Bam.Core.Module.Create<NSISScript>();
             this.DependsOn(this.ScriptModule);
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<NSISCompiler>();

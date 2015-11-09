@@ -40,8 +40,7 @@ namespace Installer
             Bam.Core.TokenizedString sourceFolderPath,
             Bam.Core.TokenizedString outputPath)
         {
-            // TODO: volume name has to be different per configuration
-            var volumeName = "My Volume";
+            var volumeName = sender.CreateTokenizedString("$(OutputName)").Parse();
             var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
             var diskImagePathName = outputPath.ToString();
 

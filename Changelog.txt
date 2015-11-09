@@ -1,3 +1,5 @@
+09-Nov-2015 Fixes #17. Fixes #31. Installers now write to configuration specific directories, using names based on their modules. Also, allowed more than one of each type to be created, which was limiting because of their use of another module to generate scripts.
+
 09-Nov-2015 The macro 'OutputName' is now available on all modules. It defaults to the module's name.
 
 09-Nov-2015 Preliminary support for VisualStudio 2015 (Community Edition); see package VisualC-14.0.

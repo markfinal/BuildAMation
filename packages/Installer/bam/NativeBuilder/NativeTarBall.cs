@@ -40,13 +40,20 @@ namespace Installer
             Bam.Core.TokenizedString scriptPath,
             Bam.Core.TokenizedString outputPath)
         {
+            var tarPath = outputPath.ToString();
+            var tarDir = System.IO.Path.GetDirectoryName(tarPath);
+            if (!System.IO.Directory.Exists(tarDir))
+            {
+                System.IO.Directory.CreateDirectory(tarDir);
+            }
+
             var args = new Bam.Core.StringArray();
             args.Add("-c");
             args.Add("-v");
             args.Add("-T");
             args.Add(scriptPath.Parse());
             args.Add("-f");
-            args.Add(outputPath.ToString());
+            args.Add(tarPath);
             CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }

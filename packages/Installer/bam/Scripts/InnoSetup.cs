@@ -35,9 +35,12 @@ namespace Installer
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
-        public InnoSetupScript()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/script.iss");
+            base.Init(parent);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/script.iss");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -147,10 +150,7 @@ namespace Installer
 
         public InnoSetupInstaller()
         {
-            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
-            // need to find a way to instantiate a non-abstract instance of an abstract class
-            // looks like emit is needed
-            this.ScriptModule = Bam.Core.Graph.Instance.FindReferencedModule<InnoSetupScript>();
+            this.ScriptModule = Bam.Core.Module.Create<InnoSetupScript>();
             this.DependsOn(this.ScriptModule);
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<InnoSetupCompiler>();

@@ -36,9 +36,12 @@ namespace Installer
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
-        public TarInputFiles()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/tarinput.txt");
+            base.Init(parent);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/tarinput.txt");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -160,12 +163,9 @@ namespace Installer
 
         public TarBall()
         {
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/installer.tar"));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).tar"));
 
-            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
-            // need to find a way to instantiate a non-abstract instance of an abstract class
-            // looks like emit is needed
-            this.InputFiles = Bam.Core.Graph.Instance.FindReferencedModule<TarInputFiles>();
+            this.InputFiles = Bam.Core.Module.Create<TarInputFiles>();
             this.DependsOn(this.InputFiles);
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<TarCompiler>();
