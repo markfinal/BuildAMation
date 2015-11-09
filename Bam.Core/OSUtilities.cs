@@ -36,7 +36,7 @@ namespace Bam.Core
         {
             get
             {
-                if (State.RunningMono)
+                if (Graph.Instance.ProcessState.RunningMono)
                 {
                     // TODO: System.Environment.GetEnvironmentVariable("HOSTTYPE") returns null instead of something like "x86_64"
                     // TODO: this is a hack and a big assumption that you're not running a 32-bit OS on a 64-bit processor
@@ -130,29 +130,22 @@ namespace Bam.Core
             switch (os)
             {
                 case Platform.OS.Windows:
-                    {
-                        State.Add<EPlatform>("System", "Platform", CheckFor64BitOS ? EPlatform.Win64 : EPlatform.Win32);
-                    }
+                    CurrentPlatform = CheckFor64BitOS ? EPlatform.Win64 : EPlatform.Win32;
                     break;
 
                 case Platform.OS.Linux:
-                    {
-                        State.Add<EPlatform>("System", "Platform", CheckFor64BitOS ? EPlatform.Linux64 : EPlatform.Linux32);
-                    }
+                    CurrentPlatform = CheckFor64BitOS ? EPlatform.Linux64 : EPlatform.Linux32;
                     break;
 
                 case Platform.OS.OSX:
-                    {
-                        State.Add<EPlatform>("System", "Platform", CheckFor64BitOS ? EPlatform.OSX64 : EPlatform.OSX32);
-                    }
+                    CurrentPlatform = CheckFor64BitOS ? EPlatform.OSX64 : EPlatform.OSX32;
                     break;
 
                 default:
-                    throw new Exception("Unrecognized platform");
+                    throw new Exception("Unrecognized platform, {0}", os.ToString());
             }
 
-            var isLittleEndian = System.BitConverter.IsLittleEndian;
-            State.Add<bool>("System", "IsLittleEndian", isLittleEndian);
+            IsLittleEndian = System.BitConverter.IsLittleEndian;
         }
 
         public static bool
@@ -167,8 +160,7 @@ namespace Bam.Core
         {
             get
             {
-                var platform = State.Platform;
-                return IsWindows(platform);
+                return IsWindows(CurrentPlatform);
             }
         }
 
@@ -184,8 +176,7 @@ namespace Bam.Core
         {
             get
             {
-                var platform = State.Platform;
-                return IsLinux(platform);
+                return IsLinux(CurrentPlatform);
             }
         }
 
@@ -201,8 +192,7 @@ namespace Bam.Core
         {
             get
             {
-                var platform = State.Platform;
-                return IsOSX(platform);
+                return IsOSX(CurrentPlatform);
             }
         }
 
@@ -218,8 +208,7 @@ namespace Bam.Core
         {
             get
             {
-                var platform = State.Platform;
-                return Is64Bit(platform);
+                return Is64Bit(CurrentPlatform);
             }
         }
 
@@ -227,8 +216,7 @@ namespace Bam.Core
         IsCurrentPlatformSupported(
             EPlatform supportedPlatforms)
         {
-            var currentPlatform = State.Platform;
-            var isSupported = (currentPlatform == (supportedPlatforms & currentPlatform));
+            var isSupported = (CurrentPlatform == (supportedPlatforms & CurrentPlatform));
             return isSupported;
         }
 
@@ -250,6 +238,19 @@ namespace Bam.Core
                         throw new Exception("Unknown platform");
                 }
             }
+        }
+
+        public static bool
+        IsLittleEndian
+        {
+            get;
+            private set;
+        }
+
+        public static EPlatform CurrentPlatform
+        {
+            get;
+            private set;
         }
     }
 }

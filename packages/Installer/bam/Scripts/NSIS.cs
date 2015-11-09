@@ -32,12 +32,15 @@ namespace Installer
     class NSISScript :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
-        public NSISScript()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/script.nsi");
+            base.Init(parent);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/script.nsi");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -49,7 +52,7 @@ namespace Installer
         public void
         AddFile(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -58,7 +61,7 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -80,10 +83,11 @@ namespace Installer
             {
                 System.IO.Directory.CreateDirectory(dir);
             }
+            var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine("Name \"{0}\"", this.GetType().ToString());
-                scriptWriter.WriteLine("OutFile \"{0}\"", "Installer.exe");
+                scriptWriter.WriteLine("OutFile \"{0}\"", this.CreateTokenizedString("$(buildroot)/$(config)/$(0).exe", outputName).ParseAndQuoteIfNecessary());
                 scriptWriter.WriteLine("InstallDir $PROGRAMFILES64\\{0}", this.GetType().ToString());
                 scriptWriter.WriteLine("Page directory");
                 scriptWriter.WriteLine("Page instfiles");
@@ -144,10 +148,7 @@ namespace Installer
 
         public NSISInstaller()
         {
-            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
-            // need to find a way to instantiate a non-abstract instance of an abstract class
-            // looks like emit is needed
-            this.ScriptModule = Bam.Core.Graph.Instance.FindReferencedModule<NSISScript>();
+            this.ScriptModule = Bam.Core.Module.Create<NSISScript>();
             this.DependsOn(this.ScriptModule);
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<NSISCompiler>();
@@ -156,7 +157,7 @@ namespace Installer
 
         public void
         Include<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddFile(dependent, key);
@@ -164,19 +165,19 @@ namespace Installer
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddPath(dependent, key);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // do nothing
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -186,7 +187,7 @@ namespace Installer
             }
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

@@ -33,7 +33,7 @@ namespace C
         Bam.Core.Module,
         Bam.Core.IInputPath
     {
-        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Source File");
+        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Source File");
 
         protected override void
         Init(

@@ -36,9 +36,12 @@ namespace Bam.Core
     public sealed class Graph :
         System.Collections.Generic.IEnumerable<ModuleCollection>
     {
+        private string TheBuildRoot;
+
         static Graph()
         {
             Instance = new Graph();
+            Instance.Initialize();
         }
 
         public static Graph Instance
@@ -47,21 +50,30 @@ namespace Bam.Core
             private set;
         }
 
-        private Graph()
+        private void
+        Initialize()
         {
+            this.ProcessState = new BamState();
+
+            OSUtilities.SetupPlatform();
+
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
-            if (null != State.BuildMode)
-            {
-                this.Macros.AddVerbatim("buildroot", State.BuildRoot);
-            }
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
-            this.Mode = null;
             this.MetaData = null;
+
+            this.PackageRepositories = new StringArray();
+            var primaryPackageRepo = System.IO.Path.Combine(
+                System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
+                "packages");
+            this.PackageRepositories.AddUnique(primaryPackageRepo);
+
+            this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new ForceDefinitionFileUpdate());
+            this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new UseDebugSymbols());
         }
 
         public void
@@ -165,7 +177,7 @@ namespace Bam.Core
         public void
         ApplySettingsPatches()
         {
-            Log.Detail("Applying settings patches");
+            Log.Detail("Apply settings to modules");
             foreach (var rank in this.DependencyGraph.Reverse())
             {
                 foreach (var module in rank.Value)
@@ -305,7 +317,7 @@ namespace Bam.Core
         public void
         SortDependencies()
         {
-            Log.Detail("Constructing dependency graph");
+            Log.Detail("Analysing module dependencies");
             var currentRank = this.DependencyGraph[0];
             foreach (var m in this.TopLevelModules)
             {
@@ -462,6 +474,67 @@ namespace Bam.Core
                 throw new Exception("Unable to locate package '{0}'", packageName);
             }
             return package.MetaData as MetaDataType;
+        }
+
+        public string BuildRoot
+        {
+            get
+            {
+                return this.TheBuildRoot;
+            }
+            set
+            {
+                if (null != this.TheBuildRoot)
+                {
+                    throw new Exception("The build root has already been set");
+                }
+                var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
+                this.TheBuildRoot = absoluteBuildRootPath;
+                this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
+            }
+        }
+
+        public EVerboseLevel
+        VerbosityLevel
+        {
+            get;
+            set;
+        }
+
+        public StringArray PackageRepositories
+        {
+            get;
+            private set;
+        }
+
+        public bool ForceDefinitionFileUpdate
+        {
+            get;
+            private set;
+        }
+
+        public bool CompileWithDebugSymbols
+        {
+            get;
+            set;
+        }
+
+        public string ScriptAssemblyPathname
+        {
+            get;
+            set;
+        }
+
+        public System.Reflection.Assembly ScriptAssembly
+        {
+            get;
+            set;
+        }
+
+        public BamState ProcessState
+        {
+            get;
+            private set;
         }
     }
 }

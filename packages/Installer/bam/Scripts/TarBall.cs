@@ -33,12 +33,15 @@ namespace Installer
     class TarInputFiles :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
-        public TarInputFiles()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/tarinput.txt");
+            base.Init(parent);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/tarinput.txt");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -50,7 +53,7 @@ namespace Installer
         public void
         AddFile(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -59,7 +62,7 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -152,7 +155,7 @@ namespace Installer
     public abstract class TarBall :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Installer");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
 
         private TarInputFiles InputFiles;
         private Bam.Core.PreBuiltTool Compiler;
@@ -160,12 +163,9 @@ namespace Installer
 
         public TarBall()
         {
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/installer.tar"));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).tar"));
 
-            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
-            // need to find a way to instantiate a non-abstract instance of an abstract class
-            // looks like emit is needed
-            this.InputFiles = Bam.Core.Graph.Instance.FindReferencedModule<TarInputFiles>();
+            this.InputFiles = Bam.Core.Module.Create<TarInputFiles>();
             this.DependsOn(this.InputFiles);
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<TarCompiler>();
@@ -174,7 +174,7 @@ namespace Installer
 
         public void
         Include<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.InputFiles.AddFile(dependent, key);
@@ -182,19 +182,19 @@ namespace Installer
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.InputFiles.AddPath(dependent, key);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // do nothing
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -204,7 +204,7 @@ namespace Installer
             }
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

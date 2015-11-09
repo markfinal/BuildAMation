@@ -34,7 +34,7 @@ namespace C
         Bam.Core.IInputPath,
         Bam.Core.IChildModule
     {
-        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Header File");
+        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Header File");
 
         public override void
         Evaluate()

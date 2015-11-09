@@ -36,13 +36,11 @@ namespace Bam.Core
         Debug     = (1 << 0),
         Optimized = (1 << 1),
         Profile   = (1 << 2),
-        Final     = (1 << 3),
 
-        All       = Debug | Optimized | Profile | Final,
+        All       = Debug | Optimized | Profile,
 
         NotDebug     = ~Debug & All,
         NotOptimized = ~Optimized & All,
-        NotProfile   = ~Profile & All,
-        NotFinal     = ~Final & All
+        NotProfile   = ~Profile & All
     }
 }

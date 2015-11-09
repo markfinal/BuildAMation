@@ -45,7 +45,7 @@ namespace C
         GetToolsFromMetaData<T>()
             where T : ToolRegistrationAttribute
         {
-            var allTypes = Bam.Core.State.ScriptAssembly.GetTypes();
+            var allTypes = Bam.Core.Graph.Instance.ScriptAssembly.GetTypes();
             foreach (var type in allTypes)
             {
                 var tools = type.GetCustomAttributes(typeof(T), false) as T[];

@@ -83,7 +83,7 @@ namespace C
             }
         }
 
-        public override CObjectFileCollection
+        public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
@@ -121,7 +121,7 @@ namespace C
             }
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             ExecutionContext context)
         {
@@ -140,7 +140,7 @@ namespace C
             }
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

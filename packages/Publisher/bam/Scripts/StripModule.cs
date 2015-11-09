@@ -33,7 +33,7 @@ namespace Publisher
     public class StripModule :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Stripped Binary Destination");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Binary Destination");
 
         private CollatedObject TheSourceModule;
         private IStripToolPolicy Policy;
@@ -118,7 +118,7 @@ namespace Publisher
                     this,
                     referenceFilePath,
                     value.SubDirectory,
-                    this.Macros["StrippedRoot"]);
+                    this.Dependees[0].GeneratedPaths[StrippedBinaryCollation.Key]); // path of the debug symbol collation root
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1))",
                     destinationDirectory,
                     value.GeneratedPaths[CollatedObject.Key]));

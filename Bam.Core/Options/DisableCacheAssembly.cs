@@ -27,56 +27,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace Bam.Core
 {
-    public sealed class FileKey
+    public sealed class DisableCacheAssembly :
+        IBooleanCommandLineArgument
     {
-        private static System.Collections.Generic.List<FileKey> GeneratedKeys = new System.Collections.Generic.List<FileKey>();
-
-        private FileKey(string key)
+        string ICommandLineArgument.ShortName
         {
-            this.Id = key;
-        }
-
-        public static FileKey
-        Generate(
-            string key)
-        {
-            var matches = GeneratedKeys.Where(item => (item.Id == key));
-            var first = matches.FirstOrDefault();
-            if (null != first)
+            get
             {
-                return first;
+                return null;
             }
-            var newKey = new FileKey(key);
-            GeneratedKeys.Add(newKey);
-            return newKey;
         }
 
-        public string Id
+        string ICommandLineArgument.LongName
         {
-            get;
-            private set;
+            get
+            {
+                return "--nocacheassembly";
+            }
         }
 
-        public override int
-        GetHashCode()
+        string ICommandLineArgument.ContextHelp
         {
-            return this.Id.GetHashCode();
-        }
-
-        public override bool
-        Equals(
-            object obj)
-        {
-            return this.Id.Equals((obj as FileKey).Id);
-        }
-
-        public override string
-        ToString()
-        {
-            return this.Id;
+            get
+            {
+                return "Disable caching of the compiled package assembly";
+            }
         }
     }
 }

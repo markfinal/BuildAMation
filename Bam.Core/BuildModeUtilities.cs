@@ -42,12 +42,12 @@ namespace Bam.Core
         public static void
         SetBuildModePackage()
         {
-            if (null == State.BuildMode)
+            if (null == Graph.Instance.Mode)
             {
                 return;
             }
 
-            var builderPackageName = System.String.Format("{0}Builder", State.BuildMode);
+            var builderPackageName = System.String.Format("{0}Builder", Graph.Instance.Mode);
             var builderPackage = Graph.Instance.Packages.Where(item => item.Name == builderPackageName).FirstOrDefault();
             if (null != builderPackage)
             {

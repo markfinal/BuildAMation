@@ -57,7 +57,7 @@ namespace Installer
     public abstract class DiskImage :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Installer");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
 
         private Bam.Core.TokenizedString SourceFolderPath;
         private Bam.Core.PreBuiltTool Compiler;
@@ -65,7 +65,7 @@ namespace Installer
 
         public DiskImage()
         {
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/installer.dmg"));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg"));
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
             this.Requires(this.Compiler);
@@ -73,20 +73,20 @@ namespace Installer
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.SourceFolderPath = dependent.GeneratedPaths[key];
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // do nothing
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -96,7 +96,7 @@ namespace Installer
             }
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

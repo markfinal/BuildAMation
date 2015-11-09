@@ -38,7 +38,7 @@ namespace Bam.Core
         public static void
         MakePackage()
         {
-            var packageDir = State.WorkingDirectory;
+            var packageDir = Graph.Instance.ProcessState.WorkingDirectory;
             var bamDir = System.IO.Path.Combine(packageDir, BamSubFolder);
             if (System.IO.Directory.Exists(bamDir))
             {
@@ -107,8 +107,11 @@ namespace Bam.Core
         {
             get
             {
-                var coreVersion = State.Version;
-                var coreVersionDefine = System.String.Format("BAM_CORE_VERSION_{0}_{1}", coreVersion.Major, coreVersion.Minor);
+                var coreVersion = Graph.Instance.ProcessState.Version;
+                var coreVersionDefine = System.String.Format("BAM_CORE_VERSION_{0}_{1}_{2}",
+                    coreVersion.Major,
+                    coreVersion.Minor,
+                    coreVersion.Revision);
                 return coreVersionDefine;
             }
         }
@@ -117,8 +120,7 @@ namespace Bam.Core
         {
             get
             {
-                var platform = State.Platform;
-                var platformString = Platform.ToString(platform, '\0', "BAM_HOST_", true);
+                var platformString = Platform.ToString(OSUtilities.CurrentPlatform, '\0', "BAM_HOST_", true);
                 return platformString;
             }
         }
@@ -162,26 +164,28 @@ namespace Bam.Core
         }
 
         public static PackageDefinition
-        GetMasterPackage()
+        GetMasterPackage(
+            bool enforceBamAssemblyVersions = true)
         {
-            var workingDir = State.WorkingDirectory;
+            var workingDir = Graph.Instance.ProcessState.WorkingDirectory;
             var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
             if (!isWorkingPackageWellDefined)
             {
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !State.ForceDefinitionFileUpdate);
-            masterDefinitionFile.Read(true);
+            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !Graph.Instance.ForceDefinitionFileUpdate);
+            masterDefinitionFile.Read(true, enforceBamAssemblyVersions);
             return masterDefinitionFile;
         }
 
         public static void
         IdentifyAllPackages(
-            bool allowDuplicates = false)
+            bool allowDuplicates = false,
+            bool enforceBamAssemblyVersions = true)
         {
             var packageRepos = new System.Collections.Generic.Queue<string>();
-            foreach (var repo in State.PackageRepositories)
+            foreach (var repo in Graph.Instance.PackageRepositories)
             {
                 if (packageRepos.Contains(repo))
                 {
@@ -190,7 +194,7 @@ namespace Bam.Core
                 packageRepos.Enqueue(repo);
             }
 
-            var masterDefinitionFile = GetMasterPackage();
+            var masterDefinitionFile = GetMasterPackage(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
                 if (packageRepos.Contains(repo))
@@ -212,7 +216,7 @@ namespace Bam.Core
                 }
                 var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
 
-                State.PackageRepositories.Add(repo);
+                Graph.Instance.PackageRepositories.Add(repo);
 
                 foreach (var bamDir in candidatePackageDirs)
                 {
@@ -225,13 +229,13 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var definitionFile = new PackageDefinition(packageDefinitionPath, !State.ForceDefinitionFileUpdate);
-                    definitionFile.Read(true);
+                    var definitionFile = new PackageDefinition(packageDefinitionPath, !Graph.Instance.ForceDefinitionFileUpdate);
+                    definitionFile.Read(true, enforceBamAssemblyVersions);
                     candidatePackageDefinitions.Add(definitionFile);
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
-                        if (State.PackageRepositories.Contains(newRepo))
+                        if (Graph.Instance.PackageRepositories.Contains(newRepo))
                         {
                             continue;
                         }
@@ -328,7 +332,7 @@ namespace Bam.Core
         GetPackageHash(
             StringArray sourceCode,
             StringArray definitions,
-            StringArray bamAssemblies)
+            Array<BamAssemblyDescription> bamAssemblies)
         {
             int hashCode = 0;
             foreach (var source in sourceCode)
@@ -339,21 +343,22 @@ namespace Bam.Core
             {
                 hashCode ^= define.GetHashCode();
             }
-            foreach (var assemblyPath in bamAssemblies)
+            foreach (var assembly in bamAssemblies)
             {
-                var assembly = System.Reflection.Assembly.Load(assemblyPath);
-                var version = assembly.GetName().Version.ToString();
-                hashCode ^= version.GetHashCode();
+                var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
+                var lastModifiedDate = System.IO.File.GetLastWriteTime(assemblyPath);
+                hashCode ^= lastModifiedDate.GetHashCode();
             }
             var hash = hashCode.ToString();
             return hash;
         }
 
         public static bool
-        CompilePackageAssembly()
+        CompilePackageAssembly(
+            bool enforceBamAssemblyVersions = true)
         {
             // validate build root
-            if (null == State.BuildRoot)
+            if (null == Graph.Instance.BuildRoot)
             {
                 throw new Exception("Build root has not been specified");
             }
@@ -361,15 +366,15 @@ namespace Bam.Core
             var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyAllPackages();
+            IdentifyAllPackages(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
 
             var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
-            if (cleanFirst && System.IO.Directory.Exists(State.BuildRoot))
+            if (cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
             {
-                Log.Info("Deleting build root '{0}'", State.BuildRoot);
+                Log.Info("Deleting build root '{0}'", Graph.Instance.BuildRoot);
                 try
                 {
-                    System.IO.Directory.Delete(State.BuildRoot, true);
+                    System.IO.Directory.Delete(Graph.Instance.BuildRoot, true);
                 }
                 catch (System.IO.IOException ex)
                 {
@@ -377,9 +382,9 @@ namespace Bam.Core
                 }
             }
 
-            if (!System.IO.Directory.Exists(State.BuildRoot))
+            if (!System.IO.Directory.Exists(Graph.Instance.BuildRoot))
             {
-                System.IO.Directory.CreateDirectory(State.BuildRoot);
+                System.IO.Directory.CreateDirectory(Graph.Instance.BuildRoot);
             }
 
             BuildModeUtilities.SetBuildModePackage();
@@ -395,7 +400,7 @@ namespace Bam.Core
 
                 // to compile with debug information, you must compile the files
                 // to compile without, we need to file contents to hash the source
-                if (State.CompileWithDebugSymbols)
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     var scripts = package.GetScriptFiles();
                     sourceCode.AddRange(scripts);
@@ -427,9 +432,6 @@ namespace Bam.Core
             // add/remove other definitions
             definitions.Add(VersionDefineForCompiler);
             definitions.Add(HostPlatformDefineForCompiler);
-            // command line definitions
-            definitions.AddRange(State.PackageCompilationDefines);
-            definitions.RemoveAll(State.PackageCompilationUndefines);
             definitions.Sort();
 
             gatherSourceProfile.StopProfile();
@@ -438,16 +440,23 @@ namespace Bam.Core
             assemblyCompileProfile.StartProfile();
 
             // assembly is written to the build root
-            var cachedAssemblyPathname = System.IO.Path.Combine(State.BuildRoot, "CachedPackageAssembly");
+            var cachedAssemblyPathname = System.IO.Path.Combine(Graph.Instance.BuildRoot, "CachedPackageAssembly");
             cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, Graph.Instance.MasterPackage.Name) + ".dll";
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
             string thisHashCode = null;
 
-            if (!State.CompileWithDebugSymbols)
+            var cacheAssembly = !CommandLineProcessor.Evaluate(new DisableCacheAssembly());
+
+            string compileReason = null;
+            if (Graph.Instance.CompileWithDebugSymbols)
+            {
+                compileReason = "debug symbols were enabled";
+            }
+            else
             {
                 // can an existing assembly be reused?
                 thisHashCode = GetPackageHash(sourceCode, definitions, Graph.Instance.MasterPackage.BamAssemblies);
-                if (State.CacheAssembly)
+                if (cacheAssembly)
                 {
                     if (System.IO.File.Exists(hashPathName))
                     {
@@ -458,7 +467,7 @@ namespace Bam.Core
                             {
                                 Log.DebugMessage("Cached assembly used '{0}', with hash {1}", cachedAssemblyPathname, diskHashCode);
                                 Log.Detail("Re-using existing package assembly");
-                                State.ScriptAssemblyPathname = cachedAssemblyPathname;
+                                Graph.Instance.ScriptAssemblyPathname = cachedAssemblyPathname;
 
                                 assemblyCompileProfile.StopProfile();
 
@@ -466,10 +475,18 @@ namespace Bam.Core
                             }
                             else
                             {
-                                Log.DebugMessage("Assembly hashes differ: '{0}' (disk) '{1}' now", diskHashCode, thisHashCode);
+                                compileReason = "package source has changed since the last compile";
                             }
                         }
                     }
+                    else
+                    {
+                        compileReason = "no previously compiled package assembly exists";
+                    }
+                }
+                else
+                {
+                    compileReason = "user has disabled package assembly caching";
                 }
             }
 
@@ -477,12 +494,15 @@ namespace Bam.Core
             var clrVersion = System.Environment.Version;
             var compilerVersion = System.String.Format("v{0}.{1}", clrVersion.Major, clrVersion.Minor);
 
-            Log.Detail("Compiling package assembly, using C# compiler {0}", compilerVersion);
+            Log.Detail("Compiling package assembly (C# compiler {0}{1}), because {2}.",
+                compilerVersion,
+                Graph.Instance.ProcessState.TargetFrameworkVersion != null ? (", targetting " + Graph.Instance.ProcessState.TargetFrameworkVersion) : string.Empty,
+                compileReason);
 
             var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", compilerVersion);
 
-            if (State.RunningMono)
+            if (Graph.Instance.ProcessState.RunningMono)
             {
                 Log.DebugMessage("Compiling assembly for Mono");
             }
@@ -495,7 +515,7 @@ namespace Bam.Core
                 compilerParameters.GenerateExecutable = false;
                 compilerParameters.GenerateInMemory = false;
 
-                if (State.CompileWithDebugSymbols)
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
                 }
@@ -505,7 +525,7 @@ namespace Bam.Core
                 }
 
                 var compilerOptions = "/checked+ /unsafe-";
-                if (State.CompileWithDebugSymbols)
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     compilerParameters.IncludeDebugInformation = true;
                     compilerOptions += " /optimize-";
@@ -527,8 +547,8 @@ namespace Bam.Core
                     // TODO: Q: why is it only for the master package? Why not all of them, which may have additional dependencies?
                     foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
                     {
-                        var assemblyFileName = System.String.Format("{0}.dll", assembly);
-                        var assemblyPathName = System.IO.Path.Combine(State.ExecutableDirectory, assemblyFileName);
+                        var assemblyFileName = System.String.Format("{0}.dll", assembly.Name);
+                        var assemblyPathName = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
 
@@ -539,7 +559,7 @@ namespace Bam.Core
                         compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
                     }
 
-                    if (State.RunningMono)
+                    if (Graph.Instance.ProcessState.RunningMono)
                     {
                         compilerParameters.ReferencedAssemblies.Add("Mono.Posix.dll");
                     }
@@ -551,7 +571,7 @@ namespace Bam.Core
 
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
-                var results = State.CompileWithDebugSymbols ?
+                var results = Graph.Instance.CompileWithDebugSymbols ?
                     provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :
                     provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
 
@@ -565,9 +585,9 @@ namespace Bam.Core
                     return false;
                 }
 
-                if (!State.CompileWithDebugSymbols)
+                if (!Graph.Instance.CompileWithDebugSymbols)
                 {
-                    if (State.CacheAssembly)
+                    if (cacheAssembly)
                     {
                         using (var writer = new System.IO.StreamWriter(hashPathName))
                         {
@@ -582,7 +602,7 @@ namespace Bam.Core
                 }
 
                 Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
-                State.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
+                Graph.Instance.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
             }
 
             assemblyCompileProfile.StopProfile();
@@ -602,12 +622,12 @@ namespace Bam.Core
             {
                 // this code works from an untrusted location, and debugging IS available when
                 // the pdb (.NET)/mdb (Mono) resides beside the assembly
-                byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
-                if (State.CompileWithDebugSymbols)
+                byte[] asmBytes = System.IO.File.ReadAllBytes(Graph.Instance.ScriptAssemblyPathname);
+                if (Graph.Instance.CompileWithDebugSymbols)
                 {
-                    var debugInfoFilename = State.RunningMono ?
-                        State.ScriptAssemblyPathname + ".mdb" :
-                        System.IO.Path.ChangeExtension(State.ScriptAssemblyPathname, ".pdb");
+                    var debugInfoFilename = Graph.Instance.ProcessState.RunningMono ?
+                        Graph.Instance.ScriptAssemblyPathname + ".mdb" :
+                        System.IO.Path.ChangeExtension(Graph.Instance.ScriptAssemblyPathname, ".pdb");
                     if (System.IO.File.Exists(debugInfoFilename))
                     {
                         byte[] pdbBytes = System.IO.File.ReadAllBytes(debugInfoFilename);
@@ -622,7 +642,7 @@ namespace Bam.Core
             }
             catch (System.IO.FileNotFoundException exception)
             {
-                Log.ErrorMessage("Could not find assembly '{0}'", State.ScriptAssemblyPathname);
+                Log.ErrorMessage("Could not find assembly '{0}'", Graph.Instance.ScriptAssemblyPathname);
                 throw exception;
             }
             catch (System.Exception exception)
@@ -630,7 +650,7 @@ namespace Bam.Core
                 throw exception;
             }
 
-            State.ScriptAssembly = scriptAssembly;
+            Graph.Instance.ScriptAssembly = scriptAssembly;
 
             assemblyLoadProfile.StopProfile();
         }

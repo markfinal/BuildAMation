@@ -32,12 +32,15 @@ namespace Installer
     class InnoSetupScript :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
-        public InnoSetupScript()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(modulename)/script.iss");
+            base.Init(parent);
+            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/script.iss");
         }
 
         public Bam.Core.TokenizedString ScriptPath
@@ -49,7 +52,7 @@ namespace Installer
         public void
         AddFile(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -58,7 +61,7 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -80,12 +83,15 @@ namespace Installer
             {
                 System.IO.Directory.CreateDirectory(dir);
             }
+            var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine("[Setup]");
-                scriptWriter.WriteLine("AppName={0}", this.GetType().ToString());
-                scriptWriter.WriteLine("AppVersion=1.0");
-                scriptWriter.WriteLine("DefaultDirName={{sd}}\\{0}", this.GetType().ToString());
+                scriptWriter.WriteLine("OutputBaseFilename={0}", outputName.ParseAndQuoteIfNecessary());
+                scriptWriter.WriteLine("OutputDir={0}", this.CreateTokenizedString("@dir($(buildroot)/$(config)/$(0).exe)", outputName).ParseAndQuoteIfNecessary());
+                scriptWriter.WriteLine("AppName={0}", outputName.Parse());
+                scriptWriter.WriteLine("AppVersion={0}", "1.0"); // TODO: get this from the main app: this.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse());
+                scriptWriter.WriteLine("DefaultDirName={{pf}}\\{0}", outputName.Parse());
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");
                 scriptWriter.WriteLine("ArchitecturesInstallIn64BitMode=x64");
                 scriptWriter.WriteLine("Uninstallable=No");
@@ -147,10 +153,7 @@ namespace Installer
 
         public InnoSetupInstaller()
         {
-            // TODO: this actually needs to be a new class each time, otherwise multiple installers won't work
-            // need to find a way to instantiate a non-abstract instance of an abstract class
-            // looks like emit is needed
-            this.ScriptModule = Bam.Core.Graph.Instance.FindReferencedModule<InnoSetupScript>();
+            this.ScriptModule = Bam.Core.Module.Create<InnoSetupScript>();
             this.DependsOn(this.ScriptModule);
 
             this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<InnoSetupCompiler>();
@@ -159,7 +162,7 @@ namespace Installer
 
         public void
         Include<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddFile(dependent, key);
@@ -167,19 +170,19 @@ namespace Installer
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddPath(dependent, key);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // do nothing
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -189,7 +192,7 @@ namespace Installer
             }
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

@@ -34,7 +34,7 @@ namespace Publisher
         Bam.Core.Module
     {
         private ICollationPolicy Policy = null;
-        public static Bam.Core.FileKey PublishingRoot = Bam.Core.FileKey.Generate("Publishing Root");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Publishing Root");
         private Bam.Core.Array<CollatedFile> CopiedFrameworks = new Bam.Core.Array<CollatedFile>();
         private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
 
@@ -48,7 +48,7 @@ namespace Publisher
         {
             if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
-                this.RegisterGeneratedFile(PublishingRoot, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
             }
         }
 
@@ -177,16 +177,16 @@ namespace Publisher
                     }
                     else
                     {
-                        if (!this.GeneratedPaths.ContainsKey(PublishingRoot))
+                        if (!this.GeneratedPaths.ContainsKey(Key))
                         {
-                            this.RegisterGeneratedFile(PublishingRoot, module.CreateTokenizedString("@dir($(0))", sourcePath));
+                            this.RegisterGeneratedFile(Key, module.CreateTokenizedString("@dir($(0))", sourcePath));
                         }
                     }
                     module.Macros["CopyDir"] = GenerateFileCopyDestination(
                         module,
                         referenceFilePath,
                         subDirectory,
-                        this.GeneratedPaths[PublishingRoot]);
+                        this.GeneratedPaths[Key]);
                 });
             this.Requires(copyFileModule);
 
@@ -303,7 +303,7 @@ namespace Publisher
 
         public CollatedFile
         Include<DependentModule>(
-            Bam.Core.FileKey key,
+            Bam.Core.PathKey key,
             EPublishingType type,
             string subdir = null) where DependentModule : Bam.Core.Module, new()
         {
@@ -350,7 +350,7 @@ namespace Publisher
 
         public CollatedFile
         Include<DependentModule>(
-            Bam.Core.FileKey key,
+            Bam.Core.PathKey key,
             string subdir,
             CollatedFile reference) where DependentModule : Bam.Core.Module, new()
         {
@@ -557,13 +557,13 @@ namespace Publisher
             this.Requires(change);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // TODO
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -574,7 +574,7 @@ namespace Publisher
             this.Policy.Collate(this, context);
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

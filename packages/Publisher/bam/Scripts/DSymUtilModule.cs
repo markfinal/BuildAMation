@@ -33,7 +33,7 @@ namespace Publisher
     public class DSymUtilModule :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("dSYM bundle");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("dSYM bundle");
 
         private CollatedObject TheSourceModule;
         private IDSymUtilToolPolicy Policy;
@@ -112,7 +112,7 @@ namespace Publisher
                     this,
                     referenceFilePath,
                     value.SubDirectory,
-                    this.Macros["DebugSymbolRoot"]);
+                    this.Dependees[0].GeneratedPaths[DebugSymbolCollation.Key]); // path of the debug symbol collation root
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).dSYM",
                     destinationDirectory,
                     value.GeneratedPaths[CollatedObject.Key]));

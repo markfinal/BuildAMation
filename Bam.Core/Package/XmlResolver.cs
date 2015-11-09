@@ -59,10 +59,10 @@ namespace Bam.Core
                 throw new System.Xml.XmlException(System.String.Format("Don't know how to resolve URIs such as '{0}'", relativeUri));
             }
 
-            if (relativeUri == State.PackageDefinitionSchemaRelativePath)
+            if (relativeUri == "./Schema/BamPackageDefinitionV1.xsd")
             {
                 // we've got a relative path match, so build an absolute path from the executable directory
-                var absolutePath = System.IO.Path.Combine(State.ExecutableDirectory, relativeUri);
+                var absolutePath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, relativeUri);
                 return new System.Uri(absolutePath);
             }
 

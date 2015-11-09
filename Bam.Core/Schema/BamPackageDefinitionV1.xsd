@@ -10,6 +10,9 @@
         <xs:element name="BamAssembly" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
                 <xs:attribute name="name" type="xs:string" use="required" />
+                <xs:attribute name="major" type="xs:positiveInteger" use="optional" />
+                <xs:attribute name="minor" type="xs:nonNegativeInteger" use="optional" />
+                <xs:attribute name="patch" type="xs:nonNegativeInteger" use="optional" />
             </xs:complexType>
         </xs:element>
     </xs:sequence>

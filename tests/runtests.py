@@ -137,11 +137,6 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
         if options.excludeResponseFiles:
           PrintMessage(" (excluding %s)" % options.excludeResponseFiles)
     nonKWArgs = []
-    for arg in args:
-        if '=' in arg:
-            argSplit = arg.split('=')
-            if argSplit[0].endswith('.version'):
-                nonKWArgs.append("-%s" % arg)
     theBuilder = GetBuilderDetails(options.buildmode)
     exitCode = 0
     for variation in variationArgs:
@@ -150,8 +145,8 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
 
         for it in range(0,iterations):
             extraArgs = nonKWArgs[:]
-            if versionArgs:
-                extraArgs = [ "-%s.version=%s" % (responseName,versionArgs[it]) ]
+            if options.Flavours:
+                extraArgs.extend(options.Flavours)
             if variation:
                 extraArgs.extend(variation.GetArguments())
             try:

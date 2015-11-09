@@ -37,9 +37,9 @@ namespace C
         private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
         private ILinkingPolicy Policy = null;
 
-        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ExecutableFile");
-        static public Bam.Core.FileKey ImportLibraryKey = Bam.Core.FileKey.Generate("Windows Import Library File");
-        static public Bam.Core.FileKey PDBKey = Bam.Core.FileKey.Generate("Windows Program DataBase File");
+        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ExecutableFile");
+        static public Bam.Core.PathKey ImportLibraryKey = Bam.Core.PathKey.Generate("Windows Import Library File");
+        static public Bam.Core.PathKey PDBKey = Bam.Core.PathKey.Generate("Windows Program DataBase File");
 
         protected override void
         Init(
@@ -80,7 +80,7 @@ namespace C
             return source;
         }
 
-        public virtual C.ObjC.ObjectFileCollection
+        public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
@@ -229,7 +229,7 @@ namespace C
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             this.ReasonToExecute = null;

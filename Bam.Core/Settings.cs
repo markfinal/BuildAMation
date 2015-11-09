@@ -52,7 +52,7 @@ namespace Bam.Core
 
         static Settings()
         {
-            var localPolicies = State.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
+            var localPolicies = Graph.Instance.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
             var numLocalPolicies = localPolicies.Count();
             if (numLocalPolicies > 0)
             {

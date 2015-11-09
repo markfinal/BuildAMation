@@ -33,10 +33,27 @@ namespace Bam.Core
     public static class EntryPoint
     {
         public static void
+        PrintVersion(
+            EVerboseLevel level)
+        {
+            Core.Log.Message(level,
+                "BuildAMation (Bam) v{0} (c) Mark Final, 2010-2015. Licensed under BSD 3-clause. See License file.",
+                Core.Graph.Instance.ProcessState.VersionString);
+        }
+
+        public static void
+        PrintVersion()
+        {
+            PrintVersion(Graph.Instance.VerbosityLevel);
+        }
+
+        public static void
         Execute(
             Array<Environment> environments,
             System.Reflection.Assembly packageAssembly = null)
         {
+            PrintVersion();
+
             if (0 == environments.Count)
             {
                 throw new Exception("No build configurations were specified");
@@ -45,8 +62,8 @@ namespace Bam.Core
             if (null != packageAssembly)
             {
                 PackageUtilities.IdentifyAllPackages();
-                State.ScriptAssembly = packageAssembly;
-                State.ScriptAssemblyPathname = packageAssembly.Location;
+                Graph.Instance.ScriptAssembly = packageAssembly;
+                Graph.Instance.ScriptAssemblyPathname = packageAssembly.Location;
             }
             else
             {
@@ -58,19 +75,13 @@ namespace Bam.Core
                 PackageUtilities.LoadPackageAssembly();
             }
 
-            var graph = Graph.Instance;
-            graph.Mode = State.BuildMode;
-            if (null == graph.Mode)
-            {
-                throw new Exception("Building mode has not been set");
-            }
-
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();
 
             // get the metadata from the build mode package
+            var graph = Graph.Instance;
             var metaName = System.String.Format("{0}Builder.{0}Meta", graph.Mode);
-            var metaDataType = State.ScriptAssembly.GetType(metaName);
+            var metaDataType = graph.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)
             {
                 throw new Exception("No build mode {0} meta data type {1}", graph.Mode, metaName);
@@ -86,7 +97,7 @@ namespace Bam.Core
             foreach (var package in graph.Packages)
             {
                 var ns = package.Name;
-                var metaType = State.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(PackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
+                var metaType = graph.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(PackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
                 if (null != metaType)
                 {
                     try
@@ -106,7 +117,7 @@ namespace Bam.Core
 
             packageMetaDataProfile.StopProfile();
 
-            var topLevelNamespace = System.IO.Path.GetFileNameWithoutExtension(State.ScriptAssemblyPathname);
+            var topLevelNamespace = graph.MasterPackage.Name;
 
             var findBuildableModulesProfile = new TimeProfile(ETimingProfiles.IdentifyBuildableModules);
             findBuildableModulesProfile.StartProfile();
@@ -115,7 +126,7 @@ namespace Bam.Core
             Log.Detail("Creating modules");
             foreach (var env in environments)
             {
-                graph.CreateTopLevelModules(State.ScriptAssembly, env, topLevelNamespace);
+                graph.CreateTopLevelModules(graph.ScriptAssembly, env, topLevelNamespace);
             }
 
             findBuildableModulesProfile.StopProfile();

@@ -77,12 +77,13 @@ namespace Bam
             var argumentTypes = assemblies.SelectMany(s => s.GetTypes()).Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
             try
             {
-                if (Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory))
+                if (Core.PackageUtilities.IsPackageDirectory(Core.Graph.Instance.ProcessState.WorkingDirectory))
                 {
-                    Core.State.BuildRoot = System.IO.Path.GetTempPath();
-                    Core.PackageUtilities.IdentifyAllPackages();
-                    Core.PackageUtilities.CompilePackageAssembly();
-                    Core.PackageUtilities.LoadPackageAssembly();
+                    Core.Graph.Instance.BuildRoot = System.IO.Path.GetTempPath();
+                    if (Core.PackageUtilities.CompilePackageAssembly(enforceBamAssemblyVersions: false))
+                    {
+                        Core.PackageUtilities.LoadPackageAssembly();
+                    }
                 }
             }
             catch (Core.Exception)
@@ -93,9 +94,9 @@ namespace Bam
             Core.Log.Info("General options");
             Core.Log.Info("===============");
             PrintOptions(argumentTypes);
-            if (null != Core.State.ScriptAssembly)
+            if (null != Core.Graph.Instance.ScriptAssembly)
             {
-                var scriptArgs = Core.State.ScriptAssembly.GetTypes().Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
+                var scriptArgs = Core.Graph.Instance.ScriptAssembly.GetTypes().Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
                 Core.Log.Info("Package specific options");
                 Core.Log.Info("========================");
                 PrintOptions(scriptArgs);
@@ -105,12 +106,13 @@ namespace Bam
         public static void
         PrintVersion()
         {
-            Core.State.VerbosityLevel = Core.EVerboseLevel.Info;
-            Core.Log.Info("BuildAMation (Bam) v{0}", Core.State.VersionString);
-            Core.Log.Info("(c) Mark Final, 2010-2015");
-            Core.Log.Info("Licensed under BSD 3-clause. See License file.");
+            Core.EntryPoint.PrintVersion(Core.EVerboseLevel.Info);
             var clrVersion = System.Environment.Version;
-            Core.Log.Info("Using C# compiler v{0}.{1} with assemblies in {2}", clrVersion.Major, clrVersion.Minor, Core.State.ExecutableDirectory);
+            Core.Log.Message(Core.EVerboseLevel.Info,
+                "Using C# compiler v{0}.{1} with assemblies in {2}",
+                clrVersion.Major,
+                clrVersion.Minor,
+                Core.Graph.Instance.ProcessState.ExecutableDirectory);
         }
     }
 }

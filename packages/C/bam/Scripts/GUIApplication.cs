@@ -56,7 +56,7 @@ namespace C
                 compiler.PreprocessorDefines.Add("_WINDOWS");
             };
 
-        public override CObjectFileCollection
+        public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,

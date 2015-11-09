@@ -66,7 +66,7 @@ namespace C.DefaultSettings
                 settings.PreprocessorDefines.Add("D_BAM_PLATFORM_BITS", bits.ToString());
             }
             {
-                var isLittleEndian = Bam.Core.State.IsLittleEndian;
+                var isLittleEndian = Bam.Core.OSUtilities.IsLittleEndian;
                 if (isLittleEndian)
                 {
                     settings.PreprocessorDefines.Add("D_BAM_PLATFORM_LITTLEENDIAN");

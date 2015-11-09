@@ -182,10 +182,7 @@ namespace Bam
             {
                 allDefines.AddRange(package.Definitions);
             }
-            // command line definitions
-            allDefines.AddRange(Core.State.PackageCompilationDefines);
             allDefines.Sort();
-            allDefines.RemoveAll(Core.State.PackageCompilationUndefines);
 
             return allDefines.ToString(';');
         }
@@ -212,10 +209,10 @@ namespace Bam
                 writer.WriteLine("{0}static void Main(string[] args)", indent(2));
                 writer.WriteLine("{0}{{", indent(2));
                 writer.WriteLine("{0}// configure", indent(3));
-                writer.WriteLine("{0}Core.State.BuildRoot = \"debug_build\";", indent(3));
-                writer.WriteLine("{0}Core.State.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
-                writer.WriteLine("{0}Core.State.CompileWithDebugSymbols = true;", indent(3));
-                writer.WriteLine("{0}Core.State.BuildMode = \"Native\";", indent(3));
+                writer.WriteLine("{0}Core.Graph.Instance.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
+                writer.WriteLine("{0}Core.Graph.Instance.CompileWithDebugSymbols = true;", indent(3));
+                writer.WriteLine("{0}Core.Graph.Instance.BuildRoot = \"debug_build\";", indent(3));
+                writer.WriteLine("{0}Core.Graph.Instance.Mode = \"Native\";", indent(3));
                 writer.WriteLine("{0}var debug = new Core.Environment();", indent(3));
                 writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
                 writer.WriteLine("{0}var optimized = new Core.Environment();", indent(3));
@@ -291,14 +288,14 @@ namespace Bam
             {
                 CreateReference(desc.Name, references, targetframework: desc.RequiredTargetFramework);
             }
-            if (Core.State.RunningMono)
+            if (Core.Graph.Instance.ProcessState.RunningMono)
             {
                 CreateReference("Mono.Posix", references);
             }
             foreach (var assembly in masterPackage.BamAssemblies)
             {
-                var assemblyPath = System.IO.Path.Combine(Core.State.ExecutableDirectory, assembly) + ".dll";
-                CreateReference(assembly, references, hintpath: assemblyPath);
+                var assemblyPath = System.IO.Path.Combine(Core.Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
+                CreateReference(assembly.Name, references, hintpath: assemblyPath);
             }
 
             var mainSource = CreateItemGroup(parent: project);

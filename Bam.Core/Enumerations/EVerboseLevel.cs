@@ -31,6 +31,7 @@ namespace Bam.Core
 {
     public enum EVerboseLevel
     {
+        NA = -1,
         None = 0,
         Info = 1,
         Detail = 2,

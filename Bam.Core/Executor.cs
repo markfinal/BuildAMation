@@ -259,7 +259,7 @@ namespace Bam.Core
         public void
         Run()
         {
-            Log.Detail("Executing graph");
+            Log.Detail("Running build");
 
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
 
@@ -270,9 +270,9 @@ namespace Bam.Core
 
             ExecutePreBuild(metaDataType);
 
-            if (!System.IO.Directory.Exists(State.BuildRoot))
+            if (!System.IO.Directory.Exists(graph.BuildRoot))
             {
-                System.IO.Directory.CreateDirectory(State.BuildRoot);
+                System.IO.Directory.CreateDirectory(graph.BuildRoot);
             }
 
             var threadCount = CommandLineProcessor.Evaluate(new MultiThreaded());

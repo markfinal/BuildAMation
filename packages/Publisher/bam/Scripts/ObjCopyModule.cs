@@ -33,7 +33,7 @@ namespace Publisher
     public class ObjCopyModule :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("ObjCopy Destination");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ObjCopy Destination");
 
         private Bam.Core.Module TheSourceModule;
         private IObjCopyToolPolicy Policy;
@@ -75,7 +75,7 @@ namespace Publisher
             }
         }
 
-        public Bam.Core.FileKey SourceKey
+        public Bam.Core.PathKey SourceKey
         {
             get;
             private set;
@@ -121,7 +121,7 @@ namespace Publisher
                         this,
                         referenceFilePath,
                         collatedFile.SubDirectory,
-                        this.Macros["DebugSymbolRoot"]);
+                        this.Dependees[0].GeneratedPaths[DebugSymbolCollation.Key]); // path of the debug symbol collation root
                     this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).debug",
                         destinationDirectory,
                         value.GeneratedPaths[CollatedObject.Key]));

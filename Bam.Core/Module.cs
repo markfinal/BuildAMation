@@ -50,7 +50,7 @@ namespace Bam.Core
             graph.AddModule(this);
             this.Macros = new MacroList();
             // TODO: Can this be generalized to be a collection of files?
-            this.GeneratedPaths = new System.Collections.Generic.Dictionary<FileKey, TokenizedString>();
+            this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
 
             // add the package root
             var packageNameSpace = graph.CommonModuleType.Peek().Namespace;
@@ -74,6 +74,7 @@ namespace Bam.Core
             this.Macros.AddVerbatim("packagename", packageDefinition.Name);
             this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
             this.Macros.AddVerbatim("modulename", this.GetType().Name);
+            this.Macros.Add("OutputName", this.Macros["modulename"]);
 
             this.OwningRank = null;
             this.Tool = null;
@@ -145,7 +146,7 @@ namespace Bam.Core
 
         protected void
         RegisterGeneratedFile(
-            FileKey key,
+            PathKey key,
             TokenizedString path)
         {
             if (this.GeneratedPaths.ContainsKey(key))
@@ -158,7 +159,7 @@ namespace Bam.Core
 
         private void
         RegisterGeneratedFile(
-            FileKey key)
+            PathKey key)
         {
             this.RegisterGeneratedFile(key, null);
         }
@@ -323,7 +324,7 @@ namespace Bam.Core
         private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> ExternalPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
 
-        public System.Collections.Generic.Dictionary<FileKey, TokenizedString> GeneratedPaths
+        public System.Collections.Generic.Dictionary<PathKey, TokenizedString> GeneratedPaths
         {
             get;
             private set;

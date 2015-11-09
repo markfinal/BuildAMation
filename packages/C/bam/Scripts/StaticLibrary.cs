@@ -37,7 +37,7 @@ namespace C
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
         private IArchivingPolicy Policy = null;
 
-        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Static Library File");
+        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Static Library File");
 
         protected override void
         Init(
@@ -87,7 +87,7 @@ namespace C
             return source;
         }
 
-        public virtual C.ObjC.ObjectFileCollection
+        public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
@@ -98,7 +98,7 @@ namespace C
             return source;
         }
 
-        public virtual C.ObjCxx.ObjectFileCollection
+        public C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
@@ -156,7 +156,7 @@ namespace C
             }
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -166,7 +166,7 @@ namespace C
             this.Policy.Archive(this, context, libraryFile, source, headers);
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
@@ -174,7 +174,7 @@ namespace C
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IArchivingPolicy>.Create(className);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             this.ReasonToExecute = null;

@@ -34,7 +34,7 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Copied Object");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
 
         private ICollatedObjectPolicy Policy = null;
 

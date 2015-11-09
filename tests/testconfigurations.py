@@ -90,10 +90,13 @@ class TestSetup:
         return variations
 
 def TestOptionSetup(optParser):
+    def store_option(option, opt_str, value, parser):
+        if not parser.values.Flavours:
+            parser.values.Flavours = []
+        parser.values.Flavours.append("%s=%s" % (opt_str, value))
     for opt, help in ConfigOptions.GetOptions():
         optName = "--%s" % opt
-        variable = opt.replace('.', '_')
-        optParser.add_option(optName, dest=variable, action="append", default=None, help=help)
+        optParser.add_option(optName, dest="Flavours", type="string", action="callback", callback=store_option, default=None, help=help)
 
 
 class ConfigOptions(object):

@@ -27,10 +27,20 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
     public static class TimingProfileUtilities
     {
+        private static Array<TimeProfile> Profiles = new Array<TimeProfile>();
+
+        public static void
+        RegisterProfile(
+            TimeProfile profile)
+        {
+            Profiles.Add(profile);
+        }
+
         public static void
         DumpProfiles()
         {
@@ -43,39 +53,32 @@ namespace Bam.Core
             var startTimeHeader = "Start";
             var stopTimeHeader = "Stop";
 
-            var profiles = System.Enum.GetValues(typeof(ETimingProfiles));
             int maxNameLength = profileHeader.Length;
             int maxMinuteLength = minutesHeader.Length;
             int maxSecondLength = secondsHeader.Length;
             int maxMillisecondLength = millisecondsHeader.Length;
             int maxTimeLength = 9;
-            foreach (var profile in profiles)
+            foreach (var profile in Profiles)
             {
-                int nameLength = profile.ToString().Length;
+                int nameLength = profile.Profile.ToString().Length;
                 if (nameLength > maxNameLength)
                 {
                     maxNameLength = nameLength;
                 }
 
-                var profileTime = State.TimingProfiles[(int)profile];
-                if (null == profileTime)
-                {
-                    continue;
-                }
-
-                int minuteLength = profileTime.Elapsed.Minutes.ToString().Length;
+                int minuteLength = profile.Elapsed.Minutes.ToString().Length;
                 if (minuteLength > maxMinuteLength)
                 {
                     maxMinuteLength = minuteLength;
                 }
 
-                int secondLength = profileTime.Elapsed.Seconds.ToString().Length;
+                int secondLength = profile.Elapsed.Seconds.ToString().Length;
                 if (secondLength > maxSecondLength)
                 {
                     maxSecondLength = secondLength;
                 }
 
-                int millisecondLength = profileTime.Elapsed.Milliseconds.ToString().Length;
+                int millisecondLength = profile.Elapsed.Milliseconds.ToString().Length;
                 if (millisecondLength > maxMillisecondLength)
                 {
                     maxMillisecondLength = millisecondLength;
@@ -102,30 +105,28 @@ namespace Bam.Core
             Log.Info(header);
             Log.Info(horizontalRule);
             var cumulativeTime = new System.TimeSpan();
-            foreach (ETimingProfiles profile in profiles)
+            foreach (var profile in Profiles)
             {
-                int intProfile = (int)profile;
-                var profileTime = State.TimingProfiles[intProfile];
-                var elapsedTime = (null != profileTime) ? profileTime.Elapsed : new System.TimeSpan(0);
-                if (ETimingProfiles.TimedTotal != profile)
+                var elapsedTime = (null != profile) ? profile.Elapsed : new System.TimeSpan(0);
+                if (ETimingProfiles.TimedTotal != profile.Profile)
                 {
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
                 }
 
                 string diffString = null;
-                if (additionalDetails && (intProfile > 0) && (ETimingProfiles.TimedTotal != profile))
+                if (additionalDetails && (ETimingProfiles.TimedTotal != profile.Profile))
                 {
-                    var diff = profileTime.Start - State.TimingProfiles[intProfile - 1].Stop;
+                    var diff = profile.Start - Profiles.First().Stop;
                     diffString = diff.Milliseconds.ToString();
                 }
 
                 var minuteString = elapsedTime.Minutes.ToString();
                 var secondString = elapsedTime.Seconds.ToString();
                 var millisecondString = elapsedTime.Milliseconds.ToString();
-                var startTimeString = (null != profileTime) ? profileTime.Start.ToString(TimeProfile.DateTimeFormat) : "0";
-                var stopTimeString = (null != profileTime) ? profileTime.Stop.ToString(TimeProfile.DateTimeFormat) : "0";
+                var startTimeString = (null != profile) ? profile.Start.ToString(TimeProfile.DateTimeFormat) : "0";
+                var stopTimeString = (null != profile) ? profile.Stop.ToString(TimeProfile.DateTimeFormat) : "0";
 
-                if (ETimingProfiles.TimedTotal == profile)
+                if (ETimingProfiles.TimedTotal == profile.Profile)
                 {
                     Log.Info(horizontalRule);
                     var cumulativeString = "CumulativeTotal";
@@ -146,8 +147,8 @@ namespace Bam.Core
                 }
 
                 Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11} {12}",
-                         profile.ToString(),
-                         new string(' ', maxNameLength - profile.ToString().Length),
+                         profile.Profile.ToString(),
+                         new string(' ', maxNameLength - profile.Profile.ToString().Length),
                          new string(' ', maxMinuteLength - minuteString.Length),
                          minuteString,
                          new string(' ', maxSecondLength - secondString.Length),

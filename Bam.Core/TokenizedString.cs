@@ -280,7 +280,7 @@ namespace Bam.Core
         public static void
         ParseAll()
         {
-            Log.Detail("Parsing tokenized strings");
+            Log.Detail("Parsing strings");
             foreach (var t in Cache)
             {
                 if (t.IsInline)

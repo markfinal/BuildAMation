@@ -63,14 +63,12 @@ namespace Bam
                     case Core.EVerboseLevel.Info:
                     case Core.EVerboseLevel.Detail:
                     case Core.EVerboseLevel.Full:
-                        Core.State.VerbosityLevel = verbosityLevel;
+                        Core.Graph.Instance.VerbosityLevel = verbosityLevel;
                         break;
 
                     default:
                         throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
                 }
-
-                Core.State.ForceDefinitionFileUpdate = Core.CommandLineProcessor.Evaluate(new Core.ForceDefinitionFileUpdate());
 
                 if (Core.CommandLineProcessor.Evaluate(new Core.PrintHelp()))
                 {
@@ -104,16 +102,15 @@ namespace Bam
 
                 if (Core.CommandLineProcessor.Evaluate(new Core.ShowDefinitionFile()))
                 {
-                    Core.PackageUtilities.IdentifyAllPackages(allowDuplicates: true);
+                    Core.PackageUtilities.IdentifyAllPackages(allowDuplicates: true, enforceBamAssemblyVersions: false);
                     Core.Graph.Instance.MasterPackage.Show();
                     return;
                 }
 
                 // configure
-                Core.State.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
-                Core.State.CompileWithDebugSymbols = Core.CommandLineProcessor.Evaluate(new Core.UseDebugSymbols());
-                Core.State.BuildMode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
-                if (null == Core.State.BuildMode)
+                Core.Graph.Instance.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
+                Core.Graph.Instance.Mode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
+                if (null == Core.Graph.Instance.Mode)
                 {
                     throw new Core.Exception("No build mode specified");
                 }

@@ -54,7 +54,7 @@ namespace Bam.Core
             var time = System.DateTime.Now;
             this.Stop = time;
             this.Elapsed = time - this.Start;
-            State.TimingProfiles[(int)this.Profile] = this;
+            TimingProfileUtilities.RegisterProfile(this);
             Log.DebugMessage("Profile '{0}': stop {1}", this.Profile.ToString(), time.ToString(DateTimeFormat));
         }
 
