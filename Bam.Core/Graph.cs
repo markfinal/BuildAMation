@@ -177,7 +177,7 @@ namespace Bam.Core
         public void
         ApplySettingsPatches()
         {
-            Log.Detail("Applying settings patches");
+            Log.Detail("Apply settings to modules");
             foreach (var rank in this.DependencyGraph.Reverse())
             {
                 foreach (var module in rank.Value)
@@ -317,7 +317,7 @@ namespace Bam.Core
         public void
         SortDependencies()
         {
-            Log.Detail("Constructing dependency graph");
+            Log.Detail("Analysing module dependencies");
             var currentRank = this.DependencyGraph[0];
             foreach (var m in this.TopLevelModules)
             {
