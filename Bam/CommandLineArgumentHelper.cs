@@ -93,9 +93,9 @@ namespace Bam
             Core.Log.Info("General options");
             Core.Log.Info("===============");
             PrintOptions(argumentTypes);
-            if (null != Core.State.ScriptAssembly)
+            if (null != Core.Graph.Instance.ScriptAssembly)
             {
-                var scriptArgs = Core.State.ScriptAssembly.GetTypes().Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
+                var scriptArgs = Core.Graph.Instance.ScriptAssembly.GetTypes().Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
                 Core.Log.Info("Package specific options");
                 Core.Log.Info("========================");
                 PrintOptions(scriptArgs);

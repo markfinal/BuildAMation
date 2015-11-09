@@ -512,5 +512,17 @@ namespace Bam.Core
             get;
             set;
         }
+
+        public string ScriptAssemblyPathname
+        {
+            get;
+            set;
+        }
+
+        public System.Reflection.Assembly ScriptAssembly
+        {
+            get;
+            set;
+        }
     }
 }

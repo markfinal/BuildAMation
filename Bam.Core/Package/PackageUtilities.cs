@@ -459,7 +459,7 @@ namespace Bam.Core
                             {
                                 Log.DebugMessage("Cached assembly used '{0}', with hash {1}", cachedAssemblyPathname, diskHashCode);
                                 Log.Detail("Re-using existing package assembly");
-                                State.ScriptAssemblyPathname = cachedAssemblyPathname;
+                                Graph.Instance.ScriptAssemblyPathname = cachedAssemblyPathname;
 
                                 assemblyCompileProfile.StopProfile();
 
@@ -591,7 +591,7 @@ namespace Bam.Core
                 }
 
                 Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
-                State.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
+                Graph.Instance.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
             }
 
             assemblyCompileProfile.StopProfile();
@@ -611,12 +611,12 @@ namespace Bam.Core
             {
                 // this code works from an untrusted location, and debugging IS available when
                 // the pdb (.NET)/mdb (Mono) resides beside the assembly
-                byte[] asmBytes = System.IO.File.ReadAllBytes(State.ScriptAssemblyPathname);
+                byte[] asmBytes = System.IO.File.ReadAllBytes(Graph.Instance.ScriptAssemblyPathname);
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     var debugInfoFilename = State.RunningMono ?
-                        State.ScriptAssemblyPathname + ".mdb" :
-                        System.IO.Path.ChangeExtension(State.ScriptAssemblyPathname, ".pdb");
+                        Graph.Instance.ScriptAssemblyPathname + ".mdb" :
+                        System.IO.Path.ChangeExtension(Graph.Instance.ScriptAssemblyPathname, ".pdb");
                     if (System.IO.File.Exists(debugInfoFilename))
                     {
                         byte[] pdbBytes = System.IO.File.ReadAllBytes(debugInfoFilename);
@@ -631,7 +631,7 @@ namespace Bam.Core
             }
             catch (System.IO.FileNotFoundException exception)
             {
-                Log.ErrorMessage("Could not find assembly '{0}'", State.ScriptAssemblyPathname);
+                Log.ErrorMessage("Could not find assembly '{0}'", Graph.Instance.ScriptAssemblyPathname);
                 throw exception;
             }
             catch (System.Exception exception)
@@ -639,7 +639,7 @@ namespace Bam.Core
                 throw exception;
             }
 
-            State.ScriptAssembly = scriptAssembly;
+            Graph.Instance.ScriptAssembly = scriptAssembly;
 
             assemblyLoadProfile.StopProfile();
         }

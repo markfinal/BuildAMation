@@ -60,8 +60,8 @@ namespace Bam.Core
             if (null != packageAssembly)
             {
                 PackageUtilities.IdentifyAllPackages();
-                State.ScriptAssembly = packageAssembly;
-                State.ScriptAssemblyPathname = packageAssembly.Location;
+                Graph.Instance.ScriptAssembly = packageAssembly;
+                Graph.Instance.ScriptAssemblyPathname = packageAssembly.Location;
             }
             else
             {
@@ -79,7 +79,7 @@ namespace Bam.Core
             // get the metadata from the build mode package
             var graph = Graph.Instance;
             var metaName = System.String.Format("{0}Builder.{0}Meta", graph.Mode);
-            var metaDataType = State.ScriptAssembly.GetType(metaName);
+            var metaDataType = graph.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)
             {
                 throw new Exception("No build mode {0} meta data type {1}", graph.Mode, metaName);
@@ -95,7 +95,7 @@ namespace Bam.Core
             foreach (var package in graph.Packages)
             {
                 var ns = package.Name;
-                var metaType = State.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(PackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
+                var metaType = graph.ScriptAssembly.GetTypes().Where(item => item.Namespace == ns && typeof(PackageMetaData).IsAssignableFrom(item)).FirstOrDefault();
                 if (null != metaType)
                 {
                     try
@@ -124,7 +124,7 @@ namespace Bam.Core
             Log.Detail("Creating modules");
             foreach (var env in environments)
             {
-                graph.CreateTopLevelModules(State.ScriptAssembly, env, topLevelNamespace);
+                graph.CreateTopLevelModules(graph.ScriptAssembly, env, topLevelNamespace);
             }
 
             findBuildableModulesProfile.StopProfile();

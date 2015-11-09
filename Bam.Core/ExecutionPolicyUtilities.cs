@@ -44,11 +44,11 @@ namespace Bam.Core
                 (typename) =>
                 {
                     // TODO: this does not seem to be used
-                    return State.ScriptAssembly;
+                    return Graph.Instance.ScriptAssembly;
                 },
                 (assembly, name, checkcase) =>
                 {
-                    return State.ScriptAssembly.GetType(name);
+                    return Graph.Instance.ScriptAssembly.GetType(name);
                 });
             if (null == type)
             {

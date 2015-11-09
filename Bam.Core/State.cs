@@ -121,8 +121,6 @@ namespace Bam.Core
 
             Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
 
-            Add<string>("System", "ScriptAssemblyPathname", null);
-            Add<System.Reflection.Assembly>("System", "ScriptAssembly", null);
             Add<bool>("System", "CacheAssembly", true);
         }
 
@@ -302,30 +300,6 @@ namespace Bam.Core
             get
             {
                 return Get("System", "WorkingDirectory") as string;
-            }
-        }
-
-        public static string ScriptAssemblyPathname
-        {
-            set
-            {
-                Set("System", "ScriptAssemblyPathname", value);
-            }
-            get
-            {
-                return Get("System", "ScriptAssemblyPathname") as string;
-            }
-        }
-
-        public static System.Reflection.Assembly ScriptAssembly
-        {
-            set
-            {
-                Set("System", "ScriptAssembly", value);
-            }
-            get
-            {
-                return Get("System", "ScriptAssembly") as System.Reflection.Assembly;
             }
         }
 
