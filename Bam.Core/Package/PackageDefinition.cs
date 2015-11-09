@@ -101,7 +101,7 @@ namespace Bam.Core
             this.validate = validate;
             this.XMLFilename = xmlFilename;
             this.Dependents = new Array<System.Tuple<string, string, bool?>>();
-            this.BamAssemblies = new StringArray();
+            this.BamAssemblies = new Array<BamAssemblyDescription>();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
@@ -143,7 +143,8 @@ namespace Bam.Core
             }
 
             // add required BuildAMation assemblies
-            this.BamAssemblies.Add("Bam.Core");
+            var bamVersion = Graph.Instance.ProcessState.Version;
+            this.BamAssemblies.Add(new BamAssemblyDescription("Bam.Core", bamVersion.Major, bamVersion.Minor));
 
             // add required DotNet assemblies
             {
@@ -283,10 +284,19 @@ namespace Bam.Core
             if (this.BamAssemblies.Count > 0)
             {
                 var requiredAssemblies = document.CreateElement("BamAssemblies", namespaceURI);
-                foreach (var assemblyName in this.BamAssemblies)
+                foreach (var assembly in this.BamAssemblies)
                 {
                     var assemblyElement = document.CreateElement("BamAssembly", namespaceURI);
-                    assemblyElement.SetAttribute("name", assemblyName);
+                    assemblyElement.SetAttribute("name", assembly.Name);
+                    if (assembly.MajorVersion.HasValue)
+                    {
+                        assemblyElement.SetAttribute("major", assembly.MajorVersion.ToString());
+                        if (assembly.MinorVersion.HasValue)
+                        {
+                            assemblyElement.SetAttribute("minor", assembly.MinorVersion.ToString());
+                        }
+                        // don't write the patch version, as that would be very particular on a bug fix
+                    }
                     requiredAssemblies.AppendChild(assemblyElement);
                 }
                 packageDefinition.AppendChild(requiredAssemblies);
@@ -386,9 +396,10 @@ namespace Bam.Core
 
         public void
         Read(
-            bool validateSchemaLocation)
+            bool validateSchemaLocation,
+            bool enforceBamAssemblyVersions)
         {
-            this.Read(validateSchemaLocation, true);
+            this.Read(validateSchemaLocation, true, enforceBamAssemblyVersions);
 
             var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
@@ -397,7 +408,8 @@ namespace Bam.Core
         public void
         Read(
             bool validateSchemaLocation,
-            bool validatePackageLocations)
+            bool validatePackageLocations,
+            bool enforceBamAssemblyVersions)
         {
             Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
 
@@ -415,7 +427,7 @@ namespace Bam.Core
             xmlReaderSettings.XmlResolver = new XmlResolver();
 
             // try reading the current schema version first
-            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations))
+            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations, enforceBamAssemblyVersions))
             {
                 if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
@@ -527,7 +539,8 @@ namespace Bam.Core
 
         private bool
         ReadBamAssemblies(
-            System.Xml.XmlReader xmlReader)
+            System.Xml.XmlReader xmlReader,
+            bool enforceVersions)
         {
             var rootName = "BamAssemblies";
             if (rootName != xmlReader.Name)
@@ -549,8 +562,61 @@ namespace Bam.Core
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
                 }
 
-                var assembly = xmlReader.GetAttribute("name");
-                this.BamAssemblies.AddUnique(assembly);
+                var assemblyName = xmlReader.GetAttribute("name");
+
+                var bamVersion = Graph.Instance.ProcessState.Version;
+                var majorVersion = xmlReader.GetAttribute("major");
+                if (!System.String.IsNullOrEmpty(majorVersion))
+                {
+                    var major = System.Convert.ToInt32(majorVersion);
+                    if (enforceVersions && major > bamVersion.Major)
+                    {
+                        throw new Exception("This version of BuildAMation, {0}, does not satisfy minimum requirements v{1}.0.0, from package {2}",
+                            Graph.Instance.ProcessState.VersionString,
+                            majorVersion,
+                            this.Name);
+                    }
+                    var minorVersion = xmlReader.GetAttribute("minor");
+                    if (!System.String.IsNullOrEmpty(minorVersion))
+                    {
+                        var minor = System.Convert.ToInt32(minorVersion);
+                        if (enforceVersions && minor > bamVersion.Minor)
+                        {
+                            throw new Exception("This version of BuildAMation, {0}, does not satisfy minimum requirements v{1}.{2}.0, from package {3}",
+                                Graph.Instance.ProcessState.VersionString,
+                                majorVersion,
+                                minorVersion,
+                                this.Name);
+                        }
+                        var patchVersion = xmlReader.GetAttribute("patch");
+                        if (!System.String.IsNullOrEmpty(patchVersion))
+                        {
+                            var patch = System.Convert.ToInt32(patchVersion);
+                            if (enforceVersions && patch > bamVersion.Build)
+                            {
+                                throw new Exception("This version of BuildAMation, {0}, does not satisfy minimum requirements v{1}.{2}.{3}, from package {4}",
+                                    Graph.Instance.ProcessState.VersionString,
+                                    majorVersion,
+                                    minorVersion,
+                                    patchVersion,
+                                    this.Name);
+                            }
+                            this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName, major, minor, patch));
+                        }
+                        else
+                        {
+                            this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName, major, minor));
+                        }
+                    }
+                    else
+                    {
+                        this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName, major));
+                    }
+                }
+                else
+                {
+                    this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName));
+                }
             }
 
             return true;
@@ -678,7 +744,8 @@ namespace Bam.Core
         ReadCurrent(
             System.Xml.XmlReaderSettings readerSettings,
             bool validateSchemaLocation,
-            bool validatePackageLocations)
+            bool validatePackageLocations,
+            bool enforceBamAssemblyVersions)
         {
             try
             {
@@ -719,7 +786,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadBamAssemblies(xmlReader))
+                        else if (ReadBamAssemblies(xmlReader, enforceBamAssemblyVersions))
                         {
                             // all done
                         }
@@ -797,7 +864,7 @@ namespace Bam.Core
             private set;
         }
 
-        public StringArray BamAssemblies
+        public Array<BamAssemblyDescription> BamAssemblies
         {
             get;
             private set;
@@ -1046,7 +1113,15 @@ namespace Bam.Core
             Log.MessageAll("\nBuildAMation assemblies:");
             foreach (var assembly in this.BamAssemblies)
             {
-                Log.MessageAll("\t{0}", assembly);
+                var minVersionNumber = assembly.MinimumVersionNumber();
+                if (null != minVersionNumber)
+                {
+                    Log.MessageAll("\t{0} (requires version {1})", assembly.Name, minVersionNumber);
+                }
+                else
+                {
+                    Log.MessageAll("\t{0}", assembly.Name);
+                }
             }
             Log.MessageAll("\nDotNet assemblies:");
             foreach (var desc in this.DotNetAssemblies)

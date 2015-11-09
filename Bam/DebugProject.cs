@@ -294,8 +294,8 @@ namespace Bam
             }
             foreach (var assembly in masterPackage.BamAssemblies)
             {
-                var assemblyPath = System.IO.Path.Combine(Core.Graph.Instance.ProcessState.ExecutableDirectory, assembly) + ".dll";
-                CreateReference(assembly, references, hintpath: assemblyPath);
+                var assemblyPath = System.IO.Path.Combine(Core.Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
+                CreateReference(assembly.Name, references, hintpath: assemblyPath);
             }
 
             var mainSource = CreateItemGroup(parent: project);

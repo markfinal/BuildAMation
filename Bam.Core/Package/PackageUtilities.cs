@@ -164,7 +164,8 @@ namespace Bam.Core
         }
 
         public static PackageDefinition
-        GetMasterPackage()
+        GetMasterPackage(
+            bool enforceBamAssemblyVersions = true)
         {
             var workingDir = Graph.Instance.ProcessState.WorkingDirectory;
             var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
@@ -174,13 +175,14 @@ namespace Bam.Core
             }
 
             var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !Graph.Instance.ForceDefinitionFileUpdate);
-            masterDefinitionFile.Read(true);
+            masterDefinitionFile.Read(true, enforceBamAssemblyVersions);
             return masterDefinitionFile;
         }
 
         public static void
         IdentifyAllPackages(
-            bool allowDuplicates = false)
+            bool allowDuplicates = false,
+            bool enforceBamAssemblyVersions = true)
         {
             var packageRepos = new System.Collections.Generic.Queue<string>();
             foreach (var repo in Graph.Instance.PackageRepositories)
@@ -192,7 +194,7 @@ namespace Bam.Core
                 packageRepos.Enqueue(repo);
             }
 
-            var masterDefinitionFile = GetMasterPackage();
+            var masterDefinitionFile = GetMasterPackage(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
                 if (packageRepos.Contains(repo))
@@ -228,7 +230,7 @@ namespace Bam.Core
                     }
 
                     var definitionFile = new PackageDefinition(packageDefinitionPath, !Graph.Instance.ForceDefinitionFileUpdate);
-                    definitionFile.Read(true);
+                    definitionFile.Read(true, enforceBamAssemblyVersions);
                     candidatePackageDefinitions.Add(definitionFile);
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
@@ -330,7 +332,7 @@ namespace Bam.Core
         GetPackageHash(
             StringArray sourceCode,
             StringArray definitions,
-            StringArray bamAssemblies)
+            Array<BamAssemblyDescription> bamAssemblies)
         {
             int hashCode = 0;
             foreach (var source in sourceCode)
@@ -341,9 +343,9 @@ namespace Bam.Core
             {
                 hashCode ^= define.GetHashCode();
             }
-            foreach (var assemblyName in bamAssemblies)
+            foreach (var assembly in bamAssemblies)
             {
-                var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assemblyName) + ".dll";
+                var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
                 var lastModifiedDate = System.IO.File.GetLastWriteTime(assemblyPath);
                 hashCode ^= lastModifiedDate.GetHashCode();
             }
@@ -352,7 +354,8 @@ namespace Bam.Core
         }
 
         public static bool
-        CompilePackageAssembly()
+        CompilePackageAssembly(
+            bool enforceBamAssemblyVersions = true)
         {
             // validate build root
             if (null == Graph.Instance.BuildRoot)
@@ -363,7 +366,7 @@ namespace Bam.Core
             var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyAllPackages();
+            IdentifyAllPackages(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
 
             var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
             if (cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
@@ -544,7 +547,7 @@ namespace Bam.Core
                     // TODO: Q: why is it only for the master package? Why not all of them, which may have additional dependencies?
                     foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
                     {
-                        var assemblyFileName = System.String.Format("{0}.dll", assembly);
+                        var assemblyFileName = System.String.Format("{0}.dll", assembly.Name);
                         var assemblyPathName = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
