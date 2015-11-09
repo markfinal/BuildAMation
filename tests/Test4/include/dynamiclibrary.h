@@ -46,17 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  #define API_IMPORT /* empty */
 #endif
 
-/* now define the library API based on whether it is built as static or not
-   the D_<package>_<module>_STATICAPI #define is populated in all uses, including the library build itself
-   the D_BAM_DYNAMICLIBRARY_BUILD is only present for the library build when it is a dynamic library */
-#if defined(D_TEST4_MYDYNAMICLIBRARY_STATICAPI)
- #define API /* empty */
+#if defined(D_BAM_DYNAMICLIBRARY_BUILD)
+#define API API_EXPORT
 #else
- #if defined(D_BAM_DYNAMICLIBRARY_BUILD)
-  #define API API_EXPORT
- #else
-  #define API API_IMPORT
- #endif
+#define API API_IMPORT
 #endif
 
 extern API int TestFunction();
