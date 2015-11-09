@@ -22,8 +22,6 @@ dirsToDelete=[\
 "codingtools",
 "packages/Clang-3.1",
 "packages/Clang-3.3",
-"packages/Clang-Apple503",
-"packages/Clang-Apple600",
 "packages/ComposerXE-12",
 "packages/ComposerXECommon",
 "packages/Gcc-4.0",
