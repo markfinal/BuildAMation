@@ -326,6 +326,14 @@ namespace VSSolutionBuilder
             this.Project.AddOtherFile(otherGroup);
         }
 
+        public void
+        AddResourceFile(
+            C.WinResource resource)
+        {
+            var resourceGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
+            this.Project.AddResourceFile(resourceGroup);
+        }
+
         public bool
         ContainsSource(
             VSSettingsGroup sourceGroup)

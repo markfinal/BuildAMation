@@ -35,9 +35,11 @@ namespace VSSolutionBuilder
         private static readonly string SourceGroupName = "Source Files";
         private static readonly string HeaderGroupName = "Header Files";
         private static readonly string OtherGroupName = "Other Files";
+        private static readonly string ResourcesGroupName = "Resource Files";
         private Bam.Core.Array<VSSettingsGroup> Source = new Bam.Core.Array<VSSettingsGroup>();
         private Bam.Core.Array<VSSettingsGroup> Headers = new Bam.Core.Array<VSSettingsGroup>();
         private Bam.Core.Array<VSSettingsGroup> Others = new Bam.Core.Array<VSSettingsGroup>();
+        private Bam.Core.Array<VSSettingsGroup> Resources = new Bam.Core.Array<VSSettingsGroup>();
 
         public void
         AddHeader(
@@ -84,6 +86,21 @@ namespace VSSolutionBuilder
             }
         }
 
+        public void
+        AddResource(
+            Bam.Core.TokenizedString path)
+        {
+            lock (this.Resources)
+            {
+                if (!this.Resources.Any(item => item.Include.Parse() == path.Parse()))
+                {
+                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Resource, include: path);
+                    group.AddSetting("Filter", ResourcesGroupName);
+                    this.Resources.AddUnique(group);
+                }
+            }
+        }
+
         public System.Xml.XmlDocument
         Serialize()
         {
@@ -123,6 +140,10 @@ namespace VSSolutionBuilder
             if (this.Others.Count > 0)
             {
                 createXML(containerEl, OtherGroupName, this.Others);
+            }
+            if (this.Resources.Count > 0)
+            {
+                createXML(containerEl, ResourcesGroupName, this.Resources);
             }
 
             return document;

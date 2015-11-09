@@ -29,6 +29,7 @@
 #endregion // License
 using Bam.Core;
 using C.DefaultSettings;
+using System.Linq;
 namespace C
 {
     public sealed partial class VSSolutionLinker :
@@ -63,7 +64,9 @@ namespace C
             }
 
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
-            if (objectFiles.Count > 1)
+
+            var realObjectFiles = objectFiles.Where(item => !(item is WinResource));
+            if (realObjectFiles.Count() > 1)
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
@@ -73,13 +76,13 @@ namespace C
                 };
 
                 var sharedSettings = C.SettingsBase.SharedSettings(
-                    objectFiles,
+                    realObjectFiles,
                     typeof(VisualCCommon.VSSolutionImplementation),
                     typeof(VisualStudioProcessor.IConvertToProject),
                     vsConvertParameterTypes);
                 (sharedSettings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
 
-                foreach (var objFile in objectFiles)
+                foreach (var objFile in realObjectFiles)
                 {
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
@@ -87,11 +90,17 @@ namespace C
             }
             else
             {
-                (objectFiles[0].Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
-                foreach (var objFile in objectFiles)
+                (realObjectFiles.First().Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
+                foreach (var objFile in realObjectFiles)
                 {
                     config.AddSourceFile(objFile, null);
                 }
+            }
+
+            var resourceObjectFiles = objectFiles.Where(item => item is WinResource);
+            foreach (var resObj in resourceObjectFiles)
+            {
+                config.AddResourceFile(resObj as WinResource);
             }
 
             foreach (var input in libraries)

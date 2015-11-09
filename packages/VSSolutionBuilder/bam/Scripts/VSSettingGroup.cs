@@ -40,7 +40,8 @@ namespace VSSolutionBuilder
             Linker,
             PreBuild,
             PostBuild,
-            CustomBuild
+            CustomBuild,
+            Resource
         }
 
         public VSSettingsGroup(
@@ -196,6 +197,9 @@ namespace VSSolutionBuilder
 
                 case ESettingsGroup.CustomBuild:
                     return "CustomBuild";
+
+                case ESettingsGroup.Resource:
+                    return "ResourceCompile";
 
                 default:
                     throw new Bam.Core.Exception("Unknown settings group, {0}", this.Group.ToString());

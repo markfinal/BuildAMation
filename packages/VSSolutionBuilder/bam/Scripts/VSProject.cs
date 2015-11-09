@@ -44,6 +44,7 @@ namespace VSSolutionBuilder
             this.Headers = new Bam.Core.Array<VSSettingsGroup>();
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
             this.Others = new Bam.Core.Array<VSSettingsGroup>();
+            this.Resources = new Bam.Core.Array<VSSettingsGroup>();
             this.Filter = new VSProjectFilter();
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
@@ -102,7 +103,7 @@ namespace VSSolutionBuilder
                     else
                     {
                         // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
-                        if ((null != include) && (settings.Include.Parse() == include.Parse()))
+                        if (settings.Include.Parse() == include.Parse())
                         {
                             return settings;
                         }
@@ -137,6 +138,14 @@ namespace VSSolutionBuilder
         {
             this.Others.AddUnique(other);
             this.Filter.AddOther(other.Include);
+        }
+
+        public void
+        AddResourceFile(
+            VSSettingsGroup other)
+        {
+            this.Resources.AddUnique(other);
+            this.Filter.AddResource(other.Include);
         }
 
         public void
@@ -211,6 +220,12 @@ namespace VSSolutionBuilder
         }
 
         private Bam.Core.Array<VSSettingsGroup> Others
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<VSSettingsGroup> Resources
         {
             get;
             set;
@@ -334,6 +349,14 @@ namespace VSSolutionBuilder
                 foreach (var group in this.Others)
                 {
                     group.Serialize(document, otherGroup);
+                }
+            }
+            if (this.Resources.Count > 0)
+            {
+                var resourceGroup = document.CreateVSItemGroup(parentEl: projectEl);
+                foreach (var group in this.Resources)
+                {
+                    group.Serialize(document, resourceGroup);
                 }
             }
 

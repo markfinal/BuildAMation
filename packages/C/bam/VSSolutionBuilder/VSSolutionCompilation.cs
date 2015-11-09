@@ -45,7 +45,14 @@ namespace C
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            sender.MetaData = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler, include: source.GeneratedPaths[C.SourceFile.Key], uniqueToProject: true);
+            var group = (sender is WinResource) ?
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource :
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
+
+            sender.MetaData = config.GetSettingsGroup(
+                group,
+                include: source.GeneratedPaths[C.SourceFile.Key],
+                uniqueToProject: true);
         }
     }
 }
