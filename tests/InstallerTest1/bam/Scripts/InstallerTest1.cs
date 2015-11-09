@@ -166,7 +166,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.SourceFolder<ExecutableRuntime>(Publisher.Collation.PublishingRoot);
+            this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
         }
     }
 
@@ -180,7 +180,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.SourceFolder<ExecutableRuntime>(Publisher.Collation.PublishingRoot);
+            this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
         }
     }
 
@@ -194,12 +194,12 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.SourceFolder<ExecutableRuntime>(Publisher.Collation.PublishingRoot);
+            this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
         }
     }
 
     [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
-    sealed class ExecutableTarBallDMG :
+    sealed class ExecutableDMG :
         Installer.DiskImage
     {
         protected override void
@@ -208,7 +208,22 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.SourceFolder<ExecutableRuntime>(Publisher.Collation.PublishingRoot);
+            this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+        }
+    }
+
+    // TODO: there is no equivalent on Windows
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class ExecutableDebugSymbolsTarBall :
+        Installer.TarBall
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.SourceFolder<ExecutableDebugSymbols>(Publisher.DebugSymbolCollation.Key);
         }
     }
 }
