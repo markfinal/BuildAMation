@@ -35,7 +35,8 @@ namespace Bam.Core
         private static void
         GetAssemblyVersionData(
             out System.Version assemblyVersion,
-            out string productVersion)
+            out string productVersion,
+            out string targetFrameworkName)
         {
             var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(BamState));
             assemblyVersion = coreAssembly.GetName().Version;
@@ -49,6 +50,15 @@ namespace Bam.Core
             else
             {
                 productVersion = pv;
+            }
+            var targetFrameworkAttributes = coreAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
+            if (targetFrameworkAttributes.Length > 0)
+            {
+                targetFrameworkName = (targetFrameworkAttributes[0] as System.Runtime.Versioning.TargetFrameworkAttribute).FrameworkName;
+            }
+            else
+            {
+                targetFrameworkName = null;
             }
         }
 
@@ -89,22 +99,16 @@ namespace Bam.Core
         {
             System.Version assemblyVersion;
             string productVersion;
-            GetAssemblyVersionData(out assemblyVersion, out productVersion);
+            string targetFrameworkName;
+            GetAssemblyVersionData(out assemblyVersion, out productVersion, out targetFrameworkName);
 
             this.RunningMono = (System.Type.GetType("Mono.Runtime") != null);
             this.ExecutableDirectory = GetBamDirectory();
-            this.Version = assemblyVersion;
-            this.VersionString = productVersion;
             this.WorkingDirectory = GetWorkingDirectory();
 
-            // TODO: commented out as the TargetFrameworkAttribute was only introduced in CLR 4
-#if false
-            var targetFramework = bamAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
-            var targetFrameworkName = (targetFramework[0] as System.Runtime.Versioning.TargetFrameworkAttribute).FrameworkName;
-            Add<string>("BuildAMation", "TargetFramework", targetFrameworkName);
-            var targetFrameworkNameSplit = targetFrameworkName.Split('=');
-            Add<string>("BuildAMation", "CSharpCompilerVersion", targetFrameworkNameSplit[1]);
-#endif
+            this.Version = assemblyVersion;
+            this.VersionString = productVersion;
+            this.TargetFrameworkVersion = targetFrameworkName;
         }
 
         public string ExecutableDirectory
@@ -135,5 +139,12 @@ namespace Bam.Core
         {
             get;
             private set;
-        }    }
+        }
+
+        public string TargetFrameworkVersion
+        {
+            get;
+            private set;
+        }
+    }
 }
