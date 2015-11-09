@@ -32,8 +32,8 @@ namespace Installer
     class NSISScript :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
         public NSISScript()
         {
@@ -49,7 +49,7 @@ namespace Installer
         public void
         AddFile(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -58,7 +58,7 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -156,7 +156,7 @@ namespace Installer
 
         public void
         Include<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddFile(dependent, key);
@@ -164,7 +164,7 @@ namespace Installer
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.ScriptModule.AddPath(dependent, key);

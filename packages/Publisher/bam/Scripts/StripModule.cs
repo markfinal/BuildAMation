@@ -33,7 +33,7 @@ namespace Publisher
     public class StripModule :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Stripped Binary Destination");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Binary Destination");
 
         private CollatedObject TheSourceModule;
         private IStripToolPolicy Policy;

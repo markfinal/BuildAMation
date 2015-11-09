@@ -52,7 +52,7 @@ namespace Publisher
         {
         }
 
-        private Bam.Core.FileKey ReferenceKey
+        private Bam.Core.PathKey ReferenceKey
         {
             get;
             set;
@@ -101,7 +101,7 @@ namespace Publisher
                     }
 
                     var newRef = referenceMap[collatedFile.Reference];
-                    // the FileKey depends on whether the reference came straight as a clone, or after being stripped
+                    // the PathKey depends on whether the reference came straight as a clone, or after being stripped
                     referenceFilePath = newRef.GeneratedPaths[this.ReferenceKey];
                 }
 

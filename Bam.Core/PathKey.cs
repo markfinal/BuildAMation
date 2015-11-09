@@ -30,16 +30,16 @@
 using System.Linq;
 namespace Bam.Core
 {
-    public sealed class FileKey
+    public sealed class PathKey
     {
-        private static System.Collections.Generic.List<FileKey> GeneratedKeys = new System.Collections.Generic.List<FileKey>();
+        private static System.Collections.Generic.List<PathKey> GeneratedKeys = new System.Collections.Generic.List<PathKey>();
 
-        private FileKey(string key)
+        private PathKey(string key)
         {
             this.Id = key;
         }
 
-        public static FileKey
+        public static PathKey
         Generate(
             string key)
         {
@@ -49,7 +49,7 @@ namespace Bam.Core
             {
                 return first;
             }
-            var newKey = new FileKey(key);
+            var newKey = new PathKey(key);
             GeneratedKeys.Add(newKey);
             return newKey;
         }
@@ -70,7 +70,7 @@ namespace Bam.Core
         Equals(
             object obj)
         {
-            return this.Id.Equals((obj as FileKey).Id);
+            return this.Id.Equals((obj as PathKey).Id);
         }
 
         public override string

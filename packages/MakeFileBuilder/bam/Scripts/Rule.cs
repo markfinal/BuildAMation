@@ -38,7 +38,7 @@ namespace MakeFileBuilder
             this.RuleCount = count;
             this.Module = module;
             this.Targets = new Bam.Core.Array<Target>();
-            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
             this.PrerequisitePaths = new Bam.Core.TokenizedStringArray();
             this.ShellCommands = new Bam.Core.StringArray();
@@ -60,7 +60,7 @@ namespace MakeFileBuilder
         public void
         AddPrerequisite(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             if (!this.Prequisities.ContainsKey(module))
             {
@@ -228,7 +228,7 @@ namespace MakeFileBuilder
             private set;
         }
 
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Prequisities
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Prequisities
         {
             get;
             set;

@@ -37,7 +37,7 @@ namespace C
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
         private IArchivingPolicy Policy = null;
 
-        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Static Library File");
+        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Static Library File");
 
         protected override void
         Init(

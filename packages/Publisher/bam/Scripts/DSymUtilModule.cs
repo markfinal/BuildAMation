@@ -33,7 +33,7 @@ namespace Publisher
     public class DSymUtilModule :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("dSYM bundle");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("dSYM bundle");
 
         private CollatedObject TheSourceModule;
         private IDSymUtilToolPolicy Policy;

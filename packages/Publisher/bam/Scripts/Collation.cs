@@ -34,7 +34,7 @@ namespace Publisher
         Bam.Core.Module
     {
         private ICollationPolicy Policy = null;
-        public static Bam.Core.FileKey PublishingRoot = Bam.Core.FileKey.Generate("Publishing Root");
+        public static Bam.Core.PathKey PublishingRoot = Bam.Core.PathKey.Generate("Publishing Root");
         private Bam.Core.Array<CollatedFile> CopiedFrameworks = new Bam.Core.Array<CollatedFile>();
         private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
 
@@ -303,7 +303,7 @@ namespace Publisher
 
         public CollatedFile
         Include<DependentModule>(
-            Bam.Core.FileKey key,
+            Bam.Core.PathKey key,
             EPublishingType type,
             string subdir = null) where DependentModule : Bam.Core.Module, new()
         {
@@ -350,7 +350,7 @@ namespace Publisher
 
         public CollatedFile
         Include<DependentModule>(
-            Bam.Core.FileKey key,
+            Bam.Core.PathKey key,
             string subdir,
             CollatedFile reference) where DependentModule : Bam.Core.Module, new()
         {

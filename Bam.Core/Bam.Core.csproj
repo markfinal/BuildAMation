@@ -81,7 +81,6 @@
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="ExecutionPolicyUtilities.cs" />
     <Compile Include="Executor.cs" />
-    <Compile Include="FileKey.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Interfaces\IBuildModeMetaData.cs" />
     <Compile Include="Interfaces\IChildModule.cs" />
@@ -128,6 +127,7 @@
     <Compile Include="Package\PackageMetaData.cs" />
     <Compile Include="Package\PackageUtilities.cs" />
     <Compile Include="Package\XmlResolver.cs" />
+    <Compile Include="PathKey.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="PreBuiltTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -33,8 +33,8 @@ namespace Installer
     class TarInputFiles :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.FileKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 
         public TarInputFiles()
         {
@@ -50,7 +50,7 @@ namespace Installer
         public void
         AddFile(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -59,7 +59,7 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
-            Bam.Core.FileKey key)
+            Bam.Core.PathKey key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -152,7 +152,7 @@ namespace Installer
     public abstract class TarBall :
         Bam.Core.Module
     {
-        public static Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Installer");
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
 
         private TarInputFiles InputFiles;
         private Bam.Core.PreBuiltTool Compiler;
@@ -174,7 +174,7 @@ namespace Installer
 
         public void
         Include<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.InputFiles.AddFile(dependent, key);
@@ -182,7 +182,7 @@ namespace Installer
 
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.FileKey key) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.InputFiles.AddPath(dependent, key);

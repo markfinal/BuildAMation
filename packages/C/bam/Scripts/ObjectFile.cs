@@ -39,7 +39,7 @@ namespace C
         private ICompilationPolicy Policy = null;
         private SourceFile SourceModule;
 
-        static public Bam.Core.FileKey Key = Bam.Core.FileKey.Generate("Compiled Object File");
+        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Compiled Object File");
 
         protected override void
         Init(
