@@ -27,38 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+namespace WindowsSDK.DefaultSettings
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        ICommonWinResourceCompilerSettings
+    static partial class DefaultSettingsExtensions
     {
-        public WinResourceCompilerSettings(
+        public static void
+        Defaults(
+            this ICommonWinResourceCompilerSettings settings,
             Bam.Core.Module module)
         {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool ICommonWinResourceCompilerSettings.NoLogo
-        {
-            get;
-            set;
+            settings.NoLogo = true;
         }
     }
 }

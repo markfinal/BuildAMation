@@ -29,33 +29,12 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        ICommonWinResourceCompilerSettings
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)]
+    public interface ICommonWinResourceCompilerSettings :
+        Bam.Core.ISettingsBase
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool ICommonWinResourceCompilerSettings.NoLogo
+        bool NoLogo
         {
             get;
             set;
