@@ -47,20 +47,6 @@ namespace C
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            // TODO: Special case, which ought to be handled in settings
-            if (sender is WinResource)
-            {
-#if true
-                commandLine.Add(System.String.Format("-Fo{0}", objectFilePath.ParseAndQuoteIfNecessary()));
-                commandLine.Add((source as C.SourceFile).InputPath.ParseAndQuoteIfNecessary());
-#else
-                commandLine.Add(System.String.Format("-i {0}", (source as C.SourceFile).InputPath.ParseAndQuoteIfNecessary()));
-                commandLine.Add(System.String.Format("-o {0}", objectFilePath.ParseAndQuoteIfNecessary()));
-                commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
-#endif
-            }
-
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
