@@ -48,10 +48,6 @@ namespace Bam.Core
             {
                 configuration = EConfiguration.Profile;
             }
-            else if (0 == System.String.Compare(configurationName, "Final", true))
-            {
-                configuration = EConfiguration.Final;
-            }
             else
             {
                 throw new Exception("Configuration name '{0}' not recognized", configurationName);
