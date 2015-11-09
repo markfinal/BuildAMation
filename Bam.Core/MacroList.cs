@@ -50,7 +50,12 @@ namespace Bam.Core
         {
             get
             {
-                return this.Dict[FormattedKey(key)];
+                var fKey = FormattedKey(key);
+                if (!this.Dict.ContainsKey(fKey))
+                {
+                    throw new Exception("Unable to locate macro '{0}'", fKey);
+                }
+                return this.Dict[fKey];
             }
             set
             {
