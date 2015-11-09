@@ -31,14 +31,20 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
         outputMessages.write("VisualStudio solution expected at %s did not exist" % slnPath)
         return 0
     try:
-        vcVersion = options.VisualC_version
-        if vcVersion:
-            vcVersion = vcVersion[0]
-        else:
-            vcVersion = defaultVCVersion
-        if vcVersion:
-            vcVersionSplit = vcVersion.split('.')
-            vcMajorVersion = int(vcVersionSplit[0])
+        try:
+           for f in options.Flavours:
+               if f.startswith("--VisualC.version"):
+                   vcVersion = f.split("=")[1]
+                   break
+        except:
+            pass
+        finally:
+            try:
+                vcVersion
+            except:
+                vcVersion = defaultVCVersion
+        vcVersionSplit = vcVersion.split('.')
+        vcMajorVersion = int(vcVersionSplit[0])
         # location of MSBuild changed in VS2013
         if vcMajorVersion >= 12:
             # VS2013 onwards path for MSBuild
