@@ -52,8 +52,7 @@ namespace C
             {
                 if (this.Linker.Macros.Contains("pdbext"))
                 {
-                    var moduleIsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
-                    this.RegisterGeneratedFile(PDBKey, moduleIsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
+                    this.RegisterGeneratedFile(PDBKey, this.IsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
                 }
             }
             this.PrivatePatch(settings =>
@@ -225,6 +224,10 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
             var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
             var linked = this.linkedModules.ToReadOnlyCollection();
@@ -236,6 +239,10 @@ namespace C
         GetExecutionPolicy(
             string mode)
         {
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             var className = "C." + mode + "Linker";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
@@ -244,6 +251,10 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
             if (!exists)
             {

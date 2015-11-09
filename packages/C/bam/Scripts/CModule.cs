@@ -43,11 +43,19 @@ namespace C
             this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new DefaultBitDepth());
         }
 
+        public bool IsPrebuilt
+        {
+            get;
+            private set;
+        }
+
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
 
             // if there is a parent from which this module is created, inherit bitdepth
             if (null != parent)

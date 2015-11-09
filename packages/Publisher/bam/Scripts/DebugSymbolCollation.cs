@@ -180,8 +180,7 @@ namespace Publisher
                 {
                     continue;
                 }
-                var moduleIsPrebuilt = (source.GetType().GetCustomAttributes(typeof(C.PrebuiltAttribute), true).Length > 0);
-                if (moduleIsPrebuilt)
+                if ((source as C.CModule).IsPrebuilt)
                 {
                     continue;
                 }
