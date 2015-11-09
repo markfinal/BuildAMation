@@ -141,10 +141,13 @@ namespace Test
                     compiler.WarningsAsErrors = false;
                 });
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+                this.CreateWinResourceContainer("$(packagedir)/resources/win32.rc");
+                if (this.Linker is VisualCCommon.LinkerBase)
+                {
+                    this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+                }
             }
         }
     }
