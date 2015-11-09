@@ -1,3 +1,5 @@
+09-Nov-2015 Preliminary support for VisualStudio 2015 (Community Edition); see package VisualC-14.0.
+
 09-Nov-2015 Removed Bam.Core.EConfiguration.Final. Existing configurations are debug (full debugging), optimized (no symbols, full optimizations), profile (debug symbols, full optimizations - useful for generating installers while hiving off debug symbols).
 
 09-Nov-2015 Renamed Publisher.Collation.PublishingRoot PathKey to Publisher.Collation.Key (for consistency with other modules).
