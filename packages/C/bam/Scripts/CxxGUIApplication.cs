@@ -57,7 +57,21 @@ namespace C.Cxx
             compiler.PreprocessorDefines.Add("_WINDOWS");
         };
 
-        public override Cxx.ObjectFileCollection
+        public sealed override C.CObjectFileCollection
+        CreateCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var container = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                container.PrivatePatch(this.WindowsPreprocessor);
+            }
+            return container;
+        }
+
+        public sealed override Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,

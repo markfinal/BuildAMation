@@ -76,7 +76,23 @@ namespace C.Cxx
             });
         }
 
-        public override Cxx.ObjectFileCollection
+        public sealed override CObjectFileCollection
+        CreateCSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
+            collection.PrivatePatch(settings =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                (collection.Tool as C.CompilerTool).CompileAsShared(settings);
+            });
+            return collection;
+        }
+
+        public sealed override Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
