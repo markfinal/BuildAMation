@@ -30,12 +30,12 @@
 
 #ifdef _WINDOWS
 #include <Windows.h>
-int APIENTRY WinMain(
-    HINSTANCE hInstance,
-    HINSTANCE hPrevInstance,
-    LPSTR lpCmdLine,
-    int nCmdShow
-    )
+int APIENTRY
+WinMain(
+    HINSTANCE /*hInstance*/,
+    HINSTANCE /*hPrevInstance*/,
+    LPSTR /*lpCmdLine*/,
+    int /*nCmdShow*/)
 #else
 int
 main()

@@ -46,6 +46,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define API_IMPORT /* empty */
 #endif
 
-extern API_EXPORT int DynamicLibraryFunction(int);
+#if defined(D_BAM_DYNAMICLIBRARY_BUILD)
+#define DYNAMICLIB_API API_EXPORT
+#else
+#define DYNAMICLIB_API API_IMPORT
+#endif
+
+extern DYNAMICLIB_API int DynamicLibraryFunction(int);
 
 #endif // DYNAMICLIBRARY_H
