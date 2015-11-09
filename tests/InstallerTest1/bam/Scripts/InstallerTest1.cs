@@ -43,13 +43,13 @@ namespace InstallerTest1
             this.CreateCxxSourceContainer("$(packagedir)/source/staticlib/*.cpp");
 
             this.PublicPatch((settings, appliedTo) =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                if (null != compiler)
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
-                    {
-                        compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/staticlib"));
-                    }
-                });
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/staticlib"));
+                }
+            });
         }
     }
 
