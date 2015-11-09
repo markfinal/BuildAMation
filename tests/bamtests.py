@@ -69,5 +69,6 @@ def ConfigureRepository():
                                               linux={"Native":[gcc64]},
                                               osx={"Native":[clang64],"Xcode":[clang64]})
     configs["InstallerTest1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64]},
+                                          linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                           osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
     return configs
