@@ -27,36 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace MingwCommon
 {
-    public sealed class NativeCompilation :
-        ICompilationPolicy
+    [C.RegisterWinResourceCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    public sealed class WinResourceCompiler :
+        C.WinResourceCompilerTool
     {
-        void
-        ICompilationPolicy.Compile(
-            ObjectFile sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString objectFilePath,
-            Bam.Core.Module source)
+        public WinResourceCompiler()
         {
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            if (!System.IO.Directory.Exists(objectFileDir))
+            var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
+
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(0)\bin\windres.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
+            this.Macros.AddVerbatim("objext", ".o");
+
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString("$(0)/bin", new[] { mingwMeta["InstallDir"] as Bam.Core.TokenizedString })));
+        }
+
+        public override Bam.Core.TokenizedString Executable
+        {
+            get
             {
-                System.IO.Directory.CreateDirectory(objectFileDir);
+                return this.Macros["CompilerPath"];
             }
+        }
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            // TODO: Special case, which ought to be handled in settings
-            if (sender is WinResource)
-            {
-                commandLine.Add(System.String.Format("-i {0}", (source as C.SourceFile).InputPath.ParseAndQuoteIfNecessary()));
-                commandLine.Add(System.String.Format("-o {0}", objectFilePath.ParseAndQuoteIfNecessary()));
-                commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
-            }
-
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
+        {
+            var settings = new Mingw.WinResourceCompilerSettings(module);
+            return settings;
         }
     }
 }

@@ -29,34 +29,15 @@
 #endregion // License
 namespace C
 {
-    public sealed class NativeCompilation :
-        ICompilationPolicy
+    public sealed class RegisterWinResourceCompilerAttribute :
+        ToolRegistrationAttribute
     {
-        void
-        ICompilationPolicy.Compile(
-            ObjectFile sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString objectFilePath,
-            Bam.Core.Module source)
-        {
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            if (!System.IO.Directory.Exists(objectFileDir))
-            {
-                System.IO.Directory.CreateDirectory(objectFileDir);
-            }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            // TODO: Special case, which ought to be handled in settings
-            if (sender is WinResource)
-            {
-                commandLine.Add(System.String.Format("-i {0}", (source as C.SourceFile).InputPath.ParseAndQuoteIfNecessary()));
-                commandLine.Add(System.String.Format("-o {0}", objectFilePath.ParseAndQuoteIfNecessary()));
-                commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
-            }
-
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
-        }
+        public RegisterWinResourceCompilerAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform,
+            EBit bitDepth)
+            :
+            base(toolsetName, platform, bitDepth)
+        {}
     }
 }
