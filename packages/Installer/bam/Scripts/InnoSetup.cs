@@ -83,12 +83,15 @@ namespace Installer
             {
                 System.IO.Directory.CreateDirectory(dir);
             }
+            var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine("[Setup]");
-                scriptWriter.WriteLine("AppName={0}", this.GetType().ToString());
-                scriptWriter.WriteLine("AppVersion=1.0");
-                scriptWriter.WriteLine("DefaultDirName={{sd}}\\{0}", this.GetType().ToString());
+                scriptWriter.WriteLine("OutputBaseFilename={0}", outputName.ParseAndQuoteIfNecessary());
+                scriptWriter.WriteLine("OutputDir={0}", this.CreateTokenizedString("@dir($(buildroot)/$(config)/$(0).exe)", outputName).ParseAndQuoteIfNecessary());
+                scriptWriter.WriteLine("AppName={0}", outputName.Parse());
+                scriptWriter.WriteLine("AppVersion={0}", "1.0"); // TODO: get this from the main app: this.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse());
+                scriptWriter.WriteLine("DefaultDirName={{pf}}\\{0}", outputName.Parse());
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");
                 scriptWriter.WriteLine("ArchitecturesInstallIn64BitMode=x64");
                 scriptWriter.WriteLine("Uninstallable=No");
