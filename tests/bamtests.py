@@ -68,4 +68,5 @@ def ConfigureRepository():
     configs["DeltaSettingsTest1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64]},
                                               linux={"Native":[gcc64]},
                                               osx={"Native":[clang64],"Xcode":[clang64]})
+    configs["InstallerTest1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64]})
     return configs

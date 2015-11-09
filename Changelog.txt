@@ -1,3 +1,5 @@
+09-Nov-2015 Added new test, InstallerTest1, to exercise generating installers for all platforms.
+
 09-Nov-2015 Renamed Bam.Core.FileKey to Bam.Core.PathKey, as it is being used for more than just files now.
 
 09-Nov-2015 Updated Bam schema, so that BamAssemblies can use a major, minor, patch attribute, to specify the minimum version supported.
