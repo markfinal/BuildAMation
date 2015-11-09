@@ -15,7 +15,7 @@
     <Package name="XcodeBuilder" />
   </Dependents>
   <BamAssemblies>
-    <BamAssembly name="Bam.Core" />
+    <BamAssembly name="Bam.Core" major="1" minor="0" />
   </BamAssemblies>
   <DotNetAssemblies>
     <DotNetAssembly name="System" requiredTargetFramework="4.0.30319" />

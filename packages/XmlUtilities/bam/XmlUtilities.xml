@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="XmlUtilities" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
   <BamAssemblies>
-    <BamAssembly name="Bam.Core" />
+    <BamAssembly name="Bam.Core" major="1" minor="0" />
   </BamAssemblies>
   <DotNetAssemblies>
     <DotNetAssembly name="System" requiredTargetFramework="4.0.30319" />
