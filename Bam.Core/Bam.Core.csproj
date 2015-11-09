@@ -105,6 +105,7 @@
     <Compile Include="Options\BuildRoot.cs" />
     <Compile Include="Options\CleanFirst.cs" />
     <Compile Include="Options\CreateDebugProject.cs" />
+    <Compile Include="Options\DisableCacheAssembly.cs" />
     <Compile Include="Options\ExplainBuildReason.cs" />
     <Compile Include="Options\ForceDefinitionFileUpdate.cs" />
     <Compile Include="Options\MakePackage.cs" />

@@ -41,11 +41,6 @@ namespace Bam.Core
         State()
         {
             ReadOnly = false;
-
-            AddCategory("System");
-
-
-            Add<bool>("System", "CacheAssembly", true);
         }
 
         [System.Diagnostics.Conditional("DEBUG")]
@@ -167,19 +162,6 @@ namespace Bam.Core
                 throw new Exception("State is marked readonly");
             }
             s[category][key] = value;
-        }
-
-        public static bool CacheAssembly
-        {
-            set
-            {
-                Set("System", "CacheAssembly", value);
-            }
-
-            get
-            {
-                return (bool)Get("System", "CacheAssembly");
-            }
         }
     }
 }

@@ -442,6 +442,8 @@ namespace Bam.Core
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
             string thisHashCode = null;
 
+            var cacheAssembly = !CommandLineProcessor.Evaluate(new DisableCacheAssembly());
+
             string compileReason = null;
             if (Graph.Instance.CompileWithDebugSymbols)
             {
@@ -451,7 +453,7 @@ namespace Bam.Core
             {
                 // can an existing assembly be reused?
                 thisHashCode = GetPackageHash(sourceCode, definitions, Graph.Instance.MasterPackage.BamAssemblies);
-                if (State.CacheAssembly)
+                if (cacheAssembly)
                 {
                     if (System.IO.File.Exists(hashPathName))
                     {
@@ -579,7 +581,7 @@ namespace Bam.Core
 
                 if (!Graph.Instance.CompileWithDebugSymbols)
                 {
-                    if (State.CacheAssembly)
+                    if (cacheAssembly)
                     {
                         using (var writer = new System.IO.StreamWriter(hashPathName))
                         {
