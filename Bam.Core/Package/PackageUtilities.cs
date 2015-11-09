@@ -38,7 +38,7 @@ namespace Bam.Core
         public static void
         MakePackage()
         {
-            var packageDir = State.WorkingDirectory;
+            var packageDir = Graph.Instance.ProcessState.WorkingDirectory;
             var bamDir = System.IO.Path.Combine(packageDir, BamSubFolder);
             if (System.IO.Directory.Exists(bamDir))
             {
@@ -107,8 +107,11 @@ namespace Bam.Core
         {
             get
             {
-                var coreVersion = State.Version;
-                var coreVersionDefine = System.String.Format("BAM_CORE_VERSION_{0}_{1}", coreVersion.Major, coreVersion.Minor);
+                var coreVersion = Graph.Instance.ProcessState.Version;
+                var coreVersionDefine = System.String.Format("BAM_CORE_VERSION_{0}_{1}_{2}",
+                    coreVersion.Major,
+                    coreVersion.Minor,
+                    coreVersion.Revision);
                 return coreVersionDefine;
             }
         }
@@ -163,7 +166,7 @@ namespace Bam.Core
         public static PackageDefinition
         GetMasterPackage()
         {
-            var workingDir = State.WorkingDirectory;
+            var workingDir = Graph.Instance.ProcessState.WorkingDirectory;
             var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
             if (!isWorkingPackageWellDefined)
             {
@@ -491,7 +494,7 @@ namespace Bam.Core
             var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
             providerOptions.Add("CompilerVersion", compilerVersion);
 
-            if (State.RunningMono)
+            if (Graph.Instance.ProcessState.RunningMono)
             {
                 Log.DebugMessage("Compiling assembly for Mono");
             }
@@ -537,7 +540,7 @@ namespace Bam.Core
                     foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
                     {
                         var assemblyFileName = System.String.Format("{0}.dll", assembly);
-                        var assemblyPathName = System.IO.Path.Combine(State.ExecutableDirectory, assemblyFileName);
+                        var assemblyPathName = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assemblyFileName);
                         compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
                     }
 
@@ -548,7 +551,7 @@ namespace Bam.Core
                         compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
                     }
 
-                    if (State.RunningMono)
+                    if (Graph.Instance.ProcessState.RunningMono)
                     {
                         compilerParameters.ReferencedAssemblies.Add("Mono.Posix.dll");
                     }
@@ -614,7 +617,7 @@ namespace Bam.Core
                 byte[] asmBytes = System.IO.File.ReadAllBytes(Graph.Instance.ScriptAssemblyPathname);
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
-                    var debugInfoFilename = State.RunningMono ?
+                    var debugInfoFilename = Graph.Instance.ProcessState.RunningMono ?
                         Graph.Instance.ScriptAssemblyPathname + ".mdb" :
                         System.IO.Path.ChangeExtension(Graph.Instance.ScriptAssemblyPathname, ".pdb");
                     if (System.IO.File.Exists(debugInfoFilename))

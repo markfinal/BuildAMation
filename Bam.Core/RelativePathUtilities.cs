@@ -131,7 +131,7 @@ namespace Bam.Core
         MakeRelativePathAbsoluteToWorkingDir(
             string relativePath)
         {
-            return MakeRelativePathAbsoluteTo(relativePath, State.WorkingDirectory);
+            return MakeRelativePathAbsoluteTo(relativePath, Graph.Instance.ProcessState.WorkingDirectory);
         }
 
         public static string

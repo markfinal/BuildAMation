@@ -77,7 +77,7 @@ namespace Bam
             var argumentTypes = assemblies.SelectMany(s => s.GetTypes()).Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
             try
             {
-                if (Core.PackageUtilities.IsPackageDirectory(Core.State.WorkingDirectory))
+                if (Core.PackageUtilities.IsPackageDirectory(Core.Graph.Instance.ProcessState.WorkingDirectory))
                 {
                     Core.Graph.Instance.BuildRoot = System.IO.Path.GetTempPath();
                     Core.PackageUtilities.IdentifyAllPackages();
@@ -107,7 +107,11 @@ namespace Bam
         {
             Core.EntryPoint.PrintVersion(Core.EVerboseLevel.Info);
             var clrVersion = System.Environment.Version;
-            Core.Log.Message(Core.EVerboseLevel.Info, "Using C# compiler v{0}.{1} with assemblies in {2}", clrVersion.Major, clrVersion.Minor, Core.State.ExecutableDirectory);
+            Core.Log.Message(Core.EVerboseLevel.Info,
+                "Using C# compiler v{0}.{1} with assemblies in {2}",
+                clrVersion.Major,
+                clrVersion.Minor,
+                Core.Graph.Instance.ProcessState.ExecutableDirectory);
         }
     }
 }

@@ -37,89 +37,13 @@ namespace Bam.Core
 
         private static System.Collections.Generic.Dictionary<string, Category> s = new System.Collections.Generic.Dictionary<string, Category>();
 
-        private static void
-        GetAssemblyVersionData(
-            out System.Version assemblyVersion,
-            out string productVersion)
-        {
-            var coreAssembly = System.Reflection.Assembly.GetAssembly(typeof(State));
-            assemblyVersion = coreAssembly.GetName().Version;
-            var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(coreAssembly.Location);
-            var pv = versionInfo.ProductVersion.Trim();
-            if (string.IsNullOrEmpty(pv))
-            {
-                // some Mono implementations only gather the product major/minor/build strings from the assembly
-                productVersion = System.String.Format("{0}.{1}", versionInfo.ProductMajorPart, versionInfo.ProductMinorPart);
-            }
-            else
-            {
-                productVersion = pv;
-            }
-        }
-
-        private static string
-        GetBamDirectory()
-        {
-            var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
-            var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
-            // TODO: would be nice to check in advance if any exist
-            try
-            {
-                return rm.GetString("BamInstallDir");
-            }
-            catch (System.Resources.MissingManifestResourceException)
-            {
-                // this assumes running an executable from the BAM! installation folder
-                return System.IO.Path.GetDirectoryName(bamAssembly.Location);
-            }
-        }
-
-        private static string
-        GetWorkingDirectory()
-        {
-            var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
-            var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
-            // TODO: would be nice to check in advance if any exist
-            try
-            {
-                return rm.GetString("WorkingDir");
-            }
-            catch (System.Resources.MissingManifestResourceException)
-            {
-                return System.IO.Directory.GetCurrentDirectory();
-            }
-        }
-
         static
         State()
         {
             ReadOnly = false;
 
-            System.Version assemblyVersion;
-            string productVersion;
-            GetAssemblyVersionData(out assemblyVersion, out productVersion);
-
-            AddCategory("BuildAMation");
-            Add<bool>("BuildAMation", "RunningMono", System.Type.GetType("Mono.Runtime") != null);
-
-            string assemblyDirectory = GetBamDirectory();
-            Add<string>("BuildAMation", "Directory", assemblyDirectory);
-
-            Add<System.Version>("BuildAMation", "Version", assemblyVersion);
-            Add<string>("BuildAMation", "VersionString", productVersion);
-
-            // TODO: commented out as the TargetFrameworkAttribute was only introduced in CLR 4
-#if false
-            var targetFramework = bamAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
-            var targetFrameworkName = (targetFramework[0] as System.Runtime.Versioning.TargetFrameworkAttribute).FrameworkName;
-            Add<string>("BuildAMation", "TargetFramework", targetFrameworkName);
-            var targetFrameworkNameSplit = targetFrameworkName.Split('=');
-            Add<string>("BuildAMation", "CSharpCompilerVersion", targetFrameworkNameSplit[1]);
-#endif
-
             AddCategory("System");
 
-            Add<string>("System", "WorkingDirectory", GetWorkingDirectory());
 
             Add<bool>("System", "CacheAssembly", true);
         }
@@ -243,64 +167,6 @@ namespace Bam.Core
                 throw new Exception("State is marked readonly");
             }
             s[category][key] = value;
-        }
-
-        public static string ExecutableDirectory
-        {
-            get
-            {
-                return Get("BuildAMation", "Directory") as string;
-            }
-        }
-
-        public static System.Version Version
-        {
-            get
-            {
-                return Get("BuildAMation", "Version") as System.Version;
-            }
-        }
-
-        public static string VersionString
-        {
-            get
-            {
-                return Get("BuildAMation", "VersionString") as string;
-            }
-        }
-
-        public static bool RunningMono
-        {
-            get
-            {
-                return (bool)Get("BuildAMation", "RunningMono");
-            }
-        }
-
-#if false
-        public static string TargetFramework
-        {
-            get
-            {
-                return Get("BuildAMation", "TargetFramework") as string;
-            }
-        }
-
-        public static string CSharpCompilerVersion
-        {
-            get
-            {
-                return Get("BuildAMation", "CSharpCompilerVersion") as string;
-            }
-        }
-#endif
-
-        public static string WorkingDirectory
-        {
-            get
-            {
-                return Get("System", "WorkingDirectory") as string;
-            }
         }
 
         public static bool CacheAssembly

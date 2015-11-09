@@ -36,7 +36,9 @@ namespace Bam.Core
         PrintVersion(
             EVerboseLevel level)
         {
-            Core.Log.Message(level, "BuildAMation (Bam) v{0} (c) Mark Final, 2010-2015. Licensed under BSD 3-clause. See License file.", Core.State.VersionString);
+            Core.Log.Message(level,
+                "BuildAMation (Bam) v{0} (c) Mark Final, 2010-2015. Licensed under BSD 3-clause. See License file.",
+                Core.Graph.Instance.ProcessState.VersionString);
         }
 
         public static void

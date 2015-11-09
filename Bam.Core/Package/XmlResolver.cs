@@ -62,7 +62,7 @@ namespace Bam.Core
             if (relativeUri == "./Schema/BamPackageDefinitionV1.xsd")
             {
                 // we've got a relative path match, so build an absolute path from the executable directory
-                var absolutePath = System.IO.Path.Combine(State.ExecutableDirectory, relativeUri);
+                var absolutePath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, relativeUri);
                 return new System.Uri(absolutePath);
             }
 

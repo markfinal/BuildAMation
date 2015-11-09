@@ -41,6 +41,7 @@ namespace Bam.Core
         static Graph()
         {
             Instance = new Graph();
+            Instance.Initialize();
         }
 
         public static Graph Instance
@@ -49,8 +50,11 @@ namespace Bam.Core
             private set;
         }
 
-        private Graph()
+        private void
+        Initialize()
         {
+            this.ProcessState = new BamState();
+
             OSUtilities.SetupPlatform();
 
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
@@ -63,7 +67,9 @@ namespace Bam.Core
             this.MetaData = null;
 
             this.PackageRepositories = new StringArray();
-            var primaryPackageRepo = System.IO.Path.Combine(System.IO.Directory.GetParent(System.IO.Directory.GetParent(State.ExecutableDirectory).FullName).FullName, "packages");
+            var primaryPackageRepo = System.IO.Path.Combine(
+                System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
+                "packages");
             this.PackageRepositories.AddUnique(primaryPackageRepo);
 
             this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new ForceDefinitionFileUpdate());
@@ -523,6 +529,12 @@ namespace Bam.Core
         {
             get;
             set;
+        }
+
+        public BamState ProcessState
+        {
+            get;
+            private set;
         }
     }
 }

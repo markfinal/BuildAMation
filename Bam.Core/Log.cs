@@ -44,7 +44,7 @@ namespace Bam.Core
             string messageValue,
             bool isError)
         {
-            if (System.Diagnostics.Debugger.IsAttached && !State.RunningMono)
+            if (System.Diagnostics.Debugger.IsAttached && !Graph.Instance.ProcessState.RunningMono)
             {
                 // In MonoDevelop, this goes nowhere that I can find...
                 System.Diagnostics.Debug.WriteLine(messageValue);

@@ -91,7 +91,8 @@ namespace Bam.Core
             AddResHeader(resourceFile, "reader", "System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
             AddResHeader(resourceFile, "writer", "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", root);
 
-            AddData(resourceFile, "BamInstallDir", State.ExecutableDirectory, root);
+            AddData(resourceFile, "BamInstallDir", Core.Graph.Instance.ProcessState.ExecutableDirectory, root);
+            // TODO: could be Core.Graph.Instance.ProcessState.WorkingDirectory?
             AddData(resourceFile, "WorkingDir", masterPackage.GetPackageDirectory(), root);
 
             var xmlWriterSettings = new System.Xml.XmlWriterSettings();

@@ -36,7 +36,7 @@ namespace Bam.Core
         {
             get
             {
-                if (State.RunningMono)
+                if (Graph.Instance.ProcessState.RunningMono)
                 {
                     // TODO: System.Environment.GetEnvironmentVariable("HOSTTYPE") returns null instead of something like "x86_64"
                     // TODO: this is a hack and a big assumption that you're not running a 32-bit OS on a 64-bit processor

@@ -64,6 +64,7 @@
     <Compile Include="Attributes\PlatformFilterAttribute.cs" />
     <Compile Include="Attributes\SettingsExtensionsAttribute.cs" />
     <Compile Include="Attributes\SettingsPrecedenceAttribute.cs" />
+    <Compile Include="BamState.cs" />
     <Compile Include="BuildModeUtilities.cs" />
     <Compile Include="CommandLineProcessor.cs" />
     <Compile Include="Configuration.cs" />

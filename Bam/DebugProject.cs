@@ -288,13 +288,13 @@ namespace Bam
             {
                 CreateReference(desc.Name, references, targetframework: desc.RequiredTargetFramework);
             }
-            if (Core.State.RunningMono)
+            if (Core.Graph.Instance.ProcessState.RunningMono)
             {
                 CreateReference("Mono.Posix", references);
             }
             foreach (var assembly in masterPackage.BamAssemblies)
             {
-                var assemblyPath = System.IO.Path.Combine(Core.State.ExecutableDirectory, assembly) + ".dll";
+                var assemblyPath = System.IO.Path.Combine(Core.Graph.Instance.ProcessState.ExecutableDirectory, assembly) + ".dll";
                 CreateReference(assembly, references, hintpath: assemblyPath);
             }
 
