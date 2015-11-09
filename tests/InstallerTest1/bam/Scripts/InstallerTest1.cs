@@ -101,6 +101,16 @@ namespace InstallerTest1
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
+
+            this.PrivatePatch(settings =>
+                {
+                    var gccCommon = settings as GccCommon.ICommonLinkerSettings;
+                    if (null != gccCommon)
+                    {
+                        gccCommon.CanUseOrigin = true;
+                        gccCommon.RPath.AddUnique("$ORIGIN");
+                    }
+                });
         }
     }
 
