@@ -176,6 +176,8 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("InnoSetupInstaller");
+
             this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
         }
     }
@@ -189,6 +191,8 @@ namespace InstallerTest1
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("NSISInstaller");
 
             this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
         }
@@ -204,6 +208,8 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("TarBallInstaller");
+
             this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
         }
     }
@@ -217,6 +223,8 @@ namespace InstallerTest1
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("DiskImageInstaller");
 
             this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
         }
@@ -232,6 +240,8 @@ namespace InstallerTest1
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("SymbolsTarBall");
 
             this.SourceFolder<ExecutableDebugSymbols>(Publisher.DebugSymbolCollation.Key);
         }
