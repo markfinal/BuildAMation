@@ -118,7 +118,7 @@ namespace Publisher
                     this,
                     referenceFilePath,
                     value.SubDirectory,
-                    this.Macros["StrippedRoot"]);
+                    this.GeneratedPaths[Key]);
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1))",
                     destinationDirectory,
                     value.GeneratedPaths[CollatedObject.Key]));

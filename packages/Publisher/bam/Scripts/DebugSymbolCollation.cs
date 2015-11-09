@@ -34,6 +34,13 @@ namespace Publisher
     public abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Debug Symbol Collation Root");
+
+        protected DebugSymbolCollation()
+        {
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+        }
+
         public override void
         Evaluate()
         {
@@ -59,8 +66,6 @@ namespace Publisher
         {
             var copyPDBModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
             {
-                module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
-
                 Bam.Core.TokenizedString referenceFilePath = null;
                 if (collatedFile.Reference != null)
                 {
@@ -77,7 +82,7 @@ namespace Publisher
                     this,
                     referenceFilePath,
                     collatedFile.SubDirectory,
-                    module.Macros["DebugSymbolRoot"]);
+                    this.GeneratedPaths[Key]);
             });
             this.DependsOn(copyPDBModule);
 
@@ -102,7 +107,6 @@ namespace Publisher
         {
             var createDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
             {
-                module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
                 module.ReferenceMap = referenceMap;
             });
             this.DependsOn(createDebugSymbols);
@@ -125,7 +129,6 @@ namespace Publisher
         {
             var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
             {
-                module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
                 module.ReferenceMap = referenceMap;
             });
             linkDebugSymbols.SourceModule = source;
@@ -144,7 +147,6 @@ namespace Publisher
         {
             var createDebugSymbols = Bam.Core.Module.Create<DSymUtilModule>(preInitCallback: module =>
             {
-                module.Macros.Add("DebugSymbolRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
                 module.ReferenceMap = referenceMap;
             });
             this.DependsOn(createDebugSymbols);

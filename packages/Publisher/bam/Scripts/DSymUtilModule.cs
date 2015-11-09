@@ -112,7 +112,7 @@ namespace Publisher
                     this,
                     referenceFilePath,
                     value.SubDirectory,
-                    this.Macros["DebugSymbolRoot"]);
+                    this.GeneratedPaths[Key]);
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).dSYM",
                     destinationDirectory,
                     value.GeneratedPaths[CollatedObject.Key]));

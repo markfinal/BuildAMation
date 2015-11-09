@@ -34,6 +34,13 @@ namespace Publisher
     public abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Collation Root");
+
+        protected StrippedBinaryCollation()
+        {
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+        }
+
         public override void
         Evaluate()
         {
@@ -66,7 +73,6 @@ namespace Publisher
         {
             var stripBinary = Bam.Core.Module.Create<StripModule>(preInitCallback: module =>
             {
-                module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
                 module.ReferenceMap = referenceMap;
             });
             this.DependsOn(stripBinary);
@@ -90,8 +96,6 @@ namespace Publisher
         {
             var clonedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
             {
-                module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
-
                 Bam.Core.TokenizedString referenceFilePath = null;
                 if (collatedFile.Reference != null)
                 {
@@ -109,7 +113,7 @@ namespace Publisher
                     this,
                     referenceFilePath,
                     collatedFile.SubDirectory,
-                    module.Macros["StrippedRoot"]);
+                    this.GeneratedPaths[Key]);
             });
             this.DependsOn(clonedFile);
 
@@ -131,8 +135,6 @@ namespace Publisher
         {
             var clonedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
             {
-                module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
-
                 if (!referenceMap.ContainsKey(collatedDir.Reference))
                 {
                     throw new Bam.Core.Exception("Unable to find CollatedDirectory reference to {0} in the reference map", collatedDir.Reference.SourceModule.ToString());
@@ -161,8 +163,6 @@ namespace Publisher
         {
             var clonedSymLink = Bam.Core.Module.Create<CollatedSymbolicLink>(preInitCallback: module =>
                 {
-                    module.Macros.Add("StrippedRoot", module.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)-$(config)"));
-
                     if (!referenceMap.ContainsKey(collatedSymlink.Reference))
                     {
                         throw new Bam.Core.Exception("Unable to find CollatedSymbolicLink reference to {0} in the reference map", collatedSymlink.Reference.SourceModule.ToString());
