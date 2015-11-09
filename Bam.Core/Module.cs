@@ -74,6 +74,7 @@ namespace Bam.Core
             this.Macros.AddVerbatim("packagename", packageDefinition.Name);
             this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
             this.Macros.AddVerbatim("modulename", this.GetType().Name);
+            this.Macros.Add("OutputName", this.Macros["modulename"]);
 
             this.OwningRank = null;
             this.Tool = null;
