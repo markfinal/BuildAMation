@@ -87,7 +87,7 @@ namespace C
 
         private static Bam.Core.TypeArray
         SharedInterfaces(
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles)
+            System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles)
         {
             System.Collections.Generic.IEnumerable<System.Type> sharedInterfaces = null;
             foreach (var input in objectFiles)
@@ -107,7 +107,7 @@ namespace C
 
         public static SettingsBase
         SharedSettings(
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles,
             System.Type convertExtensionClassType,
             System.Type conversionInterfaceType,
             Bam.Core.TypeArray convertParameterTypes)
@@ -218,7 +218,7 @@ namespace C
             // now that we have an instance of the shared settings type, calculate the values of the individual settings across all object files
             // for all shared interfaces
             var commonSettings = System.Activator.CreateInstance(sharedSettingsType) as SettingsBase;
-            commonSettings.InitializeAllInterfaces(objectFiles[0], true, false);
+            commonSettings.InitializeAllInterfaces(objectFiles.First(), true, false);
             foreach (var i in sharedInterfaces)
             {
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
@@ -245,11 +245,11 @@ namespace C
                         i.ToString());
                 }
 
-                var objectFileCount = objectFiles.Count;
-                cloneSettingsMethod.Invoke(null, new[] { commonSettings, objectFiles[0].Settings });
+                var objectFileCount = objectFiles.Count();
+                cloneSettingsMethod.Invoke(null, new[] { commonSettings, objectFiles.First().Settings });
                 for (int objIndex = 1; objIndex < objectFileCount; ++objIndex)
                 {
-                    intersectSettingsMethod.Invoke(null, new[] { commonSettings, objectFiles[objIndex].Settings });
+                    intersectSettingsMethod.Invoke(null, new[] { commonSettings, objectFiles.ElementAt(objIndex).Settings });
                 }
             }
             return commonSettings;
