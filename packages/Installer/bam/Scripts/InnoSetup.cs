@@ -173,13 +173,13 @@ namespace Installer
             this.ScriptModule.AddPath(dependent, key);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // do nothing
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -189,7 +189,7 @@ namespace Installer
             }
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

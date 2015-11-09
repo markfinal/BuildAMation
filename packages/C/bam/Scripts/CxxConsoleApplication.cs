@@ -51,7 +51,7 @@ namespace C.Cxx
             return source;
         }
 
-        public virtual C.ObjCxx.ObjectFileCollection
+        public C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,

@@ -114,7 +114,7 @@ namespace C.Cxx
             }
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             ExecutionContext context)
         {
@@ -133,7 +133,7 @@ namespace C.Cxx
             }
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

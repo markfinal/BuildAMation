@@ -557,13 +557,13 @@ namespace Publisher
             this.Requires(change);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // TODO
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
@@ -574,7 +574,7 @@ namespace Publisher
             this.Policy.Collate(this, context);
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

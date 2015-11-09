@@ -41,19 +41,19 @@ namespace Publisher
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             // TODO
         }
 
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
         }
 
-        protected override void
+        protected sealed override void
         GetExecutionPolicy(
             string mode)
         {

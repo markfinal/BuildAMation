@@ -80,7 +80,7 @@ namespace C
             return source;
         }
 
-        public virtual C.ObjC.ObjectFileCollection
+        public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
@@ -229,7 +229,7 @@ namespace C
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
 
-        public override void
+        public sealed override void
         Evaluate()
         {
             this.ReasonToExecute = null;
