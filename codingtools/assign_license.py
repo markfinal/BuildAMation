@@ -88,8 +88,6 @@ def processPath(path, extensionList):
         assign_license(path)
     else:
       for root, dirs, files in os.walk(path):
-          for dir in dirs:
-              processPath(os.path.join(root, dir), extensionList)
           for file in files:
               fileExt = os.path.splitext(file)[1]
               if fileExt in extensionList:
