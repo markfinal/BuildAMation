@@ -97,10 +97,12 @@ namespace C
                 }
             }
 
+            // TODO: if there were many resource files, this could also have a common settings group? Not sure if VS supports this
+            // and it's not as likely to have many resource files, as it would have many source files
             var resourceObjectFiles = objectFiles.Where(item => item is WinResource);
             foreach (var resObj in resourceObjectFiles)
             {
-                config.AddResourceFile(resObj as WinResource);
+                config.AddResourceFile(resObj as WinResource, resObj.Settings);
             }
 
             foreach (var input in libraries)

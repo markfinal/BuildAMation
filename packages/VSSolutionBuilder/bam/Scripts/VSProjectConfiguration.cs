@@ -328,8 +328,14 @@ namespace VSSolutionBuilder
 
         public void
         AddResourceFile(
-            C.WinResource resource)
+            C.WinResource resource,
+            Bam.Core.Settings patchSettings)
         {
+            var settings = resource.MetaData as VSSettingsGroup;
+            if (null != patchSettings)
+            {
+                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(resource, settings, condition: this.ConditionText);
+            }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
             this.Project.AddResourceFile(resourceGroup);
         }

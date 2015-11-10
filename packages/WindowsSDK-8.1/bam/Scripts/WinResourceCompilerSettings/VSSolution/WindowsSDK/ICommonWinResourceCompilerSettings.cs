@@ -29,46 +29,16 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        ICommonWinResourceCompilerSettings
+    public static partial class VSSolutionImplementation
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
+        public static void
+        Convert(
+            this ICommonWinResourceCompilerSettings settings,
             Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
-            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool ICommonWinResourceCompilerSettings.NoLogo
-        {
-            get;
-            set;
+            vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo, condition);
         }
     }
 }
