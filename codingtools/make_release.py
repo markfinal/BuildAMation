@@ -11,7 +11,6 @@ import subprocess
 import sys
 import tarfile
 import tempfile
-import time
 import zipfile
 
 filesToDelete=[\
@@ -53,9 +52,6 @@ def CloneBuildAMation(dir, version):
 
 
 def CleanClone():
-    print >>sys.stdout, "Waited before cleaning"
-    sys.stdout.flush()
-    time.sleep(5)
     for file in filesToDelete:
         print >>sys.stdout, "Deleting file %s" % file
         sys.stdout.flush()
@@ -172,9 +168,6 @@ if __name__ == "__main__":
         print >>sys.stdout, "Failed because %s" % str(e)
         sys.stdout.flush()
     finally:
-        print >>sys.stdout, "Sleeping"
-        sys.stdout.flush()
-        time.sleep(5)
         print >>sys.stdout, "Deleting clone"
         sys.stdout.flush()
         #shutil.rmtree(cloningDir)
