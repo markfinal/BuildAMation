@@ -36,6 +36,10 @@ namespace WindowsSDK
             this C.IAdditionalSettings settings,
             Bam.Core.StringArray commandLine)
         {
+            if (null != settings.AdditionalSettings)
+            {
+                commandLine.AddRange(settings.AdditionalSettings);
+            }
         }
     }
 }
