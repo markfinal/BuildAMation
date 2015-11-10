@@ -1,3 +1,5 @@
+11-Nov-2015 ======== Version 1.0.0b1 Release ========
+
 10-Nov-2015 Fixes #30. Added tar settings for compression. Supporting gzip, bzip and lzma.
 
 10-Nov-2014 Added post-function @removetrailingseparator() to TokenizedString, to trim any trailing slashes from paths.
