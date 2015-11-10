@@ -80,6 +80,7 @@ namespace Publisher
             if (null != debugSymbols)
             {
                 stripBinary.DebugSymbolsModule = debugSymbols;
+                stripBinary.Requires(debugSymbols);
             }
             if (collatedFile.Reference == null)
             {
