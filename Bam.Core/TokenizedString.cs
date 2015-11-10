@@ -49,13 +49,12 @@ namespace Bam.Core
         private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
 
         // pre-functions look like: #functionname(expression)
-        // note: this is using balancing groups in order to handle nested function calls
+        // note: this is using balancing groups in order to handle nested function calls, or any other instances of parentheses in paths (e.g. Windows 'Program Files (x86)')
         private static readonly string PreFunctionRegExPattern = @"(#(?<func>[a-z]+)\((?<expression>[^\(\)]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))";
 
         // post-functions look like: @functionname(expression)
-        private static readonly string PostFunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^()]*)\))";
-        private static readonly string PostFunctionPrefix = @"@";
-        private static readonly string PostFunctionSuffix = @")";
+        // note: this is using balancing groups in order to handle nested function calls, or any other instances of parentheses in paths (e.g. Windows 'Program Files (x86)')
+        private static readonly string PostFunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^\(\)]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))";
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
@@ -445,41 +444,26 @@ namespace Bam.Core
         EvaluatePostFunctions(
             string sourceExpression)
         {
-            // function calls may be nested, so the reg ex gets the inner most calls
-            // and so iterate until all functions have been found
-            for (;;)
+            var matches = System.Text.RegularExpressions.Regex.Matches(sourceExpression, PostFunctionRegExPattern);
+            if (0 == matches.Count)
             {
-                var tokenized = SplitIntoTokens(sourceExpression, PostFunctionRegExPattern);
-                var matchCount = tokenized.Count();
-                if (1 == matchCount)
-                {
-                    break;
-                }
-                // triplets of matches (entire expression, function name, argument)
-                int matchIndex = 0;
-                while (matchIndex < matchCount)
-                {
-                    var matchedExpression = tokenized.ElementAt(matchIndex++);
-                    // does the first match constitute a function call?
-                    if (!matchedExpression.StartsWith(PostFunctionPrefix))
-                    {
-                        continue;
-                    }
-                    if (!matchedExpression.EndsWith(PostFunctionSuffix))
-                    {
-                        // nested function call - this is the outer call, ignore
-                        continue;
-                    }
-
-                    // if it was a function call, the next match is the function name
-                    var functionName = tokenized.ElementAt(matchIndex++);
-                    // and after that is the argument expression
-                    var expression = tokenized.ElementAt(matchIndex++);
-                    var expandedExpression = this.FunctionExpression(functionName, expression);
-                    sourceExpression = sourceExpression.Replace(matchedExpression, expandedExpression);
-                }
+                return sourceExpression;
             }
-            return sourceExpression;
+            var modifiedString = sourceExpression;
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                var functionName = match.Groups["func"].Value;
+                // this correctly obtains the expression when nested functions are present
+                var expressionText = new System.Text.StringBuilder();
+                foreach (System.Text.RegularExpressions.Capture capture in match.Groups["expression"].Captures)
+                {
+                    expressionText.Append(capture.Value);
+                }
+                var expression = this.EvaluatePostFunctions(expressionText.ToString());
+                var expandedExpression = this.FunctionExpression(functionName, expression);
+                modifiedString = modifiedString.Replace(match.Value, expandedExpression);
+            }
+            return modifiedString;
         }
 
         private string
