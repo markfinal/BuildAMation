@@ -29,58 +29,46 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class WindowsSDK :
-        C.CSDKModule
+    public class MetaData :
+        Bam.Core.PackageMetaData
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+
+        public MetaData()
         {
-            base.Init(parent);
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("WindowsSDK");
-            var installDir = meta["InstallDir"] as Bam.Core.TokenizedString;
-            this.PublicPatch((settings, appliedTo) =>
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                var compilation = settings as C.ICommonCompilerSettings;
-                if (null != compilation)
+                return;
+            }
+
+            string installPath;
+            using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Windows Kits\Installed Roots"))
+            {
+                if (null == key)
                 {
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir));
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir));
+                    throw new Bam.Core.Exception("Windows SDKs were not installed");
                 }
 
-                var linking = settings as C.ICommonLinkerSettings;
-                if (null != linking)
-                {
-                    if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
-                    {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x86", installDir));
-                    }
-                    else
-                    {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x64", installDir));
-                    }
-                }
-            });
+                installPath = key.GetValue("KitsRoot81") as string;
+                Bam.Core.Log.DebugMessage("Windows 8.1 SDK installation folder is {0}", installPath);
+            }
+
+            this.Meta["InstallDir"] = Bam.Core.TokenizedString.CreateVerbatim(installPath);
         }
 
-        public override void
-        Evaluate()
+        public override object this[string index]
         {
-            this.ReasonToExecute = null;
+            get
+            {
+                return this.Meta[index];
+            }
         }
 
-        protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
+        public override bool
+        Contains(
+            string index)
         {
-            // do nothing
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
+            return this.Meta.ContainsKey(index);
         }
     }
 }
