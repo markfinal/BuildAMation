@@ -510,6 +510,9 @@ namespace Bam.Core
                         return changed;
                     }
 
+                case "removetrailingseperator":
+                    return argument.TrimEnd(System.IO.Path.DirectorySeparatorChar);
+
                 default:
                     throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
             }

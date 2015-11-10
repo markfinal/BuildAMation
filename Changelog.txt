@@ -1,3 +1,5 @@
+10-Nov-2014 Added post-function @removetrailingseparator() to TokenizedString, to trim any trailing slashes from paths.
+
 10-Nov-2015 Fixes #4. Added support for Windows resources to be compiled for linking into binaries. Use CreateWinResourceContainer(<path>), similar to normal source files. Support available in Native, MakeFile and VSSolution build modes.
 
 09-Nov-2015 Fixes #17. Fixes #31. Installers now write to configuration specific directories, using names based on their modules. Also, allowed more than one of each type to be created, which was limiting because of their use of another module to generate scripts.
