@@ -27,44 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon.DefaultSettings
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        MingwCommon.ICommonWinResourceCompilerSettings
+    public static partial class DefaultSettingsExtensions
     {
-        public WinResourceCompilerSettings(
+        public static void
+        Defaults(
+            this ICommonWinResourceCompilerSettings settings,
             Bam.Core.Module module)
         {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonWinResourceCompilerSettings.UseTempFile
-        {
-            get;
-            set;
+            settings.UseTempFile = true; // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
         }
     }
 }

@@ -27,41 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        MingwCommon.ICommonWinResourceCompilerSettings
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonWinResourceCompilerSettings :
+        Bam.Core.ISettingsBase
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonWinResourceCompilerSettings.UseTempFile
+        bool? UseTempFile
         {
             get;
             set;

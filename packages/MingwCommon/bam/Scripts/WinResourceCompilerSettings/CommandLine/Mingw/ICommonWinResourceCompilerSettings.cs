@@ -27,44 +27,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        MingwCommon.ICommonWinResourceCompilerSettings
+    public static partial class CommandLineImplementation
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this ICommonWinResourceCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
-        }
+            if (settings.UseTempFile.HasValue)
+            {
+                if (settings.UseTempFile.Value)
+                {
+                    commandLine.Add("--use-temp-file");
+                }
+                else
+                {
+                    commandLine.Add("--no-use-temp-file");
+                }
+            }
 
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonWinResourceCompilerSettings.UseTempFile
-        {
-            get;
-            set;
+            var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
+            commandLine.Add(System.String.Format("-o {0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
         }
     }
 }
