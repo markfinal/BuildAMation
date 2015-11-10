@@ -41,7 +41,7 @@ namespace Publisher
         private Bam.Core.Module RealSourceModule = null;
         private Bam.Core.TokenizedString SubDirectoryPath = null;
         private CollatedFile ReferenceFile = null;
-        private Bam.Core.TokenizedString RealSourcePath;
+        protected Bam.Core.TokenizedString RealSourcePath;
 
         public CollatedObject()
         {
@@ -125,7 +125,7 @@ namespace Publisher
             }
         }
 
-        public TokenizedString SourcePath
+        public virtual TokenizedString SourcePath
         {
             get
             {
