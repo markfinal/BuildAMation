@@ -38,7 +38,10 @@ namespace WindowsSDK
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
-            vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo, condition);
+            if (settings.NoLogo.HasValue)
+            {
+                vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
+            }
         }
     }
 }

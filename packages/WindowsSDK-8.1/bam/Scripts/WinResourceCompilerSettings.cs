@@ -59,13 +59,19 @@ namespace WindowsSDK
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 
+        bool? C.ICommonWinResourceCompilerSettings.Verbose
+        {
+            get;
+            set;
+        }
+
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-        bool ICommonWinResourceCompilerSettings.NoLogo
+        bool? ICommonWinResourceCompilerSettings.NoLogo
         {
             get;
             set;

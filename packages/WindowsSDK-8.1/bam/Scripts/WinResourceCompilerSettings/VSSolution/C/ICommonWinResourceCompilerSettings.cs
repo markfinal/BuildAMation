@@ -38,6 +38,10 @@ namespace WindowsSDK
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
+            if (settings.Verbose.HasValue)
+            {
+                vsSettingsGroup.AddSetting("ShowProgress", settings.Verbose.Value, condition);
+            }
             vsSettingsGroup.AddSetting("ResourceOutputFileName", module.GeneratedPaths[C.ObjectFile.Key].Parse(), condition);
         }
     }

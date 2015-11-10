@@ -34,7 +34,7 @@ namespace WindowsSDK
     public interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
-        bool NoLogo
+        bool? NoLogo
         {
             get;
             set;

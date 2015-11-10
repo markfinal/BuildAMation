@@ -36,6 +36,11 @@ namespace WindowsSDK
             this C.ICommonWinResourceCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
+            if (settings.Verbose.HasValue && settings.Verbose.Value)
+            {
+                commandLine.Add("-v");
+            }
+
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
             commandLine.Add(System.String.Format("-Fo{0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
         }

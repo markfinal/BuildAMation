@@ -48,6 +48,12 @@ namespace Mingw
             CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
         }
 
+        bool? C.ICommonWinResourceCompilerSettings.Verbose
+        {
+            get;
+            set;
+        }
+
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;

@@ -32,5 +32,11 @@ namespace C
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
-    {}
+    {
+        bool? Verbose
+        {
+            get;
+            set;
+        }
+    }
 }

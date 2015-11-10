@@ -36,6 +36,7 @@ namespace C.DefaultSettings
             this C.ICommonWinResourceCompilerSettings settings,
             Bam.Core.Module module)
         {
+            settings.Verbose = true;
         }
     }
 }

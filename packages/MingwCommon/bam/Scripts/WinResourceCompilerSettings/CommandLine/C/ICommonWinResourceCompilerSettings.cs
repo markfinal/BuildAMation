@@ -36,6 +36,11 @@ namespace MingwCommon
             this C.ICommonWinResourceCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
+            if (settings.Verbose.HasValue && settings.Verbose.Value)
+            {
+                commandLine.Add("-v");
+            }
+
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
             commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
             commandLine.Add(System.String.Format("-o {0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));

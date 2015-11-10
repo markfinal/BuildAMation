@@ -36,7 +36,7 @@ namespace WindowsSDK
             this ICommonWinResourceCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            if (settings.NoLogo)
+            if (settings.NoLogo.HasValue && settings.NoLogo.Value)
             {
                 commandLine.Add("-NOLOGO");
             }
