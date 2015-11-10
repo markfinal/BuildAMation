@@ -52,9 +52,9 @@ namespace Publisher
 
             rule.AddShellCommand(System.String.Format("{0} {1} -o {2} {3}",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                commandLine.ToString(' ')),
+                commandLine.ToString(' '),
                 copiedPath.Parse(),
-                originalPath.Parse());
+                originalPath.Parse()));
         }
     }
 }
