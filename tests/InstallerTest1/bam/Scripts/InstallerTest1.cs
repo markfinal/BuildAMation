@@ -211,6 +211,12 @@ namespace InstallerTest1
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("TarBallInstaller");
 
             this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+
+            this.PrivatePatch(settings =>
+                {
+                    var tarSettings = settings as Installer.ITarBallSettings;
+                    tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
+                });
         }
     }
 
@@ -244,6 +250,12 @@ namespace InstallerTest1
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("SymbolsTarBall");
 
             this.SourceFolder<ExecutableDebugSymbols>(Publisher.DebugSymbolCollation.Key);
+
+            this.PrivatePatch(settings =>
+                {
+                    var tarSettings = settings as Installer.ITarBallSettings;
+                    tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
+                });
         }
     }
 }

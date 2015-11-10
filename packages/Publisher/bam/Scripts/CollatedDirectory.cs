@@ -39,5 +39,28 @@ namespace Publisher
             // always copy currently
             //this.ReasonToExecute = null;
         }
+
+        public override TokenizedString SourcePath
+        {
+            get
+            {
+                return this.RealSourcePath;
+            }
+
+            set
+            {
+                this.RealSourcePath.Aliased(value);
+                // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+                // therefore don't add it back here for Windows
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    this.GeneratedPaths[Key] = this.CreateTokenizedString("@removetrailingseperator($(CopyDir))");
+                }
+                else
+                {
+                    this.GeneratedPaths[Key] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
+                }
+            }
+        }
     }
 }

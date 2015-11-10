@@ -35,6 +35,7 @@ namespace Publisher
         Bam.Core.Module
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Collation Root");
+        private IStrippedBinaryCollationPolicy Policy = null;
 
         protected StrippedBinaryCollation()
         {
@@ -51,12 +52,26 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.CollateStrippedBinaries(this, context);
         }
 
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
+            switch (mode)
+            {
+            case "MakeFile":
+                {
+                    var className = "Publisher." + mode + "StrippedBinaryCollation";
+                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IStrippedBinaryCollationPolicy>.Create(className);
+                }
+                break;
+            }
         }
 
         private Bam.Core.PathKey ReferenceKey
@@ -80,6 +95,7 @@ namespace Publisher
             if (null != debugSymbols)
             {
                 stripBinary.DebugSymbolsModule = debugSymbols;
+                stripBinary.Requires(debugSymbols);
             }
             if (collatedFile.Reference == null)
             {
@@ -117,8 +133,8 @@ namespace Publisher
             });
             this.DependsOn(clonedFile);
 
-            clonedFile.SourceModule = collatedFile.SourceModule;
-            clonedFile.SourcePath = collatedFile.SourcePath;
+            clonedFile.SourceModule = collatedFile;
+            clonedFile.SourcePath = collatedFile.GeneratedPaths[CollatedObject.Key];
             clonedFile.SubDirectory = collatedFile.SubDirectory;
 
             if (collatedFile.Reference == null)
@@ -151,8 +167,8 @@ namespace Publisher
             });
             this.DependsOn(clonedDir);
 
-            clonedDir.SourceModule = collatedDir.SourceModule;
-            clonedDir.SourcePath = collatedDir.SourcePath;
+            clonedDir.SourceModule = collatedDir;
+            clonedDir.SourcePath = collatedDir.GeneratedPaths[CollatedObject.Key];
             clonedDir.SubDirectory = collatedDir.SubDirectory;
         }
 
@@ -178,8 +194,8 @@ namespace Publisher
                 });
             this.DependsOn(clonedSymLink);
 
-            clonedSymLink.SourceModule = collatedSymlink.SourceModule;
-            clonedSymLink.SourcePath = collatedSymlink.SourcePath;
+            clonedSymLink.SourceModule = collatedSymlink;
+            clonedSymLink.SourcePath = collatedSymlink.GeneratedPaths[CollatedObject.Key];
             clonedSymLink.SubDirectory = collatedSymlink.SubDirectory;
             clonedSymLink.AssignLinkTarget(collatedSymlink.Macros["LinkTarget"]);
         }
@@ -222,8 +238,7 @@ namespace Publisher
                         continue;
                     }
 
-                    var moduleIsPrebuilt = (source.GetType().GetCustomAttributes(typeof(C.PrebuiltAttribute), true).Length > 0);
-                    if (moduleIsPrebuilt)
+                    if ((source as C.CModule).IsPrebuilt)
                     {
                         this.CloneFile(req, referenceMap);
                         continue;

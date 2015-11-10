@@ -39,6 +39,7 @@ namespace C
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Cxx_Linkers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveC_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveCxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> WinResourceCompilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static string UserToolchainOverride = null;
 
         private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
@@ -95,6 +96,7 @@ namespace C
             FindTools<RegisterCxxLinkerAttribute, LinkerTool>(Cxx_Linkers);
             FindTools<RegisterObjectiveCCompilerAttribute, CompilerTool>(ObjectiveC_Compilers);
             FindTools<RegisterObjectiveCxxCompilerAttribute, CompilerTool>(ObjectiveCxx_Compilers);
+            FindTools<RegisterWinResourceCompilerAttribute, WinResourceCompilerTool>(WinResourceCompilers);
         }
 
         private static ToolType
@@ -193,6 +195,13 @@ namespace C
             EBit bitDepth)
         {
             return GetTool<CompilerTool>(ObjectiveCxx_Compilers, bitDepth, "Objective C++ compiler");
+        }
+
+        public static WinResourceCompilerTool
+        WinResource_Compiler(
+            EBit bitDepth)
+        {
+            return GetTool<WinResourceCompilerTool>(WinResourceCompilers, bitDepth, "Windows resource compiler");
         }
     }
 }

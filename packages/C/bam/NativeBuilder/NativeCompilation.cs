@@ -39,15 +39,15 @@ namespace C
             Bam.Core.TokenizedString objectFilePath,
             Bam.Core.Module source)
         {
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
             if (!System.IO.Directory.Exists(objectFileDir))
             {
                 System.IO.Directory.CreateDirectory(objectFileDir);
             }
 
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+            commandLine.Add(source.GeneratedPaths[SourceFile.Key].ParseAndQuoteIfNecessary());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

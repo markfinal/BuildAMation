@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #error MAIN_C has been defined
 #endif
 
-#ifndef D_BAM_CONFIGURATION_OPTIMIZED
+#if !(defined(D_BAM_CONFIGURATION_OPTIMIZED) || defined(D_BAM_CONFIGURATION_PROFILE))
 #error This file can only be compiled in BuildAMation optimized configuration builds
 #endif
 

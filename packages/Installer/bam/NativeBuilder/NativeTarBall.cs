@@ -47,14 +47,16 @@ namespace Installer
                 System.IO.Directory.CreateDirectory(tarDir);
             }
 
-            var args = new Bam.Core.StringArray();
-            args.Add("-c");
-            args.Add("-v");
-            args.Add("-T");
-            args.Add(scriptPath.Parse());
-            args.Add("-f");
-            args.Add(tarPath);
-            CommandLineProcessor.Processor.Execute(context, compiler, args);
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+
+            commandLine.Add("-c");
+            commandLine.Add("-v");
+            commandLine.Add("-T");
+            commandLine.Add(scriptPath.Parse());
+            commandLine.Add("-f");
+            commandLine.Add(tarPath);
+            CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
         }
     }
 }

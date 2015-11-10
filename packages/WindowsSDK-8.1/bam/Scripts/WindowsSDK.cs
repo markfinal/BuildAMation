@@ -32,28 +32,20 @@ namespace WindowsSDK
     public sealed class WindowsSDK :
         C.CSDKModule
     {
-        public WindowsSDK()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            string installPath;
-            using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Windows Kits\Installed Roots"))
-            {
-                if (null == key)
-                {
-                    throw new Bam.Core.Exception("Windows SDKs were not installed");
-                }
-
-                installPath = key.GetValue("KitsRoot81") as string;
-                Bam.Core.Log.DebugMessage("Windows 8.1 SDK installation folder is {0}", installPath);
-            }
-
-            this.Macros.AddVerbatim("InstallPath", installPath);
+            base.Init(parent);
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("WindowsSDK");
+            var installDir = meta["InstallDir"] as Bam.Core.TokenizedString;
             this.PublicPatch((settings, appliedTo) =>
             {
                 var compilation = settings as C.ICommonCompilerSettings;
                 if (null != compilation)
                 {
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Include\um"));
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Include\shared"));
+                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir));
+                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir));
                 }
 
                 var linking = settings as C.ICommonLinkerSettings;
@@ -61,11 +53,11 @@ namespace WindowsSDK
                 {
                     if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
                     {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Lib\winv6.3\um\x86"));
+                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x86", installDir));
                     }
                     else
                     {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)Lib\winv6.3\um\x64"));
+                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x64", installDir));
                     }
                 }
             });

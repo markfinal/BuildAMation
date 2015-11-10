@@ -68,10 +68,15 @@ namespace Publisher
         GetExecutionPolicy(
             string mode)
         {
-            if (mode == "Native")
+            switch (mode)
             {
-                var className = "Publisher." + mode + "Strip";
-                this.Policy = Bam.Core.ExecutionPolicyUtilities<IStripToolPolicy>.Create(className);
+                case "Native":
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "Strip";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IStripToolPolicy>.Create(className);
+                    }
+                    break;
             }
         }
 
