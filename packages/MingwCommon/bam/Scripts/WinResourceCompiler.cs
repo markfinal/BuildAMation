@@ -41,6 +41,7 @@ namespace MingwCommon
             this.Macros.AddVerbatim("objext", ".o");
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString("$(0)/bin", new[] { mingwMeta["InstallDir"] as Bam.Core.TokenizedString })));
+            this.InheritedEnvironmentVariables.Add("TEMP");
         }
 
         public override Bam.Core.TokenizedString Executable
