@@ -265,6 +265,10 @@ namespace Bam.Core
         {
             get
             {
+                if (this.Alias != null)
+                {
+                    return this.Alias.Empty;
+                }
                 return (null == this.Tokens) || (0 == this.Tokens.Count());
             }
         }
