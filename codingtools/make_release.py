@@ -42,9 +42,12 @@ dirsToDelete=[\
 # TODO remove .git
 
 
-def CloneBuildAMation(dir, version):
+def CloneBuildAMation(dir, options):
     # TODO: specify the explicit tag too
-    args = ["git", "clone", "--depth", "1", "--branch", "v%s"%version, "https://github.com/markfinal/BuildAMation", dir]
+    branch = options.branch
+    if not branch:
+        branch = "v%s" % options.version
+    args = ["git", "clone", "--depth", "1", "--branch", branch, "https://github.com/markfinal/BuildAMation", dir]
     print "Running: %s" % ' '.join(args)
     subprocess.check_call(args)
     print >>sys.stdout, "Cloning complete"
@@ -62,10 +65,10 @@ def CleanClone():
         shutil.rmtree(directory)
 
 
-def UpdateVersionNumbers(version):
+def UpdateVersionNumbers(options):
     commonAssemblyInfoPath = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
     for line in fileinput.input(commonAssemblyInfoPath, inplace=1):#, backup='.bk'):
-        line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)', 'AssemblyInformationalVersion("%s")'%version, line.rstrip())
+        line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)', 'AssemblyInformationalVersion("%s")'%options.version, line.rstrip())
         print line
 
 
@@ -85,11 +88,11 @@ def Build():
     sys.stdout.flush()
 
 
-def MakeTarDistribution(version):
+def MakeTarDistribution(options):
     cwd = os.getcwd()
     try:
         coDir, bamDir = os.path.split(cwd)
-        tarPath = os.path.join(coDir, "BuildAMation-%s.tgz"%version)
+        tarPath = os.path.join(coDir, "BuildAMation-%s.tgz"%options.version)
         print >>sys.stdout, "Writing tar file %s" % tarPath
         sys.stdout.flush()
         os.chdir(coDir)
@@ -108,11 +111,11 @@ def MakeTarDistribution(version):
         os.chdir(cwd)
 
 
-def MakeZipDistribution(version):
+def MakeZipDistribution(options):
     cwd = os.getcwd()
     try:
         coDir, bamDir = os.path.split(cwd)
-        zipPath = os.path.join(coDir, "BuildAMation-%s.zip"%version)
+        zipPath = os.path.join(coDir, "BuildAMation-%s.zip"%options.version)
         print >>sys.stdout, "Writing zip file %s" % zipPath
         sys.stdout.flush()
         os.chdir(coDir)
@@ -135,18 +138,18 @@ def MakeZipDistribution(version):
         os.chdir(cwd)
 
 
-def Main(dir, version):
-    print >>sys.stdout, "Creating BuildAMation version %s" % version
+def Main(dir, options):
+    print >>sys.stdout, "Creating BuildAMation version %s" % options.version
     sys.stdout.flush()
-    CloneBuildAMation(dir, version)
+    CloneBuildAMation(dir, options)
     cwd = os.getcwd()
     try:
         os.chdir(dir)
         CleanClone()
-        UpdateVersionNumbers(version)
+        UpdateVersionNumbers(options)
         Build()
-        MakeTarDistribution(version)
-        MakeZipDistribution(version)
+        MakeTarDistribution(options)
+        MakeZipDistribution(options)
     finally:
         os.chdir(cwd)
 
@@ -154,6 +157,7 @@ def Main(dir, version):
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("-v", "--version", dest="version", help="Version to create")
+    parser.add_option("-b", "--branch", dest="branch", default=None, help="Override for branch to clone")
     (options, args) = parser.parse_args()
     if not options.version:
         parser.error("Must supply a version")
@@ -163,9 +167,9 @@ if __name__ == "__main__":
     os.makedirs(cloningDir)
     #cloningDir = r"c:\users\mark\appdata\local\temp\tmpg4tul0"
     try:
-        Main(cloningDir, options.version)
+        Main(cloningDir, options)
     except Exception, e:
-        print >>sys.stdout, "Failed because %s" % str(e)
+        print >>sys.stdout, "*** Failure reason: %s" % str(e)
         sys.stdout.flush()
     finally:
         print >>sys.stdout, "Deleting clone"
