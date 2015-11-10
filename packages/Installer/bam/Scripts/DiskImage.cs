@@ -41,7 +41,7 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module)
         {
-            return new TarSettings();
+            return new DiskImageSettings();
         }
 
         public override Bam.Core.TokenizedString Executable
