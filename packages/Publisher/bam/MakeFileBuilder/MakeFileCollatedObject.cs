@@ -52,6 +52,8 @@ namespace Publisher
                 sender.CreateTokenizedString("$(0)/@filename($(1))", sender.Macros["CopyDir"], sourcePath);
             rule.AddTarget(targetName, variableName: sourceType + "_" + senderType + "_" + sourceFilename, isPhony: isSymLink);
 
+            meta.CommonMetaData.Directories.AddUnique(sender.Macros["CopyDir"].Parse());
+
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
@@ -64,8 +66,6 @@ namespace Publisher
             }
             else
             {
-                meta.CommonMetaData.Directories.AddUnique(sender.Macros["CopyDir"].Parse());
-
                 var ignoreErrors = (sender is CollatedFile) && !(sender as CollatedFile).FailWhenSourceDoesNotExist;
                 rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
