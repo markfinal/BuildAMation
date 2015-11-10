@@ -35,6 +35,7 @@ namespace Publisher
         Bam.Core.Module
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Collation Root");
+        private IStrippedBinaryCollationPolicy Policy = null;
 
         protected StrippedBinaryCollation()
         {
@@ -51,12 +52,26 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.CollateStrippedBinaries(this, context);
         }
 
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
+            switch (mode)
+            {
+            case "MakeFile":
+                {
+                    var className = "Publisher." + mode + "StrippedBinaryCollation";
+                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IStrippedBinaryCollationPolicy>.Create(className);
+                }
+                break;
+            }
         }
 
         private Bam.Core.PathKey ReferenceKey
