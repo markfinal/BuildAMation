@@ -29,34 +29,14 @@
 #endregion // License
 namespace Installer
 {
-    public sealed class NativeTarBall :
-        ITarPolicy
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface ITarBallSettings :
+        Bam.Core.ISettingsBase
     {
-        void
-        ITarPolicy.CreateTarBall(
-            TarBall sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool compiler,
-            Bam.Core.TokenizedString scriptPath,
-            Bam.Core.TokenizedString outputPath)
+        ETarCompressionType CompressionType
         {
-            var tarPath = outputPath.ToString();
-            var tarDir = System.IO.Path.GetDirectoryName(tarPath);
-            if (!System.IO.Directory.Exists(tarDir))
-            {
-                System.IO.Directory.CreateDirectory(tarDir);
-            }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            commandLine.Add("-c");
-            commandLine.Add("-v");
-            commandLine.Add("-T");
-            commandLine.Add(scriptPath.Parse());
-            commandLine.Add("-f");
-            commandLine.Add(tarPath);
-            CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
+            get;
+            set;
         }
     }
 }

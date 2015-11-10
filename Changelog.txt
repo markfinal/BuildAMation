@@ -1,3 +1,5 @@
+10-Nov-2015 Fixes #30. Added tar settings for compression. Supporting gzip, bzip and lzma.
+
 10-Nov-2014 Added post-function @removetrailingseparator() to TokenizedString, to trim any trailing slashes from paths.
 
 10-Nov-2015 Fixes #4. Added support for Windows resources to be compiled for linking into binaries. Use CreateWinResourceContainer(<path>), similar to normal source files. Support available in Native, MakeFile and VSSolution build modes.

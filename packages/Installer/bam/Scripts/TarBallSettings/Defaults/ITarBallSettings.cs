@@ -27,36 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Installer
+namespace Installer.DefaultSettings
 {
-    public sealed class NativeTarBall :
-        ITarPolicy
+    public static partial class DefaultSettingsExtensions
     {
-        void
-        ITarPolicy.CreateTarBall(
-            TarBall sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool compiler,
-            Bam.Core.TokenizedString scriptPath,
-            Bam.Core.TokenizedString outputPath)
+        public static void
+        Defaults(
+            this ITarBallSettings settings,
+            Bam.Core.Module module)
         {
-            var tarPath = outputPath.ToString();
-            var tarDir = System.IO.Path.GetDirectoryName(tarPath);
-            if (!System.IO.Directory.Exists(tarDir))
-            {
-                System.IO.Directory.CreateDirectory(tarDir);
-            }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            commandLine.Add("-c");
-            commandLine.Add("-v");
-            commandLine.Add("-T");
-            commandLine.Add(scriptPath.Parse());
-            commandLine.Add("-f");
-            commandLine.Add(tarPath);
-            CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
+            settings.CompressionType = ETarCompressionType.None;
         }
     }
 }

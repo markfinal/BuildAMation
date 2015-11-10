@@ -27,36 +27,62 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Installer
 {
-    public sealed class NativeTarBall :
-        ITarPolicy
+    public sealed class TarBallSettings :
+        Bam.Core.Settings,
+        CommandLineProcessor.IConvertToCommandLine,
+        ITarBallSettings
     {
-        void
-        ITarPolicy.CreateTarBall(
-            TarBall sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool compiler,
-            Bam.Core.TokenizedString scriptPath,
-            Bam.Core.TokenizedString outputPath)
+        public TarBallSettings()
+        {}
+
+        public TarBallSettings(
+            Bam.Core.Module module)
         {
-            var tarPath = outputPath.ToString();
-            var tarDir = System.IO.Path.GetDirectoryName(tarPath);
-            if (!System.IO.Directory.Exists(tarDir))
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+        }
+
+        private ETarCompressionType _compression;
+        ETarCompressionType ITarBallSettings.CompressionType
+        {
+            get
             {
-                System.IO.Directory.CreateDirectory(tarDir);
+                return this._compression;
             }
+            set
+            {
+                this._compression = value;
+                switch (value)
+                {
+                case ETarCompressionType.None:
+                    this.Module.Macros.AddVerbatim("tarext", ".tar");
+                    break;
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+                case ETarCompressionType.gzip:
+                    this.Module.Macros.AddVerbatim("tarext", ".tgz");
+                    break;
 
-            commandLine.Add("-c");
-            commandLine.Add("-v");
-            commandLine.Add("-T");
-            commandLine.Add(scriptPath.Parse());
-            commandLine.Add("-f");
-            commandLine.Add(tarPath);
-            CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
+                case ETarCompressionType.bzip:
+                    this.Module.Macros.AddVerbatim("tarext", ".tar.bz2");
+                    break;
+
+                case ETarCompressionType.lzma:
+                    this.Module.Macros.AddVerbatim("tarext", ".tar.lzma");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unknown tar compression, {0}", value.ToString());
+                }
+            }
         }
     }
 }

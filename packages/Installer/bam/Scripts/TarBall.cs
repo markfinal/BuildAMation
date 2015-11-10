@@ -127,11 +127,6 @@ namespace Installer
         }
     }
 
-    public sealed class TarSettings :
-        Bam.Core.Settings
-    {
-    }
-
     public sealed class TarCompiler :
         Bam.Core.PreBuiltTool
     {
@@ -139,7 +134,7 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module)
         {
-            return new TarSettings();
+            return new TarBallSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -158,18 +153,17 @@ namespace Installer
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
 
         private TarInputFiles InputFiles;
-        private Bam.Core.PreBuiltTool Compiler;
         private ITarPolicy Policy;
 
         public TarBall()
         {
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).tar"));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName)$(tarext)"));
 
             this.InputFiles = Bam.Core.Module.Create<TarInputFiles>();
             this.DependsOn(this.InputFiles);
 
-            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<TarCompiler>();
-            this.Requires(this.Compiler);
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<TarCompiler>();
+            this.Requires(this.Tool);
         }
 
         public void
@@ -200,7 +194,7 @@ namespace Installer
         {
             if (null != this.Policy)
             {
-                this.Policy.CreateTarBall(this, context, this.Compiler, this.InputFiles.ScriptPath, this.GeneratedPaths[Key]);
+                this.Policy.CreateTarBall(this, context, this.Tool as Bam.Core.ICommandLineTool, this.InputFiles.ScriptPath, this.GeneratedPaths[Key]);
             }
         }
 

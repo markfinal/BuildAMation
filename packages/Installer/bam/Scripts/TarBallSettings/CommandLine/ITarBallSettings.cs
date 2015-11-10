@@ -29,34 +29,33 @@
 #endregion // License
 namespace Installer
 {
-    public sealed class NativeTarBall :
-        ITarPolicy
+    public static partial class CommandLineImplementation
     {
-        void
-        ITarPolicy.CreateTarBall(
-            TarBall sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool compiler,
-            Bam.Core.TokenizedString scriptPath,
-            Bam.Core.TokenizedString outputPath)
+        public static void
+        Convert(
+            this ITarBallSettings settings,
+            Bam.Core.StringArray commandLine)
         {
-            var tarPath = outputPath.ToString();
-            var tarDir = System.IO.Path.GetDirectoryName(tarPath);
-            if (!System.IO.Directory.Exists(tarDir))
+            switch (settings.CompressionType)
             {
-                System.IO.Directory.CreateDirectory(tarDir);
+            case ETarCompressionType.None:
+                break;
+
+            case ETarCompressionType.gzip:
+                commandLine.Add("-z");
+                break;
+
+            case ETarCompressionType.bzip:
+                commandLine.Add("-j");
+                break;
+
+            case ETarCompressionType.lzma:
+                commandLine.Add("--lzma");
+                break;
+
+            default:
+                throw new Bam.Core.Exception("Unknown compression type, {0}", settings.CompressionType.ToString());
             }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            commandLine.Add("-c");
-            commandLine.Add("-v");
-            commandLine.Add("-T");
-            commandLine.Add(scriptPath.Parse());
-            commandLine.Add("-f");
-            commandLine.Add(tarPath);
-            CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
         }
     }
 }
