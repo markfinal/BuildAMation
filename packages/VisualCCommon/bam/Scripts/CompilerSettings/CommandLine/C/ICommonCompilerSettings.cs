@@ -100,10 +100,10 @@ namespace VisualCCommon
                 switch (settings.TargetLanguage.Value)
                 {
                     case C.ETargetLanguage.C:
-                        commandLine.Add(System.String.Format("-Tc {0}", (module as C.ObjectFile).InputPath.ToString()));
+                        commandLine.Add("-TC");
                         break;
                     case C.ETargetLanguage.Cxx:
-                        commandLine.Add(System.String.Format("-Tp {0}", (module as C.ObjectFile).InputPath.ToString()));
+                        commandLine.Add("-TP");
                         break;
                     default:
                         throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value.ToString());
@@ -121,12 +121,10 @@ namespace VisualCCommon
                 switch (settings.OutputType.Value)
                 {
                     case C.ECompilerOutput.CompileOnly:
-                        commandLine.Add("-c");
-                        commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-c -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                         break;
                     case C.ECompilerOutput.Preprocess:
-                        commandLine.Add("-E");
-                        commandLine.Add(System.String.Format("-Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-E -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                         break;
                     default:
                         throw new Bam.Core.Exception("Unknown output type, {0}", settings.OutputType.Value.ToString());

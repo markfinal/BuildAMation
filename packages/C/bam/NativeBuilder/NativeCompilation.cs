@@ -47,6 +47,7 @@ namespace C
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+            commandLine.Add(source.GeneratedPaths[SourceFile.Key].ParseAndQuoteIfNecessary());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

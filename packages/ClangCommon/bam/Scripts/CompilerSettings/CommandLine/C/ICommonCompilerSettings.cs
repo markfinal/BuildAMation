@@ -143,12 +143,10 @@ namespace ClangCommon
                 switch (settings.OutputType.Value)
                 {
                     case C.ECompilerOutput.CompileOnly:
-                        commandLine.Add(System.String.Format("-c {0}", (module as C.ObjectFile).InputPath.ToString()));
-                        commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-c -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                         break;
                     case C.ECompilerOutput.Preprocess:
-                        commandLine.Add(System.String.Format("-E {0}", (module as C.ObjectFile).InputPath.ToString()));
-                        commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-E -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                         break;
                     default:
                         throw new Bam.Core.Exception("Unsupported output type, {0}", settings.OutputType.Value);

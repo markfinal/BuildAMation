@@ -49,7 +49,7 @@ namespace C
 
             var tool = sender.Tool as Bam.Core.ICommandLineTool;
             var command = new System.Text.StringBuilder();
-            command.AppendFormat("{0} {1}",
+            command.AppendFormat("{0} {1} $<",
                 CommandLineProcessor.Processor.StringifyTool(tool),
                 commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());
