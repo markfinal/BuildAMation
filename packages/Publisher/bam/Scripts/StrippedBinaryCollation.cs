@@ -133,8 +133,8 @@ namespace Publisher
             });
             this.DependsOn(clonedFile);
 
-            clonedFile.SourceModule = collatedFile.SourceModule;
-            clonedFile.SourcePath = collatedFile.SourcePath;
+            clonedFile.SourceModule = collatedFile;
+            clonedFile.SourcePath = collatedFile.GeneratedPaths[CollatedObject.Key];
             clonedFile.SubDirectory = collatedFile.SubDirectory;
 
             if (collatedFile.Reference == null)
@@ -167,8 +167,8 @@ namespace Publisher
             });
             this.DependsOn(clonedDir);
 
-            clonedDir.SourceModule = collatedDir.SourceModule;
-            clonedDir.SourcePath = collatedDir.SourcePath;
+            clonedDir.SourceModule = collatedDir;
+            clonedDir.SourcePath = collatedDir.GeneratedPaths[CollatedObject.Key];
             clonedDir.SubDirectory = collatedDir.SubDirectory;
         }
 
@@ -194,8 +194,8 @@ namespace Publisher
                 });
             this.DependsOn(clonedSymLink);
 
-            clonedSymLink.SourceModule = collatedSymlink.SourceModule;
-            clonedSymLink.SourcePath = collatedSymlink.SourcePath;
+            clonedSymLink.SourceModule = collatedSymlink;
+            clonedSymLink.SourcePath = collatedSymlink.GeneratedPaths[CollatedObject.Key];
             clonedSymLink.SubDirectory = collatedSymlink.SubDirectory;
             clonedSymLink.AssignLinkTarget(collatedSymlink.Macros["LinkTarget"]);
         }
