@@ -68,10 +68,15 @@ namespace Publisher
         GetExecutionPolicy(
             string mode)
         {
-            if (mode == "Native")
+            switch (mode)
             {
-                var className = "Publisher." + mode + "ObjCopy";
-                this.Policy = Bam.Core.ExecutionPolicyUtilities<IObjCopyToolPolicy>.Create(className);
+                case "Native":
+                case "MakeFile":
+                {
+                    var className = "Publisher." + mode + "ObjCopy";
+                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IObjCopyToolPolicy>.Create(className);
+                }
+                break;
             }
         }
 

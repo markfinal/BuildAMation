@@ -33,10 +33,10 @@ namespace Publisher
     public abstract class Collation :
         Bam.Core.Module
     {
-        private ICollationPolicy Policy = null;
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Publishing Root");
         private Bam.Core.Array<CollatedFile> CopiedFrameworks = new Bam.Core.Array<CollatedFile>();
         private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
+        private ICollationPolicy Policy = null;
 
         public enum EPublishingType
         {

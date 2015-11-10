@@ -35,6 +35,7 @@ namespace Publisher
         Bam.Core.Module
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Debug Symbol Collation Root");
+        private IDebugSymbolCollationPolicy Policy = null;
 
         protected DebugSymbolCollation()
         {
@@ -51,12 +52,26 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.CollateDebugSymbols(this, context);
         }
 
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
+            switch (mode)
+            {
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "DebugSymbolCollation";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IDebugSymbolCollationPolicy>.Create(className);
+                    }
+                    break;
+            }
         }
 
         private void
