@@ -1061,7 +1061,7 @@ namespace Bam.Core
         {
             // package repo/package name/bam/<definition file>.xml
             var repo = System.IO.Path.GetDirectoryName(this.GetPackageDirectory());
-            if (repo.EndsWith("packages"))
+            if (repo.EndsWith("packages") || repo.EndsWith("tests"))
             {
                 return repo;
             }
