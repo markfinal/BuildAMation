@@ -396,7 +396,7 @@ namespace Bam.Core
             int packageIndex = 0;
             foreach (var package in Graph.Instance.Packages)
             {
-                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, package.Version, package.PackageRepositories[0]);
+                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, package.Version, (package.PackageRepositories.Count > 0) ? package.PackageRepositories[0] : "Not in a repository");
 
                 // to compile with debug information, you must compile the files
                 // to compile without, we need to file contents to hash the source
