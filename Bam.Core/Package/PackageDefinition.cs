@@ -82,6 +82,10 @@ namespace Bam.Core
             // package repositories have a 'package' folder and a 'tests' folder
             // if this package is from the 'tests' folder, automatically add the 'packages' folder as another place to search for packages
             var thisRepo = this.GetPackageRepository();
+            if (null == thisRepo)
+            {
+                return null;
+            }
             if (System.IO.Path.GetFileName(thisRepo) == "tests")
             {
                 var associatedPackagesRepo = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(thisRepo), "packages");
@@ -1057,7 +1061,11 @@ namespace Bam.Core
         {
             // package repo/package name/bam/<definition file>.xml
             var repo = System.IO.Path.GetDirectoryName(this.GetPackageDirectory());
-            return repo;
+            if (repo.EndsWith("packages"))
+            {
+                return repo;
+            }
+            return null;
         }
 
         public string
