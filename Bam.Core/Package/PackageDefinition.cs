@@ -1094,9 +1094,9 @@ namespace Bam.Core
                     dep.FullName,
                     dependent.Item3.GetValueOrDefault(false) ? "*" : System.String.Empty);
 
-                Log.MessageAll(packageFormatting,
-                    formattedName,
-                    dep.PackageRepositories[0]);
+                var repo = (dep.PackageRepositories.Count > 0) ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
+
+                Log.MessageAll(packageFormatting, formattedName, repo);
 
                 if (dep.Dependents.Count > 0)
                 {
