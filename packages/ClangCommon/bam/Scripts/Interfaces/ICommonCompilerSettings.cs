@@ -30,6 +30,7 @@
 namespace ClangCommon
 {
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)] // warning settings must come before warning suppressions
     public interface ICommonCompilerSettings :
         Bam.Core.ISettingsBase
     {
