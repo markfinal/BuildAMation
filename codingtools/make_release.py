@@ -78,10 +78,8 @@ def Build():
     if platform.system() == "Windows":
         print >>sys.stdout, "WARNING: build disabled on Windows"
         sys.stdout.flush()
-    elif platform.system() == "Darwin":
-        subprocess.check_call([r"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool", "build", "--target:Build", "--configuration:Release", "BuildAMation.sln"])
-    elif platform.system() == "Linux":
-        subprocess.check_call(["mdtool", "build", "--target:Build", "--configuration:Release", "BuildAMation.sln"])
+    elif platform.system() == "Darwin" or platform.system() == "Linux":
+        subprocess.check_call(["xbuild", "/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
     else:
         raise RuntimeError("Unrecognized platform, %s" % platform.system())
     print >>sys.stdout, "Finished build"
