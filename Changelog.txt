@@ -2,7 +2,7 @@
 
 16-Nov-2015 Fixes #63. Added command line option, '--viewgraph', to display a representation of the dependency graph of modules on the console.
 
-13-Nov-2015 Fixes #62. Invoking 'bam --showdefinition' on a package outside of a formal repository (i.e. in a packages or tests folder), threw an exception.
+13-Nov-2015 Fixes #62. Invoking 'bam --showdefinition' on a package outside of a formal repository (i.e. not in a packages or tests folder), threw an exception.
 
 13-Nov-2015 Fixes #61. C/C++ compiler warning levels must appear on the command lines before any warning suppressions. The interfaces containing the warning levels now have a high precedence.
 
