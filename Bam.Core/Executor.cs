@@ -266,7 +266,7 @@ namespace Bam.Core
             var graph = Graph.Instance;
             var metaDataType = graph.BuildModeMetaData.GetType();
             var useEvaluation = CheckIfModulesNeedRebuilding(metaDataType);
-            var explainRebuild = CommandLineProcessor.Evaluate(new ExplainBuildReason());
+            var explainRebuild = CommandLineProcessor.Evaluate(new Options.ExplainBuildReason());
 
             ExecutePreBuild(metaDataType);
 
@@ -275,7 +275,7 @@ namespace Bam.Core
                 System.IO.Directory.CreateDirectory(graph.BuildRoot);
             }
 
-            var threadCount = CommandLineProcessor.Evaluate(new MultiThreaded());
+            var threadCount = CommandLineProcessor.Evaluate(new Options.MultiThreaded());
             if (0 == threadCount)
             {
                 threadCount = System.Environment.ProcessorCount;

@@ -76,14 +76,15 @@ def Build():
     print >>sys.stdout, "Starting build in %s" % os.getcwd()
     sys.stdout.flush()
     if platform.system() == "Windows":
-        print >>sys.stdout, "WARNING: build disabled on Windows"
-        sys.stdout.flush()
-    elif platform.system() == "Darwin":
-        subprocess.check_call([r"/Applications/Xamarin Studio.app/Contents/MacOS/mdtool", "build", "--target:Build", "--configuration:Release", "BuildAMation.sln"])
-    elif platform.system() == "Linux":
-        subprocess.check_call(["mdtool", "build", "--target:Build", "--configuration:Release", "BuildAMation.sln"])
+        # assume Visual Studio 2013
+        buildtool = r"C:\Program Files (x86)\MSBuild\12.0\bin\MSBuild.exe"
+        if not os.path.isfile(buildtool):
+           raise RuntimeError("Unable to locate msbuild at '%s'" % buildtool)
+    elif platform.system() == "Darwin" or platform.system() == "Linux":
+        buildtool = "xbuild"
     else:
         raise RuntimeError("Unrecognized platform, %s" % platform.system())
+    subprocess.check_call([buildtool, "/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
     print >>sys.stdout, "Finished build"
     sys.stdout.flush()
 

@@ -1,4 +1,14 @@
-13-Nov-2015 Fixes #62. Invoking 'bam --showdefinition' on a package outside of a formal repository (i.e. in a packages or tests folder), threw an exception.
+16-Nov-2015 Fixes #60. Collation of OSX Frameworks now optionally changes the install name of the dylib, to be in a standard location for an application bundle, from an optional argument to Publisher.Collation.IncludeFramework. The default value of this argument is false, so this is a change of behaviour to earlier versions of the Publisher package. If frameworks are built with install names, that, say, use an rpath, then their install name does not need changing - instead, a suitable RPath search path should be added to the main executable.
+
+16-Nov-2015 Added ClangCommon.ICommonLinkerSettings.RPath property to all Clang-Xcode* linker settings, to add RPaths to the linked binary. Defaults to being an empty list.
+
+16-Nov-2015 Fixes #59. Changed release process to build the solution with 'xbuild' (equivalent to msbuild) on Mono implementations.
+
+16-Nov-2015 Moved all command line option classes into an 'Options' sub-namespace, to scope them, and simplify what is visible using Intellisense.
+
+16-Nov-2015 Fixes #63. Added command line option, '--viewgraph', to display a representation of the dependency graph of modules on the console.
+
+13-Nov-2015 Fixes #62. Invoking 'bam --showdefinition' on a package outside of a formal repository (i.e. not in a packages or tests folder), threw an exception.
 
 13-Nov-2015 Fixes #61. C/C++ compiler warning levels must appear on the command lines before any warning suppressions. The interfaces containing the warning levels now have a high precedence.
 

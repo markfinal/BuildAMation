@@ -43,6 +43,8 @@ namespace Publisher
                 throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
             }
 
+            // TODO: although this is standard for an application bundle, should the '../Frameworks' be actually taken
+            // from the subdirectory of the copied framework?
             this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
 
             this.Policy.InstallName(

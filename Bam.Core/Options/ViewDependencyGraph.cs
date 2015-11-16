@@ -29,7 +29,7 @@
 #endregion // License
 namespace Bam.Core.Options
 {
-    public sealed class ExplainBuildReason :
+    public sealed class ViewDependencyGraph :
         IBooleanCommandLineArgument
     {
         string ICommandLineArgument.ShortName
@@ -44,7 +44,7 @@ namespace Bam.Core.Options
         {
             get
             {
-                return "--explain";
+                return "--viewgraph";
             }
         }
 
@@ -52,7 +52,7 @@ namespace Bam.Core.Options
         {
             get
             {
-                return "For build modes that evaluate, explain why modules are building";
+                return "View the dependency graph once constructed (before the build starts)";
             }
         }
     }

@@ -456,7 +456,8 @@ namespace Publisher
         public void
         IncludeFramework<DependentModule>(
             string subdir,
-            CollatedFile reference) where DependentModule : Bam.Core.Module, new()
+            CollatedFile reference,
+            bool updateInstallName = false) where DependentModule : C.OSXFramework, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -469,10 +470,6 @@ namespace Publisher
             var subdirTS = Bam.Core.TokenizedString.CreateVerbatim(subdir);
 
             var framework = dependent as C.OSXFramework;
-            if (null == framework)
-            {
-                throw new Bam.Core.Exception("Module {0} did not derive from {1}", dependent.GetType().ToString(), typeof(C.OSXFramework).ToString());
-            }
             var frameworkPath = framework.FrameworkPath;
 
             var dirPublishedModules = new Bam.Core.Array<CollatedDirectory>();
@@ -504,7 +501,8 @@ namespace Publisher
                     }
                     filePublishedModules.Add(copyFile);
 
-                    if (file == framework.Macros["FrameworkLibraryPath"])
+                    // the dylib in the framework
+                    if (updateInstallName && (file == framework.Macros["FrameworkLibraryPath"]))
                     {
                         var updateIDName = Bam.Core.Module.Create<IdNameOSX>();
                         updateIDName.Source = copyFile;

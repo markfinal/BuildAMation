@@ -27,32 +27,18 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Bam.Core.Options
+namespace ClangCommon
 {
-    public sealed class ExplainBuildReason :
-        IBooleanCommandLineArgument
+    public static partial class CommandLineLinkerImplementation
     {
-        string ICommandLineArgument.ShortName
+        public static void
+        Convert(
+            this ICommonLinkerSettings settings,
+            Bam.Core.StringArray commandLine)
         {
-            get
+            foreach (var rpath in settings.RPath)
             {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--explain";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "For build modes that evaluate, explain why modules are building";
+                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
             }
         }
     }

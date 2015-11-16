@@ -72,8 +72,8 @@ namespace Bam.Core
                 "packages");
             this.PackageRepositories.AddUnique(primaryPackageRepo);
 
-            this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new ForceDefinitionFileUpdate());
-            this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new UseDebugSymbols());
+            this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new Options.ForceDefinitionFileUpdate());
+            this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new Options.UseDebugSymbols());
         }
 
         public void
@@ -148,7 +148,7 @@ namespace Bam.Core
             string ns)
         {
             this.BuildEnvironment = env;
-            var includeTests = CommandLineProcessor.Evaluate(new UseTests());
+            var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
             var allTypes = assembly.GetTypes();
             var allPackageTypes = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)) && type.IsSealed);
             foreach (var moduleType in allPackageTypes)
@@ -330,6 +330,9 @@ namespace Bam.Core
         public void
         Dump()
         {
+            Log.Message(this.VerbosityLevel, new string('*', 80));
+            Log.Message(this.VerbosityLevel, "{0,50}", "DEPENDENCY GRAPH VIEW");
+            Log.Message(this.VerbosityLevel, new string('*', 80));
             foreach (var rank in this.DependencyGraph)
             {
                 var text = new System.Text.StringBuilder();
@@ -347,8 +350,11 @@ namespace Bam.Core
                         text.AppendFormat("\t{0} : {1}{2}", s.Key, s.Value, System.Environment.NewLine);
                     }
                 }
-                Log.DebugMessage(text.ToString());
+                Log.Message(this.VerbosityLevel, text.ToString());
             }
+            Log.Message(this.VerbosityLevel, new string('*', 80));
+            Log.Message(this.VerbosityLevel, "{0,50}", "END DEPENDENCY GRAPH VIEW");
+            Log.Message(this.VerbosityLevel, new string('*', 80));
         }
 
         private void

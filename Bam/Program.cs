@@ -56,7 +56,7 @@ namespace Bam
                 totalTimeProfile.StartProfile();
                 processCommandLineProfile.StartProfile();
 
-                var verbosityLevel = (Core.EVerboseLevel)Core.CommandLineProcessor.Evaluate(new Core.VerbosityLevel());
+                var verbosityLevel = (Core.EVerboseLevel)Core.CommandLineProcessor.Evaluate(new Core.Options.VerbosityLevel());
                 switch (verbosityLevel)
                 {
                     case Core.EVerboseLevel.None:
@@ -70,37 +70,37 @@ namespace Bam
                         throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
                 }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.PrintHelp()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.PrintHelp()))
                 {
                     CommandLineArgumentHelper.PrintHelp();
                     return;
                 }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.PrintVersion()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.PrintVersion()))
                 {
                     CommandLineArgumentHelper.PrintVersion();
                     return;
                 }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.CreateDebugProject()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.CreateDebugProject()))
                 {
                     DebugProject.Create();
                     return;
                 }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.MakePackage()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.MakePackage()))
                 {
                     Core.PackageUtilities.MakePackage();
                     return;
                 }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.AddDependentPackage()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.AddDependentPackage()))
                 {
                     Core.PackageUtilities.AddDependentPackage();
                     return;
                 }
 
-                if (Core.CommandLineProcessor.Evaluate(new Core.ShowDefinitionFile()))
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.ShowDefinitionFile()))
                 {
                     Core.PackageUtilities.IdentifyAllPackages(allowDuplicates: true, enforceBamAssemblyVersions: false);
                     Core.Graph.Instance.MasterPackage.Show();
@@ -108,15 +108,15 @@ namespace Bam
                 }
 
                 // configure
-                Core.Graph.Instance.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.BuildRoot());
-                Core.Graph.Instance.Mode = Core.CommandLineProcessor.Evaluate(new Core.BuildMode());
+                Core.Graph.Instance.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.Options.BuildRoot());
+                Core.Graph.Instance.Mode = Core.CommandLineProcessor.Evaluate(new Core.Options.BuildMode());
                 if (null == Core.Graph.Instance.Mode)
                 {
                     throw new Core.Exception("No build mode specified");
                 }
 
                 var configs = new Core.Array<Core.Environment>();
-                var requestedConfigs = Core.CommandLineProcessor.Evaluate(new Core.BuildConfigurations());
+                var requestedConfigs = Core.CommandLineProcessor.Evaluate(new Core.Options.BuildConfigurations());
                 if (0 == requestedConfigs.Count)
                 {
                     // default
@@ -158,7 +158,7 @@ namespace Bam
                 {
                     Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
 
-                    if (Core.CommandLineProcessor.Evaluate(new Core.PrintStatistics()))
+                    if (Core.CommandLineProcessor.Evaluate(new Core.Options.PrintStatistics()))
                     {
                         Core.Statistics.Display();
                     }

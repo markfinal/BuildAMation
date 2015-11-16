@@ -27,32 +27,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Bam.Core.Options
+namespace ClangCommon
 {
-    public sealed class ExplainBuildReason :
-        IBooleanCommandLineArgument
+    public static partial class XcodeLinkerImplementation
     {
-        string ICommandLineArgument.ShortName
+        public static void
+        Convert(
+            this ICommonLinkerSettings settings,
+            Bam.Core.Module module,
+            XcodeBuilder.Configuration configuration)
         {
-            get
+            if (settings.RPath.Count > 0)
             {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--explain";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "For build modes that evaluate, explain why modules are building";
+                var option = new XcodeBuilder.MultiConfigurationValue();
+                foreach (var path in settings.RPath)
+                {
+                    option.Add(path.Parse());
+                }
+                configuration["LD_RUNPATH_SEARCH_PATHS"] = option;
             }
         }
     }

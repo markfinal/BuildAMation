@@ -57,7 +57,7 @@ namespace Bam.Core
             var packageDefinition = graph.Packages.Where(item => item.Name == packageNameSpace).FirstOrDefault();
             if (null == packageDefinition)
             {
-                var includeTests = CommandLineProcessor.Evaluate(new UseTests());
+                var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
                 if (includeTests && packageNameSpace.EndsWith(".tests"))
                 {
                     packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);

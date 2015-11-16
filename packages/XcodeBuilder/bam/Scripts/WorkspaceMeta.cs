@@ -94,7 +94,7 @@ namespace XcodeBuilder
             workspaceEl.SetAttribute("version", "1.0");
             workspaceDoc.AppendChild(workspaceEl);
 
-            var generateProjectSchemes = Bam.Core.CommandLineProcessor.Evaluate(new GenerateXcodeSchemes());
+            var generateProjectSchemes = Bam.Core.CommandLineProcessor.Evaluate(new Options.GenerateXcodeSchemes());
             foreach (var project in this.ProjectMap.Values)
             {
                 project.FixupPerConfigurationData();
