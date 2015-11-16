@@ -330,6 +330,9 @@ namespace Bam.Core
         public void
         Dump()
         {
+            Log.Message(this.VerbosityLevel, new string('*', 80));
+            Log.Message(this.VerbosityLevel, "{0,50}", "DEPENDENCY GRAPH VIEW");
+            Log.Message(this.VerbosityLevel, new string('*', 80));
             foreach (var rank in this.DependencyGraph)
             {
                 var text = new System.Text.StringBuilder();
@@ -347,8 +350,11 @@ namespace Bam.Core
                         text.AppendFormat("\t{0} : {1}{2}", s.Key, s.Value, System.Environment.NewLine);
                     }
                 }
-                Log.DebugMessage(text.ToString());
+                Log.Message(this.VerbosityLevel, text.ToString());
             }
+            Log.Message(this.VerbosityLevel, new string('*', 80));
+            Log.Message(this.VerbosityLevel, "{0,50}", "END DEPENDENCY GRAPH VIEW");
+            Log.Message(this.VerbosityLevel, new string('*', 80));
         }
 
         private void

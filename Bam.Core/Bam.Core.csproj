@@ -119,6 +119,7 @@
     <Compile Include="Options\UseDebugSymbols.cs" />
     <Compile Include="Options\UseTests.cs" />
     <Compile Include="Options\VerbosityLevel.cs" />
+    <Compile Include="Options\ViewDependencyGraph.cs" />
     <Compile Include="OSUtilities.cs" />
     <Compile Include="Package\BamAssemblyDescription.cs" />
     <Compile Include="Package\DotNetAssemblyDescription.cs" />
