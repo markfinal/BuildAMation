@@ -77,14 +77,14 @@ def Build():
     sys.stdout.flush()
     if platform.system() == "Windows":
         # assume Visual Studio 2013
-        msbuildpath = r"C:\Program Files (x86)\MSBuild\12.0\bin\MSBuild.exe"
-        if not os.path.isfile(msbuildpath):
-           raise RuntimeError("Unable to locate msbuild at '%s'" % msbuildpath)
-        subprocess.check_call([msbuildpath, "/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
+        buildtool = r"C:\Program Files (x86)\MSBuild\12.0\bin\MSBuild.exe"
+        if not os.path.isfile(buildtool):
+           raise RuntimeError("Unable to locate msbuild at '%s'" % buildtool)
     elif platform.system() == "Darwin" or platform.system() == "Linux":
-        subprocess.check_call(["xbuild", "/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
+        buildtool = "xbuild"
     else:
         raise RuntimeError("Unrecognized platform, %s" % platform.system())
+    subprocess.check_call([buildtool, "/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
     print >>sys.stdout, "Finished build"
     sys.stdout.flush()
 
