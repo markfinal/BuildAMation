@@ -1,3 +1,5 @@
+16-Nov-2015 Moved all command line option classes into an 'Options' sub-namespace, to scope them, and simplify what is visible using Intellisense.
+
 16-Nov-2015 Fixes #63. Added command line option, '--viewgraph', to display a representation of the dependency graph of modules on the console.
 
 13-Nov-2015 Fixes #62. Invoking 'bam --showdefinition' on a package outside of a formal repository (i.e. in a packages or tests folder), threw an exception.

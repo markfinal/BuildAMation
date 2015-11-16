@@ -45,14 +45,14 @@ namespace Bam.Core
                 throw new Exception("A Bam package already exists at {0}", packageDir);
             }
 
-            var packageNameArgument = new PackageName();
+            var packageNameArgument = new Options.PackageName();
             var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
             if (null == packageName)
             {
                 throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
             }
 
-            var packageVersion = CommandLineProcessor.Evaluate(new PackageVersion());
+            var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
             var definition = new PackageDefinition(bamDir, packageName, packageVersion);
 
             System.IO.Directory.CreateDirectory(bamDir);
@@ -75,14 +75,14 @@ namespace Bam.Core
         public static void
         AddDependentPackage()
         {
-            var packageNameArgument = new PackageName();
+            var packageNameArgument = new Options.PackageName();
             var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
             if (null == packageName)
             {
                 throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
             }
 
-            var packageVersion = CommandLineProcessor.Evaluate(new PackageVersion());
+            var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
 
             var masterPackage = GetMasterPackage();
             // TODO: no checking if this package exists
@@ -256,7 +256,7 @@ namespace Bam.Core
             var duplicatePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() > 1).Select(item => item.Key);
             if ((duplicatePackageNames.Count() > 0) && !allowDuplicates)
             {
-                var versionSpeciferArgs = new PackageDefaultVersion();
+                var versionSpeciferArgs = new Options.PackageDefaultVersion();
                 var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
                 var toRemove = new Array<PackageDefinition>();
 
@@ -368,7 +368,7 @@ namespace Bam.Core
 
             IdentifyAllPackages(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
 
-            var cleanFirst = CommandLineProcessor.Evaluate(new CleanFirst());
+            var cleanFirst = CommandLineProcessor.Evaluate(new Options.CleanFirst());
             if (cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
             {
                 Log.Info("Deleting build root '{0}'", Graph.Instance.BuildRoot);
@@ -445,7 +445,7 @@ namespace Bam.Core
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
             string thisHashCode = null;
 
-            var cacheAssembly = !CommandLineProcessor.Evaluate(new DisableCacheAssembly());
+            var cacheAssembly = !CommandLineProcessor.Evaluate(new Options.DisableCacheAssembly());
 
             string compileReason = null;
             if (Graph.Instance.CompileWithDebugSymbols)

@@ -166,7 +166,7 @@ namespace Bam.Core
             TokenizedString.ParseAll();
             parseStringsProfile.StopProfile();
 
-            if (CommandLineProcessor.Evaluate(new ViewDependencyGraph()))
+            if (CommandLineProcessor.Evaluate(new Options.ViewDependencyGraph()))
             {
                 // must come after all strings are parsed, in order to display useful paths
                 graph.Dump();

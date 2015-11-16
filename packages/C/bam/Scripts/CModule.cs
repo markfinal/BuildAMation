@@ -40,7 +40,7 @@ namespace C
             this.Macros.Add("MinorVersion", Bam.Core.TokenizedString.CreateVerbatim("0"));
             this.Macros.Add("PatchVersion", Bam.Core.TokenizedString.CreateVerbatim("0"));
             // default bit depth
-            this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new DefaultBitDepth());
+            this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new Options.DefaultBitDepth());
         }
 
         public bool IsPrebuilt

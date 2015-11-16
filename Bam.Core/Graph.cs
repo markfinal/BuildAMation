@@ -72,8 +72,8 @@ namespace Bam.Core
                 "packages");
             this.PackageRepositories.AddUnique(primaryPackageRepo);
 
-            this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new ForceDefinitionFileUpdate());
-            this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new UseDebugSymbols());
+            this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new Options.ForceDefinitionFileUpdate());
+            this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new Options.UseDebugSymbols());
         }
 
         public void
@@ -148,7 +148,7 @@ namespace Bam.Core
             string ns)
         {
             this.BuildEnvironment = env;
-            var includeTests = CommandLineProcessor.Evaluate(new UseTests());
+            var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
             var allTypes = assembly.GetTypes();
             var allPackageTypes = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)) && type.IsSealed);
             foreach (var moduleType in allPackageTypes)
