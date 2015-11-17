@@ -245,66 +245,75 @@ namespace XcodeBuilder
             bool explicitType = true,
             FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
         {
-            var existingFileRef = this.FileReferences.Where(item => item.Path.Equals(path)).FirstOrDefault();
-            if (null != existingFileRef)
+            lock (this.FileReferences)
             {
-                return existingFileRef;
+                var existingFileRef = this.FileReferences.Where(item => item.Path.Equals(path)).FirstOrDefault();
+                if (null != existingFileRef)
+                {
+                    return existingFileRef;
+                }
+                var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
+                this.FileReferences.Add(newFileRef);
+                return newFileRef;
             }
-            var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
-            this.FileReferences.Add(newFileRef);
-            return newFileRef;
         }
 
         public BuildFile
         EnsureBuildFileExists(
             FileReference fileRef)
         {
-            var existingBuildFile = this.BuildFiles.Where(item => item.FileRef == fileRef).FirstOrDefault();
-            if (null != existingBuildFile)
+            lock (this.BuildFiles)
             {
-                return existingBuildFile;
+                var existingBuildFile = this.BuildFiles.Where(item => item.FileRef == fileRef).FirstOrDefault();
+                if (null != existingBuildFile)
+                {
+                    return existingBuildFile;
+                }
+                var newBuildFile = new BuildFile(fileRef);
+                this.BuildFiles.Add(newBuildFile);
+                return newBuildFile;
             }
-            var newBuildFile = new BuildFile(fileRef);
-            this.BuildFiles.Add(newBuildFile);
-            return newBuildFile;
         }
 
         public void
         EnsureProjectConfigurationExists(
             Bam.Core.Module module)
         {
-            var config = module.BuildEnvironment.Configuration;
-            if (this.ProjectConfigurations.ContainsKey(config))
+            lock (this.ProjectConfigurations)
             {
-                return;
+                var config = module.BuildEnvironment.Configuration;
+                if (this.ProjectConfigurations.ContainsKey(config))
+                {
+                    return;
+                }
+
+                // add configuration to project
+                var projectConfig = new Configuration(config);
+                projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
+                projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
+
+                // reset SRCROOT, or it is taken to be where the workspace is
+                projectConfig["SRCROOT"] = new UniqueConfigurationValue(this.SourceRoot);
+
+                // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
+                // needed so that built products are no longer 'red' in the IDE
+                projectConfig["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
+
+                // all intermediate files generated are relative to this
+                projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
+
+                // would like to be able to set this to '$(SYMROOT)/$(TARGET_NAME)/$(CONFIGURATION)'
+                // but TARGET_NAME is not defined in the Project configuration settings, and will end up collapsing
+                // to an empty value
+                // 'products' use the Project configuration value of CONFIGURATION_BUILD_DIR for their path, while
+                // written target files use the Target configuration value of CONFIGURATION_BUILD_DIR
+                // if these are inconsistent the IDE shows the product in red
+                projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
+
+                this.ConfigurationLists[0].AddConfiguration(projectConfig);
+                this.AllConfigurations.Add(projectConfig);
+                this.ProjectConfigurations.Add(config, projectConfig);
             }
-
-            // add configuration to project
-            var projectConfig = new Configuration(config);
-            projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
-            projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
-
-            // reset SRCROOT, or it is taken to be where the workspace is
-            projectConfig["SRCROOT"] = new UniqueConfigurationValue(this.SourceRoot);
-
-            // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
-            // needed so that built products are no longer 'red' in the IDE
-            projectConfig["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
-
-            // all intermediate files generated are relative to this
-            projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
-
-            // would like to be able to set this to '$(SYMROOT)/$(TARGET_NAME)/$(CONFIGURATION)'
-            // but TARGET_NAME is not defined in the Project configuration settings, and will end up collapsing
-            // to an empty value
-            // 'products' use the Project configuration value of CONFIGURATION_BUILD_DIR for their path, while
-            // written target files use the Target configuration value of CONFIGURATION_BUILD_DIR
-            // if these are inconsistent the IDE shows the product in red
-            projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
-
-            this.ConfigurationLists[0].AddConfiguration(projectConfig);
-            this.AllConfigurations.Add(projectConfig);
-            this.ProjectConfigurations.Add(config, projectConfig);
         }
 
         public Configuration
@@ -312,41 +321,44 @@ namespace XcodeBuilder
             Bam.Core.Module module,
             ConfigurationList configList)
         {
-            var config = module.BuildEnvironment.Configuration;
-            var existingConfig = configList.Where(item => item.Config == config).FirstOrDefault();
-            if (null != existingConfig)
+            lock (configList)
             {
-                return existingConfig;
+                var config = module.BuildEnvironment.Configuration;
+                var existingConfig = configList.Where(item => item.Config == config).FirstOrDefault();
+                if (null != existingConfig)
+                {
+                    return existingConfig;
+                }
+
+                // if a new target config is needed, then a new project config is needed too
+                this.EnsureProjectConfigurationExists(module);
+
+                var newConfig = new Configuration(module.BuildEnvironment.Configuration);
+                this.AllConfigurations.Add(newConfig);
+                configList.AddConfiguration(newConfig);
+
+                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+
+                // set which SDK to build against
+                newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
+
+                // set the minimum version of OSX/iPhone to run against
+                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
+                var match = minVersionRegEx.Match(clangMeta.MinimumVersionSupported);
+                if (!match.Groups["Type"].Success)
+                {
+                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", clangMeta.MinimumVersionSupported);
+                }
+                if (!match.Groups["Version"].Success)
+                {
+                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", clangMeta.MinimumVersionSupported);
+                }
+
+                var optionName = System.String.Format("{0}_DEPLOYMENT_TARGET", match.Groups["Type"].Value.ToUpper());
+                newConfig[optionName] = new UniqueConfigurationValue(match.Groups["Version"].Value);
+
+                return newConfig;
             }
-
-            // if a new target config is needed, then a new project config is needed too
-            this.EnsureProjectConfigurationExists(module);
-
-            var newConfig = new Configuration(module.BuildEnvironment.Configuration);
-            this.AllConfigurations.Add(newConfig);
-            configList.AddConfiguration(newConfig);
-
-            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-
-            // set which SDK to build against
-            newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
-
-            // set the minimum version of OSX/iPhone to run against
-            var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-            var match = minVersionRegEx.Match(clangMeta.MinimumVersionSupported);
-            if (!match.Groups["Type"].Success)
-            {
-                throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", clangMeta.MinimumVersionSupported);
-            }
-            if (!match.Groups["Version"].Success)
-            {
-                throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", clangMeta.MinimumVersionSupported);
-            }
-
-            var optionName = System.String.Format("{0}_DEPLOYMENT_TARGET", match.Groups["Type"].Value.ToUpper());
-            newConfig[optionName] = new UniqueConfigurationValue(match.Groups["Version"].Value);
-
-            return newConfig;
         }
 
         public void

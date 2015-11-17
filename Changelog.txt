@@ -1,3 +1,5 @@
+17-Nov-2015 Fixes #66. Added synchronization to XcodeBuilder, to avoid multiple build threads changing lists simultaneously.
+
 16-Nov-2015 Fixes #60. Collation of OSX Frameworks now optionally changes the install name of the dylib, to be in a standard location for an application bundle, from an optional argument to Publisher.Collation.IncludeFramework. The default value of this argument is false, so this is a change of behaviour to earlier versions of the Publisher package. If frameworks are built with install names, that, say, use an rpath, then their install name does not need changing - instead, a suitable RPath search path should be added to the main executable.
 
 16-Nov-2015 Added ClangCommon.ICommonLinkerSettings.RPath property to all Clang-Xcode* linker settings, to add RPaths to the linked binary. Defaults to being an empty list.

@@ -186,34 +186,40 @@ namespace XcodeBuilder
             Bam.Core.TokenizedString path,
             FileReference.EFileType type)
         {
-            if (null == this.SourcesBuildPhase)
+            lock (this)
             {
-                this.SourcesBuildPhase = new SourcesBuildPhase();
-                if (null == this.BuildPhases)
+                if (null == this.SourcesBuildPhase)
                 {
-                    this.BuildPhases = new Bam.Core.Array<BuildPhase>();
+                    this.SourcesBuildPhase = new SourcesBuildPhase();
+                    if (null == this.BuildPhases)
+                    {
+                        this.BuildPhases = new Bam.Core.Array<BuildPhase>();
+                    }
+                    this.BuildPhases.Add(this.SourcesBuildPhase);
+                    this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
                 }
-                this.BuildPhases.Add(this.SourcesBuildPhase);
-                this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
-            }
 
-            var buildFile = this.EnsureBuildFileExists(path, type);
-            this.Project.SourceFilesGroup.AddChild(buildFile.FileRef);
-            this.SourcesBuildPhase.AddBuildFile(buildFile);
-            return buildFile;
+                var buildFile = this.EnsureBuildFileExists(path, type);
+                this.Project.SourceFilesGroup.AddChild(buildFile.FileRef);
+                this.SourcesBuildPhase.AddBuildFile(buildFile);
+                return buildFile;
+            }
         }
 
         private void
         EnsureFrameworksBuildPhaseExists()
         {
-            if (null != this.FrameworksBuildPhase)
+            lock (this)
             {
-                return;
+                if (null != this.FrameworksBuildPhase)
+                {
+                    return;
+                }
+                var frameworks = new FrameworksBuildPhase();
+                this.Project.FrameworksBuildPhases.Add(frameworks);
+                this.BuildPhases.Add(frameworks);
+                this.FrameworksBuildPhase = frameworks;
             }
-            var frameworks = new FrameworksBuildPhase();
-            this.Project.FrameworksBuildPhases.Add(frameworks);
-            this.BuildPhases.Add(frameworks);
-            this.FrameworksBuildPhase = frameworks;
         }
 
         public BuildFile
@@ -221,22 +227,28 @@ namespace XcodeBuilder
             Bam.Core.TokenizedString path,
             FileReference.EFileType type)
         {
-            this.EnsureFrameworksBuildPhaseExists();
+            lock (this)
+            {
+                this.EnsureFrameworksBuildPhaseExists();
 
-            var buildFile = this.EnsureBuildFileExists(path, type);
-            this.FrameworksBuildPhase.AddBuildFile(buildFile);
-            return buildFile;
+                var buildFile = this.EnsureBuildFileExists(path, type);
+                this.FrameworksBuildPhase.AddBuildFile(buildFile);
+                return buildFile;
+            }
         }
 
         public void
         EnsureHeaderFileExists(
             Bam.Core.TokenizedString path)
         {
-            var fileRef = this.Project.EnsureFileReferenceExists(
-                path,
-                FileReference.EFileType.HeaderFile,
-                sourceTree: FileReference.ESourceTree.Absolute);
-            this.Project.HeaderFilesGroup.AddChild(fileRef);
+            lock (this)
+            {
+                var fileRef = this.Project.EnsureFileReferenceExists(
+                    path,
+                    FileReference.EFileType.HeaderFile,
+                    sourceTree: FileReference.ESourceTree.Absolute);
+                this.Project.HeaderFilesGroup.AddChild(fileRef);
+            }
         }
 
         public void
