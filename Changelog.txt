@@ -1,3 +1,5 @@
+18-Nov-2015 Fixes #67. Added C.ICommonLinkerSettings.Bits, which is configured automatically, but allows linkers that must pass options specifying the architecture to do so.
+
 18-Nov-2015 Fixes #64. Added test, MultiBitDepthModuleTest, that illustrates how to build a module in both 32-bit and 64-bit.
 
 18-Nov-2015 Fixes #66. Multiple configuration Xcode builds, with modules that are configuration specific, relating to an application bundle to be created, was throwing an exception, as the metadata to identify an application bundle was being set, and then unset, by the modules on different configurations executed at different times (since the application bundle is treated as a single entity in multiple configurations in the Xcode project).
