@@ -1,4 +1,4 @@
-from testconfigurations import TestSetup, visualc64, mingw32, gcc64, clang64
+from testconfigurations import TestSetup, visualc, visualc64, mingw32, gcc, gcc64, clang, clang64
 
 def ConfigureRepository():
     configs = {}
@@ -71,4 +71,7 @@ def ConfigureRepository():
     configs["InstallerTest1"] = TestSetup(win={"Native":[visualc64],"VSSolution":[visualc64]},
                                           linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                           osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+    configs["MultiBitDepthModuleTest"] = TestSetup(win={"Native":[visualc],"VSSolution":[visualc]},
+                                                   linux={"Native":[gcc]},
+                                                   osx={"Native":[clang]})
     return configs

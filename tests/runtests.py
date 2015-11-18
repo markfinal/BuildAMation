@@ -79,7 +79,7 @@ def FindAllPackagesToTest(root, options):
         tests.append(package)
     return tests
 
-def _preExecute(builder, options):
+def _preExecute(builder, options, flavour):
     if builder.preAction:
         builder.preAction()
 
@@ -112,9 +112,9 @@ def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
         errorMessages.write(errorStream)
     return (p.returncode, argList)
 
-def _postExecute(builder, options, package, outputMessages, errorMessages):
+def _postExecute(builder, options, flavour, package, outputMessages, errorMessages):
     if builder.postAction:
-        exitCode = builder.postAction(package, options, outputMessages, errorMessages)
+        exitCode = builder.postAction(package, options, flavour, outputMessages, errorMessages)
         return exitCode
     return 0
 
@@ -152,10 +152,10 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
             try:
               outputMessages = StringIO.StringIO()
               errorMessages = StringIO.StringIO()
-              _preExecute(theBuilder, options)
+              _preExecute(theBuilder, options, variation)
               returncode, argList = _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
               if returncode == 0:
-                returncode = _postExecute(theBuilder, options, package, outputMessages, errorMessages)
+                returncode = _postExecute(theBuilder, options, variation, package, outputMessages, errorMessages)
             except Exception, e:
                 PrintMessage("Popen exception: '%s'" % str(e))
                 raise

@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import copy
 import os
 import subprocess
 import sys
@@ -22,7 +23,7 @@ msBuildVersionToNetMapping = {\
     "14.0":"14.0"
 }
 
-def VSSolutionPost(package, options, outputMessages, errorMessages):
+def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
     """Post action for testing the VSSolution builder"""
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
@@ -60,21 +61,24 @@ def VSSolutionPost(package, options, outputMessages, errorMessages):
             # capitalize the first letter of the configuration
             config = config[0].upper() + config[1:]
             argList.append("/p:Configuration=%s" % config)
-            print "Running '%s'\n" % ' '.join(argList)
-            p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            (outputStream, errorStream) = p.communicate() # this should WAIT
-            exitCode |= p.returncode
-            if outputStream:
-                outputMessages.write(outputStream)
-            if errorStream:
-                errorMessages.write(errorStream)
+            for platform in flavour._platforms:
+                thisArgList = copy.deepcopy(argList)
+                thisArgList.append("/p:Platform=%s" % platform)
+                print "Running '%s'\n" % ' '.join(thisArgList)
+                p = subprocess.Popen(thisArgList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                (outputStream, errorStream) = p.communicate() # this should WAIT
+                exitCode |= p.returncode
+                if outputStream:
+                    outputMessages.write(outputStream)
+                if errorStream:
+                    errorMessages.write(errorStream)
     except Exception, e:
         import traceback
         errorMessages.write(str(e) + '\n' + traceback.format_exc())
         return -1
     return exitCode
 
-def MakeFilePost(package, options, outputMessages, errorMessages):
+def MakeFilePost(package, options, flavour, outputMessages, errorMessages):
     """Post action for testing the MakeFile builder"""
     if sys.platform.startswith("win"):
         # TODO: allow configuring where make is
@@ -102,7 +106,7 @@ def MakeFilePost(package, options, outputMessages, errorMessages):
         return -1
     return exitCode
 
-def XcodePost(package, options, outputMessages, errorMessages):
+def XcodePost(package, options, flavour, outputMessages, errorMessages):
     """Post action for testing the Xcode builder"""
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
