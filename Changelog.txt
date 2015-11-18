@@ -1,4 +1,4 @@
-18-Nov-2015 Fixes #70. Added --immediateoutput command line option to the CommandLineProcessor package. Usually, output is deferred for the Bam.Core.Executor to display (so it is not interleaved in multithreaded builds), but if the process were to stall, then no output would be seen. Using this option displays the output (both stdout and stderr) immediately, useful for diagnosing issues. Default remains deferred output.
+18-Nov-2015 Fixes #70. Added --immediateoutput (-i) command line option the Bam Core. Usually, output is deferred for the Bam.Core.Executor to display (so it is not interleaved during multithreaded builds), but if the process were to stall, then no output would be seen. Using this option displays the output (both stdout and stderr) immediately, useful for diagnosing issues. Default remains deferred output.
 
 18-Nov-2015 Fixes #69. Installer package now exposes a verbosity setting on the DiskImage module, to configure how much output is logged from hdiutil. The options are Default, Quiet, Verbose, Debug, corresponding to the flags (<empty>, '-quiet', '-verbose', '-debug'). Default is the default setting.
 

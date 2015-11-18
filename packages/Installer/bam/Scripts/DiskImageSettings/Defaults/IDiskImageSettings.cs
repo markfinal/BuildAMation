@@ -36,7 +36,7 @@ namespace Installer.DefaultSettings
             this IDiskImageSettings settings,
             Bam.Core.Module module)
         {
-            settings.Verbosity = EDiskImageVerbosity.Default;
+            settings.Verbosity = EDiskImageVerbosity.Verbose;
         }
     }
 }

@@ -32,17 +32,6 @@ namespace CommandLineProcessor
 {
     public static class Processor
     {
-        private static bool ImmediateOutput
-        {
-            get;
-            set;
-        }
-
-        static Processor()
-        {
-            ImmediateOutput = Bam.Core.CommandLineProcessor.Evaluate(new Options.ImmediateOutput());
-        }
-
         public static string
         StringifyTool(
             Bam.Core.ICommandLineTool tool)
@@ -171,26 +160,17 @@ namespace CommandLineProcessor
             }
             if (null != process)
             {
-                if (!ImmediateOutput)
-                {
-                    process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.OutputDataReceived);
-                    process.BeginOutputReadLine();
+                process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.OutputDataReceived);
+                process.BeginOutputReadLine();
 
-                    process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.ErrorDataReceived);
-                    process.BeginErrorReadLine();
-                }
+                process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.ErrorDataReceived);
+                process.BeginErrorReadLine();
 
                 // TODO: need to poll for an external cancel op?
                 // poll for the process to exit, as some processes seem to get stuck (hdiutil attach, for example)
                 while (!process.HasExited)
                 {
                     process.WaitForExit(2000);
-                }
-
-                if (ImmediateOutput)
-                {
-                    Bam.Core.Log.Info(process.StandardOutput.ReadToEnd());
-                    Bam.Core.Log.ErrorMessage(process.StandardError.ReadToEnd());
                 }
             }
 

@@ -33,12 +33,17 @@ namespace Bam.Core
     {
         public ExecutionContext(
             bool useEvaluation,
-            bool explainRebuild)
+            bool explainRebuild,
+            bool useImmediateOutput)
         {
             this.Evaluate = useEvaluation;
             this.ExplainLoggingLevel = explainRebuild ? Graph.Instance.VerbosityLevel : EVerboseLevel.Full;
-            this.OutputStringBuilder = new System.Text.StringBuilder();
-            this.ErrorStringBuilder = new System.Text.StringBuilder();
+            this.UseDeferredOutput = !useImmediateOutput;
+            if (this.UseDeferredOutput)
+            {
+                this.OutputStringBuilder = new System.Text.StringBuilder();
+                this.ErrorStringBuilder = new System.Text.StringBuilder();
+            }
         }
 
         public bool Evaluate
@@ -48,6 +53,12 @@ namespace Bam.Core
         }
 
         public EVerboseLevel ExplainLoggingLevel
+        {
+            get;
+            private set;
+        }
+
+        public bool UseDeferredOutput
         {
             get;
             private set;
@@ -74,8 +85,14 @@ namespace Bam.Core
             {
                 return;
             }
-            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
-            this.OutputStringBuilder.Append(e.Data + '\n');
+            if (this.UseDeferredOutput)
+            {
+                this.OutputStringBuilder.Append(e.Data + '\n');
+            }
+            else
+            {
+                Log.MessageAll("stdout: {0}", e.Data);
+            }
         }
 
         public void
@@ -87,8 +104,14 @@ namespace Bam.Core
             {
                 return;
             }
-            //System.Diagnostics.Process process = sender as System.Diagnostics.Process;
-            this.ErrorStringBuilder.Append(e.Data + '\n');
+            if (this.UseDeferredOutput)
+            {
+                this.ErrorStringBuilder.Append(e.Data + '\n');
+            }
+            else
+            {
+                Log.ErrorMessage("stderr: {0}", e.Data);
+            }
         }
     }
 }

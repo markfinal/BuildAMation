@@ -27,12 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace CommandLineProcessor.Options
+namespace Bam.Core.Options
 {
     public sealed class ImmediateOutput :
-        Bam.Core.IBooleanCommandLineArgument
+        IBooleanCommandLineArgument
     {
-        string Bam.Core.ICommandLineArgument.ContextHelp
+        string ICommandLineArgument.ContextHelp
         {
             get
             {
@@ -40,7 +40,7 @@ namespace CommandLineProcessor.Options
             }
         }
 
-        string Bam.Core.ICommandLineArgument.LongName
+        string ICommandLineArgument.LongName
         {
             get
             {
@@ -48,11 +48,11 @@ namespace CommandLineProcessor.Options
             }
         }
 
-        string Bam.Core.ICommandLineArgument.ShortName
+        string ICommandLineArgument.ShortName
         {
             get
             {
-                return null;
+                return "-i";
             }
         }
     }

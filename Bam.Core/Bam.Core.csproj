@@ -107,6 +107,7 @@
     <Compile Include="Options\DisableCacheAssembly.cs" />
     <Compile Include="Options\ExplainBuildReason.cs" />
     <Compile Include="Options\ForceDefinitionFileUpdate.cs" />
+    <Compile Include="Options\ImmediateOutput.cs" />
     <Compile Include="Options\MakePackage.cs" />
     <Compile Include="Options\MultiThreaded.cs" />
     <Compile Include="Options\PackageDefaultVersion.cs" />

@@ -267,6 +267,7 @@ namespace Bam.Core
             var metaDataType = graph.BuildModeMetaData.GetType();
             var useEvaluation = CheckIfModulesNeedRebuilding(metaDataType);
             var explainRebuild = CommandLineProcessor.Evaluate(new Options.ExplainBuildReason());
+            var immediateOutput = CommandLineProcessor.Evaluate(new Options.ImmediateOutput());
 
             ExecutePreBuild(metaDataType);
 
@@ -304,7 +305,7 @@ namespace Bam.Core
                 {
                     foreach (var module in rank)
                     {
-                        var context = new ExecutionContext(useEvaluation, explainRebuild);
+                        var context = new ExecutionContext(useEvaluation, explainRebuild, immediateOutput);
                         var task = factory.StartNew(() =>
                             {
                                 if (cancellationToken.IsCancellationRequested)
@@ -345,11 +346,11 @@ namespace Bam.Core
                                 }
                                 finally
                                 {
-                                    if (context.OutputStringBuilder.Length > 0)
+                                    if (context.OutputStringBuilder != null && context.OutputStringBuilder.Length > 0)
                                     {
                                         Log.Info(context.OutputStringBuilder.ToString());
                                     }
-                                    if (context.ErrorStringBuilder.Length > 0)
+                                    if (context.ErrorStringBuilder != null && context.ErrorStringBuilder.Length > 0)
                                     {
                                         Log.Info(context.ErrorStringBuilder.ToString());
                                     }
@@ -381,7 +382,7 @@ namespace Bam.Core
                     }
                     foreach (IModuleExecution module in rank)
                     {
-                        var context = new ExecutionContext(useEvaluation, explainRebuild);
+                        var context = new ExecutionContext(useEvaluation, explainRebuild, immediateOutput);
                         try
                         {
                             module.Execute(context);
@@ -393,11 +394,11 @@ namespace Bam.Core
                         }
                         finally
                         {
-                            if (context.OutputStringBuilder.Length > 0)
+                            if (context.OutputStringBuilder != null && context.OutputStringBuilder.Length > 0)
                             {
                                 Log.Info(context.OutputStringBuilder.ToString());
                             }
-                            if (context.ErrorStringBuilder.Length > 0)
+                            if (context.ErrorStringBuilder != null && context.ErrorStringBuilder.Length > 0)
                             {
                                 Log.Info(context.ErrorStringBuilder.ToString());
                             }
