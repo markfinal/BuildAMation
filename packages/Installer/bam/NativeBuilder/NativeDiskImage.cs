@@ -44,11 +44,14 @@ namespace Installer
             var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
             var diskImagePathName = outputPath.ToString();
 
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+
             // create the disk image
             {
                 var args = new Bam.Core.StringArray();
                 args.Add("create");
-                args.Add("-quiet");
+                args.AddRange(commandLine);
                 args.Add("-srcfolder");
                 args.Add(System.String.Format("\"{0}\"", sourceFolderPath.ToString()));
                 args.Add("-size");
@@ -65,7 +68,7 @@ namespace Installer
             {
                 var args = new Bam.Core.StringArray();
                 args.Add("attach");
-                args.Add("-quiet");
+                args.AddRange(commandLine);
                 args.Add(tempDiskImagePathName);
                 CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
@@ -77,7 +80,7 @@ namespace Installer
             {
                 var args = new Bam.Core.StringArray();
                 args.Add("detach");
-                args.Add("-quiet");
+                args.AddRange(commandLine);
                 args.Add(System.String.Format("\"/Volumes/{0}\"", volumeName));
                 CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
@@ -86,7 +89,7 @@ namespace Installer
             {
                 var args = new Bam.Core.StringArray();
                 args.Add("convert");
-                args.Add("-quiet");
+                args.AddRange(commandLine);
                 args.Add(tempDiskImagePathName);
                 args.Add("-format");
                 args.Add("UDZO");

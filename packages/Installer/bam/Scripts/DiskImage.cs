@@ -29,11 +29,6 @@
 #endregion // License
 namespace Installer
 {
-    public sealed class DiskImageSettings :
-        Bam.Core.Settings
-    {
-    }
-
     public sealed class DiskImageCompiler :
         Bam.Core.PreBuiltTool
     {
@@ -41,7 +36,7 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module)
         {
-            return new DiskImageSettings();
+            return new DiskImageSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -60,15 +55,13 @@ namespace Installer
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
 
         private Bam.Core.TokenizedString SourceFolderPath;
-        private Bam.Core.PreBuiltTool Compiler;
         private IDiskImagePolicy Policy;
 
         public DiskImage()
         {
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg"));
 
-            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
-            this.Requires(this.Compiler);
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
         }
 
         public void
@@ -92,7 +85,7 @@ namespace Installer
         {
             if (null != this.Policy)
             {
-                this.Policy.CreateDMG(this, context, this.Compiler, this.SourceFolderPath, this.GeneratedPaths[Key]);
+                this.Policy.CreateDMG(this, context, this.Tool as DiskImageCompiler, this.SourceFolderPath, this.GeneratedPaths[Key]);
             }
         }
 
