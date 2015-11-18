@@ -178,7 +178,7 @@ class ClangCommon(ConfigOptions):
 class Clang64(ClangCommon):
     def __init__(self):
         super(Clang64, self).__init__()
-        self._argList.append("--C.bitdepth=32")
+        self._argList.append("--C.bitdepth=64")
 
 
 visualc = VisualCCommon()
