@@ -130,9 +130,23 @@ namespace XcodeBuilder
         SetProductType(
             EProductType type)
         {
-            if ((this.Type != EProductType.NA) && (this.Type != type))
+            if (this.Type == type)
             {
-                throw new Bam.Core.Exception("Product type has already been set to {0}. Cannot change it", this.Type.ToString());
+                return;
+            }
+
+            if (this.Type != EProductType.NA)
+            {
+                // exception: if there is a multi-config build, and collation modules have been executed on one configuration
+                // prior to linking on another
+                if (EProductType.Executable == type && this.Type == EProductType.ApplicationBundle)
+                {
+                    return;
+                }
+
+                throw new Bam.Core.Exception("Product type has already been set to {0}. Cannot change it to {1}",
+                    this.Type.ToString(),
+                    type.ToString());
             }
 
             this.Type = type;

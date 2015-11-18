@@ -1,3 +1,5 @@
+18-Nov-2015 Fixes #66. Multiple configuration Xcode builds, with modules that are configuration specific, relating to an application bundle to be created, was throwing an exception, as the metadata to identify an application bundle was being set, and then unset, by the modules on different configurations executed at different times (since the application bundle is treated as a single entity in multiple configurations in the Xcode project).
+
 17-Nov-2015 Fixes #65. Added synchronization to XcodeBuilder, to avoid multiple build threads changing lists simultaneously.
 
 16-Nov-2015 Fixes #60. Collation of OSX Frameworks now optionally changes the install name of the dylib, to be in a standard location for an application bundle, from an optional argument to Publisher.Collation.IncludeFramework. The default value of this argument is false, so this is a change of behaviour to earlier versions of the Publisher package. If frameworks are built with install names, that, say, use an rpath, then their install name does not need changing - instead, a suitable RPath search path should be added to the main executable.
