@@ -166,8 +166,12 @@ namespace CommandLineProcessor
                 process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.ErrorDataReceived);
                 process.BeginErrorReadLine();
 
-                // TODO: need to poll for an external cancel op? this currently waits forever
-                process.WaitForExit();
+                // TODO: need to poll for an external cancel op?
+                // poll for the process to exit, as some processes seem to get stuck (hdiutil attach, for example)
+                while (!process.HasExited)
+                {
+                    process.WaitForExit(2000);
+                }
             }
 
             var exitCode = process.ExitCode;

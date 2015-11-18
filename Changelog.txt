@@ -1,3 +1,5 @@
+18-Nov-2015 Fixes #68. Poll every few seconds for process exit in CommandLineProcessor. Some processes, although ended in the OS, did not return from process.WaitForExit.
+
 18-Nov-2015 Fixes #67. Added C.ICommonLinkerSettings.Bits, which is configured automatically, but allows linkers that must pass options specifying the architecture to do so.
 
 18-Nov-2015 Fixes #64. Added test, MultiBitDepthModuleTest, that illustrates how to build a module in both 32-bit and 64-bit.
