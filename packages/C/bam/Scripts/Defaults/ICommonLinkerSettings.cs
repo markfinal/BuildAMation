@@ -36,6 +36,7 @@ namespace C.DefaultSettings
             this C.ICommonLinkerSettings settings,
             Bam.Core.Module module)
         {
+            settings.Bits = (module as CModule).BitDepth;
             settings.OutputType = ELinkerOutput.Executable;
             settings.LibraryPaths = new Bam.Core.TokenizedStringArray();
             settings.Libraries = new Bam.Core.StringArray();

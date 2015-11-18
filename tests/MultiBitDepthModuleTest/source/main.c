@@ -27,6 +27,27 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#if defined(D_COMMON)
-#error D_COMMON must not be defined
+#include <stdio.h>
+
+#if defined(D_BAM_PLATFORM_WINDOWS)
+#include <Windows.h>
 #endif
+
+static void
+Log(
+    const char * const message)
+{
+    fprintf(stdout, "%s", message);
+#if defined(D_BAM_PLATFORM_WINDOWS)
+    OutputDebugString(message);
+#endif
+}
+
+int
+main()
+{
+    char buffer[256];
+    sprintf(buffer, "sizeof(size_t) == %zd\n", sizeof(size_t));
+    Log(buffer);
+    return 0;
+}

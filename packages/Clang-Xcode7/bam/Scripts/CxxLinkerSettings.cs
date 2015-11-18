@@ -64,6 +64,12 @@ namespace Clang
             XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeLinkerImplementation), this, module, configuration);
         }
 
+        C.EBit C.ICommonLinkerSettings.Bits
+        {
+            get;
+            set;
+        }
+
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;

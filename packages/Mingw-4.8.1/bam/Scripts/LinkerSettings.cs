@@ -48,6 +48,12 @@ namespace Mingw
             CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
         }
 
+        C.EBit C.ICommonLinkerSettings.Bits
+        {
+            get;
+            set;
+        }
+
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;

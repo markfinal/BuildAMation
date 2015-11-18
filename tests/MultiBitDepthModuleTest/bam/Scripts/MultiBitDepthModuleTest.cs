@@ -27,80 +27,56 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Gcc
+using Bam.Core;
+namespace MultiBitDepthModuleTest
 {
-    public class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettings,
-        C.IAdditionalSettings,
-        GccCommon.ICommonLinkerSettings
+    sealed class Test32Bit :
+        C.ConsoleApplication
     {
-        public LinkerSettings(
-            Bam.Core.Module module)
+        public Test32Bit()
         {
-            this.InitializeAllInterfaces(module, false, true);
+            // setting the bit-depth must occur in the constructor to affect all modules (link and compile)
+            this.BitDepth = C.EBit.ThirtyTwo;
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, commandLine);
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+            }
+        }
+    }
+
+    sealed class Test64Bit :
+        C.ConsoleApplication
+    {
+        public Test64Bit()
+        {
+            // setting the bit-depth must occur in the constructor to affect all modules (link and compile)
+            this.BitDepth = C.EBit.SixtyFour;
         }
 
-        C.EBit C.ICommonLinkerSettings.Bits
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            get;
-            set;
-        }
+            base.Init(parent);
 
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool GccCommon.ICommonLinkerSettings.CanUseOrigin
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPath
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPathLink
-        {
-            get;
-            set;
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+            }
         }
     }
 }

@@ -123,6 +123,7 @@ class VisualCCommon(ConfigOptions):
     def __init__(self):
         super(VisualCCommon, self).__init__()
         self._argList.append("--C.toolchain=VisualC")
+        self._platforms = ["Win32", "x64"]
         ConfigOptions.RegisterOption("Windows", ("VisualC.version", "Set the VisualC version"))
         ConfigOptions.RegisterOption("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
 
@@ -131,12 +132,14 @@ class VisualC64(VisualCCommon):
     def __init__(self):
         super(VisualC64, self).__init__()
         self._argList.append("--C.bitdepth=64")
+        self._platforms.remove("Win32")
 
 
 class VisualC32(VisualCCommon):
     def __init__(self):
         super(VisualC32, self).__init__()
         self._argList.append("--C.bitdepth=32")
+        self._platforms.remove("x64")
 
 
 class Mingw32(ConfigOptions):
@@ -165,18 +168,27 @@ class Gcc32(GccCommon):
         self._argList.append("--C.bitdepth=32")
 
 
-class Clang64(ConfigOptions):
+class ClangCommon(ConfigOptions):
     def __init__(self):
-        super(Clang64, self).__init__()
+        super(ClangCommon, self).__init__()
         self._argList.append("--Xcode.generateSchemes"); # TODO: this is only for the Xcode build mode
         ConfigOptions.RegisterOption("Darwin", ("Clang.version", "Set the Clang version"))
 
 
+class Clang64(ClangCommon):
+    def __init__(self):
+        super(Clang64, self).__init__()
+        self._argList.append("--C.bitdepth=64")
+
+
+visualc = VisualCCommon()
 visualc64 = VisualC64()
 visualc32 = VisualC32()
 mingw32 = Mingw32()
+gcc = GccCommon()
 gcc32 = Gcc32()
 gcc64 = Gcc64()
+clang = ClangCommon()
 clang64 = Clang64()
 
 

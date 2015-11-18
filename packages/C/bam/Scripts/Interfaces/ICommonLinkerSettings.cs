@@ -33,6 +33,12 @@ namespace C
     public interface ICommonLinkerSettings :
         Bam.Core.ISettingsBase
     {
+        EBit Bits
+        {
+            get;
+            set;
+        }
+
         C.ELinkerOutput OutputType
         {
             get;

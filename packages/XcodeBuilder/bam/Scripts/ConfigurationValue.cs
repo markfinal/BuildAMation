@@ -49,6 +49,12 @@ namespace XcodeBuilder
         Merge(
             ConfigurationValue value)
         {
+            var newValue = (value as UniqueConfigurationValue).Value;
+            if (this.Value == newValue)
+            {
+                return;
+            }
+            Bam.Core.Log.Info("Warning: Replacing '{0}' with '{1}'", this.Value, newValue);
             this.Value = (value as UniqueConfigurationValue).Value;
         }
 
