@@ -3,6 +3,7 @@
   <Description>A new package called MultiBitDepthModuleTest</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Gcc" version="4.8" />
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="12.0" />
     <Package name="VSSolutionBuilder" />

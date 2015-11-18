@@ -37,7 +37,7 @@ static void
 Log(
     const char * const message)
 {
-    printf(message);
+    fprintf(stdout, "%s", message);
 #if defined(D_BAM_PLATFORM_WINDOWS)
     OutputDebugString(message);
 #endif
@@ -47,7 +47,7 @@ int
 main()
 {
     char buffer[256];
-    sprintf(buffer, "sizeof(size_t) == %d\n", sizeof(size_t));
+    sprintf(buffer, "sizeof(size_t) == %zd\n", sizeof(size_t));
     Log(buffer);
     return 0;
 }
