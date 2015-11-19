@@ -39,7 +39,6 @@ namespace CommandLineProcessor
             Bam.Core.StringArray commandLine)
         {
             var stringArrayType = typeof(Bam.Core.StringArray);
-            var commandOrder = new Bam.Core.Array<System.Tuple<int, Bam.Core.StringArray>>();
             foreach (var i in toolSettings.Interfaces())
             {
                 var method = conversionClass.GetMethod("Convert", new[] { i, stringArrayType });
@@ -59,19 +58,7 @@ namespace CommandLineProcessor
                 {
                     throw new Bam.Core.Exception(exception.InnerException, "Command line conversion error:");
                 }
-
-                var precedenceAttribs = i.GetCustomAttributes(typeof(Bam.Core.SettingsPrecedenceAttribute), false);
-                int precedence = 0;
-                if (precedenceAttribs.Length > 0)
-                {
-                    precedence = (precedenceAttribs[0] as Bam.Core.SettingsPrecedenceAttribute).Order;
-                }
-                commandOrder.Add(new System.Tuple<int, Bam.Core.StringArray>(precedence, commands));
-            }
-
-            foreach (var commands in commandOrder.OrderByDescending(item => item.Item1))
-            {
-                commandLine.AddRange(commands.Item2);
+                commandLine.AddRange(commands);
             }
         }
     }

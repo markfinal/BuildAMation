@@ -70,7 +70,21 @@ namespace Bam.Core
         {
             // find true interfaces
             var baseI = typeof(ISettingsBase);
-            var interfaces = this.GetType().GetInterfaces().Where(item => (item != baseI) && baseI.IsAssignableFrom(item));
+            // note that GetInterfaces does not return in a deterministic order
+            // so use any precedence to order those that need to be (highest first)
+            var interfaces = this.GetType().GetInterfaces().
+                Where(item => (item != baseI) && baseI.IsAssignableFrom(item)).
+                OrderByDescending(
+                    item =>
+                    {
+                        var precedenceAttribs = item.GetCustomAttributes(typeof(SettingsPrecedenceAttribute), false);
+                        if (precedenceAttribs.Length > 0)
+                        {
+                            return (precedenceAttribs[0] as SettingsPrecedenceAttribute).Order;
+                        }
+                        return 0;
+                    });
+
             foreach (var i in interfaces)
             {
                 yield return i;
