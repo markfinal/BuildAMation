@@ -269,17 +269,20 @@ namespace XcodeBuilder
         DependsOn(
             Target other)
         {
-            this.EnsureFrameworksBuildPhaseExists();
-            if (this.Project == other.Project)
+            lock (this)
             {
-                var linkedBuildFile = this.Project.EnsureBuildFileExists(other.FileReference);
-                this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
-            }
-            else
-            {
-                var fileRefAlias = other.FileReference.MakeLinkableAlias(this.Module, this.Project);
-                var linkedBuildFile = this.Project.EnsureBuildFileExists(fileRefAlias);
-                this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
+                this.EnsureFrameworksBuildPhaseExists();
+                if (this.Project == other.Project)
+                {
+                    var linkedBuildFile = this.Project.EnsureBuildFileExists(other.FileReference);
+                    this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
+                }
+                else
+                {
+                    var fileRefAlias = other.FileReference.MakeLinkableAlias(this.Module, this.Project);
+                    var linkedBuildFile = this.Project.EnsureBuildFileExists(fileRefAlias);
+                    this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
+                }
             }
         }
 
@@ -287,71 +290,74 @@ namespace XcodeBuilder
         Requires(
             Target other)
         {
-            var existingTargetDep = this.TargetDependencies.Where(item => item.Dependency == other).FirstOrDefault();
-            if (null != existingTargetDep)
+            lock (this)
             {
-                return;
-            }
-            if (this.Project == other.Project)
-            {
-                var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == this.Project) && (item.Remote == other)).FirstOrDefault();
-                if (null == itemProxy)
+                var existingTargetDep = this.TargetDependencies.Where(item => item.Dependency == other).FirstOrDefault();
+                if (null != existingTargetDep)
                 {
-                    itemProxy = new ContainerItemProxy(this.Project, this.Project, other, false);
+                    return;
                 }
-
-                var dependency = this.TargetDependencies.Where(item => (item.Dependency == other) && (item.Proxy == itemProxy)).FirstOrDefault();
-                if (null == dependency)
+                if (this.Project == other.Project)
                 {
-                    dependency = new TargetDependency(this.Project, other, itemProxy);
-                    this.TargetDependencies.AddUnique(dependency);
+                    var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == this.Project) && (item.Remote == other)).FirstOrDefault();
+                    if (null == itemProxy)
+                    {
+                        itemProxy = new ContainerItemProxy(this.Project, this.Project, other, false);
+                    }
+
+                    var dependency = this.TargetDependencies.Where(item => (item.Dependency == other) && (item.Proxy == itemProxy)).FirstOrDefault();
+                    if (null == dependency)
+                    {
+                        dependency = new TargetDependency(this.Project, other, itemProxy);
+                        this.TargetDependencies.AddUnique(dependency);
+                    }
                 }
-            }
-            else
-            {
-                var fileRef = this.Project.EnsureFileReferenceExists(
-                    other.Project.ProjectDir,
-                    FileReference.EFileType.Project,
-                    explicitType: false,
-                    sourceTree: FileReference.ESourceTree.Absolute);
-                this.Project.MainGroup.AddChild(fileRef);
-
-                var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == fileRef) && (item.Remote == other)).FirstOrDefault();
-                if (null == itemProxy)
+                else
                 {
-                    itemProxy = new ContainerItemProxy(this.Project, fileRef, other, false);
-                }
+                    var fileRef = this.Project.EnsureFileReferenceExists(
+                        other.Project.ProjectDir,
+                        FileReference.EFileType.Project,
+                        explicitType: false,
+                        sourceTree: FileReference.ESourceTree.Absolute);
+                    this.Project.MainGroup.AddChild(fileRef);
 
-                var refProxy = this.Project.ReferenceProxies.Where(item => item.RemoteRef == itemProxy).FirstOrDefault();
-                if (null == refProxy)
-                {
-                    refProxy = new ReferenceProxy(
-                        this.Project,
-                        other.FileReference.Type,
-                        other.FileReference.Path,
-                        itemProxy,
-                        other.FileReference.SourceTree);
-                }
+                    var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == fileRef) && (item.Remote == other)).FirstOrDefault();
+                    if (null == itemProxy)
+                    {
+                        itemProxy = new ContainerItemProxy(this.Project, fileRef, other, false);
+                    }
 
-                var productRefGroup = this.Project.Groups.Where(item => item.Children.Contains(refProxy)).FirstOrDefault();
-                if (null == productRefGroup)
-                {
-                    productRefGroup = new Group("Products");
-                    productRefGroup.AddChild(refProxy);
-                    this.Project.Groups.Add(productRefGroup);
-                }
+                    var refProxy = this.Project.ReferenceProxies.Where(item => item.RemoteRef == itemProxy).FirstOrDefault();
+                    if (null == refProxy)
+                    {
+                        refProxy = new ReferenceProxy(
+                            this.Project,
+                            other.FileReference.Type,
+                            other.FileReference.Path,
+                            itemProxy,
+                            other.FileReference.SourceTree);
+                    }
 
-                var productRef = this.Project.ProjectReferences.Where(item => item.Key == productRefGroup).FirstOrDefault();
-                if (productRef.Equals(default(System.Collections.Generic.Dictionary<Group, FileReference>)))
-                {
-                    this.Project.ProjectReferences.Add(productRefGroup, fileRef);
-                }
+                    var productRefGroup = this.Project.Groups.Where(item => item.Children.Contains(refProxy)).FirstOrDefault();
+                    if (null == productRefGroup)
+                    {
+                        productRefGroup = new Group("Products");
+                        productRefGroup.AddChild(refProxy);
+                        this.Project.Groups.Add(productRefGroup);
+                    }
 
-                var dependency = this.TargetDependencies.Where(item => (item.Dependency == null) && (item.Proxy == itemProxy)).FirstOrDefault();
-                if (null == dependency)
-                {
-                    dependency = new TargetDependency(this.Project, null, itemProxy);
-                    this.TargetDependencies.AddUnique(dependency);
+                    var productRef = this.Project.ProjectReferences.Where(item => item.Key == productRefGroup).FirstOrDefault();
+                    if (productRef.Equals(default(System.Collections.Generic.Dictionary<Group, FileReference>)))
+                    {
+                        this.Project.ProjectReferences.Add(productRefGroup, fileRef);
+                    }
+
+                    var dependency = this.TargetDependencies.Where(item => (item.Dependency == null) && (item.Proxy == itemProxy)).FirstOrDefault();
+                    if (null == dependency)
+                    {
+                        dependency = new TargetDependency(this.Project, null, itemProxy);
+                        this.TargetDependencies.AddUnique(dependency);
+                    }
                 }
             }
         }
@@ -361,28 +367,31 @@ namespace XcodeBuilder
             Bam.Core.StringArray commands,
             Configuration configuration)
         {
-            if (null == this.PreBuildBuildPhase)
+            lock (this)
             {
-                var preBuildBuildPhase = new ShellScriptBuildPhase(this, "Pre Build", (target) =>
+                if (null == this.PreBuildBuildPhase)
                 {
-                    var content = new System.Text.StringBuilder();
-                    foreach (var config in target.ConfigurationList)
+                    var preBuildBuildPhase = new ShellScriptBuildPhase(this, "Pre Build", (target) =>
                     {
-                        content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
-                        foreach (var line in config.PreBuildCommands)
+                        var content = new System.Text.StringBuilder();
+                        foreach (var config in target.ConfigurationList)
                         {
-                            content.AppendFormat("  {0}\\n", line);
+                            content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                            foreach (var line in config.PreBuildCommands)
+                            {
+                                content.AppendFormat("  {0}\\n", line);
+                            }
+                            content.AppendFormat("fi\\n\\n");
                         }
-                        content.AppendFormat("fi\\n\\n");
-                    }
-                    return content.ToString();
-                });
-                this.Project.ShellScriptsBuildPhases.Add(preBuildBuildPhase);
-                this.PreBuildBuildPhase = preBuildBuildPhase;
-                // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
-            }
+                        return content.ToString();
+                    });
+                    this.Project.ShellScriptsBuildPhases.Add(preBuildBuildPhase);
+                    this.PreBuildBuildPhase = preBuildBuildPhase;
+                    // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
+                }
 
-            configuration.PreBuildCommands.AddRange(commands);
+                configuration.PreBuildCommands.AddRange(commands);
+            }
         }
 
         public void
@@ -390,28 +399,31 @@ namespace XcodeBuilder
             Bam.Core.StringArray commands,
             Configuration configuration)
         {
-            if (null == this.PostBuildBuildPhase)
+            lock (this)
             {
-                var postBuildBuildPhase = new ShellScriptBuildPhase(this, "Post Build", (target) =>
+                if (null == this.PostBuildBuildPhase)
                 {
-                    var content = new System.Text.StringBuilder();
-                    foreach (var config in target.ConfigurationList)
+                    var postBuildBuildPhase = new ShellScriptBuildPhase(this, "Post Build", (target) =>
                     {
-                        content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
-                        foreach (var line in config.PostBuildCommands)
+                        var content = new System.Text.StringBuilder();
+                        foreach (var config in target.ConfigurationList)
                         {
-                            content.AppendFormat("  {0}\\n", line);
+                            content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                            foreach (var line in config.PostBuildCommands)
+                            {
+                                content.AppendFormat("  {0}\\n", line);
+                            }
+                            content.AppendFormat("fi\\n\\n");
                         }
-                        content.AppendFormat("fi\\n\\n");
-                    }
-                    return content.ToString();
-                });
-                this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
-                this.PostBuildBuildPhase = postBuildBuildPhase;
-                // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
-            }
+                        return content.ToString();
+                    });
+                    this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
+                    this.PostBuildBuildPhase = postBuildBuildPhase;
+                    // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
+                }
 
-            configuration.PostBuildCommands.AddRange(commands);
+                configuration.PostBuildCommands.AddRange(commands);
+            }
         }
 
         public void
