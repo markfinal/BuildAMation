@@ -1,3 +1,5 @@
+19-Nov-2015 Fixes #71. Xcode build settings with multiple values are now serialized as a comma separated list scoped by parentheses. Any escaped characters are enforced in the serialized project files.
+
 19-Nov-2015 Fixes #73. Bam.Core.Settings.Interfaces() now returns all implemented settings interfaces from the Settings instance, ordered by precedence (Bam.Core.SettingsPrecedenceAttribute). This ensures all build modes convert interfaces in a consistent order.
 
 18-Nov-2015 Fixes #70. Added --immediateoutput (-i) command line option the Bam Core. Usually, output is deferred for the Bam.Core.Executor to display (so it is not interleaved during multithreaded builds), but if the process were to stall, then no output would be seen. Using this option displays the output (both stdout and stderr) immediately, useful for diagnosing issues. Default remains deferred output.

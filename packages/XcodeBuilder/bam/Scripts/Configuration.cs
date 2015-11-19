@@ -113,7 +113,12 @@ namespace XcodeBuilder
             text.AppendLine();
             foreach (var setting in this.Settings.OrderBy(key => key.Key))
             {
-                text.AppendFormat("{0}{1} = \"{2}\";", indent3, setting.Key, setting.Value);
+                var value = setting.Value.ToString();
+                if (null == value)
+                {
+                    continue;
+                }
+                text.AppendFormat("{0}{1} = {2};", indent3, setting.Key, value);
                 text.AppendLine();
             }
             text.AppendFormat("{0}}};", indent2);

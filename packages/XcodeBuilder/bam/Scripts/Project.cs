@@ -375,12 +375,12 @@ namespace XcodeBuilder
                     var diff = target.SourcesBuildPhase.BuildFiles.Complement(config.BuildFiles);
                     if (diff.Count > 0)
                     {
-                        var excluded = new Bam.Core.StringArray();
+                        var excluded = new MultiConfigurationValue();
                         foreach (var file in diff)
                         {
-                            excluded.AddUnique(file.FileRef.Path.Parse());
+                            excluded.Add(file.FileRef.Path.Parse());
                         }
-                        config["EXCLUDED_SOURCE_FILE_NAMES"] = new UniqueConfigurationValue(excluded.ToString(" "));
+                        config["EXCLUDED_SOURCE_FILE_NAMES"] = excluded;
                     }
                 }
             }
