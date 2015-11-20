@@ -287,7 +287,14 @@ namespace Bam.Core
                         // children inherit the settings from their parents
                         m.UsePublicPatches(m.Tool);
                     }
-                    m.Settings = (m.Tool as ITool).CreateDefaultSettings(m);
+                    try
+                    {
+                        m.Settings = (m.Tool as ITool).CreateDefaultSettings(m);
+                    }
+                    catch (System.TypeInitializationException ex)
+                    {
+                        throw ex.InnerException;
+                    }
                 }
             }
             if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
