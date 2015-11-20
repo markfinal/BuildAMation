@@ -99,7 +99,16 @@ namespace ClangCommon
                 }
                 else
                 {
-                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, define.Value));
+                    if (define.Value.Contains("\""))
+                    {
+                        // specifically, without the outer quotes, this was causing an issue in a bash shell
+                        // when the value contained an escaped double quote
+                        commandLine.Add(System.String.Format("-D{0}=\"{1}\"", define.Key, define.Value));
+                    }
+                    else
+                    {
+                        commandLine.Add(System.String.Format("-D{0}={1}", define.Key, define.Value));
+                    }
                 }
             }
             foreach (var undefine in settings.PreprocessorUndefines)
