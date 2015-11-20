@@ -58,7 +58,7 @@ namespace VSSolutionBuilder
             this.PlatformToolset = visualCMeta.PlatformToolset;
             this.UseDebugLibraries = false;
             this.CharacterSet = C.ECharacterSet.NotSet;
-            this.WholeProgramOptimization = (module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug);
+            this.WholeProgramOptimization = false;// TODO: false is consistent with Native builds (module.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug);
 
             this.SettingGroups = new Bam.Core.Array<VSSettingsGroup>();
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
