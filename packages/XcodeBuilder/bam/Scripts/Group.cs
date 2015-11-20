@@ -64,10 +64,13 @@ namespace XcodeBuilder
         AddChild(
             Object other)
         {
-            var existingRef = this.Children.Where(item => item.GUID == other.GUID).FirstOrDefault();
-            if (null == existingRef)
+            lock (this.Children)
             {
-                this.Children.Add(other);
+                var existingRef = this.Children.Where(item => item.GUID == other.GUID).FirstOrDefault();
+                if (null == existingRef)
+                {
+                    this.Children.Add(other);
+                }
             }
         }
 
