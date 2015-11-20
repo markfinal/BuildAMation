@@ -1,3 +1,15 @@
+20-Nov-2015 Fixes #76. Added synchronization to VSSolution functions to avoid collections changing in multiple threads concurrently.
+
+19-Nov-2015 Fixes #71. Xcode build settings with multiple values are now serialized as a comma separated list scoped by parentheses. Any escaped characters are enforced in the serialized project files.
+
+19-Nov-2015 Fixes #73. Bam.Core.Settings.Interfaces() now returns all implemented settings interfaces from the Settings instance, ordered by precedence (Bam.Core.SettingsPrecedenceAttribute). This ensures all build modes convert interfaces in a consistent order.
+
+18-Nov-2015 Fixes #70. Added --immediateoutput (-i) command line option the Bam Core. Usually, output is deferred for the Bam.Core.Executor to display (so it is not interleaved during multithreaded builds), but if the process were to stall, then no output would be seen. Using this option displays the output (both stdout and stderr) immediately, useful for diagnosing issues. Default remains deferred output.
+
+18-Nov-2015 Fixes #69. Installer package now exposes a verbosity setting on the DiskImage module, to configure how much output is logged from hdiutil. The options are Default, Quiet, Verbose, Debug, corresponding to the flags (<empty>, '-quiet', '-verbose', '-debug'). Default is the default setting.
+
+18-Nov-2015 Fixes #68. Poll every few seconds for process exit in CommandLineProcessor. Some processes, although ended in the OS, did not return from process.WaitForExit.
+
 18-Nov-2015 Fixes #67. Added C.ICommonLinkerSettings.Bits, which is configured automatically, but allows linkers that must pass options specifying the architecture to do so.
 
 18-Nov-2015 Fixes #64. Added test, MultiBitDepthModuleTest, that illustrates how to build a module in both 32-bit and 64-bit.

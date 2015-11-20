@@ -27,39 +27,34 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
-namespace CommandLineProcessor
+using Bam.Core;
+namespace Installer
 {
-    public static class Conversion
+    public sealed class DiskImageSettings :
+        Bam.Core.Settings,
+        CommandLineProcessor.IConvertToCommandLine,
+        IDiskImageSettings
     {
-        public static void
-        Convert(
-            System.Type conversionClass,
-            Bam.Core.Settings toolSettings,
+        public DiskImageSettings()
+        {}
+
+        public DiskImageSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
-            var stringArrayType = typeof(Bam.Core.StringArray);
-            foreach (var i in toolSettings.Interfaces())
-            {
-                var method = conversionClass.GetMethod("Convert", new[] { i, stringArrayType });
-                if (null == method)
-                {
-                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2})",
-                        conversionClass.ToString(),
-                        i.ToString(),
-                        stringArrayType);
-                }
-                var commands = new Bam.Core.StringArray();
-                try
-                {
-                    method.Invoke(null, new object[] { toolSettings, commands });
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    throw new Bam.Core.Exception(exception.InnerException, "Command line conversion error:");
-                }
-                commandLine.AddRange(commands);
-            }
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+        }
+
+        EDiskImageVerbosity IDiskImageSettings.Verbosity
+        {
+            get;
+            set;
         }
     }
 }

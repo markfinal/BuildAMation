@@ -27,39 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
-namespace CommandLineProcessor
+namespace Installer
 {
-    public static class Conversion
+    public enum EDiskImageVerbosity
     {
-        public static void
-        Convert(
-            System.Type conversionClass,
-            Bam.Core.Settings toolSettings,
-            Bam.Core.StringArray commandLine)
-        {
-            var stringArrayType = typeof(Bam.Core.StringArray);
-            foreach (var i in toolSettings.Interfaces())
-            {
-                var method = conversionClass.GetMethod("Convert", new[] { i, stringArrayType });
-                if (null == method)
-                {
-                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2})",
-                        conversionClass.ToString(),
-                        i.ToString(),
-                        stringArrayType);
-                }
-                var commands = new Bam.Core.StringArray();
-                try
-                {
-                    method.Invoke(null, new object[] { toolSettings, commands });
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    throw new Bam.Core.Exception(exception.InnerException, "Command line conversion error:");
-                }
-                commandLine.AddRange(commands);
-            }
-        }
+        Default,
+        Quiet,
+        Verbose,
+        Debug
     }
 }

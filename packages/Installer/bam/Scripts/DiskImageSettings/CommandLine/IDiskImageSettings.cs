@@ -27,38 +27,34 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
-namespace CommandLineProcessor
+namespace Installer
 {
-    public static class Conversion
+    public static partial class CommandLineImplementation
     {
         public static void
         Convert(
-            System.Type conversionClass,
-            Bam.Core.Settings toolSettings,
+            this IDiskImageSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            var stringArrayType = typeof(Bam.Core.StringArray);
-            foreach (var i in toolSettings.Interfaces())
+            switch (settings.Verbosity)
             {
-                var method = conversionClass.GetMethod("Convert", new[] { i, stringArrayType });
-                if (null == method)
-                {
-                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2})",
-                        conversionClass.ToString(),
-                        i.ToString(),
-                        stringArrayType);
-                }
-                var commands = new Bam.Core.StringArray();
-                try
-                {
-                    method.Invoke(null, new object[] { toolSettings, commands });
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    throw new Bam.Core.Exception(exception.InnerException, "Command line conversion error:");
-                }
-                commandLine.AddRange(commands);
+            case EDiskImageVerbosity.Default:
+                break;
+
+            case EDiskImageVerbosity.Quiet:
+                commandLine.Add("-quiet");
+                break;
+
+            case EDiskImageVerbosity.Verbose:
+                commandLine.Add("-verbose");
+                break;
+
+            case EDiskImageVerbosity.Debug:
+                commandLine.Add("-debug");
+                break;
+
+            default:
+                throw new Bam.Core.Exception("Unknown disk image verbosity level, {0}", settings.Verbosity.ToString());
             }
         }
     }

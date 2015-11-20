@@ -31,6 +31,15 @@ namespace XcodeBuilder
 {
     public abstract class ConfigurationValue
     {
+        private static char[] SpecialChars = { '$', '@', '=', '+' };
+
+        protected bool
+        StringRequiresQuoting(
+            string input)
+        {
+            return (-1 != input.IndexOfAny(SpecialChars));
+        }
+
         public abstract void
         Merge(
             ConfigurationValue value);
@@ -67,6 +76,14 @@ namespace XcodeBuilder
         public override string
         ToString()
         {
+            if (System.String.IsNullOrEmpty(this.Value))
+            {
+                return null;
+            }
+            if (StringRequiresQuoting(this.Value))
+            {
+                return System.String.Format("\"{0}\"", this.Value);
+            }
             return this.Value;
         }
     }
@@ -109,7 +126,25 @@ namespace XcodeBuilder
         public override string
         ToString()
         {
-            return this.Value.ToString(' ');
+            if (this.Value.Count == 0)
+            {
+                return null;
+            }
+            var value = new System.Text.StringBuilder();
+            value.AppendFormat("(");
+            foreach (var item in this.Value)
+            {
+                if (StringRequiresQuoting(item))
+                {
+                    value.AppendFormat("\"{0}\", ", item);
+                }
+                else
+                {
+                    value.AppendFormat("{0}, ", item);
+                }
+            }
+            value.AppendFormat(")");
+            return value.ToString();
         }
     }
 }

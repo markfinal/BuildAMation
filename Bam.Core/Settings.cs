@@ -48,6 +48,8 @@ namespace Bam.Core
         }
 
         private static ISitePolicy LocalPolicy = null;
+
+        // TODO: Could this be System.Collections.Concurrent.ConcurrenDictionary to avoid the explicit lock below?
         private static System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces> Cache = new System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces>();
 
         static Settings()
@@ -70,7 +72,21 @@ namespace Bam.Core
         {
             // find true interfaces
             var baseI = typeof(ISettingsBase);
-            var interfaces = this.GetType().GetInterfaces().Where(item => (item != baseI) && baseI.IsAssignableFrom(item));
+            // note that GetInterfaces does not return in a deterministic order
+            // so use any precedence to order those that need to be (highest first)
+            var interfaces = this.GetType().GetInterfaces().
+                Where(item => (item != baseI) && baseI.IsAssignableFrom(item)).
+                OrderByDescending(
+                    item =>
+                    {
+                        var precedenceAttribs = item.GetCustomAttributes(typeof(SettingsPrecedenceAttribute), false);
+                        if (precedenceAttribs.Length > 0)
+                        {
+                            return (precedenceAttribs[0] as SettingsPrecedenceAttribute).Order;
+                        }
+                        return 0;
+                    });
+
             foreach (var i in interfaces)
             {
                 yield return i;
@@ -85,29 +101,32 @@ namespace Bam.Core
         {
             this.Module = module;
             var settingsType = this.GetType();
-            if (!Cache.ContainsKey(settingsType))
+            lock (Cache)
             {
-                var attributeType = typeof(SettingsExtensionsAttribute);
-                var interfaces = new SettingsInterfaces();
-                foreach (var i in this.Interfaces())
+                if (!Cache.ContainsKey(settingsType))
                 {
-                    var attributeArray = i.GetCustomAttributes(attributeType, false);
-                    if (0 == attributeArray.Length)
+                    var attributeType = typeof(SettingsExtensionsAttribute);
+                    var interfaces = new SettingsInterfaces();
+                    foreach (var i in this.Interfaces())
                     {
-                        throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                        var attributeArray = i.GetCustomAttributes(attributeType, false);
+                        if (0 == attributeArray.Length)
+                        {
+                            throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                        }
+
+                        var newData = new InterfaceData();
+                        newData.InterfaceType = i;
+
+                        var attribute = attributeArray[0] as SettingsExtensionsAttribute;
+                        // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
+                        // although it won't then be a centralized definition, so the extension method as-is is probably better
+                        newData.emptyMethod = attribute.GetMethod("Empty", new[] { i });
+                        newData.defaultMethod = attribute.GetMethod("Defaults", new[] { i, typeof(Module) });
+                        interfaces.Data.Add(newData);
                     }
-
-                    var newData = new InterfaceData();
-                    newData.InterfaceType = i;
-
-                    var attribute = attributeArray[0] as SettingsExtensionsAttribute;
-                    // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
-                    // although it won't then be a centralized definition, so the extension method as-is is probably better
-                    newData.emptyMethod = attribute.GetMethod("Empty", new[] { i });
-                    newData.defaultMethod = attribute.GetMethod("Defaults", new[] { i, typeof(Module) });
-                    interfaces.Data.Add(newData);
+                    Cache.Add(settingsType, interfaces);
                 }
-                Cache.Add(settingsType, interfaces);
             }
 
             var data = Cache[settingsType];

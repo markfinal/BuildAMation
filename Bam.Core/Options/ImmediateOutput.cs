@@ -27,38 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
-namespace CommandLineProcessor
+namespace Bam.Core.Options
 {
-    public static class Conversion
+    public sealed class ImmediateOutput :
+        IBooleanCommandLineArgument
     {
-        public static void
-        Convert(
-            System.Type conversionClass,
-            Bam.Core.Settings toolSettings,
-            Bam.Core.StringArray commandLine)
+        string ICommandLineArgument.ContextHelp
         {
-            var stringArrayType = typeof(Bam.Core.StringArray);
-            foreach (var i in toolSettings.Interfaces())
+            get
             {
-                var method = conversionClass.GetMethod("Convert", new[] { i, stringArrayType });
-                if (null == method)
-                {
-                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2})",
-                        conversionClass.ToString(),
-                        i.ToString(),
-                        stringArrayType);
-                }
-                var commands = new Bam.Core.StringArray();
-                try
-                {
-                    method.Invoke(null, new object[] { toolSettings, commands });
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    throw new Bam.Core.Exception(exception.InnerException, "Command line conversion error:");
-                }
-                commandLine.AddRange(commands);
+                return "Display tool output immediately for debugging, rather than deferred for the Bam.Core.Executor to display. Deferred by default.";
+            }
+        }
+
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--immediateoutput";
+            }
+        }
+
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return "-i";
             }
         }
     }

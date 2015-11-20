@@ -166,10 +166,15 @@ namespace CommandLineProcessor
                 process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.ErrorDataReceived);
                 process.BeginErrorReadLine();
 
-                // TODO: need to poll for an external cancel op? this currently waits forever
-                process.WaitForExit();
+                // TODO: need to poll for an external cancel op?
+                // poll for the process to exit, as some processes seem to get stuck (hdiutil attach, for example)
+                while (!process.HasExited)
+                {
+                    process.WaitForExit(2000);
+                }
             }
 
+            // TODO: there is a check above for whether process is null
             var exitCode = process.ExitCode;
             //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
             process.Close();

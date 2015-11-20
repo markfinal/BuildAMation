@@ -34,6 +34,27 @@ namespace Bam.Core
     {
         protected System.Collections.Generic.List<T> list = new System.Collections.Generic.List<T>();
 
+        private void
+        AddToEnd(
+            T item)
+        {
+            if (null == item)
+            {
+                throw new Exception("Cannot add null");
+            }
+            this.list.Add(item);
+        }
+
+        private void
+        AddMultipleToEnd(
+            System.Collections.Generic.IEnumerable<T> items)
+        {
+            foreach (var item in items)
+            {
+                this.AddToEnd(item);
+            }
+        }
+
         public
         Array()
         {}
@@ -42,38 +63,39 @@ namespace Bam.Core
         Array(
             params T[] itemsToAdd)
         {
-            this.list.AddRange(itemsToAdd);
+            this.AddMultipleToEnd(itemsToAdd);
         }
 
         public
         Array(
             System.Collections.Generic.IEnumerable<T> items)
         {
-            this.list.AddRange(items);
+            this.AddMultipleToEnd(items);
         }
 
         public virtual void
         Add(
             T item)
         {
-            this.list.Add(item);
+            this.AddToEnd(item);
         }
 
         public void
         AddUnique(
             T item)
         {
-            if (!this.list.Contains(item))
+            if (this.list.Contains(item))
             {
-                this.Add(item);
+                return;
             }
+            this.AddToEnd(item);
         }
 
         public void
         AddRange(
             T[] itemsToAdd)
         {
-            this.list.AddRange(itemsToAdd);
+            this.AddMultipleToEnd(itemsToAdd);
         }
 
         public void
@@ -87,7 +109,7 @@ namespace Bam.Core
 
             foreach (var item in array)
             {
-                this.list.Add(item);
+                this.AddToEnd(item);
             }
         }
 
@@ -95,7 +117,7 @@ namespace Bam.Core
         AddRange(
             System.Collections.Generic.IEnumerable<T> items)
         {
-            this.list.AddRange(items);
+            this.AddMultipleToEnd(items);
         }
 
         public void
@@ -109,10 +131,11 @@ namespace Bam.Core
 
             foreach (var item in array)
             {
-                if (!this.list.Contains(item))
+                if (this.list.Contains(item))
                 {
-                    this.list.Add(item);
+                    continue;
                 }
+                this.AddToEnd(item);
             }
         }
 
@@ -126,7 +149,7 @@ namespace Bam.Core
                 {
                     continue;
                 }
-                this.list.Add(item);
+                this.AddToEnd(item);
             }
         }
 
@@ -135,6 +158,10 @@ namespace Bam.Core
             int index,
             T item)
         {
+            if (null == item)
+            {
+                throw new Exception("Cannot insert null at index {0}", index);
+            }
             this.list.Insert(index, item);
         }
 
@@ -235,6 +262,10 @@ namespace Bam.Core
             var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
             {
+                if (null == item)
+                {
+                    throw new Exception("Item in array was null");
+                }
                 builder.AppendFormat("{0}{1}", item.ToString(), separator);
             }
             // remove the trailing separator
@@ -279,10 +310,11 @@ namespace Bam.Core
             var intersect = new Array<T>();
             foreach (var item in this.list)
             {
-                if (other.list.Contains(item))
+                if (!other.list.Contains(item))
                 {
-                    intersect.list.Add(item);
+                    continue;
                 }
+                intersect.AddToEnd(item);
             }
             return intersect;
         }
@@ -294,10 +326,11 @@ namespace Bam.Core
             var complement = new Array<T>();
             foreach (var item in this.list)
             {
-                if (!other.list.Contains(item))
+                if (other.list.Contains(item))
                 {
-                    complement.list.Add(item);
+                    continue;
                 }
+                complement.AddToEnd(item);
             }
             return complement;
         }

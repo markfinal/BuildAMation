@@ -120,54 +120,72 @@ namespace VSSolutionBuilder
         AddHeader(
             VSSettingsGroup header)
         {
-            this.Headers.AddUnique(header);
-            this.Filter.AddHeader(header.Include);
+            lock (this)
+            {
+                this.Headers.AddUnique(header);
+                this.Filter.AddHeader(header.Include);
+            }
         }
 
         public void
         AddSource(
             VSSettingsGroup source)
         {
-            this.Sources.AddUnique(source);
-            this.Filter.AddSource(source.Include);
+            lock (this)
+            {
+                this.Sources.AddUnique(source);
+                this.Filter.AddSource(source.Include);
+            }
         }
 
         public void
         AddOtherFile(
             VSSettingsGroup other)
         {
-            this.Others.AddUnique(other);
-            this.Filter.AddOther(other.Include);
+            lock (this)
+            {
+                this.Others.AddUnique(other);
+                this.Filter.AddOther(other.Include);
+            }
         }
 
         public void
         AddResourceFile(
             VSSettingsGroup other)
         {
-            this.Resources.AddUnique(other);
-            this.Filter.AddResource(other.Include);
+            lock (this)
+            {
+                this.Resources.AddUnique(other);
+                this.Filter.AddResource(other.Include);
+            }
         }
 
         public void
         RequiresProject(
             VSProject dependentProject)
         {
-            if (this.LinkDependentProjects.Contains(dependentProject))
+            lock (this)
             {
-                throw new Bam.Core.Exception("Project already exists as a link dependency");
+                if (this.LinkDependentProjects.Contains(dependentProject))
+                {
+                    throw new Bam.Core.Exception("Project already exists as a link dependency");
+                }
+                this.OrderOnlyDependentProjects.AddUnique(dependentProject);
             }
-            this.OrderOnlyDependentProjects.AddUnique(dependentProject);
         }
 
         public void
         LinkAgainstProject(
             VSProject dependentProject)
         {
-            if (this.OrderOnlyDependentProjects.Contains(dependentProject))
+            lock (this)
             {
-                throw new Bam.Core.Exception("Project already exists as an order only dependency");
+                if (this.OrderOnlyDependentProjects.Contains(dependentProject))
+                {
+                    throw new Bam.Core.Exception("Project already exists as an order only dependency");
+                }
+                this.LinkDependentProjects.AddUnique(dependentProject);
             }
-            this.LinkDependentProjects.AddUnique(dependentProject);
         }
 
         public string
