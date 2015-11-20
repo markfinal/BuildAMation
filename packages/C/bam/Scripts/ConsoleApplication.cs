@@ -74,7 +74,8 @@ namespace C
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
+            var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
+            var source = this.InternalCreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
@@ -85,7 +86,8 @@ namespace C
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, this.ConsolePreprocessor);
+            var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
+            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
