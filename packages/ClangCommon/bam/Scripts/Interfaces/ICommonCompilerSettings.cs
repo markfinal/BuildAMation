@@ -57,5 +57,11 @@ namespace ClangCommon
             get;
             set;
         }
+
+        bool? StrictAliasing
+        {
+            get;
+            set;
+        }
     }
 }

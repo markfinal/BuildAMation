@@ -1,4 +1,4 @@
-20-Nov-2015 Added GccCommon.ICommonCompilerSettings.StrictAliasing, defaulting to false in debug, and true in all configurations with optimizations enabled. See http://dbp-consulting.com/tutorials/StrictAliasing.html for an explanation of aliasing.
+20-Nov-2015 Added GccCommon.ICommonCompilerSettings.StrictAliasing and ClangCommon.ICommonCompilerSettings.StrictAliasing, defaulting to false in debug, and true in all configurations with optimizations enabled. See http://dbp-consulting.com/tutorials/StrictAliasing.html for an explanation of aliasing.
 
 20-Nov-2015 Added Publisher.IObjCopyToolSettings.Verbose boolean option to vary the amount of output from the objcopy tool. Defaults to true.
 
