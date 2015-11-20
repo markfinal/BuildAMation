@@ -77,13 +77,16 @@ namespace VSSolutionBuilder
             bool value,
             string condition = null)
         {
-            var stringValue = value.ToString().ToLower();
-            if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
+            lock (this.Settings)
             {
-                throw new Bam.Core.Exception("Cannot change the value of existing boolean option {0} to {1}", name, value);
-            }
+                var stringValue = value.ToString().ToLower();
+                if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
+                {
+                    throw new Bam.Core.Exception("Cannot change the value of existing boolean option {0} to {1}", name, value);
+                }
 
-            this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+                this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+            }
         }
 
         public void
@@ -92,12 +95,15 @@ namespace VSSolutionBuilder
             string value,
             string condition = null)
         {
-            if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != value))
+            lock (this.Settings)
             {
-                throw new Bam.Core.Exception("Cannot change the value of existing string option {0} to {1}", name, value);
-            }
+                if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != value))
+                {
+                    throw new Bam.Core.Exception("Cannot change the value of existing string option {0} to {1}", name, value);
+                }
 
-            this.Settings.AddUnique(new VSSetting(name, value, condition));
+                this.Settings.AddUnique(new VSSetting(name, value, condition));
+            }
         }
 
         public void
@@ -107,13 +113,16 @@ namespace VSSolutionBuilder
             string condition = null,
             bool inheritExisting = false)
         {
-            var stringValue = path.Parse();
-            if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
+            lock (this.Settings)
             {
-                throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, stringValue);
-            }
+                var stringValue = path.Parse();
+                if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
+                {
+                    throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, stringValue);
+                }
 
-            this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+                this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+            }
         }
 
         public void
@@ -123,17 +132,20 @@ namespace VSSolutionBuilder
             string condition = null,
             bool inheritExisting = false)
         {
-            if (0 == value.Count)
+            lock (this.Settings)
             {
-                return;
-            }
-            if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
-            {
-                throw new Bam.Core.Exception("Cannot append to the option {0}", name);
-            }
+                if (0 == value.Count)
+                {
+                    return;
+                }
+                if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
+                {
+                    throw new Bam.Core.Exception("Cannot append to the option {0}", name);
+                }
 
-            var linearized = value.ToString(';');
-            this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+                var linearized = value.ToString(';');
+                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+            }
         }
 
         public void
@@ -143,17 +155,20 @@ namespace VSSolutionBuilder
             string condition = null,
             bool inheritExisting = false)
         {
-            if (0 == value.Count)
+            lock (this.Settings)
             {
-                return;
-            }
-            if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
-            {
-                throw new Bam.Core.Exception("Cannot append to the option {0}", name);
-            }
+                if (0 == value.Count)
+                {
+                    return;
+                }
+                if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
+                {
+                    throw new Bam.Core.Exception("Cannot append to the option {0}", name);
+                }
 
-            var linearized = value.ToString(';');
-            this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+                var linearized = value.ToString(';');
+                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+            }
         }
 
         public void
@@ -163,13 +178,16 @@ namespace VSSolutionBuilder
             string condition = null,
             bool inheritExisting = false)
         {
-            if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
+            lock (this.Settings)
             {
-                throw new Bam.Core.Exception("Cannot append to the preprocessor define list {0}", name);
-            }
+                if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
+                {
+                    throw new Bam.Core.Exception("Cannot append to the preprocessor define list {0}", name);
+                }
 
-            var linearized = definitions.ToString();
-            this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0}%({1})", linearized, name) : linearized, condition));
+                var linearized = definitions.ToString();
+                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0}%({1})", linearized, name) : linearized, condition));
+            }
         }
 
         private string

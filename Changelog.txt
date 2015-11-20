@@ -1,3 +1,5 @@
+20-Nov-2015 Fixes #76. Added synchronization to VSSolution functions to avoid collections changing in multiple threads concurrently.
+
 19-Nov-2015 Fixes #71. Xcode build settings with multiple values are now serialized as a comma separated list scoped by parentheses. Any escaped characters are enforced in the serialized project files.
 
 19-Nov-2015 Fixes #73. Bam.Core.Settings.Interfaces() now returns all implemented settings interfaces from the Settings instance, ordered by precedence (Bam.Core.SettingsPrecedenceAttribute). This ensures all build modes convert interfaces in a consistent order.
