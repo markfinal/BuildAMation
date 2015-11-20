@@ -63,5 +63,11 @@ namespace GccCommon
             get;
             set;
         }
+
+        bool? StrictAliasing
+        {
+            get;
+            set;
+        }
     }
 }
