@@ -44,6 +44,9 @@ namespace Publisher
                     throw new Bam.Core.Exception("Unable to locate Mingw");
                 }
                 this.ExecutablePath = this.CreateTokenizedString("$(0)/bin/objcopy.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString);
+
+                // required with binutils 2.25+
+                this.InheritedEnvironmentVariables.Add("SYSTEMROOT");
             }
             else
             {

@@ -1,3 +1,7 @@
+20-Nov-2015 Added Publisher.IObjCopyToolSettings.Verbose boolean option to vary the amount of output from the objcopy tool. Defaults to true.
+
+20-Nov-2015 Fixes #75. Mingw binutils 2.25.1 changed behaviour of objcopy, requiring at least the SYSTEMROOT environment variable, or a failure to create a temporary file is reported.
+
 20-Nov-2015 Fixes #74. Only Windows console applications will define the _CONSOLE preprocessor definition.
 
 20-Nov-2015 Fixes #72. C preprocessor definitions that have a value containing a quoted string did not parse correctly in MakeFiles in a bash shell. These values appeared to just require a double quote surrounding them, which also works in Native build modes.

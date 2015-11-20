@@ -37,6 +37,19 @@ namespace MingwCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
+            switch (settings.Bits)
+            {
+                case C.EBit.ThirtyTwo:
+                    commandLine.Add("-m32");
+                    break;
+
+                case C.EBit.SixtyFour:
+                    commandLine.Add("-m64");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unknown machine bit depth, {0}", settings.Bits.ToString());
+            }
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
