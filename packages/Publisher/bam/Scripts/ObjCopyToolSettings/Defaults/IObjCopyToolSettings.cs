@@ -37,6 +37,7 @@ namespace Publisher.DefaultSettings
             Bam.Core.Module module)
         {
             settings.Mode = EObjCopyToolMode.NA;
+            settings.Verbose = true;
         }
     }
 }

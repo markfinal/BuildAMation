@@ -55,6 +55,10 @@ namespace Publisher
             default:
                 throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
             }
+            if (settings.Verbose)
+            {
+                commandLine.Add("-v");
+            }
         }
     }
 }

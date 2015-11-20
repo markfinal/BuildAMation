@@ -38,5 +38,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool Verbose
+        {
+            get;
+            set;
+        }
     }
 }

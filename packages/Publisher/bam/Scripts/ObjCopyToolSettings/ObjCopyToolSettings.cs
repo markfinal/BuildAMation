@@ -55,5 +55,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool IObjCopyToolSettings.Verbose
+        {
+            get;
+            set;
+        }
     }
 }
