@@ -30,6 +30,9 @@
 using System.Linq;
 namespace Bam
 {
+    /// <summary>
+    /// Utility class for printing all things related to Bam help
+    /// </summary>
     public static class CommandLineArgumentHelper
     {
         private static void
@@ -64,6 +67,11 @@ namespace Bam
             }
         }
 
+        /// <summary>
+        /// Display Bam help, with a version header, and each command line argument from the Core.
+        /// If the working directory is a package, compile the package and display any command line arguments
+        /// defined in that and any dependent packages.
+        /// </summary>
         public static void
         PrintHelp()
         {
@@ -103,6 +111,9 @@ namespace Bam
             }
         }
 
+        /// <summary>
+        /// Display the version information, C# compiler version, and location of Bam assemblies
+        /// </summary>
         public static void
         PrintVersion()
         {

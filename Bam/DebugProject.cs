@@ -29,6 +29,11 @@
 #endregion // License
 namespace Bam
 {
+    /// <summary>
+    /// Utility class for creating a standalone debuggable VisualStudio C# project for the package
+    /// A main.cs file is created procedurally, with predefined options, which can be edited by the
+    /// developer to change how Bam is invoked (as an alternative to command line options).
+    /// </summary>
     public static class DebugProject
     {
         private static readonly string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
@@ -187,7 +192,7 @@ namespace Bam
             return allDefines.ToString(';');
         }
 
-        public static void
+        private static void
         WriteEntryPoint(
             string path)
         {
@@ -236,6 +241,9 @@ namespace Bam
             }
         }
 
+        /// <summary>
+        /// Create the debuggable project.
+        /// </summary>
         public static void
         Create()
         {
