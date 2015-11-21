@@ -7,6 +7,7 @@ import os
 import platform
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -97,15 +98,22 @@ def MakeTarDistribution(options):
         print >>sys.stdout, "Writing tar file %s" % tarPath
         sys.stdout.flush()
         os.chdir(coDir)
+        def filter(tarinfo):
+            if platform.system() != "Windows":
+                return tarinfo
+            # attempt to fix up the permissions that are lost during tarring on Windows
+            if tarinfo.name.endswith(".exe") or tarinfo.name.endswith(".dll") or tarinfo.name.endswith(".py") or tarinfo.name.endswith(".sh") or tarinfo.name.endswith("bam"):
+                tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
+            return tarinfo
         with tarfile.open(tarPath, "w:gz") as tar:
             if os.path.isdir(os.path.join(bamDir, "bin")):
-                tar.add(os.path.join(bamDir, "bin"))
+                tar.add(os.path.join(bamDir, "bin"), filter=filter)
             tar.add(os.path.join(bamDir, "Changelog.txt"))
             tar.add(os.path.join(bamDir, "env.bat"))
             tar.add(os.path.join(bamDir, "env.sh"))
             tar.add(os.path.join(bamDir, "License.md"))
             tar.add(os.path.join(bamDir, "packages"))
-            tar.add(os.path.join(bamDir, "tests"))
+            tar.add(os.path.join(bamDir, "tests"), filter=filter)
         print >>sys.stdout, "Finished writing tar file %s" % tarPath
         sys.stdout.flush()
     finally:
