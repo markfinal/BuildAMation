@@ -1,3 +1,5 @@
+21-Nov-2015 ======== Version 1.0.0b3 Release ========
+
 20-Nov-2015 Catch and report exceptions thrown during Settings creation.
 
 20-Nov-2015 Added GccCommon.ICommonCompilerSettings.StrictAliasing and ClangCommon.ICommonCompilerSettings.StrictAliasing, defaulting to false in debug, and true in all configurations with optimizations enabled. See http://dbp-consulting.com/tutorials/StrictAliasing.html for an explanation of aliasing.
@@ -44,7 +46,7 @@
 
 13-Nov-2015 Fixes #61. C/C++ compiler warning levels must appear on the command lines before any warning suppressions. The interfaces containing the warning levels now have a high precedence.
 
-11-Nov-2015 ======== Version 1.0.0b1 Release ========
+11-Nov-2015 ======== Version 1.0.0b1 (and b2) Release ========
 
 10-Nov-2015 Fixes #30. Added tar settings for compression. Supporting gzip, bzip and lzma.
 
