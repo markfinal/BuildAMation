@@ -92,6 +92,10 @@ namespace Bam.Core
         public T
         FindReferencedModule<T>() where T : Module, new()
         {
+            if (null == this.BuildEnvironmentInternal)
+            {
+                throw new Exception("Unable to find a module within a patch - please change the calling code to invoke this outside of the patch, but in the module's Init method");
+            }
             var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
             var matches = referencedModules.Where(item => item.GetType() == typeof(T));
             var matchedModule = matches.FirstOrDefault();
