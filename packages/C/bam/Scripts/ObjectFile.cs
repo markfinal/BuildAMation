@@ -64,7 +64,7 @@ namespace C
                 }
                 this.SourceModule = value;
                 this.DependsOn(value);
-                this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@basename($(0))$(objext)", value.GeneratedPaths[SourceFile.Key]);
+                this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@relativeto($(0),$(packagedir)),$(objext))", value.GeneratedPaths[SourceFile.Key]);
             }
         }
 

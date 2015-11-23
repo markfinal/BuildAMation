@@ -1,3 +1,5 @@
+23-Nov-2015 Issue #83. Default C.ObjectFile path has changed from using the basename of the source file, to the relative path of the source file to the package directory. This means that object file paths now incorporates the folder hierarchy of the source, allowing source files with duplicate basenames to exist in a package. For example, in the DuplicateSourceFilenameTest test.
+
 23-Nov-2015 Added new TokenizedString post-function, @relativeto(a,b), which calculates the relative path of 'a' to 'b'. If the result is 'a', then an exception is thrown, as returning absolute paths may not be ideal if the function is used to compose a path.
 
 23-Nov-2015 Bam.Core.PlatformFilterAttribute and ConfigurationFilterAttribute no longer expose the EPlatform and EConfiguration as properties. Instead an 'Includes' boolean function that accepts an EPlatform or EConfiguration, returning true if the argument is contained within the flags set on the attribute, false otherwise.
