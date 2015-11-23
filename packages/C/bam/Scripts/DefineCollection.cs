@@ -64,6 +64,23 @@ namespace C
 
         public void
         Add(
+            string name,
+            Bam.Core.TokenizedString value)
+        {
+            var parsedValue = value.Parse();
+            if (this.Defines.ContainsKey(name))
+            {
+                if (this.Defines[name] != parsedValue)
+                {
+                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with value {1}. Cannot change it to {2}", name, this.Defines[name], parsedValue);
+                }
+                return;
+            }
+            this.Defines.Add(name, parsedValue);
+        }
+
+        public void
+        Add(
             string name)
         {
             this.Add(name, string.Empty);
