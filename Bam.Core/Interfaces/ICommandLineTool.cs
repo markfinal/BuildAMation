@@ -37,7 +37,7 @@ namespace Bam.Core
             get;
         }
 
-        System.Collections.Generic.List<string> InheritedEnvironmentVariables
+        StringArray InheritedEnvironmentVariables
         {
             get;
         }

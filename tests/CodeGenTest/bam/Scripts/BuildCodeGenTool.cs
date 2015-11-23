@@ -62,7 +62,7 @@ namespace CodeGenTest
             private set;
         }
 
-        public System.Collections.Generic.List<string> InheritedEnvironmentVariables
+        public Bam.Core.StringArray InheritedEnvironmentVariables
         {
             get;
             private set;
