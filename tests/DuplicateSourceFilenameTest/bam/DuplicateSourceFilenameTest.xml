@@ -3,6 +3,8 @@
   <Description>A new package called DuplicateSourceFilenameTest</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Gcc" version="4.8" />
+    <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="12.0" />
     <Package name="VSSolutionBuilder" />
