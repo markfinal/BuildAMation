@@ -1,3 +1,5 @@
+23-Nov-2015 Added new TokenizedString post-function, @relativeto(a,b), which calculates the relative path of 'a' to 'b'. If the result is 'a', then an exception is thrown, as returning absolute paths may not be ideal if the function is used to compose a path.
+
 23-Nov-2015 Bam.Core.PlatformFilterAttribute and ConfigurationFilterAttribute no longer expose the EPlatform and EConfiguration as properties. Instead an 'Includes' boolean function that accepts an EPlatform or EConfiguration, returning true if the argument is contained within the flags set on the attribute, false otherwise.
 
 23-Nov-2015 Extended the CommandLineProcessor.Processor utility class, so that arbitrary executables can be invoked, without needing to go through the Bam.Core.ITool interface. For example, if a module simply needed to invoke a system command.
