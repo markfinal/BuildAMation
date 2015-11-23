@@ -1,3 +1,5 @@
+23-Nov-2015 Bam.Core.PlatformFilterAttribute and ConfigurationFilterAttribute no longer expose the EPlatform and EConfiguration as properties. Instead an 'Includes' boolean function that accepts an EPlatform or EConfiguration, returning true if the argument is contained within the flags set on the attribute, false otherwise.
+
 23-Nov-2015 Extended the CommandLineProcessor.Processor utility class, so that arbitrary executables can be invoked, without needing to go through the Bam.Core.ITool interface. For example, if a module simply needed to invoke a system command.
 
 23-Nov-2015 Changed the type of Bam.Core.ICommandLineTool.InheritedEnvironmentVariables from System.Collections.Generic.List<string> to Bam.Core.StringArray. Any module implementing this interface will require an update.

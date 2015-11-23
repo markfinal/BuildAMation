@@ -39,10 +39,17 @@ namespace Bam.Core
             this.Configuration = config;
         }
 
-        public EConfiguration Configuration
+        public bool
+        Includes(
+            EConfiguration other)
+        {
+            return (other == (this.Configuration & other));
+        }
+
+        private EConfiguration Configuration
         {
             get;
-            private set;
+            set;
         }
     }
 }
