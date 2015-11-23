@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="DuplicateSourceFilenameTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>A new package called DuplicateSourceFilenameTest</Description>
+  <Dependents>
+    <Package name="C" />
+    <Package name="NativeBuilder" />
+    <Package name="VisualC" version="12.0" />
+    <Package name="VSSolutionBuilder" />
+    <Package name="WindowsSDK" version="8.1" />
+  </Dependents>
+  <BamAssemblies>
+    <BamAssembly name="Bam.Core" major="1" minor="0" />
+  </BamAssemblies>
+  <DotNetAssemblies>
+    <DotNetAssembly name="System" requiredTargetFramework="4.0.30319" />
+    <DotNetAssembly name="System.Xml" requiredTargetFramework="4.0.30319" />
+    <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
+  </DotNetAssemblies>
+  <SupportedPlatforms>
+    <Platform name="Windows" />
+    <Platform name="Linux" />
+    <Platform name="OSX" />
+  </SupportedPlatforms>
+</PackageDefinition>

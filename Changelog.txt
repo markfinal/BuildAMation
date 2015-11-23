@@ -1,3 +1,5 @@
+23-Nov-2015 Added test, DuplicateSourceFilenameTest, to exercise compiling source files, with the same basename, but different paths in a module.
+
 23-Nov-2015 Fixes #82. Report a useful exception message of why trying to add a dependency (eventually through Bam.Core.FindReferencedModule) will not work in a patch. This should be done during the invocation of the module's Init function.
 
 21-Nov-2015 ======== Version 1.0.0b3 Release ========
