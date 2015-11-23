@@ -510,6 +510,9 @@ namespace Bam.Core
                         return relative;
                     }
 
+                case "escapedquotes":
+                    return System.String.Format("\\\"{0}\\\"", argument);
+
                 default:
                     throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
             }
