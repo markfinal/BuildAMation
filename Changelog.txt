@@ -1,3 +1,5 @@
+23-Nov-2015 Extended the CommandLineProcessor.Processor utility class, so that arbitrary executables can be invoked, without needing to go through the Bam.Core.ITool interface. For example, if a module simply needed to invoke a system command.
+
 23-Nov-2015 Changed the type of Bam.Core.ICommandLineTool.InheritedEnvironmentVariables from System.Collections.Generic.List<string> to Bam.Core.StringArray. Any module implementing this interface will require an update.
 
 23-Nov-2015 Added test, DuplicateSourceFilenameTest, to exercise compiling source files, with the same basename, but different paths in a module.
