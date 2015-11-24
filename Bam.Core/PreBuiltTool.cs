@@ -79,6 +79,14 @@ namespace Bam.Core
             }
         }
 
+        public virtual string UseResponseFileOption
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         protected override void
         ExecuteInternal(
             ExecutionContext context)

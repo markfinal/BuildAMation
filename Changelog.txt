@@ -1,3 +1,5 @@
+24-Nov-2015 Added Bam.Core.ICommandLineTool.UseResponseFileOption, a string property. This is the option to use on the command line if the tool supports response files in Native build mode. This option is only invoked if the command line length exceeds 32767 characters. Any class implementing this interface will require updating. Bam.Core.PrebuiltTool implements this as a virtual property, with a default of null (response files not supported). VisualC compiler, linker and archiver supports it with the "@" command.
+
 23-Nov-2015 Added new TokenizedString post-function, @escapedquotes(a), which surrounds the argument with \\\". This is useful to use a string as a preprocessor definition.
 
 23-Nov-2015 Issue #83. Default C.ObjectFile path has changed from using the basename of the source file, to the relative path of the source file to the package directory. This means that object file paths now incorporates the folder hierarchy of the source, allowing source files with duplicate basenames to exist in a package. For example, in the DuplicateSourceFilenameTest test.

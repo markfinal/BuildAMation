@@ -83,5 +83,13 @@ namespace CodeGenTest
                 return null;
             }
         }
+
+        public string UseResponseFileOption
+        {
+            get
+            {
+                return null;
+            }
+        }
     }
 }

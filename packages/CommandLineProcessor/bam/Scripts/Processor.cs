@@ -55,7 +55,8 @@ namespace CommandLineProcessor
             Bam.Core.StringArray commandLineArguments,
             string workingDirectory = null,
             Bam.Core.StringArray inheritedEnvironmentVariables = null,
-            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> addedEnvironmentVariables = null)
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> addedEnvironmentVariables = null,
+            string useResponseFileOption = null)
         {
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
             processStartInfo.FileName = executablePath;
@@ -127,7 +128,28 @@ namespace CommandLineProcessor
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardInput = true;
 
-            processStartInfo.Arguments = commandLineArguments.ToString(' ');
+            var arguments = commandLineArguments.ToString(' ');
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                //TODO: should this include the length of the executable path too?
+                if (arguments.Length >= 32767)
+                {
+                    if (null == useResponseFileOption)
+                    {
+                        throw new Bam.Core.Exception("Command line is {0} characters long, but response files are not supported by the tool {1}", arguments.Length, executablePath);
+                    }
+
+                    var responseFilePath = System.IO.Path.GetTempFileName();
+                    using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFilePath))
+                    {
+                        Bam.Core.Log.DebugMessage("Written response file {0} containing:\n{1}", responseFilePath, arguments);
+                        writer.WriteLine(arguments);
+                    }
+
+                    arguments = System.String.Format("{0}{1}", useResponseFileOption, responseFilePath);
+                }
+            }
+            processStartInfo.Arguments = arguments;
 
             Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
 
@@ -207,7 +229,8 @@ namespace CommandLineProcessor
                 commandLineArgs,
                 workingDirectory: workingDirectory,
                 inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
-                addedEnvironmentVariables: tool.EnvironmentVariables);
+                addedEnvironmentVariables: tool.EnvironmentVariables,
+                useResponseFileOption: tool.UseResponseFileOption);
         }
     }
 }

@@ -60,6 +60,14 @@ namespace VisualCCommon
             }
         }
 
+        public override string UseResponseFileOption
+        {
+            get
+            {
+                return "@";
+            }
+        }
+
         public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
             if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||

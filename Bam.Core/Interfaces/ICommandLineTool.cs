@@ -51,5 +51,10 @@ namespace Bam.Core
         {
             get;
         }
+
+        string UseResponseFileOption
+        {
+            get;
+        }
     }
 }

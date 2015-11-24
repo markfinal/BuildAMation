@@ -57,5 +57,13 @@ namespace VisualCCommon
                 return this.Macros["ArchiverPath"];
             }
         }
+
+        public override string UseResponseFileOption
+        {
+            get
+            {
+                return "@";
+            }
+        }
     }
 }
