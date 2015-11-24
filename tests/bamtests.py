@@ -74,4 +74,7 @@ def ConfigureRepository():
     configs["MultiBitDepthModuleTest"] = TestSetup(win={"Native":[visualc],"VSSolution":[visualc]},
                                                    linux={"Native":[gcc],"MakeFile":[gcc]},
                                                    osx={"Native":[clang],"MakeFile":[clang],"Xcode":[clang]})
+    configs["DuplicateSourceFilenameTest"] = TestSetup(win={"Native":[visualc]},
+                                                       linux={"Native":[gcc]},
+                                                       osx={"Native":[clang]})
     return configs
