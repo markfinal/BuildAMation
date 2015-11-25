@@ -49,10 +49,12 @@ namespace C
                 VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource :
                 VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
 
-            sender.MetaData = config.GetSettingsGroup(
+            var settingsGroup = config.GetSettingsGroup(
                 group,
                 include: source.GeneratedPaths[C.SourceFile.Key],
                 uniqueToProject: true);
+            settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + sender.CreateTokenizedString("@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)", objectFilePath).Parse());
+            sender.MetaData = settingsGroup;
         }
     }
 }
