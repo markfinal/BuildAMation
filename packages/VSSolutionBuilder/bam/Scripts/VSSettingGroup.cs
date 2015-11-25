@@ -185,7 +185,8 @@ namespace VSSolutionBuilder
                     throw new Bam.Core.Exception("Cannot append to the preprocessor define list {0}", name);
                 }
 
-                var linearized = definitions.ToString();
+                // escaped quotes need to be removed
+                var linearized = definitions.ToString().Replace("\\\"", "\"");
                 this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0}%({1})", linearized, name) : linearized, condition));
             }
         }
