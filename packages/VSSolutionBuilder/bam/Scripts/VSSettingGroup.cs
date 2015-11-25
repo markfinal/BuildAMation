@@ -45,12 +45,24 @@ namespace VSSolutionBuilder
         }
 
         public VSSettingsGroup(
+            Bam.Core.Module module,
             ESettingsGroup group,
             Bam.Core.TokenizedString include = null)
         {
+            this.Module = module;
             this.Group = group;
             this.Include = include;
+            if (null != include)
+            {
+                this.RelativeDirectory = module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", include);
+            }
             this.Settings = new Bam.Core.Array<VSSetting>();
+        }
+
+        public Bam.Core.Module Module
+        {
+            get;
+            private set;
         }
 
         public ESettingsGroup Group
@@ -60,6 +72,12 @@ namespace VSSolutionBuilder
         }
 
         public Bam.Core.TokenizedString Include
+        {
+            get;
+            private set;
+        }
+
+        public Bam.Core.TokenizedString RelativeDirectory
         {
             get;
             private set;

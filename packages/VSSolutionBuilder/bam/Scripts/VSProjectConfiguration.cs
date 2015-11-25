@@ -290,7 +290,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                var newGroup = uniqueToProject ? this.Project.GetUniqueSettingsGroup(group, include) : new VSSettingsGroup(group, include);
+                var newGroup = uniqueToProject ? this.Project.GetUniqueSettingsGroup(this.Module, group, include) : new VSSettingsGroup(this.Module, group, include);
                 this.SettingGroups.Add(newGroup);
                 return newGroup;
             }
@@ -300,7 +300,7 @@ namespace VSSolutionBuilder
         AddHeaderFile(
             C.HeaderFile header)
         {
-            var headerGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.Header, header.InputPath);
+            var headerGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Header, header.InputPath);
             this.Project.AddHeader(headerGroup);
         }
 
@@ -322,7 +322,7 @@ namespace VSSolutionBuilder
         AddOtherFile(
             Bam.Core.IInputPath other)
         {
-            var otherGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.CustomBuild, other.InputPath);
+            var otherGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, other.InputPath);
             this.Project.AddOtherFile(otherGroup);
         }
 
@@ -336,7 +336,7 @@ namespace VSSolutionBuilder
             {
                 (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(resource, settings, condition: this.ConditionText);
             }
-            var resourceGroup = this.Project.GetUniqueSettingsGroup(VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
+            var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
             this.Project.AddResourceFile(resourceGroup);
         }
 
@@ -438,13 +438,13 @@ namespace VSSolutionBuilder
 
             if (this.PreBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.PreBuild);
+                var preBuildGroup = new VSSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.PreBuild);
                 preBuildGroup.AddSetting("Command", this.PreBuildCommands.ToString(System.Environment.NewLine));
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }
             if (this.PostBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.PostBuild);
+                var preBuildGroup = new VSSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.PostBuild);
                 preBuildGroup.AddSetting("Command", this.PostBuildCommands.ToString(System.Environment.NewLine));
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }

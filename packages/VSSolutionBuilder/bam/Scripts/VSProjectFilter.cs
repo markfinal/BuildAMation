@@ -32,73 +32,40 @@ namespace VSSolutionBuilder
 {
     public sealed class VSProjectFilter
     {
-        private static readonly string SourceGroupName = "Source Files";
-        private static readonly string HeaderGroupName = "Header Files";
-        private static readonly string OtherGroupName = "Other Files";
-        private static readonly string ResourcesGroupName = "Resource Files";
-        private Bam.Core.Array<VSSettingsGroup> Source = new Bam.Core.Array<VSSettingsGroup>();
-        private Bam.Core.Array<VSSettingsGroup> Headers = new Bam.Core.Array<VSSettingsGroup>();
-        private Bam.Core.Array<VSSettingsGroup> Others = new Bam.Core.Array<VSSettingsGroup>();
-        private Bam.Core.Array<VSSettingsGroup> Resources = new Bam.Core.Array<VSSettingsGroup>();
+        private System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>> Filters = new System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>>();
 
-        public void
-        AddHeader(
-            Bam.Core.TokenizedString path)
+        private void
+        AddFilters(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString filterPath)
         {
-            lock (this.Headers)
+            var path = filterPath.Parse();
+            if (!this.Filters.ContainsKey(path))
             {
-                if (!this.Headers.Any(item => item.Include.Parse() == path.Parse()))
-                {
-                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Header, include: path);
-                    group.AddSetting("Filter", HeaderGroupName);
-                    this.Headers.AddUnique(group);
-                }
+                this.Filters.Add(path, new Bam.Core.Array<VSSettingsGroup>());
             }
+            if (!path.Contains(System.IO.Path.DirectorySeparatorChar))
+            {
+                return;
+            }
+            // the entire hierarchy needs to be added, even if they are empty
+            var parent = module.CreateTokenizedString("@dir($(0))", filterPath);
+            AddFilters(module, parent);
         }
 
         public void
-        AddSource(
-            Bam.Core.TokenizedString path)
+        AddFile(
+            VSSettingsGroup sourceGroup)
         {
-            lock (this.Source)
+            this.AddFilters(sourceGroup.Module, sourceGroup.RelativeDirectory);
+            var filter = this.Filters[sourceGroup.RelativeDirectory.Parse()];
+            if (filter.Any(item => item.Include.Parse() == sourceGroup.Include.Parse()))
             {
-                if (!this.Source.Any(item => item.Include.Parse() == path.Parse()))
-                {
-                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Compiler, include: path);
-                    group.AddSetting("Filter", SourceGroupName);
-                    this.Source.AddUnique(group);
-                }
+                return;
             }
-        }
-
-        public void
-        AddOther(
-            Bam.Core.TokenizedString path)
-        {
-            lock (this.Others)
-            {
-                if (!this.Others.Any(item => item.Include.Parse() == path.Parse()))
-                {
-                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.CustomBuild, include: path);
-                    group.AddSetting("Filter", OtherGroupName);
-                    this.Others.AddUnique(group);
-                }
-            }
-        }
-
-        public void
-        AddResource(
-            Bam.Core.TokenizedString path)
-        {
-            lock (this.Resources)
-            {
-                if (!this.Resources.Any(item => item.Include.Parse() == path.Parse()))
-                {
-                    var group = new VSSettingsGroup(VSSettingsGroup.ESettingsGroup.Resource, include: path);
-                    group.AddSetting("Filter", ResourcesGroupName);
-                    this.Resources.AddUnique(group);
-                }
-            }
+            var newGroup = new VSSettingsGroup(sourceGroup.Module, sourceGroup.Group, sourceGroup.Include);
+            newGroup.AddSetting("Filter", sourceGroup.RelativeDirectory);
+            filter.AddUnique(newGroup);
         }
 
         public System.Xml.XmlDocument
@@ -109,43 +76,28 @@ namespace VSSolutionBuilder
             var projectEl = this.CreateRootProject(document);
             projectEl.SetAttribute("ToolsVersion", "4.0"); // TODO: get this number from VisualC
 
-            System.Action<System.Xml.XmlElement, string, Bam.Core.Array<VSSettingsGroup>> createXML = (parentEl, groupName, list) =>
+            var filtersEl = document.CreateVSItemGroup(parentEl: projectEl);
+
+            foreach (var filter in this.Filters)
+            {
+                var filterEl = document.CreateVSElement("Filter", parentEl: filtersEl);
+                filterEl.SetAttribute("Include", filter.Key);
+                document.CreateVSElement("UniqueIdentifier", new DeterministicGuid("VSFilter" + filter.Key).Guid.ToString("B").ToUpper(), parentEl: filterEl);
+
+                var filesEl = document.CreateVSItemGroup(parentEl: projectEl);
+                var extensions = new Bam.Core.StringArray();
+                foreach (var setting in filter.Value)
                 {
-                    var allFiles = document.CreateVSItemGroup(parentEl: projectEl);
-
-                    var idEl = document.CreateVSElement("Filter", parentEl: parentEl);
-                    idEl.SetAttribute("Include", groupName);
-                    document.CreateVSElement("UniqueIdentifier", new DeterministicGuid("VSFilter" + groupName).Guid.ToString("B").ToUpper(), parentEl: idEl);
-                    var extensions = new Bam.Core.StringArray();
-                    foreach (var setting in list)
-                    {
-                        var path = setting.Include;
-                        var extension = System.IO.Path.GetExtension(path.Parse()).TrimStart(new[] { '.' });
-                        extensions.AddUnique(extension);
-
-                        setting.Serialize(document, allFiles);
-                    }
-                    document.CreateVSElement("Extensions", extensions.ToString(';'), parentEl: idEl);
-                };
-
-            var containerEl = document.CreateVSItemGroup(parentEl: projectEl);
-            if (this.Source.Count > 0)
-            {
-                createXML(containerEl, SourceGroupName, this.Source);
+                    var path = setting.Include;
+                    var extension = System.IO.Path.GetExtension(path.Parse()).TrimStart(new[] { '.' });
+                    extensions.AddUnique(extension);
+                    setting.Serialize(document, filesEl);
+                }
+                if (extensions.Count > 0)
+                {
+                    document.CreateVSElement("Extensions", extensions.ToString(';'), parentEl: filterEl);
+                }
             }
-            if (this.Headers.Count > 0)
-            {
-                createXML(containerEl, HeaderGroupName, this.Headers);
-            }
-            if (this.Others.Count > 0)
-            {
-                createXML(containerEl, OtherGroupName, this.Others);
-            }
-            if (this.Resources.Count > 0)
-            {
-                createXML(containerEl, ResourcesGroupName, this.Resources);
-            }
-
             return document;
         }
 

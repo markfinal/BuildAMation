@@ -84,8 +84,9 @@ namespace VSSolutionBuilder
             }
         }
 
-        public  VSSettingsGroup
+        public VSSettingsGroup
         GetUniqueSettingsGroup(
+            Bam.Core.Module module,
             VSSettingsGroup.ESettingsGroup group,
             Bam.Core.TokenizedString include = null)
         {
@@ -110,7 +111,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                var newGroup = new VSSettingsGroup(group, include);
+                var newGroup = new VSSettingsGroup(module, group, include);
                 this.ProjectSettings.Add(newGroup);
                 return newGroup;
             }
@@ -123,7 +124,7 @@ namespace VSSolutionBuilder
             lock (this)
             {
                 this.Headers.AddUnique(header);
-                this.Filter.AddHeader(header.Include);
+                this.Filter.AddFile(header);
             }
         }
 
@@ -134,7 +135,7 @@ namespace VSSolutionBuilder
             lock (this)
             {
                 this.Sources.AddUnique(source);
-                this.Filter.AddSource(source.Include);
+                this.Filter.AddFile(source);
             }
         }
 
@@ -145,7 +146,7 @@ namespace VSSolutionBuilder
             lock (this)
             {
                 this.Others.AddUnique(other);
-                this.Filter.AddOther(other.Include);
+                this.Filter.AddFile(other);
             }
         }
 
@@ -156,7 +157,7 @@ namespace VSSolutionBuilder
             lock (this)
             {
                 this.Resources.AddUnique(other);
-                this.Filter.AddResource(other.Include);
+                this.Filter.AddFile(other);
             }
         }
 
