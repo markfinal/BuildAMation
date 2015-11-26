@@ -60,7 +60,14 @@ namespace Bam.Core
             {
                 if (numLocalPolicies > 1)
                 {
-                    throw new Exception("Too many site policies exist in the package assembly");
+                    var message = new System.Text.StringBuilder();
+                    message.AppendLine("Too many site policies exist in the package assembly:");
+                    foreach (var policy in localPolicies)
+                    {
+                        message.AppendFormat("\t{0}", policy.ToString());
+                        message.AppendLine();
+                    }
+                    throw new Exception(message.ToString());
                 }
 
                 LocalPolicy = System.Activator.CreateInstance(localPolicies.First()) as ISitePolicy;

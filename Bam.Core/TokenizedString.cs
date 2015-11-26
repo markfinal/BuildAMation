@@ -497,6 +497,35 @@ namespace Bam.Core
                 case "removetrailingseperator":
                     return argument.TrimEnd(System.IO.Path.DirectorySeparatorChar);
 
+                case "relativeto":
+                    {
+                        var split = argument.Split(',');
+                        var path = split[0];
+                        var root = split[1] + System.IO.Path.DirectorySeparatorChar;
+                        var relative = RelativePathUtilities.GetPath(path, root);
+                        if (relative.Equals(path))
+                        {
+                            throw new Exception("Unable to determine relative path of {0} from {1}", path, root);
+                        }
+                        return relative;
+                    }
+
+                case "trimstart":
+                    {
+                        var split = argument.Split(',');
+                        var original = split[0];
+                        var totrim = split[1];
+                        while (original.StartsWith(totrim))
+                        {
+                            original = original.Replace(totrim, string.Empty);
+                        }
+                        return original;
+                    }
+
+                case "escapedquotes":
+                    // ensure back slashes are escaped too
+                    return System.String.Format("\\\"{0}\\\"", argument.Replace("\\", "\\\\"));
+
                 default:
                     throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
             }

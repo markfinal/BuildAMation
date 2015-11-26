@@ -78,6 +78,14 @@ namespace VisualCCommon
             }
         }
 
+        public override string UseResponseFileOption
+        {
+            get
+            {
+                return "@";
+            }
+        }
+
         private static Bam.Core.TokenizedString
         GetLibraryPath(
             Bam.Core.Module module)

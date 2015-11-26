@@ -40,6 +40,7 @@ namespace ClangCommon.DefaultSettings
             settings.ExtraWarnings = false;
             settings.Pedantic = false;
             settings.Visibility = EVisibility.Hidden;
+            settings.StrictAliasing = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
         }
 
         public static void
@@ -63,6 +64,10 @@ namespace ClangCommon.DefaultSettings
             {
                 shared.Visibility = null;
             }
+            if (shared.StrictAliasing != other.StrictAliasing)
+            {
+                shared.StrictAliasing = null;
+            }
         }
 
         public static void
@@ -75,6 +80,7 @@ namespace ClangCommon.DefaultSettings
             delta.ExtraWarnings = (lhs.ExtraWarnings != rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
             delta.Pedantic = (lhs.Pedantic != rhs.Pedantic) ? lhs.Pedantic : null;
             delta.Visibility = (lhs.Visibility != rhs.Visibility) ? lhs.Visibility : null;
+            delta.StrictAliasing = (lhs.StrictAliasing != rhs.StrictAliasing) ? lhs.StrictAliasing : null;
         }
 
         public static void
@@ -86,6 +92,7 @@ namespace ClangCommon.DefaultSettings
             settings.ExtraWarnings = other.ExtraWarnings;
             settings.Pedantic = other.Pedantic;
             settings.Visibility = other.Visibility;
+            settings.StrictAliasing = other.StrictAliasing;
         }
     }
 }

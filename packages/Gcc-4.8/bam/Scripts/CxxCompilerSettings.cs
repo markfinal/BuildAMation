@@ -181,5 +181,11 @@ namespace Gcc
             get;
             set;
         }
+
+        bool? GccCommon.ICommonCompilerSettings.StrictAliasing
+        {
+            get;
+            set;
+        }
     }
 }

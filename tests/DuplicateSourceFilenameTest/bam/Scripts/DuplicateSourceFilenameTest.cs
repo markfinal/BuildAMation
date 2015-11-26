@@ -27,47 +27,30 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+using Bam.Core;
+namespace DuplicateSourceFilenameTest
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)] // warning settings must come before warning suppressions
-    public interface ICommonCompilerSettings :
-        Bam.Core.ISettingsBase
+    sealed class Duplicate :
+        C.ConsoleApplication
     {
-        bool? PositionIndependentCode
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            get;
-            set;
-        }
+            base.Init(parent);
 
-        bool? AllWarnings
-        {
-            get;
-            set;
-        }
+            var headers = this.CreateHeaderContainer("$(packagedir)/source/A/*.h");
+            headers.AddFiles("$(packagedir)/source/B/*.h");
 
-        bool? ExtraWarnings
-        {
-            get;
-            set;
-        }
+            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            source.AddFiles("$(packagedir)/source/A/*.c");
+            source.AddFiles("$(packagedir)/source/B/*.c");
 
-        bool? Pedantic
-        {
-            get;
-            set;
-        }
-
-        EVisibility? Visibility
-        {
-            get;
-            set;
-        }
-
-        bool? StrictAliasing
-        {
-            get;
-            set;
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
         }
     }
 }

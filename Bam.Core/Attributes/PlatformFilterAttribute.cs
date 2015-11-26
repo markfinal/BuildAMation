@@ -39,10 +39,17 @@ namespace Bam.Core
             this.Platform = platform;
         }
 
-        public EPlatform Platform
+        public bool
+        Includes(
+            EPlatform other)
+        {
+            return (other == (this.Platform & other));
+        }
+
+        private EPlatform Platform
         {
             get;
-            private set;
+            set;
         }
     }
 }

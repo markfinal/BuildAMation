@@ -63,6 +63,10 @@ namespace ClangCommon
             {
                 configuration["GCC_SYMBOLS_PRIVATE_EXTERN"] = new XcodeBuilder.UniqueConfigurationValue((settings.Visibility.Value == EVisibility.Default) ? "NO" : "YES");
             }
+            if (settings.StrictAliasing.HasValue)
+            {
+                configuration["GCC_STRICT_ALIASING"] = new XcodeBuilder.UniqueConfigurationValue(settings.StrictAliasing.Value ? "YES" : "NO");
+            }
         }
     }
 }

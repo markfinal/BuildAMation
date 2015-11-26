@@ -51,12 +51,15 @@ namespace CommandLineProcessor
         public static void
         Execute(
             Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool tool,
-            Bam.Core.StringArray commandLine,
-            string workingDirectory = null)
+            string executablePath,
+            Bam.Core.StringArray commandLineArguments,
+            string workingDirectory = null,
+            Bam.Core.StringArray inheritedEnvironmentVariables = null,
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> addedEnvironmentVariables = null,
+            string useResponseFileOption = null)
         {
             var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = tool.Executable.Parse();
+            processStartInfo.FileName = executablePath;
             processStartInfo.ErrorDialog = true;
             if (null != workingDirectory)
             {
@@ -65,19 +68,19 @@ namespace CommandLineProcessor
 
             var cachedEnvVars = new System.Collections.Generic.Dictionary<string, string>();
             // first get the inherited environment variables from the system environment
-            if (null != tool.InheritedEnvironmentVariables)
+            if (null != inheritedEnvironmentVariables)
             {
                 int envVarCount;
-                if (tool.InheritedEnvironmentVariables.Count == 1 &&
-                    tool.InheritedEnvironmentVariables[0] == "*")
+                if (inheritedEnvironmentVariables.Count == 1 &&
+                    inheritedEnvironmentVariables[0] == "*")
                 {
                     foreach (System.Collections.DictionaryEntry envVar in processStartInfo.EnvironmentVariables)
                     {
                         cachedEnvVars.Add(envVar.Key as string, envVar.Value as string);
                     }
                 }
-                else if (tool.InheritedEnvironmentVariables.Count == 1 &&
-                         System.Int32.TryParse(tool.InheritedEnvironmentVariables[0], out envVarCount) &&
+                else if (inheritedEnvironmentVariables.Count == 1 &&
+                         System.Int32.TryParse(inheritedEnvironmentVariables[0], out envVarCount) &&
                          envVarCount < 0)
                 {
                     envVarCount += processStartInfo.EnvironmentVariables.Count;
@@ -93,7 +96,7 @@ namespace CommandLineProcessor
                 }
                 else
                 {
-                    foreach (var envVar in tool.InheritedEnvironmentVariables)
+                    foreach (var envVar in inheritedEnvironmentVariables)
                     {
                         if (!processStartInfo.EnvironmentVariables.ContainsKey(envVar))
                         {
@@ -104,16 +107,17 @@ namespace CommandLineProcessor
                     }
                 }
             }
-
             processStartInfo.EnvironmentVariables.Clear();
-
-            foreach (var envVar in cachedEnvVars)
+            if (null != inheritedEnvironmentVariables)
             {
-                processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
+                foreach (var envVar in cachedEnvVars)
+                {
+                    processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
+                }
             }
-            if (null != tool.EnvironmentVariables)
+            if (null != addedEnvironmentVariables)
             {
-                foreach (var envVar in tool.EnvironmentVariables)
+                foreach (var envVar in addedEnvironmentVariables)
                 {
                     processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value.ToString(System.IO.Path.PathSeparator);
                 }
@@ -124,16 +128,28 @@ namespace CommandLineProcessor
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardInput = true;
 
-            var linearized = new System.Text.StringBuilder();
-            if (tool.InitialArguments != null)
+            var arguments = commandLineArguments.ToString(' ');
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                foreach (var arg in tool.InitialArguments)
+                //TODO: should this include the length of the executable path too?
+                if (arguments.Length >= 32767)
                 {
-                    linearized.AppendFormat("{0} ", arg.Parse());
+                    if (null == useResponseFileOption)
+                    {
+                        throw new Bam.Core.Exception("Command line is {0} characters long, but response files are not supported by the tool {1}", arguments.Length, executablePath);
+                    }
+
+                    var responseFilePath = System.IO.Path.GetTempFileName();
+                    using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFilePath))
+                    {
+                        Bam.Core.Log.DebugMessage("Written response file {0} containing:\n{1}", responseFilePath, arguments);
+                        writer.WriteLine(arguments);
+                    }
+
+                    arguments = System.String.Format("{0}{1}", useResponseFileOption, responseFilePath);
                 }
             }
-            linearized.Append(commandLine.ToString(' '));
-            processStartInfo.Arguments = linearized.ToString();
+            processStartInfo.Arguments = arguments;
 
             Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
 
@@ -188,6 +204,33 @@ namespace CommandLineProcessor
                 message.AppendLine();
                 throw new Bam.Core.Exception(message.ToString());
             }
+        }
+
+        public static void
+        Execute(
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool tool,
+            Bam.Core.StringArray commandLine,
+            string workingDirectory = null)
+        {
+            var commandLineArgs = new Bam.Core.StringArray();
+            if (tool.InitialArguments != null)
+            {
+                foreach (var arg in tool.InitialArguments)
+                {
+                    commandLineArgs.Add(arg.Parse());
+                }
+            }
+            commandLineArgs.AddRange(commandLine);
+
+            Execute(
+                context,
+                tool.Executable.Parse(),
+                commandLineArgs,
+                workingDirectory: workingDirectory,
+                inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
+                addedEnvironmentVariables: tool.EnvironmentVariables,
+                useResponseFileOption: tool.UseResponseFileOption);
         }
     }
 }

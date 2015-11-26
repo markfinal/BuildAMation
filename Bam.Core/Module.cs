@@ -96,12 +96,12 @@ namespace Bam.Core
         {
             var platformFilters = moduleType.GetCustomAttributes(typeof(PlatformFilterAttribute), true) as PlatformFilterAttribute[];
             var configurationFilters = moduleType.GetCustomAttributes(typeof(ConfigurationFilterAttribute), true) as ConfigurationFilterAttribute[];
-            if (platformFilters.Length > 0 && !platformFilters[0].Platform.Includes(Graph.Instance.BuildEnvironment.Platform))
+            if (platformFilters.Length > 0 && !platformFilters[0].Includes(Graph.Instance.BuildEnvironment.Platform))
             {
                 Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the platform filter", moduleType.ToString());
                 return false;
             }
-            if (configurationFilters.Length > 0 && 0 == (configurationFilters[0].Configuration & Graph.Instance.BuildEnvironment.Configuration))
+            if (configurationFilters.Length > 0 && !configurationFilters[0].Includes(Graph.Instance.BuildEnvironment.Configuration))
             {
                 Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the configuration filter", moduleType.ToString());
                 return false;

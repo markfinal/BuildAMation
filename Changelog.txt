@@ -1,3 +1,33 @@
+26-Nov-2015 Fixes #38. VisualStudio and Xcode project files display module source files in a folder hierarchy that mirrors their location beneath their respective package directories.
+
+25-Nov-2015 Fixed #83. Modules with source files with the same basename, but different directories, now compile their object files to unique locations, duplicating the directory structure under their package directory for the full path to their object files. VisualStudio projects use the new object file locations, Xcode builds always built to unique object file locations. MakeFiles share the same directory structure as Native build modes.
+
+24-Nov-2015 Added new TokenizedString post-function, @trimstart(a,b), that removes (multiple) instances of b from the start of a.
+
+24-Nov-2015 Added Bam.Core.ICommandLineTool.UseResponseFileOption, a string property. This is the option to use on the command line if the tool supports response files in Native build mode. This option is only invoked if the command line length exceeds 32767 characters. Any class implementing this interface will require updating. Bam.Core.PrebuiltTool implements this as a virtual property, with a default of null (response files not supported). VisualC compiler, linker and archiver supports it with the "@" command.
+
+23-Nov-2015 Added new TokenizedString post-function, @escapedquotes(a), which surrounds the argument with \\\". This is useful to use a string as a preprocessor definition.
+
+23-Nov-2015 Issue #83. Default C.ObjectFile path has changed from using the basename of the source file, to the relative path of the source file to the package directory. This means that object file paths now incorporates the folder hierarchy of the source, allowing source files with duplicate basenames to exist in a package. For example, in the DuplicateSourceFilenameTest test.
+
+23-Nov-2015 Added new TokenizedString post-function, @relativeto(a,b), which calculates the relative path of 'a' to 'b'. If the result is 'a', then an exception is thrown, as returning absolute paths may not be ideal if the function is used to compose a path.
+
+23-Nov-2015 Bam.Core.PlatformFilterAttribute and ConfigurationFilterAttribute no longer expose the EPlatform and EConfiguration as properties. Instead an 'Includes' boolean function that accepts an EPlatform or EConfiguration, returning true if the argument is contained within the flags set on the attribute, false otherwise.
+
+23-Nov-2015 Extended the CommandLineProcessor.Processor utility class, so that arbitrary executables can be invoked, without needing to go through the Bam.Core.ITool interface. For example, if a module simply needed to invoke a system command.
+
+23-Nov-2015 Changed the type of Bam.Core.ICommandLineTool.InheritedEnvironmentVariables from System.Collections.Generic.List<string> to Bam.Core.StringArray. Any module implementing this interface will require an update.
+
+23-Nov-2015 Added test, DuplicateSourceFilenameTest, to exercise compiling source files, with the same basename, but different paths in a module.
+
+23-Nov-2015 Fixes #82. Report a useful exception message of why trying to add a dependency (eventually through Bam.Core.FindReferencedModule) will not work in a patch. Instead, this should be done during the invocation of the module's Init function.
+
+21-Nov-2015 ======== Version 1.0.0b3 Release ========
+
+20-Nov-2015 Catch and report exceptions thrown during Settings creation.
+
+20-Nov-2015 Added GccCommon.ICommonCompilerSettings.StrictAliasing and ClangCommon.ICommonCompilerSettings.StrictAliasing, defaulting to false in debug, and true in all configurations with optimizations enabled. See http://dbp-consulting.com/tutorials/StrictAliasing.html for an explanation of aliasing.
+
 20-Nov-2015 Added Publisher.IObjCopyToolSettings.Verbose boolean option to vary the amount of output from the objcopy tool. Defaults to true.
 
 20-Nov-2015 Fixes #75. Mingw binutils 2.25.1 changed behaviour of objcopy, requiring at least the SYSTEMROOT environment variable, or a failure to create a temporary file is reported.
@@ -40,7 +70,7 @@
 
 13-Nov-2015 Fixes #61. C/C++ compiler warning levels must appear on the command lines before any warning suppressions. The interfaces containing the warning levels now have a high precedence.
 
-11-Nov-2015 ======== Version 1.0.0b1 Release ========
+11-Nov-2015 ======== Version 1.0.0b1 (and b2) Release ========
 
 10-Nov-2015 Fixes #30. Added tar settings for compression. Supporting gzip, bzip and lzma.
 

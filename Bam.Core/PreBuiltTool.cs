@@ -40,7 +40,7 @@ namespace Bam.Core
             : base()
         {
             this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, TokenizedStringArray>();
-            this.InheritedEnvironmentVariables = new System.Collections.Generic.List<string>();
+            this.InheritedEnvironmentVariables = new StringArray();
         }
 
             #if false
@@ -60,7 +60,7 @@ namespace Bam.Core
             private set;
         }
 
-        public System.Collections.Generic.List<string> InheritedEnvironmentVariables
+        public StringArray InheritedEnvironmentVariables
         {
             get;
             private set;
@@ -72,6 +72,14 @@ namespace Bam.Core
         }
 
         public virtual TokenizedStringArray InitialArguments
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public virtual string UseResponseFileOption
         {
             get
             {

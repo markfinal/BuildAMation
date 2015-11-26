@@ -198,5 +198,11 @@ namespace Clang
             get;
             set;
         }
+
+        bool? ClangCommon.ICommonCompilerSettings.StrictAliasing
+        {
+            get;
+            set;
+        }
     }
 }
