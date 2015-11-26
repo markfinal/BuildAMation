@@ -264,9 +264,8 @@ namespace Bam.Core
             }
         }
 
-        // TODO: is this function needed?
         /// <summary>
-        /// Is the list readonly?
+        /// Is the list readonly? Required by the ICollection interface.
         /// </summary>
         /// <value>Always <c>false</c>.</value>
         public bool IsReadOnly
