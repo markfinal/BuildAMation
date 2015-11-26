@@ -211,12 +211,12 @@ namespace XcodeBuilder
                 group = new Group(basename);
                 this.Project.Groups.Add(group);
                 this.Project.GroupMap.Add(path.Parse(), group);
-            }
-            if (path.Parse().Contains(System.IO.Path.DirectorySeparatorChar))
-            {
-                var parent = this.Module.CreateTokenizedString("@dir($(0))", path);
-                var parentGroup = this.CreateGroupHierarchy(parent);
-                parentGroup.AddChild(group);
+                if (path.Parse().Contains(System.IO.Path.DirectorySeparatorChar))
+                {
+                    var parent = this.Module.CreateTokenizedString("@dir($(0))", path);
+                    var parentGroup = this.CreateGroupHierarchy(parent);
+                    parentGroup.AddChild(group);
+                }
             }
             return group;
         }
