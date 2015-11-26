@@ -4,7 +4,7 @@
 
 24-Nov-2015 Added new TokenizedString post-function, @trimstart(a,b), that removes (multiple) instances of b from the start of a.
 
-24-Nov-2015 Added Bam.Core.ICommandLineTool.UseResponseFileOption, a string property. This is the option to use on the command line if the tool supports response files in Native build mode. This option is only invoked if the command line length exceeds 32767 characters. Any class implementing this interface will require updating. Bam.Core.PrebuiltTool implements this as a virtual property, with a default of null (response files not supported). VisualC compiler, linker and archiver supports it with the "@" command.
+24-Nov-2015 Fixes #84. Added Bam.Core.ICommandLineTool.UseResponseFileOption, a string property. This is the option to use on the command line if the tool supports response files in Native build mode. This option is only invoked if the command line length exceeds 32767 characters. Any class implementing this interface will require updating. Bam.Core.PrebuiltTool implements this as a virtual property, with a default of null (response files not supported). VisualC compiler, linker and archiver supports it with the "@" command.
 
 23-Nov-2015 Added new TokenizedString post-function, @escapedquotes(a), which surrounds the argument with \\\". This is useful to use a string as a preprocessor definition.
 
