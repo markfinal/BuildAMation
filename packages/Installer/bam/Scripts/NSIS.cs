@@ -88,7 +88,7 @@ namespace Installer
             {
                 scriptWriter.WriteLine("Name \"{0}\"", outputName.Parse());
                 scriptWriter.WriteLine("OutFile \"{0}\"", this.CreateTokenizedString("$(buildroot)/$(config)/$(0).exe", outputName).ParseAndQuoteIfNecessary());
-                scriptWriter.WriteLine("InstallDir $PROGRAMFILES64\\{0}", outputName.Parse());
+                scriptWriter.WriteLine("InstallDir $APPDATA\\{0}", outputName.Parse());
                 scriptWriter.WriteLine("Page directory");
                 scriptWriter.WriteLine("Page instfiles");
                 scriptWriter.WriteLine("Section \"\"");

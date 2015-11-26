@@ -91,7 +91,7 @@ namespace Installer
                 scriptWriter.WriteLine("OutputDir={0}", this.CreateTokenizedString("@dir($(buildroot)/$(config)/$(0).exe)", outputName).ParseAndQuoteIfNecessary());
                 scriptWriter.WriteLine("AppName={0}", outputName.Parse());
                 scriptWriter.WriteLine("AppVersion={0}", "1.0"); // TODO: get this from the main app: this.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse());
-                scriptWriter.WriteLine("DefaultDirName={{pf}}\\{0}", outputName.Parse());
+                scriptWriter.WriteLine("DefaultDirName={{userappdata}}\\{0}", outputName.Parse());
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");
                 scriptWriter.WriteLine("ArchitecturesInstallIn64BitMode=x64");
                 scriptWriter.WriteLine("Uninstallable=No");
