@@ -50,7 +50,7 @@ namespace VSSolutionBuilder
             }
             // the entire hierarchy needs to be added, even if they are empty
             var parent = module.CreateTokenizedString("@dir($(0))", filterPath);
-            AddFilters(module, parent);
+            this.AddFilters(module, parent);
         }
 
         public void

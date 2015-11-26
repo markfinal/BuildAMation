@@ -60,16 +60,35 @@ namespace XcodeBuilder
             private set;
         }
 
+        public Group Parent
+        {
+            get;
+            private set;
+        }
+
         public void
         AddChild(
             Object other)
         {
+            if (this == other)
+            {
+                return;
+            }
             lock (this.Children)
             {
                 var existingRef = this.Children.Where(item => item.GUID == other.GUID).FirstOrDefault();
                 if (null == existingRef)
                 {
                     this.Children.Add(other);
+                    if (other is Group)
+                    {
+                        var otherGroup = other as Group;
+                        if (null != otherGroup.Parent)
+                        {
+                            throw new Bam.Core.Exception("Group '{0}' is already a child of '{1}'", this.Name, otherGroup.Parent.Name);
+                        }
+                        otherGroup.Parent = this;
+                    }
                 }
             }
         }
@@ -97,7 +116,7 @@ namespace XcodeBuilder
             {
                 text.AppendFormat("{0}children = (", indent2);
                 text.AppendLine();
-                foreach (var child in this.Children)
+                foreach (var child in this.Children.OrderBy(item => item.Name))
                 {
                     text.AppendFormat("{0}{1} /* {2} */,", indent3, child.GUID, child.Name);
                     text.AppendLine();

@@ -1,4 +1,4 @@
-25-Nov-2015 Issue #38. VisualStudio project files now filter all files (source, header, resource, etc) by path relative to their package directory. 
+26-Nov-2015 Fixes #38. VisualStudio and Xcode project files display module source files in a folder hierarchy that mirrors their location beneath their respective package directories.
 
 25-Nov-2015 Fixed #83. Modules with source files with the same basename, but different directories, now compile their object files to unique locations, duplicating the directory structure under their package directory for the full path to their object files. VisualStudio projects use the new object file locations, Xcode builds always built to unique object file locations. MakeFiles share the same directory structure as Native build modes.
 

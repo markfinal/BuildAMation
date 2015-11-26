@@ -195,6 +195,51 @@ namespace XcodeBuilder
             return buildFile;
         }
 
+        private Group
+        CreateGroupHierarchy(
+            Bam.Core.TokenizedString path)
+        {
+            Group group = null;
+            lock (this.Project)
+            {
+                var found = this.Project.GroupMap.Where(item => item.Key == path.Parse()).FirstOrDefault();
+                if (!found.Equals(default(System.Collections.Generic.KeyValuePair<string, Group>)))
+                {
+                    return found.Value;
+                }
+                var basename = this.Module.CreateTokenizedString("@basename($(0))", path).Parse();
+                group = new Group(basename);
+                this.Project.Groups.Add(group);
+                this.Project.GroupMap.Add(path.Parse(), group);
+            }
+            if (path.Parse().Contains(System.IO.Path.DirectorySeparatorChar))
+            {
+                var parent = this.Module.CreateTokenizedString("@dir($(0))", path);
+                var parentGroup = this.CreateGroupHierarchy(parent);
+                parentGroup.AddChild(group);
+            }
+            return group;
+        }
+
+        private void
+        AddFileRefToGroup(
+            FileReference fileRef)
+        {
+            var relDir = this.Module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", fileRef.Path);
+            var newGroup = this.CreateGroupHierarchy(relDir);
+            var parentGroup = newGroup;
+            while (parentGroup.Parent != null)
+            {
+                parentGroup = parentGroup.Parent;
+                if (parentGroup == this.Project.MainGroup)
+                {
+                    break;
+                }
+            }
+            this.Project.MainGroup.AddChild(parentGroup);
+            newGroup.AddChild(fileRef);
+        }
+
         public BuildFile
         EnsureSourceBuildFileExists(
             Bam.Core.TokenizedString path,
@@ -214,7 +259,7 @@ namespace XcodeBuilder
                 }
 
                 var buildFile = this.EnsureBuildFileExists(path, type);
-                this.Project.SourceFilesGroup.AddChild(buildFile.FileRef);
+                this.AddFileRefToGroup(buildFile.FileRef);
                 this.SourcesBuildPhase.AddBuildFile(buildFile);
                 return buildFile;
             }
@@ -261,7 +306,7 @@ namespace XcodeBuilder
                     path,
                     FileReference.EFileType.HeaderFile,
                     sourceTree: FileReference.ESourceTree.Absolute);
-                this.Project.HeaderFilesGroup.AddChild(fileRef);
+                this.AddFileRefToGroup(fileRef);
             }
         }
 

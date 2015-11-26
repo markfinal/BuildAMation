@@ -53,6 +53,7 @@ namespace XcodeBuilder
             this.FileReferences = new System.Collections.Generic.List<FileReference>();
             this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
             this.Groups = new System.Collections.Generic.List<Group>();
+            this.GroupMap = new System.Collections.Generic.Dictionary<string, Group>();
             this.AllConfigurations = new System.Collections.Generic.List<Configuration>();
             this.ProjectConfigurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration>();
             this.ConfigurationLists = new System.Collections.Generic.List<ConfigurationList>();
@@ -67,12 +68,7 @@ namespace XcodeBuilder
 
             this.Groups.Add(new Group()); // main group
             this.Groups.Add(new Group("Products")); // product ref group
-            this.Groups.Add(new Group("Source Files"));
-            this.Groups.Add(new Group("Header Files"));
-
             this.MainGroup.AddChild(this.ProductRefGroup);
-            this.MainGroup.AddChild(this.SourceFilesGroup);
-            this.MainGroup.AddChild(this.HeaderFilesGroup);
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
@@ -135,6 +131,12 @@ namespace XcodeBuilder
         }
 
         public System.Collections.Generic.List<Group> Groups
+        {
+            get;
+            private set;
+        }
+
+        public System.Collections.Generic.Dictionary<string, Group> GroupMap
         {
             get;
             private set;
@@ -219,22 +221,6 @@ namespace XcodeBuilder
             get
             {
                 return this.Groups[1];
-            }
-        }
-
-        public Group SourceFilesGroup
-        {
-            get
-            {
-                return this.Groups[2];
-            }
-        }
-
-        public Group HeaderFilesGroup
-        {
-            get
-            {
-                return this.Groups[3];
             }
         }
 
