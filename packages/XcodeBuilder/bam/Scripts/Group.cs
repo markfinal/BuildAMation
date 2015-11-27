@@ -83,9 +83,10 @@ namespace XcodeBuilder
                     if (other is Group)
                     {
                         var otherGroup = other as Group;
-                        if (null != otherGroup.Parent)
+                        if (null != otherGroup.Parent && otherGroup.Parent != this)
                         {
-                            throw new Bam.Core.Exception("Group '{0}' is already a child of '{1}'", this.Name, otherGroup.Parent.Name);
+                            throw new Bam.Core.Exception("Group '{0}' is already a child of '{1}'. Asking to make it a child of '{2}'",
+                                otherGroup.Name, otherGroup.Parent.Name, this.Name);
                         }
                         otherGroup.Parent = this;
                     }

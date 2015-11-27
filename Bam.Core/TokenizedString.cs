@@ -447,6 +447,10 @@ namespace Bam.Core
             var matches = System.Text.RegularExpressions.Regex.Matches(sourceExpression, PostFunctionRegExPattern);
             if (0 == matches.Count)
             {
+                if (sourceExpression.Contains("@"))
+                {
+                    throw new Exception("Expression '{0}' did not match for post-functions, but does contain @ - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", sourceExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                }
                 return sourceExpression;
             }
             var modifiedString = sourceExpression;
@@ -678,6 +682,10 @@ namespace Bam.Core
             var matches = System.Text.RegularExpressions.Regex.Matches(originalExpression, PreFunctionRegExPattern);
             if (0 == matches.Count)
             {
+                if (originalExpression.Contains("#"))
+                {
+                    throw new Exception("Expression '{0}' did not match for pre-functions, but does contain # - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", originalExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                }
                 return originalExpression;
             }
             var modifiedString = originalExpression;
