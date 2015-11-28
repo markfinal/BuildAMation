@@ -31,13 +31,13 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Management of the graph execution
+    /// Management of the graph execution.
     /// </summary>
     public sealed class Executor
     {
-        // Provides a task scheduler that ensures a maximum concurrency level while
-        // running on top of the thread pool.
-        // https://msdn.microsoft.com/en-us/library/ee789351.aspx
+        /// <summary>
+        /// Provides a task scheduler that ensures a maximum concurrency level while running on top of the thread pool. Based upon https://msdn.microsoft.com/en-us/library/ee789351.aspx
+        /// </summary>
         public class LimitedConcurrencyLevelTaskScheduler : System.Threading.Tasks.TaskScheduler
         {
             // Indicates whether the current thread is processing work items.
@@ -53,14 +53,20 @@ namespace Bam.Core
             // Indicates whether the scheduler is currently processing work items.
             private int _delegatesQueuedOrRunning = 0;
 
-            // Creates a new instance with the specified degree of parallelism.
+            /// <summary>
+            /// Creates a new instance with the specified degree of parallelism.
+            /// </summary>
+            /// <param name="maxDegreeOfParallelism">Max degree of parallelism.</param>
             public LimitedConcurrencyLevelTaskScheduler(int maxDegreeOfParallelism)
             {
                 if (maxDegreeOfParallelism < 1) throw new System.ArgumentOutOfRangeException("maxDegreeOfParallelism");
                 _maxDegreeOfParallelism = maxDegreeOfParallelism;
             }
 
-            // Queues a task to the scheduler.
+            /// <summary>
+            /// Queues a task to the scheduler.
+            /// </summary>
+            /// <param name="task">Task.</param>
             protected sealed override void QueueTask(System.Threading.Tasks.Task task)
             {
                 // Add the task to the list of tasks to be processed.  If there aren't enough
@@ -114,7 +120,12 @@ namespace Bam.Core
                 }, null);
             }
 
-            // Attempts to execute the specified task on the current thread.
+            /// <summary>
+            /// Attempts to execute the specified task on the current thread.
+            /// </summary>
+            /// <returns><c>true</c>, if execute task inline was tryed, <c>false</c> otherwise.</returns>
+            /// <param name="task">Task.</param>
+            /// <param name="taskWasPreviouslyQueued">If set to <c>true</c> task was previously queued.</param>
             protected sealed override bool TryExecuteTaskInline(System.Threading.Tasks.Task task, bool taskWasPreviouslyQueued)
             {
                 // If this thread isn't already processing a task, we don't support inlining
@@ -131,16 +142,26 @@ namespace Bam.Core
                     return base.TryExecuteTask(task);
             }
 
-            // Attempt to remove a previously scheduled task from the scheduler.
+            /// <summary>
+            /// Attempt to remove a previously scheduled task from the scheduler.
+            /// </summary>
+            /// <returns><c>true</c>, if dequeue was tryed, <c>false</c> otherwise.</returns>
+            /// <param name="task">Task.</param>
             protected sealed override bool TryDequeue(System.Threading.Tasks.Task task)
             {
                 lock (_tasks) return _tasks.Remove(task);
             }
 
-            // Gets the maximum concurrency level supported by this scheduler.
+            /// <summary>
+            /// Gets the maximum concurrency level supported by this scheduler.
+            /// </summary>
+            /// <value>The maximum concurrency level.</value>
             public sealed override int MaximumConcurrencyLevel { get { return _maxDegreeOfParallelism; } }
 
-            // Gets an enumerable of the tasks currently scheduled on this scheduler.
+            /// <summary>
+            /// Gets an enumerable of the tasks currently scheduled on this scheduler.
+            /// </summary>
+            /// <returns>The scheduled tasks.</returns>
             protected sealed override System.Collections.Generic.IEnumerable<System.Threading.Tasks.Task> GetScheduledTasks()
             {
                 bool lockTaken = false;
@@ -256,6 +277,12 @@ namespace Bam.Core
             return true;
         }
 
+        /// <summary>
+        /// Run the executor on the dependency graph.
+        /// Graph execution can be single threaded or many threaded, using .NET framework Tasks.
+        /// Graph execution can have a pre- and post- build step, defined by the build mode meta data.
+        /// Modules are executed in rank, honouring dependencies.
+        /// </summary>
         public void
         Run()
         {
