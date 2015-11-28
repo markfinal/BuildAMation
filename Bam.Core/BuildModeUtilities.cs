@@ -30,8 +30,16 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class used to identify and use packages that expose a build mode.
+    /// </summary>
     public static class BuildModeUtilities
     {
+        /// <summary>
+        /// Does the name of the package specified indicate it exposes a build mode. Ends with 'Builder'.
+        /// </summary>
+        /// <returns><c>true</c> if is build mode package the specified packageName; otherwise, <c>false</c>.</returns>
+        /// <param name="packageName">Name of the package to query.</param>
         public static bool
         IsBuildModePackage(
             string packageName)
@@ -39,6 +47,9 @@ namespace Bam.Core
             return packageName.EndsWith("Builder");
         }
 
+        /// <summary>
+        /// Validates the package associated with the selected build mode.
+        /// </summary>
         public static void
         ValidateBuildModePackage()
         {
