@@ -34,6 +34,9 @@ namespace Bam.Core
     /// </summary>
     public sealed class MacroList
     {
+        /// <summary>
+        /// Construct an instance of a MacroList.
+        /// </summary>
         public MacroList()
         {
             this.DictInternal = new System.Collections.Generic.Dictionary<string, TokenizedString>();
@@ -46,6 +49,10 @@ namespace Bam.Core
             return System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
         }
 
+        /// <summary>
+        /// Get or set the macro defined by the given key.
+        /// </summary>
+        /// <param name="key">Key.</param>
         public TokenizedString this[string key]
         {
             get
@@ -63,6 +70,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Add the TokenizedString against the key provided.
+        /// </summary>
+        /// <param name="key">Key. Must not start with $( nor end with ).</param>
+        /// <param name="value">Value.</param>
         public void
         Add(
             string key,
@@ -79,6 +91,11 @@ namespace Bam.Core
             this.DictInternal[FormattedKey(key)] = value;
         }
 
+        /// <summary>
+        /// Add a non-verbatim macro.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value.</param>
         public void
         Add(
             string key,
@@ -87,6 +104,11 @@ namespace Bam.Core
             this.Add(key, TokenizedString.Create(value, null));
         }
 
+        /// <summary>
+        /// Add a verbatim macro.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value.</param>
         public void
         AddVerbatim(
             string key,
@@ -95,6 +117,10 @@ namespace Bam.Core
             this.Add(key, TokenizedString.CreateVerbatim(value));
         }
 
+        /// <summary>
+        /// Remove the macro associated with the provided key.
+        /// </summary>
+        /// <param name="key">Key.</param>
         public void
         Remove(
             string key)
@@ -108,6 +134,10 @@ namespace Bam.Core
             set;
         }
 
+        /// <summary>
+        /// Obtain a read-only instance of the key-value pair dictionary.
+        /// </summary>
+        /// <value>The dict.</value>
         public System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString> Dict
         {
             get
@@ -116,6 +146,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Query if the dictionary contains the given key-token.
+        /// </summary>
+        /// <param name="token">Token (not starting with $( nor ending with )).</param>
         public bool
         Contains(
             string token)
