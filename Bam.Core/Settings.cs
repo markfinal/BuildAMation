@@ -74,6 +74,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Return each interface implemented, implementing ISettingsBase, and ordered by precedence with
+        /// SettingsPrecedenceAttribute.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<System.Type>
         Interfaces()
         {
@@ -100,6 +104,13 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// For all settings interfaces, optionally calling Empty method and Default method
+        /// in the extensions class defined by SettingsExtensionsAttribute on each interface.
+        /// </summary>
+        /// <param name="module">Module.</param>
+        /// <param name="emptyFirst">If set to <c>true</c> empty first.</param>
+        /// <param name="useDefaults">If set to <c>true</c> use defaults.</param>
         protected void
         InitializeAllInterfaces(
             Module module,
@@ -161,6 +172,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get or set the Module associated with the Settings instance.
+        /// </summary>
+        /// <value>The module.</value>
         public Module Module
         {
             get;
