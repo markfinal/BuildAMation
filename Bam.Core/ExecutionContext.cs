@@ -29,8 +29,18 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Each module execution has a copy of an execution context, which holds useful state data about
+    /// invoking the execution, and recording the output from the execution.
+    /// </summary>
     public class ExecutionContext
     {
+        /// <summary>
+        /// Construct an instance of the context.
+        /// </summary>
+        /// <param name="useEvaluation">If set to <c>true</c>, the build mode requires module evaluation to occur.</param>
+        /// <param name="explainRebuild">If set to <c>true</c>, any module (re)build reasons are logged to the console.</param>
+        /// <param name="useImmediateOutput">If set to <c>true</c>, any output from the module execution is not cached, but displayed immediately.</param>
         public ExecutionContext(
             bool useEvaluation,
             bool explainRebuild,
@@ -46,36 +56,61 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determine if the module execution requires evaluation first.
+        /// </summary>
+        /// <value><c>true</c> if evaluate is to occur before execution; otherwise, <c>false</c>.</value>
         public bool Evaluate
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Obtain the log verbosity level of any (re)build explanations.
+        /// </summary>
+        /// <value>The explain logging level.</value>
         public EVerboseLevel ExplainLoggingLevel
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Does any output from module execution get cached for a deferred display?
+        /// </summary>
+        /// <value><c>true</c> if use deferred output; otherwise, <c>false</c>.</value>
         public bool UseDeferredOutput
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// If using deferred output, this is where stdout output is captured. Otherwise this is null.
+        /// </summary>
+        /// <value>The output string builder.</value>
         public System.Text.StringBuilder OutputStringBuilder
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// If using deferred output, this is where stderr output is captured. Otherwise this is null.
+        /// </summary>
+        /// <value>The error string builder.</value>
         public System.Text.StringBuilder ErrorStringBuilder
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Delegate for asynchronous capturing of stdout data.
+        /// </summary>
+        /// <param name="sender">Not used</param>
+        /// <param name="e">Data received event arguments, containing stdout data.</param>
         public void
         OutputDataReceived(
             object sender,
@@ -95,6 +130,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Delegate for asynchronous capturing of stderr data.
+        /// </summary>
+        /// <param name="sender">Not used</param>
+        /// <param name="e">Data received event arguments, containing stderr data.</param>
         public void
         ErrorDataReceived(
             object sender,
