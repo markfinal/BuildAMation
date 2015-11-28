@@ -30,7 +30,8 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Utility functions for dealing with execution policies
+    /// Utility functions instantiating build mode policy classes.
+    /// Note that the where clause specifies class, whereas T can only ever be an interface.
     /// </summary>
     public static class ExecutionPolicyUtilities<T> where T: class
     {
@@ -62,7 +63,10 @@ namespace Bam.Core
             return policy;
         }
 
-        // there is no where T: interface clause
+        /// <summary>
+        /// Create an instance of the policy class, classname, that implements policy in interface T.
+        /// </summary>
+        /// <param name="classname">Name of the class implementing policy T</param>
         public static T
         Create(
             string classname)
