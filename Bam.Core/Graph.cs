@@ -31,7 +31,8 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Singleton representing the single point of reference for all build functionality
+    /// Singleton representing the single point of reference for all build functionality.
+    /// This can be thought about as a layer on top of the DependencyGraph.
     /// </summary>
     public sealed class Graph :
         System.Collections.Generic.IEnumerable<ModuleCollection>
@@ -44,6 +45,10 @@ namespace Bam.Core
             Instance.Initialize();
         }
 
+        /// <summary>
+        /// Obtain the singleton instance of the Graph.
+        /// </summary>
+        /// <value>Singleton instance.</value>
         public static Graph Instance
         {
             get;
@@ -76,19 +81,37 @@ namespace Bam.Core
             this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new Options.UseDebugSymbols());
         }
 
+        /// <summary>
+        /// Add the module to the flat list of all modules in the current build environment.
+        /// </summary>
+        /// <param name="module">Module to be added</param>
         public void
         AddModule(
-            Module m)
+            Module module)
         {
-            this.Modules[this.BuildEnvironmentInternal].Add(m);
+            this.Modules[this.BuildEnvironmentInternal].Add(module);
         }
 
+        /// <summary>
+        /// Stack of module types, that are pushed when a new module is created, and popped post-creation.
+        /// This is so that modules created as dependencies can inspect their module parental hierarchy at construction time.
+        /// </summary>
+        /// <value>The stack of module types</value>
         public System.Collections.Generic.Stack<System.Type> CommonModuleType
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// A referenced module is one that is referenced by it's class type. This is normally in use when specifying
+        /// a dependency. There can be one and only one copy, in a build environment, of this type of module.
+        /// A non-referenced module, is one that is never referred to explicitly in user scripts, but are created behind
+        /// the scenes by packages. There can be many instances of these modules.
+        /// The graph maintains a list of all referenced modules
+        /// </summary>
+        /// <returns>The instance of the referenced module.</returns>
+        /// <typeparam name="T">The type of module being referenced.</typeparam>
         public T
         FindReferencedModule<T>() where T : Module, new()
         {
@@ -123,7 +146,7 @@ namespace Bam.Core
             {
                 var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule");
                 var genericVersionForModuleType = findReferencedModuleMethod.MakeGenericMethod(moduleType);
-                var newModule = genericVersionForModuleType.Invoke(Graph.Instance, null) as Module;
+                var newModule = genericVersionForModuleType.Invoke(this, null) as Module;
                 return newModule;
             }
             catch (System.Reflection.TargetInvocationException ex)
@@ -138,6 +161,12 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Create an unreferenced module instance of the specified type.
+        /// </summary>
+        /// <returns>The module of type.</returns>
+        /// <param name="moduleType">Module type.</param>
+        /// <typeparam name="ModuleType">The 1st type parameter.</typeparam>
         public ModuleType
         MakeModuleOfType<ModuleType>(
             System.Type moduleType) where ModuleType : Module
@@ -145,6 +174,12 @@ namespace Bam.Core
             return this.MakeModuleOfType(moduleType) as ModuleType;
         }
 
+        /// <summary>
+        /// Create all modules in the top level namespace, which is the namespace of the package in which Bam is invoked.
+        /// </summary>
+        /// <param name="assembly">Package assembly</param>
+        /// <param name="env">Environment to create the modules for.</param>
+        /// <param name="ns">Namespace of the package in which Bam is invoked.</param>
         public void
         CreateTopLevelModules(
             System.Reflection.Assembly assembly,
@@ -178,6 +213,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Apply any patches associated with modules.
+        /// </summary>
         public void
         ApplySettingsPatches()
         {
@@ -209,18 +247,30 @@ namespace Bam.Core
             set;
         }
 
+        /// <summary>
+        /// Obtain the build mode.
+        /// </summary>
+        /// <value>The mode.</value>
         public string Mode
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Obtain global macros.
+        /// </summary>
+        /// <value>The macros.</value>
         public MacroList Macros
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get or set metadata associated with the Graph. This is used for multi-threaded builds.
+        /// </summary>
+        /// <value>The meta data.</value>
         public object MetaData
         {
             get;
@@ -228,6 +278,10 @@ namespace Bam.Core
         }
 
         private Environment BuildEnvironmentInternal = null;
+        /// <summary>
+        /// Get the current build environment.
+        /// </summary>
+        /// <value>The build environment.</value>
         public Environment BuildEnvironment
         {
             get
@@ -246,6 +300,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get the actual graph of module dependencies.
+        /// </summary>
+        /// <value>The dependency graph.</value>
         public DependencyGraph DependencyGraph
         {
             get;
@@ -325,6 +383,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Sort all dependencies, invoking Init functions, creating all additional dependencies, placing
+        /// modules into their correct rank.
+        /// Settings classes are also created and set to default property values if modules have a Tool associated with them.
+        /// </summary>
         public void
         SortDependencies()
         {
@@ -338,6 +401,9 @@ namespace Bam.Core
             Module.CompleteModules();
         }
 
+        /// <summary>
+        /// Dump a representation of the dependency graph to the console.
+        /// </summary>
         public void
         Dump()
         {
@@ -397,6 +463,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Perform a validation step to ensure that all modules exist and are in correct ranks.
+        /// </summary>
         public void
         Validate()
         {
@@ -410,6 +479,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Wrapper around the enumerator of the DependencyGraph, but only returning the rank module collections.
+        /// </summary>
+        /// <returns>The enumerator.</returns>
         public System.Collections.Generic.IEnumerator<ModuleCollection>
         GetEnumerator()
         {
@@ -425,6 +498,11 @@ namespace Bam.Core
             return this.GetEnumerator();
         }
 
+        /// <summary>
+        /// Determines whether the specified module is referenced or unreferenced.
+        /// </summary>
+        /// <returns><c>true</c> if this instance is referenced; otherwise, <c>false</c>.</returns>
+        /// <param name="module">Module to check.</param>
         public bool
         IsReferencedModule(
             Module module)
@@ -432,6 +510,10 @@ namespace Bam.Core
             return this.ReferencedModules[module.BuildEnvironment].Contains(module);
         }
 
+        /// <summary>
+        /// Obtain the list of build environments defined for this Graph.
+        /// </summary>
+        /// <value>The build environments.</value>
         public System.Collections.Generic.List<Environment> BuildEnvironments
         {
             get
@@ -446,6 +528,10 @@ namespace Bam.Core
             set;
         }
 
+        /// <summary>
+        /// Obtain the master package (the package in which Bam was invoked).
+        /// </summary>
+        /// <value>The master package.</value>
         public PackageDefinition MasterPackage
         {
             get
@@ -454,6 +540,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Assign the array of package definitions to the Graph.
+        /// </summary>
+        /// <param name="packages">Array of package definitions.</param>
         public void
         SetPackageDefinitions(
             Array<PackageDefinition> packages)
@@ -462,6 +552,10 @@ namespace Bam.Core
             this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
         }
 
+        /// <summary>
+        /// Enumerate the package definitions associated with the Graph.
+        /// </summary>
+        /// <value>The packages.</value>
         public System.Collections.Generic.IEnumerable<PackageDefinition> Packages
         {
             get
@@ -473,6 +567,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Obtain the metadata associated with the chosen build mode.
+        /// </summary>
+        /// <value>The build mode meta data.</value>
         public IBuildModeMetaData
         BuildModeMetaData
         {
@@ -480,6 +578,12 @@ namespace Bam.Core
             set;
         }
 
+        /// <summary>
+        /// For a given package, obtain the metadata and cast it to MetaDataType.
+        /// </summary>
+        /// <returns>The meta data.</returns>
+        /// <param name="packageName">Package name.</param>
+        /// <typeparam name="MetaDataType">The 1st type parameter.</typeparam>
         public MetaDataType
         PackageMetaData<MetaDataType>(
             string packageName)
@@ -493,6 +597,10 @@ namespace Bam.Core
             return package.MetaData as MetaDataType;
         }
 
+        /// <summary>
+        /// Get or set the build root to write all build output to.
+        /// </summary>
+        /// <value>The build root.</value>
         public string BuildRoot
         {
             get
@@ -511,6 +619,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get or set the logging verbosity level to use across the build.
+        /// </summary>
+        /// <value>The verbosity level.</value>
         public EVerboseLevel
         VerbosityLevel
         {
@@ -518,36 +630,60 @@ namespace Bam.Core
             set;
         }
 
+        /// <summary>
+        /// Obtain a list of package repositories used to locate packages.
+        /// </summary>
+        /// <value>The package repositories.</value>
         public StringArray PackageRepositories
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Determine whether package definition files are automatically updated after being read.
+        /// </summary>
+        /// <value><c>true</c> if force definition file update; otherwise, <c>false</c>.</value>
         public bool ForceDefinitionFileUpdate
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Determine whether package assembly compilation occurs with debug symbol information.
+        /// </summary>
+        /// <value><c>true</c> if compile with debug symbols; otherwise, <c>false</c>.</value>
         public bool CompileWithDebugSymbols
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Get or set the path of the package script assembly.
+        /// </summary>
+        /// <value>The script assembly pathname.</value>
         public string ScriptAssemblyPathname
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Get or set the compiled package script assembly.
+        /// </summary>
+        /// <value>The script assembly.</value>
         public System.Reflection.Assembly ScriptAssembly
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Obtain the current state of Bam.
+        /// </summary>
+        /// <value>The state of the process.</value>
         public BamState ProcessState
         {
             get;
