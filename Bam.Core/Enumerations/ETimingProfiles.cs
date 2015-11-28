@@ -29,19 +29,70 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Enumeration for the timing profiles for Bam core operations
+    /// </summary>
     public enum ETimingProfiles
     {
+        /// <summary>
+        /// Command line option processing time
+        /// </summary>
         ProcessCommandLine = 0,
+
+        /// <summary>
+        /// Time to gather all package source
+        /// </summary>
         GatherSource,
+
+        /// <summary>
+        /// Time to compile all the package source, and referenced assemblies
+        /// </summary>
         AssemblyCompilation,
+
+        /// <summary>
+        /// Time to load the compiled package assembly.
+        /// </summary>
         LoadAssembly,
+
+        /// <summary>
+        /// Time to generate the meta data for all packages.
+        /// </summary>
         PackageMetaData,
+
+        /// <summary>
+        /// Time to identify each of the top-level buildable modules.
+        /// </summary>
         IdentifyBuildableModules,
+
+        /// <summary>
+        /// Time to populate the remainder of the graph, and sort modules into their correct ranks to satisfy dependencies.
+        /// Any modules with an associated tool has their default settings class created, and configured.
+        /// </summary>
         PopulateGraph,
+
+        /// <summary>
+        /// Time to validate the graph, to ensure modules are in the expected ranks, no cyclic dependencies exist etc.
+        /// </summary>
         ValidateGraph,
+
+        /// <summary>
+        /// Time to create and evaluate settings patches on any module with a tool.
+        /// </summary>
         CreatePatches,
+
+        /// <summary>
+        /// Time to parse all TokenizedStrings.
+        /// </summary>
         ParseTokenizedStrings,
+
+        /// <summary>
+        /// Time to execute the generated dependency graph in the chosen build mode.
+        /// </summary>
         GraphExecution,
+
+        /// <summary>
+        /// Total execution time.
+        /// </summary>
         TimedTotal
     }
 }
