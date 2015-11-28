@@ -29,8 +29,16 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Utility class for configuration based operations.
+    /// </summary>
     public static class Configuration
     {
+        /// <summary>
+        /// Convert a string into an EConfiguration, if applicable.
+        /// </summary>
+        /// <returns>The EConfiguration if the parameter matches, or throws a Bam.Core.Exception.</returns>
+        /// <param name="configurationName">Name of the configuration to match. Case is not important.</param>
         public static EConfiguration
         FromString(
             string configurationName)
