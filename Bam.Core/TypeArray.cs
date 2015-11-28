@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Array of System.Types.
+    /// </summary>
     public sealed class TypeArray :
         Array<System.Type>
     {
@@ -36,11 +39,19 @@ namespace Bam.Core
         TypeArray() : base()
         {}
 
+        /// <summary>
+        /// Create an instance from an array of types.
+        /// </summary>
+        /// <param name="itemsToAdd">Items to add.</param>
         public
         TypeArray(
             params System.Type[] itemsToAdd) : base(itemsToAdd)
         {}
 
+        /// <summary>
+        /// Create an instance from an enumerable of types.
+        /// </summary>
+        /// <param name="items">Items.</param>
         public
         TypeArray(
             System.Collections.Generic.IEnumerable<System.Type> items) :
