@@ -29,8 +29,16 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class to convert paths to relative paths.
+    /// </summary>
     public static class RelativePathUtilities
     {
+        /// <summary>
+        /// Is the specified path absolute?
+        /// </summary>
+        /// <returns><c>true</c> if is path absolute the specified path; otherwise, <c>false</c>.</returns>
+        /// <param name="path">Path.</param>
         public static bool
         IsPathAbsolute(
             string path)
@@ -40,6 +48,12 @@ namespace Bam.Core
             return isAbsolute;
         }
 
+        /// <summary>
+        /// Get a relative path between two URIs.
+        /// </summary>
+        /// <returns>The path.</returns>
+        /// <param name="pathUri">Path URI.</param>
+        /// <param name="relativeToUri">Relative to URI.</param>
         public static string
         GetPath(
             System.Uri pathUri,
@@ -48,6 +62,13 @@ namespace Bam.Core
             return GetPath(pathUri, relativeToUri, null);
         }
 
+        /// <summary>
+        /// Get a relative path between two URIs.
+        /// </summary>
+        /// <returns>The path.</returns>
+        /// <param name="pathUri">Path URI.</param>
+        /// <param name="relativeToUri">Relative to URI.</param>
+        /// <param name="relativePrefix">Relative prefix.</param>
         public static string
         GetPath(
             System.Uri pathUri,
@@ -76,6 +97,13 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get a relative path between a string and a URI.
+        /// </summary>
+        /// <returns>The path.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="relativeToUri">Relative to URI.</param>
+        /// <param name="relativePrefix">Relative prefix.</param>
         public static string
         GetPath(
             string path,
@@ -98,6 +126,12 @@ namespace Bam.Core
             return GetPath(pathUri, relativeToUri, relativePrefix);
         }
 
+        /// <summary>
+        /// Get a relative path.
+        /// </summary>
+        /// <returns>The path.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="relativeToUri">Relative to URI.</param>
         public static string
         GetPath(
             string path,
@@ -106,6 +140,13 @@ namespace Bam.Core
             return GetPath(path, relativeToUri, null);
         }
 
+        /// <summary>
+        /// Get a relative path between two strings.
+        /// </summary>
+        /// <returns>The path.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="relativeToString">Relative to string.</param>
+        /// <param name="relativePrefix">Relative prefix.</param>
         public static string
         GetPath(
             string path,
@@ -117,6 +158,12 @@ namespace Bam.Core
             return relativePath;
         }
 
+        /// <summary>
+        /// Get a relative path between two strings.
+        /// </summary>
+        /// <returns>The path.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="relativeToString">Relative to string.</param>
         public static string
         GetPath(
             string path,
@@ -127,6 +174,11 @@ namespace Bam.Core
             return relativePath;
         }
 
+        /// <summary>
+        /// Get a path relative to the working directory.
+        /// </summary>
+        /// <returns>The relative path absolute to working dir.</returns>
+        /// <param name="relativePath">Relative path.</param>
         public static string
         MakeRelativePathAbsoluteToWorkingDir(
             string relativePath)
@@ -134,6 +186,12 @@ namespace Bam.Core
             return MakeRelativePathAbsoluteTo(relativePath, Graph.Instance.ProcessState.WorkingDirectory);
         }
 
+        /// <summary>
+        /// Get a relative path.
+        /// </summary>
+        /// <returns>The relative path absolute to.</returns>
+        /// <param name="relativePath">Relative path.</param>
+        /// <param name="basePath">Base path.</param>
         public static string
         MakeRelativePathAbsoluteTo(
             string relativePath,
@@ -156,6 +214,12 @@ namespace Bam.Core
             return absolutePath;
         }
 
+        /// <summary>
+        /// Find the common root path between two paths.
+        /// </summary>
+        /// <returns>The common root.</returns>
+        /// <param name="path1">Path1.</param>
+        /// <param name="path2">Path2.</param>
         public static string
         GetCommonRoot(
             string path1,
