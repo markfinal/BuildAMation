@@ -387,7 +387,7 @@ namespace Bam.Core
                 System.IO.Directory.CreateDirectory(Graph.Instance.BuildRoot);
             }
 
-            BuildModeUtilities.SetBuildModePackage();
+            BuildModeUtilities.ValidateBuildModePackage();
 
             var definitions = new StringArray();
 

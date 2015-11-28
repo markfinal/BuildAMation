@@ -40,7 +40,7 @@ namespace Bam.Core
         }
 
         public static void
-        SetBuildModePackage()
+        ValidateBuildModePackage()
         {
             if (null == Graph.Instance.Mode)
             {
