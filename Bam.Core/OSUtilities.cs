@@ -30,6 +30,9 @@
 
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class for configuring and querying OS specific details.
+    /// </summary>
     public static class OSUtilities
     {
         private static bool CheckFor64BitOS
@@ -123,6 +126,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Configure the current platform, based on .NET framework settings.
+        /// </summary>
         public static void
         SetupPlatform()
         {
@@ -148,6 +154,11 @@ namespace Bam.Core
             IsLittleEndian = System.BitConverter.IsLittleEndian;
         }
 
+        /// <summary>
+        /// Determines if is Windows the specified platform.
+        /// </summary>
+        /// <returns><c>true</c> if is windows the specified platform; otherwise, <c>false</c>.</returns>
+        /// <param name="platform">Platform.</param>
         public static bool
         IsWindows(
             EPlatform platform)
@@ -156,6 +167,10 @@ namespace Bam.Core
             return isWindows;
         }
 
+        /// <summary>
+        /// Determines if Windows is the current platform.
+        /// </summary>
+        /// <value><c>true</c> if is windows hosting; otherwise, <c>false</c>.</value>
         public static bool IsWindowsHosting
         {
             get
@@ -164,6 +179,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determines if is Linux the specified platform.
+        /// </summary>
+        /// <returns><c>true</c> if is linux the specified platform; otherwise, <c>false</c>.</returns>
+        /// <param name="platform">Platform.</param>
         public static bool
         IsLinux(
             EPlatform platform)
@@ -172,6 +192,10 @@ namespace Bam.Core
             return isLinux;
         }
 
+        /// <summary>
+        /// Determines if Linux is the current platform.
+        /// </summary>
+        /// <value><c>true</c> if is linux hosting; otherwise, <c>false</c>.</value>
         public static bool IsLinuxHosting
         {
             get
@@ -180,6 +204,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determines if is OSX the specified platform.
+        /// </summary>
+        /// <returns><c>true</c> if is OS the specified platform; otherwise, <c>false</c>.</returns>
+        /// <param name="platform">Platform.</param>
         public static bool
         IsOSX(
             EPlatform platform)
@@ -188,6 +217,10 @@ namespace Bam.Core
             return isOSX;
         }
 
+        /// <summary>
+        /// Determines if OSX is the current platform.
+        /// </summary>
+        /// <value><c>true</c> if is OSX hosting; otherwise, <c>false</c>.</value>
         public static bool IsOSXHosting
         {
             get
@@ -196,6 +229,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determines if the current platform is 64-bits.
+        /// </summary>
+        /// <returns><c>true</c> if is64 bit the specified platform; otherwise, <c>false</c>.</returns>
+        /// <param name="platform">Platform.</param>
         public static bool
         Is64Bit(
             EPlatform platform)
@@ -204,6 +242,10 @@ namespace Bam.Core
             return is64Bit;
         }
 
+        /// <summary>
+        /// Determines if the current OS is 64-bit.
+        /// </summary>
+        /// <value><c>true</c> if is64 bit hosting; otherwise, <c>false</c>.</value>
         public static bool Is64BitHosting
         {
             get
@@ -212,6 +254,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determines if the specified platform is supported by the current platform.
+        /// </summary>
+        /// <returns><c>true</c> if is current platform supported the specified supportedPlatforms; otherwise, <c>false</c>.</returns>
+        /// <param name="supportedPlatforms">Supported platforms.</param>
         public static bool
         IsCurrentPlatformSupported(
             EPlatform supportedPlatforms)
@@ -220,6 +267,10 @@ namespace Bam.Core
             return isSupported;
         }
 
+        /// <summary>
+        /// Get the current platform in terms of the EPlatform enumeration.
+        /// </summary>
+        /// <value>The current O.</value>
         public static EPlatform
         CurrentOS
         {
@@ -240,6 +291,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determine if the current platform is little endian.
+        /// </summary>
+        /// <value><c>true</c> if is little endian; otherwise, <c>false</c>.</value>
         public static bool
         IsLittleEndian
         {
@@ -247,6 +302,10 @@ namespace Bam.Core
             private set;
         }
 
+        /// <summary>
+        /// Retrieve the current platform.
+        /// </summary>
+        /// <value>The current platform.</value>
         public static EPlatform CurrentPlatform
         {
             get;
