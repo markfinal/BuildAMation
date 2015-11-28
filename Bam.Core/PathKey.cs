@@ -30,15 +30,23 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// String based representation of a unique key to use to identify particular paths within modules.
+    /// </summary>
     public sealed class PathKey
     {
         private static System.Collections.Generic.List<PathKey> GeneratedKeys = new System.Collections.Generic.List<PathKey>();
 
-        private PathKey(string key)
+        private PathKey(
+            string key)
         {
             this.Id = key;
         }
 
+        /// <summary>
+        /// Generate, or return an existing, unique key given the name.
+        /// </summary>
+        /// <param name="key">Key.</param>
         public static PathKey
         Generate(
             string key)
@@ -54,18 +62,33 @@ namespace Bam.Core
             return newKey;
         }
 
+        /// <summary>
+        /// Recall the Id for the key.
+        /// </summary>
+        /// <value>The identifier.</value>
         public string Id
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Required override for the Equals override.
+        /// </summary>
+        /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
+        /// hash table.</returns>
         public override int
         GetHashCode()
         {
             return this.Id.GetHashCode();
         }
 
+        /// <summary>
+        /// Are two keys equal?
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Bam.Core.PathKey"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+        /// <see cref="Bam.Core.PathKey"/>; otherwise, <c>false</c>.</returns>
         public override bool
         Equals(
             object obj)
@@ -73,6 +96,10 @@ namespace Bam.Core
             return this.Id.Equals((obj as PathKey).Id);
         }
 
+        /// <summary>
+        /// String representation of a key.
+        /// </summary>
+        /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.PathKey"/>.</returns>
         public override string
         ToString()
         {
