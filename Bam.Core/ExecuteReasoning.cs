@@ -29,12 +29,30 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// In some build modes, module execution only occurs after evaluation has determined that the module outputs
+    /// require building. This class encapsulates the reasoning behind a (re)build of a module.
+    /// </summary>
     public class ExecuteReasoning
     {
+        /// <summary>
+        /// Enumeration defining the different types of module (re)build.
+        /// </summary>
         public enum EReason
         {
+            /// <summary>
+            /// A (re)build is required, but it is for some undefined reason.
+            /// </summary>
             Undefined,
+
+            /// <summary>
+            /// A (re)build is required as the module output files do not exist.
+            /// </summary>
             FileDoesNotExist,
+
+            /// <summary>
+            /// A (re)build is required as the sources to the modules are newer than the output files.
+            /// </summary>
             InputFileIsNewer
         }
 
@@ -48,12 +66,20 @@ namespace Bam.Core
             this.InputFilePath = inputFilePath;
         }
 
+        /// <summary>
+        /// Utility method to create an instance of undefined (re)build.
+        /// </summary>
         public static ExecuteReasoning
         Undefined()
         {
             return new ExecuteReasoning(EReason.Undefined);
         }
 
+        /// <summary>
+        /// Utility method to create an instance of file-does-not-exist (re)build, of the specified path.
+        /// </summary>
+        /// <returns>An instance of ExecuteReasoning.</returns>
+        /// <param name="path">Module path that does not exist.</param>
         public static ExecuteReasoning
         FileDoesNotExist(
             TokenizedString path)
@@ -61,6 +87,12 @@ namespace Bam.Core
             return new ExecuteReasoning(EReason.FileDoesNotExist, path);
         }
 
+        /// <summary>
+        /// Utility method to create an instance of source-file-newer (re)build, of the specified source and output paths.
+        /// </summary>
+        /// <returns>An instance of ExecuteReasoning.</returns>
+        /// <param name="outputPath">Output path that is older.</param>
+        /// <param name="inputPath">Source path that is newer.</param>
         public static ExecuteReasoning
         InputFileNewer(
             TokenizedString outputPath,
@@ -69,6 +101,10 @@ namespace Bam.Core
             return new ExecuteReasoning(EReason.InputFileIsNewer, outputPath, inputPath);
         }
 
+        /// <summary>
+        /// Convert the reasoning to a meaningful description. Used by the --explain command line option.
+        /// </summary>
+        /// <returns>A description of the (re)build reason.</returns>
         public override string
         ToString()
         {
@@ -94,25 +130,31 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Obtain the (re)build enumeration.
+        /// </summary>
+        /// <value>The reason.</value>
         public EReason Reason
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Obtain the (re)build output path, if it has been specified.
+        /// </summary>
+        /// <value>The output file path.</value>
         public TokenizedString OutputFilePath
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Obtain the (re)build source path, if it has been specified.
+        /// </summary>
+        /// <value>The input file path.</value>
         public TokenizedString InputFilePath
-        {
-            get;
-            private set;
-        }
-
-        public TokenizedString ModuleFilePath
         {
             get;
             private set;
