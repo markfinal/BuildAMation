@@ -30,7 +30,8 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// A tool is a module in the usual sense, so that it can be added into the dependency tree
+    /// A prebuilt tool is a module that has been built outside of Bam, but can still be included
+    /// as a dependency in the build.
     /// </summary>
     public abstract class PreBuiltTool :
         Module,
@@ -52,25 +53,49 @@ namespace Bam.Core
         }
             #endif
 
-        public abstract Settings CreateDefaultSettings<T>(T module) where T : Module;
+        /// <summary>
+        /// Create an instance of the default settings for the tool associated with the module.
+        /// </summary>
+        /// <returns>The default settings.</returns>
+        /// <param name="module">Module.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public abstract Settings
+        CreateDefaultSettings<T>(
+            T module) where T : Module;
 
+        /// <summary>
+        /// Get the environment variables to be injected into the run of the tool.
+        /// </summary>
+        /// <value>The environment variables.</value>
         public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the array of environment variable names to inherit from the parent environment.
+        /// </summary>
+        /// <value>The inherited environment variables.</value>
         public StringArray InheritedEnvironmentVariables
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the executable name for the prebuilt tool.
+        /// </summary>
+        /// <value>The executable.</value>
         public abstract TokenizedString Executable
         {
             get;
         }
 
+        /// <summary>
+        /// Default to no extra initial arguments. Virtual to allow overriding.
+        /// </summary>
+        /// <value>The initial arguments.</value>
         public virtual TokenizedStringArray InitialArguments
         {
             get
@@ -79,6 +104,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Prebuilt tool does not support response files by default. Virtual to allow overiding.
+        /// </summary>
+        /// <value>The use response file option.</value>
         public virtual string UseResponseFileOption
         {
             get
@@ -87,6 +116,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// No execution needed to update the prebuilt tool.
+        /// </summary>
+        /// <param name="context">Context.</param>
         protected override void
         ExecuteInternal(
             ExecutionContext context)
@@ -94,6 +127,10 @@ namespace Bam.Core
             // by default, a PreBuiltTool's execution does nothing as it's on disk
         }
 
+        /// <summary>
+        /// No execution policy required for a prebuilt tool.
+        /// </summary>
+        /// <param name="mode">Mode.</param>
         protected override void
         GetExecutionPolicy(
             string mode)
@@ -101,6 +138,9 @@ namespace Bam.Core
             // by default, the execution policy of a PreBuiltTool is to do nothing as it's on disk
         }
 
+        /// <summary>
+        /// Confirm that the prebuilt executable exists.
+        /// </summary>
         public override void
         Evaluate()
         {
