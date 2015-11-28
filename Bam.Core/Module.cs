@@ -31,13 +31,21 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Abstract concept of a module, the base class for all buildables in BAM
+    /// Abstract concept of a module, the base class for all buildables in BAM. A hierarchy of classes in modules
+    /// allows all modules to share similar features, and build specifics with each sub-class.
     /// </summary>
     public abstract class Module :
         IModuleExecution
     {
+        /// <summary>
+        /// Static cache of all modules created.
+        /// </summary>
         static protected System.Collections.Generic.List<Module> AllModules = new System.Collections.Generic.List<Module>();
 
+        /// <summary>
+        /// Protected constructor (use Init function in general use to configure a module) for a new module.
+        /// Defines all standard macros settings, etc
+        /// </summary>
         // private so that the factory method must be used
         protected Module()
         {
@@ -84,12 +92,23 @@ namespace Bam.Core
             this.ReasonToExecute = ExecuteReasoning.Undefined();
         }
 
-        // TODO: is this virtual or abstract?
+        /// <summary>
+        /// Initialize the module. The base implementation does nothing, but subsequent sub-classing
+        /// adds more specific details. Always invoke the base.Init.
+        /// The parent module is present for any cases in which parentage is useful for the initialization of the child. 
+        /// </summary>
+        /// <param name="parent">Parent.</param>
         protected virtual void
         Init(
             Module parent)
         { }
 
+        /// <summary>
+        /// Utillity function to determine whether a specific module type can be created. Does it satisfy all requirements,
+        /// such as platform and configuration filters.
+        /// </summary>
+        /// <returns><c>true</c> if can create the specified moduleType; otherwise, <c>false</c>.</returns>
+        /// <param name="moduleType">Module type.</param>
         public static bool
         CanCreate(
             System.Type moduleType)
@@ -109,8 +128,17 @@ namespace Bam.Core
             return true;
         }
 
+        /// <summary>
+        /// Define the delegate that can be invoked between module construction and Init being called.
+        /// </summary>
         public delegate void PreInitDelegate<T>(T module);
 
+        /// <summary>
+        /// Create the specified module type T, given an optional parent and pre-init callback.
+        /// </summary>
+        /// <param name="parent">Parent.</param>
+        /// <param name="preInitCallback">Pre init callback.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
         public static T
         Create<T>(
             Module parent = null,
@@ -144,6 +172,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Register a path against a particular key for the module. Useful for output paths that are referenced in dependents.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="path">Path.</param>
         protected void
         RegisterGeneratedFile(
             PathKey key,
@@ -157,6 +190,10 @@ namespace Bam.Core
             this.GeneratedPaths.Add(key, path);
         }
 
+        /// <summary>
+        /// Register an empty path against a given key.
+        /// </summary>
+        /// <param name="key">Key.</param>
         private void
         RegisterGeneratedFile(
             PathKey key)
@@ -176,6 +213,12 @@ namespace Bam.Core
             module.DependeesList.Add(this);
         }
 
+        /// <summary>
+        /// An axiom of Bam. If a module depends on another, that other must have completely been brought up-to-date
+        /// before the first module can begin to build.
+        /// </summary>
+        /// <param name="module">Module to depend upon.</param>
+        /// <param name="moreModules">A zero-or-longer list or further modules to depend upon</param>
         public void
         DependsOn(
             Module module,
@@ -188,6 +231,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// An axion of Bam. Depend upon a list of modules.
+        /// </summary>
+        /// <param name="modules">Modules.</param>
         public void
         DependsOn(
             System.Collections.Generic.IEnumerable<Module> modules)
@@ -211,6 +258,11 @@ namespace Bam.Core
             module.RequiredDependeesList.Add(this);
         }
 
+        /// <summary>
+        /// An axiom of Bam. A module requires another module, ensures that both modules will be brought up-to-date.
+        /// </summary>
+        /// <param name="module">Module.</param>
+        /// <param name="moreModules">A zero-or-longer list or further modules to depend upon</param>
         public void
         Requires(
             Module module,
@@ -223,6 +275,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// An axiom of Bam. Require a list of modules to exist.
+        /// </summary>
+        /// <param name="modules">Modules.</param>
         public void
         Requires(
             System.Collections.Generic.IEnumerable<Module> modules)
@@ -234,20 +290,35 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get or set the Settings instance associated with the Tool for this Module. Can be null.
+        /// </summary>
+        /// <value>The settings.</value>
         public Settings Settings
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Get the package definition containing this module.
+        /// </summary>
+        /// <value>The package definition.</value>
         public PackageDefinition PackageDefinition
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Delegate used for private-scope patching of Settings.
+        /// </summary>
         public delegate void PrivatePatchDelegate(Settings settings);
 
+        /// <summary>
+        /// Add a private patch to the current module. Usually this takes the form of a lambda function.
+        /// </summary>
+        /// <param name="dlg">Dlg.</param>
         public void
         PrivatePatch(
             PrivatePatchDelegate dlg)
@@ -255,8 +326,16 @@ namespace Bam.Core
             this.PrivatePatches.Add(dlg);
         }
 
+        /// <summary>
+        /// Delegate used for public-scope patching of Settings. Note that appliedTo is the module on which
+        /// this delegate is being applied.
+        /// </summary>
         public delegate void PublicPatchDelegate(Settings settings, Module appliedTo);
 
+        /// <summary>
+        /// Add a public patch to the current module. Usually this takes the form of a lambda function.
+        /// </summary>
+        /// <param name="dlg">Dlg.</param>
         public void
         PublicPatch(
             PublicPatchDelegate dlg)
@@ -264,6 +343,10 @@ namespace Bam.Core
             this.PublicPatches.Add(dlg);
         }
 
+        /// <summary>
+        /// Instruct a module to use the public patches from module.
+        /// </summary>
+        /// <param name="module">Module.</param>
         public void
         UsePublicPatches(
             Module module)
@@ -272,6 +355,10 @@ namespace Bam.Core
             this.ExternalPatches.AddRange(module.ExternalPatches);
         }
 
+        /// <summary>
+        /// Determine whether a module has any patches to be applied.
+        /// </summary>
+        /// <value><c>true</c> if this instance has patches; otherwise, <c>false</c>.</value>
         public bool HasPatches
         {
             get
@@ -282,6 +369,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Obtain a read-only list of modules it depends on.
+        /// </summary>
+        /// <value>The dependents.</value>
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
         {
             get
@@ -290,6 +381,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Obtain a read-only list of module that depend on it.
+        /// </summary>
+        /// <value>The dependees.</value>
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependees
         {
             get
@@ -298,6 +393,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Obtain a read-only list of modules it requires to be up-to-date.
+        /// </summary>
+        /// <value>The requirements.</value>
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirements
         {
             get
@@ -306,6 +405,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Obtain a read-only list of dependents that are children of this module.
+        /// </summary>
+        /// <value>The children.</value>
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Children
         {
             get
@@ -324,18 +427,30 @@ namespace Bam.Core
         private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> ExternalPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
 
+        /// <summary>
+        /// Get the dictionary of keys and strings for all registered generated paths with the module.
+        /// </summary>
+        /// <value>The generated paths.</value>
         public System.Collections.Generic.Dictionary<PathKey, TokenizedString> GeneratedPaths
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets or sets meta data on the module, which build mode packages use to associated extra data for builds.
+        /// </summary>
+        /// <value>The meta data.</value>
         public object MetaData
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Internal module execution function, invoked from IModuleExecution.
+        /// </summary>
+        /// <param name="context">Context.</param>
         protected abstract void
         ExecuteInternal(
             ExecutionContext context);
@@ -360,6 +475,10 @@ namespace Bam.Core
             this.ExecuteInternal(context);
         }
 
+        /// <summary>
+        /// Determine if the module is a top-level module, i.e. is from the package in which Bam was invoked.
+        /// </summary>
+        /// <value><c>true</c> if top level; otherwise, <c>false</c>.</value>
         public bool TopLevel
         {
             get
@@ -369,23 +488,38 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Gets the macros associated with this Module.
+        /// </summary>
+        /// <value>The macros.</value>
         public MacroList Macros
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets or sets the ModuleCollection, which is associated with a rank in the DependencyGraph.
+        /// </summary>
+        /// <value>The owning rank.</value>
         public ModuleCollection OwningRank
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// For the given build mode, perform the necessary actions to generate an execution policy.
+        /// </summary>
+        /// <param name="mode">Mode.</param>
         protected abstract void
         GetExecutionPolicy(
             string mode);
 
         private Module TheTool;
+        /// <summary>
+        /// Get or set the tool associated with the module.
+        /// </summary>
         public Module Tool
         {
             get
@@ -403,12 +537,21 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Apply any patches set on the module with the settings for its tool.
+        /// </summary>
         public void
         ApplySettingsPatches()
         {
             this.ApplySettingsPatches(this.Settings, true);
         }
 
+        /// <summary>
+        /// Apply any patches set on the module with the settings for its tool.
+        /// </summary>
+        /// <param name="settings">Settings.</param>
+        /// <param name="honourParents">If set to <c>true</c> honour parents takes private patches from any parent module
+        /// and also invokes those if this module is a child.</param>
         public void
         ApplySettingsPatches(
             Settings settings,
@@ -462,18 +605,30 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determine the reason why the module should (re)build.
+        /// </summary>
+        /// <value>The reason to execute.</value>
         public ExecuteReasoning ReasonToExecute
         {
             get;
             protected set;
         }
 
+        /// <summary>
+        /// Get or set the async Task for execution.
+        /// </summary>
+        /// <value>The execution task.</value>
         public System.Threading.Tasks.Task ExecutionTask
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Get the async Task for evaluating the module for whether it is up-to-date.
+        /// </summary>
+        /// <value>The evaluation task.</value>
         public System.Threading.Tasks.Task
         EvaluationTask
         {
@@ -481,15 +636,31 @@ namespace Bam.Core
             protected set;
         }
 
+        /// <summary>
+        /// Evaluate the module to determine whether it requires a (re)build.
+        /// </summary>
         public abstract void
         Evaluate();
 
+        /// <summary>
+        /// Get the Environment associated with this module. The same module in different environments will be different
+        /// instances of a Module.
+        /// </summary>
+        /// <value>The build environment.</value>
         public Environment BuildEnvironment
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// A referenced module is an encapsulating module, and can be considered to be uniquely identifiable by name.
+        /// An unreferenced module belongs, in some part, to another module and perhaps many of them exist within the
+        /// dependency graph. For identification, walking up the hierarchy of dependees will eventually find a referenced
+        /// module, and this is that module's encapsulating module.
+        /// It is useful for logical grouping, such as build sub-folder names.
+        /// </summary>
+        /// <returns>The encapsulating referenced module.</returns>
         public Module
         GetEncapsulatingReferencedModule()
         {
@@ -549,6 +720,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Ensures all modules have been 'completed', which ensures that everything is in place, ready for validation.
+        /// </summary>
         static public void
         CompleteModules()
         {
@@ -558,12 +732,22 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Make a path which is a placeholder, and will eventually be aliased.
+        /// </summary>
+        /// <returns>The placeholder path.</returns>
         public TokenizedString
         MakePlaceholderPath()
         {
             return TokenizedString.Create(string.Empty, this);
         }
 
+        /// <summary>
+        /// Create a TokenizedString associated with this module, using the MacroList in the module.
+        /// </summary>
+        /// <returns>The tokenized string.</returns>
+        /// <param name="format">Format.</param>
+        /// <param name="argv">Argv.</param>
         public TokenizedString
         CreateTokenizedString(
             string format,
@@ -577,6 +761,10 @@ namespace Bam.Core
             return TokenizedString.Create(format, this, positionalTokens);
         }
 
+        /// <summary>
+        /// Static utility method to count all modules created. Useful for profiling.
+        /// </summary>
+        /// <value>The count.</value>
         public static int
         Count
         {
