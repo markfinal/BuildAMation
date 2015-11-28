@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to create a debuggable standalone project for the package build.
+    /// </summary>
     public sealed class CreateDebugProject :
         IBooleanCommandLineArgument
     {

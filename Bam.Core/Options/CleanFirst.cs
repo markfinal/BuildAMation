@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to determine if the build root is to be cleaned before the next build starts.
+    /// </summary>
     public sealed class CleanFirst :
         IBooleanCommandLineArgument
     {

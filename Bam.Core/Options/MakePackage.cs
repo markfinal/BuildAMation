@@ -29,6 +29,10 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to make the current directory into a package.
+    /// Requires the PackageName option at least.
+    /// </summary>
     public sealed class MakePackage :
         IBooleanCommandLineArgument
     {

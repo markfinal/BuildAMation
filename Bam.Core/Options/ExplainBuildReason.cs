@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to enable displaying why each module is/is not (re)built.
+    /// </summary>
     public sealed class ExplainBuildReason :
         IBooleanCommandLineArgument
     {

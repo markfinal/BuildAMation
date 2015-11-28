@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to override the selection of package versions given a choice.
+    /// </summary>
     public sealed class PackageDefaultVersion :
         IRegExCommandLineArgument
     {

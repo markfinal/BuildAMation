@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to specify the configuration(s) to build.
+    /// </summary>
     public sealed class BuildConfigurations :
         IRegExCommandLineArgument
     {

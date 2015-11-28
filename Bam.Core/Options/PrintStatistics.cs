@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to enable printing statistics following a build.s
+    /// </summary>
     public sealed class PrintStatistics :
         IBooleanCommandLineArgument
     {

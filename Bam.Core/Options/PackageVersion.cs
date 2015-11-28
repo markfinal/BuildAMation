@@ -29,6 +29,10 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to specify the version of the package in PackageName, used in conjunction
+    /// with other commands.
+    /// </summary>
     public sealed class PackageVersion :
         IStringCommandLineArgument
     {
