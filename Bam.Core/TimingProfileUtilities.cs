@@ -30,10 +30,17 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class for all timing profiles.
+    /// </summary>
     public static class TimingProfileUtilities
     {
         private static Array<TimeProfile> Profiles = new Array<TimeProfile>();
 
+        /// <summary>
+        /// Register a new timing profile.
+        /// </summary>
+        /// <param name="profile">Profile.</param>
         public static void
         RegisterProfile(
             TimeProfile profile)
@@ -41,6 +48,9 @@ namespace Bam.Core
             Profiles.Add(profile);
         }
 
+        /// <summary>
+        /// Dump all of the profiles to the console.
+        /// </summary>
         public static void
         DumpProfiles()
         {
