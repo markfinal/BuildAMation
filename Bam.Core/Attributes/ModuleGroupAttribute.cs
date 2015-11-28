@@ -29,10 +29,18 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Attribute for modules that defines a logical group that project files (if supported)
+    /// can use. Multiple modules can reside in the same group.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
     public sealed class ModuleGroupAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute
+        /// </summary>
+        /// <param name="groupName">Name of the group.</param>
         public
         ModuleGroupAttribute(
             string groupName)
@@ -40,6 +48,10 @@ namespace Bam.Core
             this.GroupName = groupName;
         }
 
+        /// <summary>
+        /// Obtain the name of the group associated with the attribute.
+        /// </summary>
+        /// <value>The name of the group.</value>
         public string GroupName
         {
             get;

@@ -29,16 +29,27 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Attribute to attach to module classes, indicating which configurations it can be built for.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
     public sealed class ConfigurationFilterAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Initializes a new attribute.
+        /// </summary>
+        /// <param name="config">The configuration(s) for which the module can be built.</param>
         public ConfigurationFilterAttribute(
             EConfiguration config)
         {
             this.Configuration = config;
         }
 
+        /// <summary>
+        /// Is the configuration in <paramref name="other" /> included in those specified at construction.
+        /// </summary>
+        /// <param name="other">Configuration to compare against.</param>
         public bool
         Includes(
             EConfiguration other)

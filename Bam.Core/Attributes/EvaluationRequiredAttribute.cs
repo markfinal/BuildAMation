@@ -29,16 +29,28 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Attribute to apply to a class implementing Bam.Core.IBuildModeMetaData, used by the core
+    /// assembly to determine whether module evaluation is required.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public sealed class EvaluationRequiredAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Construct an attribute.
+        /// </summary>
+        /// <param name="enabled">If set to <c>true</c>, evaluation is used on all modules.</param>
         public EvaluationRequiredAttribute(
             bool enabled)
         {
             this.Enabled = enabled;
         }
 
+        /// <summary>
+        /// Return whether evaluation is required for modules.
+        /// </summary>
+        /// <value><c>true</c> if evaluation is used; <c>false</c> if not.</value>
         public bool Enabled
         {
             get;
