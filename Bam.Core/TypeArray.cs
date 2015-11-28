@@ -35,6 +35,9 @@ namespace Bam.Core
     public sealed class TypeArray :
         Array<System.Type>
     {
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
         public
         TypeArray() : base()
         {}

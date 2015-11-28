@@ -37,6 +37,9 @@ namespace Bam.Core
         Module,
         ICommandLineTool
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         protected PreBuiltTool()
             : base()
         {

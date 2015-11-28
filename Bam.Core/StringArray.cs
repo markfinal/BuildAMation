@@ -36,6 +36,9 @@ namespace Bam.Core
         Array<string>,
         ISetOperations<StringArray>
     {
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
         public
         StringArray() : base()
         {}
