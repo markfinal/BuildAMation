@@ -31,7 +31,11 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Strings can contain macros and functions, which are tokenized and evaluated in this class
+    /// Strings can contain macros and functions, which are tokenized and evaluated in this class.
+    /// Tokens are identified by $( and ).
+    /// Functions can run before or after token expansion.
+    /// Pre-functions run before, and are identified by #name(...).
+    /// Post-functions run after token expansion, and are identified by @(...).
     /// </summary>
     public sealed class TokenizedString
     {
@@ -42,8 +46,16 @@ namespace Bam.Core
             Inline = 0x1
         }
 
+        /// <summary>
+        /// Prefix of each token.
+        /// </summary>
         public static readonly string TokenPrefix = @"$(";
+
+        /// <summary>
+        /// Suffix of each token.
+        /// </summary>
         public static readonly string TokenSuffix = @")";
+
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
         private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
         private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
@@ -69,6 +81,10 @@ namespace Bam.Core
         private EFlags Flags = EFlags.None;
         private TokenizedString Alias = null;
 
+        /// <summary>
+        /// Alias to another string. Useful for placeholder strings.
+        /// </summary>
+        /// <param name="alias">Alias.</param>
         public void
         Aliased(
             TokenizedString alias)
@@ -188,6 +204,12 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility method to create a TokenizedString associated with a module, or return a cached version.
+        /// </summary>
+        /// <param name="tokenizedString">Tokenized string.</param>
+        /// <param name="macroSource">Macro source.</param>
+        /// <param name="positionalTokens">Positional tokens.</param>
         public static TokenizedString
         Create(
             string tokenizedString,
@@ -197,6 +219,11 @@ namespace Bam.Core
             return CreateInternal(tokenizedString, macroSource, false, positionalTokens, EFlags.None);
         }
 
+        /// <summary>
+        /// Utility method to create a TokenizedString with no macro replacement, or return a cached version.
+        /// </summary>
+        /// <returns>The verbatim.</returns>
+        /// <param name="verboseString">Verbose string.</param>
         public static TokenizedString
         CreateVerbatim(
             string verboseString)
@@ -204,6 +231,12 @@ namespace Bam.Core
             return CreateInternal(verboseString, null, true, null, EFlags.None);
         }
 
+        /// <summary>
+        /// Utility method to create a TokenizedString that can be inlined into other TokenizedStrings
+        /// , or return a cached version.
+        /// </summary>
+        /// <returns>The inline.</returns>
+        /// <param name="inlineString">Inline string.</param>
         public static TokenizedString
         CreateInline(
             string inlineString)
@@ -246,6 +279,10 @@ namespace Bam.Core
             return normalized;
         }
 
+        /// <summary>
+        /// Display the parsed string, assuming it has been parsed.
+        /// </summary>
+        /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.TokenizedString"/>.</returns>
         public override string
         ToString()
         {
@@ -260,6 +297,10 @@ namespace Bam.Core
             return this.ParsedString;
         }
 
+        /// <summary>
+        /// Determine if the string is empty.
+        /// </summary>
+        /// <value><c>true</c> if empty; otherwise, <c>false</c>.</value>
         public bool Empty
         {
             get
@@ -280,6 +321,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Parse every TokenizedString.
+        /// </summary>
         public static void
         ParseAll()
         {
@@ -295,12 +339,28 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Parse a TokenizedString with no macro overrides.
+        /// </summary>
         public string
         Parse()
         {
             return this.Parse(null);
         }
 
+        /// <summary>
+        /// Parsed a TokenizedString with another source of macro overrides.
+        /// Pre-functions are evaluated first.
+        /// The order of source of tokens are checked in the follow order:
+        /// - Positional tokens.
+        /// - Any custom macros
+        /// - Global macros (from the Graph)
+        /// - Macros in the associated Module
+        /// - Macros in the Tool associated with the Module
+        /// - Environment variables
+        /// After token expansion, post-functions are then evaluated.
+        /// </summary>
+        /// <param name="customMacros">Custom macros.</param>
         public string
         Parse(
             MacroList customMacros)
@@ -535,6 +595,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Does the string contain a space?
+        /// </summary>
+        /// <value><c>true</c> if contains space; otherwise, <c>false</c>.</value>
         public bool ContainsSpace
         {
             get
@@ -558,6 +622,12 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Are two strings equivalent?
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Bam.Core.TokenizedString"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+        /// <see cref="Bam.Core.TokenizedString"/>; otherwise, <c>false</c>.</returns>
         public override bool
         Equals(
             object obj)
@@ -567,12 +637,22 @@ namespace Bam.Core
             return equal;
         }
 
+        /// <summary>
+        /// Required by the Equals override.
+        /// </summary>
+        /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
+        /// hash table.</returns>
         public override int
         GetHashCode()
         {
             return base.GetHashCode();
         }
 
+        /// <summary>
+        /// Parse, and if the parsed string contains a space, surround with quotes.
+        /// </summary>
+        /// <returns>The and quote if necessary.</returns>
+        /// <param name="customMacros">Custom macros.</param>
         public string ParseAndQuoteIfNecessary(
             MacroList customMacros = null)
         {
@@ -588,6 +668,10 @@ namespace Bam.Core
             return System.String.Format("\"{0}\"", parsed);
         }
 
+        /// <summary>
+        /// Static utility method to return the number of TokenizedStrings cached.
+        /// </summary>
+        /// <value>The count.</value>
         public static int
         Count
         {
@@ -597,6 +681,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Static utility method to return the number of strings with a single refcount.
+        /// </summary>
+        /// <value>The unshared count.</value>
         public static int
         UnsharedCount
         {
@@ -606,6 +694,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// In debug builds, dump data representing all of the tokenized strings.
+        /// </summary>
         [System.Diagnostics.Conditional("DEBUG")]
         public static void
         DumpCache()
