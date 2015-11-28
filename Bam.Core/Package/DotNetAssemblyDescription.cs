@@ -29,8 +29,16 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Information concerned each .NET framework assembly, including name and
+    /// required target framework version.
+    /// </summary>
     public class DotNetAssemblyDescription
     {
+        /// <summary>
+        /// Construct a new instance, including a name.
+        /// </summary>
+        /// <param name="name">Name.</param>
         public
         DotNetAssemblyDescription(
             string name)
@@ -38,12 +46,20 @@ namespace Bam.Core
             this.Name = name;
         }
 
+        /// <summary>
+        /// Get the name of the .NET framework assembly.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get or set the required target framework version.
+        /// </summary>
+        /// <value>The required target framework.</value>
         public string RequiredTargetFramework
         {
             get;
