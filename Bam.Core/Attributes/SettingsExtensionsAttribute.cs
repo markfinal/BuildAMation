@@ -39,10 +39,18 @@ namespace Bam.Core
             this.ClassType = extensionClass;
         }
 
-        public System.Type ClassType
+        private System.Type ClassType
         {
             get;
-            private set;
+            set;
+        }
+
+        public string ExtensionsClassName
+        {
+            get
+            {
+                return this.ClassType.FullName;
+            }
         }
 
         public System.Reflection.MethodInfo

@@ -47,7 +47,8 @@ namespace C
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
                 if (0 == attributeArray.Length)
                 {
-                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}",
+                        i.ToString(), attributeType.ToString());
                 }
 
                 var attribute = attributeArray[0] as Bam.Core.SettingsExtensionsAttribute;
@@ -64,7 +65,8 @@ namespace C
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Unable to find method {0}.Delta(this {1}, {1}, {1)", attribute.ClassType.ToString(), i.ToString());
+                        throw new Bam.Core.Exception("Unable to find method {0}.Delta(this {1}, {1}, {1)",
+                            attribute.ExtensionsClassName, i.ToString());
                     }
                 }
                 else
@@ -77,7 +79,8 @@ namespace C
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Unable to find method {0}.Clone(this {1}, {1})", attribute.ClassType.ToString(), i.ToString());
+                        throw new Bam.Core.Exception("Unable to find method {0}.Clone(this {1}, {1})",
+                            attribute.ExtensionsClassName, i.ToString());
                     }
                 }
             }
@@ -233,7 +236,7 @@ namespace C
                 if (null == cloneSettingsMethod)
                 {
                     throw new Bam.Core.Exception("Unable to find extension method {0}.SharedSettings(this {1}, {1}, {1}, {1})",
-                        attribute.ClassType.ToString(),
+                        attribute.ExtensionsClassName,
                         i.ToString());
                 }
 
@@ -241,7 +244,7 @@ namespace C
                 if (null == intersectSettingsMethod)
                 {
                     throw new Bam.Core.Exception("Unable to find extension method {0}.Intersect(this {1}, {1})",
-                        attribute.ClassType.ToString(),
+                        attribute.ExtensionsClassName,
                         i.ToString());
                 }
 
