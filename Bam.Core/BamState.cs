@@ -30,6 +30,10 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Inspect the current configuration state of BuildAMation (Bam), such as the version number,
+    /// where Bam is being executed, which version of the .NET framework is being targeted.
+    /// </summary>
     public class BamState
     {
         private static void
@@ -95,6 +99,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Create an instance of the class. Although there is only going to be one instance created,
+        /// this is not a singleton, as BamState is attached to the Graph.
+        /// </summary>
         public BamState()
         {
             System.Version assemblyVersion;
@@ -111,36 +119,60 @@ namespace Bam.Core
             this.TargetFrameworkVersion = targetFrameworkName;
         }
 
+        /// <summary>
+        /// Obtains the directory containing the Bam assemblies.
+        /// </summary>
+        /// <value>Bam assembly directory path</value>
         public string ExecutableDirectory
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Obtains the version of Bam in use.
+        /// </summary>
+        /// <value>System.Version representation of the Bam version.</value>
         public System.Version Version
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Obtains a string representation of the version of Bam in use.
+        /// </summary>
+        /// <value>The version string.</value>
         public string VersionString
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Determines whether Bam is running through Mono.
+        /// </summary>
+        /// <value><c>true</c> if running mono; otherwise, <c>false</c>.</value>
         public bool RunningMono
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Obtains the working directory in which Bam is being executed.
+        /// </summary>
+        /// <value>The working directory.</value>
         public string WorkingDirectory
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Retrieves the .NET framework version being targeted for package builds.
+        /// </summary>
+        /// <value>The target framework version.</value>
         public string TargetFrameworkVersion
         {
             get;
