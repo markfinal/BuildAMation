@@ -29,13 +29,28 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Packages that expose build modes (i.e. names end in Builder) can provide an implementation of this
+    /// interface to configure how the main parts of Bam work with them.
+    /// </summary>
     public interface IBuildModeMetaData
     {
+        /// <summary>
+        /// Define the subdirectory under the build root in which module output files are written
+        /// </summary>
+        /// <returns>The output directory.</returns>
+        /// <param name="currentModule">Current module.</param>
+        /// <param name="encapsulatingModule">Encapsulating module.</param>
         TokenizedString
         ModuleOutputDirectory(
             Module currentModule,
             Module encapsulatingModule);
 
+        /// <summary>
+        /// Are files published next to where the executable is built? This comes down to being able to debug from project files
+        /// without having to set up environment variables, vs command line builds.
+        /// </summary>
+        /// <value><c>true</c> if publish beside executable; otherwise, <c>false</c>.</value>
         bool PublishBesideExecutable
         {
             get;

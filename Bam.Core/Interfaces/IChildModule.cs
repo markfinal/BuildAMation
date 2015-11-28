@@ -29,8 +29,16 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// A module is a child module if it belongs to a collection of homogenous modules. The parent
+    /// is also a module.
+    /// </summary>
     public interface IChildModule
     {
+        /// <summary>
+        /// Obtain the parent collection module.
+        /// </summary>
+        /// <value>The parent.</value>
         Module Parent
         {
             get;

@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Interface that defines another interface as forming the properties required to be used in Settings classes.
+    /// </summary>
     public interface ISettingsBase
     {
     }

@@ -29,17 +29,32 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Interface defining the contract to execute a module.
+    /// </summary>
     public interface IModuleExecution
     {
+        /// <summary>
+        /// Perform the actual module execution, having the context for it passed in from the Executor.
+        /// </summary>
+        /// <param name="context">Context.</param>
         void
         Execute(
             ExecutionContext context);
 
+        /// <summary>
+        /// Obtain the reason for the execution to occur. A null value means the module does not need to execute.
+        /// </summary>
+        /// <value>The reason to execute.</value>
         ExecuteReasoning ReasonToExecute
         {
             get;
         }
 
+        /// <summary>
+        /// If the module execution is task based, get the Task used to build the module. Otherwise this is null.
+        /// </summary>
+        /// <value>The execution task.</value>
         System.Threading.Tasks.Task ExecutionTask
         {
             get;
