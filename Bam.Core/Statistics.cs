@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class representing all statistics for the build
+    /// </summary>
     public static class Statistics
     {
         private static double
@@ -38,6 +41,9 @@ namespace Bam.Core
             return bytes / 1024.0 / 1024.0;
         }
 
+        /// <summary>
+        /// Display the statistics for the build.
+        /// </summary>
         public static void
         Display()
         {
