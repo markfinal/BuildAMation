@@ -29,8 +29,17 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Interface that allows user package scripts to hook into the start of package metadata construction.
+    /// </summary>
     public interface IPackageMetaDataConfigure<MetaDataType>
     {
+        /// <summary>
+        /// Hook into the start of meta data construction of type MetaDataType. This can be used to set macros, properties
+        /// etc. that will affect how the generic metadata construction code will flow.
+        /// For example, can be used to override the Xcode SDK version to use.
+        /// </summary>
+        /// <param name="instance">Instance.</param>
         void
         Configure(
             MetaDataType instance);

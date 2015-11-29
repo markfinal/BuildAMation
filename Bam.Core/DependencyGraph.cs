@@ -31,13 +31,24 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Representation of a dependency graph of modules
+    /// A representation of the dependencies between modules in a graph-like-manner.
+    /// Each module resides uniquely within a collection of modules. This is termed a rank.
+    /// Each rank has an index. The leaf modules have the largest index. The last module to build
+    /// has an index of index.
+    /// A module exists in a higher rank if some other module depends on it.
+    /// To build, the modules with the highest rank are built first, then moves to the previous rank,
+    /// and so on, until rank zero.
     /// </summary>
     public sealed class DependencyGraph :
         System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, ModuleCollection>>
     {
         private System.Collections.Generic.Dictionary<int, ModuleCollection> graph = new System.Collections.Generic.Dictionary<int, ModuleCollection>();
 
+        /// <summary>
+        /// Access the rank of modules at the specified index, or returns an empty collection.
+        /// </summary>
+        /// <param name="rankIndex">Index of the rank to obtain.</param>
+        /// <returns>The module collection at the specified index, or an empty collection.</returns>
         public ModuleCollection this[int rankIndex]
         {
             get
@@ -50,6 +61,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determine the rank index of the provided collection of modules.
+        /// </summary>
+        /// <param name="collection">Module collection whose rank is to be determined.</param>
+        /// <returns>The index of the specified module collection.</returns>
         public int this[ModuleCollection collection]
         {
             get
@@ -64,6 +80,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Return each rank index and module collection in turn.
+        /// </summary>
+        /// <returns>An IEnumerator for the index and module collection.</returns>
         public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<int, ModuleCollection>>
         GetEnumerator()
         {

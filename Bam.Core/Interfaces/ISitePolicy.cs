@@ -29,8 +29,18 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Interface to allow users to hook into default Settings initialization, so that local site-policies
+    /// for their own default values can be defined.
+    /// </summary>
     public interface ISitePolicy
     {
+        /// <summary>
+        /// For the given module and settings, override any of the default settings. Similar to writing a patch
+        /// lambda.
+        /// </summary>
+        /// <param name="settings">Settings.</param>
+        /// <param name="module">Module.</param>
         void
         DefineLocalSettings(
             Settings settings,

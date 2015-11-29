@@ -30,11 +30,24 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class with useful package related methods.
+    /// </summary>
     public static class PackageUtilities
     {
+        /// <summary>
+        /// Central definition of what the Bam sub-folder is called.
+        /// </summary>
         public static readonly string BamSubFolder = "bam";
+
+        /// <summary>
+        /// Central definition of what the scripts sub-folder is called.
+        /// </summary>
         public static readonly string ScriptsSubFolder = "Scripts";
 
+        /// <summary>
+        /// Utility method to create a new package.
+        /// </summary>
         public static void
         MakePackage()
         {
@@ -72,6 +85,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility method for adding a dependent package.
+        /// </summary>
         public static void
         AddDependentPackage()
         {
@@ -103,6 +119,10 @@ namespace Bam.Core
             masterPackage.Write();
         }
 
+        /// <summary>
+        /// Get the preprocessor define specifying the Bam Core version.
+        /// </summary>
+        /// <value>The version define for compiler.</value>
         public static string VersionDefineForCompiler
         {
             get
@@ -116,6 +136,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get the preprocessor define specifying the host OS.
+        /// </summary>
+        /// <value>The host platform define for compiler.</value>
         public static string HostPlatformDefineForCompiler
         {
             get
@@ -125,6 +149,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Determine if a path is configured as a package.
+        /// </summary>
+        /// <returns><c>true</c> if is package directory the specified packagePath; otherwise, <c>false</c>.</returns>
+        /// <param name="packagePath">Package path.</param>
         public static bool
         IsPackageDirectory(
             string packagePath)
@@ -138,6 +167,11 @@ namespace Bam.Core
             return true;
         }
 
+        /// <summary>
+        /// Get the XML pathname for the package.
+        /// </summary>
+        /// <returns>The package definition pathname.</returns>
+        /// <param name="packagePath">Package path.</param>
         public static string
         GetPackageDefinitionPathname(
             string packagePath)
@@ -163,6 +197,11 @@ namespace Bam.Core
             return xmlFiles[0];
         }
 
+        /// <summary>
+        /// Get the package in which Bam is executed.
+        /// </summary>
+        /// <returns>The master package.</returns>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public static PackageDefinition
         GetMasterPackage(
             bool enforceBamAssemblyVersions = true)
@@ -179,6 +218,13 @@ namespace Bam.Core
             return masterDefinitionFile;
         }
 
+        /// <summary>
+        /// Scan though all package repositories for all package dependencies, and resolve any duplicate package names
+        /// by either data in the package definition file, or on the command line, by specifying a particular version to
+        /// use. The master package definition file is the source of disambiguation for package versions.
+        /// </summary>
+        /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates.</param>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public static void
         IdentifyAllPackages(
             bool allowDuplicates = false,
@@ -353,6 +399,11 @@ namespace Bam.Core
             return hash;
         }
 
+        /// <summary>
+        /// Compile the package assembly, using all the source files from the dependent packages.
+        /// </summary>
+        /// <returns><c>true</c>, if package assembly was compiled, <c>false</c> otherwise.</returns>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public static bool
         CompilePackageAssembly(
             bool enforceBamAssemblyVersions = true)
@@ -387,7 +438,7 @@ namespace Bam.Core
                 System.IO.Directory.CreateDirectory(Graph.Instance.BuildRoot);
             }
 
-            BuildModeUtilities.SetBuildModePackage();
+            BuildModeUtilities.ValidateBuildModePackage();
 
             var definitions = new StringArray();
 
@@ -610,6 +661,9 @@ namespace Bam.Core
             return true;
         }
 
+        /// <summary>
+        /// Load the compiled package assembly.
+        /// </summary>
         public static void
         LoadPackageAssembly()
         {

@@ -29,29 +29,53 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Interface that defines a tool run on the command line (as opposed to a tool that can run entirely in C#).
+    /// </summary>
     public interface ICommandLineTool :
         ITool
     {
+        /// <summary>
+        /// Obtain the dictionary of custom environment variables (name, array of values) to set when the tool is executed.
+        /// </summary>
+        /// <value>The environment variables.</value>
         System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
         {
             get;
         }
 
+        /// <summary>
+        /// Obtain the list of environment variable names to inherit from the current environment when the tool is executed.
+        /// </summary>
+        /// <value>The inherited environment variables.</value>
         StringArray InheritedEnvironmentVariables
         {
             get;
         }
 
+        /// <summary>
+        /// Obtain the path to the executable to run. This could be a literal string, or the output from a module build.
+        /// </summary>
+        /// <value>The executable.</value>
         TokenizedString Executable
         {
             get;
         }
 
+        /// <summary>
+        /// Define any arguments that must appear directly after the executable, e.g. on Windows, any DOS commands must use
+        /// an executable of CMD, and the command itself comes after, followed by the arguments to that command.
+        /// </summary>
+        /// <value>The initial arguments.</value>
         TokenizedStringArray InitialArguments
         {
             get;
         }
 
+        /// <summary>
+        /// Get the option to use a response file, or null if this is not supported.
+        /// </summary>
+        /// <value>The use response file option.</value>
         string UseResponseFileOption
         {
             get;

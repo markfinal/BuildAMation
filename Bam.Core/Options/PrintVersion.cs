@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to display the version of Bam and then exit.s
+    /// </summary>
     public sealed class PrintVersion :
         IBooleanCommandLineArgument
     {

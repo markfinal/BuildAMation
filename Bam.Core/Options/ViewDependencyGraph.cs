@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to display a representation of the dependency graph prior to executing it.
+    /// </summary>
     public sealed class ViewDependencyGraph :
         IBooleanCommandLineArgument
     {

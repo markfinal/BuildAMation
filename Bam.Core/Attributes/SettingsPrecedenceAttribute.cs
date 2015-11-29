@@ -29,16 +29,35 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Iterating over interfaces for a concrete settings class does not return those interfaces in a
+    /// deterministic order (as defined by the C# GetInterfaces() function). Since some interfaces contain
+    /// properties that do need to be provided in a specific order when serialized as a command line, e.g.
+    /// warning suppressions and enabling, each interface can specify a precedence, and this is used to force
+    /// the order in which they are processed.
+    /// The default precedence is assumed to be zero.
+    /// A positive precedence will result in the interface being processed earlier than others.
+    /// A negative precedence will result in the interface being processed later than others.
+    /// Any two interfaces with the same precedence may be processed in any order.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Interface)]
     public sealed class SettingsPrecedenceAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Create an instance of the attribute.
+        /// </summary>
+        /// <param name="order">The precedence value.</param>
         public SettingsPrecedenceAttribute(
             int order)
         {
             this.Order = order;
         }
 
+        /// <summary>
+        /// Retrieve the precedence value.
+        /// </summary>
+        /// <value>Precedence</value>
         public int Order
         {
             get;

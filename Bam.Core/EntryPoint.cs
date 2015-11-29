@@ -30,8 +30,15 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Utility class defining the entry point for Bam execution.
+    /// </summary>
     public static class EntryPoint
     {
+        /// <summary>
+        /// Log the Bam version number, at the specified log level.
+        /// </summary>
+        /// <param name="level">Log level to use.</param>
         public static void
         PrintVersion(
             EVerboseLevel level)
@@ -41,12 +48,34 @@ namespace Bam.Core
                 Core.Graph.Instance.ProcessState.VersionString);
         }
 
+        /// <summary>
+        /// Log the Bam version number, at the current log level.
+        /// </summary>
         public static void
         PrintVersion()
         {
             PrintVersion(Graph.Instance.VerbosityLevel);
         }
 
+        /// <summary>
+        /// Bam execution
+        /// - find all packages required
+        /// - compile all package scripts into an assembly (unless in a debug project)
+        /// - generate metadata for each package
+        /// - create top-level modules, i.e. modules in the package in which Bam was invoked (performed by namespace lookup
+        /// and all sealed module classes), without any knowledge of inter-dependencies
+        /// - invoke the Init functions on each created module, and begin sorting modules into rank collections, and creating
+        /// instances of non-top-level modules that are required. If a module has a tool, the default settings are created for
+        /// each module.
+        /// - validate the dependencies created, so that there are no cyclic dependencies, or modules in the wrong rank to
+        /// satisfy their dependencies
+        /// - execute the settings patches where they exist, so that module settings are now configured as the user specified them
+        /// - expand all TokenizedStrings that have been created
+        /// - (display the dependency graph if the user specified the command line option)
+        /// - execute the dependency graph, from highest rank to lowest rank, using the build mode specified by the user.
+        /// </summary>
+        /// <param name="environments">An array of Environments in which to generate modules.</param>
+        /// <param name="packageAssembly">Optional Assembly containing the package code. Defaults to null. Only required when building as part of a debug project.</param>
         public static void
         Execute(
             Array<Environment> environments,

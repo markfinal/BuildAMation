@@ -29,22 +29,50 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// A mandatory attribute applied to all settings interfaces for tool settings.
+    /// This is the metadata that links a settings interface to the static class containing
+    /// the extension methods, such as defining default values, associated with
+    /// each property of the interface.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Interface)]
     public sealed class SettingsExtensionsAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="extensionClass">Type of the static class defining the extension methods for this interface.</param>
         public SettingsExtensionsAttribute(
             System.Type extensionClass)
         {
             this.ClassType = extensionClass;
         }
 
-        public System.Type ClassType
+        private System.Type ClassType
         {
             get;
-            private set;
+            set;
         }
 
+        /// <summary>
+        /// The name of the static extensions class for the interface.
+        /// </summary>
+        /// <value>The name of class.</value>
+        public string ExtensionsClassName
+        {
+            get
+            {
+                return this.ClassType.FullName;
+            }
+        }
+
+        /// <summary>
+        /// Given a method name, and an array of parameter types, find that method on the extensions class.
+        /// </summary>
+        /// <returns>The requested method, or null, if not found.</returns>
+        /// <param name="name">Name of the method to find.</param>
+        /// <param name="inputs">Array of parameter types that the method takes as input.</param>
         public System.Reflection.MethodInfo
         GetMethod(
             string name,

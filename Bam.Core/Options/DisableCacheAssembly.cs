@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to disable caching the compiled package assembly for the next build run.
+    /// </summary>
     public sealed class DisableCacheAssembly :
         IBooleanCommandLineArgument
     {

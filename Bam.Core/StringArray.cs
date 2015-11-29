@@ -29,14 +29,24 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Array of strings class, derived from the Array class.
+    /// </summary>
     public sealed class StringArray :
         Array<string>,
         ISetOperations<StringArray>
     {
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
         public
         StringArray() : base()
         {}
 
+        /// <summary>
+        /// Construct a new instance from an array of strings.
+        /// </summary>
+        /// <param name="itemsToAdd">Items to add.</param>
         public
         StringArray(
             params string[] itemsToAdd)
@@ -51,6 +61,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Construct an instance from an enumerable of strings.
+        /// </summary>
+        /// <param name="items">Items.</param>
         public
         StringArray(
             System.Collections.Generic.IEnumerable<string> items)
@@ -65,6 +79,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Construct an instance from another StringArray.
+        /// </summary>
+        /// <param name="array">Array.</param>
         public
         StringArray(
             StringArray array)
@@ -79,6 +97,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Construct an instance from an array of strings.
+        /// </summary>
+        /// <param name="array">Array.</param>
         public
         StringArray(
             Array<string> array)
@@ -93,6 +115,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Add a single string to the end of the array.
+        /// </summary>
+        /// <param name="item">Item.</param>
         public override void
         Add(
             string item)
@@ -106,12 +132,21 @@ namespace Bam.Core
             this.list.Add(item);
         }
 
+        /// <summary>
+        /// Convert the array of strings to a single string separated by spaces.
+        /// </summary>
+        /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.StringArray"/>.</returns>
         public override string
         ToString()
         {
             return this.ToString(' ');
         }
 
+        /// <summary>
+        /// Convert the array of strings to a single string separated by the specified character.
+        /// </summary>
+        /// <returns>The string.</returns>
+        /// <param name="separator">Separator.</param>
         public override string
         ToString(
             char separator)
@@ -126,6 +161,9 @@ namespace Bam.Core
             return output;
         }
 
+        /// <summary>
+        /// Remove any duplicates from the array.
+        /// </summary>
         public void
         RemoveDuplicates()
         {

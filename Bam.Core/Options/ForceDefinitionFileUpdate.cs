@@ -29,6 +29,10 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to force package definition files to be written back after a read.
+    /// Updates such things as defaults and schemas.
+    /// </summary>
     public sealed class ForceDefinitionFileUpdate :
         IBooleanCommandLineArgument
     {

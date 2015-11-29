@@ -30,12 +30,23 @@
 namespace Bam.Core
 {
     // TODO: these may be redundant with Linq
+    /// <summary>
+    /// Interface for common set operations.
+    /// </summary>
     public interface ISetOperations<T>
     {
+        /// <summary>
+        /// Obtain the complement (those in A but not in B) of two instances.
+        /// </summary>
+        /// <param name="other">Other.</param>
         T
         Complement(
             T other);
 
+        /// <summary>
+        /// Obtain the intersection (those both in A and B) of two instances.
+        /// </summary>
+        /// <param name="other">Other.</param>
         T
         Intersect(
             T other);

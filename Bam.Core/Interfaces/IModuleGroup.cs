@@ -29,6 +29,10 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Interface to use on modules that define a group/collection/container of homogenous modules. Those other modules
+    /// will implement the IChildModule interface
+    /// </summary>
     public interface IModuleGroup
     {
     }

@@ -450,7 +450,7 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Find all elements in <paramref name="this"/> but not in <paramref name="other"/> 
+        /// Find all elements in this but not in <paramref name="other"/>
         /// </summary>
         /// <param name="other">The other list</param>
         /// <returns>The array containing the complement of the two arrays.</returns>

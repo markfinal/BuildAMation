@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to specify the build mode to use.
+    /// </summary>
     public sealed class BuildMode :
         IStringCommandLineArgument
     {

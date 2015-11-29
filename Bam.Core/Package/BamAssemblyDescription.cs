@@ -29,8 +29,16 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Information concerned each Bam assembly reference, including name and minimum
+    /// version number supported.
+    /// </summary>
     public class BamAssemblyDescription
     {
+        /// <summary>
+        /// Construct a new instance, with just a name.
+        /// </summary>
+        /// <param name="name">Name.</param>
         public
         BamAssemblyDescription(
             string name)
@@ -38,6 +46,11 @@ namespace Bam.Core
             this.Name = name;
         }
 
+        /// <summary>
+        /// Construct a new instance, with a name and a major version number.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="major">Major.</param>
         public
         BamAssemblyDescription(
             string name,
@@ -48,6 +61,12 @@ namespace Bam.Core
             this.MajorVersion = major;
         }
 
+        /// <summary>
+        /// Construct a new instance, with a name, major and minor version numbers.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="major">Major.</param>
+        /// <param name="minor">Minor.</param>
         public BamAssemblyDescription(
             string name,
             int major,
@@ -58,6 +77,13 @@ namespace Bam.Core
             this.MinorVersion = minor;
         }
 
+        /// <summary>
+        /// Construct a new instance, with a name, major, minor and patch version numbers.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="major">Major.</param>
+        /// <param name="minor">Minor.</param>
+        /// <param name="patch">Patch.</param>
         public BamAssemblyDescription(
             string name,
             int major,
@@ -69,12 +95,21 @@ namespace Bam.Core
             this.PatchVersion = patch;
         }
 
+        /// <summary>
+        /// Get the name of the assembly.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Determine the minimum version number of the assembly, including
+        /// all the parts of the version number.
+        /// </summary>
+        /// <returns>The version number.</returns>
         public string MinimumVersionNumber()
         {
             if (!this.MajorVersion.HasValue)
@@ -94,18 +129,30 @@ namespace Bam.Core
             return number.ToString();
         }
 
+        /// <summary>
+        /// Get the assembly major version number, if defined.
+        /// </summary>
+        /// <value>The major version.</value>
         public int? MajorVersion
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the assembly minor version number, if defined.
+        /// </summary>
+        /// <value>The minor version.</value>
         public int? MinorVersion
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the assembly patch version number, if defined.
+        /// </summary>
+        /// <value>The patch version.</value>
         public int? PatchVersion
         {
             get;

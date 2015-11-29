@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to specify a package name, used in conjunction with other commands.
+    /// </summary>
     public sealed class PackageName :
         IStringCommandLineArgument
     {

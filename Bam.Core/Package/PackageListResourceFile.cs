@@ -30,6 +30,9 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Resource file containing data allowing a debug project to run standalone.
+    /// </summary>
     public static class PackageListResourceFile
     {
         private static void
@@ -62,6 +65,11 @@ namespace Bam.Core
             data.AppendChild(valueEl);
         }
 
+        /// <summary>
+        /// Write the resource file containing the data.
+        /// </summary>
+        /// <returns>The res X file.</returns>
+        /// <param name="projectPath">Project path.</param>
         public static string
         WriteResXFile(
             string projectPath)

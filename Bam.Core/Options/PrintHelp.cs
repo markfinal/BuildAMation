@@ -29,6 +29,11 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to print the Bam help text, and then exit.
+    /// When in a package directory, any help for options in the packages required will also be displayed.
+    /// Otherwise, only the Core help is shown.
+    /// </summary>
     public sealed class PrintHelp :
         IBooleanCommandLineArgument
     {

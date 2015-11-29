@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class for all Windows registry methods.
+    /// </summary>
     public static class Win32RegistryUtilities
     {
         private static string Wow6432NodeString = @"Wow6432Node";
@@ -92,6 +95,11 @@ namespace Bam.Core
             return exists;
         }
 
+        /// <summary>
+        /// Query if the current user software key at the provided path exists?
+        /// </summary>
+        /// <returns><c>true</c>, if CU software key exist was doesed, <c>false</c> otherwise.</returns>
+        /// <param name="path">Path.</param>
         public static bool
         DoesCUSoftwareKeyExist(
             string path)
@@ -100,6 +108,11 @@ namespace Bam.Core
             return exists;
         }
 
+        /// <summary>
+        /// Does the 32-bit local machine software key at the provided path exists?
+        /// </summary>
+        /// <returns><c>true</c>, if bit LM software key exist was does32ed, <c>false</c> otherwise.</returns>
+        /// <param name="path">Path.</param>
         public static bool
         Does32BitLMSoftwareKeyExist(
             string path)
@@ -128,6 +141,11 @@ namespace Bam.Core
             return key;
         }
 
+        /// <summary>
+        /// Open the 32-bit local machine software key specified by the path.
+        /// </summary>
+        /// <returns>The bit LM software key.</returns>
+        /// <param name="path">Path.</param>
         public static Microsoft.Win32.RegistryKey
         Open32BitLMSoftwareKey(
             string path)
@@ -135,6 +153,11 @@ namespace Bam.Core
             return OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, true);
         }
 
+        /// <summary>
+        /// Open the current user software key specified by the path.
+        /// </summary>
+        /// <returns>The CU software key.</returns>
+        /// <param name="path">Path.</param>
         public static Microsoft.Win32.RegistryKey
         OpenCUSoftwareKey(
             string path)
@@ -142,6 +165,11 @@ namespace Bam.Core
             return OpenSoftwareKey(path, Microsoft.Win32.Registry.CurrentUser, false);
         }
 
+        /// <summary>
+        /// Does the local machine software key exist at the path?
+        /// </summary>
+        /// <returns><c>true</c>, if LM software key exist was doesed, <c>false</c> otherwise.</returns>
+        /// <param name="path">Path.</param>
         public static bool
         DoesLMSoftwareKeyExist(
             string path)
@@ -150,6 +178,11 @@ namespace Bam.Core
             return exists;
         }
 
+        /// <summary>
+        /// Open the local machine software key at the path.
+        /// </summary>
+        /// <returns>The LM software key.</returns>
+        /// <param name="path">Path.</param>
         public static Microsoft.Win32.RegistryKey
         OpenLMSoftwareKey(
             string path)

@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to display the current package definition file, and then exit.
+    /// </summary>
     public sealed class ShowDefinitionFile :
         IBooleanCommandLineArgument
     {

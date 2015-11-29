@@ -29,24 +29,42 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Array of TokenizedStrings.
+    /// </summary>
     public sealed class TokenizedStringArray :
         Array<TokenizedString>
     {
+        /// <summary>
+        /// Create an array of TokenizedStrings.
+        /// </summary>
         public TokenizedStringArray()
         { }
 
+        /// <summary>
+        /// Create an array of TokenizedStrings from a single TokenizedString.
+        /// </summary>
+        /// <param name="input">Input.</param>
         public TokenizedStringArray(
             TokenizedString input)
             :
             base(new [] {input})
         { }
 
+        /// <summary>
+        /// Create an array of TokenizedStrings from an enumerable of TokenizedStrings.
+        /// </summary>
+        /// <param name="input">Input.</param>
         public TokenizedStringArray(
             System.Collections.Generic.IEnumerable<TokenizedString> input)
             :
             base(input)
         { }
 
+        /// <summary>
+        /// Create an array of TokenizedStrings from an array of TokenizedStrings.
+        /// </summary>
+        /// <param name="input">Input.</param>
         public
         TokenizedStringArray(
             params TokenizedString[] input)
@@ -54,6 +72,10 @@ namespace Bam.Core
             base(input)
         { }
 
+        /// <summary>
+        /// Add a verbatim string to the array.
+        /// </summary>
+        /// <param name="item">Item.</param>
         public void
         Add(
             string item)
@@ -61,6 +83,10 @@ namespace Bam.Core
             this.Add(Bam.Core.TokenizedString.CreateVerbatim(item));
         }
 
+        /// <summary>
+        /// Add a unique verbatim string to the array.
+        /// </summary>
+        /// <param name="item">Object to be added uniquely.</param>
         public void
         AddUnique(
             string item)

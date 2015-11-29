@@ -29,12 +29,34 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Log verbosity level enumeration
+    /// </summary>
     public enum EVerboseLevel
     {
+        /// <summary>
+        /// No such logging level
+        /// </summary>
         NA = -1,
+
+        /// <summary>
+        /// There is no output at all
+        /// </summary>
         None = 0,
+
+        /// <summary>
+        /// Just informational messages are logged.
+        /// </summary>
         Info = 1,
+
+        /// <summary>
+        /// Some detailed messages are output.
+        /// </summary>
         Detail = 2,
+
+        /// <summary>
+        /// All output is logged.
+        /// </summary>
         Full = 3
     }
 }

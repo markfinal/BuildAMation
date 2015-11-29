@@ -30,6 +30,10 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Representation of the .xml file required by each Bam package, with methods for reading
+    /// and writing them, and inspecting and retrieving data about packages.
+    /// </summary>
     public class PackageDefinition
     {
         private bool validate;
@@ -118,6 +122,11 @@ namespace Bam.Core
             this.Description = string.Empty;
         }
 
+        /// <summary>
+        /// Construct a new instance, based from an existing XML filename.
+        /// </summary>
+        /// <param name="xmlFilename">Xml filename.</param>
+        /// <param name="validate">If set to <c>true</c> validate.</param>
         public
         PackageDefinition(
             string xmlFilename,
@@ -126,6 +135,12 @@ namespace Bam.Core
             this.Initialize(xmlFilename, validate);
         }
 
+        /// <summary>
+        /// Create a new instance, for the specified directory, package name and version.
+        /// </summary>
+        /// <param name="bamDirectory">Bam directory.</param>
+        /// <param name="name">Name.</param>
+        /// <param name="version">Version.</param>
         public
         PackageDefinition(
             string bamDirectory,
@@ -398,6 +413,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Read an existing XML file into the instance.
+        /// </summary>
+        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public void
         Read(
             bool validateSchemaLocation,
@@ -409,6 +429,12 @@ namespace Bam.Core
             this.Definitions.AddUnique(packageDefinition);
         }
 
+        /// <summary>
+        /// Read an existing XML file into the instance.
+        /// </summary>
+        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
+        /// <param name="validatePackageLocations">If set to <c>true</c> validate package locations.</param>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public void
         Read(
             bool validateSchemaLocation,
@@ -744,6 +770,14 @@ namespace Bam.Core
             return true;
         }
 
+        /// <summary>
+        /// Read the XML file using the current schema.
+        /// </summary>
+        /// <returns><c>true</c>, if current was  read, <c>false</c> otherwise.</returns>
+        /// <param name="readerSettings">Reader settings.</param>
+        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
+        /// <param name="validatePackageLocations">If set to <c>true</c> validate package locations.</param>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         protected bool
         ReadCurrent(
             System.Xml.XmlReaderSettings readerSettings,
@@ -844,72 +878,123 @@ namespace Bam.Core
             return true;
         }
 
+        /// <summary>
+        /// Gets the XML filename associated with the package.
+        /// </summary>
+        /// <value>The XML filename.</value>
         public string XMLFilename
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the package name.
+        /// </summary>
+        /// <value>The name.</value>
         public string Name
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the package version.
+        /// </summary>
+        /// <value>The version.</value>
         public string Version
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Array of package name, package version, isdefaultversion, for each dependent of the package.
+        /// </summary>
+        /// <value>The dependents.</value>
         public Array<System.Tuple<string, string, bool?>> Dependents
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Array of Bam assemblies required for this package.
+        /// </summary>
+        /// <value>The bam assemblies.</value>
         public Array<BamAssemblyDescription> BamAssemblies
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Array of .NET assemblies required for this package.
+        /// </summary>
+        /// <value>The dot net assemblies.</value>
         public Array<DotNetAssemblyDescription> DotNetAssemblies
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get or set the enumerations for the platforms supported by this package.
+        /// </summary>
+        /// <value>The supported platforms.</value>
         public EPlatform SupportedPlatforms
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Get or set the preprocessor definitions used for compiling the package assembly.
+        /// </summary>
+        /// <value>The definitions.</value>
         public StringArray Definitions
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the array of repositories to search for packages in.
+        /// </summary>
+        /// <value>The package repositories.</value>
         public StringArray PackageRepositories
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the description of the package.
+        /// </summary>
+        /// <value>The description.</value>
         public string Description
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// String representation is the XML filename
+        /// </summary>
+        /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.PackageDefinition"/>.</returns>
         public override string
         ToString()
         {
             return this.XMLFilename;
         }
 
+        /// <summary>
+        /// Based on the dependents lists in the XML file, resolve all dependents by reading more
+        /// package definition files.
+        /// </summary>
+        /// <param name="current">Current.</param>
+        /// <param name="authenticated">Authenticated.</param>
+        /// <param name="candidatePackageDefinitions">Candidate package definitions.</param>
         public static void
         ResolveDependencies(
             PackageDefinition current,
@@ -982,6 +1067,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get the full name of the package, which is Name-Version, or just Name if there is no version.
+        /// </summary>
+        /// <value>The full name.</value>
         public string FullName
         {
             get
@@ -997,6 +1086,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get the array of files to compile from all packages.
+        /// </summary>
+        /// <returns>The script files.</returns>
+        /// <param name="allBuilders">If set to <c>true</c> all builders.</param>
         public StringArray
         GetScriptFiles(
             bool allBuilders = false)
@@ -1032,6 +1126,10 @@ namespace Bam.Core
             return scripts;
         }
 
+        /// <summary>
+        /// Get the pathname of the debug project file that could be written.
+        /// </summary>
+        /// <returns>The debug package project pathname.</returns>
         public string
         GetDebugPackageProjectPathname()
         {
@@ -1048,6 +1146,10 @@ namespace Bam.Core
             return bamDir;
         }
 
+        /// <summary>
+        /// Get the package directory, i.e. that containing the bam folder.
+        /// </summary>
+        /// <returns>The package directory.</returns>
         public string
         GetPackageDirectory()
         {
@@ -1056,6 +1158,11 @@ namespace Bam.Core
             return packageDir;
         }
 
+        /// <summary>
+        /// Get the repository directory, if it is a formal repository structure, called 'packages'
+        /// or 'tests'. If it not in a formal structure, null is returned.
+        /// </summary>
+        /// <returns>The package repository.</returns>
         private string
         GetPackageRepository()
         {
@@ -1068,6 +1175,10 @@ namespace Bam.Core
             return null;
         }
 
+        /// <summary>
+        /// Get the directory that build files are written into.
+        /// </summary>
+        /// <returns>The build directory.</returns>
         public string
         GetBuildDirectory()
         {
@@ -1105,6 +1216,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Show a representation of the package definition file to the console.
+        /// </summary>
         public void
         Show()
         {
@@ -1177,6 +1291,10 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Get or set metadata associated with the package.
+        /// </summary>
+        /// <value>The meta data.</value>
         public PackageMetaData MetaData
         {
             get;

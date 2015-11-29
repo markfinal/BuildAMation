@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to set the log verbosity level.
+    /// </summary>
     public sealed class VerbosityLevel :
         IIntegerCommandLineArgument
     {

@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to enable using debug symbols while compiling the package assembly.
+    /// </summary>
     public sealed class UseDebugSymbols :
         IBooleanCommandLineArgument
     {

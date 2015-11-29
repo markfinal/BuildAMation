@@ -55,6 +55,7 @@
     <Optimize>false</Optimize>
     <NoWarn>1607</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>docbuild\Debug\bam.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\bin\Release\</OutputPath>
@@ -68,6 +69,7 @@
     <NoWarn>
     </NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>docbuild\Release\bam.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>

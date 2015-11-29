@@ -38,6 +38,7 @@
     <Optimize>false</Optimize>
     <NoWarn>1607</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>docbuild\Debug\Bam.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\bin\Release\</OutputPath>
@@ -51,6 +52,7 @@
     <NoWarn>
     </NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>docbuild\Release\Bam.Core.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
@@ -141,7 +143,6 @@
     <Compile Include="TimingProfileUtilities.cs" />
     <Compile Include="TokenizedString.cs" />
     <Compile Include="TokenizedStringArray.cs" />
-    <Compile Include="ToolType.cs" />
     <Compile Include="TypeArray.cs" />
     <Compile Include="Win32RegistryUtilities.cs" />
     <None Include="app.config" />

@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to enable writing tool output immediately to console, rather than caching it.
+    /// </summary>
     public sealed class ImmediateOutput :
         IBooleanCommandLineArgument
     {

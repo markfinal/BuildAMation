@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to enable inspecting modules in a package's 'tests' subnamespace as top-level modules.
+    /// </summary>
     public sealed class UseTests :
         IBooleanCommandLineArgument
     {

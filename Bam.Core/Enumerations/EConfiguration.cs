@@ -29,18 +29,51 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Configuration enumeration
+    /// </summary>
     [System.Flags]
     public enum EConfiguration
     {
+        /// <summary>
+        /// No such configuration
+        /// </summary>
         Invalid   = 0,
+
+        /// <summary>
+        /// Debug settings are enabled by default, with no optimizations.
+        /// </summary>
         Debug     = (1 << 0),
+
+        /// <summary>
+        /// Full optimizations are enabled by default, with no debug settings.
+        /// </summary>
         Optimized = (1 << 1),
+
+        /// <summary>
+        /// Full optimizations are enabled by default, but debug information is available.
+        /// </summary>
         Profile   = (1 << 2),
 
+        /// <summary>
+        /// Alias for all configurations
+        /// </summary>
         All       = Debug | Optimized | Profile,
 
+        /// <summary>
+        /// Alias for not the debug configuration
+        /// </summary>
         NotDebug     = ~Debug & All,
+
+        /// <summary>
+        /// Alias for not the optimized configuration
+        /// </summary>
         NotOptimized = ~Optimized & All,
+
+
+        /// <summary>
+        /// Alias for not the profile configuration
+        /// </summary>
         NotProfile   = ~Profile & All
     }
 }

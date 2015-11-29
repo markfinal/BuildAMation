@@ -29,10 +29,20 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Store data for each timing profile.
+    /// </summary>
     public class TimeProfile
     {
+        /// <summary>
+        /// Format for the time representation.
+        /// </summary>
         public static readonly string DateTimeFormat = "m:s.fff";
 
+        /// <summary>
+        /// Construct a new instanced based on the enumeration.
+        /// </summary>
+        /// <param name="profile">Profile.</param>
         public
         TimeProfile(
             ETimingProfiles profile)
@@ -40,6 +50,9 @@ namespace Bam.Core
             this.Profile = profile;
         }
 
+        /// <summary>
+        /// Start timing.
+        /// </summary>
         public void
         StartProfile()
         {
@@ -48,6 +61,9 @@ namespace Bam.Core
             Log.DebugMessage("Profile '{0}': start {1}", this.Profile.ToString(), time.ToString(DateTimeFormat));
         }
 
+        /// <summary>
+        /// Stop timing.
+        /// </summary>
         public void
         StopProfile()
         {
@@ -58,24 +74,40 @@ namespace Bam.Core
             Log.DebugMessage("Profile '{0}': stop {1}", this.Profile.ToString(), time.ToString(DateTimeFormat));
         }
 
+        /// <summary>
+        /// Which timing profile is this?
+        /// </summary>
+        /// <value>The profile.</value>
         public ETimingProfiles Profile
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the start time for the profile.
+        /// </summary>
+        /// <value>The start.</value>
         public System.DateTime Start
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the stop time for the profile.
+        /// </summary>
+        /// <value>The stop.</value>
         public System.DateTime Stop
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Get the elapsed time for the profile.
+        /// </summary>
+        /// <value>The elapsed.</value>
         public System.TimeSpan Elapsed
         {
             get;

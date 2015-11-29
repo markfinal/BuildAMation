@@ -29,16 +29,27 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Attribute to attach to module classes, indicating which platforms it can be built for.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
     public sealed class PlatformFilterAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Initializes a new attribute.
+        /// </summary>
+        /// <param name="platform">The platform(s) for which the module can be built.</param>
         public PlatformFilterAttribute(
             EPlatform platform)
         {
             this.Platform = platform;
         }
 
+        /// <summary>
+        /// Is the platform in <paramref name="other" /> included in those specified at construction.
+        /// </summary>
+        /// <param name="other">Platform to compare against.</param>
         public bool
         Includes(
             EPlatform other)

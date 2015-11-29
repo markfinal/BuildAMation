@@ -11,5 +11,7 @@ PackageDebug
 /tests/Logs
 .DS_Store
 /Bam/obj
+/Bam/docbuild
 /Bam.Core/obj
-/BamOptionGenerator/obj
+/Bam.Core/docbuild
+/docs

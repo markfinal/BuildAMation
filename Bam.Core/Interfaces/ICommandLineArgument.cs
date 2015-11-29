@@ -29,52 +29,94 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Common interface for all command line options.
+    /// </summary>
     public interface ICommandLineArgument
     {
+        /// <summary>
+        /// Retrieve the short (single dash) name of the option. Null if not supported.
+        /// </summary>
+        /// <value>The short name.</value>
         string ShortName
         {
             get;
         }
 
+        /// <summary>
+        /// Retrieve the long (double dash) name of the option. Must be non-null;
+        /// </summary>
+        /// <value>The long name.</value>
         string LongName
         {
             get;
         }
 
+        /// <summary>
+        /// Help text to display for the option.
+        /// </summary>
+        /// <value>The context help.</value>
         string ContextHelp
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Interface to define a default value.
+    /// </summary>
     public interface ICommandLineArgumentDefault<T>
     {
+        /// <summary>
+        /// Obtain the default value, of type T, for the option.
+        /// </summary>
+        /// <value>The default.</value>
         T Default
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Interface to define custom help text, that the regular context help cannot achieve. This is a more dynamic
+    /// approach to help text.
+    /// </summary>
     public interface ICustomHelpText
     {
+        /// <summary>
+        /// Obtain the help for the option.
+        /// </summary>
+        /// <value>The option help.</value>
         string OptionHelp
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Interface for an option that is <c>true</c> or <c>false</c>.
+    /// </summary>
     public interface IBooleanCommandLineArgument : ICommandLineArgument
     {
     }
 
+    /// <summary>
+    /// Interface for an option that has a string value.
+    /// </summary>
     public interface IStringCommandLineArgument : ICommandLineArgument
     {
     }
 
+    /// <summary>
+    /// Interface that is a regular expression to match a family of command line options.
+    /// </summary>
     public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
     {
     }
 
+    /// <summary>
+    /// Interface for an option that has an integer value, and always defines a default.
+    /// </summary>
     public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
     {
     }

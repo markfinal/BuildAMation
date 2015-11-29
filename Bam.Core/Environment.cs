@@ -30,26 +30,38 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Encapsulation of all things needed to configure a build
+    /// An Environment is an encapsulation of the platform and configuration to build.
+    /// For each Environment, the DependencyGraph will contain a copy of each N modules.
     /// </summary>
     sealed public class Environment
     {
+        /// <summary>
+        /// Constructs a new Environment with an invalid configuration but the current platform.
+        /// </summary>
         public Environment()
         {
             this.Configuration = EConfiguration.Invalid;
             this.Platform = OSUtilities.CurrentPlatform;
         }
 
+        /// <summary>
+        /// Get or set the Environment's configuration.
+        /// </summary>
+        /// <value>The configuration associated with the Environment.</value>
         public EConfiguration Configuration
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Get the Environment's platform. It cannot be changed.
+        /// </summary>
+        /// <value>The platform associated with the Environment.</value>
         public EPlatform Platform
         {
             get;
-            set;
+            private set;
         }
     }
 }

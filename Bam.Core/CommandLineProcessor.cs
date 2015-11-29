@@ -29,6 +29,10 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Utility class for evaluating command line options, implementing the ICommandLineArgument
+    /// interface.
+    /// </summary>
     public static class CommandLineProcessor
     {
         private static StringArray Arguments;
@@ -48,6 +52,11 @@ namespace Bam.Core
             return uses;
         }
 
+        /// <summary>
+        /// Evaluate an option instance implementing the IBooleanCommandLineArgument interface.
+        /// </summary>
+        /// <param name="realArg">Instance of the option class.</param>
+        /// <returns>The boolean value from the option.</returns>
         public static bool
         Evaluate(
             IBooleanCommandLineArgument realArg)
@@ -68,6 +77,11 @@ namespace Bam.Core
             return (realArg is ICommandLineArgumentDefault<bool>) ? (realArg as ICommandLineArgumentDefault<bool>).Default : false;
         }
 
+        /// <summary>
+        /// Evaluate an option instance implementing the IStringCommandLineArgument interface.
+        /// </summary>
+        /// <param name="realArg">Instance of the option class.</param>
+        /// <returns>The string value from the option.</returns>
         public static string
         Evaluate(
             IStringCommandLineArgument realArg)
@@ -88,6 +102,11 @@ namespace Bam.Core
             return (realArg is ICommandLineArgumentDefault<string>) ? (realArg as ICommandLineArgumentDefault<string>).Default : null;
         }
 
+        /// <summary>
+        /// Evaluate an option instance implementing the IIntegerCommandLineArgument interface.
+        /// </summary>
+        /// <param name="realArg">Instance of the option class.</param>
+        /// <returns>The integer value from the option.</returns>
         public static int
         Evaluate(
             IIntegerCommandLineArgument realArg)
@@ -108,6 +127,11 @@ namespace Bam.Core
             return realArg.Default;
         }
 
+        /// <summary>
+        /// Evaluate an option instance implementing the IRegExCommandLineArgument interface.
+        /// </summary>
+        /// <param name="realArg">Instance of the option class.</param>
+        /// <returns>The string array from the option, an element per match of the regular expression.</returns>
         public static Array<StringArray>
         Evaluate(
             IRegExCommandLineArgument realArg)

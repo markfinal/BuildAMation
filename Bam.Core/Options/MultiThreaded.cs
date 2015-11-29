@@ -29,6 +29,11 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to determine how many threads are to be used to build.
+    /// By default, this is single threaded (1).
+    /// If zero is specified, all cores are used.
+    /// </summary>
     public sealed class MultiThreaded :
         IIntegerCommandLineArgument
     {

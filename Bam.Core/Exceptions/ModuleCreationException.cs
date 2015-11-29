@@ -29,9 +29,17 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Specified exception class to throw when modules fail to create.
+    /// </summary>
     public class ModuleCreationException :
         Exception
     {
+        /// <summary>
+        /// Constructs a new exception instance.
+        /// </summary>
+        /// <param name="moduleType">Type of module that failed to be created.</param>
+        /// <param name="exception">Exception that had been thrown, usually deep in the package scripts, causing the failure.</param>
         public ModuleCreationException(
             System.Type moduleType,
             System.Exception exception) :
@@ -40,6 +48,10 @@ namespace Bam.Core
             this.ModuleType = moduleType;
         }
 
+        /// <summary>
+        /// Gets the type of the module that failed to be created.
+        /// </summary>
+        /// <value>The type of the module.</value>
         public System.Type ModuleType
         {
             get;

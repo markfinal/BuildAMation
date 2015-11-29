@@ -37,6 +37,11 @@ namespace Bam.Core
     {
         private System.Collections.Generic.List<Module> Modules = new System.Collections.Generic.List<Module>();
 
+        /// <summary>
+        /// Add the module to the current collection. If the module already belongs to a collection, move it
+        /// unless dependencies will not be honoured.
+        /// </summary>
+        /// <param name="m">M.</param>
         public void
         Add(
             Module m)
@@ -72,6 +77,10 @@ namespace Bam.Core
             m.OwningRank = null;
         }
 
+        /// <summary>
+        /// Return each module in the collection
+        /// </summary>
+        /// <returns>The enumerator.</returns>
         public System.Collections.Generic.IEnumerator<Module>
         GetEnumerator()
         {

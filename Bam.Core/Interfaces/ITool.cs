@@ -29,8 +29,20 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Interface to identify a tool to be used with a module. There is no requirement that this tool run an executable
+    /// on a filesystem - it can easily be some C# scripts. Note that this may restrict which build modes it can be
+    /// used with.
+    /// </summary>
     public interface ITool
     {
+        /// <summary>
+        /// Create and initialize to defaults, the Settings class for this Tool and all of its properties as defined by
+        /// the interfaces implemented by the Settings class.
+        /// </summary>
+        /// <returns>The default settings.</returns>
+        /// <param name="module">Module.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
         Settings
         CreateDefaultSettings<T>(
             T module) where T : Module;

@@ -29,8 +29,16 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Static utility class with utilities surrounding the Bam Platform.
+    /// </summary>
     public static class Platform
     {
+        /// <summary>
+        /// Is the specified platform included in the enumeration?
+        /// </summary>
+        /// <param name="platform">Platform.</param>
+        /// <param name="choice">Choice.</param>
         // can't just use HasFlag, as the logic is inversed with the combined flag enum values
         public static bool
         Includes(
@@ -40,6 +48,11 @@ namespace Bam.Core
             return (0 != (platform & choice));
         }
 
+        /// <summary>
+        /// Convert a string to an EPlatform enumeration.
+        /// </summary>
+        /// <returns>The string.</returns>
+        /// <param name="platformName">Platform name, case insensitive.</param>
         public static EPlatform
         FromString(
             string platformName)
@@ -119,6 +132,11 @@ namespace Bam.Core
             platformString += name;
         }
 
+        /// <summary>
+        /// Convert EPlatform to a string.
+        /// </summary>
+        /// <returns>The string.</returns>
+        /// <param name="platformFlags">Platform flags.</param>
         public static string
         ToString(
             EPlatform platformFlags)
@@ -127,6 +145,12 @@ namespace Bam.Core
             return value;
         }
 
+        /// <summary>
+        /// Convert EPlatform to a string.
+        /// </summary>
+        /// <returns>The string.</returns>
+        /// <param name="platformFlags">Platform flags.</param>
+        /// <param name="separator">Separator.</param>
         public static string
         ToString(
             EPlatform platformFlags,
@@ -145,6 +169,14 @@ namespace Bam.Core
             return contains;
         }
 
+        /// <summary>
+        /// Convert an EPlatform to a string.
+        /// </summary>
+        /// <returns>The string.</returns>
+        /// <param name="platformFlags">Platform flags.</param>
+        /// <param name="separator">Separator.</param>
+        /// <param name="prefix">Prefix.</param>
+        /// <param name="toUpper">If set to <c>true</c> to upper.</param>
         public static string
         ToString(
             EPlatform platformFlags,

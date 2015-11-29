@@ -30,8 +30,15 @@
 using System.Linq;
 namespace Bam.Core
 {
+    /// <summary>
+    /// Base class for all package metadata.
+    /// </summary>
     public abstract class PackageMetaData
     {
+        /// <summary>
+        /// Construct the basic metadata.
+        /// User scripts can hook into this construction, by implementing the IPackageMetaDataConfigure interface.
+        /// </summary>
         protected PackageMetaData()
         {
             var thisType = this.GetType();
@@ -46,11 +53,19 @@ namespace Bam.Core
             configureMethod.Invoke(configureInstance, new[] { this });
         }
 
+        /// <summary>
+        /// Obtain data stored in the metadata at a string based index.
+        /// </summary>
+        /// <param name="index">Index.</param>
         public abstract object this[string index]
         {
             get;
         }
 
+        /// <summary>
+        /// Determine whether an index is present in the metadata.
+        /// </summary>
+        /// <param name="index">Index.</param>
         public abstract bool
         Contains(
             string index);

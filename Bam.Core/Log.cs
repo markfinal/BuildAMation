@@ -106,6 +106,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility function to log a message in all verbosity levels.
+        /// </summary>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
         public static void
         MessageAll(
             string format,
@@ -123,6 +128,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility function to log a message only when verbosity mode is at least Info.
+        /// </summary>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
         public static void
         Info(
             string format,
@@ -143,6 +153,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility function to log a message only when verbosity mode is at least Detail.
+        /// </summary>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
         public static void
         Detail(
             string format,
@@ -163,6 +178,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility function to log a message only when verbosity mode is at least Full.
+        /// </summary>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
         public static void
         Full(
             string format,
@@ -183,6 +203,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility function to display a message, prefixed with ERROR:, in all verbosity levels.
+        /// </summary>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
         public static void
         ErrorMessage(
             string format,
@@ -200,6 +225,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Utility function to log a message only when verbosity mode is at least Detail AND in debug builds.
+        /// </summary>
+        /// <param name="format">Format.</param>
+        /// <param name="args">Arguments.</param>
         [System.Diagnostics.Conditional("DEBUG")]
         public static void
         DebugMessage(

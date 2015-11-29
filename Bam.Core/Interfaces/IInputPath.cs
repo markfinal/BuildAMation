@@ -29,9 +29,15 @@
 #endregion // License
 namespace Bam.Core
 {
-    // only here because not all modules require a path
+    /// <summary>
+    /// Interface used on modules that define an input/source path.
+    /// </summary>
     public interface IInputPath
     {
+        /// <summary>
+        /// Obtain the source path for the module.
+        /// </summary>
+        /// <value>The input path.</value>
         TokenizedString InputPath
         {
             get;

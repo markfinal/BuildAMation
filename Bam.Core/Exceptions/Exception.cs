@@ -91,6 +91,11 @@ namespace Bam.Core
             base(serializationInfo, streamingContext)
         {}
 
+        /// <summary>
+        /// Utility method to display an exception message, and any details from any inner exceptions.
+        /// </summary>
+        /// <returns><c>true</c>, if the exception is non-null, <c>false</c> otherwise, allowing a recursive invocation for inner exceptions.</returns>
+        /// <param name="exception">Exception to display information about.</param>
         public static bool
         DisplayException(
             System.Exception exception)
@@ -110,6 +115,13 @@ namespace Bam.Core
             return true;
         }
 
+        /// <summary>
+        /// Utility method to display an exception message (and inner exceptions), with a specified error message prefix.
+        /// </summary>
+        /// <returns><c>true</c>, if the exception is non-null, <c>false</c> otherwise, allowing a recursive invocation for inner exceptions.</returns>
+        /// <param name="exception">Exception to display.</param>
+        /// <param name="prefix">Prefix format string to display</param>
+        /// <param name="args">Arguments to the prefix format string</param>
         public static bool
         DisplayException(
             System.Exception exception,

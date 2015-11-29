@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option to define where build artifacts are to be written.
+    /// </summary>
     public sealed class BuildRoot :
         IStringCommandLineArgument,
         ICommandLineArgumentDefault<string>

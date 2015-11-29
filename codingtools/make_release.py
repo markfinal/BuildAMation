@@ -90,6 +90,12 @@ def Build():
     sys.stdout.flush()
 
 
+def BuildDocumentation(options):
+    args = [options.doxygenpath, "docsrc/BuildAMationDoxy"]
+    print "Running: %s" % ' '.join(args)
+    subprocess.check_call(args)
+
+
 def MakeTarDistribution(options):
     cwd = os.getcwd()
     try:
@@ -147,6 +153,49 @@ def MakeZipDistribution(options):
         os.chdir(cwd)
 
 
+def MakeTarDocsDistribution(options):
+    cwd = os.getcwd()
+    try:
+        coDir, bamDir = os.path.split(cwd)
+        tarPath = os.path.join(coDir, "BuildAMation-%s-docs.tgz"%options.version)
+        print >>sys.stdout, "Writing tar file %s" % tarPath
+        sys.stdout.flush()
+        os.chdir(coDir)
+        def filter(tarinfo):
+            if platform.system() != "Windows":
+                return tarinfo
+            # attempt to fix up the permissions that are lost during tarring on Windows
+            if tarinfo.name.endswith(".exe") or tarinfo.name.endswith(".dll") or tarinfo.name.endswith(".py") or tarinfo.name.endswith(".sh") or tarinfo.name.endswith("bam"):
+                tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
+            return tarinfo
+        with tarfile.open(tarPath, "w:gz") as tar:
+            tar.add(os.path.join(bamDir, "docs"))
+        print >>sys.stdout, "Finished writing tar file %s" % tarPath
+        sys.stdout.flush()
+    finally:
+        os.chdir(cwd)
+
+
+def MakeZipDocsDistribution(options):
+    cwd = os.getcwd()
+    try:
+        coDir, bamDir = os.path.split(cwd)
+        zipPath = os.path.join(coDir, "BuildAMation-%s-docs.zip"%options.version)
+        print >>sys.stdout, "Writing zip file %s" % zipPath
+        sys.stdout.flush()
+        os.chdir(coDir)
+        def RecursiveWrite(zip, dirToAdd):
+            for root, dirs, files in os.walk(dirToAdd):
+                for file in files:
+                    zip.write(os.path.join(root, file))
+        with zipfile.ZipFile(zipPath, "w", zipfile.ZIP_DEFLATED) as zip:
+            RecursiveWrite(zip, os.path.join(bamDir, "docs"))
+        print >>sys.stdout, "Finished writing zip file %s" % zipPath
+        sys.stdout.flush()
+    finally:
+        os.chdir(cwd)
+
+
 def Main(dir, options):
     print >>sys.stdout, "Creating BuildAMation version %s" % options.version
     sys.stdout.flush()
@@ -157,8 +206,11 @@ def Main(dir, options):
         CleanClone()
         UpdateVersionNumbers(options)
         Build()
+        BuildDocumentation(options)
         MakeTarDistribution(options)
         MakeZipDistribution(options)
+        MakeTarDocsDistribution(options)
+        MakeZipDocsDistribution(options)
     finally:
         os.chdir(cwd)
 
@@ -167,9 +219,12 @@ if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("-v", "--version", dest="version", help="Version to create")
     parser.add_option("-b", "--branch", dest="branch", default=None, help="Override for branch to clone")
+    parser.add_option("-d", "--doxygen", dest="doxygenpath", default=None, help="Path to the doxygen executable")
     (options, args) = parser.parse_args()
     if not options.version:
         parser.error("Must supply a version")
+    if not options.doxygenpath:
+        parser.error("Must supply the path to the doxygen executable")
         
     tempDir = tempfile.mkdtemp()
     cloningDir = os.path.join(tempDir, "BuildAMation-%s" % options.version)

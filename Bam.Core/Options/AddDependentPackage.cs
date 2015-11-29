@@ -29,6 +29,10 @@
 #endregion // License
 namespace Bam.Core.Options
 {
+    /// <summary>
+    /// Command line option for adding a depenent package to the current package.
+    /// Requires at least the PackageName option as well.
+    /// </summary>
     public sealed class AddDependentPackage :
         IBooleanCommandLineArgument
     {
