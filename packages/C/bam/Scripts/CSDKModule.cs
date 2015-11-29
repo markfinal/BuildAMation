@@ -29,6 +29,10 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Derive from this module to specify a module that represents an entire SDK.
+    /// There is unlikely to be a single output, but instead, a number of libraries.
+    /// </summary>
     public abstract class CSDKModule :
         CModule
     { }

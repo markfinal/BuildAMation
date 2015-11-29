@@ -29,6 +29,9 @@
 #endregion // License
 namespace C.ObjCxx
 {
+    /// <summary>
+    /// Object file compiled against ObjectiveC++.
+    /// </summary>
     public class ObjectFile :
         C.ObjectFile
     {

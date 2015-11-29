@@ -29,28 +29,47 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Linker settings that are common for OSX builds.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerSettingsOSX :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Array of framework paths to link against.
+        /// </summary>
+        /// <value>The frameworks.</value>
         Bam.Core.TokenizedStringArray Frameworks
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Array of paths the linker uses to search for frameworks.
+        /// </summary>
+        /// <value>The framework search paths.</value>
         Bam.Core.TokenizedStringArray FrameworkSearchPaths
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// For dylibs, the install name to use.
+        /// </summary>
+        /// <value>The name of the install.</value>
         Bam.Core.TokenizedString InstallName
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Minimum version of OSX supported for the binary.
+        /// </summary>
+        /// <value>The minimum version supported.</value>
         string MinimumVersionSupported
         {
             get;

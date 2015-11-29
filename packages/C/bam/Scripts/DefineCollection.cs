@@ -29,6 +29,10 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Representation of preprocessor definitions, of key-value string pairs, and the value
+    /// is optional.
+    /// </summary>
     public sealed class PreprocessorDefinitions :
         System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
     {

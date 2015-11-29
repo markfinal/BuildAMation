@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace C.Cxx
 {
+    /// <summary>
+    /// Derive from this module to create a runtime loadable plugin linking against the C++ runtime.
+    /// </summary>
     public abstract class Plugin :
         DynamicLibrary
     {

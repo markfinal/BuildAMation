@@ -29,16 +29,28 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Compiler settings common to OSX.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonCompilerSettingsOSX :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Search paths for frameworks.
+        /// </summary>
+        /// <value>The framework search paths.</value>
         Bam.Core.TokenizedStringArray FrameworkSearchPaths
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Minimum version of OSX supported, which will report deprecated messages if features of
+        /// the operating system are used but should not be.
+        /// </summary>
+        /// <value>The minimum version supported.</value>
         string MinimumVersionSupported
         {
             get;

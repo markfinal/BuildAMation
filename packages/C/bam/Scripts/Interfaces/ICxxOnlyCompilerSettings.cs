@@ -29,22 +29,39 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// C++ only compilation settings.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.Cxx.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICxxOnlyCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Which exception handler to compile support for.
+        /// </summary>
+        /// <value>The exception handler.</value>
         C.Cxx.EExceptionHandler? ExceptionHandler
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// The C++ language standard to compile against.
+        /// </summary>
+        /// <value>The language standard.</value>
         C.Cxx.ELanguageStandard? LanguageStandard
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// The C++ standard library to compile against. Some support for the standard library
+        /// are in headers, which this controls, while others are in the library itself which is
+        /// dealt with separately on the linker.
+        /// </summary>
+        /// <value>The standard library.</value>
         C.Cxx.EStandardLibrary? StandardLibrary
         {
             get;

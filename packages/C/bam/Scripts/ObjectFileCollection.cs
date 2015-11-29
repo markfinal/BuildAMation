@@ -29,6 +29,9 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Collection of one or more object files compiled against C.
+    /// </summary>
     public class CObjectFileCollection :
         CModuleContainer<ObjectFile>
     {

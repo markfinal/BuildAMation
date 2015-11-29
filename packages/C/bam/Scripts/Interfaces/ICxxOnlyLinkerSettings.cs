@@ -29,10 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// C++ only linker settings.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICxxOnlyLinkerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// The C++ standard library to link against.
+        /// </summary>
+        /// <value>The standard library.</value>
         C.Cxx.EStandardLibrary StandardLibrary
         {
             get;

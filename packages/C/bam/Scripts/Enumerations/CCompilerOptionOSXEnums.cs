@@ -29,9 +29,19 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Which Apple platform to compile against
+    /// </summary>
     public enum EOSXPlatform
     {
+        /// <summary>
+        /// Compile for MacOSX
+        /// </summary>
         MacOSX = 0,
+
+        /// <summary>
+        /// Compile for iOS (not yet supported)
+        /// </summary>
         iOS = 1
     }
 }

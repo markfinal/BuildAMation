@@ -29,10 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Objective C specific compiler settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.ObjC.DefaultSettings.DefaultSettingsExtensions))]
     public interface IObjectiveCOnlyCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Which class to use for constant strings.
+        /// </summary>
+        /// <value>The constant string class.</value>
         string ConstantStringClass
         {
             get;

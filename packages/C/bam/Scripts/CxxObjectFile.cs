@@ -29,6 +29,9 @@
 #endregion // License
 namespace C.Cxx
 {
+    /// <summary>
+    /// Compile a source file against C++.
+    /// </summary>
     public class ObjectFile :
         C.ObjectFile
     {

@@ -30,27 +30,77 @@
 namespace C.Cxx
 {
     // TOOD: rename enum as structured?
+    /// <summary>
+    /// Which exception handler to use
+    /// </summary>
     public enum EExceptionHandler
     {
+        /// <summary>
+        /// Exception handling is not enabled
+        /// </summary>
         Disabled = 0,
+
+        /// <summary>
+        /// Use synchronous exception handling.
+        /// </summary>
         Synchronous = 1,
+
+        /// <summary>
+        /// Use asynchronous exception handling.
+        /// </summary>
         Asynchronous = 2,
+
+        /// <summary>
+        /// Use synchronous exception handle with C externs
+        /// </summary>
         SyncWithCExternFunctions = 3
     }
 
+    /// <summary>
+    /// C++ language standard varieties
+    /// </summary>
     public enum ELanguageStandard
     {
+        /// <summary>
+        /// No standard defined, use compiler default
+        /// </summary>
         NotSet,
+
+        /// <summary>
+        /// Compile against the C++ 98 standard.
+        /// </summary>
         Cxx98,
+
+        /// <summary>
+        /// Compile against the GNU C++ 98 standard.
+        /// </summary>
         GnuCxx98,
+
+        /// <summary>
+        /// Compile against the C++11 standard.
+        /// </summary>
         Cxx11,
         // TODO: GnuCxx11
     }
 
+    /// <summary>
+    /// Specify the C++ standard library to compile against
+    /// </summary>
     public enum EStandardLibrary
     {
+        /// <summary>
+        /// Undefined, use compiler standard library.
+        /// </summary>
         NotSet,
+
+        /// <summary>
+        /// Use the libstdc++ standard library.
+        /// </summary>
         libstdcxx,
+
+        /// <summary>
+        /// Use the libc++ standard library.
+        /// </summary>
         libcxx
     }
 }

@@ -29,10 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Compilation settings only for C code
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICOnlyCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// The C language standard to compile against.
+        /// </summary>
+        /// <value>The language standard.</value>
         C.ELanguageStandard? LanguageStandard
         {
             get;

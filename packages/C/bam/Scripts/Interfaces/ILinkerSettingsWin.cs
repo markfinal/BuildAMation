@@ -29,10 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Windows specific linker settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerSettingsWin :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// The subsystem defines what sort of binary is generated, and which entry point to use.
+        /// </summary>
+        /// <value>The sub system.</value>
         C.ESubsystem? SubSystem
         {
             get;

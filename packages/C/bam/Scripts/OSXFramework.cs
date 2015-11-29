@@ -29,6 +29,9 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Derive this module to represent an OSX framework.
+    /// </summary>
     public abstract class OSXFramework :
         CModule
     {
@@ -90,21 +93,37 @@ namespace C
             this.GetIDName();
         }
 
+        /// <summary>
+        /// Path to where the framework is stored
+        /// </summary>
+        /// <value>The framework path.</value>
         public abstract Bam.Core.TokenizedString FrameworkPath
         {
             get;
         }
 
+        /// <summary>
+        /// Directories of the framework to publish.
+        /// </summary>
+        /// <value>The directories to publish.</value>
         public abstract Bam.Core.Array<Path> DirectoriesToPublish
         {
             get;
         }
 
+        /// <summary>
+        /// Files of the framework to publish.
+        /// </summary>
+        /// <value>The files to publish.</value>
         public abstract Bam.Core.Array<Path> FilesToPublish
         {
             get;
         }
 
+        /// <summary>
+        /// Symbolic links of the framework to publish.
+        /// </summary>
+        /// <value>The symlinks to publish.</value>
         public abstract Bam.Core.Array<Path> SymlinksToPublish
         {
             get;

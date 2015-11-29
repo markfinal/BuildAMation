@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace C.Cxx
 {
+    /// <summary>
+    /// Derive from this module to create a GUI application linking against the C++ runtime.
+    /// </summary>
     public class GUIApplication :
         ConsoleApplication
     {
@@ -57,6 +60,13 @@ namespace C.Cxx
             compiler.PreprocessorDefines.Add("_WINDOWS");
         };
 
+        /// <summary>
+        /// Create a container whose matching source files compile against C.
+        /// </summary>
+        /// <returns>The C source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public sealed override C.CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -71,6 +81,13 @@ namespace C.Cxx
             return container;
         }
 
+        /// <summary>
+        /// Create a container whose matching source files compile against C++>
+        /// </summary>
+        /// <returns>The cxx source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public sealed override Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
