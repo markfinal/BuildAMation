@@ -154,8 +154,12 @@ namespace Installer
         private Bam.Core.PreBuiltTool Compiler;
         private IInnoSetupPolicy Policy;
 
-        public InnoSetupInstaller()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             this.ScriptModule = Bam.Core.Module.Create<InnoSetupScript>();
             this.DependsOn(this.ScriptModule);
 

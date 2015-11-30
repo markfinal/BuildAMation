@@ -60,8 +60,12 @@ namespace Installer
         private Bam.Core.TokenizedString SourceFolderPath;
         private IDiskImagePolicy Policy;
 
-        public DiskImage()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg"));
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();

@@ -158,8 +158,12 @@ namespace Installer
         private TarInputFiles InputFiles;
         private ITarPolicy Policy;
 
-        public TarBall()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName)$(tarext)"));
 
             this.InputFiles = Bam.Core.Module.Create<TarInputFiles>();
