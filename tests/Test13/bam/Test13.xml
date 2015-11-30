@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="Test13" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Create a program that depends on a dynamic library that also depends on a dynamic library</Description>
   <Dependents>
     <Package name="C" />
     <Package name="Clang" version="Xcode4" />
