@@ -29,6 +29,9 @@
 #endregion // License
 namespace C.ObjCxx
 {
+    /// <summary>
+    /// Collection of one or more object files compiled against ObjectiveC++.
+    /// </summary>
     public class ObjectFileCollection :
         C.CModuleContainer<ObjectFile>
     {

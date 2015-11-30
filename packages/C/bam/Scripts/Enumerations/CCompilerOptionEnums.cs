@@ -29,41 +29,124 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Optimization level for the compiler
+    /// </summary>
     public enum EOptimization
     {
+        /// <summary>
+        /// No optimizations
+        /// </summary>
         Off = 0,
+
+        /// <summary>
+        /// Optimize for size
+        /// </summary>
         Size = 1,
+
+        /// <summary>
+        /// Optimize for speed
+        /// </summary>
         Speed = 2,
+
+        /// <summary>
+        /// Enable full optimizations
+        /// </summary>
         Full = 3,
+
+        /// <summary>
+        /// Customize the optimization level (TODO)
+        /// </summary>
         Custom = 4 // TODO: confirm
     }
 
+    /// <summary>
+    /// Define the output of the compiler
+    /// </summary>
     public enum ECompilerOutput
     {
+        /// <summary>
+        /// Compiler generates object code
+        /// </summary>
         CompileOnly = 0,
+
+        /// <summary>
+        /// Compiler stops after the preprocessor
+        /// </summary>
         Preprocess = 1
     }
 
+    /// <summary>
+    /// Which language should the compiler target
+    /// </summary>
     public enum ETargetLanguage
     {
+        /// <summary>
+        /// Default language based on the file extension
+        /// </summary>
         Default = 0,
+
+        /// <summary>
+        /// Compile as C code
+        /// </summary>
         C = 1,
+
+        /// <summary>
+        /// Compile as C++ code
+        /// </summary>
         Cxx = 2,
+
+        /// <summary>
+        /// Compile as ObjectiveC code
+        /// </summary>
         ObjectiveC = 3,
+
+        /// <summary>
+        /// Compile as ObjectiveC++ code
+        /// </summary>
         ObjectiveCxx = 4
     }
 
+    /// <summary>
+    /// Which character set is used by the compiler
+    /// May affect system APIs used.
+    /// </summary>
     public enum ECharacterSet
     {
+        /// <summary>
+        /// No character set is defined
+        /// </summary>
         NotSet = 0,
+
+        /// <summary>
+        /// Compile as Unicode
+        /// </summary>
         Unicode = 1,
+
+        /// <summary>
+        /// Compile as multibyte
+        /// </summary>
         MultiByte = 2
     }
 
+    /// <summary>
+    /// C language standard options
+    /// </summary>
     public enum ELanguageStandard
     {
+        /// <summary>
+        /// No standard set, use compiler default
+        /// </summary>
         NotSet,
+
+        /// <summary>
+        /// Compile as the C89 standard
+        /// </summary>
         C89,
+
+        /// <summary>
+        /// Compile as the C99 standard
+        /// </summary>
         C99
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="Test15" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Create a static library that depends on the static library in Test14</Description>
   <Dependents>
     <Package name="C" />
     <Package name="Clang" version="Xcode4" />
@@ -9,9 +10,8 @@
     <Package name="Gcc" version="4.8" />
     <Package name="MakeFileBuilder" />
     <Package name="Mingw" version="4.8.1" />
-    <Package name="NativeBuilder" />
+    <Package name="Test14" />
     <Package name="VisualC" version="12.0" />
-    <Package name="VSSolutionBuilder" />
     <Package name="WindowsSDK" version="8.1" />
     <Package name="XcodeBuilder" />
   </Dependents>

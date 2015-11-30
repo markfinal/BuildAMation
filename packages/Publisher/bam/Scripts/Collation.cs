@@ -30,6 +30,16 @@
 using Bam.Core;
 namespace Publisher
 {
+    /// <summary>
+    /// Derive from this module to collate files and directories into a runnable distribution.
+    /// Collation occurs within a folder in the build root called the 'publishing root'.
+    /// An initial file is collated into the publishing root, and this file determines the structure of the
+    /// subsequent files and folders, and the application type. This is the reference file.
+    /// Add subsequent files and folders, specifying paths relative to the reference file. For example, to
+    /// place a dynamic library in a plugins subfolder next to the main executable, specify a subdirectory of
+    /// 'plugins'. To place a framework in the <name>.app/Contents/Frameworks folder of an application bundle, specify
+    /// a subdirectory of '../Frameworks', as the executable is in Contents/MacOS.
+    /// </summary>
     public abstract class Collation :
         Bam.Core.Module
     {
@@ -38,9 +48,21 @@ namespace Publisher
         private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
         private ICollationPolicy Policy = null;
 
+        /// <summary>
+        /// The type of application being published.
+        /// </summary>
         public enum EPublishingType
         {
+            /// <summary>
+            /// Application in a console application.
+            /// </summary>
             ConsoleApplication,
+
+            /// <summary>
+            /// Application is a GUI application.
+            /// On OSX, this is an application bundle, and will automatically appear in a <name>.app/Contents/MacOS folder
+            /// under the publishing root.
+            /// </summary>
             WindowedApplication
         }
 
@@ -301,6 +323,14 @@ namespace Publisher
             return reference.SubDirectory.Parse().Contains(".app");
         }
 
+        /// <summary>
+        /// Collate the main application file in the publishing root. Use the publishing type to determine 
+        /// what kind of application this will be.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="type">Type.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public CollatedFile
         Include<DependentModule>(
             Bam.Core.PathKey key,
@@ -348,6 +378,13 @@ namespace Publisher
             return copyFileModule;
         }
 
+        /// <summary>
+        /// Include a file built by Bam in a location relative to the reference file.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public CollatedFile
         Include<DependentModule>(
             Bam.Core.PathKey key,
@@ -384,6 +421,14 @@ namespace Publisher
             return copyFileModule;
         }
 
+        /// <summary>
+        /// Include a number of files relative to the reference file, from the DependentModule.
+        /// </summary>
+        /// <param name="parameterizedFilePath">Parameterized file path.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
+        /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         IncludeFiles<DependentModule>(
             string parameterizedFilePath,
@@ -411,6 +456,13 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Include a file relative to the reference file, from an arbitrary location.
+        /// </summary>
+        /// <param name="parameterizedFilePath">Parameterized file path.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
+        /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
         public void
         IncludeFile(
             string parameterizedFilePath,
@@ -422,6 +474,13 @@ namespace Publisher
             this.IncludeFile(tokenString, subdir, reference, isExecutable);
         }
 
+        /// <summary>
+        /// Include a file relative to the reference file, from an arbitrary location.
+        /// </summary>
+        /// <param name="parameterizedFilePath">Parameterized file path.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
+        /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
         public void
         IncludeFile(
             Bam.Core.TokenizedString parameterizedFilePath,
@@ -444,6 +503,12 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Include a directory relative to the reference file, from an arbitrary location.
+        /// </summary>
+        /// <param name="parameterizedPath">Parameterized path.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
         public void
         IncludeDirectory(
             Bam.Core.TokenizedString parameterizedPath,
@@ -453,6 +518,14 @@ namespace Publisher
             this.CreateCollatedDirectory(null, parameterizedPath, reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
         }
 
+        /// <summary>
+        /// Include an OSX framework relative to the reference file, from DependentModule, and optionally
+        /// update its install name to function in its new location.
+        /// </summary>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
+        /// <param name="updateInstallName">If set to <c>true</c> update install name.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         IncludeFramework<DependentModule>(
             string subdir,
@@ -544,6 +617,11 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// For a collated ELF file, update it's RPATH.
+        /// </summary>
+        /// <param name="source">Source.</param>
+        /// <param name="newRPath">New R path.</param>
         public void
         ChangeRPath(
             CollatedFile source,

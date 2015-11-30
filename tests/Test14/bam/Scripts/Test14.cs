@@ -27,11 +27,10 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Test14
 {
-    public sealed class DynamicLibraryA :
-        C.DynamicLibrary
+    public sealed class StaticLibrary1 :
+        C.StaticLibrary
     {
         protected override void
         Init(
@@ -39,8 +38,8 @@ namespace Test14
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryA.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryA.c");
+            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary1.h");
+            this.CreateCSourceContainer("$(packagedir)/source/staticlibrary1.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
@@ -49,89 +48,6 @@ namespace Test14
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
-        }
-    }
-
-    public sealed class DynamicLibraryB :
-        C.DynamicLibrary
-    {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-
-            this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryB.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryB.c");
-            this.PublicPatch((settings, appliedTo) =>
-                {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
-                    {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
-                    }
-                });
-
-            this.LinkAgainst<DynamicLibraryA>();
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
-        }
-    }
-
-    public sealed class Application :
-        C.ConsoleApplication
-    {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
-
-            this.PrivatePatch(settings =>
-                {
-                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-                    if (null != gccLinker)
-                    {
-                        gccLinker.CanUseOrigin = true;
-                        gccLinker.RPath.AddUnique("$ORIGIN");
-                    }
-                });
-
-            this.CompileAndLinkAgainst<DynamicLibraryA>(source);
-            this.CompileAndLinkAgainst<DynamicLibraryB>(source);
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
-        }
-    }
-
-    public sealed class RuntimePackage :
-        Publisher.Collation
-    {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-
-            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<DynamicLibraryA>(C.DynamicLibrary.Key, ".", app);
-            this.Include<DynamicLibraryB>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

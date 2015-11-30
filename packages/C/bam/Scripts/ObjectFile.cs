@@ -29,6 +29,9 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Object file compiled against C.
+    /// </summary>
     public class ObjectFile :
         CModule,
         Bam.Core.IChildModule,

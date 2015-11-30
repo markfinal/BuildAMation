@@ -48,6 +48,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Derive from this module to create an OSX disk image.
+    /// </summary>
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
     public abstract class DiskImage :
         Bam.Core.Module
@@ -57,13 +60,23 @@ namespace Installer
         private Bam.Core.TokenizedString SourceFolderPath;
         private IDiskImagePolicy Policy;
 
-        public DiskImage()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg"));
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
         }
 
+        /// <summary>
+        /// Specify the source for the disk image. This could equally be a single file, but is usually a folder, such
+        /// as the output from one of the publishing collation steps.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()

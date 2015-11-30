@@ -30,6 +30,10 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Base class for containers of homogenous object files. Provides methods that automatically
+    /// generate modules of the correct type given the source paths.
+    /// </summary>
     public abstract class CModuleContainer<ChildModuleType> :
         CModule, // TODO: should this be here? it has no headers, nor version number
         Bam.Core.IModuleGroup,
@@ -59,6 +63,13 @@ namespace C
             return sourceFile;
         }
 
+        /// <summary>
+        /// Add a single object file, given the source path, to the container. Path must resolve to a single file.
+        /// </summary>
+        /// <returns>The object file module, in order to manage patches.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="verbatim">If set to <c>true</c> verbatim.</param>
         public ChildModuleType
         AddFile(
             string path,
@@ -93,6 +104,14 @@ namespace C
             return child;
         }
 
+        /// <summary>
+        /// Add multiple object files, given a wildcarded source path.
+        /// Allow filtering on the expanded paths, so that only matching paths are included.
+        /// </summary>
+        /// <returns>The files.</returns>
+        /// <param name="path">Path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public Bam.Core.Array<Bam.Core.Module>
         AddFiles(
             string path,
@@ -125,6 +144,12 @@ namespace C
             return modulesCreated;
         }
 
+        /// <summary>
+        /// Add an object file from an existing SourceFile module.
+        /// </summary>
+        /// <returns>The file.</returns>
+        /// <param name="sourceModule">Source module.</param>
+        /// <param name="preInitDlg">Pre init dlg.</param>
         public ChildModuleType
         AddFile(
             SourceFile sourceModule,

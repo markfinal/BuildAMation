@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test15
 {
-    public sealed class StaticLibrary1 :
+    public sealed class StaticLibrary2 :
         C.StaticLibrary
     {
         protected override void
@@ -38,8 +38,8 @@ namespace Test15
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary1.h");
-            this.CreateCSourceContainer("$(packagedir)/source/staticlibrary1.c");
+            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary2.h");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary2.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
@@ -48,6 +48,8 @@ namespace Test15
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
+
+            this.CompileAgainstPublicly<Test14.StaticLibrary1>(source);
         }
     }
 }

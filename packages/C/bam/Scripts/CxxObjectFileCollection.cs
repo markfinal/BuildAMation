@@ -29,6 +29,9 @@
 #endregion // License
 namespace C.Cxx
 {
+    /// <summary>
+    /// Container of one or more object files compiled against C++.
+    /// </summary>
     public class ObjectFileCollection :
         C.CModuleContainer<ObjectFile>
     {

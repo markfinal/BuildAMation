@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace C
 {
+    /// <summary>
+    /// Derive from this class to generate a console application and link against the C runtime library.
+    /// </summary>
     public class ConsoleApplication :
         CModule
     {
@@ -68,6 +71,13 @@ namespace C
                 compiler.PreprocessorDefines.Add("_CONSOLE");
             };
 
+        /// <summary>
+        /// Create a container for matching source files, to compile as C.
+        /// </summary>
+        /// <returns>The C source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public virtual CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -80,6 +90,13 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Create a container for matching source files, to compile as ObjectiveC.
+        /// </summary>
+        /// <returns>The objective C source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
@@ -92,6 +109,13 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Create a container for matching Windows resource files.
+        /// </summary>
+        /// <returns>The window resource container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public virtual WinResourceCollection
         CreateWinResourceContainer(
             string wildcardPath = null,
@@ -103,6 +127,11 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Specified source modules are compiled against the DependentModule type.
+        /// </summary>
+        /// <param name="affectedSources">Affected sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAgainst<DependentModule>(
             params CModule[] affectedSources) where DependentModule : HeaderLibrary, new()
@@ -124,6 +153,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Application is linked against the DependentModule type.
+        /// </summary>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         LinkAgainst<DependentModule>() where DependentModule : CModule, new()
         {
@@ -133,6 +166,11 @@ namespace C
             this.UsePublicPatches(dependent);
         }
 
+        /// <summary>
+        /// Application requires the DependentModule type to exist.
+        /// </summary>
+        /// <param name="affectedSources">Affected sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         RequiredToExist<DependentModule>(
             params CModule[] affectedSources) where DependentModule : CModule, new()
@@ -153,6 +191,11 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Specified sources and the application compiles and links against the DependentModule.
+        /// </summary>
+        /// <param name="affectedSources">Affected sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAndLinkAgainst<DependentModule>(
             params CModule[] affectedSources) where DependentModule : CModule, new()
@@ -176,6 +219,12 @@ namespace C
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
         }
 
+        /// <summary>
+        /// Specified sources and the application compiles and links against the DependentModule, and the
+        /// application uses patches from the dependent.
+        /// </summary>
+        /// <param name="affectedSources">Affected sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompilePubliclyAndLinkAgainst<DependentModule>(
             params CModule[] affectedSources) where DependentModule : CModule, new()

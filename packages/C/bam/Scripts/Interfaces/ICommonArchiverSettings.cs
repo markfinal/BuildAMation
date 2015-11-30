@@ -29,8 +29,11 @@
 #endregion // License
 namespace C
 {
-    // since some librarians require the output to be between options and the inputs, so push the conversion
-    // of this Settings interface to the end by setting the precedence really low
+    /// <summary>
+    /// Common settings for the librarian.
+    /// Since some librarians require the output to be between options and the inputs, the
+    /// precedence is set very low.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MinValue)]
     public interface ICommonArchiverSettings :

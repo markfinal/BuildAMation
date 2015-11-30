@@ -29,8 +29,14 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Define the output of the archiver
+    /// </summary>
     public enum EArchiverOutput
     {
+        /// <summary>
+        /// Generate a static library
+        /// </summary>
         StaticLibrary
     }
 }

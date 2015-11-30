@@ -138,6 +138,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Derive from this module to create an NSIS installer
+    /// </summary>
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
     public abstract class NSISInstaller :
         Bam.Core.Module
@@ -146,8 +149,12 @@ namespace Installer
         private Bam.Core.PreBuiltTool Compiler;
         private INSISPolicy Policy;
 
-        public NSISInstaller()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             this.ScriptModule = Bam.Core.Module.Create<NSISScript>();
             this.DependsOn(this.ScriptModule);
 
@@ -155,6 +162,11 @@ namespace Installer
             this.Requires(this.Compiler);
         }
 
+        /// <summary>
+        /// Include an individual file in the installer.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         Include<DependentModule>(
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
@@ -163,6 +175,11 @@ namespace Installer
             this.ScriptModule.AddFile(dependent, key);
         }
 
+        /// <summary>
+        /// Include a folder in the installer, such as the output from one of the Publisher collation steps.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()

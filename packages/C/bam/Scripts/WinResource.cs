@@ -29,6 +29,9 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Compile a Windows resource file into the compiled resource.
+    /// </summary>
     public class WinResource :
         ObjectFile
     {
@@ -41,6 +44,9 @@ namespace C
         }
     }
 
+    /// <summary>
+    /// Collection of one or more resource files.
+    /// </summary>
     public class WinResourceCollection :
         CModuleContainer<WinResource>
     {

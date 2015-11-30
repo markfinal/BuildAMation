@@ -146,6 +146,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Derive from this module to create a tarball of the specified files.
+    /// </summary>
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Linux | Bam.Core.EPlatform.OSX)]
     public abstract class TarBall :
         Bam.Core.Module
@@ -155,8 +158,12 @@ namespace Installer
         private TarInputFiles InputFiles;
         private ITarPolicy Policy;
 
-        public TarBall()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName)$(tarext)"));
 
             this.InputFiles = Bam.Core.Module.Create<TarInputFiles>();
@@ -166,6 +173,11 @@ namespace Installer
             this.Requires(this.Tool);
         }
 
+        /// <summary>
+        /// Include the specified file into the tarball.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         Include<DependentModule>(
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
@@ -174,6 +186,11 @@ namespace Installer
             this.InputFiles.AddFile(dependent, key);
         }
 
+        /// <summary>
+        /// Include the folder into the tarball, usually one of the results of Publishing collation.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()

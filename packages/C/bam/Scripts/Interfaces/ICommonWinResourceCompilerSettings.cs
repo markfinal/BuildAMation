@@ -29,10 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Common resource compiler settings.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Verbose output during resource compilation.
+        /// </summary>
+        /// <value>The verbose.</value>
         bool? Verbose
         {
             get;

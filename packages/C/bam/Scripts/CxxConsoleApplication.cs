@@ -29,6 +29,9 @@
 #endregion // License
 namespace C.Cxx
 {
+    /// <summary>
+    /// Derive from this module to create a C++ application, linking against the C++ runtime library.
+    /// </summary>
     public class ConsoleApplication :
         C.ConsoleApplication
     {
@@ -40,6 +43,13 @@ namespace C.Cxx
             this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
         }
 
+        /// <summary>
+        /// Create a container whose matching sources compile against C++.
+        /// </summary>
+        /// <returns>The cxx source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public virtual Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
@@ -51,6 +61,13 @@ namespace C.Cxx
             return source;
         }
 
+        /// <summary>
+        /// Create a container whose matching sources compile against Objective C++.
+        /// </summary>
+        /// <returns>The objective cxx source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,

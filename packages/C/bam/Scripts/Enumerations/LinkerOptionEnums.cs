@@ -29,16 +29,40 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Define the linker output.
+    /// </summary>
     public enum ELinkerOutput
     {
+        /// <summary>
+        /// Linker generates an executable program.
+        /// </summary>
         Executable,
+
+        /// <summary>
+        /// Linker generates a dynamic library.
+        /// </summary>
         DynamicLibrary
     }
 
+    /// <summary>
+    /// Which Windows subsystem to use.
+    /// </summary>
     public enum ESubsystem
     {
+        /// <summary>
+        /// Undefined, use linker default.
+        /// </summary>
         NotSet = 0,
+
+        /// <summary>
+        /// Generate a console executable, entry point of main.
+        /// </summary>
         Console = 1,
+
+        /// <summary>
+        /// Generate a windows executable, entry point of WinMain.
+        /// </summary>
         Windows = 2
     }
 }

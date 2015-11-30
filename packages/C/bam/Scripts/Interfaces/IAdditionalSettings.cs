@@ -29,11 +29,21 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Settings interface that can be used to add any additional command line options
+    /// that are not covered by existing properties in other interfaces.
+    /// Arguments have a very low precedence in order to be specified last, in order
+    /// to override any existing settings.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MinValue + 1)]
     public interface IAdditionalSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Array of extra command line settings.
+        /// </summary>
+        /// <value>The additional settings.</value>
         Bam.Core.StringArray AdditionalSettings
         {
             get;

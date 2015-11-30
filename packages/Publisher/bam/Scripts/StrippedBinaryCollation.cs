@@ -31,6 +31,16 @@ using Bam.Core;
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Derive from this module to generate a standalone directory of stripped binaries and other
+    /// collated files that mirrors a collated publishing root. This is identical to that publishing
+    /// root other than all binaries are stripped.
+    /// This mirror folder can be distributed as is to users, or further processed by Installer
+    /// modules in Bam.
+    /// On Windows VisualC, all files are simply copied, as they do not contain debug information.
+    /// On Linux, strip and objcopy is used to strip binaries, but link back to already hived off debug symbol files.
+    /// On OSX, strip is used to strip binaries.
+    /// </summary>
     public abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
@@ -200,6 +210,14 @@ namespace Publisher
             clonedSymLink.AssignLinkTarget(collatedSymlink.Macros["LinkTarget"]);
         }
 
+        /// <summary>
+        /// Create a stripped file mirror from the result of collation and debug symbol creation.
+        /// Both previous steps are required in order to fulfil being able to provide an application
+        /// release to end-users without debug information, and yet the developer is still able to
+        /// debug issues by combining debug files with the stripped binaries.
+        /// </summary>
+        /// <typeparam name="RuntimeModule">The 1st type parameter.</typeparam>
+        /// <typeparam name="DebugSymbolModule">The 2nd type parameter.</typeparam>
         public void
         StripBinariesFrom<RuntimeModule, DebugSymbolModule>()
             where RuntimeModule : Collation, new()

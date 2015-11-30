@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace C.Cxx
 {
+    /// <summary>
+    /// Derive from this module to create a C++ dynamic library, linking against the C++ runtime.
+    /// </summary>
     public class DynamicLibrary :
         ConsoleApplication,
         IDynamicLibrary
@@ -76,6 +79,13 @@ namespace C.Cxx
             });
         }
 
+        /// <summary>
+        /// Create a container whose matching source compiles against C.
+        /// </summary>
+        /// <returns>The C source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -92,6 +102,13 @@ namespace C.Cxx
             return collection;
         }
 
+        /// <summary>
+        /// Create a container whose matching source compiles against C++.
+        /// </summary>
+        /// <returns>The cxx source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
         public sealed override Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
@@ -108,6 +125,13 @@ namespace C.Cxx
             return collection;
         }
 
+        /// <summary>
+        /// Specified sources compile against DependentModule, and re-exports the public patches
+        /// from the dependent, e.g. if the headers of the dynamic library require include paths from
+        /// the dependent.
+        /// </summary>
+        /// <param name="affectedSources">Affected sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAgainstPublicly<DependentModule>(
             params CModule[] affectedSources) where DependentModule : CModule, new()
@@ -126,8 +150,8 @@ namespace C.Cxx
                     continue;
                 }
                 source.UsePublicPatches(dependent);
-                this.UsePublicPatches(dependent);
             }
+            this.UsePublicPatches(dependent);
         }
 
         protected sealed override void

@@ -29,10 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Compiler settings common to building on Windows.
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonCompilerSettingsWin :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Specify the character set to use for compilation.
+        /// </summary>
+        /// <value>The character set.</value>
         C.ECharacterSet? CharacterSet
         {
             get;

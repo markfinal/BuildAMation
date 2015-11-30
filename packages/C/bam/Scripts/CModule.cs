@@ -29,6 +29,11 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Base class for many C modules.
+    /// Defines versioning macros.
+    /// Defines the default bit-depth.
+    /// </summary>
     public abstract class CModule :
         Bam.Core.Module
     {

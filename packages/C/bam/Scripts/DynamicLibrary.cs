@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace C
 {
+    /// <summary>
+    /// Derive against this module to create a dynamic library, linking against the C runtime library.
+    /// </summary>
     public class DynamicLibrary :
         ConsoleApplication,
         IDynamicLibrary

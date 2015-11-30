@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="Clang" version="Xcode7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Clang support for Xcode7, SDK 10.11</Description>
   <Dependents>
     <Package name="ClangCommon" />
     <Package name="XcodeBuilder" />

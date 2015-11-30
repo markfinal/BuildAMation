@@ -30,6 +30,10 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Base class for all concrete settings classes. This is tuned towards compilation settings
+    /// which can be delta'd in project generation.
+    /// </summary>
     public abstract class SettingsBase :
         Bam.Core.Settings
     {

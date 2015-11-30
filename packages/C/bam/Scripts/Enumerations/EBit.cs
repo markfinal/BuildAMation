@@ -29,9 +29,19 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Binary architecture
+    /// </summary>
     public enum EBit
     {
+        /// <summary>
+        /// Compile or link for 32-bit architecture
+        /// </summary>
         ThirtyTwo = 32,
+
+        /// <summary>
+        /// Compile or link for 64-bit architecture
+        /// </summary>
         SixtyFour = 64
     }
 }
