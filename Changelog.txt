@@ -1,3 +1,5 @@
+30-Nov-2015 Fixes #58. Documented Core assembly, and some of the major packages.
+
 26-Nov-2015 Fixes #85. Added check for mismatching brackets on a TokenizedString function call (pre and post types), e.g. @dir($(0) would previously result in an infinite loop, but will now fail.
 
 26-Nov-2015 Fixes #79. Windows installers default to non-privileged locations (%APPDATA%) for their installation paths.
