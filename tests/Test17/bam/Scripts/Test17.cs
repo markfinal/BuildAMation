@@ -27,10 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Test17
 {
-    public sealed class Application :
+    public sealed class Control :
         C.ConsoleApplication
     {
         protected override void
@@ -39,15 +38,49 @@ namespace Test17
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            // NB: these are long handed code, normally hidden behind utility functions
 
-            this.CompileAndLinkAgainst<Test16.StaticLibrary2>(source);
+            var x = Bam.Core.Graph.Instance.FindReferencedModule<X>();
+            this.DependsOn(x);
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
+            var y = Bam.Core.Graph.Instance.FindReferencedModule<Y>();
+            this.DependsOn(y);
+
+            var z = Bam.Core.Graph.Instance.FindReferencedModule<Z>();
+            this.DependsOn(z);
+        }
+    }
+
+    public sealed class X :
+        C.StaticLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var y = Bam.Core.Graph.Instance.FindReferencedModule<Y>();
+            this.DependsOn(y);
+        }
+    }
+
+    public sealed class Y :
+        C.DynamicLibrary
+    {
+    }
+
+    public sealed class Z :
+        C.StaticLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var x = Bam.Core.Graph.Instance.FindReferencedModule<X>();
+            this.DependsOn(x);
         }
     }
 }

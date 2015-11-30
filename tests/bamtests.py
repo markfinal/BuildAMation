@@ -36,6 +36,9 @@ def ConfigureRepository():
     configs["Test12"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
+    configs["Test13"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
+                                  linux={"Native":[gcc64],"MakeFile":[gcc64]},
+                                  osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
     configs["Test14"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
@@ -43,9 +46,6 @@ def ConfigureRepository():
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
     configs["Test16"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
-                                  linux={"Native":[gcc64],"MakeFile":[gcc64]},
-                                  osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
-    configs["Test17"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},
                                   linux={"Native":[gcc64],"MakeFile":[gcc64]},
                                   osx={"Native":[clang64],"MakeFile":[clang64],"Xcode":[clang64]})
     configs["CodeGenTest"] = TestSetup(win={"Native":[visualc64,mingw32],"VSSolution":[visualc64],"MakeFile":[visualc64,mingw32]},

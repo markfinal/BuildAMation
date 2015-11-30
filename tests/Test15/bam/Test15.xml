@@ -9,9 +9,8 @@
     <Package name="Gcc" version="4.8" />
     <Package name="MakeFileBuilder" />
     <Package name="Mingw" version="4.8.1" />
-    <Package name="NativeBuilder" />
+    <Package name="Test14" />
     <Package name="VisualC" version="12.0" />
-    <Package name="VSSolutionBuilder" />
     <Package name="WindowsSDK" version="8.1" />
     <Package name="XcodeBuilder" />
   </Dependents>

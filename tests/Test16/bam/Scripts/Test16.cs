@@ -27,10 +27,11 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Test16
 {
-    public sealed class StaticLibrary2 :
-        C.StaticLibrary
+    public sealed class Application :
+        C.ConsoleApplication
     {
         protected override void
         Init(
@@ -38,18 +39,15 @@ namespace Test16
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary2.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary2.c");
-            this.PublicPatch((settings, appliedTo) =>
-                {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
-                    {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
-                    }
-                });
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
-            this.CompileAgainstPublicly<Test15.StaticLibrary1>(source);
+            this.CompileAndLinkAgainst<Test15.StaticLibrary2>(source);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
         }
     }
 }
