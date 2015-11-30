@@ -31,6 +31,15 @@ using Bam.Core;
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Derive from this module to generate a standalone directory of extracted debug symbol files
+    /// that mirrors a collated publishing root. This mirror folder can be hived off and stored by
+    /// developers. It can be dropped on top of stripped binaries in order to produce a fully
+    /// debuggable solution, debug symbols beside executables.
+    /// On Windows VisualC, this copies the PDB files.
+    /// On Linux, this uses objcopy to extract the symbol data.
+    /// On OSX, this uses dsymutil to extract symbol bundles.
+    /// </summary>
     public abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
@@ -172,6 +181,10 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Create a symbol data mirror from the result of collation.
+        /// </summary>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CreateSymbolsFrom<DependentModule>() where DependentModule : Collation, new()
         {
