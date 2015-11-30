@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="VisualStudioProcessor" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Utilities for generating and serializing VisualStudio project and solution files</Description>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="0" />
   </BamAssemblies>

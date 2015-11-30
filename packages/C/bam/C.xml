@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="C" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Compilers, linkers, archivers, applications, dynamic and static libraries - all for C, C++, ObjectiveC and ObjectiveC++.</Description>
   <Dependents>
     <Package name="CommandLineProcessor" />
   </Dependents>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="Installer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
-  <Description>A new package called Installer</Description>
+  <Description>Support for generating installers, from InnoSetup, NSIS, OSX disk images, and tar balls</Description>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="0" />
   </BamAssemblies>
