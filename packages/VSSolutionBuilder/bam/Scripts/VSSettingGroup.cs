@@ -156,12 +156,21 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
+                var linearized = value.ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
-                    throw new Bam.Core.Exception("Cannot append to the option {0}", name);
+                    var settingOption = this.Settings.Where(item => item.Name == name && item.Condition == condition).First();
+                    if (settingOption.Value.Contains(linearized))
+                    {
+                        return;
+                    }
+                    throw new Bam.Core.Exception("Cannot append {3}, to the option {0} as it already exists for condition {1}: {2}",
+                        name,
+                        condition,
+                        settingOption.Value.ToString(),
+                        linearized);
                 }
 
-                var linearized = value.ToString(';');
                 this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
             }
         }
@@ -179,12 +188,21 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
+                var linearized = value.ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
-                    throw new Bam.Core.Exception("Cannot append to the option {0}", name);
+                    var settingOption = this.Settings.Where(item => item.Name == name && item.Condition == condition).First();
+                    if (settingOption.Value.Contains(linearized))
+                    {
+                        return;
+                    }
+                    throw new Bam.Core.Exception("Cannot append {3}, to the option {0} as it already exists for condition {1}: {2}",
+                        name,
+                        condition,
+                        this.Settings.Where(item => item.Name == name && item.Condition == condition).First().Value.ToString(),
+                        linearized);
                 }
 
-                var linearized = value.ToString(';');
                 this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
             }
         }
