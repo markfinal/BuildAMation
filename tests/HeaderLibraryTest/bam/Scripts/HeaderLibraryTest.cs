@@ -72,4 +72,67 @@ namespace HeaderLibraryTest
             }
         }
     }
+
+    // not sealed, to avoid being considered as a top-level module
+    class StringifyMacro :
+        C.HeaderLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/include/lib1/stringifymacro.h");
+
+            this.PublicPatch((settings, appliedTo) =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib1"));
+                }
+            });
+        }
+    }
+
+    // not sealed, to avoid being considered as a top-level module
+    class StringifyMacroValue :
+        C.HeaderLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/include/lib2/stringifymacrovalue.h");
+
+            this.CompileAgainst<StringifyMacro>();
+
+            this.PublicPatch((settings, appliedTo) =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib2"));
+                }
+            });
+        }
+    }
+
+    sealed class LibUsingStringifyMacros :
+        C.StaticLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer("$(packagedir)/source/lib.c");
+
+            this.CompileAgainst<StringifyMacroValue>(source);
+        }
+    }
 }
