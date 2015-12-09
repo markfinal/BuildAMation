@@ -85,12 +85,15 @@ namespace C
         public void
         CompileAgainst<DependentModule>() where DependentModule : CModule, new()
         {
-            // no graph dependency, as it's just using patches
-            // note that this won't add the module into the graph, unless a link dependency is made
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.UsePublicPatches(dependent);
-            if (!(dependent is HeaderLibrary))
+            if (dependent is HeaderLibrary)
             {
+                this.Requires(dependent);
+            }
+            else
+            {
+                // this delays the dependency until a link
                 this.forwardedDeps.AddUnique(dependent);
             }
         }

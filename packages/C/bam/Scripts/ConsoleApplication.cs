@@ -142,7 +142,7 @@ namespace C
             }
 
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            this.DependsOn(dependent);
+            this.Requires(dependent);
             foreach (var source in affectedSources)
             {
                 if (null == source)
