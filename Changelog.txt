@@ -1,3 +1,5 @@
+09-Dec-2015 Fixes #89. Static libraries or header libraries that compile against header libraries now set up module requirements in the graph, so projects actually display those headers. This does not affect the build, as the patches were working previously.
+
 01-Dec-2015 Check first whether a VSProject option already contains a value, before raising an exception if it isn't possible to append.
 
 30-Nov-2015 ======== Version 1.0.0b4 Release ========
