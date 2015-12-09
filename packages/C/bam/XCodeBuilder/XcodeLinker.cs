@@ -200,6 +200,11 @@ namespace C
                 {
                     continue;
                 }
+                if (required is HeaderLibrary)
+                {
+                    // the target for a HeaderLibrary has no FileReference output, and thus cannot be an order only dependency
+                    continue;
+                }
 
                 var requiredTarget = required.MetaData as XcodeBuilder.Target;
                 if (null != requiredTarget)

@@ -403,10 +403,12 @@ namespace Bam.Core
         /// Compile the package assembly, using all the source files from the dependent packages.
         /// </summary>
         /// <returns><c>true</c>, if package assembly was compiled, <c>false</c> otherwise.</returns>
-        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions. Default is true.</param>
+        /// <param name="enableClean">If set to <c>true</c> cleaning the build root is allowed. Default is true.</param>
         public static bool
         CompilePackageAssembly(
-            bool enforceBamAssemblyVersions = true)
+            bool enforceBamAssemblyVersions = true,
+            bool enableClean = true)
         {
             // validate build root
             if (null == Graph.Instance.BuildRoot)
@@ -420,7 +422,7 @@ namespace Bam.Core
             IdentifyAllPackages(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
 
             var cleanFirst = CommandLineProcessor.Evaluate(new Options.CleanFirst());
-            if (cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
+            if (enableClean && cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
             {
                 Log.Info("Deleting build root '{0}'", Graph.Instance.BuildRoot);
                 try

@@ -121,8 +121,6 @@ namespace C
                 throw new Bam.Core.Exception("At least one source module argument must be passed to {0} in {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, this.ToString());
             }
 
-            // no graph dependency, as it's just using patches
-            // note that this won't add the module into the graph, unless a link dependency is made
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             foreach (var source in affectedSources)
             {
@@ -132,8 +130,13 @@ namespace C
                 }
                 source.UsePublicPatches(dependent);
             }
-            if (!(dependent is HeaderLibrary))
+            if (dependent is HeaderLibrary)
             {
+                this.Requires(dependent);
+            }
+            else
+            {
+                // this delays the dependency until a link
                 this.forwardedDeps.AddUnique(dependent);
             }
         }
