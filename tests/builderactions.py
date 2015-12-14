@@ -48,14 +48,13 @@ def vssolution_post(package, options, flavour, output_messages, error_messages):
                 if f.startswith("--VisualC.version"):
                     visualc_version = f.split("=")[1]
                     break
-        except:
+        except TypeError:  # Flavours can be None
             pass
-        finally:
-            try:
-                visualc_version
-            except:
-                visualc_version = defaultVCVersion
-        visualc_version_split = visualc_version.split('.')
+        try:
+            visualc_version_split = visualc_version.split('.')
+        except UnboundLocalError:
+            visualc_version = defaultVCVersion
+            visualc_version_split = visualc_version.split('.')
         visualc_major_version = int(visualc_version_split[0])
         # location of MSBuild changed in VS2013
         if visualc_major_version >= 12:
