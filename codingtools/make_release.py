@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import fileinput
-import fnmatch
 from optparse import OptionParser
 import os
 import platform
@@ -178,18 +177,6 @@ def make_tar_docs_distribution(options):
         print >>sys.stdout, "Writing tar file_path %s" % tar_path
         sys.stdout.flush()
         os.chdir(checkout_dir)
-
-        def windows_executable_filter(tarinfo):
-            if platform.system() != "Windows":
-                return tarinfo
-            # attempt to fix up the permissions that are lost during tarring on Windows
-            if tarinfo.name.endswith(".exe") or\
-               tarinfo.name.endswith(".dll") or\
-               tarinfo.name.endswith(".py") or\
-               tarinfo.name.endswith(".sh") or\
-               tarinfo.name.endswith("bam"):
-                tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
-            return tarinfo
         with tarfile.open(tar_path, "w:gz") as tar:
             tar.add(os.path.join(bam_dir, "docs"))
         print >>sys.stdout, "Finished writing tar file_path %s" % tar_path
