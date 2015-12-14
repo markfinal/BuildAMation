@@ -23,14 +23,17 @@ class Package:
         self.root = root
         self.name = name
         self.version = version
+        self.repo = None
+        self.packageDir = None
 
-    def __init__(self, xmlFilename):
-        document = ET.parse(xmlFilename)
+    @classmethod
+    def from_xml(cls, xml_filename):
+        document = ET.parse(xml_filename)
         root = document.getroot()
-        self.name = root.attrib["name"]
-        self.version = root.attrib.get("version", None)
-        self.packageDir = os.path.normpath(os.path.join(xmlFilename, os.pardir, os.pardir))
-        self.repo = os.path.normpath(os.path.join(self.packageDir, os.pardir))
+        instance = cls(None, root.attrib["name"], root.attrib.get("version", None))
+        instance.packageDir = os.path.normpath(os.path.join(xml_filename, os.pardir, os.pardir))
+        instance.repo = os.path.normpath(os.path.join(instance.packageDir, os.pardir))
+        return instance
 
     def GetDescription(self):
         if self.version:
@@ -53,7 +56,11 @@ class Package:
 # ----------
 
 def FindAllPackagesToTest(root, options):
-    """Locate packages that can be tested"""
+    """Locate packages that can be tested
+    Args:
+        root:
+        options:
+    """
     if options.verbose:
         PrintMessage("Locating packages under '%s'" % root)
     tests = []
@@ -73,7 +80,7 @@ def FindAllPackagesToTest(root, options):
           continue
         if len(xmlFiles) > 1:
           raise RuntimeError("Too many XML files found in %s to identify a package definition file" % bamDir)
-        package = Package(xmlFiles[0])
+        package = Package.from_xml(xmlFiles[0])
         if options.verbose:
             PrintMessage("\t%s" % package.GetId())
         tests.append(package)
@@ -84,12 +91,13 @@ def _preExecute(builder, options, flavour):
         builder.preAction()
 
 def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages):
-    argList = []
-    argList.append("bam")
-    argList.append("-o=%s" % options.buildRoot)
-    argList.append("-b=%s" % options.buildmode)
+    argList = [
+        "bam",
+        "-o=%s" % options.buildRoot,
+        "-b=%s" % options.buildmode
+    ]
     for config in options.configurations:
-        argList.append("--config=%s" % config);
+        argList.append("--config=%s" % config)
     argList.append("-j=" + str(options.numJobs))
     if options.debugSymbols:
         argList.append("-d")
@@ -110,7 +118,7 @@ def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
         outputMessages.write(outputStream)
     if errorStream:
         errorMessages.write(errorStream)
-    return (p.returncode, argList)
+    return p.returncode, argList
 
 def _postExecute(builder, options, flavour, package, outputMessages, errorMessages):
     if builder.postAction:
@@ -183,7 +191,7 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
                         outputBuffer.write("Errors:\n")
                         outputBuffer.write(errorMessages.getvalue())
                     outputBuffer.write("\n")
-                    exitCode = exitCode - 1
+                    exitCode -= 1
     return exitCode
 
 def CleanUp(options):

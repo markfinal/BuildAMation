@@ -15,7 +15,7 @@ class Builder(object):
 # the version of MSBuild.exe to use, depends on which version of VisualStudio was used to build the solution and projects
 # by default, VS2013 is assumed
 defaultVCVersion = "12.0"
-msBuildVersionToNetMapping = {\
+msBuildVersionToNetMapping = {
     "9.0":"v3.5",
     "10.0":"v4.0.30319",
     "11.0":"v4.0.30319",
@@ -24,7 +24,14 @@ msBuildVersionToNetMapping = {\
 }
 
 def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
-    """Post action for testing the VSSolution builder"""
+    """Post action for testing the VSSolution builder
+    Args:
+        package:
+        options:
+        flavour:
+        outputMessages:
+        errorMessages:
+    """
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
     slnPath = os.path.join(buildRoot, package.GetId() + ".sln")
@@ -54,14 +61,15 @@ def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
         else:
             msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersionToNetMapping[vcVersion]
         for config in options.configurations:
-            argList = []
-            argList.append(msBuildPath)
-            argList.append("/verbosity:normal");
-            argList.append(slnPath)
+            argList = [
+                msBuildPath,
+                "/verbosity:normal",
+                slnPath
+            ]
             # capitalize the first letter of the configuration
             config = config[0].upper() + config[1:]
             argList.append("/p:Configuration=%s" % config)
-            for platform in flavour._platforms:
+            for platform in flavour.platforms():
                 thisArgList = copy.deepcopy(argList)
                 thisArgList.append("/p:Platform=%s" % platform)
                 print "Running '%s'\n" % ' '.join(thisArgList)
@@ -79,7 +87,14 @@ def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
     return exitCode
 
 def MakeFilePost(package, options, flavour, outputMessages, errorMessages):
-    """Post action for testing the MakeFile builder"""
+    """Post action for testing the MakeFile builder
+    Args:
+        package:
+        options:
+        flavour:
+        outputMessages:
+        errorMessages:
+    """
     if sys.platform.startswith("win"):
         # TODO: allow configuring where make is
         return 0
@@ -91,8 +106,9 @@ def MakeFilePost(package, options, flavour, outputMessages, errorMessages):
         return 0
     try:
         # currently do not support building configurations separately
-        argList = []
-        argList.append("make")
+        argList = [
+            "make"
+        ]
         print "Running '%s' in %s\n" % (' '.join(argList), makeFileDir)
         p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makeFileDir)
         (outputStream, errorStream) = p.communicate() # this should WAIT
@@ -107,7 +123,14 @@ def MakeFilePost(package, options, flavour, outputMessages, errorMessages):
     return exitCode
 
 def XcodePost(package, options, flavour, outputMessages, errorMessages):
-    """Post action for testing the Xcode builder"""
+    """Post action for testing the Xcode builder
+    Args:
+        package:
+        options:
+        flavour:
+        outputMessages:
+        errorMessages:
+    """
     exitCode = 0
     buildRoot = os.path.join(package.GetPath(), options.buildRoot)
     xcodeWorkspacePath = os.path.join(buildRoot, "*.xcworkspace")
@@ -122,11 +145,12 @@ def XcodePost(package, options, flavour, outputMessages, errorMessages):
         return -1
     try:
         # first, list all the schemes available
-        argList = []
-        argList.append("xcodebuild")
-        argList.append("-workspace")
-        argList.append(workspaces[0])
-        argList.append("-list")
+        argList = [
+            "xcodebuild",
+            "-workspace",
+            workspaces[0],
+            "-list"
+        ]
         print "Running '%s'\n" % ' '.join(argList)
         p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (outputStream, errorStream) = p.communicate() # this should WAIT
@@ -150,13 +174,14 @@ def XcodePost(package, options, flavour, outputMessages, errorMessages):
         # iterate over all the schemes and configurations
         for scheme in schemes:
             for config in options.configurations:
-                argList = []
-                argList.append("xcodebuild")
-                argList.append("-workspace")
-                argList.append(workspaces[0])
-                argList.append("-scheme")
-                argList.append(scheme)
-                argList.append("-configuration")
+                argList = [
+                    "xcodebuild",
+                    "-workspace",
+                    workspaces[0],
+                    "-scheme",
+                    scheme,
+                    "-configuration"
+                ]
                 # capitalize the first letter of the configuration
                 config = config[0].upper() + config[1:]
                 argList.append(config)
@@ -174,13 +199,17 @@ def XcodePost(package, options, flavour, outputMessages, errorMessages):
         return -1
     return exitCode
 
-builder = {}
-builder["Native"] = Builder("Native", None, None)
-builder["VSSolution"] = Builder("VSSolution", None, VSSolutionPost)
-builder["MakeFile"] = Builder("MakeFile", None, MakeFilePost)
-builder["QMake"] = Builder("QMake", None, None)
-builder["Xcode"] = Builder("Xcode", None, XcodePost)
+builder = {
+    "Native" : Builder("Native", None, None),
+    "VSSolution" : Builder("VSSolution", None, VSSolutionPost),
+    "MakeFile" : Builder("MakeFile", None, MakeFilePost),
+    "QMake" : Builder("QMake", None, None),
+    "Xcode" : Builder("Xcode", None, XcodePost)
+}
 
 def GetBuilderDetails(builderName):
-    """Return the Builder associated with the name passed in"""
+    """Return the Builder associated with the name passed in
+    Args:
+        builderName:
+    """
     return builder[builderName]

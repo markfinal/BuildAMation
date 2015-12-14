@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import os
 import platform
 import sys
 
@@ -8,10 +7,10 @@ class TestSetup:
     _linux = {}
     _osx = {}
 
-    def __init__(self, win={}, linux={}, osx={}):
-        self._win = win
-        self._linux = linux
-        self._osx = osx
+    def __init__(self, win=None, linux=None, osx=None):
+        self._win = {} if win is None else win
+        self._linux = {} if linux is None else linux
+        self._osx = {} if osx is None else osx
 
     def GetBuildModes(self):
         platform = sys.platform
@@ -59,19 +58,19 @@ class TestSetup:
                 for i in self._win[builder]:
                     responseNames.append(i)
             else:
-                responseNames.append(None);
+                responseNames.append(None)
         elif platform.startswith("linux"):
             if self._linux[builder]:
                 for i in self._linux[builder]:
                     responseNames.append(i)
             else:
-                responseNames.append(None);
+                responseNames.append(None)
         elif platform.startswith("darwin"):
             if self._osx[builder]:
                 for i in self._osx[builder]:
                     responseNames.append(i)
             else:
-                responseNames.append(None);
+                responseNames.append(None)
         else:
             raise RuntimeError("Unknown platform " + platform)
         return responseNames
@@ -94,19 +93,23 @@ def TestOptionSetup(optParser):
         if not parser.values.Flavours:
             parser.values.Flavours = []
         parser.values.Flavours.append("%s=%s" % (opt_str, value))
-    for opt, help in ConfigOptions.GetOptions():
+    for opt, help_text in ConfigOptions.GetOptions():
         optName = "--%s" % opt
-        optParser.add_option(optName, dest="Flavours", type="string", action="callback", callback=store_option, default=None, help=help)
+        optParser.add_option(optName, dest="Flavours", type="string", action="callback", callback=store_option, default=None, help=help_text)
 
 
 class ConfigOptions(object):
     _allOptions = {}
 
     def __init__(self):
+        self._platforms = []
         self._argList = []
 
     def GetArguments(self):
         return self._argList
+
+    def platforms(self):
+        return self._platforms
 
     @staticmethod
     def RegisterOption(platform, optionTuple):
@@ -171,7 +174,7 @@ class Gcc32(GccCommon):
 class ClangCommon(ConfigOptions):
     def __init__(self):
         super(ClangCommon, self).__init__()
-        self._argList.append("--Xcode.generateSchemes"); # TODO: this is only for the Xcode build mode
+        self._argList.append("--Xcode.generateSchemes") # TODO: this is only for the Xcode build mode
         ConfigOptions.RegisterOption("Darwin", ("Clang.version", "Set the Clang version"))
 
 
