@@ -90,7 +90,7 @@ def find_all_packages_to_test(root, options):
     return tests
 
 
-def _pre_execute(builder, options, flavour):
+def _pre_execute(builder):
     if builder.pre_action:
         builder.pre_action()
 
@@ -133,7 +133,7 @@ def _post_execute(builder, options, flavour, package, output_messages, error_mes
     return 0
 
 
-def execute_tests(package, configuration, options, args, output_buffer):
+def execute_tests(package, configuration, options, output_buffer):
     print_message("Package           : %s" % package.get_id())
     if options.verbose:
         print_message("Description          : %s" % package.get_description())
@@ -158,7 +158,6 @@ def execute_tests(package, configuration, options, args, output_buffer):
     exit_code = 0
     for variation in variation_args:
         iterations = 1
-        version_args = None
 
         for it in range(0, iterations):
             extra_args = non_kwargs[:]
@@ -169,7 +168,7 @@ def execute_tests(package, configuration, options, args, output_buffer):
             try:
                 output_messages = StringIO.StringIO()
                 error_messages = StringIO.StringIO()
-                _pre_execute(the_builder, options, variation)
+                _pre_execute(the_builder)
                 returncode, arg_list = _run_buildamation(options, package, extra_args, output_messages, error_messages)
                 if returncode == 0:
                     returncode = _post_execute(the_builder, options, variation, package, output_messages, error_messages)
@@ -304,7 +303,7 @@ if __name__ == "__main__":
                 if options.verbose:
                     print_message("No configuration for package: '%s'" % str(e))
                 continue
-            exit_code += execute_tests(package, config, options, args, output_buffer)
+            exit_code += execute_tests(package, config, options, output_buffer)
 
         if not options.keepFiles:
             # TODO: consider keeping track of all directories created instead
