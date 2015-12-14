@@ -5,6 +5,7 @@ import os
 import re
 import sys
 
+
 def convertTabsToSpaces(file):
     with open(file, mode='rt') as infile:
         lines = infile.readlines()
@@ -15,16 +16,17 @@ def convertTabsToSpaces(file):
     if sys.platform.startswith("win"):
         convert_line_endings(file)
 
+
 def processPath(path, extensionList):
     if os.path.isfile(path):
         convertTabsToSpaces(path)
     else:
-      for root, dirs, files in os.walk(path):
-          for file in files:
-              fileExt = os.path.splitext(file)[1]
-              if fileExt in extensionList:
-                  fullPath = os.path.join(root, file)
-                  convertTabsToSpaces(fullPath)
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                fileExt = os.path.splitext(file)[1]
+                if fileExt in extensionList:
+                    fullPath = os.path.join(root, file)
+                    convertTabsToSpaces(fullPath)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

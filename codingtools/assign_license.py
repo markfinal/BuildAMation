@@ -7,17 +7,19 @@ import sys
 
 licenseText = []
 
+
 def readLicenseText():
-  bam_path = find_executable('bam')
-  if not bam_path:
-      raise RuntimeError('Unable to locate bam')
-  bam_dir = os.path.dirname(bam_path)
-  licenseHeaderFile = os.path.join(bam_dir, 'licenseheader.txt')
-  with open(licenseHeaderFile, 'rt') as licenseFile:
-      original_license_text = licenseFile.readlines()
-  global licenseText
-  for line in original_license_text:
-    licenseText.append(line.replace('\n', ''))
+    bam_path = find_executable('bam')
+    if not bam_path:
+        raise RuntimeError('Unable to locate bam')
+    bam_dir = os.path.dirname(bam_path)
+    licenseHeaderFile = os.path.join(bam_dir, 'licenseheader.txt')
+    with open(licenseHeaderFile, 'rt') as licenseFile:
+        original_license_text = licenseFile.readlines()
+    global licenseText
+    for line in original_license_text:
+        licenseText.append(line.replace('\n', ''))
+
 
 def write_license_text(outfile, file):
     ext = os.path.splitext(file)[1]
@@ -43,6 +45,7 @@ def write_license_text(outfile, file):
     else:
         raise RuntimeError('Unsupported file extension for appending license, %s' % file)
 
+
 def assign_license(file):
     with open(file, mode='rt') as infile:
         lines = infile.readlines()
@@ -51,7 +54,7 @@ def assign_license(file):
     has_c_style_comment = False
     is_python = os.path.splitext(file)[1] == '*.py'
     shebang = ''
-    for index,line in enumerate(lines):
+    for index, line in enumerate(lines):
         if not line:
             continue
         if is_python and line.startswith('#!'):
@@ -83,16 +86,17 @@ def assign_license(file):
     if sys.platform.startswith("win"):
         convert_line_endings(file)
 
+
 def processPath(path, extensionList):
     if os.path.isfile(path):
         assign_license(path)
     else:
-      for root, dirs, files in os.walk(path):
-          for file in files:
-              fileExt = os.path.splitext(file)[1]
-              if fileExt in extensionList:
-                  fullPath = os.path.join(root, file)
-                  assign_license(fullPath)
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                fileExt = os.path.splitext(file)[1]
+                if fileExt in extensionList:
+                    fullPath = os.path.join(root, file)
+                    assign_license(fullPath)
 
 if __name__ == "__main__":
     readLicenseText()

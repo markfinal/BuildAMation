@@ -5,9 +5,10 @@ import codecs
 import os
 import sys
 
-boms = [ (codecs.BOM_UTF32, 4),\
-         (codecs.BOM_UTF16, 2),\
-         (codecs.BOM_UTF8, 3) ]
+boms = [(codecs.BOM_UTF32, 4),
+        (codecs.BOM_UTF16, 2),
+        (codecs.BOM_UTF8, 3)]
+
 
 def remove_bom(file):
     with open(file, mode='rt') as infile:
@@ -18,7 +19,7 @@ def remove_bom(file):
         first_line = lines[0]
         remaining_lines = lines[1:]
         first_line_offset = 0
-        for bom,length in boms:
+        for bom, length in boms:
             if first_line.startswith(bom):
                 first_line_offset = length
                 print "%s has BOM" % file
@@ -29,16 +30,17 @@ def remove_bom(file):
     if sys.platform.startswith("win"):
         convert_line_endings(file)
 
+
 def processPath(path, extensionList):
     if os.path.isfile(path):
         remove_bom(path)
     else:
-      for root, dirs, files in os.walk(path):
-          for file in files:
-              fileExt = os.path.splitext(file)[1]
-              if fileExt in extensionList:
-                  fullPath = os.path.join(root, file)
-                  remove_bom(fullPath)
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                fileExt = os.path.splitext(file)[1]
+                if fileExt in extensionList:
+                    fullPath = os.path.join(root, file)
+                    remove_bom(fullPath)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

@@ -5,13 +5,14 @@ import os
 import subprocess
 import sys
 
+
 def upgradeSchema(packageDir, failed_packages):
     current_dir = os.getcwd()
     try:
         print >>sys.stdout, "Updating '%s'" % packageDir
         sys.stdout.flush()
         os.chdir(packageDir)
-        args = [ 'bam', '--showdefinition', '--forceupdates' ]
+        args = ['bam', '--showdefinition', '--forceupdates']
         process = subprocess.Popen(args)
         process.wait()
         if process.returncode:
@@ -19,10 +20,12 @@ def upgradeSchema(packageDir, failed_packages):
     finally:
         os.chdir(current_dir)
 
+
 def getPackagePathsFromRoot(packageRoot):
     files = glob.glob('%s/*/*/bam' % packageRoot)
     dirs = [os.path.split(f)[0] for f in files if os.path.isdir(f)]
     return dirs
+
 
 def processPath(packageRootList):
     failed_packages = []
@@ -33,7 +36,7 @@ def processPath(packageRootList):
     if failed_packages:
         print >>sys.stdout, "Failed to upgrade some packages:"
         sys.stdout.flush()
-        for packageDir,exitCode in failed_packages:
+        for packageDir, exitCode in failed_packages:
             print >>sys.stdout, packageDir
             sys.stdout.flush()
 

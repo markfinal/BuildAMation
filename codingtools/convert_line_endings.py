@@ -3,6 +3,7 @@
 import os
 import sys
 
+
 def convert_line_endings(file):
     if '\r\n' in open(file, 'rb').read():
         print '%s contains DOS line endings. Converting' % file
@@ -12,16 +13,17 @@ def convert_line_endings(file):
         with open(file, 'wb') as outfile:
             outfile.write(text)
 
+
 def processPath(path, extensionList):
     if os.path.isfile(path):
         convert_line_endings(path)
     else:
-      for root, dirs, files in os.walk(path):
-          for file in files:
-              fileExt = os.path.splitext(file)[1]
-              if fileExt in extensionList:
-                  fullPath = os.path.join(root, file)
-                  convert_line_endings(fullPath)
+        for root, dirs, files in os.walk(path):
+            for file in files:
+                fileExt = os.path.splitext(file)[1]
+                if fileExt in extensionList:
+                    fullPath = os.path.join(root, file)
+                    convert_line_endings(fullPath)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

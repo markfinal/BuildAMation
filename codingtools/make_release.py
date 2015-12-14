@@ -14,31 +14,31 @@ import tarfile
 import tempfile
 import zipfile
 
-filesToDelete=[\
-".gitignore"
+filesToDelete = [
+    ".gitignore"
 ]
 
-dirsToDelete=[\
-"codingtools",
-"packages/Clang-3.1",
-"packages/Clang-3.3",
-"packages/ComposerXE-12",
-"packages/ComposerXECommon",
-"packages/Gcc-4.0",
-"packages/Gcc-4.1",
-"packages/Gcc-4.4",
-"packages/Gcc-4.5",
-"packages/Gcc-4.6",
-"packages/Mingw-3.4.5",
-"packages/Mingw-4.5.0",
-"packages/QMakeBuilder",
-"packages/VisualC-8.0",
-"packages/VisualC-9.0",
-"packages/VisualC-10.0",
-"packages/VisualC-11.0",
-"packages/WindowsSDK-6.0A",
-"packages/WindowsSDK-7.1",
-"packages/XmlUtilities"
+dirsToDelete = [
+    "codingtools",
+    "packages/Clang-3.1",
+    "packages/Clang-3.3",
+    "packages/ComposerXE-12",
+    "packages/ComposerXECommon",
+    "packages/Gcc-4.0",
+    "packages/Gcc-4.1",
+    "packages/Gcc-4.4",
+    "packages/Gcc-4.5",
+    "packages/Gcc-4.6",
+    "packages/Mingw-3.4.5",
+    "packages/Mingw-4.5.0",
+    "packages/QMakeBuilder",
+    "packages/VisualC-8.0",
+    "packages/VisualC-9.0",
+    "packages/VisualC-10.0",
+    "packages/VisualC-11.0",
+    "packages/WindowsSDK-6.0A",
+    "packages/WindowsSDK-7.1",
+    "packages/XmlUtilities"
 ]
 # TODO remove .git
 
@@ -68,8 +68,10 @@ def CleanClone():
 
 def UpdateVersionNumbers(options):
     commonAssemblyInfoPath = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
-    for line in fileinput.input(commonAssemblyInfoPath, inplace=1):#, backup='.bk'):
-        line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)', 'AssemblyInformationalVersion("%s")'%options.version, line.rstrip())
+    for line in fileinput.input(commonAssemblyInfoPath, inplace=1):  # , backup='.bk'):
+        line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)',
+                      'AssemblyInformationalVersion("%s")' % options.version,
+                      line.rstrip())
         print line
 
 
@@ -80,7 +82,7 @@ def Build():
         # assume Visual Studio 2013
         buildtool = r"C:\Program Files (x86)\MSBuild\12.0\bin\MSBuild.exe"
         if not os.path.isfile(buildtool):
-           raise RuntimeError("Unable to locate msbuild at '%s'" % buildtool)
+            raise RuntimeError("Unable to locate msbuild at '%s'" % buildtool)
     elif platform.system() == "Darwin" or platform.system() == "Linux":
         buildtool = "xbuild"
     else:
@@ -100,15 +102,20 @@ def MakeTarDistribution(options):
     cwd = os.getcwd()
     try:
         coDir, bamDir = os.path.split(cwd)
-        tarPath = os.path.join(coDir, "BuildAMation-%s.tgz"%options.version)
+        tarPath = os.path.join(coDir, "BuildAMation-%s.tgz" % options.version)
         print >>sys.stdout, "Writing tar file %s" % tarPath
         sys.stdout.flush()
         os.chdir(coDir)
+
         def filter(tarinfo):
             if platform.system() != "Windows":
                 return tarinfo
             # attempt to fix up the permissions that are lost during tarring on Windows
-            if tarinfo.name.endswith(".exe") or tarinfo.name.endswith(".dll") or tarinfo.name.endswith(".py") or tarinfo.name.endswith(".sh") or tarinfo.name.endswith("bam"):
+            if tarinfo.name.endswith(".exe") or\
+               tarinfo.name.endswith(".dll") or\
+               tarinfo.name.endswith(".py") or\
+               tarinfo.name.endswith(".sh") or\
+               tarinfo.name.endswith("bam"):
                 tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
             return tarinfo
         with tarfile.open(tarPath, "w:gz") as tar:
@@ -130,17 +137,18 @@ def MakeZipDistribution(options):
     cwd = os.getcwd()
     try:
         coDir, bamDir = os.path.split(cwd)
-        zipPath = os.path.join(coDir, "BuildAMation-%s.zip"%options.version)
+        zipPath = os.path.join(coDir, "BuildAMation-%s.zip" % options.version)
         print >>sys.stdout, "Writing zip file %s" % zipPath
         sys.stdout.flush()
         os.chdir(coDir)
+
         def RecursiveWrite(zip, dirToAdd):
             for root, dirs, files in os.walk(dirToAdd):
                 for file in files:
                     zip.write(os.path.join(root, file))
         with zipfile.ZipFile(zipPath, "w", zipfile.ZIP_DEFLATED) as zip:
             if os.path.isdir(os.path.join(bamDir, "bin")):
-              RecursiveWrite(zip, os.path.join(bamDir, "bin"))
+                RecursiveWrite(zip, os.path.join(bamDir, "bin"))
             zip.write(os.path.join(bamDir, "Changelog.txt"))
             zip.write(os.path.join(bamDir, "env.bat"))
             zip.write(os.path.join(bamDir, "env.sh"))
@@ -157,15 +165,20 @@ def MakeTarDocsDistribution(options):
     cwd = os.getcwd()
     try:
         coDir, bamDir = os.path.split(cwd)
-        tarPath = os.path.join(coDir, "BuildAMation-%s-docs.tgz"%options.version)
+        tarPath = os.path.join(coDir, "BuildAMation-%s-docs.tgz" % options.version)
         print >>sys.stdout, "Writing tar file %s" % tarPath
         sys.stdout.flush()
         os.chdir(coDir)
+
         def filter(tarinfo):
             if platform.system() != "Windows":
                 return tarinfo
             # attempt to fix up the permissions that are lost during tarring on Windows
-            if tarinfo.name.endswith(".exe") or tarinfo.name.endswith(".dll") or tarinfo.name.endswith(".py") or tarinfo.name.endswith(".sh") or tarinfo.name.endswith("bam"):
+            if tarinfo.name.endswith(".exe") or\
+               tarinfo.name.endswith(".dll") or\
+               tarinfo.name.endswith(".py") or\
+               tarinfo.name.endswith(".sh") or\
+               tarinfo.name.endswith("bam"):
                 tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
             return tarinfo
         with tarfile.open(tarPath, "w:gz") as tar:
@@ -180,10 +193,11 @@ def MakeZipDocsDistribution(options):
     cwd = os.getcwd()
     try:
         coDir, bamDir = os.path.split(cwd)
-        zipPath = os.path.join(coDir, "BuildAMation-%s-docs.zip"%options.version)
+        zipPath = os.path.join(coDir, "BuildAMation-%s-docs.zip" % options.version)
         print >>sys.stdout, "Writing zip file %s" % zipPath
         sys.stdout.flush()
         os.chdir(coDir)
+
         def RecursiveWrite(zip, dirToAdd):
             for root, dirs, files in os.walk(dirToAdd):
                 for file in files:
@@ -229,7 +243,7 @@ if __name__ == "__main__":
     tempDir = tempfile.mkdtemp()
     cloningDir = os.path.join(tempDir, "BuildAMation-%s" % options.version)
     os.makedirs(cloningDir)
-    #cloningDir = r"c:\users\mark\appdata\local\temp\tmpg4tul0"
+    # cloningDir = r"c:\users\mark\appdata\local\temp\tmpg4tul0"
     try:
         Main(cloningDir, options)
     except Exception, e:
@@ -238,6 +252,6 @@ if __name__ == "__main__":
     finally:
         print >>sys.stdout, "Deleting clone"
         sys.stdout.flush()
-        #shutil.rmtree(cloningDir)
+        # shutil.rmtree(cloningDir)
     print >>sys.stdout, "Done"
     sys.stdout.flush()
