@@ -143,16 +143,16 @@ def execute_tests(package, configuration, options, args, output_buffer):
                             (package.get_description(), options.buildmode))
         print_message("\tIgnored")
         return 0
-    variation_args = configuration.get_variations(options.buildmode, options.excludeResponseFiles)
+    variation_args = configuration.get_variations(options.buildmode, options.excludedVariations)
     if len(variation_args) == 0:
-        output_buffer.write("IGNORED: Package '%s' has no response file with the current options\n" %
+        output_buffer.write("IGNORED: Package '%s' has no configuration with the current options\n" %
                             package.get_description())
         print_message("\tIgnored")
         return 0
     if options.verbose:
-        print_message("Response filenames: %s" % variation_args)
-        if options.excludeResponseFiles:
-            print_message(" (excluding %s)" % options.excludeResponseFiles)
+        print_message("Test configurations: %s" % variation_args)
+        if options.excludedVariations:
+            print_message(" (excluding %s)" % options.excludedVariations)
     non_kwargs = []
     the_builder = get_builder_details(options.buildmode)
     exit_code = 0
@@ -244,7 +244,7 @@ if __name__ == "__main__":
     optParser.add_option("--debug", "-d", dest="debugSymbols", action="store_true", default=False, help="Build BuildAMation packages with debug information")
     optParser.add_option("--noinitialclean", "-i", dest="noInitialClean", action="store_true", default=False, help="Disable cleaning packages before running tests")
     optParser.add_option("--forcedefinitionupdate", "-f", dest="forceDefinitionUpdate", action="store_true", default=False, help="Force definition file updates")
-    optParser.add_option("--excluderesponsefiles", "-x", dest="excludeResponseFiles", action="append", default=None, help="Exclude response files")
+    optParser.add_option("--excludevariation", "-x", dest="excludedVariations", action="append", default=None, help="Exclude a variation from the test configurations")
     optParser.add_option("--repo", "-r", dest="repos", action="append", default=[bam_dir], help="Add a package repository to test")
     optParser.add_option("--nodefaultrepo", dest="nodefaultrepo", action="store_true", default=False, help="Do not test the default repository")
     test_option_setup(optParser)
