@@ -43,7 +43,7 @@ dirsToDelete = [
 # TODO remove .git
 
 
-def CloneBuildAMation(dir, options):
+def clone_buildamation(dir, options):
     # TODO: specify the explicit tag too
     branch = options.branch
     if not branch:
@@ -55,7 +55,7 @@ def CloneBuildAMation(dir, options):
     sys.stdout.flush()
 
 
-def CleanClone():
+def clean_clone():
     for file in filesToDelete:
         print >>sys.stdout, "Deleting file %s" % file
         sys.stdout.flush()
@@ -66,16 +66,16 @@ def CleanClone():
         shutil.rmtree(directory)
 
 
-def UpdateVersionNumbers(options):
-    commonAssemblyInfoPath = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
-    for line in fileinput.input(commonAssemblyInfoPath, inplace=1):  # , backup='.bk'):
+def update_version_numbers(options):
+    common_assembly_info_path = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
+    for line in fileinput.input(common_assembly_info_path, inplace=1):  # , backup='.bk'):
         line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)',
                       'AssemblyInformationalVersion("%s")' % options.version,
                       line.rstrip())
         print line
 
 
-def Build():
+def build():
     print >>sys.stdout, "Starting build in %s" % os.getcwd()
     sys.stdout.flush()
     if platform.system() == "Windows":
@@ -92,20 +92,20 @@ def Build():
     sys.stdout.flush()
 
 
-def BuildDocumentation(options):
+def build_documentation(options):
     args = [options.doxygenpath, "docsrc/BuildAMationDoxy"]
     print "Running: %s" % ' '.join(args)
     subprocess.check_call(args)
 
 
-def MakeTarDistribution(options):
+def make_tar_distribution(options):
     cwd = os.getcwd()
     try:
-        coDir, bamDir = os.path.split(cwd)
-        tarPath = os.path.join(coDir, "BuildAMation-%s.tgz" % options.version)
-        print >>sys.stdout, "Writing tar file %s" % tarPath
+        checkout_dir, bam_dir = os.path.split(cwd)
+        tar_path = os.path.join(checkout_dir, "BuildAMation-%s.tgz" % options.version)
+        print >>sys.stdout, "Writing tar file %s" % tar_path
         sys.stdout.flush()
-        os.chdir(coDir)
+        os.chdir(checkout_dir)
 
         def filter(tarinfo):
             if platform.system() != "Windows":
@@ -118,57 +118,57 @@ def MakeTarDistribution(options):
                tarinfo.name.endswith("bam"):
                 tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
             return tarinfo
-        with tarfile.open(tarPath, "w:gz") as tar:
-            if os.path.isdir(os.path.join(bamDir, "bin")):
-                tar.add(os.path.join(bamDir, "bin"), filter=filter)
-            tar.add(os.path.join(bamDir, "Changelog.txt"))
-            tar.add(os.path.join(bamDir, "env.bat"))
-            tar.add(os.path.join(bamDir, "env.sh"))
-            tar.add(os.path.join(bamDir, "License.md"))
-            tar.add(os.path.join(bamDir, "packages"))
-            tar.add(os.path.join(bamDir, "tests"), filter=filter)
-        print >>sys.stdout, "Finished writing tar file %s" % tarPath
+        with tarfile.open(tar_path, "w:gz") as tar:
+            if os.path.isdir(os.path.join(bam_dir, "bin")):
+                tar.add(os.path.join(bam_dir, "bin"), filter=filter)
+            tar.add(os.path.join(bam_dir, "Changelog.txt"))
+            tar.add(os.path.join(bam_dir, "env.bat"))
+            tar.add(os.path.join(bam_dir, "env.sh"))
+            tar.add(os.path.join(bam_dir, "License.md"))
+            tar.add(os.path.join(bam_dir, "packages"))
+            tar.add(os.path.join(bam_dir, "tests"), filter=filter)
+        print >>sys.stdout, "Finished writing tar file %s" % tar_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
 
 
-def MakeZipDistribution(options):
+def make_zip_distribution(options):
     cwd = os.getcwd()
     try:
-        coDir, bamDir = os.path.split(cwd)
-        zipPath = os.path.join(coDir, "BuildAMation-%s.zip" % options.version)
-        print >>sys.stdout, "Writing zip file %s" % zipPath
+        checkout_dir, bam_dir = os.path.split(cwd)
+        zip_path = os.path.join(checkout_dir, "BuildAMation-%s.zip" % options.version)
+        print >>sys.stdout, "Writing zip file %s" % zip_path
         sys.stdout.flush()
-        os.chdir(coDir)
+        os.chdir(checkout_dir)
 
-        def RecursiveWrite(zip, dirToAdd):
-            for root, dirs, files in os.walk(dirToAdd):
+        def recursive_write(zip, dir_to_add):
+            for root, dirs, files in os.walk(dir_to_add):
                 for file in files:
                     zip.write(os.path.join(root, file))
-        with zipfile.ZipFile(zipPath, "w", zipfile.ZIP_DEFLATED) as zip:
-            if os.path.isdir(os.path.join(bamDir, "bin")):
-                RecursiveWrite(zip, os.path.join(bamDir, "bin"))
-            zip.write(os.path.join(bamDir, "Changelog.txt"))
-            zip.write(os.path.join(bamDir, "env.bat"))
-            zip.write(os.path.join(bamDir, "env.sh"))
-            zip.write(os.path.join(bamDir, "License.md"))
-            RecursiveWrite(zip, os.path.join(bamDir, "packages"))
-            RecursiveWrite(zip, os.path.join(bamDir, "tests"))
-        print >>sys.stdout, "Finished writing zip file %s" % zipPath
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip:
+            if os.path.isdir(os.path.join(bam_dir, "bin")):
+                recursive_write(zip, os.path.join(bam_dir, "bin"))
+            zip.write(os.path.join(bam_dir, "Changelog.txt"))
+            zip.write(os.path.join(bam_dir, "env.bat"))
+            zip.write(os.path.join(bam_dir, "env.sh"))
+            zip.write(os.path.join(bam_dir, "License.md"))
+            recursive_write(zip, os.path.join(bam_dir, "packages"))
+            recursive_write(zip, os.path.join(bam_dir, "tests"))
+        print >>sys.stdout, "Finished writing zip file %s" % zip_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
 
 
-def MakeTarDocsDistribution(options):
+def make_tar_docs_distribution(options):
     cwd = os.getcwd()
     try:
-        coDir, bamDir = os.path.split(cwd)
-        tarPath = os.path.join(coDir, "BuildAMation-%s-docs.tgz" % options.version)
-        print >>sys.stdout, "Writing tar file %s" % tarPath
+        checkout_dir, bam_dir = os.path.split(cwd)
+        tar_path = os.path.join(checkout_dir, "BuildAMation-%s-docs.tgz" % options.version)
+        print >>sys.stdout, "Writing tar file %s" % tar_path
         sys.stdout.flush()
-        os.chdir(coDir)
+        os.chdir(checkout_dir)
 
         def filter(tarinfo):
             if platform.system() != "Windows":
@@ -181,50 +181,50 @@ def MakeTarDocsDistribution(options):
                tarinfo.name.endswith("bam"):
                 tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
             return tarinfo
-        with tarfile.open(tarPath, "w:gz") as tar:
-            tar.add(os.path.join(bamDir, "docs"))
-        print >>sys.stdout, "Finished writing tar file %s" % tarPath
+        with tarfile.open(tar_path, "w:gz") as tar:
+            tar.add(os.path.join(bam_dir, "docs"))
+        print >>sys.stdout, "Finished writing tar file %s" % tar_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
 
 
-def MakeZipDocsDistribution(options):
+def make_zip_docs_distribution(options):
     cwd = os.getcwd()
     try:
-        coDir, bamDir = os.path.split(cwd)
-        zipPath = os.path.join(coDir, "BuildAMation-%s-docs.zip" % options.version)
-        print >>sys.stdout, "Writing zip file %s" % zipPath
+        checkout_dir, bam_dir = os.path.split(cwd)
+        zip_path = os.path.join(checkout_dir, "BuildAMation-%s-docs.zip" % options.version)
+        print >>sys.stdout, "Writing zip file %s" % zip_path
         sys.stdout.flush()
-        os.chdir(coDir)
+        os.chdir(checkout_dir)
 
-        def RecursiveWrite(zip, dirToAdd):
-            for root, dirs, files in os.walk(dirToAdd):
+        def recursive_write(zip, dir_to_add):
+            for root, dirs, files in os.walk(dir_to_add):
                 for file in files:
                     zip.write(os.path.join(root, file))
-        with zipfile.ZipFile(zipPath, "w", zipfile.ZIP_DEFLATED) as zip:
-            RecursiveWrite(zip, os.path.join(bamDir, "docs"))
-        print >>sys.stdout, "Finished writing zip file %s" % zipPath
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip:
+            recursive_write(zip, os.path.join(bam_dir, "docs"))
+        print >>sys.stdout, "Finished writing zip file %s" % zip_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
 
 
-def Main(dir, options):
+def main(dir, options):
     print >>sys.stdout, "Creating BuildAMation version %s" % options.version
     sys.stdout.flush()
-    CloneBuildAMation(dir, options)
+    clone_buildamation(dir, options)
     cwd = os.getcwd()
     try:
         os.chdir(dir)
-        CleanClone()
-        UpdateVersionNumbers(options)
-        Build()
-        BuildDocumentation(options)
-        MakeTarDistribution(options)
-        MakeZipDistribution(options)
-        MakeTarDocsDistribution(options)
-        MakeZipDocsDistribution(options)
+        clean_clone()
+        update_version_numbers(options)
+        build()
+        build_documentation(options)
+        make_tar_distribution(options)
+        make_zip_distribution(options)
+        make_tar_docs_distribution(options)
+        make_zip_docs_distribution(options)
     finally:
         os.chdir(cwd)
 
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     os.makedirs(cloningDir)
     # cloningDir = r"c:\users\mark\appdata\local\temp\tmpg4tul0"
     try:
-        Main(cloningDir, options)
+        main(cloningDir, options)
     except Exception, e:
         print >>sys.stdout, "*** Failure reason: %s" % str(e)
         sys.stdout.flush()

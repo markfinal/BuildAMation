@@ -17,23 +17,23 @@ def strip_trailing_whitespace(file):
         convert_line_endings(file)
 
 
-def processPath(path, extensionList):
+def process_path(path, extension_list):
     if os.path.isfile(path):
         strip_trailing_whitespace(path)
     else:
         for root, dirs, files in os.walk(path):
             for file in files:
-                fileExt = os.path.splitext(file)[1]
-                if fileExt in extensionList:
-                    fullPath = os.path.join(root, file)
-                    strip_trailing_whitespace(fullPath)
+                file_ext = os.path.splitext(file)[1]
+                if file_ext in extension_list:
+                    full_path = os.path.join(root, file)
+                    strip_trailing_whitespace(full_path)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         extensions = sys.argv[2:]
         if not extensions:
             extensions = ['.cs']
-        processPath(sys.argv[1], extensions)
+        process_path(sys.argv[1], extensions)
     else:
-        processPath('.', ['.cs'])
-        processPath('tests', ['.h', '.c', '.cpp', '.m', '.mm'])
+        process_path('.', ['.cs'])
+        process_path('tests', ['.h', '.c', '.cpp', '.m', '.mm'])
