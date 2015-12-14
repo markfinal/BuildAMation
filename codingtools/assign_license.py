@@ -21,8 +21,8 @@ def read_license_text():
         licenseText.append(line.replace('\n', ''))
 
 
-def write_license_text(outfile, file):
-    ext = os.path.splitext(file)[1]
+def write_license_text(outfile, file_path):
+    ext = os.path.splitext(file_path)[1]
     if ext == '.cs':
         outfile.write('#region License\n')
         for line in licenseText:
@@ -43,16 +43,16 @@ def write_license_text(outfile, file):
             outfile.write('%s\n' % line)
         outfile.write('*/\n')
     else:
-        raise RuntimeError('Unsupported file extension for appending license, %s' % file)
+        raise RuntimeError('Unsupported file_path extension for appending license, %s' % file_path)
 
 
-def assign_license(file):
-    with open(file, mode='rt') as infile:
+def assign_license(file_path):
+    with open(file_path, mode='rt') as infile:
         lines = infile.readlines()
     first_code_line = 0
     has_region = False
     has_c_style_comment = False
-    is_python = os.path.splitext(file)[1] == '*.py'
+    is_python = os.path.splitext(file_path)[1] == '*.py'
     shebang = ''
     for index, line in enumerate(lines):
         if not line:
@@ -77,14 +77,14 @@ def assign_license(file):
                 first_code_line = index
                 break
     code_lines = lines[first_code_line:]
-    with open(file, mode='wt') as outfile:
+    with open(file_path, mode='wt') as outfile:
         if is_python and shebang:
             outfile.write(shebang)
-        write_license_text(outfile, file)
+        write_license_text(outfile, file_path)
         for line in code_lines:
             outfile.write(line)
     if sys.platform.startswith("win"):
-        convert_line_endings(file)
+        convert_line_endings(file_path)
 
 
 def process_path(path, extension_list):
@@ -92,10 +92,10 @@ def process_path(path, extension_list):
         assign_license(path)
     else:
         for root, dirs, files in os.walk(path):
-            for file in files:
-                file_ext = os.path.splitext(file)[1]
+            for file_path in files:
+                file_ext = os.path.splitext(file_path)[1]
                 if file_ext in extension_list:
-                    full_path = os.path.join(root, file)
+                    full_path = os.path.join(root, file_path)
                     assign_license(full_path)
 
 if __name__ == "__main__":

@@ -6,15 +6,15 @@ import re
 import sys
 
 
-def convert_tabs_to_spaces(file):
-    with open(file, mode='rt') as infile:
+def convert_tabs_to_spaces(file_path):
+    with open(file_path, mode='rt') as infile:
         lines = infile.readlines()
-    with open(file, mode='wt') as outfile:
+    with open(file_path, mode='wt') as outfile:
         for line in lines:
             stripped = re.sub('[\t]+', '    ', line)
             outfile.write(stripped)
     if sys.platform.startswith("win"):
-        convert_line_endings(file)
+        convert_line_endings(file_path)
 
 
 def process_path(path, extension_list):
@@ -22,10 +22,10 @@ def process_path(path, extension_list):
         convert_tabs_to_spaces(path)
     else:
         for root, dirs, files in os.walk(path):
-            for file in files:
-                file_ext = os.path.splitext(file)[1]
+            for file_path in files:
+                file_ext = os.path.splitext(file_path)[1]
                 if file_ext in extension_list:
-                    full_path = os.path.join(root, file)
+                    full_path = os.path.join(root, file_path)
                     convert_tabs_to_spaces(full_path)
 
 if __name__ == "__main__":
