@@ -1,3 +1,5 @@
+14-Dec-2015 Renamed the entry point of package repositories test code, from ConfigureRepository to configure_repository.
+
 09-Dec-2015 Fixes #88. Fixed issue where running 'bam --help --clean' in a package directory would result in an exception when the build root is cleaned.
 
 09-Dec-2015 Fixes #89. Static libraries or header libraries that compile against header libraries now set up module requirements in the graph, so projects actually display those headers. This does not affect the build, as the patches were working previously.

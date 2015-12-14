@@ -1,7 +1,7 @@
 from testconfigurations import TestSetup, visualc, visualc64, mingw32, gcc, gcc64, clang, clang64
 
 
-def ConfigureRepository():
+def configure_repository():
     configs = {}
     configs["Test"] = TestSetup(win={"Native": [visualc64, mingw32], "VSSolution": [visualc64], "MakeFile": [visualc64, mingw32]},
                                 linux={"Native": [gcc64], "MakeFile": [gcc64]},

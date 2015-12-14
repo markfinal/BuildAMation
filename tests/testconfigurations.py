@@ -13,7 +13,7 @@ class TestSetup:
         self._linux = {} if linux is None else linux
         self._osx = {} if osx is None else osx
 
-    def GetBuildModes(self):
+    def get_build_modes(self):
         platform = sys.platform
         if platform.startswith("win"):
             return self._win.keys()
@@ -24,61 +24,61 @@ class TestSetup:
         else:
             raise RuntimeError("Unknown platform " + platform)
 
-    def _GetSetOfAllResponseNames(self):
+    def _get_set_of_all_response_names(self):
         platform = sys.platform
-        uniqueResponseFiles = set()
+        unique_response_files = set()
         # TODO: can we do this with a lambda expression?
         if platform.startswith("win"):
             for i in self._win.values():
                 if not i:
                     continue
                 for j in i:
-                    uniqueResponseFiles.add(j)
+                    unique_response_files.add(j)
         elif platform.startswith("linux"):
             for i in self._linux.values():
                 if not i:
                     continue
                 for j in i:
-                    uniqueResponseFiles.add(j)
+                    unique_response_files.add(j)
         elif platform.startswith("darwin"):
             for i in self._osx.values():
                 if not i:
                     continue
                 for j in i:
-                    uniqueResponseFiles.add(j)
+                    unique_response_files.add(j)
         else:
             raise RuntimeError("Unknown platform " + platform)
-        return uniqueResponseFiles
+        return unique_response_files
 
-    def _GetListOfResponseNames(self, builder):
+    def _get_list_of_response_names(self, builder):
         platform = sys.platform
-        responseNames = []
+        response_names = []
         # TODO: can we do this with a lambda expression?
         if platform.startswith("win"):
             if self._win[builder]:
                 for i in self._win[builder]:
-                    responseNames.append(i)
+                    response_names.append(i)
             else:
-                responseNames.append(None)
+                response_names.append(None)
         elif platform.startswith("linux"):
             if self._linux[builder]:
                 for i in self._linux[builder]:
-                    responseNames.append(i)
+                    response_names.append(i)
             else:
-                responseNames.append(None)
+                response_names.append(None)
         elif platform.startswith("darwin"):
             if self._osx[builder]:
                 for i in self._osx[builder]:
-                    responseNames.append(i)
+                    response_names.append(i)
             else:
-                responseNames.append(None)
+                response_names.append(None)
         else:
             raise RuntimeError("Unknown platform " + platform)
-        return responseNames
+        return response_names
 
-    def GetVariations(self, builder, excludedVariations):
+    def get_variations(self, builder, excluded_variations):
         variations = set()
-        for i in self._GetListOfResponseNames(builder):
+        for i in self._get_list_of_response_names(builder):
             """
             if not i:
                 responseFiles.append(i)
@@ -90,20 +90,20 @@ class TestSetup:
         return variations
 
 
-def TestOptionSetup(optParser):
+def test_option_setup(opt_parser):
     def store_option(option, opt_str, value, parser):
         if not parser.values.Flavours:
             parser.values.Flavours = []
         parser.values.Flavours.append("%s=%s" % (opt_str, value))
-    for opt, help_text in ConfigOptions.GetOptions():
-        optName = "--%s" % opt
-        optParser.add_option(optName,
-                             dest="Flavours",
-                             type="string",
-                             action="callback",
-                             callback=store_option,
-                             default=None,
-                             help=help_text)
+    for opt, help_text in ConfigOptions.get_options():
+        option_name = "--%s" % opt
+        opt_parser.add_option(option_name,
+                              dest="Flavours",
+                              type="string",
+                              action="callback",
+                              callback=store_option,
+                              default=None,
+                              help=help_text)
 
 
 class ConfigOptions(object):
@@ -113,20 +113,20 @@ class ConfigOptions(object):
         self._platforms = []
         self._argList = []
 
-    def GetArguments(self):
+    def get_arguments(self):
         return self._argList
 
     def platforms(self):
         return self._platforms
 
     @staticmethod
-    def RegisterOption(platform, optionTuple):
+    def register_option(platform, option_tuple):
         if platform not in ConfigOptions._allOptions:
             ConfigOptions._allOptions[platform] = set()
-        ConfigOptions._allOptions[platform].add(optionTuple)
+        ConfigOptions._allOptions[platform].add(option_tuple)
 
     @staticmethod
-    def GetOptions():
+    def get_options():
         return ConfigOptions._allOptions.get(platform.system(), [])
 
 
@@ -135,8 +135,8 @@ class VisualCCommon(ConfigOptions):
         super(VisualCCommon, self).__init__()
         self._argList.append("--C.toolchain=VisualC")
         self._platforms = ["Win32", "x64"]
-        ConfigOptions.RegisterOption("Windows", ("VisualC.version", "Set the VisualC version"))
-        ConfigOptions.RegisterOption("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
+        ConfigOptions.register_option("Windows", ("VisualC.version", "Set the VisualC version"))
+        ConfigOptions.register_option("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
 
 
 class VisualC64(VisualCCommon):
@@ -158,13 +158,13 @@ class Mingw32(ConfigOptions):
         super(Mingw32, self).__init__()
         self._argList.append("--C.bitdepth=32")
         self._argList.append("--C.toolchain=Mingw")
-        ConfigOptions.RegisterOption("Windows", ("Mingw.version", "Set the Mingw version"))
+        ConfigOptions.register_option("Windows", ("Mingw.version", "Set the Mingw version"))
 
 
 class GccCommon(ConfigOptions):
     def __init__(self):
         super(GccCommon, self).__init__()
-        ConfigOptions.RegisterOption("Linux", ("GCC.version", "Set the GCC version"))
+        ConfigOptions.register_option("Linux", ("GCC.version", "Set the GCC version"))
 
 
 class Gcc64(GccCommon):
@@ -183,7 +183,7 @@ class ClangCommon(ConfigOptions):
     def __init__(self):
         super(ClangCommon, self).__init__()
         self._argList.append("--Xcode.generateSchemes")  # TODO: this is only for the Xcode build mode
-        ConfigOptions.RegisterOption("Darwin", ("Clang.version", "Set the Clang version"))
+        ConfigOptions.register_option("Darwin", ("Clang.version", "Set the Clang version"))
 
 
 class Clang64(ClangCommon):
