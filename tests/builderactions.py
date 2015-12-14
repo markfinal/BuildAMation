@@ -5,6 +5,7 @@ import subprocess
 import sys
 import traceback
 
+
 class Builder(object):
     """Class that represents the actions for a builder"""
     def __init__(self, name, preAction, postAction):
@@ -12,16 +13,18 @@ class Builder(object):
         self.preAction = preAction
         self.postAction = postAction
 
-# the version of MSBuild.exe to use, depends on which version of VisualStudio was used to build the solution and projects
+# the version of MSBuild.exe to use, depends on which version of VisualStudio
+# was used to build the solution and projects
 # by default, VS2013 is assumed
 defaultVCVersion = "12.0"
 msBuildVersionToNetMapping = {
-    "9.0":"v3.5",
-    "10.0":"v4.0.30319",
-    "11.0":"v4.0.30319",
-    "12.0":"v4.0.30319",
-    "14.0":"14.0"
+    "9.0": "v3.5",
+    "10.0": "v4.0.30319",
+    "11.0": "v4.0.30319",
+    "12.0": "v4.0.30319",
+    "14.0": "14.0"
 }
+
 
 def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
     """Post action for testing the VSSolution builder
@@ -41,10 +44,10 @@ def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
         return 0
     try:
         try:
-           for f in options.Flavours:
-               if f.startswith("--VisualC.version"):
-                   vcVersion = f.split("=")[1]
-                   break
+            for f in options.Flavours:
+                if f.startswith("--VisualC.version"):
+                    vcVersion = f.split("=")[1]
+                    break
         except:
             pass
         finally:
@@ -57,9 +60,9 @@ def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
         # location of MSBuild changed in VS2013
         if vcMajorVersion >= 12:
             # VS2013 onwards path for MSBuild
-            msBuildPath = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe"%vcVersion
+            msBuildPath = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe" % vcVersion
         else:
-            msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe"%msBuildVersionToNetMapping[vcVersion]
+            msBuildPath = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe" % msBuildVersionToNetMapping[vcVersion]
         for config in options.configurations:
             argList = [
                 msBuildPath,
@@ -74,7 +77,7 @@ def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
                 thisArgList.append("/p:Platform=%s" % platform)
                 print "Running '%s'\n" % ' '.join(thisArgList)
                 p = subprocess.Popen(thisArgList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                (outputStream, errorStream) = p.communicate() # this should WAIT
+                (outputStream, errorStream) = p.communicate()  # this should WAIT
                 exitCode |= p.returncode
                 if outputStream:
                     outputMessages.write(outputStream)
@@ -85,6 +88,7 @@ def VSSolutionPost(package, options, flavour, outputMessages, errorMessages):
         errorMessages.write(str(e) + '\n' + traceback.format_exc())
         return -1
     return exitCode
+
 
 def MakeFilePost(package, options, flavour, outputMessages, errorMessages):
     """Post action for testing the MakeFile builder
@@ -111,7 +115,7 @@ def MakeFilePost(package, options, flavour, outputMessages, errorMessages):
         ]
         print "Running '%s' in %s\n" % (' '.join(argList), makeFileDir)
         p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makeFileDir)
-        (outputStream, errorStream) = p.communicate() # this should WAIT
+        (outputStream, errorStream) = p.communicate()  # this should WAIT
         exitCode |= p.returncode
         if outputStream:
             outputMessages.write(outputStream)
@@ -121,6 +125,7 @@ def MakeFilePost(package, options, flavour, outputMessages, errorMessages):
         errorMessages.write(str(e))
         return -1
     return exitCode
+
 
 def XcodePost(package, options, flavour, outputMessages, errorMessages):
     """Post action for testing the Xcode builder
@@ -153,13 +158,14 @@ def XcodePost(package, options, flavour, outputMessages, errorMessages):
         ]
         print "Running '%s'\n" % ' '.join(argList)
         p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        (outputStream, errorStream) = p.communicate() # this should WAIT
+        (outputStream, errorStream) = p.communicate()  # this should WAIT
         outputMessages.write(outputStream)
         errorMessages.write(errorStream)
         # parse the output to get the schemes
         lines = outputStream.split('\n')
         if len(lines) < 3:
-            raise RuntimeError("Unable to parse workspace for schemes. Was --Xcode.generateSchemes passed to the Bam build?")
+            raise RuntimeError("Unable to parse workspace for schemes. \
+                               Was --Xcode.generateSchemes passed to the Bam build?")
         schemes = []
         hasSchemes = False
         for line in lines:
@@ -170,7 +176,8 @@ def XcodePost(package, options, flavour, outputMessages, errorMessages):
             elif trimmed.startswith('Schemes:'):
                 hasSchemes = True
         if not hasSchemes or len(schemes) == 0:
-            raise RuntimeError("No schemes were extracted from the workspace. Has the project scheme cache been warmed?")
+            raise RuntimeError("No schemes were extracted from the workspace. \
+                            Has the project scheme cache been warmed?")
         # iterate over all the schemes and configurations
         for scheme in schemes:
             for config in options.configurations:
@@ -187,7 +194,7 @@ def XcodePost(package, options, flavour, outputMessages, errorMessages):
                 argList.append(config)
                 outputMessages.write("Running '%s' in %s" % (" ".join(argList), buildRoot))
                 p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=buildRoot)
-                (outputStream, errorStream) = p.communicate() # this should WAIT
+                (outputStream, errorStream) = p.communicate()  # this should WAIT
                 exitCode |= p.returncode
                 if outputStream:
                     outputMessages.write(outputStream)
@@ -200,12 +207,13 @@ def XcodePost(package, options, flavour, outputMessages, errorMessages):
     return exitCode
 
 builder = {
-    "Native" : Builder("Native", None, None),
-    "VSSolution" : Builder("VSSolution", None, VSSolutionPost),
-    "MakeFile" : Builder("MakeFile", None, MakeFilePost),
-    "QMake" : Builder("QMake", None, None),
-    "Xcode" : Builder("Xcode", None, XcodePost)
+    "Native": Builder("Native", None, None),
+    "VSSolution": Builder("VSSolution", None, VSSolutionPost),
+    "MakeFile": Builder("MakeFile", None, MakeFilePost),
+    "QMake": Builder("QMake", None, None),
+    "Xcode": Builder("Xcode", None, XcodePost)
 }
+
 
 def GetBuilderDetails(builderName):
     """Return the Builder associated with the name passed in

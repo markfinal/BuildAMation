@@ -2,6 +2,7 @@
 import platform
 import sys
 
+
 class TestSetup:
     _win = {}
     _linux = {}
@@ -88,6 +89,7 @@ class TestSetup:
             variations.add(i)
         return variations
 
+
 def TestOptionSetup(optParser):
     def store_option(option, opt_str, value, parser):
         if not parser.values.Flavours:
@@ -95,7 +97,13 @@ def TestOptionSetup(optParser):
         parser.values.Flavours.append("%s=%s" % (opt_str, value))
     for opt, help_text in ConfigOptions.GetOptions():
         optName = "--%s" % opt
-        optParser.add_option(optName, dest="Flavours", type="string", action="callback", callback=store_option, default=None, help=help_text)
+        optParser.add_option(optName,
+                             dest="Flavours",
+                             type="string",
+                             action="callback",
+                             callback=store_option,
+                             default=None,
+                             help=help_text)
 
 
 class ConfigOptions(object):
@@ -113,7 +121,7 @@ class ConfigOptions(object):
 
     @staticmethod
     def RegisterOption(platform, optionTuple):
-        if not ConfigOptions._allOptions.has_key(platform):
+        if platform not in ConfigOptions._allOptions:
             ConfigOptions._allOptions[platform] = set()
         ConfigOptions._allOptions[platform].add(optionTuple)
 
@@ -174,7 +182,7 @@ class Gcc32(GccCommon):
 class ClangCommon(ConfigOptions):
     def __init__(self):
         super(ClangCommon, self).__init__()
-        self._argList.append("--Xcode.generateSchemes") # TODO: this is only for the Xcode build mode
+        self._argList.append("--Xcode.generateSchemes")  # TODO: this is only for the Xcode build mode
         ConfigOptions.RegisterOption("Darwin", ("Clang.version", "Set the Clang version"))
 
 
@@ -195,7 +203,9 @@ clang = ClangCommon()
 clang64 = Clang64()
 
 
-# TODO: change the list of response files to a dictionary, with the key as the response file (which also serves as part of a Bam command option) and the value is a list of supported versions, e.g. {"visual":["8.0","9.0","10.0"]}
+# TODO: change the list of response files to a dictionary, with the key as the response file
+# (which also serves as part of a Bam command option) and the value is a list of supported versions,
+# e.g. {"visual":["8.0","9.0","10.0"]}
 """ Moved to bam-csharp
 configs["CodeGenTest2"] = TestSetup(win={"Native":[visualc64,mingw32],"MakeFile":[visualc64,mingw32]},
                                     linux={"Native":[gcc64],"MakeFile":[gcc64]},

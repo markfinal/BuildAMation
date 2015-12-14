@@ -14,9 +14,11 @@ import xml.etree.ElementTree as ET
 
 # ----------
 
+
 def PrintMessage(message):
     print >>sys.stdout, message
     sys.stdout.flush()
+
 
 class Package:
     def __init__(self, root, name, version):
@@ -55,6 +57,7 @@ class Package:
 
 # ----------
 
+
 def FindAllPackagesToTest(root, options):
     """Locate packages that can be tested
     Args:
@@ -77,18 +80,20 @@ def FindAllPackagesToTest(root, options):
             continue
         xmlFiles = glob.glob(os.path.join(bamDir, "*.xml"))
         if len(xmlFiles) == 0:
-          continue
+            continue
         if len(xmlFiles) > 1:
-          raise RuntimeError("Too many XML files found in %s to identify a package definition file" % bamDir)
+            raise RuntimeError("Too many XML files found in %s to identify a package definition file" % bamDir)
         package = Package.from_xml(xmlFiles[0])
         if options.verbose:
             PrintMessage("\t%s" % package.GetId())
         tests.append(package)
     return tests
 
+
 def _preExecute(builder, options, flavour):
     if builder.preAction:
         builder.preAction()
+
 
 def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages):
     argList = [
@@ -113,12 +118,13 @@ def _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
         argList.extend(extraArgs)
     PrintMessage(" ".join(argList))
     p = subprocess.Popen(argList, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.GetPath())
-    (outputStream, errorStream) = p.communicate() # this should WAIT
+    (outputStream, errorStream) = p.communicate()  # this should WAIT
     if outputStream:
         outputMessages.write(outputStream)
     if errorStream:
         errorMessages.write(errorStream)
     return p.returncode, argList
+
 
 def _postExecute(builder, options, flavour, package, outputMessages, errorMessages):
     if builder.postAction:
@@ -126,24 +132,27 @@ def _postExecute(builder, options, flavour, package, outputMessages, errorMessag
         return exitCode
     return 0
 
+
 def ExecuteTests(package, configuration, options, args, outputBuffer):
     PrintMessage("Package           : %s" % package.GetId())
     if options.verbose:
         PrintMessage("Description          : %s" % package.GetDescription())
         PrintMessage("Available build modes: %s" % configuration.GetBuildModes())
-    if not options.buildmode in configuration.GetBuildModes():
-        outputBuffer.write("IGNORED: Package '%s' does not support build mode '%s' in the test configuration\n" % (package.GetDescription(),options.buildmode))
+    if options.buildmode not in configuration.GetBuildModes():
+        outputBuffer.write("IGNORED: Package '%s' does not support build mode '%s' in the test configuration\n" %
+                           (package.GetDescription(), options.buildmode))
         PrintMessage("\tIgnored")
         return 0
     variationArgs = configuration.GetVariations(options.buildmode, options.excludeResponseFiles)
     if len(variationArgs) == 0:
-        outputBuffer.write("IGNORED: Package '%s' has no response file with the current options\n" % package.GetDescription())
+        outputBuffer.write("IGNORED: Package '%s' has no response file with the current options\n" %
+                           package.GetDescription())
         PrintMessage("\tIgnored")
         return 0
     if options.verbose:
         PrintMessage("Response filenames: %s" % variationArgs)
         if options.excludeResponseFiles:
-          PrintMessage(" (excluding %s)" % options.excludeResponseFiles)
+            PrintMessage(" (excluding %s)" % options.excludeResponseFiles)
     nonKWArgs = []
     theBuilder = GetBuilderDetails(options.buildmode)
     exitCode = 0
@@ -151,26 +160,26 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
         iterations = 1
         versionArgs = None
 
-        for it in range(0,iterations):
+        for it in range(0, iterations):
             extraArgs = nonKWArgs[:]
             if options.Flavours:
                 extraArgs.extend(options.Flavours)
             if variation:
                 extraArgs.extend(variation.GetArguments())
             try:
-              outputMessages = StringIO.StringIO()
-              errorMessages = StringIO.StringIO()
-              _preExecute(theBuilder, options, variation)
-              returncode, argList = _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
-              if returncode == 0:
-                returncode = _postExecute(theBuilder, options, variation, package, outputMessages, errorMessages)
+                outputMessages = StringIO.StringIO()
+                errorMessages = StringIO.StringIO()
+                _preExecute(theBuilder, options, variation)
+                returncode, argList = _runBuildAMation(options, package, extraArgs, outputMessages, errorMessages)
+                if returncode == 0:
+                    returncode = _postExecute(theBuilder, options, variation, package, outputMessages, errorMessages)
             except Exception, e:
                 PrintMessage("Popen exception: '%s'" % str(e))
                 raise
             finally:
                 message = "Package '%s'" % package.GetDescription()
                 if extraArgs:
-                  message += " with extra arguments '%s'" % " ".join(extraArgs)
+                    message += " with extra arguments '%s'" % " ".join(extraArgs)
                 if returncode == 0:
                     outputBuffer.write("SUCCESS: %s\n" % message)
                     if options.verbose:
@@ -194,6 +203,7 @@ def ExecuteTests(package, configuration, options, args, outputBuffer):
                     exitCode -= 1
     return exitCode
 
+
 def CleanUp(options):
     argList = []
     if sys.platform.startswith("win"):
@@ -205,6 +215,7 @@ def CleanUp(options):
         PrintMessage("Executing: %s" % argList)
     p = subprocess.Popen(argList)
     p.wait()
+
 
 def FindBamDefaultRepository():
     for path in os.environ["PATH"].split(os.pathsep):
@@ -219,7 +230,7 @@ if __name__ == "__main__":
     bamDir = FindBamDefaultRepository()
 
     optParser = OptionParser(description="BuildAMation unittests")
-    #optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
+    # optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
     optParser.add_option("--configuration", "-c", dest="configurations", action="append", default=None, help="Configurations to test")
     optParser.add_option("--test", "-t", dest="tests", action="append", default=None, help="Tests to run")
     optParser.add_option("--buildroot", "-o", dest="buildRoot", action="store", default="build", help="BuildAMation build root")
@@ -234,7 +245,7 @@ if __name__ == "__main__":
     optParser.add_option("--repo", "-r", dest="repos", action="append", default=[bamDir], help="Add a package repository to test")
     optParser.add_option("--nodefaultrepo", dest="nodefaultrepo", action="store_true", default=False, help="Do not test the default repository")
     TestOptionSetup(optParser)
-    (options,args) = optParser.parse_args()
+    (options, args) = optParser.parse_args()
 
     if options.nodefaultrepo:
         options.repos.remove(bamDir)
@@ -245,13 +256,13 @@ if __name__ == "__main__":
         PrintMessage("Options are %s" % options)
         PrintMessage("Args    are %s" % args)
 
-    #if not options.platforms:
+    # if not options.platforms:
     #    raise RuntimeError("No platforms were specified")
 
     if not options.configurations:
         raise RuntimeError("No configurations were specified")
 
-    #if not options.noInitialClean:
+    # if not options.noInitialClean:
     #    CleanUp(options)
 
     exitCode = 0
