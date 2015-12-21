@@ -128,13 +128,13 @@ def make_tar_distribution(options):
             return tarinfo
         with tarfile.open(tar_path, "w:gz") as tar:
             if os.path.isdir(os.path.join(bam_dir, "bin")):
-                tar.add(os.path.join(bam_dir, "bin"), windows_executable_filter=windows_executable_filter)
+                tar.add(os.path.join(bam_dir, "bin"), filter=windows_executable_filter)
             tar.add(os.path.join(bam_dir, "Changelog.txt"))
             tar.add(os.path.join(bam_dir, "env.bat"))
             tar.add(os.path.join(bam_dir, "env.sh"))
             tar.add(os.path.join(bam_dir, "License.md"))
             tar.add(os.path.join(bam_dir, "packages"))
-            tar.add(os.path.join(bam_dir, "tests"), windows_executable_filter=windows_executable_filter)
+            tar.add(os.path.join(bam_dir, "tests"), filter=windows_executable_filter)
         print >>sys.stdout, "Finished writing tar file_path %s" % tar_path
         sys.stdout.flush()
     finally:
