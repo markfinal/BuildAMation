@@ -145,8 +145,8 @@ def make_zip_distribution(options):
     cwd = os.getcwd()
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
-        zip_path = os.path.join(checkout_dir, "BuildAMation-%s.zip_object" % options.version)
-        print >>sys.stdout, "Writing zip_object file_path %s" % zip_path
+        zip_path = os.path.join(checkout_dir, "BuildAMation-%s.zip" % options.version)
+        print >>sys.stdout, "Writing zip file_path %s" % zip_path
         sys.stdout.flush()
         os.chdir(checkout_dir)
 
@@ -163,7 +163,7 @@ def make_zip_distribution(options):
             zip_object.write(os.path.join(bam_dir, "License.md"))
             recursive_write(zip_object, os.path.join(bam_dir, "packages"))
             recursive_write(zip_object, os.path.join(bam_dir, "tests"))
-        print >>sys.stdout, "Finished writing zip_object file_path %s" % zip_path
+        print >>sys.stdout, "Finished writing zip file_path %s" % zip_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
@@ -189,8 +189,8 @@ def make_zip_docs_distribution(options):
     cwd = os.getcwd()
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
-        zip_path = os.path.join(checkout_dir, "BuildAMation-%s-docs.zip_object" % options.version)
-        print >>sys.stdout, "Writing zip_object file_path %s" % zip_path
+        zip_path = os.path.join(checkout_dir, "BuildAMation-%s-docs.zip" % options.version)
+        print >>sys.stdout, "Writing zip file_path %s" % zip_path
         sys.stdout.flush()
         os.chdir(checkout_dir)
 
@@ -200,7 +200,7 @@ def make_zip_docs_distribution(options):
                     zip_object.write(os.path.join(root, file_path))
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_object:
             recursive_write(zip_object, os.path.join(bam_dir, "docs"))
-        print >>sys.stdout, "Finished writing zip_object file_path %s" % zip_path
+        print >>sys.stdout, "Finished writing zip file_path %s" % zip_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
