@@ -1,5 +1,4 @@
-BuildAMation
-============
+![Logo](http://buildamation.com/BAM.png)
 
 C# scripted build tool for C/C++ code
 
