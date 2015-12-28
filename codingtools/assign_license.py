@@ -7,20 +7,22 @@ import sys
 
 licenseText = []
 
-def readLicenseText():
-  bam_path = find_executable('bam')
-  if not bam_path:
-      raise RuntimeError('Unable to locate bam')
-  bam_dir = os.path.dirname(bam_path)
-  licenseHeaderFile = os.path.join(bam_dir, 'licenseheader.txt')
-  with open(licenseHeaderFile, 'rt') as licenseFile:
-      original_license_text = licenseFile.readlines()
-  global licenseText
-  for line in original_license_text:
-    licenseText.append(line.replace('\n', ''))
 
-def write_license_text(outfile, file):
-    ext = os.path.splitext(file)[1]
+def read_license_text():
+    bam_path = find_executable('bam')
+    if not bam_path:
+        raise RuntimeError('Unable to locate bam')
+    bam_dir = os.path.dirname(bam_path)
+    license_header_file = os.path.join(bam_dir, 'licenseheader.txt')
+    with open(license_header_file, 'rt') as licenseFile:
+        original_license_text = licenseFile.readlines()
+    global licenseText
+    for line in original_license_text:
+        licenseText.append(line.replace('\n', ''))
+
+
+def write_license_text(outfile, file_path):
+    ext = os.path.splitext(file_path)[1]
     if ext == '.cs':
         outfile.write('#region License\n')
         for line in licenseText:
@@ -41,17 +43,18 @@ def write_license_text(outfile, file):
             outfile.write('%s\n' % line)
         outfile.write('*/\n')
     else:
-        raise RuntimeError('Unsupported file extension for appending license, %s' % file)
+        raise RuntimeError('Unsupported file_path extension for appending license, %s' % file_path)
 
-def assign_license(file):
-    with open(file, mode='rt') as infile:
+
+def assign_license(file_path):
+    with open(file_path, mode='rt') as infile:
         lines = infile.readlines()
     first_code_line = 0
     has_region = False
     has_c_style_comment = False
-    is_python = os.path.splitext(file)[1] == '*.py'
+    is_python = os.path.splitext(file_path)[1] == '*.py'
     shebang = ''
-    for index,line in enumerate(lines):
+    for index, line in enumerate(lines):
         if not line:
             continue
         if is_python and line.startswith('#!'):
@@ -74,33 +77,34 @@ def assign_license(file):
                 first_code_line = index
                 break
     code_lines = lines[first_code_line:]
-    with open(file, mode='wt') as outfile:
+    with open(file_path, mode='wt') as outfile:
         if is_python and shebang:
             outfile.write(shebang)
-        write_license_text(outfile, file)
+        write_license_text(outfile, file_path)
         for line in code_lines:
             outfile.write(line)
     if sys.platform.startswith("win"):
-        convert_line_endings(file)
+        convert_line_endings(file_path)
 
-def processPath(path, extensionList):
+
+def process_path(path, extension_list):
     if os.path.isfile(path):
         assign_license(path)
     else:
-      for root, dirs, files in os.walk(path):
-          for file in files:
-              fileExt = os.path.splitext(file)[1]
-              if fileExt in extensionList:
-                  fullPath = os.path.join(root, file)
-                  assign_license(fullPath)
+        for root, dirs, files in os.walk(path):
+            for file_path in files:
+                file_ext = os.path.splitext(file_path)[1]
+                if file_ext in extension_list:
+                    full_path = os.path.join(root, file_path)
+                    assign_license(full_path)
 
 if __name__ == "__main__":
-    readLicenseText()
+    read_license_text()
     if len(sys.argv) > 1:
         extensions = sys.argv[2:]
         if not extensions:
             extensions = ['.cs']
-        processPath(sys.argv[1], extensions)
+        process_path(sys.argv[1], extensions)
     else:
-        processPath('.', ['.cs'])
-        processPath('tests', ['.h', '.c', '.cpp', '.m', '.mm'])
+        process_path('.', ['.cs'])
+        process_path('tests', ['.h', '.c', '.cpp', '.m', '.mm'])
