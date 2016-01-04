@@ -429,7 +429,7 @@ namespace Publisher
         /// <param name="reference">Reference.</param>
         /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
+        public CollatedFile
         IncludeFiles<DependentModule>(
             string parameterizedFilePath,
             string subdir,
@@ -439,7 +439,7 @@ namespace Publisher
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
-                return;
+                return null;
             }
 
             var copyFileModule = this.CreateCollatedFile(
@@ -454,6 +454,8 @@ namespace Publisher
                     this.AddOSXChangeIDNameForBinary(copyFileModule);
                 }
             }
+
+            return copyFileModule;
         }
 
         /// <summary>
@@ -463,7 +465,7 @@ namespace Publisher
         /// <param name="subdir">Subdir.</param>
         /// <param name="reference">Reference.</param>
         /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
-        public void
+        public CollatedFile
         IncludeFile(
             string parameterizedFilePath,
             string subdir,
@@ -471,7 +473,7 @@ namespace Publisher
             bool isExecutable = false)
         {
             var tokenString = this.CreateTokenizedString(parameterizedFilePath);
-            this.IncludeFile(tokenString, subdir, reference, isExecutable);
+            return this.IncludeFile(tokenString, subdir, reference, isExecutable);
         }
 
         /// <summary>
@@ -481,7 +483,7 @@ namespace Publisher
         /// <param name="subdir">Subdir.</param>
         /// <param name="reference">Reference.</param>
         /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
-        public void
+        public CollatedFile
         IncludeFile(
             Bam.Core.TokenizedString parameterizedFilePath,
             string subdir,
@@ -501,6 +503,8 @@ namespace Publisher
                     this.AddOSXChangeIDNameForBinary(copyFileModule);
                 }
             }
+
+            return copyFileModule;
         }
 
         /// <summary>
@@ -509,13 +513,13 @@ namespace Publisher
         /// <param name="parameterizedPath">Parameterized path.</param>
         /// <param name="subdir">Subdir.</param>
         /// <param name="reference">Reference.</param>
-        public void
+        public CollatedDirectory
         IncludeDirectory(
             Bam.Core.TokenizedString parameterizedPath,
             string subdir,
             CollatedFile reference)
         {
-            this.CreateCollatedDirectory(null, parameterizedPath, reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
+            return this.CreateCollatedDirectory(null, parameterizedPath, reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
         }
 
         /// <summary>
@@ -526,7 +530,7 @@ namespace Publisher
         /// <param name="reference">Reference.</param>
         /// <param name="updateInstallName">If set to <c>true</c> update install name.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
+        public Bam.Core.Array<CollatedObject>
         IncludeFramework<DependentModule>(
             string subdir,
             CollatedFile reference,
@@ -535,7 +539,7 @@ namespace Publisher
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
-                return;
+                return null;
             }
 
             // TODO: confirm that reference was created in WindowedApplication mode
@@ -547,15 +551,17 @@ namespace Publisher
 
             var dirPublishedModules = new Bam.Core.Array<CollatedDirectory>();
             if (null != framework.DirectoriesToPublish)
-            foreach (var dirData in framework.DirectoriesToPublish)
             {
-                var dir = dirData.SourcePath;
-                var copyDir = this.CreateCollatedDirectory(
-                    dependent,
-                    this.CreateTokenizedString("$(0)/$(1)", frameworkPath, dir),
-                    reference,
-                    this.CreateTokenizedString("$(0)/$(1)", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
-                dirPublishedModules.Add(copyDir);
+                foreach (var dirData in framework.DirectoriesToPublish)
+                {
+                    var dir = dirData.SourcePath;
+                    var copyDir = this.CreateCollatedDirectory(
+                        dependent,
+                        this.CreateTokenizedString("$(0)/$(1)", frameworkPath, dir),
+                        reference,
+                        this.CreateTokenizedString("$(0)/$(1)", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
+                    dirPublishedModules.AddUnique(copyDir);
+                }
             }
             var filePublishedModules = new Bam.Core.Array<CollatedFile>();
             if (null != framework.FilesToPublish)
@@ -572,7 +578,7 @@ namespace Publisher
                     {
                         copyFile.Requires(publishedDir);
                     }
-                    filePublishedModules.Add(copyFile);
+                    filePublishedModules.AddUnique(copyFile);
 
                     // the dylib in the framework
                     if (updateInstallName && (file == framework.Macros["FrameworkLibraryPath"]))
@@ -594,6 +600,7 @@ namespace Publisher
                     }
                 }
             }
+            var symlinkPublishedModules = new Bam.Core.Array<CollatedSymbolicLink>();
             if (null != framework.SymlinksToPublish)
             {
                 foreach (var symlinkData in framework.SymlinksToPublish)
@@ -613,8 +620,15 @@ namespace Publisher
                     {
                         copySymlink.Requires(publishedFile);
                     }
+                    symlinkPublishedModules.AddUnique(copySymlink);
                 }
             }
+
+            var frameworkComponents = new Bam.Core.Array<CollatedObject>();
+            frameworkComponents.AddRangeUnique(filePublishedModules);
+            frameworkComponents.AddRangeUnique(dirPublishedModules);
+            frameworkComponents.AddRangeUnique(symlinkPublishedModules);
+            return frameworkComponents;
         }
 
         /// <summary>
@@ -622,7 +636,7 @@ namespace Publisher
         /// </summary>
         /// <param name="source">Source.</param>
         /// <param name="newRPath">New R path.</param>
-        public void
+        public ChangeRPathModule
         ChangeRPath(
             CollatedFile source,
             string newRPath)
@@ -631,6 +645,7 @@ namespace Publisher
             change.Source = source;
             change.NewRPath = newRPath;
             this.Requires(change);
+            return change;
         }
 
         public sealed override void

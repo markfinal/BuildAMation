@@ -1,3 +1,5 @@
+04-Jan-2016 Fixes #95. All Publisher public methods (Include* and ChangeRPath) now return the modules they create, to allow such modules to be ordered through dependencies. Note that IncludeFramework returns an Array<CollatedObject> since it can copy directories, files and symbolic links.
+
 28-Dec-2015 ======== Version 1.0.0 Release ========
 
 14-Dec-2015 Renamed the entry point of package repositories test code, from ConfigureRepository to configure_repository.
