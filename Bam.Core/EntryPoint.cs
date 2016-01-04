@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2015, Mark Final
+// Copyright (c) 2010-2016, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ namespace Bam.Core
             EVerboseLevel level)
         {
             Core.Log.Message(level,
-                "BuildAMation (Bam) v{0} (c) Mark Final, 2010-2015. Licensed under BSD 3-clause. See License file.",
+                "BuildAMation (Bam) v{0} (c) Mark Final, 2010-2016. Licensed under BSD 3-clause. See License file.",
                 Core.Graph.Instance.ProcessState.VersionString);
         }
 

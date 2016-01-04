@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2015, Mark Final
+// Copyright (c) 2010-2016, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright 2010-2015")]
+[assembly: AssemblyCopyright("Copyright 2010-2016")]
 [assembly: AssemblyProduct("BuildAMation")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -53,8 +53,8 @@ using System.Runtime.InteropServices;
 // AssemblyInformationalVersion is modified by the release procedure for any alpha/beta qualifications, and is used
 // in the 'product version' detail when inspecting an assembly, and also by "bam --version".
 // Semantic versioning (http://semver.org/) is used.
-[assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyInformationalVersion("1.0.0")]
+[assembly: AssemblyVersion("1.0.1")]
+[assembly: AssemblyInformationalVersion("1.0.1")]
 
 // Because it exposes externally visible types.
 [assembly: CLSCompliant(true)]
