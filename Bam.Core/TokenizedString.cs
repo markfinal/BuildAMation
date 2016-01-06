@@ -647,6 +647,21 @@ namespace Bam.Core
                     // ensure back slashes are escaped too
                     return System.String.Format("\\\"{0}\\\"", argument.Replace("\\", "\\\\"));
 
+                case "ifnotempty":
+                    {
+                        var split = argument.Split(',');
+                        var predicateString = split[0];
+                        if (!System.String.IsNullOrEmpty(predicateString))
+                        {
+                            return predicateString;
+                        }
+                        else
+                        {
+                            var defaultString = split[1];
+                            return defaultString;
+                        }
+                    }
+
                 default:
                     throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
             }

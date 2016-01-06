@@ -1,3 +1,5 @@
+06-Jan-2015 Added TokenizedString post-function, @ifnotempty(a,b). If 'a' is not an empty string, then use it, otherwise use b.
+
 06-Jan-2015 Fixes #99. Xcode pre and post build scripts now escape double quotes.
 
 06-Jan-2015 Added boolean property Bam.Core.TokenizedString.IsAliased, returning true when the TokenizedString is aliased to another.
