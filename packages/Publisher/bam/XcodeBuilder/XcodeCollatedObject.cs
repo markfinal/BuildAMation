@@ -105,14 +105,39 @@ namespace Publisher
                     }
                 }
 
-                commands.Add(System.String.Format("{0} {1} {2} {3}/{4}{5} {6}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    isSymlink ? sender.Macros["LinkTarget"].Parse() : sourcePath.Parse(),
-                    destinationFolder,
-                    isSymlink ? sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse() : sender.SubDirectory.Parse(),
-                    isSymlink ? string.Empty : "/",
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                if (isSymlink)
+                {
+                    commands.Add(System.String.Format("{0} {1} {2} {3}/{4} {5}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        sender.Macros["LinkTarget"].Parse(),
+                        destinationFolder,
+                        sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse(),
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                }
+                else
+                {
+                    if (sender is CollatedDirectory)
+                    {
+                        commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
+                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                            commandLine.ToString(' '),
+                            sourcePath.Parse(),
+                            destinationFolder,
+                            sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath).Parse(),
+                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                    }
+                    else
+                    {
+                        commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
+                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                            commandLine.ToString(' '),
+                            sourcePath.Parse(),
+                            destinationFolder,
+                            sender.SubDirectory.Parse(),
+                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                    }
+                }
 
                 var target = sender.Reference.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.Reference.SourceModule);

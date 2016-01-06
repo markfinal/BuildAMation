@@ -136,14 +136,14 @@ namespace Publisher
             {
                 if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@filename($(2))/)",
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@ifnotempty($(CopiedFilename),@filename($(2)))/)",
                         referenceFilePath,
                         subDirectory,
                         sourcePath);
                 }
                 else
                 {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@ifnotempty($(CopiedFilename),))",
                         referenceFilePath,
                         subDirectory);
                 }
@@ -152,13 +152,13 @@ namespace Publisher
             {
                 if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/@filename($(1))/)",
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/@ifnotempty($(CopiedFilename),@filename($(1)))/)",
                         referenceFilePath,
                         sourcePath);
                 }
                 else
                 {
-                    return module.Macros["CopyDir"] = module.CreateTokenizedString("@normalize(@dir($(0))/)",
+                    return module.CreateTokenizedString("@normalize(@dir($(0))/@ifnotempty($(CopiedFilename),))",
                         referenceFilePath);
                 }
             }

@@ -1,3 +1,5 @@
+06-Jan-2015 Fixes #100. Added CopiedFilename write property to Publisher.CollatedDirectory. If set, the directory is renamed during the copy. Also, Linux/OSX copy functionality has changed from 'cp' to 'bash -c cp' in order for wildcards to be evaluated.
+
 06-Jan-2015 Added TokenizedString post-function, @ifnotempty(a,b). If 'a' is not an empty string, then use it, otherwise use b.
 
 06-Jan-2015 Fixes #99. Xcode pre and post build scripts now escape double quotes.

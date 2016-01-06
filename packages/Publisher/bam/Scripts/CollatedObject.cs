@@ -46,6 +46,7 @@ namespace Publisher
         public CollatedObject()
         {
             this.RealSourcePath = this.MakePlaceholderPath();
+            this.Macros.Add("CopiedFilename", this.MakePlaceholderPath());
         }
 
         protected override void

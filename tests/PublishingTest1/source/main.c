@@ -161,11 +161,12 @@ validateTestFile1(
 }
 
 static int
-validateTestDir1(
-    const char *parentDir)
+validateTestDir1_renamed(
+    const char *parentDir,
+    const char *dirName)
 {
     int exitStatus = 0;
-    char *dirpath = joinPaths(parentDir, "testdir1");
+    char *dirpath = joinPaths(parentDir, dirName);
     if (0 == directoryExists(dirpath))
     {
         fprintf(stdout, "FOUND directory: '%s'\n", dirpath);
@@ -237,6 +238,13 @@ validateTestDir1(
     return exitStatus;
 }
 
+static int
+validateTestDir1(
+    const char *parentDir)
+{
+    return validateTestDir1_renamed(parentDir, "testdir1");
+}
+
 int
 main(
     int argc,
@@ -252,6 +260,11 @@ main(
     /* check if directory (and all files/subdirs within) exists next to executable */
     exitStatus += validateTestDir1(exeDir);
 
+    char *libDir = joinPaths(exeDir, "lib");
+    /* check directory again, but in a different location, and a different name */
+    exitStatus += validateTestDir1_renamed(libDir, "testdir1_renamed");
+
+    free(libDir);
     free(exeDir);
 
     if (0 == exitStatus)

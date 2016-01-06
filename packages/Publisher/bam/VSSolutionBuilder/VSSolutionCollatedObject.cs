@@ -75,7 +75,7 @@ namespace Publisher
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
                         sourcePath.ParseAndQuoteIfNecessary(),
-                        sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sourcePath).Parse(),
+                        sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath).Parse(),
                         CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }
                 else
