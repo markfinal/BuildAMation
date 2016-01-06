@@ -85,6 +85,19 @@ namespace Bam.Core
         private TokenizedString Alias = null;
 
         /// <summary>
+        /// Query if the TokenizedString has been aliased to another.
+        /// </summary>
+        /// <value><c>true</c> if this instance is aliased; otherwise, <c>false</c>.</value>
+        public bool
+        IsAliased
+        {
+            get
+            {
+                return (null != this.Alias);
+            }
+        }
+
+        /// <summary>
         /// Alias to another string. Useful for placeholder strings.
         /// </summary>
         /// <param name="alias">Alias.</param>
@@ -92,7 +105,7 @@ namespace Bam.Core
         Aliased(
             TokenizedString alias)
         {
-            if (null != this.Alias)
+            if (this.IsAliased)
             {
                 throw new Exception("TokenizedString is already aliased");
             }
@@ -270,7 +283,7 @@ namespace Bam.Core
         {
             get
             {
-                if (null != this.Alias)
+                if (this.IsAliased)
                 {
                     return this.Alias.IsExpanded;
                 }
@@ -308,7 +321,7 @@ namespace Bam.Core
         public override string
         ToString()
         {
-            if (this.Alias != null)
+            if (this.IsAliased)
             {
                 return this.Alias.ToString();
             }
@@ -327,7 +340,7 @@ namespace Bam.Core
         {
             get
             {
-                if (this.Alias != null)
+                if (this.IsAliased)
                 {
                     return this.Alias.Empty;
                 }
@@ -391,7 +404,7 @@ namespace Bam.Core
             {
                 throw new Exception("Inline TokenizedString cannot be parsed, {0}", this.OriginalString);
             }
-            if (this.Alias != null)
+            if (this.IsAliased)
             {
                 return this.Alias.Parse(customMacros);
             }
@@ -700,7 +713,7 @@ namespace Bam.Core
         public string ParseAndQuoteIfNecessary(
             MacroList customMacros = null)
         {
-            if (null != this.Alias)
+            if (this.IsAliased)
             {
                 return this.Alias.ParseAndQuoteIfNecessary(customMacros);
             }
@@ -746,14 +759,14 @@ namespace Bam.Core
         DumpCache()
         {
             Log.DebugMessage("Tokenized string cache");
-            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.Alias != null))
+            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.IsAliased))
             {
                 Log.DebugMessage("#{0} {1}'{2}'{3} {4} {5}",
                     item.RefCount,
                     item.Verbatim ? "<verbatim>" : string.Empty,
                     item.OriginalString,
                     item.Verbatim ? "</verbatim>" : string.Empty,
-                    item.Alias != null ? System.String.Format("Aliased to: '{0}'", item.Alias.OriginalString) : string.Empty,
+                    item.IsAliased ? System.String.Format("Aliased to: '{0}'", item.Alias.OriginalString) : string.Empty,
                     item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
             }
         }
