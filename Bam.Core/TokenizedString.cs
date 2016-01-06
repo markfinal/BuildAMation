@@ -43,7 +43,8 @@ namespace Bam.Core
         private enum EFlags
         {
             None = 0,
-            Inline = 0x1
+            Inline = 0x1,
+            NoCache = 0x2
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Bam.Core
                 throw new Exception("TokenizedString is already aliased");
             }
             this.Alias = alias;
-            alias.RefCount += 1;
+            ++alias.RefCount;
         }
 
         static private System.Collections.Generic.IEnumerable<string>
@@ -165,38 +166,41 @@ namespace Bam.Core
             // strings can be created during the multithreaded phase
             lock (Cache)
             {
-                var search = Cache.Where((ts) =>
+                if (0 == (flags & EFlags.NoCache))
                 {
-                    // first check the simple states for equivalence
-                    if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource && ts.Verbatim == verbatim)
+                    var search = Cache.Where((ts) =>
                     {
-                        // and then check the positional tokens, if they exist
-                        var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
-                                                ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
-                        if (!samePosTokenCount)
+                        // first check the simple states for equivalence
+                        if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource && ts.Verbatim == verbatim)
                         {
-                            return false;
-                        }
-                        for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
-                        {
-                            // because positional tokens are TokenizedStrings, they will refer to the same object
-                            if (ts.PositionalTokens[i] != positionalTokens[i])
+                            // and then check the positional tokens, if they exist
+                            var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
+                                                    ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
+                            if (!samePosTokenCount)
                             {
                                 return false;
                             }
+                            for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
+                            {
+                                // because positional tokens are TokenizedStrings, they will refer to the same object
+                                if (ts.PositionalTokens[i] != positionalTokens[i])
+                                {
+                                    return false;
+                                }
+                            }
+                            return true;
                         }
-                        return true;
-                    }
-                    else
+                        else
+                        {
+                            return false;
+                        }
+                    });
+                    var foundTS = search.FirstOrDefault();
+                    if (null != foundTS)
                     {
-                        return false;
+                        ++foundTS.RefCount;
+                        return foundTS;
                     }
-                });
-                var foundTS = search.FirstOrDefault();
-                if (null != foundTS)
-                {
-                    ++foundTS.RefCount;
-                    return foundTS;
                 }
                 var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
                 Cache.Add(newTS);
@@ -242,6 +246,22 @@ namespace Bam.Core
             string inlineString)
         {
             return CreateInternal(inlineString, null, false, null, EFlags.Inline);
+        }
+
+        /// <summary>
+        /// Utility method to create a TokenizedString which will not be cached with any other existing
+        /// TokenizedStrings that share the same original string.
+        /// Such TokenizedStrings are intended to be aliased at a future time.
+        /// </summary>
+        /// <param name="uncachedString">The string that will be uncached.</param>
+        /// <param name="macroSource">The Module containing macros that will be eventually referenced.</param>
+        /// <returns>A unique TokenizedString.</returns>
+        public static TokenizedString
+        CreateUncached(
+            string uncachedString,
+            Module macroSource)
+        {
+            return CreateInternal(uncachedString, macroSource, false, null, EFlags.NoCache);
         }
 
         private bool IsExpanded
