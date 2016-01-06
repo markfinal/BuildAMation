@@ -1,3 +1,5 @@
+06-Jan-2015 Fixes #97. TokenizedString expressions referencing functions (pre or post) but having mismatched brackets, could result in the .NET regex engine hanging indefinitely. Added a timeout (5 seconds) and throw an exception with details on both the source expression and regex used, in order to diagnose the issue.
+
 06-Jan-2016 Fixes #96. The utility function Bam.Core.Module.MakePlaceholderPath could only be used once per module, due to the caching of similar TokenizedStrings. Undesired behaviour resulted if it was used multiple times, since as soon as any placeholder TokenizedString on that Module was aliased (the whole purpose behind a placeholder), all placeholder strings were aliased. Added a utility function Bam.Core.TokenizedString.CreateUncached, which will always return a unique TokenizedString. Bam.Core.Module.MakePlaceholderPath now uses TokenizedString.CreateUncached.
 
 06-Jan-2016 Added new test, PublishingTest1, which can be used to exercise the features of the Publishing package.

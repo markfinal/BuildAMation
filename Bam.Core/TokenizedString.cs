@@ -71,6 +71,8 @@ namespace Bam.Core
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
+        private static System.TimeSpan RegExTimeout = System.TimeSpan.FromSeconds(5);
+
         private System.Collections.Generic.List<string> Tokens = null;
         private Module ModuleWithMacros = null;
         private string OriginalString = null;
@@ -524,14 +526,36 @@ namespace Bam.Core
         EvaluatePostFunctions(
             string sourceExpression)
         {
-            var matches = System.Text.RegularExpressions.Regex.Matches(sourceExpression, PostFunctionRegExPattern);
-            if (0 == matches.Count)
+            System.Text.RegularExpressions.MatchCollection matches = null;
+            try
             {
-                if (sourceExpression.Contains("@"))
+                matches = System.Text.RegularExpressions.Regex.Matches(
+                    sourceExpression,
+                    PostFunctionRegExPattern,
+                    System.Text.RegularExpressions.RegexOptions.None,
+                    RegExTimeout);
+                if (0 == matches.Count)
                 {
-                    throw new Exception("Expression '{0}' did not match for post-functions, but does contain @ - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", sourceExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    if (sourceExpression.Contains("@"))
+                    {
+                        throw new Exception("Expression '{0}' did not match for post-functions, but does contain @ - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", sourceExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    }
+                    return sourceExpression;
                 }
-                return sourceExpression;
+            }
+            catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("TokenizedString post-function regular expression matching timed out after {0} seconds. Check details below for errors.", RegExTimeout.Seconds);
+                message.AppendLine();
+                message.AppendFormat("String being parsed: {0}", sourceExpression);
+                message.AppendLine();
+                message.AppendFormat("Regex              : {0}", PostFunctionRegExPattern);
+                message.AppendLine();
+                message.AppendFormat("Tokenized string {0} created at", this.OriginalString);
+                message.AppendLine();
+                message.AppendLine(this.CreationStackTrace);
+                throw new Exception(message.ToString());
             }
             var modifiedString = sourceExpression;
             foreach (System.Text.RegularExpressions.Match match in matches)
@@ -790,14 +814,36 @@ namespace Bam.Core
             string originalExpression,
             MacroList customMacros)
         {
-            var matches = System.Text.RegularExpressions.Regex.Matches(originalExpression, PreFunctionRegExPattern);
-            if (0 == matches.Count)
+            System.Text.RegularExpressions.MatchCollection matches = null;
+            try
             {
-                if (originalExpression.Contains("#"))
+                matches = System.Text.RegularExpressions.Regex.Matches(
+                    originalExpression,
+                    PreFunctionRegExPattern,
+                    System.Text.RegularExpressions.RegexOptions.None,
+                    RegExTimeout);
+                if (0 == matches.Count)
                 {
-                    throw new Exception("Expression '{0}' did not match for pre-functions, but does contain # - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", originalExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    if (originalExpression.Contains("#"))
+                    {
+                        throw new Exception("Expression '{0}' did not match for pre-functions, but does contain # - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", originalExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    }
+                    return originalExpression;
                 }
-                return originalExpression;
+            }
+            catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("TokenizedString pre-function regular expression matching timed out after {0} seconds. Check details below for errors.", RegExTimeout.Seconds);
+                message.AppendLine();
+                message.AppendFormat("String being parsed: {0}", originalExpression);
+                message.AppendLine();
+                message.AppendFormat("Regex              : {0}", PreFunctionRegExPattern);
+                message.AppendLine();
+                message.AppendFormat("Tokenized string {0} created at", this.OriginalString);
+                message.AppendLine();
+                message.AppendLine(this.CreationStackTrace);
+                throw new Exception(message.ToString());
             }
             var modifiedString = originalExpression;
             foreach (System.Text.RegularExpressions.Match match in matches)
