@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #if defined(D_BAM_PLATFORM_WINDOWS)
 #include <Windows.h>
@@ -89,7 +90,7 @@ fileExists(
         return -1;
     }
     int doesExist = S_ISREG(info.st_mode);
-    return (doesExist != 0);
+    return (0 == doesExist);
 }
 
 int
@@ -103,7 +104,7 @@ directoryExists(
         return -1;
     }
     int doesExist = S_ISDIR(info.st_mode);
-    return (doesExist != 0);
+    return (0 == doesExist);
 }
 #endif
 
@@ -131,7 +132,7 @@ joinPaths(
 {
     size_t lendir = strlen(dir);
     size_t lenfile = strlen(filename);
-    size_t lentotal = lendir + lenfile + 2; // pathsep + null char
+    size_t lentotal = lendir + lenfile + 2; /* pathsep + null char */
     char *combined = malloc(lentotal);
     strcpy(combined, dir);
     combined[lendir] = pathSep;
@@ -149,7 +150,7 @@ main(
     char *exeDir = getParentDirectory(exePath);
     int exitStatus = 0;
 
-    // check if single data file exists next to executable
+    /* check if single data file exists next to executable */
     {
         char *path = joinPaths(exeDir, "testfile1.txt");
         if (0 == fileExists(path))
@@ -164,14 +165,14 @@ main(
         free(path);
     }
 
-    // check if directory exists next to executable
+    /* check if directory exists next to executable */
     {
         char *dirpath = joinPaths(exeDir, "testdir1");
         if (0 == directoryExists(dirpath))
         {
             fprintf(stdout, "FOUND directory: '%s'\n", dirpath);
 
-            // check for files within directory
+            /* check for files within directory */
             {
                 char *path = joinPaths(dirpath, "file1.txt");
                 if (0 == fileExists(path))
@@ -199,14 +200,14 @@ main(
                 free(path);
             }
 
-            // check for subdirectory
+            /* check for subdirectory */
             {
                 char *subdirPath = joinPaths(dirpath, "subdir");
                 if (0 == directoryExists(subdirPath))
                 {
                     fprintf(stdout, "FOUND directory: '%s'\n", subdirPath);
 
-                    // check for file in subdir
+                    /* check for file in subdir */
                     {
                         char *path = joinPaths(subdirPath, "file3.txt");
                         if (0 == fileExists(path))
