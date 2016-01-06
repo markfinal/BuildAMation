@@ -46,10 +46,11 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             commandLine.Add("-r");
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@",
+            rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@ {3}",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                 commandLine.ToString(' '),
-                newRPath));
+                newRPath,
+                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
     }
 }

@@ -48,10 +48,11 @@ namespace C
             commandLineArgs.Add("-s");
             commandLineArgs.Add("-f");
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} $(notdir $@) $(dir $@)/{2}",
+            rule.AddShellCommand(System.String.Format(@"{0} {1} $(notdir $@) $(dir $@)/{2} {3}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
                 commandLineArgs.ToString(' '),
-                linkname.Parse()));
+                linkname.Parse(),
+                CommandLineProcessor.Processor.TerminatingArgs(tool)));
         }
     }
 }

@@ -98,9 +98,10 @@ namespace C
 
             var tool = sender.Tool as Bam.Core.ICommandLineTool;
             var commands = new System.Text.StringBuilder();
-            commands.AppendFormat("{0} $^ {1}",
+            commands.AppendFormat("{0} $^ {1} {2}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
-                commandLineArgs.ToString(' '));
+                commandLineArgs.ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(commands.ToString());
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());

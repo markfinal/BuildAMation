@@ -50,11 +50,12 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            rule.AddShellCommand(System.String.Format("{0} {1} {2} -o {3}",
+            rule.AddShellCommand(System.String.Format("{0} {1} {2} -o {3} {4}",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                 commandLine.ToString(' '),
                 originalPath.Parse(),
-                copiedPath.Parse()));
+                copiedPath.Parse(),
+                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
     }
 }

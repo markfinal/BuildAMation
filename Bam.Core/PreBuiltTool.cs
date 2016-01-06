@@ -108,6 +108,18 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Default to no terminating arguments. Virtual to allow overriding.
+        /// </summary>
+        /// <value>The terminating arguments to a command line.</value>
+        public virtual TokenizedStringArray TerminatingArguments
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Prebuilt tool does not support response files by default. Virtual to allow overiding.
         /// </summary>
         /// <value>The use response file option.</value>

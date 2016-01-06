@@ -72,10 +72,11 @@ namespace Publisher
 
                 var commands = new Bam.Core.StringArray();
                 commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
-                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2}",
+                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2} {3}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
-                    destinationPath));
+                    destinationPath,
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
 
                 var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.SourceModule);
@@ -104,13 +105,14 @@ namespace Publisher
                     }
                 }
 
-                commands.Add(System.String.Format("{0} {1} {2} {3}/{4}{5}",
+                commands.Add(System.String.Format("{0} {1} {2} {3}/{4}{5} {6}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     isSymlink ? sender.Macros["LinkTarget"].Parse() : sourcePath.Parse(),
                     destinationFolder,
                     isSymlink ? sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse() : sender.SubDirectory.Parse(),
-                    isSymlink ? string.Empty : "/"));
+                    isSymlink ? string.Empty : "/",
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
 
                 var target = sender.Reference.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.Reference.SourceModule);
