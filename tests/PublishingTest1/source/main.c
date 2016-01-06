@@ -36,7 +36,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 const char pathSep = '\\';
 
-int
+static int
 fileExists(
     const char *inPath)
 {
@@ -57,7 +57,7 @@ fileExists(
     return 0;
 }
 
-int
+static int
 directoryExists(
     const char *inPath)
 {
@@ -79,7 +79,7 @@ directoryExists(
 
 const char pathSep = '/';
 
-int
+static int
 fileExists(
     const char *inPath)
 {
@@ -93,7 +93,7 @@ fileExists(
     return (0 == doesExist);
 }
 
-int
+static int
 directoryExists(
     const char *inPath)
 {
@@ -108,7 +108,7 @@ directoryExists(
 }
 #endif
 
-char *
+static char *
 getParentDirectory(
     const char *exePath)
 {
@@ -125,7 +125,7 @@ getParentDirectory(
     return copy;
 }
 
-char *
+static char *
 joinPaths(
     const char *dir,
     const char *filename)
@@ -141,51 +141,49 @@ joinPaths(
     return combined;
 }
 
-int
-main(
-    int argc,
-    char **argv)
+static int
+validateTestFile1(
+    const char *parentDir)
 {
-    char *exePath = argv[0];
-    char *exeDir = getParentDirectory(exePath);
     int exitStatus = 0;
-
-    /* check if single data file exists next to executable */
+    char *path = joinPaths(parentDir, "testfile1.txt");
+    if (0 == fileExists(path))
     {
-        char *path = joinPaths(exeDir, "testfile1.txt");
-        if (0 == fileExists(path))
-        {
-            fprintf(stdout, "FOUND file: '%s'\n", path);
-        }
-        else
-        {
-            fprintf(stderr, "Unable to locate file '%s'\n", path);
-            ++exitStatus;
-        }
-        free(path);
+        fprintf(stdout, "FOUND file: '%s'\n", path);
     }
-
-    /* check if directory exists next to executable */
+    else
     {
-        char *dirpath = joinPaths(exeDir, "testdir1");
-        if (0 == directoryExists(dirpath))
-        {
-            fprintf(stdout, "FOUND directory: '%s'\n", dirpath);
+        fprintf(stderr, "Unable to locate file '%s'\n", path);
+        ++exitStatus;
+    }
+    free(path);
+    return exitStatus;
+}
 
-            /* check for files within directory */
+static int
+validateTestDir1(
+    const char *parentDir)
+{
+    int exitStatus = 0;
+    char *dirpath = joinPaths(parentDir, "testdir1");
+    if (0 == directoryExists(dirpath))
+    {
+        fprintf(stdout, "FOUND directory: '%s'\n", dirpath);
+
+        /* check for files within directory */
+        {
+            char *path = joinPaths(dirpath, "file1.txt");
+            if (0 == fileExists(path))
             {
-                char *path = joinPaths(dirpath, "file1.txt");
-                if (0 == fileExists(path))
-                {
-                    fprintf(stdout, "FOUND file: '%s'\n", path);
-                }
-                else
-                {
-                    fprintf(stderr, "Unable to locate file '%s'\n", path);
-                    ++exitStatus;
-                }
-                free(path);
+                fprintf(stdout, "FOUND file: '%s'\n", path);
             }
+            else
+            {
+                fprintf(stderr, "Unable to locate file '%s'\n", path);
+                ++exitStatus;
+            }
+            free(path);
+        }
             {
                 char *path = joinPaths(dirpath, "file2.txt");
                 if (0 == fileExists(path))
@@ -229,14 +227,30 @@ main(
                 }
                 free(subdirPath);
             }
-        }
-        else
-        {
-            fprintf(stderr, "Unable to locate directory '%s'\n", dirpath);
-            ++exitStatus;
-        }
-        free(dirpath);
     }
+    else
+    {
+        fprintf(stderr, "Unable to locate directory '%s'\n", dirpath);
+        ++exitStatus;
+    }
+    free(dirpath);
+    return exitStatus;
+}
+
+int
+main(
+    int argc,
+    char **argv)
+{
+    char *exePath = argv[0];
+    char *exeDir = getParentDirectory(exePath);
+    int exitStatus = 0;
+
+    /* check if single data file exists next to executable */
+    exitStatus += validateTestFile1(exeDir);
+
+    /* check if directory (and all files/subdirs within) exists next to executable */
+    exitStatus += validateTestDir1(exeDir);
 
     free(exeDir);
 
