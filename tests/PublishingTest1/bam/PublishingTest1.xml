@@ -5,6 +5,7 @@
     <Package name="C" />
     <Package name="Clang" version="Xcode6" />
     <Package name="Gcc" version="4.8" />
+    <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
     <Package name="Publisher" />
     <Package name="VisualC" version="12.0" />
