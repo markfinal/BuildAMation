@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace PreprocessorStringTest1
 {
     sealed class TestApp :
@@ -43,8 +44,39 @@ namespace PreprocessorStringTest1
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("D_COMMON_STRING", "Hello");
+                    compiler.PreprocessorDefines.Add("D_COMMON_STRING", "\"Hello1\"");
+                    compiler.PreprocessorDefines.Add("D_COMMON_STRING2", this.CreateTokenizedString("@escapedquotes(Hello2)"));
+                    compiler.PreprocessorDefines.Add("D_SOURCE_PATH", this.CreateTokenizedString("@escapedquotes($(packagedir))"));
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        if (this.Linker is VisualCCommon.LinkerBase)
+                        {
+                            compiler.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message(\"Compile-time-message\")");
+                        }
+                        else
+                        {
+                            compiler.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message\"Compile-time-message\"");
+                        }
+                    }
+                    else
+                    {
+                        compiler.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message\"Compile-time-message\"");
+                    }
                 });
+
+            source.Children.Where(item => item.InputPath.Parse().Contains("string.c")).ToList().ForEach(item =>
+                {
+                    item.PrivatePatch(settings =>
+                        {
+                            var compiler = settings as C.ICommonCompilerSettings;
+                            compiler.PreprocessorDefines.Add("D_FILE_STRING", "\"Hello3\"");
+                        });
+                });
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
         }
     }
 }

@@ -99,16 +99,12 @@ namespace GccCommon
                 }
                 else
                 {
-                    if (define.Value.Contains("\""))
+                    var value = define.Value;
+                    if (value.Contains("\""))
                     {
-                        // specifically, without the outer quotes, this was causing an issue in a bash shell
-                        // when the value contained an escaped double quote
-                        commandLine.Add(System.String.Format("-D{0}=\"{1}\"", define.Key, define.Value));
+                        value = value.Replace("\"", "\\\"");
                     }
-                    else
-                    {
-                        commandLine.Add(System.String.Format("-D{0}={1}", define.Key, define.Value));
-                    }
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
                 }
             }
             foreach (var undefine in settings.PreprocessorUndefines)

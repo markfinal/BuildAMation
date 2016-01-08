@@ -644,8 +644,15 @@ namespace Bam.Core
                     }
 
                 case "escapedquotes":
-                    // ensure back slashes are escaped too
-                    return System.String.Format("\\\"{0}\\\"", argument.Replace("\\", "\\\\"));
+                    {
+                        if (OSUtilities.IsWindowsHosting)
+                        {
+                            // on Windows, escape any backslashes, as these are normal Windows paths
+                            // so don't interpret them as control characters
+                            argument = argument.Replace("\\", "\\\\");
+                        }
+                        return System.String.Format("\"{0}\"", argument);
+                    }
 
                 case "ifnotempty":
                     {

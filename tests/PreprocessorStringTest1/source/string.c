@@ -29,18 +29,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include <stdio.h>
 
-#define CONCAT_COMMON_STRING D_COMMON_STRING " World"
-#define CONCAT_COMMON_STRING2 D_COMMON_STRING2 " World"
+#define CONCAT_STRING D_FILE_STRING " World"
 
-extern void stringfunction();
-
-int
-main()
+void
+stringfunction()
 {
-#pragma D_MESSAGE_PRAGMA
-    printf("Source tree @ %s\n", D_SOURCE_PATH);
-    printf("%s from %s\n", CONCAT_COMMON_STRING, __FILE__);
-    printf("%s from %s\n", CONCAT_COMMON_STRING2, __FILE__);
-    stringfunction();
-    return 0;
+    printf("%s from %s\n", CONCAT_STRING, __FILE__);
 }

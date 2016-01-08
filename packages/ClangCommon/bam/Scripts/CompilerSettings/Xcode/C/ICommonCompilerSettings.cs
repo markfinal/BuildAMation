@@ -117,8 +117,14 @@ namespace ClangCommon
                     }
                     else
                     {
-                        // persist escape characters
-                        defines.Add(System.String.Format("{0}={1}", define.Key, define.Value.Replace(@"\", @"\\\")));
+                        var value = define.Value;
+                        if (value.Contains("\""))
+                        {
+                            // note the number of back slashes here
+                            // required to get \\\" for each " in the original value
+                            value = value.Replace("\"", "\\\\\\\"");
+                        }
+                        defines.Add(System.String.Format("{0}={1}", define.Key, value));
                     }
                 }
                 configuration["GCC_PREPROCESSOR_DEFINITIONS"] = defines;
