@@ -77,7 +77,7 @@ def configure_repository():
                                                    osx={"Native": [clang], "MakeFile": [clang], "Xcode": [clang]})
     configs["DuplicateSourceFilenameTest"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
                                                        linux={"Native": [gcc64], "MakeFile": [gcc64]},
-                                                       osx={"Native": [clang64], "MakeFile": [clang64]})
+                                                       osx={"Native": [clang64], "MakeFile": [clang64], "Xcode": [clang]})
     configs["PreprocessorStringTest1"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
                                                    linux={"Native": [gcc64], "MakeFile": [gcc64]},
                                                    osx={"Native": [clang64], "MakeFile": [clang64], "Xcode": [clang]})
