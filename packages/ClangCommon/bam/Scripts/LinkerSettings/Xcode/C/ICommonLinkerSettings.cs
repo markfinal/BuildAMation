@@ -61,14 +61,27 @@ namespace ClangCommon
             case C.ELinkerOutput.Executable:
                 {
                     configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(string.Empty);
-                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["exeext"].Parse().TrimStart(new [] {'.'}));
+                    var ext = module.CreateTokenizedString("$(exeext)").Parse().TrimStart(new [] {'.'});
+                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(ext);
                 }
                 break;
 
             case C.ELinkerOutput.DynamicLibrary:
                 {
-                    configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicprefix"].Parse());
-                    configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(module.Tool.Macros["dynamicextonly"].Parse().TrimStart(new [] {'.'}));
+                    if ((module is C.Plugin) || (module is C.Cxx.Plugin))
+                    {
+                        var prefix = module.CreateTokenizedString("$(pluginprefix)").Parse();
+                        configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(prefix);
+                        var ext = module.CreateTokenizedString("$(pluginext)").Parse().TrimStart(new [] {'.'});
+                        configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(ext);
+                    }
+                    else
+                    {
+                        var prefix = module.CreateTokenizedString("$(dynamicprefix)").Parse();
+                        configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(prefix);
+                        var ext = module.CreateTokenizedString("$(dynamicextonly)").Parse().TrimStart(new [] {'.'});
+                        configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(ext);
+                    }
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.UniqueConfigurationValue("mh_dylib");
 
                     var versionString = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse();
