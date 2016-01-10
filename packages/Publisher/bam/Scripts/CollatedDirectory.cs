@@ -40,6 +40,14 @@ namespace Publisher
             //this.ReasonToExecute = null;
         }
 
+        public string CopiedFilename
+        {
+            set
+            {
+                this.Macros["CopiedFilename"].Aliased(Bam.Core.TokenizedString.CreateVerbatim(value));
+            }
+        }
+
         public override TokenizedString SourcePath
         {
             get

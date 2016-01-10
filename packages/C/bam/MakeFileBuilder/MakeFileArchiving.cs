@@ -53,9 +53,10 @@ namespace C
 
             var tool = sender.Tool as Bam.Core.ICommandLineTool;
             var command = new System.Text.StringBuilder();
-            command.AppendFormat("{0} {1} $^",
+            command.AppendFormat("{0} {1} $^ {2}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
-                commandLineArgs.ToString(' '));
+                commandLineArgs.ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(command.ToString());
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());

@@ -43,7 +43,8 @@ namespace Bam.Core
         private enum EFlags
         {
             None = 0,
-            Inline = 0x1
+            Inline = 0x1,
+            NoCache = 0x2
         }
 
         /// <summary>
@@ -70,6 +71,8 @@ namespace Bam.Core
 
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
+        private static System.TimeSpan RegExTimeout = System.TimeSpan.FromSeconds(5);
+
         private System.Collections.Generic.List<string> Tokens = null;
         private Module ModuleWithMacros = null;
         private string OriginalString = null;
@@ -82,6 +85,19 @@ namespace Bam.Core
         private TokenizedString Alias = null;
 
         /// <summary>
+        /// Query if the TokenizedString has been aliased to another.
+        /// </summary>
+        /// <value><c>true</c> if this instance is aliased; otherwise, <c>false</c>.</value>
+        public bool
+        IsAliased
+        {
+            get
+            {
+                return (null != this.Alias);
+            }
+        }
+
+        /// <summary>
         /// Alias to another string. Useful for placeholder strings.
         /// </summary>
         /// <param name="alias">Alias.</param>
@@ -89,12 +105,12 @@ namespace Bam.Core
         Aliased(
             TokenizedString alias)
         {
-            if (null != this.Alias)
+            if (this.IsAliased)
             {
                 throw new Exception("TokenizedString is already aliased");
             }
             this.Alias = alias;
-            alias.RefCount += 1;
+            ++alias.RefCount;
         }
 
         static private System.Collections.Generic.IEnumerable<string>
@@ -165,38 +181,41 @@ namespace Bam.Core
             // strings can be created during the multithreaded phase
             lock (Cache)
             {
-                var search = Cache.Where((ts) =>
+                if (0 == (flags & EFlags.NoCache))
                 {
-                    // first check the simple states for equivalence
-                    if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource && ts.Verbatim == verbatim)
+                    var search = Cache.Where((ts) =>
                     {
-                        // and then check the positional tokens, if they exist
-                        var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
-                                                ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
-                        if (!samePosTokenCount)
+                        // first check the simple states for equivalence
+                        if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource && ts.Verbatim == verbatim)
                         {
-                            return false;
-                        }
-                        for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
-                        {
-                            // because positional tokens are TokenizedStrings, they will refer to the same object
-                            if (ts.PositionalTokens[i] != positionalTokens[i])
+                            // and then check the positional tokens, if they exist
+                            var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
+                                                    ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
+                            if (!samePosTokenCount)
                             {
                                 return false;
                             }
+                            for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
+                            {
+                                // because positional tokens are TokenizedStrings, they will refer to the same object
+                                if (ts.PositionalTokens[i] != positionalTokens[i])
+                                {
+                                    return false;
+                                }
+                            }
+                            return true;
                         }
-                        return true;
-                    }
-                    else
+                        else
+                        {
+                            return false;
+                        }
+                    });
+                    var foundTS = search.FirstOrDefault();
+                    if (null != foundTS)
                     {
-                        return false;
+                        ++foundTS.RefCount;
+                        return foundTS;
                     }
-                });
-                var foundTS = search.FirstOrDefault();
-                if (null != foundTS)
-                {
-                    ++foundTS.RefCount;
-                    return foundTS;
                 }
                 var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
                 Cache.Add(newTS);
@@ -244,11 +263,27 @@ namespace Bam.Core
             return CreateInternal(inlineString, null, false, null, EFlags.Inline);
         }
 
+        /// <summary>
+        /// Utility method to create a TokenizedString which will not be cached with any other existing
+        /// TokenizedStrings that share the same original string.
+        /// Such TokenizedStrings are intended to be aliased at a future time.
+        /// </summary>
+        /// <param name="uncachedString">The string that will be uncached.</param>
+        /// <param name="macroSource">The Module containing macros that will be eventually referenced.</param>
+        /// <returns>A unique TokenizedString.</returns>
+        public static TokenizedString
+        CreateUncached(
+            string uncachedString,
+            Module macroSource)
+        {
+            return CreateInternal(uncachedString, macroSource, false, null, EFlags.NoCache);
+        }
+
         private bool IsExpanded
         {
             get
             {
-                if (null != this.Alias)
+                if (this.IsAliased)
                 {
                     return this.Alias.IsExpanded;
                 }
@@ -286,7 +321,7 @@ namespace Bam.Core
         public override string
         ToString()
         {
-            if (this.Alias != null)
+            if (this.IsAliased)
             {
                 return this.Alias.ToString();
             }
@@ -305,7 +340,7 @@ namespace Bam.Core
         {
             get
             {
-                if (this.Alias != null)
+                if (this.IsAliased)
                 {
                     return this.Alias.Empty;
                 }
@@ -369,7 +404,7 @@ namespace Bam.Core
             {
                 throw new Exception("Inline TokenizedString cannot be parsed, {0}", this.OriginalString);
             }
-            if (this.Alias != null)
+            if (this.IsAliased)
             {
                 return this.Alias.Parse(customMacros);
             }
@@ -504,14 +539,36 @@ namespace Bam.Core
         EvaluatePostFunctions(
             string sourceExpression)
         {
-            var matches = System.Text.RegularExpressions.Regex.Matches(sourceExpression, PostFunctionRegExPattern);
-            if (0 == matches.Count)
+            System.Text.RegularExpressions.MatchCollection matches = null;
+            try
             {
-                if (sourceExpression.Contains("@"))
+                matches = System.Text.RegularExpressions.Regex.Matches(
+                    sourceExpression,
+                    PostFunctionRegExPattern,
+                    System.Text.RegularExpressions.RegexOptions.None,
+                    RegExTimeout);
+                if (0 == matches.Count)
                 {
-                    throw new Exception("Expression '{0}' did not match for post-functions, but does contain @ - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", sourceExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    if (sourceExpression.Contains("@"))
+                    {
+                        throw new Exception("Expression '{0}' did not match for post-functions, but does contain @ - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", sourceExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    }
+                    return sourceExpression;
                 }
-                return sourceExpression;
+            }
+            catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("TokenizedString post-function regular expression matching timed out after {0} seconds. Check details below for errors.", RegExTimeout.Seconds);
+                message.AppendLine();
+                message.AppendFormat("String being parsed: {0}", sourceExpression);
+                message.AppendLine();
+                message.AppendFormat("Regex              : {0}", PostFunctionRegExPattern);
+                message.AppendLine();
+                message.AppendFormat("Tokenized string {0} created at", this.OriginalString);
+                message.AppendLine();
+                message.AppendLine(this.CreationStackTrace);
+                throw new Exception(message.ToString());
             }
             var modifiedString = sourceExpression;
             foreach (System.Text.RegularExpressions.Match match in matches)
@@ -587,8 +644,30 @@ namespace Bam.Core
                     }
 
                 case "escapedquotes":
-                    // ensure back slashes are escaped too
-                    return System.String.Format("\\\"{0}\\\"", argument.Replace("\\", "\\\\"));
+                    {
+                        if (OSUtilities.IsWindowsHosting)
+                        {
+                            // on Windows, escape any backslashes, as these are normal Windows paths
+                            // so don't interpret them as control characters
+                            argument = argument.Replace("\\", "\\\\");
+                        }
+                        return System.String.Format("\"{0}\"", argument);
+                    }
+
+                case "ifnotempty":
+                    {
+                        var split = argument.Split(',');
+                        var predicateString = split[0];
+                        if (!System.String.IsNullOrEmpty(predicateString))
+                        {
+                            return predicateString;
+                        }
+                        else
+                        {
+                            var defaultString = split[1];
+                            return defaultString;
+                        }
+                    }
 
                 default:
                     throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
@@ -656,7 +735,7 @@ namespace Bam.Core
         public string ParseAndQuoteIfNecessary(
             MacroList customMacros = null)
         {
-            if (null != this.Alias)
+            if (this.IsAliased)
             {
                 return this.Alias.ParseAndQuoteIfNecessary(customMacros);
             }
@@ -702,14 +781,14 @@ namespace Bam.Core
         DumpCache()
         {
             Log.DebugMessage("Tokenized string cache");
-            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.Alias != null))
+            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.IsAliased))
             {
                 Log.DebugMessage("#{0} {1}'{2}'{3} {4} {5}",
                     item.RefCount,
                     item.Verbatim ? "<verbatim>" : string.Empty,
                     item.OriginalString,
                     item.Verbatim ? "</verbatim>" : string.Empty,
-                    item.Alias != null ? System.String.Format("Aliased to: '{0}'", item.Alias.OriginalString) : string.Empty,
+                    item.IsAliased ? System.String.Format("Aliased to: '{0}'", item.Alias.OriginalString) : string.Empty,
                     item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
             }
         }
@@ -770,14 +849,36 @@ namespace Bam.Core
             string originalExpression,
             MacroList customMacros)
         {
-            var matches = System.Text.RegularExpressions.Regex.Matches(originalExpression, PreFunctionRegExPattern);
-            if (0 == matches.Count)
+            System.Text.RegularExpressions.MatchCollection matches = null;
+            try
             {
-                if (originalExpression.Contains("#"))
+                matches = System.Text.RegularExpressions.Regex.Matches(
+                    originalExpression,
+                    PreFunctionRegExPattern,
+                    System.Text.RegularExpressions.RegexOptions.None,
+                    RegExTimeout);
+                if (0 == matches.Count)
                 {
-                    throw new Exception("Expression '{0}' did not match for pre-functions, but does contain # - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", originalExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    if (originalExpression.Contains("#"))
+                    {
+                        throw new Exception("Expression '{0}' did not match for pre-functions, but does contain # - are there mismatching brackets?. Tokenized string '{1}' created at{2}{3}", originalExpression, this.OriginalString, System.Environment.NewLine, this.CreationStackTrace);
+                    }
+                    return originalExpression;
                 }
-                return originalExpression;
+            }
+            catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("TokenizedString pre-function regular expression matching timed out after {0} seconds. Check details below for errors.", RegExTimeout.Seconds);
+                message.AppendLine();
+                message.AppendFormat("String being parsed: {0}", originalExpression);
+                message.AppendLine();
+                message.AppendFormat("Regex              : {0}", PreFunctionRegExPattern);
+                message.AppendLine();
+                message.AppendFormat("Tokenized string {0} created at", this.OriginalString);
+                message.AppendLine();
+                message.AppendLine(this.CreationStackTrace);
+                throw new Exception(message.ToString());
             }
             var modifiedString = originalExpression;
             foreach (System.Text.RegularExpressions.Match match in matches)

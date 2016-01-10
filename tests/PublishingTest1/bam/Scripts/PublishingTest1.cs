@@ -27,35 +27,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+using Bam.Core;
+namespace PublishingTest1
 {
-    public sealed class MakeFileStrip :
-        IStripToolPolicy
+    sealed class SimpleExe :
+        C.ConsoleApplication
     {
-        void
-        IStripToolPolicy.Strip(
-            StripModule sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString originalPath,
-            Bam.Core.TokenizedString copiedPath)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
+            base.Init(parent);
 
-            var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
+            this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
-            meta.CommonMetaData.Directories.AddUnique(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
-            rule.AddTarget(copiedPath, variableName: "strip_" + sourceFilename, isPhony: true);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+        }
+    }
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+    sealed class Runtime :
+        Publisher.Collation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
 
-            rule.AddShellCommand(System.String.Format("{0} {1} {2} -o {3} {4}",
-                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                commandLine.ToString(' '),
-                originalPath.Parse(),
-                copiedPath.Parse(),
-                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+            var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+
+            // copy a single data file, next to the executable
+            this.IncludeFile("$(packagedir)/data/testfile1.txt", ".", app);
+
+            // copy a directory, with a number of files and a subdirectory, next to the executable
+            this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), ".", app);
+
+            // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the executable
+            var renamedDir = this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), "lib", app);
+            renamedDir.CopiedFilename = "testdir1_renamed";
         }
     }
 }

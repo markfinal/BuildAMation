@@ -424,7 +424,7 @@ namespace XcodeBuilder
                             content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
                             foreach (var line in config.PreBuildCommands)
                             {
-                                content.AppendFormat("  {0}\\n", line);
+                                content.AppendFormat("  {0}\\n", line.Replace("\"", "\\\""));
                             }
                             content.AppendFormat("fi\\n\\n");
                         }
@@ -456,7 +456,7 @@ namespace XcodeBuilder
                             content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
                             foreach (var line in config.PostBuildCommands)
                             {
-                                content.AppendFormat("  {0}\\n", line);
+                                content.AppendFormat("  {0}\\n", line.Replace("\"", "\\\""));
                             }
                             content.AppendFormat("fi\\n\\n");
                         }

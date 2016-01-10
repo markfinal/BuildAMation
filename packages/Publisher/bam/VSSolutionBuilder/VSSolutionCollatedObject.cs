@@ -55,10 +55,11 @@ namespace Publisher
 
                 var commands = new Bam.Core.StringArray();
                 commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationPath));
-                commands.Add(System.String.Format(@"{0} {1} $(OutputPath)$(TargetFileName) {2}",
+                commands.Add(System.String.Format(@"{0} {1} $(OutputPath)$(TargetFileName) {2} {3}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
-                    destinationPath));
+                    destinationPath,
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
 
                 var project = sender.SourceModule.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(sender.SourceModule);
@@ -70,19 +71,21 @@ namespace Publisher
                 if (sender is CollatedDirectory)
                 {
                     // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
-                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\",
+                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\ {4}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
                         sourcePath.ParseAndQuoteIfNecessary(),
-                        sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sourcePath).Parse()));
+                        sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath).Parse(),
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }
                 else
                 {
-                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\",
+                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\ {4}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
                         sourcePath.ParseAndQuoteIfNecessary(),
-                        sender.SubDirectory));
+                        sender.SubDirectory,
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }
 
                 var project = sender.Reference.SourceModule.MetaData as VSSolutionBuilder.VSProject;

@@ -84,6 +84,14 @@ namespace CodeGenTest
             }
         }
 
+        public Bam.Core.TokenizedStringArray TerminatingArguments
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         public string UseResponseFileOption
         {
             get

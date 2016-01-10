@@ -52,12 +52,13 @@ namespace Publisher
 
             if (sender.Source.SourceModule != null && sender.Source.SourceModule.MetaData != null)
             {
-                commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
+                commands.Add(System.String.Format("{0} {1} {2} {3} {4} {5}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     oldName.Parse(),
                     newName.Parse(),
-                    sender.Source.GeneratedPaths[CollatedObject.Key].Parse()));
+                    sender.Source.GeneratedPaths[CollatedObject.Key].Parse(),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
 
                 var target = sender.Source.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.Source.SourceModule);
@@ -71,13 +72,14 @@ namespace Publisher
                     destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
                 }
 
-                commands.Add(System.String.Format("{0} {1} {2} {3} {4}/{5}",
+                commands.Add(System.String.Format("{0} {1} {2} {3} {4}/{5} {6}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     oldName.Parse(),
                     newName.Parse(),
                     destinationFolder,
-                    sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath).Parse()));
+                    sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath).Parse(),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
 
                 var target = sender.Source.Reference.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.Source.Reference.SourceModule);

@@ -73,6 +73,18 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Define any arguments that must appear directly after all other arguments, e.g. on Linux, commands that
+        /// expect wildcard expansion must use an executable of bash, and the command itself comes after (with a -c),
+        /// followed by the arguments to that command. However, the command and it's own arguments, must be quoted.
+        /// The TerminatingArguments can be used to add that last quote.
+        /// </summary>
+        /// <value>The terminating arguments to a command line.</value>
+        TokenizedStringArray TerminatingArguments
+        {
+            get;
+        }
+
+        /// <summary>
         /// Get the option to use a response file, or null if this is not supported.
         /// </summary>
         /// <value>The use response file option.</value>

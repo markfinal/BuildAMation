@@ -739,7 +739,7 @@ namespace Bam.Core
         public TokenizedString
         MakePlaceholderPath()
         {
-            return TokenizedString.Create(string.Empty, this);
+            return TokenizedString.CreateUncached(string.Empty, this);
         }
 
         /// <summary>

@@ -67,10 +67,16 @@ namespace Publisher
                 }
             }
 
+            var copySource = sourcePath.ParseAndQuoteIfNecessary();
+            if (sender is CollatedDirectory && sender.Tool is CopyFilePosix & sender.Macros["CopiedFilename"].IsAliased)
+            {
+                copySource = System.String.Format("{0}/*", copySource);
+            }
+
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            commandLine.Add(sourcePath.ParseAndQuoteIfNecessary());
+            commandLine.Add(copySource);
             commandLine.Add(destinationPath);
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }

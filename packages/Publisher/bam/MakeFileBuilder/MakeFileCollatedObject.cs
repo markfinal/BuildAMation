@@ -59,17 +59,19 @@ namespace Publisher
 
             if (isSymLink)
             {
-                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@",
+                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@ {3}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
-                    sender.Macros["LinkTarget"].Parse()));
+                    sender.Macros["LinkTarget"].Parse(),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             }
             else
             {
                 var ignoreErrors = (sender is CollatedFile) && !(sender as CollatedFile).FailWhenSourceDoesNotExist;
-                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@)",
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' ')),
+                    commandLine.ToString(' '),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)),
                     ignoreErrors: ignoreErrors);
                 rule.AddPrerequisite(sourcePath);
             }

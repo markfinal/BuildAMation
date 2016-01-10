@@ -100,7 +100,12 @@ namespace MingwCommon
                 }
                 else
                 {
-                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, define.Value));
+                    var value = define.Value;
+                    if (value.Contains("\""))
+                    {
+                        value = value.Replace("\"", "\\\"");
+                    }
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
                 }
             }
             foreach (var undefine in settings.PreprocessorUndefines)

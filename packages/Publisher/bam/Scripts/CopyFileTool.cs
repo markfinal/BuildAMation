@@ -53,7 +53,29 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("cp");
+                return Bam.Core.TokenizedString.CreateVerbatim("bash");
+            }
+        }
+
+        public override Bam.Core.TokenizedStringArray InitialArguments
+        {
+            get
+            {
+                var initArgs = new Bam.Core.TokenizedStringArray();
+                initArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("-c"));
+                initArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("\""));
+                initArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("cp"));
+                return initArgs;
+            }
+        }
+
+        public override Bam.Core.TokenizedStringArray TerminatingArguments
+        {
+            get
+            {
+                var termArgs = new Bam.Core.TokenizedStringArray();
+                termArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("\""));
+                return termArgs;
             }
         }
     }

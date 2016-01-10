@@ -57,6 +57,10 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
+            var destinationPath = sender.Macros["CopyDir"].Parse();
+            var commands = new Bam.Core.StringArray();
+            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
+
             if (sender.SourceModule != null && sender.SourceModule.MetaData != null)
             {
                 if ((null != sender.Reference) &&
@@ -68,14 +72,11 @@ namespace Publisher
                     return;
                 }
 
-                var destinationPath = sender.Macros["CopyDir"].Parse();
-
-                var commands = new Bam.Core.StringArray();
-                commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
-                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2}",
+                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2} {3}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
-                    destinationPath));
+                    destinationPath,
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
 
                 var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.SourceModule);
@@ -84,33 +85,52 @@ namespace Publisher
             else
             {
                 var isSymlink = (sender is CollatedSymbolicLink);
-                var commands = new Bam.Core.StringArray();
 
                 var destinationFolder = "$CONFIGURATION_BUILD_DIR";
                 if (sender.Reference != null)
                 {
                     destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
-                    if (isSymlink)
+                }
+
+                if (isSymlink)
+                {
+                    commands.Add(System.String.Format("{0} {1} {2} {3}/{4} {5}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        sender.Macros["LinkTarget"].Parse(),
+                        destinationFolder,
+                        sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse(),
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                }
+                else
+                {
+                    if (sender is CollatedDirectory)
                     {
-                        commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}",
-                            sender.CreateTokenizedString("@dir($CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$(0))",
-                                sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath)).Parse()));
+                        var copySource = sourcePath.Parse();
+                        if (sender.Macros["CopiedFilename"].IsAliased)
+                        {
+                            copySource = System.String.Format("{0}/*", copySource);
+                        }
+
+                        commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
+                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                            commandLine.ToString(' '),
+                            copySource,
+                            destinationFolder,
+                            sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath).Parse(),
+                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     }
                     else
                     {
-                        commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}",
-                            sender.CreateTokenizedString("$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$(0)",
-                                sender.SubDirectory).Parse()));
+                        commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
+                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                            commandLine.ToString(' '),
+                            sourcePath.Parse(),
+                            destinationFolder,
+                            sender.SubDirectory.Parse(),
+                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     }
                 }
-
-                commands.Add(System.String.Format("{0} {1} {2} {3}/{4}{5}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    isSymlink ? sender.Macros["LinkTarget"].Parse() : sourcePath.Parse(),
-                    destinationFolder,
-                    isSymlink ? sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse() : sender.SubDirectory.Parse(),
-                    isSymlink ? string.Empty : "/"));
 
                 var target = sender.Reference.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.Reference.SourceModule);

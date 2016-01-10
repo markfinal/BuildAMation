@@ -60,6 +60,9 @@ namespace PluginTest
         {
             base.Init(parent);
 
+            this.Macros["pluginprefix"] = Bam.Core.TokenizedString.CreateVerbatim("test");
+            this.Macros["pluginext"] = Bam.Core.TokenizedString.CreateVerbatim(".plugin");
+
             this.CreateCxxSourceContainer("$(packagedir)/source/plugin/pluginmain.cpp");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&

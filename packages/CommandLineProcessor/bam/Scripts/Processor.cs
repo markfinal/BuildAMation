@@ -48,6 +48,21 @@ namespace CommandLineProcessor
             return linearized.ToString();
         }
 
+        public static string
+        TerminatingArgs(
+            Bam.Core.ICommandLineTool tool)
+        {
+            var linearized = new System.Text.StringBuilder();
+            if (null != tool.TerminatingArguments)
+            {
+                foreach (var arg in tool.TerminatingArguments)
+                {
+                    linearized.AppendFormat(" {0}", arg.Parse());
+                }
+            }
+            return linearized.ToString();
+        }
+
         public static void
         Execute(
             Bam.Core.ExecutionContext context,
@@ -222,6 +237,13 @@ namespace CommandLineProcessor
                 }
             }
             commandLineArgs.AddRange(commandLine);
+            if (null != tool.TerminatingArguments)
+            {
+                foreach (var arg in tool.TerminatingArguments)
+                {
+                    commandLineArgs.Add(arg.Parse());
+                }
+            }
 
             Execute(
                 context,
