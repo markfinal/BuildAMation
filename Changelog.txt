@@ -1,3 +1,5 @@
+12-Jan-2016 Fixes #104. Very wide Native builds were not displaying the output and error streams from external processes launched.
+
 09-Jan-2016 Fixes #94. Overriding the macros 'pluginprefix' and 'pluginext' are now honoured in Xcode projects. Updated the PluginTest test case to exercise changing these macros.
 
 08-Jan-2016 Fixes #102. Preprocessor defines with quotes specified from the build scripts are now supported consistently across platforms and IDEs in BuildAMation. Added a test case, PreprocessorStringTest1, to exercise these forms. To specify a quoted string as a preprocessor definition within a (private or public) patch, use (settings as ICommonCompilerSettings).PreprocessorDefines.Add("DEFNAME", "\"astring\""); or the TokenizedString function (settings as ICommonCompilerSettings).PreprocessorDefines.Add("DEFNAME", this.CreateTokenizedString("@escapedquotes(apath)"));

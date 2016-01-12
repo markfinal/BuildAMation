@@ -180,9 +180,14 @@ namespace CommandLineProcessor
             }
 
             System.Diagnostics.Process process = null;
+            int exitCode = -1;
             try
             {
-                process = System.Diagnostics.Process.Start(processStartInfo);
+                process = new System.Diagnostics.Process();
+                process.StartInfo = processStartInfo;
+                process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.OutputDataReceived);
+                process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.ErrorDataReceived);
+                process.Start();
                 process.StandardInput.Close();
             }
             catch (System.ComponentModel.Win32Exception ex)
@@ -191,24 +196,22 @@ namespace CommandLineProcessor
             }
             if (null != process)
             {
-                process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.OutputDataReceived);
                 process.BeginOutputReadLine();
-
-                process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(context.ErrorDataReceived);
                 process.BeginErrorReadLine();
-
                 // TODO: need to poll for an external cancel op?
                 // poll for the process to exit, as some processes seem to get stuck (hdiutil attach, for example)
                 while (!process.HasExited)
                 {
                     process.WaitForExit(2000);
                 }
-            }
+                // this additional WaitForExit appears to be needed in order to finish reading the output and error streams asynchronously
+                // without it, output is missing from a Native build when executed in many threads
+                process.WaitForExit();
 
-            // TODO: there is a check above for whether process is null
-            var exitCode = process.ExitCode;
-            //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
-            process.Close();
+                exitCode = process.ExitCode;
+                //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
+                process.Close();
+            }
 
             if (exitCode != 0)
             {
