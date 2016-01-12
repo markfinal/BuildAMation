@@ -37,7 +37,7 @@ namespace Publisher
     /// subsequent files and folders, and the application type. This is the reference file.
     /// Add subsequent files and folders, specifying paths relative to the reference file. For example, to
     /// place a dynamic library in a plugins subfolder next to the main executable, specify a subdirectory of
-    /// 'plugins'. To place a framework in the <name>.app/Contents/Frameworks folder of an application bundle, specify
+    /// 'plugins'. To place a framework in the Contents/Frameworks sub-folder of an application bundle, specify
     /// a subdirectory of '../Frameworks', as the executable is in Contents/MacOS.
     /// </summary>
     public abstract class Collation :
