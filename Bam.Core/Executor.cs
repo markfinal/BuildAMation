@@ -436,7 +436,7 @@ namespace Bam.Core
 
             if (null != abortException)
             {
-                throw new Exception(abortException, "Error during non-threaded build");
+                throw new Exception(abortException, "Error during {0}threaded build", (threadCount > 1) ? string.Empty : "non-");
             }
 
             ExecutePostBuild(metaDataType);

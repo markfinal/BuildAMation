@@ -122,7 +122,7 @@ namespace Bam.Core
             }
             if (this.UseDeferredOutput)
             {
-                this.OutputStringBuilder.Append(e.Data + '\n');
+                this.OutputStringBuilder.AppendLine(e.Data);
             }
             else
             {
@@ -146,7 +146,7 @@ namespace Bam.Core
             }
             if (this.UseDeferredOutput)
             {
-                this.ErrorStringBuilder.Append(e.Data + '\n');
+                this.ErrorStringBuilder.AppendLine(e.Data);
             }
             else
             {
