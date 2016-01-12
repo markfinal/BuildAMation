@@ -170,7 +170,7 @@ namespace Publisher
                 var referenceFilePath = newRef.GeneratedPaths[this.ReferenceKey];
 
                 module.Macros["CopyDir"] = Collation.GenerateDirectoryCopyDestination(
-                    this,
+                    module,
                     referenceFilePath,
                     collatedDir.SubDirectory,
                     collatedDir.SourcePath);
