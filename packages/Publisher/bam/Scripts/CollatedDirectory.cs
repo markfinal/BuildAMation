@@ -62,7 +62,7 @@ namespace Publisher
                 // therefore don't add it back here for Windows
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
-                    this.GeneratedPaths[Key] = this.CreateTokenizedString("@removetrailingseperator($(CopyDir))");
+                    this.GeneratedPaths[Key] = this.CreateTokenizedString("@removetrailingseparator($(CopyDir))");
                 }
                 else
                 {

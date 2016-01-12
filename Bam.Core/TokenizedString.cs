@@ -51,7 +51,8 @@ namespace Bam.Core
     /// <item><description><code>@dir_(path)</code></description> Return the parent directory of path. (Remove the underscore from the name)</item>
     /// <item><description><code>@normalize(path)</code></description> Return the full path of path, without any special directories.</item>
     /// <item><description><code>@changeextension(path,ext)</code></description> Change the extension of the file in path, to ext.</item>
-    /// <item><description><code>@removetrailingseperator(path)</code></description> Remove any directory separator characters from the end of path.</item>
+    /// <item><description><code>@removetrailingseperator(path)</code></description> Deprecated for removal in v1.1.0. Use removetrailingseparator.</item>
+    /// <item><description><code>@removetrailingseparator(path)</code></description> Remove any directory separator characters from the end of path.</item>
     /// <item><description><code>@relativeto(path,root)</code></description> Return the relative path from root.</item>
     /// <item><description><code>@trimstart(path,totrim)</code></description> Trim string from the start of path.</item>
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
@@ -637,6 +638,10 @@ namespace Bam.Core
                     }
 
                 case "removetrailingseperator":
+                    Log.MessageAll("DEPRECATED for removal in v1.1.0: Use 'removetrailingseparator' with the correct spelling instead.");
+                    goto case "removetrailingseparator";
+
+                case "removetrailingseparator":
                     return argument.TrimEnd(System.IO.Path.DirectorySeparatorChar);
 
                 case "relativeto":
