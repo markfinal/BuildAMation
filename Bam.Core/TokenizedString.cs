@@ -31,12 +31,33 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Strings can contain macros and functions, which are tokenized and evaluated in this class.
-    /// Tokens are identified by $( and ).
-    /// Functions can run before or after token expansion.
-    /// Pre-functions run before, and are identified by #name(...).
-    /// Post-functions run after token expansion, and are identified by @(...).
+    /// Strings are tokenized by macros and functions. Macros are themselves TokenizedStrings
+    /// and so there is a recursive expansion to evaluate the resulting string.
     /// </summary>
+    /// <remarks>
+    /// Tokens are identified by $( and ).
+    /// <para />
+    /// Functions can run before or after token expansion.
+    /// <para />
+    /// Pre-functions are run before, and are identified by #name(...):
+    /// <list type="bullet">
+    /// <item><description><code>#valid(expr)</code></description> If the expression is a valid
+    /// TokenizedString, expand it and use it, otherwise the entire function call is replaced with an empty string.</item>
+    /// </list>
+    /// Post-functions are run after token expansion, and are identified by @(...):
+    /// <list type="bullet">
+    /// <item><description><code>@basename(path)</code></description> Return the filename excluding extension in the path.</item>
+    /// <item><description><code>@filename(path)</code></description> Return the filename including extension in the path.</item>
+    /// <item><description><code>@dir_(path)</code></description> Return the parent directory of path. (Remove the underscore from the name)</item>
+    /// <item><description><code>@normalize(path)</code></description> Return the full path of path, without any special directories.</item>
+    /// <item><description><code>@changeextension(path,ext)</code></description> Change the extension of the file in path, to ext.</item>
+    /// <item><description><code>@removetrailingseperator(path)</code></description> Remove any directory separator characters from the end of path.</item>
+    /// <item><description><code>@relativeto(path,root)</code></description> Return the relative path from root.</item>
+    /// <item><description><code>@trimstart(path,totrim)</code></description> Trim string from the start of path.</item>
+    /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
+    /// <item><description><code>@ifnotempty(path,default)</code></description> If path is not empty, use it, otherwise use default.</item>
+    /// </list>
+    /// </remarks>
     public sealed class TokenizedString
     {
         [System.Flags]
