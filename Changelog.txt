@@ -1,3 +1,5 @@
+12-Jan-2016 Fixes #105. Added documentation for the pre- and post-functions available in TokenizedStrings.
+
 12-Jan-2016 Fixes #104. Very wide Native builds were not displaying the output and error streams from external processes launched.
 
 09-Jan-2016 Fixes #94. Overriding the macros 'pluginprefix' and 'pluginext' are now honoured in Xcode projects. Updated the PluginTest test case to exercise changing these macros.
