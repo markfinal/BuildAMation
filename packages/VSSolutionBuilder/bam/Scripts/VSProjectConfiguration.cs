@@ -191,6 +191,12 @@ namespace VSSolutionBuilder
             set;
         }
 
+        private string TargetExt
+        {
+            get;
+            set;
+        }
+
         private Bam.Core.Array<VSSettingsGroup> SettingGroups
         {
             get;
@@ -248,13 +254,11 @@ namespace VSSolutionBuilder
             outDir += "\\";
             this.OutputDirectory = outDir;
 
-            // does the target name differ?
-            var outputName = this.Module.Macros["OutputName"].Parse();
-            var moduleName = this.Module.Macros["modulename"].Parse();
-            if (outputName != moduleName)
-            {
-                this.TargetName = outputName;
-            }
+            var targetName = this.Module.CreateTokenizedString("@basename($(0))", path).Parse();
+            var filename = this.Module.CreateTokenizedString("@filename($(0))", path).Parse();
+            var ext = filename.Replace(targetName, string.Empty);
+            this.TargetName = targetName;
+            this.TargetExt = ext;
         }
 
         public void
@@ -418,6 +422,10 @@ namespace VSSolutionBuilder
             if (null != this.TargetName)
             {
                 document.CreateVSElement("TargetName", value: this.TargetName, parentEl: propGroup);
+            }
+            if (null != this.TargetExt)
+            {
+                document.CreateVSElement("TargetExt", value: this.TargetExt, parentEl: propGroup);
             }
         }
 
