@@ -85,6 +85,12 @@ namespace Installer
                 CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
 
+            var dmgDir = System.IO.Path.GetDirectoryName(diskImagePathName);
+            if (!System.IO.Directory.Exists(dmgDir))
+            {
+                System.IO.Directory.CreateDirectory(dmgDir);
+            }
+
             // hdiutil convert myimg.dmg -format UDZO -o myoutputimg.dmg
             {
                 var args = new Bam.Core.StringArray();
