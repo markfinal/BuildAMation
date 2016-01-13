@@ -1,3 +1,5 @@
+13-Jan-2016 ======== Version 1.0.1b1 Release ========
+
 13-Jan-2016 Fixes #111. DiskImage conversion sometimes fails, as the directory containing the converted .dmg was not created.
 
 13-Jan-2016 Fixes #110. MakeFiles with commands including parentheses that are not Make commands require the parentheses to be escaped for bash.
