@@ -1,3 +1,5 @@
+13-Jan-2016 Fixes #55. Fixing MakeFile generation for GNU objcopy and strip.
+
 12-Jan-2016 Fixes #109. Dynamic library builds no longer performs symlink generation for prebuilts.
 
 12-Jan-2016 Fixes #106. TokenizedString post-function, removetrailingseperator, is misspelt. This function is now deprecated, and will be removed in v1.1.0. Replaced with the correctly spelt, removetrailingseparator.

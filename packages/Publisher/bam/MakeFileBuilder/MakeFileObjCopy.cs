@@ -39,13 +39,23 @@ namespace Publisher
             Bam.Core.TokenizedString originalPath,
             Bam.Core.TokenizedString copiedPath)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
+            var mode = (sender.Settings as IObjCopyToolSettings).Mode;
 
-            var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
+            // if linking debug data, add to the strip
+            var meta = (EObjCopyToolMode.AddGNUDebugLink == mode) ? sender.SourceModule.MetaData as MakeFileBuilder.MakeFileMeta : new MakeFileBuilder.MakeFileMeta(sender);
+            var rule = (EObjCopyToolMode.AddGNUDebugLink == mode) ? meta.Rules[0] :meta.AddRule();
 
-            meta.CommonMetaData.Directories.AddUnique(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
-            rule.AddTarget(copiedPath, variableName: "objcopy_" + sourceFilename, isPhony: true);
+            if (EObjCopyToolMode.AddGNUDebugLink == mode)
+            {
+                rule.AddOrderOnlyDependency(copiedPath.Parse());
+            }
+            else
+            {
+                meta.CommonMetaData.Directories.AddUnique(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
+
+                var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
+                rule.AddTarget(copiedPath, variableName: "objcopy_" + sourceFilename);
+            }
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
