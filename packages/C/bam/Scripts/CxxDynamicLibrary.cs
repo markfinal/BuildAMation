@@ -158,6 +158,10 @@ namespace C.Cxx
         ExecuteInternal(
             ExecutionContext context)
         {
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             base.ExecuteInternal(context);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
@@ -177,6 +181,10 @@ namespace C.Cxx
         GetExecutionPolicy(
             string mode)
         {
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             base.GetExecutionPolicy(mode);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {

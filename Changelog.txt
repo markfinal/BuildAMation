@@ -1,6 +1,20 @@
+13-Jan-2016 ======== Version 1.0.1b1 Release ========
+
+13-Jan-2016 Fixes #111. DiskImage conversion sometimes fails, as the directory containing the converted .dmg was not created.
+
+13-Jan-2016 Fixes #110. MakeFiles with commands including parentheses that are not Make commands require the parentheses to be escaped for bash.
+
+13-Jan-2016 Fixes #55. Fixing MakeFile generation for GNU objcopy and strip.
+
+12-Jan-2016 Fixes #109. Dynamic library builds no longer performs symlink generation for prebuilts.
+
+12-Jan-2016 Fixes #106. TokenizedString post-function, removetrailingseperator, is misspelt. This function is now deprecated, and will be removed in v1.1.0. Replaced with the correctly spelt, removetrailingseparator.
+
+12-Jan-2016 Fixes #105. Added documentation for the pre- and post-functions available in TokenizedStrings.
+
 12-Jan-2016 Fixes #104. Very wide Native builds were not displaying the output and error streams from external processes launched.
 
-09-Jan-2016 Fixes #94. Overriding the macros 'pluginprefix' and 'pluginext' are now honoured in Xcode projects. Updated the PluginTest test case to exercise changing these macros.
+09-Jan-2016 Fixes #94. Overriding the macros 'pluginprefix' and 'pluginext' are now honoured in Xcode and VisualStudio projects. Updated the PluginTest test case to exercise changing these macros.
 
 08-Jan-2016 Fixes #102. Preprocessor defines with quotes specified from the build scripts are now supported consistently across platforms and IDEs in BuildAMation. Added a test case, PreprocessorStringTest1, to exercise these forms. To specify a quoted string as a preprocessor definition within a (private or public) patch, use (settings as ICommonCompilerSettings).PreprocessorDefines.Add("DEFNAME", "\"astring\""); or the TokenizedString function (settings as ICommonCompilerSettings).PreprocessorDefines.Add("DEFNAME", this.CreateTokenizedString("@escapedquotes(apath)"));
 

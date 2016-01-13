@@ -45,7 +45,7 @@ namespace Publisher
             var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
 
             meta.CommonMetaData.Directories.AddUnique(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
-            rule.AddTarget(copiedPath, variableName: "strip_" + sourceFilename, isPhony: true);
+            rule.AddTarget(copiedPath, variableName: "strip_" + sourceFilename);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);

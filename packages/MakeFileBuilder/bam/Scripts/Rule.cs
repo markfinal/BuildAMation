@@ -155,6 +155,30 @@ namespace MakeFileBuilder
             }
         }
 
+        private static void
+        EscapeCharacter(
+            ref string input,
+            char toReplace)
+        {
+            var offset = 0;
+            for (;;)
+            {
+                var index = input.IndexOf(toReplace, offset);
+                if (-1 == index)
+                {
+                    break;
+                }
+                var charBefore = input[index - 1];
+                if ('$' == charBefore)
+                {
+                    offset = index + 1;
+                    continue;
+                }
+                input = input.Substring(0, index) + '\\' + input.Substring(index);
+                offset = index + 2;
+            }
+        }
+
         public void
         WriteRules(
             System.Text.StringBuilder rules)
@@ -204,6 +228,12 @@ namespace MakeFileBuilder
                 {
                     // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
                     var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
+                    // any parentheses that are not associated with MakeFile commands must be escaped
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(escapedCommand, @"\$\(.*\)"))
+                    {
+                        EscapeCharacter(ref escapedCommand, '(');
+                        EscapeCharacter(ref escapedCommand, ')');
+                    }
                     rules.AppendFormat("\t{0}", escapedCommand);
                     rules.AppendLine();
                 }
