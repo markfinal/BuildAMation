@@ -1,3 +1,5 @@
+13-Jan-2016 Fixes #110. MakeFiles with commands including parentheses that are not Make commands require the parentheses to be escaped for bash.
+
 13-Jan-2016 Fixes #55. Fixing MakeFile generation for GNU objcopy and strip.
 
 12-Jan-2016 Fixes #109. Dynamic library builds no longer performs symlink generation for prebuilts.
