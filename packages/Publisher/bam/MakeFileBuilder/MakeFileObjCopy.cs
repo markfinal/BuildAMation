@@ -55,6 +55,7 @@ namespace Publisher
 
                 var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
                 rule.AddTarget(copiedPath, variableName: "objcopy_" + sourceFilename);
+                rule.AddPrerequisite(originalPath);
             }
 
             var commandLine = new Bam.Core.StringArray();
