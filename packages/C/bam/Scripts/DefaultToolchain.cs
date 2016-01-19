@@ -108,7 +108,7 @@ namespace C
         {
             if (!collection.ContainsKey(bitDepth) || 0 == collection[bitDepth].Count)
             {
-                throw new Bam.Core.Exception("No default {0}s for this platform in {1}-bits", toolDescription, (int)bitDepth);
+                throw new Bam.Core.Exception("No default {0}s found for this platform in {1}-bits. Are all relevant packages present?", toolDescription, (int)bitDepth);
             }
             var candidates = collection[bitDepth];
             if (candidates.Count > 1)

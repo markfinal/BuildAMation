@@ -1,3 +1,5 @@
+19-Jan-2016 Missing toolchain packages and incorrectly spelt toolchain overrides now report how to fix the problem.
+
 13-Jan-2016 ======== Version 1.0.1b1 Release ========
 
 13-Jan-2016 Fixes #111. DiskImage conversion sometimes fails, as the directory containing the converted .dmg was not created.
