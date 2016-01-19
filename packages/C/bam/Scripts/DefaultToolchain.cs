@@ -143,7 +143,15 @@ namespace C
             var toolToolSet = (toolTypeToUse.GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName;
             if ((null != UserToolchainOverride) && (toolToolSet != UserToolchainOverride))
             {
-                throw new Bam.Core.Exception("{0}-bit {1} identified is from the {2} toolchain, not {3} as requested", (int)bitDepth, toolDescription, toolToolSet, UserToolchainOverride);
+                var wrongToolchain = new System.Text.StringBuilder();
+                wrongToolchain.AppendFormat("{0}-bit {1} identified is from the {2} toolchain, not {3} as requested. Resolve using the command line option {4}={2}",
+                    (int)bitDepth,
+                    toolDescription,
+                    toolToolSet,
+                    UserToolchainOverride,
+                    (SelectDefaultToolChainCommand as Bam.Core.ICommandLineArgument).LongName);
+                wrongToolchain.AppendLine();
+                throw new Bam.Core.Exception(wrongToolchain.ToString());
             }
             return Bam.Core.Graph.Instance.MakeModuleOfType<ToolType>(toolTypeToUse);
         }
