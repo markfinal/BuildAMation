@@ -40,6 +40,14 @@ namespace VisualCCommon
         {
             if (settings.CharacterSet.HasValue)
             {
+                // this setting is project wide
+                var encapsulating = module.GetEncapsulatingReferencedModule();
+                if (encapsulating != module)
+                {
+                    // if it is not being applied project wide, then this cannot be represented properly in VisualStudio projects
+                    // as the character set is applied at the project level
+                    throw new Bam.Core.Exception("Unable to apply character set change to a subset of source files in the VisualStudio project for module '{0}'", encapsulating.ToString());
+                }
                 var project = module.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(module);
                 config.SetCharacterSet(settings.CharacterSet.Value);
