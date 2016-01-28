@@ -56,7 +56,7 @@ namespace Bam.Core
     /// <item><description><code>@relativeto(path,root)</code></description> Return the relative path from root.</item>
     /// <item><description><code>@trimstart(path,totrim)</code></description> Trim string from the start of path.</item>
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
-    /// <item><description><code>@ifnotempty(path,default)</code></description> If path is not empty, use it, otherwise use default.</item>
+    /// <item><description><code>@ifnotempty(path,whennotempty,whenempty)</code></description> If path is not empty, replace the expression with that in whennotempty, otherwise use whenempty.</item>
     /// </list>
     /// </remarks>
     public sealed class TokenizedString
@@ -631,6 +631,14 @@ namespace Bam.Core
                 case "changeextension":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var original = split[0];
                         var extension = split[1].Trim();
                         var changed = System.IO.Path.ChangeExtension(original, extension);
@@ -647,6 +655,14 @@ namespace Bam.Core
                 case "relativeto":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var path = split[0];
                         var root = split[1] + System.IO.Path.DirectorySeparatorChar;
                         var relative = RelativePathUtilities.GetPath(path, root);
@@ -660,6 +676,14 @@ namespace Bam.Core
                 case "trimstart":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var original = split[0];
                         var totrim = split[1];
                         while (original.StartsWith(totrim))
@@ -683,15 +707,24 @@ namespace Bam.Core
                 case "ifnotempty":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 3)
+                        {
+                            throw new Exception("Expected 3, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var predicateString = split[0];
                         if (!System.String.IsNullOrEmpty(predicateString))
                         {
-                            return predicateString;
+                            var positiveString = split[1];
+                            return positiveString;
                         }
                         else
                         {
-                            var defaultString = split[1];
-                            return defaultString;
+                            var negativeString = split[2];
+                            return negativeString;
                         }
                     }
 

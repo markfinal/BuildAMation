@@ -37,6 +37,7 @@ namespace Installer.DefaultSettings
             Bam.Core.Module module)
         {
             settings.Verbosity = EDiskImageVerbosity.Default;
+            settings.ImageSize = "32m";
         }
     }
 }

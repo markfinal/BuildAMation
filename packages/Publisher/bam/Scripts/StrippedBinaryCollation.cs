@@ -180,6 +180,10 @@ namespace Publisher
             clonedDir.SourceModule = collatedDir;
             clonedDir.SourcePath = collatedDir.GeneratedPaths[CollatedObject.Key];
             clonedDir.SubDirectory = collatedDir.SubDirectory;
+            if (collatedDir.Macros["CopiedFilename"].IsAliased)
+            {
+                clonedDir.Macros["CopiedFilename"].Aliased(collatedDir.Macros["CopiedFilename"]);
+            }
         }
 
         private void

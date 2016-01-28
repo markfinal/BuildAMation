@@ -38,5 +38,11 @@ namespace Installer
             get;
             set;
         }
+
+        string ImageSize
+        {
+            get;
+            set;
+        }
     }
 }

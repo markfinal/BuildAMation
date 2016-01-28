@@ -56,5 +56,11 @@ namespace Installer
             get;
             set;
         }
+
+        string IDiskImageSettings.ImageSize
+        {
+            get;
+            set;
+        }
     }
 }

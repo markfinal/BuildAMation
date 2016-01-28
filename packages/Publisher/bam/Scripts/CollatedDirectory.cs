@@ -66,7 +66,7 @@ namespace Publisher
                 }
                 else
                 {
-                    this.GeneratedPaths[Key] = this.CreateTokenizedString("$(CopyDir)/@filename($(0))", value);
+                    this.GeneratedPaths[Key] = this.CreateTokenizedString("@removetrailingseparator($(CopyDir)/@ifnotempty($(CopiedFilename),,@filename($(0))))", value);
                 }
             }
         }
