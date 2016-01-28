@@ -1,3 +1,5 @@
+28-Jan-2016 Fixes #117. TokenizedString post-function, @ifnotempty, added in beta1, has been modified so that the expression is @ifnotempty(pred,a,b). If the expression predicate does not evaluate to an empty string, then the whole expression is replaced with a, otherwise b. In addition, Publisher.CollatedDirectory macros have been normalized so that even renamed directories are clonable by a StrippedBinaryCollation.
+
 27-Jan-2016 Fixes #115. Trying to set the Windows character set in a patch for a subset of a module's source files is not supported in the VSSolution build mode. This is because the setting is project wide. An exception is now thrown if this is encountered. The workaround is to apply the patch to all the source files.
 
 19-Jan-2016 Missing toolchain packages and incorrectly spelt toolchain overrides now report how to fix the problem.

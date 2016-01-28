@@ -70,4 +70,32 @@ namespace PublishingTest1
             renamedDir.CopiedFilename = "testdir1_renamed";
         }
     }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class DebugSymbols :
+        Publisher.DebugSymbolCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateSymbolsFrom<Runtime>();
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class Stripped :
+        Publisher.StrippedBinaryCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.StripBinariesFrom<Runtime, DebugSymbols>();
+        }
+    }
 }

@@ -56,7 +56,7 @@ namespace Bam.Core
     /// <item><description><code>@relativeto(path,root)</code></description> Return the relative path from root.</item>
     /// <item><description><code>@trimstart(path,totrim)</code></description> Trim string from the start of path.</item>
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
-    /// <item><description><code>@ifnotempty(path,default)</code></description> If path is not empty, use it, otherwise use default.</item>
+    /// <item><description><code>@ifnotempty(path,whennotempty,whenempty)</code></description> If path is not empty, replace the expression with that in whennotempty, otherwise use whenempty.</item>
     /// </list>
     /// </remarks>
     public sealed class TokenizedString
@@ -686,12 +686,13 @@ namespace Bam.Core
                         var predicateString = split[0];
                         if (!System.String.IsNullOrEmpty(predicateString))
                         {
-                            return predicateString;
+                            var positiveString = split[1];
+                            return positiveString;
                         }
                         else
                         {
-                            var defaultString = split[1];
-                            return defaultString;
+                            var negativeString = split[2];
+                            return negativeString;
                         }
                     }
 
