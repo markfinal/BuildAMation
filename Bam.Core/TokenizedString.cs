@@ -631,6 +631,14 @@ namespace Bam.Core
                 case "changeextension":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var original = split[0];
                         var extension = split[1].Trim();
                         var changed = System.IO.Path.ChangeExtension(original, extension);
@@ -647,6 +655,14 @@ namespace Bam.Core
                 case "relativeto":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var path = split[0];
                         var root = split[1] + System.IO.Path.DirectorySeparatorChar;
                         var relative = RelativePathUtilities.GetPath(path, root);
@@ -660,6 +676,14 @@ namespace Bam.Core
                 case "trimstart":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var original = split[0];
                         var totrim = split[1];
                         while (original.StartsWith(totrim))
@@ -683,6 +707,14 @@ namespace Bam.Core
                 case "ifnotempty":
                     {
                         var split = argument.Split(',');
+                        if (split.Length != 3)
+                        {
+                            throw new Exception("Expected 3, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
                         var predicateString = split[0];
                         if (!System.String.IsNullOrEmpty(predicateString))
                         {
