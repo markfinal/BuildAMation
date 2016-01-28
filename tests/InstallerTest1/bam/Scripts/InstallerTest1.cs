@@ -230,6 +230,12 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
+            this.PrivatePatch(settings =>
+                {
+                    var dmgSettings = settings as Installer.IDiskImageSettings;
+                    dmgSettings.ImageSize = "128m";
+                });
+
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("DiskImageInstaller");
 
             this.SourceFolder<ExecutableStripped>(Publisher.StrippedBinaryCollation.Key);

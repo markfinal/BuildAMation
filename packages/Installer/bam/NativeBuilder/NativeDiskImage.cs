@@ -49,13 +49,15 @@ namespace Installer
 
             // create the disk image
             {
+                var settings = sender.Settings as IDiskImageSettings;
+
                 var args = new Bam.Core.StringArray();
                 args.Add("create");
                 args.AddRange(commandLine);
                 args.Add("-srcfolder");
                 args.Add(System.String.Format("\"{0}\"", sourceFolderPath.ToString()));
                 args.Add("-size");
-                args.Add("32m");
+                args.Add(settings.ImageSize);
                 args.Add("-fs");
                 args.Add("HFS+");
                 args.Add("-volname");

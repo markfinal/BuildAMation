@@ -1,3 +1,5 @@
+28-Jan-2016 Fixes #118. Added Installer.IDiskImageSettings.ImageSize string setting. Defaults to '32m'. The string should be sensible for the -size parameter to hdiutil.
+
 28-Jan-2016 TokenizedString post-functions taking multiple arguments now throw an exception if an incorrect number of arguments are passed.
 
 28-Jan-2016 Fixes #117. TokenizedString post-function, @ifnotempty, added in beta1, has been modified so that the expression is @ifnotempty(pred,a,b). If the expression predicate does not evaluate to an empty string, then the whole expression is replaced with a, otherwise b. In addition, Publisher.CollatedDirectory macros have been normalized so that even renamed directories are clonable by a StrippedBinaryCollation.

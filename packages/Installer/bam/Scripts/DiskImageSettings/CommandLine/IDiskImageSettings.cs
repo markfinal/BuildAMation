@@ -56,6 +56,8 @@ namespace Installer
             default:
                 throw new Bam.Core.Exception("Unknown disk image verbosity level, {0}", settings.Verbosity.ToString());
             }
+
+            // Note: intentionally not parsing ImageSize - used later in the builder scripts
         }
     }
 }
