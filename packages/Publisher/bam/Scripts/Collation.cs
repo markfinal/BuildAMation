@@ -508,6 +508,24 @@ namespace Publisher
         }
 
         /// <summary>
+        /// Include a file which can act as a reference file, from an arbitrary location.
+        /// </summary>
+        /// <param name="parameterizedFilePath">Parameterized file path.</param>
+        /// <param name="subdir">Subdir.</param>
+        public CollatedFile
+        IncludeFile(
+            Bam.Core.TokenizedString parameterizedFilePath,
+            string subdir)
+        {
+            var copyFileModule = this.CreateCollatedFile(
+                null,
+                parameterizedFilePath,
+                null,
+                Bam.Core.TokenizedString.CreateVerbatim(subdir));
+            return copyFileModule;
+        }
+
+        /// <summary>
         /// Include a directory relative to the reference file, from an arbitrary location.
         /// </summary>
         /// <param name="parameterizedPath">Parameterized path.</param>

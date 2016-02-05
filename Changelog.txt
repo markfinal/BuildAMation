@@ -1,3 +1,5 @@
+05-Feb-2016 Fixes #122. Allow arbitrary files to start off the Publisher collation, rather than just outputs from modules. Use Publisher.Collation.IncludeFile(path,subdirectory). This allows the Publisher.Collation module to be used for other tasks, such as copying sparsely distributed header files into a single location, to act as a public API. Added example, PublishingTest2, to exercise this.
+
 28-Jan-2016 Fixes #118. Added Installer.IDiskImageSettings.ImageSize string setting. Defaults to '32m'. The string should be sensible for the -size parameter to hdiutil.
 
 28-Jan-2016 TokenizedString post-functions taking multiple arguments now throw an exception if an incorrect number of arguments are passed.

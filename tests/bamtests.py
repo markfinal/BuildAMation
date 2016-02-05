@@ -84,4 +84,7 @@ def configure_repository():
     configs["PublishingTest1"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
                                            linux={"Native": [gcc64]},
                                            osx={"Native": [clang64], "Xcode": [clang]})
+    configs["PublishingTest2"] = TestSetup(win={"Native": [visualc64]},
+                                           linux={"Native": [gcc64]},
+                                           osx={"Native": [clang64]})
     return configs
