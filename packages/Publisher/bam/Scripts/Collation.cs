@@ -66,8 +66,12 @@ namespace Publisher
             WindowedApplication
         }
 
-        protected Collation()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
@@ -518,7 +522,7 @@ namespace Publisher
             string subdir)
         {
             var copyFileModule = this.CreateCollatedFile(
-                null,
+                this,
                 parameterizedFilePath,
                 null,
                 Bam.Core.TokenizedString.CreateVerbatim(subdir));

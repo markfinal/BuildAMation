@@ -40,10 +40,27 @@ namespace Publisher
             var sourcePath = sender.SourcePath;
             if (null == sender.Reference)
             {
-                // the main file is not copied anywhere, as we copy required files around it where VS wrote the main file
-                // this is managed by the Collation class, querying the build mode for where publishing is relative to
-                // ignore any subdirectory on this module
-                return;
+                if ((null != sender.SourceModule.MetaData) || (sender.SourceModule is CollatedObject))
+                {
+                    // the main file is not copied anywhere, as we copy required files around it where VS wrote the main file
+                    // this is managed by the Collation class, querying the build mode for where publishing is relative to
+                    // ignore any subdirectory on this module
+
+                    // could also be a DebugSymbols or Stripped copy, in which case, ignore it
+                    return;
+                }
+                else
+                {
+                    // the main reference file was a prebuilt - so create a new project to handle copying files
+
+                    var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                    var project = solution.EnsureProjectExists(sender.SourceModule);
+                    var config = project.GetConfiguration(sender.SourceModule);
+
+                    config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+                    config.SetOutputPath(sender.Macros["CopyDir"]);
+                    config.EnableIntermediatePath();
+                }
             }
 
             var commandLine = new Bam.Core.StringArray();
@@ -53,17 +70,29 @@ namespace Publisher
             {
                 var destinationPath = sender.Macros["CopyDir"].Parse();
 
-                var commands = new Bam.Core.StringArray();
-                commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationPath));
-                commands.Add(System.String.Format(@"{0} {1} $(OutputPath)$(TargetFileName) {2} {3}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    destinationPath,
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-
                 var project = sender.SourceModule.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(sender.SourceModule);
-                config.AddPostBuildCommands(commands);
+
+                var commands = new Bam.Core.StringArray();
+                commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationPath));
+                if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility)
+                {
+                    commands.Add(System.String.Format(@"{0} {1} $(OutputPath)$(TargetFileName) {2} {3}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        destinationPath,
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                    config.AddPostBuildCommands(commands);
+                }
+                else
+                {
+                    commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir).\ {3}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        sourcePath.ParseAndQuoteIfNecessary(),
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                    config.AddPreBuildCommands(commands);
+                }
             }
             else
             {
@@ -90,7 +119,14 @@ namespace Publisher
 
                 var project = sender.Reference.SourceModule.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(sender.Reference.SourceModule);
-                config.AddPostBuildCommands(commands);
+                if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility)
+                {
+                    config.AddPostBuildCommands(commands);
+                }
+                else
+                {
+                    config.AddPreBuildCommands(commands);
+                }
             }
         }
     }

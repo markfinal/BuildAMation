@@ -50,6 +50,21 @@ namespace VSSolutionBuilder
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
         }
 
+        private static C.EBit
+        GetModuleBitDepth(
+            Bam.Core.Module module)
+        {
+            if (module is C.CModule)
+            {
+                return (module as C.CModule).BitDepth;
+            }
+            else
+            {
+                // best guess
+                return (C.EBit)Bam.Core.CommandLineProcessor.Evaluate(new C.Options.DefaultBitDepth());
+            }
+        }
+
         public VSProjectConfiguration
         GetConfiguration(
             Bam.Core.Module module)
@@ -63,7 +78,7 @@ namespace VSSolutionBuilder
                 }
 
                 var platform = Bam.Core.EPlatform.Invalid;
-                var bitDepth = (module as C.CModule).BitDepth;
+                var bitDepth = GetModuleBitDepth(module);
                 switch (bitDepth)
                 {
                     case C.EBit.ThirtyTwo:
