@@ -135,4 +135,42 @@ namespace HeaderLibraryTest
             this.CompileAgainst<StringifyMacroValue>(source);
         }
     }
+
+    // not sealed, to avoid being considered as a top-level module
+    class DeepHeaderLib :
+        C.HeaderLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/include/level1/**.h");
+
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/level1"));
+                    }
+                });
+        }
+    }
+
+    sealed class LibUsingDeepHeaderLibrary :
+        C.StaticLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer("$(packagedir)/source/deeplib.c");
+
+            this.CompileAgainst<DeepHeaderLib>(source);
+        }
+    }
 }

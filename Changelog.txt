@@ -1,3 +1,5 @@
+05-Feb-2016 Fixes #124. Any C container implementing AddFiles() can already accept a wildcarded path, e.g. /path/to/*.c to find all .c files in /path/to. In addition, it can accept a recursive search, /path/to/**.c, which finds all .c files recursively beneath /path/to.
+
 05-Feb-2016 Clarified when C.CModuleContainer.AddFiles fails to find any files from the original System.IO.Directory.GetFiles call, or if the regex filter has been applied.
 
 05-Feb-2016 Fixes #123. Bam.Core.ModuleGroup attributes can now specify a path (using forward slashes). VisualStudio solutions honour the directories as a hierarchy of solution folders.
