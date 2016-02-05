@@ -27,24 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace VSSolutionBuilder
 {
-    sealed class VSSolutionFolder :
-        HasGuid
+    public abstract class HasGuid
     {
-        public VSSolutionFolder(
-            string name)
-            :
-            base("SolutionFolder" + name)
+        protected HasGuid(
+            string input)
         {
-            this.NestedEntities = new Bam.Core.Array<HasGuid>();
+            this.Guid = new DeterministicGuid(input).Guid;
         }
 
-        public Bam.Core.Array<HasGuid> NestedEntities
+        protected System.Guid Guid
         {
             get;
             private set;
+        }
+
+        public string GuidString
+        {
+            get
+            {
+                return this.Guid.ToString("B").ToUpper();
+            }
         }
     }
 }

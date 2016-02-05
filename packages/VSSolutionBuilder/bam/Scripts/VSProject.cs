@@ -30,15 +30,17 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
-    public sealed class VSProject
+    public sealed class VSProject :
+        HasGuid
     {
         public VSProject(
             VSSolution solution,
             Bam.Core.Module module)
+            :
+            base(module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse())
         {
             this.Solution = solution;
             this.ProjectPath = module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse();
-            this.Guid = new DeterministicGuid(this.ProjectPath).Guid;
             this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
             this.Headers = new Bam.Core.Array<VSSettingsGroup>();
@@ -221,12 +223,6 @@ namespace VSSolutionBuilder
         {
             get;
             set;
-        }
-
-        public System.Guid Guid
-        {
-            get;
-            private set;
         }
 
         public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration> Configurations

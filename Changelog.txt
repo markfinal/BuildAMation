@@ -1,3 +1,5 @@
+05-Feb-2016 Fixes #123. Bam.Core.ModuleGroup attributes can now specify a path (using forward slashes). VisualStudio solutions honour the directories as a hierarchy of solution folders.
+
 05-Feb-2016 Issue #122. Modifications to VSSolutionBuilder to generate a utility project for cases of collating a prebuilt file. Note that there is no Xcode support for this at this time.
 
 05-Feb-2016 Fixes #122. Allow arbitrary files to start off the Publisher collation, rather than just outputs from modules. Use Publisher.Collation.IncludeFile(path,subdirectory). This allows the Publisher.Collation module to be used for other tasks, such as copying sparsely distributed header files into a single location, to act as a public API. Added example, PublishingTest2, to exercise this.
