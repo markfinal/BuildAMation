@@ -1,3 +1,5 @@
+05-Feb-2016 Clarified when C.CModuleContainer.AddFiles fails to find any files from the original System.IO.Directory.GetFiles call, or if the regex filter has been applied.
+
 05-Feb-2016 Fixes #123. Bam.Core.ModuleGroup attributes can now specify a path (using forward slashes). VisualStudio solutions honour the directories as a hierarchy of solution folders.
 
 05-Feb-2016 Issue #122. Modifications to VSSolutionBuilder to generate a utility project for cases of collating a prebuilt file. Note that there is no Xcode support for this at this time.
