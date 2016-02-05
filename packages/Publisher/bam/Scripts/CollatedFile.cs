@@ -62,7 +62,7 @@ namespace Publisher
                 {
                     source.EvaluationTask.Wait();
                 }
-                if (null != source.ReasonToExecute)
+                if (null != source.ReasonToExecute && null != source.ReasonToExecute.OutputFilePath)
                 {
                     if (source.ReasonToExecute.OutputFilePath.Equals(this.SourcePath))
                     {
@@ -82,15 +82,13 @@ namespace Publisher
                     }
                 }
             }
-            else
+
+            var destLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
+            var srcLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
+            if (srcLastWriteTime > destLastWriteTime)
             {
-                var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
-                var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
-                if (sourceLastWriteTime > destinationLastWriteTime)
-                {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
-                    return;
-                }
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
+                return;
             }
         }
     }
