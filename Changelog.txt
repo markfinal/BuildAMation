@@ -1,3 +1,5 @@
+06-Feb-2016 Fixes #125. Using the bam command line options to modify the definition file now honours the version set on existing referenced Bam assemblies in the definition file. Previously, the patch version on any referenced assembly was removed upon writing the updated file. New definition files (i.e. when making a new package) honour the full version of BuildAMation in use.
+
 05-Feb-2016 Fixes #124. Any C container implementing AddFiles() can already accept a wildcarded path, e.g. /path/to/*.c to find all .c files in /path/to. In addition, it can accept a recursive search, /path/to/**.c, which finds all .c files recursively beneath /path/to.
 
 05-Feb-2016 Clarified when C.CModuleContainer.AddFiles fails to find any files from the original System.IO.Directory.GetFiles call, or if the regex filter has been applied.
