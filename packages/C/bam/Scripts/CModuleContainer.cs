@@ -127,14 +127,20 @@ namespace C
                 throw new Bam.Core.Exception("The directory {0} does not exist", dir);
             }
             var leafname = System.IO.Path.GetFileName(wildcardPath);
-            var files = System.IO.Directory.GetFiles(dir, leafname, System.IO.SearchOption.TopDirectoryOnly);
-            if (filter != null)
-            {
-                files = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
-            }
+            var option = leafname.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+            var files = System.IO.Directory.GetFiles(dir, leafname, option);
             if (0 == files.Length)
             {
                 throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
+            }
+            if (filter != null)
+            {
+                var filteredFiles = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
+                if (0 == filteredFiles.Length)
+                {
+                    throw new Bam.Core.Exception("No files were found that matched the pattern '{0}', after applying the regex filter. {1} were found prior to applying the filter.", wildcardPath, files.Count());
+                }
+                files = filteredFiles;
             }
             var modulesCreated = new Bam.Core.Array<Bam.Core.Module>();
             foreach (var filepath in files)

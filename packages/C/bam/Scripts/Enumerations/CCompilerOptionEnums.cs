@@ -145,8 +145,18 @@ namespace C
         C89,
 
         /// <summary>
+        /// Compile as the GNU C89 standard
+        /// </summary>
+        GNU89,
+
+        /// <summary>
         /// Compile as the C99 standard
         /// </summary>
-        C99
+        C99,
+
+        /// <summary>
+        /// Compile as the GNU C99 standard
+        /// </summary>
+        GNU99
     }
 }

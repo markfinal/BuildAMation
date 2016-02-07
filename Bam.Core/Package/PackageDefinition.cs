@@ -163,7 +163,14 @@ namespace Bam.Core
 
             // add required BuildAMation assemblies
             var bamVersion = Graph.Instance.ProcessState.Version;
-            this.BamAssemblies.Add(new BamAssemblyDescription("Bam.Core", bamVersion.Major, bamVersion.Minor));
+            if (bamVersion.Build > 0)
+            {
+                this.BamAssemblies.Add(new BamAssemblyDescription("Bam.Core", bamVersion.Major, bamVersion.Minor, bamVersion.Build));
+            }
+            else
+            {
+                this.BamAssemblies.Add(new BamAssemblyDescription("Bam.Core", bamVersion.Major, bamVersion.Minor));
+            }
 
             // add required DotNet assemblies
             {
@@ -313,8 +320,12 @@ namespace Bam.Core
                         if (assembly.MinorVersion.HasValue)
                         {
                             assemblyElement.SetAttribute("minor", assembly.MinorVersion.ToString());
+                            if (assembly.PatchVersion.HasValue)
+                            {
+                                // honour any existing BamAssembly with a specific patch version
+                                assemblyElement.SetAttribute("patch", assembly.PatchVersion.ToString());
+                            }
                         }
-                        // don't write the patch version, as that would be very particular on a bug fix
                     }
                     requiredAssemblies.AppendChild(assemblyElement);
                 }

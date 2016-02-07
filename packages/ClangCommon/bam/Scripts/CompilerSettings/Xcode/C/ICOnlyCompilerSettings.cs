@@ -45,8 +45,16 @@ namespace ClangCommon
                         configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("c89");
                         break;
 
+                    case C.ELanguageStandard.GNU89:
+                            configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("gnu89");
+                            break;
+
                     case C.ELanguageStandard.C99:
                         configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("c99");
+                        break;
+
+                    case C.ELanguageStandard.GNU99:
+                        configuration["GCC_C_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("gnu99");
                         break;
 
                     default:

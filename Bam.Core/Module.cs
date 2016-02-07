@@ -382,7 +382,7 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Obtain a read-only list of module that depend on it.
+        /// Obtain a read-only list of modules that depend on it.
         /// </summary>
         /// <value>The dependees.</value>
         public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependees
@@ -406,6 +406,18 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Obtain a read-only list of modules that require it.
+        /// </summary>
+        /// <value>The requirements.</value>
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirees
+        {
+            get
+            {
+                return this.RequiredDependeesList.ToReadOnlyCollection();
+            }
+        }
+
+        /// <summary>
         /// Obtain a read-only list of dependents that are children of this module.
         /// </summary>
         /// <value>The children.</value>
@@ -421,7 +433,7 @@ namespace Bam.Core
         private Array<Module> DependeesList = new Array<Module>();
 
         private Array<Module> RequiredDependentsList = new Array<Module>();
-        private System.Collections.Generic.List<Module> RequiredDependeesList = new System.Collections.Generic.List<Module>();
+        private Array<Module> RequiredDependeesList = new Array<Module>();
 
         private System.Collections.Generic.List<PrivatePatchDelegate> PrivatePatches = new System.Collections.Generic.List<PrivatePatchDelegate>();
         private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();

@@ -91,6 +91,11 @@ namespace Publisher
                 this.RealSourceModule = value;
                 if (null != value)
                 {
+                    if (this.Requirees.Count > 0 && value == this.Requirees[0])
+                    {
+                        // avoid a circular reference
+                        return;
+                    }
                     this.Requires(value);
                 }
             }

@@ -27,46 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace MingwCommon
+namespace VSSolutionBuilder
 {
-    [C.RegisterWinResourceCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class WinResourceCompiler :
-        C.WinResourceCompilerTool
+    public abstract class HasGuid
     {
-        public WinResourceCompiler()
+        protected HasGuid(
+            string input)
         {
-            var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
-
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(0)\bin\windres.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
-            this.Macros.AddVerbatim("objext", ".o");
-
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString("$(0)/bin", new[] { mingwMeta["InstallDir"] as Bam.Core.TokenizedString })));
-            this.InheritedEnvironmentVariables.Add("TEMP");
+            this.Guid = new DeterministicGuid(input).Guid;
         }
 
-        public override Bam.Core.TokenizedString Executable
+        protected System.Guid Guid
+        {
+            get;
+            private set;
+        }
+
+        public string GuidString
         {
             get
             {
-                return this.Macros["CompilerPath"];
+                return this.Guid.ToString("B").ToUpper();
             }
-        }
-
-
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Mingw.WinResourceCompilerSettings(module);
-            return settings;
         }
     }
 }

@@ -27,46 +27,27 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace MingwCommon
+using Bam.Core;
+namespace PublishingTest2
 {
-    [C.RegisterWinResourceCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class WinResourceCompiler :
-        C.WinResourceCompilerTool
+    sealed class Runtime :
+        Publisher.Collation
     {
-        public WinResourceCompiler()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
+            base.Init(parent);
 
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(0)\bin\windres.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
-            this.Macros.AddVerbatim("objext", ".o");
+            // copy a single data file as the root of all other copies
+            var root = this.IncludeFile(this.CreateTokenizedString("$(packagedir)/data/testfile1.txt"), "api_include");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString("$(0)/bin", new[] { mingwMeta["InstallDir"] as Bam.Core.TokenizedString })));
-            this.InheritedEnvironmentVariables.Add("TEMP");
-        }
+            // copy a directory, with a number of files and a subdirectory, next to the root data file
+            this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), ".", root);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["CompilerPath"];
-            }
-        }
-
-
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Mingw.WinResourceCompilerSettings(module);
-            return settings;
+            // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the root data file
+            var renamedDir = this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), "lib", root);
+            renamedDir.CopiedFilename = "testdir1_renamed";
         }
     }
 }

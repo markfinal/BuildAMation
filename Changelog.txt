@@ -1,3 +1,21 @@
+07-Feb-2016 Fixes #129. C.ELanguageStandard now exposes GNU89 and GNU99 standards. Default language standard remains at C89. The extensions are necessary to support some language extensions required by some projects.
+
+06-Feb-2016 Fixes #127. Response files on Windows now escape back slashes.
+
+06-Feb-2016 Fixes #126. Mingw tools now use response files for very long command lines.
+
+06-Feb-2016 Fixes #125. Using the bam command line options to modify the definition file now honours the version set on existing referenced Bam assemblies in the definition file. Previously, the patch version on any referenced assembly was removed upon writing the updated file. New definition files (i.e. when making a new package) honour the full version of BuildAMation in use.
+
+05-Feb-2016 Fixes #124. Any C container implementing AddFiles() can already accept a wildcarded path, e.g. /path/to/*.c to find all .c files in /path/to. In addition, it can accept a recursive search, /path/to/**.c, which finds all .c files recursively beneath /path/to.
+
+05-Feb-2016 Clarified when C.CModuleContainer.AddFiles fails to find any files from the original System.IO.Directory.GetFiles call, or if the regex filter has been applied.
+
+05-Feb-2016 Fixes #123. Bam.Core.ModuleGroup attributes can now specify a path (using forward slashes). VisualStudio solutions honour the directories as a hierarchy of solution folders.
+
+05-Feb-2016 Issue #122. Modifications to VSSolutionBuilder to generate a utility project for cases of collating a prebuilt file. Note that there is no Xcode support for this at this time.
+
+05-Feb-2016 Fixes #122. Allow arbitrary files to start off the Publisher collation, rather than just outputs from modules. Use Publisher.Collation.IncludeFile(path,subdirectory). This allows the Publisher.Collation module to be used for other tasks, such as copying sparsely distributed header files into a single location, to act as a public API. Added example, PublishingTest2, to exercise this.
+
 28-Jan-2016 Fixes #118. Added Installer.IDiskImageSettings.ImageSize string setting. Defaults to '32m'. The string should be sensible for the -size parameter to hdiutil.
 
 28-Jan-2016 TokenizedString post-functions taking multiple arguments now throw an exception if an incorrect number of arguments are passed.
@@ -42,7 +60,7 @@
 
 06-Jan-2016 Fixes #96. The utility function Bam.Core.Module.MakePlaceholderPath could only be used once per module, due to the caching of similar TokenizedStrings. Undesired behaviour resulted if it was used multiple times, since as soon as any placeholder TokenizedString on that Module was aliased (the whole purpose behind a placeholder), all placeholder strings were aliased. Added a utility function Bam.Core.TokenizedString.CreateUncached, which will always return a unique TokenizedString. Bam.Core.Module.MakePlaceholderPath now uses TokenizedString.CreateUncached.
 
-06-Jan-2016 Added new test, PublishingTest1, which can be used to exercise the features of the Publishing package.
+06-Jan-2016 Added new test, PublishingTest1, which can be used to exercise the features of the Publisher package.
 
 04-Jan-2016 Fixes #95. All Publisher public methods (Include* and ChangeRPath) now return the modules they create, to allow such modules to be ordered through dependencies. Note that IncludeFramework returns an Array<CollatedObject> since it can copy directories, files and symbolic links.
 

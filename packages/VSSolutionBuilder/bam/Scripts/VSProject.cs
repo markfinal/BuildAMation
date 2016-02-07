@@ -30,15 +30,17 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
-    public sealed class VSProject
+    public sealed class VSProject :
+        HasGuid
     {
         public VSProject(
             VSSolution solution,
             Bam.Core.Module module)
+            :
+            base(module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse())
         {
             this.Solution = solution;
             this.ProjectPath = module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse();
-            this.Guid = new DeterministicGuid(this.ProjectPath).Guid;
             this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
             this.Headers = new Bam.Core.Array<VSSettingsGroup>();
@@ -48,6 +50,21 @@ namespace VSSolutionBuilder
             this.Filter = new VSProjectFilter();
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
+        }
+
+        private static C.EBit
+        GetModuleBitDepth(
+            Bam.Core.Module module)
+        {
+            if (module is C.CModule)
+            {
+                return (module as C.CModule).BitDepth;
+            }
+            else
+            {
+                // best guess
+                return (C.EBit)Bam.Core.CommandLineProcessor.Evaluate(new C.Options.DefaultBitDepth());
+            }
         }
 
         public VSProjectConfiguration
@@ -63,7 +80,7 @@ namespace VSSolutionBuilder
                 }
 
                 var platform = Bam.Core.EPlatform.Invalid;
-                var bitDepth = (module as C.CModule).BitDepth;
+                var bitDepth = GetModuleBitDepth(module);
                 switch (bitDepth)
                 {
                     case C.EBit.ThirtyTwo:
@@ -206,12 +223,6 @@ namespace VSSolutionBuilder
         {
             get;
             set;
-        }
-
-        public System.Guid Guid
-        {
-            get;
-            private set;
         }
 
         public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration> Configurations

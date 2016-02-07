@@ -158,7 +158,8 @@ namespace CommandLineProcessor
                     using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFilePath))
                     {
                         Bam.Core.Log.DebugMessage("Written response file {0} containing:\n{1}", responseFilePath, arguments);
-                        writer.WriteLine(arguments);
+                        // escape any back slashes
+                        writer.WriteLine(arguments.Replace(@"\", @"\\"));
                     }
 
                     arguments = System.String.Format("{0}{1}", useResponseFileOption, responseFilePath);

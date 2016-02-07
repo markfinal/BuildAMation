@@ -35,6 +35,33 @@ namespace VSSolutionBuilder
         private System.Collections.Generic.Dictionary<System.Type, VSProject> ProjectMap = new System.Collections.Generic.Dictionary<System.Type, VSProject>();
         private System.Collections.Generic.Dictionary<string, VSSolutionFolder> SolutionFolders = new System.Collections.Generic.Dictionary<string, VSSolutionFolder>();
 
+        private void
+        AddNestedEntity(
+            string fullpath,
+            VSProject project,
+            VSSolutionFolder parent = null)
+        {
+            var split = fullpath.Split('/');
+            var path = split[0];
+            if (!this.SolutionFolders.ContainsKey(path))
+            {
+                this.SolutionFolders.Add(path, new VSSolutionFolder(path));
+            }
+            var folder = this.SolutionFolders[path];
+            if (null != parent)
+            {
+                parent.NestedEntities.AddUnique(folder);
+            }
+            if (1 == split.Length)
+            {
+                folder.NestedEntities.AddUnique(project);
+            }
+            else
+            {
+                this.AddNestedEntity(string.Join("/", split.Skip(1)), project, folder);
+            }
+        }
+
         public VSProject
         EnsureProjectExists(
             Bam.Core.Module module)
@@ -51,11 +78,7 @@ namespace VSSolutionBuilder
                     if (groups.Length > 0)
                     {
                         var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
-                        if (!this.SolutionFolders.ContainsKey(solutionFolderName))
-                        {
-                            this.SolutionFolders.Add(solutionFolderName, new VSSolutionFolder(solutionFolderName));
-                        }
-                        this.SolutionFolders[solutionFolderName].Projects.AddUnique(project);
+                        this.AddNestedEntity(solutionFolderName, project);
                     }
                 }
                 if (null == module.MetaData)
@@ -95,7 +118,7 @@ namespace VSSolutionBuilder
                     ProjectTypeGuid.ToString("B").ToUpper(),
                     System.IO.Path.GetFileNameWithoutExtension(project.ProjectPath),
                     project.ProjectPath, // TODO: relative to the solution file
-                    project.Guid.ToString("B").ToUpper());
+                    project.GuidString);
                 content.AppendLine();
                 content.AppendLine("EndProject");
 
@@ -110,7 +133,7 @@ namespace VSSolutionBuilder
                     SolutionFolderGuid.ToString("B").ToUpper(),
                     folder.Key,
                     folder.Key,
-                    folder.Value.Guid);
+                    folder.Value.GuidString);
                 content.AppendLine();
                 content.AppendLine("EndProject");
             }
@@ -128,7 +151,7 @@ namespace VSSolutionBuilder
             {
                 foreach (var config in project.Configurations)
                 {
-                    var guid = project.Guid.ToString("B").ToUpper();
+                    var guid = project.GuidString;
                     content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {1}", guid, config.Value.FullName);
                     content.AppendLine();
                     content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, config.Value.FullName);
@@ -142,9 +165,9 @@ namespace VSSolutionBuilder
             content.AppendLine("\tGlobalSection(NestedProjects) = preSolution");
             foreach (var folder in this.SolutionFolders)
             {
-                foreach (var project in folder.Value.Projects)
+                foreach (var nested in folder.Value.NestedEntities)
                 {
-                    content.AppendFormat("\t\t{0} = {1}", project.Guid.ToString("B").ToUpper(), folder.Value.Guid);
+                    content.AppendFormat("\t\t{0} = {1}", nested.GuidString, folder.Value.GuidString);
                     content.AppendLine();
                 }
             }

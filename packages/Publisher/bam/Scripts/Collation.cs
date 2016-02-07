@@ -66,8 +66,12 @@ namespace Publisher
             WindowedApplication
         }
 
-        protected Collation()
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
@@ -504,6 +508,24 @@ namespace Publisher
                 }
             }
 
+            return copyFileModule;
+        }
+
+        /// <summary>
+        /// Include a file which can act as a reference file, from an arbitrary location.
+        /// </summary>
+        /// <param name="parameterizedFilePath">Parameterized file path.</param>
+        /// <param name="subdir">Subdir.</param>
+        public CollatedFile
+        IncludeFile(
+            Bam.Core.TokenizedString parameterizedFilePath,
+            string subdir)
+        {
+            var copyFileModule = this.CreateCollatedFile(
+                this,
+                parameterizedFilePath,
+                null,
+                Bam.Core.TokenizedString.CreateVerbatim(subdir));
             return copyFileModule;
         }
 

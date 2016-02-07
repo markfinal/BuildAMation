@@ -227,6 +227,10 @@ namespace VSSolutionBuilder
         {
             if (this.Type != EType.NA)
             {
+                if (this.Type == type)
+                {
+                    return;
+                }
                 throw new Bam.Core.Exception("Project configuration already has type {0}. Cannot change it to {1}", this.Type.ToString(), type.ToString());
             }
 
@@ -255,10 +259,13 @@ namespace VSSolutionBuilder
             this.OutputDirectory = outDir;
 
             var targetName = this.Module.CreateTokenizedString("@basename($(0))", path).Parse();
-            var filename = this.Module.CreateTokenizedString("@filename($(0))", path).Parse();
-            var ext = filename.Replace(targetName, string.Empty);
-            this.TargetName = targetName;
-            this.TargetExt = ext;
+            if (!string.IsNullOrEmpty(targetName))
+            {
+                var filename = this.Module.CreateTokenizedString("@filename($(0))", path).Parse();
+                var ext = filename.Replace(targetName, string.Empty);
+                this.TargetName = targetName;
+                this.TargetExt = ext;
+            }
         }
 
         public void

@@ -30,22 +30,18 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
-    sealed class VSSolutionFolder
+    sealed class VSSolutionFolder :
+        HasGuid
     {
         public VSSolutionFolder(
             string name)
+            :
+            base("SolutionFolder" + name)
         {
-            this.Guid = new DeterministicGuid("SolutionFolder" + name).Guid.ToString("B").ToUpper();
-            this.Projects = new Bam.Core.Array<VSProject>();
+            this.NestedEntities = new Bam.Core.Array<HasGuid>();
         }
 
-        public string Guid
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.Array<VSProject> Projects
+        public Bam.Core.Array<HasGuid> NestedEntities
         {
             get;
             private set;

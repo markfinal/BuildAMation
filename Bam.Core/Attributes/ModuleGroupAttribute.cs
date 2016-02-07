@@ -40,7 +40,7 @@ namespace Bam.Core
         /// <summary>
         /// Construct an instance of the attribute
         /// </summary>
-        /// <param name="groupName">Name of the group.</param>
+        /// <param name="groupName">Name of the group. This can be a full path, e.g. Path/To/Something, and if the build mode supports it, the directory structure will be honoured. Note, use forward slashes.</param>
         public
         ModuleGroupAttribute(
             string groupName)
