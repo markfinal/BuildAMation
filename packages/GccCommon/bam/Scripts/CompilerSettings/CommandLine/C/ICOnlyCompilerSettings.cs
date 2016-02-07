@@ -44,8 +44,16 @@ namespace GccCommon
                         commandLine.Add("-std=c89");
                         break;
 
+                    case C.ELanguageStandard.GNU89:
+                        commandLine.Add("-std=gnu89");
+                        break;
+
                     case C.ELanguageStandard.C99:
                         commandLine.Add("-std=c99");
+                        break;
+
+                    case C.ELanguageStandard.GNU99:
+                        commandLine.Add("-std=gnu99");
                         break;
 
                     default:

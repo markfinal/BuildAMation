@@ -1,3 +1,5 @@
+07-Feb-2016 Fixes #129. C.ELanguageStandard now exposes GNU89 and GNU99 standards. Default language standard remains at C89. The extensions are necessary to support some language extensions required by some projects.
+
 06-Feb-2016 Fixes #127. Response files on Windows now escape back slashes.
 
 06-Feb-2016 Fixes #126. Mingw tools now use response files for very long command lines.
