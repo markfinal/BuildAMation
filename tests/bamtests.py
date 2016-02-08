@@ -69,22 +69,22 @@ def configure_repository():
     configs["DeltaSettingsTest1"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
                                               linux={"Native": [gcc64]},
                                               osx={"Native": [clang64], "Xcode": [clang64]})
-    configs["InstallerTest1"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
+    configs["InstallerTest1"] = TestSetup(win={"Native": [visualc64, mingw32], "VSSolution": [visualc64]},
                                           linux={"Native": [gcc64], "MakeFile": [gcc64]},
                                           osx={"Native": [clang64], "MakeFile": [clang64], "Xcode": [clang64]})
     configs["MultiBitDepthModuleTest"] = TestSetup(win={"Native": [visualc], "VSSolution": [visualc]},
                                                    linux={"Native": [gcc], "MakeFile": [gcc]},
                                                    osx={"Native": [clang], "MakeFile": [clang], "Xcode": [clang]})
-    configs["DuplicateSourceFilenameTest"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
+    configs["DuplicateSourceFilenameTest"] = TestSetup(win={"Native": [visualc64, mingw32], "VSSolution": [visualc64]},
                                                        linux={"Native": [gcc64], "MakeFile": [gcc64]},
                                                        osx={"Native": [clang64], "MakeFile": [clang64], "Xcode": [clang]})
-    configs["PreprocessorStringTest1"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
+    configs["PreprocessorStringTest1"] = TestSetup(win={"Native": [visualc64, mingw32], "VSSolution": [visualc64]},
                                                    linux={"Native": [gcc64], "MakeFile": [gcc64]},
                                                    osx={"Native": [clang64], "MakeFile": [clang64], "Xcode": [clang]})
-    configs["PublishingTest1"] = TestSetup(win={"Native": [visualc64], "VSSolution": [visualc64]},
+    configs["PublishingTest1"] = TestSetup(win={"Native": [visualc64, mingw32], "VSSolution": [visualc64]},
                                            linux={"Native": [gcc64]},
                                            osx={"Native": [clang64], "Xcode": [clang]})
-    configs["PublishingTest2"] = TestSetup(win={"Native": [visualc64]},
+    configs["PublishingTest2"] = TestSetup(win={"Native": [visualc64, mingw32]},
                                            linux={"Native": [gcc64]},
                                            osx={"Native": [clang64]})
     configs["ProceduralHeaderTest1"] = TestSetup(win={"Native": [visualc64, mingw32], "VSSolution": [visualc64]},

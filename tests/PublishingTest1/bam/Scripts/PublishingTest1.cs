@@ -43,7 +43,10 @@ namespace PublishingTest1
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+                if (this.Linker is VisualCCommon.LinkerBase)
+                {
+                    this.LinkAgainst<WindowsSDK.WindowsSDK>();
+                }
             }
         }
     }
