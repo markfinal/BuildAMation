@@ -27,52 +27,57 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+using Bam.Core;
+namespace ProceduralHeaderTest1
 {
-    public class HeaderFile :
-        Bam.Core.Module,
-        Bam.Core.IInputPath,
-        Bam.Core.IChildModule
+    sealed class TestApp :
+        C.ConsoleApplication
     {
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Header File");
-
-        public override void
-        Evaluate()
-        {
-            this.ReasonToExecute = null;
-            // TODO: could do a hash check of the contents?
-        }
-
         protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
+        Init(
+            Bam.Core.Module parent)
         {
-            // TODO: exception to this is generated source, but there ought to be an override for that
-        }
+            base.Init(parent);
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // there is no execution policy
-        }
+            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
 
-        public Bam.Core.TokenizedString InputPath
+            var genHeader = Graph.Instance.FindReferencedModule<GenHeader>();
+            source.DependsOn(genHeader);
+            source.UsePublicPatches(genHeader);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                if (this.Linker is VisualCCommon.LinkerBase)
+                {
+                    this.LinkAgainst<WindowsSDK.WindowsSDK>();
+                }
+            }
+        }
+    }
+
+    class GenHeader :
+        C.ProceduralHeaderFile
+    {
+        protected override TokenizedString OutputPath
         {
             get
             {
-                return this.GeneratedPaths[Key];
-            }
-            set
-            {
-                this.GeneratedPaths[Key] = value;
+                return this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/genheader.h");
             }
         }
 
-        Bam.Core.Module Bam.Core.IChildModule.Parent
+        protected override string Contents
         {
-            get;
-            set;
+            get
+            {
+                var contents = new System.Text.StringBuilder();
+                contents.AppendLine("#define GENERATED_HEADER");
+                contents.AppendLine("char *function()");
+                contents.AppendLine("{");
+                contents.AppendLine("\treturn \"Hello world\";");
+                contents.AppendLine("}");
+                return contents.ToString();
+            }
         }
     }
 }

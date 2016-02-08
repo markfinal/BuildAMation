@@ -179,6 +179,21 @@ namespace C
                     return;
                 }
 
+                // are there any headers as explicit dependencies (procedurally generated most likely), which are newer?
+                var explicitHeadersUpdated = new Bam.Core.StringArray();
+                foreach (var dep in this.Dependents)
+                {
+                    if (!(dep is HeaderFile))
+                    {
+                        continue;
+                    }
+                    if (null == dep.ReasonToExecute)
+                    {
+                        continue;
+                    }
+                    explicitHeadersUpdated.AddUnique((dep as HeaderFile).InputPath.Parse());
+                }
+
                 var includeSearchPaths = (this.Settings as C.ICommonCompilerSettings).IncludePaths;
 
                 var filesToSearch = new System.Collections.Generic.Queue<string>();
@@ -208,13 +223,14 @@ namespace C
 
                     foreach (System.Text.RegularExpressions.Match match in matches)
                     {
+                        var headerFile = match.Groups[1].Value;
                         bool exists = false;
                         // search for the file on the include paths the compiler uses
                         foreach (var includePath in includeSearchPaths)
                         {
                             try
                             {
-                                var potentialPath = System.IO.Path.Combine(includePath.Parse(), match.Groups[1].Value);
+                                var potentialPath = System.IO.Path.Combine(includePath.Parse(), headerFile);
                                 if (!System.IO.File.Exists(potentialPath))
                                 {
                                     continue;
@@ -225,6 +241,15 @@ namespace C
                                 // early out - header is newer than generated object file
                                 if (headerWriteTime > objectFileWriteTime)
                                 {
+                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                        this.GeneratedPaths[Key],
+                                        Bam.Core.TokenizedString.CreateVerbatim(potentialPath));
+                                    return;
+                                }
+
+                                if (explicitHeadersUpdated.Contains(potentialPath))
+                                {
+                                    // found #included header in list of explicitly dependent headers that have been updated
                                     this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                                         this.GeneratedPaths[Key],
                                         Bam.Core.TokenizedString.CreateVerbatim(potentialPath));
@@ -242,7 +267,7 @@ namespace C
                             }
                             catch (System.Exception ex)
                             {
-                                Bam.Core.Log.MessageAll("IncludeDependency Exception: Cannot locate '{0}' on '{1}' due to {2}", match.Groups[1].Value, includePath, ex.Message);
+                                Bam.Core.Log.MessageAll("IncludeDependency Exception: Cannot locate '{0}' on '{1}' due to {2}", headerFile, includePath, ex.Message);
                             }
                         }
 
