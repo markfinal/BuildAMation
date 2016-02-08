@@ -67,6 +67,7 @@ namespace C
             get
             {
                 var guard = this.CreateTokenizedString("@basename($(0))", this.OutputPath).Parse();
+                guard = guard.Replace('-', '_'); // replace any characters not suitable for a preprocessor definition with underscores
                 guard = guard.ToUpper() + "_H";
                 return guard;
             }
