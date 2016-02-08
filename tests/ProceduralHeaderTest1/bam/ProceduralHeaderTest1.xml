@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="DuplicateSourceFilenameTest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
-  <Description>Test to exercise Bam compiling files with the same basename</Description>
+<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="ProceduralHeaderTest1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Exercising procedurally generated headers</Description>
   <Dependents>
     <Package name="C" />
     <Package name="Clang" version="Xcode4" />
@@ -13,11 +13,10 @@
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="12.0" />
     <Package name="VSSolutionBuilder" />
-    <Package name="WindowsSDK" version="8.1" />
     <Package name="XcodeBuilder" />
   </Dependents>
   <BamAssemblies>
-    <BamAssembly name="Bam.Core" major="1" minor="0" />
+    <BamAssembly name="Bam.Core" major="1" minor="0" patch="1" />
   </BamAssemblies>
   <DotNetAssemblies>
     <DotNetAssembly name="System" requiredTargetFramework="4.0.30319" />

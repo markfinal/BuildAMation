@@ -27,7 +27,15 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#include "header1.h"
-#include "level2/header2.h"
-#include "level2/level3/header3a.h"
-#include "level2/level3/header3b.h"
+#include "genheader.h"
+#include <stdio.h>
+
+#ifndef GENERATED_HEADER
+#error "Header does not define GENERATED_HEADER"
+#endif
+
+int main()
+{
+    printf("%s\n", function());
+    return 0;
+}
