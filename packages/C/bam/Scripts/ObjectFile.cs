@@ -195,9 +195,10 @@ namespace C
                         fileContents = reader.ReadToEnd();
                     }
 
+                    // never know if developers are consistent with #include "header.h" or #include <header.h> so look for both
                     var matches = System.Text.RegularExpressions.Regex.Matches(
                         fileContents,
-                        "^\\s*#include \"(.*)\"",
+                        "^\\s*#include [\"<](.*)[\">]",
                         System.Text.RegularExpressions.RegexOptions.Multiline);
                     if (0 == matches.Count)
                     {
