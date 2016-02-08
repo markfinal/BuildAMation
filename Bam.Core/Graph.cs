@@ -311,10 +311,17 @@ namespace Bam.Core
         }
 
         private void ApplyGroupDependenciesToChildren(
+            Module module,
             System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
-            var nonChildDependents = dependencies.Where(item => !(item is IChildModule));
+            // find all dependencies that are not children of this module
+            var nonChildDependents = dependencies.Where(item =>
+                !(item is IChildModule) || (item as IChildModule).Parent != module);
+            if (0 == nonChildDependents.Count())
+            {
+                return;
+            }
             foreach (var c in children)
             {
                 c.DependsOn(nonChildDependents);
@@ -322,10 +329,17 @@ namespace Bam.Core
         }
 
         private void ApplyGroupRequirementsToChildren(
+            Module module,
             System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
-            var nonChildDependents = dependencies.Where(item => !(item is IChildModule));
+            // find all dependencies that are not children of this module
+            var nonChildDependents = dependencies.Where(item =>
+                !(item is IChildModule) || (item as IChildModule).Parent != module);
+            if (0 == nonChildDependents.Count())
+            {
+                return;
+            }
             foreach (var c in children)
             {
                 c.Requires(nonChildDependents);
@@ -366,8 +380,8 @@ namespace Bam.Core
             if (m is IModuleGroup)
             {
                 var children = m.Children;
-                this.ApplyGroupDependenciesToChildren(children, m.Dependents);
-                this.ApplyGroupRequirementsToChildren(children, m.Requirements);
+                this.ApplyGroupDependenciesToChildren(m, children, m.Dependents);
+                this.ApplyGroupRequirementsToChildren(m, children, m.Requirements);
             }
             var nextRank = rank + 1;
             var currentRank = this.DependencyGraph[nextRank];
