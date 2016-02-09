@@ -31,7 +31,7 @@ using System.Linq;
 namespace C
 {
     /// <summary>
-    /// Base class for containers of homogenous object files. Provides methods that automatically
+    /// Base class for containers of C files, be they compilable source or header files. Provides methods that automatically
     /// generate modules of the correct type given the source paths.
     /// </summary>
     public abstract class CModuleContainer<ChildModuleType> :
@@ -40,7 +40,7 @@ namespace C
         IAddFiles
         where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     {
-        private System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
+        protected System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
 
         private SourceFileType
         CreateSourceFile<SourceFileType>(
@@ -148,30 +148,6 @@ namespace C
                 modulesCreated.Add(this.AddFile(filepath, verbatim: true));
             }
             return modulesCreated;
-        }
-
-        /// <summary>
-        /// Add an object file from an existing SourceFile module.
-        /// </summary>
-        /// <returns>The file.</returns>
-        /// <param name="sourceModule">Source module.</param>
-        /// <param name="preInitDlg">Pre init dlg.</param>
-        public ChildModuleType
-        AddFile(
-            SourceFile sourceModule,
-            Bam.Core.Module.PreInitDelegate<ChildModuleType> preInitDlg = null)
-        {
-            var child = Bam.Core.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
-            var requiresSource = child as IRequiresSourceModule;
-            if (null == requiresSource)
-            {
-                throw new Bam.Core.Exception("Module type {0} does not implement the interface {1}", typeof(ChildModuleType).FullName, typeof(IRequiresSourceModule).FullName);
-            }
-            requiresSource.Source = sourceModule;
-            (child as Bam.Core.IChildModule).Parent = this;
-            this.children.Add(child);
-            this.DependsOn(child);
-            return child;
         }
 
         // note that this is 'new' to hide the version in Bam.Core.Module

@@ -33,7 +33,7 @@ namespace C.Cxx
     /// Container of one or more object files compiled against C++.
     /// </summary>
     public class ObjectFileCollection :
-        C.CModuleContainer<ObjectFile>
+        C.CCompilableModuleContainer<ObjectFile>
     {
         protected override void
         Init(

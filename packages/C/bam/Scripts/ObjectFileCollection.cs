@@ -33,7 +33,7 @@ namespace C
     /// Collection of one or more object files compiled against C.
     /// </summary>
     public class CObjectFileCollection :
-        CModuleContainer<ObjectFile>
+        CCompilableModuleContainer<ObjectFile>
     {
         protected override void
         Init(

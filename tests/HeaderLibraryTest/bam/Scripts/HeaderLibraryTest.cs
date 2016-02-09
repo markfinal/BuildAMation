@@ -30,6 +30,26 @@
 using Bam.Core;
 namespace HeaderLibraryTest
 {
+    class GeneratedHeader :
+        C.ProceduralHeaderFile
+    {
+        protected override TokenizedString OutputPath
+        {
+            get
+            {
+                return this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/genheader.h");
+            }
+        }
+
+        protected override string Contents
+        {
+            get
+            {
+                return "#define GENERATED_HEADER";
+            }
+        }
+    }
+
     public sealed class HeaderLibrary :
         C.HeaderLibrary
     {
@@ -39,7 +59,11 @@ namespace HeaderLibraryTest
         {
             base.Init(parent);
 
-            this.CreateHeaderContainer("$(packagedir)/include/unusedmacros.h");
+            var headers = this.CreateHeaderContainer("$(packagedir)/include/unusedmacros.h");
+
+            var genHeader = Bam.Core.Graph.Instance.FindReferencedModule<GeneratedHeader>();
+            headers.AddFile(genHeader);
+            this.UsePublicPatches(genHeader);
 
             this.PublicPatch((settings, appliedTo) =>
                 {
