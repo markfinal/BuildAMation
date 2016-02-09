@@ -1,3 +1,5 @@
+09-Feb-2016 Fixes #92. Package XML definition files that do not satisfy the schema syntax now identifies the error by description and location on the terminal.
+
 09-Feb-2016 Fixes #93. Feedback is now provided on the terminal when a package is successfully made.
 
 08-Feb-2016 ======== Version 1.0.1b2 Release ========
