@@ -1,3 +1,5 @@
+09-Feb-2016 Fixes #91. C container functions that accept multiple source modules (e.g. CompileAgainst, CompilePubliclyAgainst), have had their signatures slightly altered to ensure that at least one source module is passed. Additional source modules can be passed, but are now optional. This moves a runtime test to a compile time test.
+
 09-Feb-2016 Fixes #92. Package XML definition files that do not satisfy the schema syntax now identifies the error by description and location on the terminal.
 
 09-Feb-2016 Fixes #93. Feedback is now provided on the terminal when a package is successfully made.

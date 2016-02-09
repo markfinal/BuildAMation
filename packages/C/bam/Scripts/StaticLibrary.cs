@@ -112,17 +112,26 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Specified source modules are compiled against the DependentModule type, with any public patches
+        /// of that type applied to each source.
+        /// </summary>
+        /// <param name="affectedSource">Required source module.</param>
+        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAgainst<DependentModule>(
-            params CModule[] affectedSources) where DependentModule : CModule, new()
+            CModule affectedSource,
+            params CModule[] additionalSources) where DependentModule : CModule, new()
         {
-            if (0 == affectedSources.Length)
-            {
-                throw new Bam.Core.Exception("At least one source module argument must be passed to {0} in {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, this.ToString());
-            }
-
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            foreach (var source in affectedSources)
+            var sources = new CModule[additionalSources.Length + 1];
+            sources[0] = affectedSource;
+            if (additionalSources.Length > 0)
+            {
+                additionalSources.CopyTo(sources, 1);
+            }
+            foreach (var source in sources)
             {
                 if (null == source)
                 {
@@ -141,11 +150,20 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Specified sources compile against DependentModule, and re-exports the public patches
+        /// from the dependent, e.g. if the headers of the dynamic library require include paths from
+        /// the dependent.
+        /// </summary>
+        /// <param name="affectedSource">Required source module.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAgainstPublicly<DependentModule>(
-            params CModule[] affectedSources) where DependentModule : CModule, new()
+            CModule affectedSource,
+            params CModule[] additionalSources) where DependentModule : CModule, new()
         {
-            this.CompileAgainst<DependentModule>(affectedSources);
+            this.CompileAgainst<DependentModule>(affectedSource, additionalSources);
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.UsePublicPatches(dependent);
         }
