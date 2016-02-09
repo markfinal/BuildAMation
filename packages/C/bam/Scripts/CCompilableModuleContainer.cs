@@ -27,20 +27,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C.ObjCxx
+using System.Linq;
+namespace C
 {
     /// <summary>
-    /// Collection of one or more object files compiled against ObjectiveC++.
+    /// Base class for containers of homogenous object files. Provides methods that automatically
+    /// generate modules of the correct type given the source paths.
     /// </summary>
-    public class ObjectFileCollection :
-        C.CCompilableModuleContainer<ObjectFile>
+    public abstract class CCompilableModuleContainer<ChildModuleType> :
+        CModuleContainer<ChildModuleType>
+        where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        /// <summary>
+        /// Add an object file from an existing SourceFile module.
+        /// </summary>
+        /// <returns>The file.</returns>
+        /// <param name="sourceModule">Source module.</param>
+        /// <param name="preInitDlg">Pre init dlg.</param>
+        virtual public ChildModuleType
+        AddFile(
+            SourceFile sourceModule,
+            Bam.Core.Module.PreInitDelegate<ChildModuleType> preInitDlg = null)
         {
-            base.Init(parent);
-            this.Tool = C.DefaultToolchain.ObjectiveCxx_Compiler(this.BitDepth);
+            var child = Bam.Core.Module.Create<ChildModuleType>(this, preInitCallback: preInitDlg);
+            var requiresSource = child as IRequiresSourceModule;
+            if (null == requiresSource)
+            {
+                throw new Bam.Core.Exception("Module type {0} does not implement the interface {1}", typeof(ChildModuleType).FullName, typeof(IRequiresSourceModule).FullName);
+            }
+            requiresSource.Source = sourceModule;
+            (child as Bam.Core.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            return child;
         }
     }
 }

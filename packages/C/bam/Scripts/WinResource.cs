@@ -48,7 +48,7 @@ namespace C
     /// Collection of one or more resource files.
     /// </summary>
     public class WinResourceCollection :
-        CModuleContainer<WinResource>
+        CCompilableModuleContainer<WinResource>
     {
         protected override void
         Init(

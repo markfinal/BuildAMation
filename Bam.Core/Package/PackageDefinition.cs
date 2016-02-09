@@ -876,10 +876,15 @@ namespace Bam.Core
                 // something in Bam went wrong
                 throw ex;
             }
-            catch (System.FormatException ex)
+            catch (System.FormatException formatEx)
             {
                 // format of the XML is wrong
-                throw ex;
+                throw new Exception(formatEx, "Error while reading {0}", this.XMLFilename);
+            }
+            catch (System.Xml.XmlException xmlEx)
+            {
+                // the XML does not match the schema
+                throw new Exception(xmlEx, "Error while reading {0}", this.XMLFilename);
             }
             catch (System.Exception)
             {

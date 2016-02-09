@@ -32,5 +32,13 @@ namespace C
     public class HeaderFileCollection :
         CModuleContainer<HeaderFile>
     {
+        public void
+        AddFile(
+            HeaderFile sourceModule)
+        {
+            (sourceModule as Bam.Core.IChildModule).Parent = this;
+            this.children.Add(sourceModule);
+            this.DependsOn(sourceModule);
+        }
     }
 }

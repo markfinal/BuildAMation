@@ -28,6 +28,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #include "unusedmacros.h" /* beware of extras quotes " being picked up by the parser */
+#include "genheader.h"
+
+#ifndef GENERATED_HEADER
+#error "Generated header does not define preprocessor definition"
+#endif
 
 int main(int UNUSEDARG(argc), char *UNUSEDARG(argvB[]))
 {

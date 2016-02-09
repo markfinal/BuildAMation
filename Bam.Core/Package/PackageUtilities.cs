@@ -55,14 +55,14 @@ namespace Bam.Core
             var bamDir = System.IO.Path.Combine(packageDir, BamSubFolder);
             if (System.IO.Directory.Exists(bamDir))
             {
-                throw new Exception("A Bam package already exists at {0}", packageDir);
+                throw new Exception("Cannot create new package: A Bam package already exists at {0}", packageDir);
             }
 
             var packageNameArgument = new Options.PackageName();
             var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
             if (null == packageName)
             {
-                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
+                throw new Exception("Cannot create new package: No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
             }
 
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
@@ -83,6 +83,8 @@ namespace Bam.Core
                 writer.WriteLine("    // write modules here ...");
                 writer.WriteLine("}");
             }
+
+            Log.Info("Package {0} was successfully created at {1}", definition.FullName, packageDir);
         }
 
         /// <summary>
