@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "genheader.h"
 
 #ifndef GENERATED_HEADER
-#error "Generated header does not define preprocessor definition""
+#error "Generated header does not define preprocessor definition"
 #endif
 
 int main(int UNUSEDARG(argc), char *UNUSEDARG(argvB[]))
