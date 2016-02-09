@@ -43,9 +43,9 @@ dirsToDelete = [
 
 
 def clone_buildamation(directory_path, options):
-    # TODO: specify the explicit tag too
     branch = options.branch
     if not branch:
+        # this is a tag
         branch = "v%s" % options.version
     args = [
         "git",
@@ -132,6 +132,7 @@ def make_tar_distribution(options):
             tar.add(os.path.join(bam_dir, "Changelog.txt"))
             tar.add(os.path.join(bam_dir, "env.bat"))
             tar.add(os.path.join(bam_dir, "env.sh"))
+            tar.add(os.path.join(bam_dir, "MS-PL.md"))
             tar.add(os.path.join(bam_dir, "License.md"))
             tar.add(os.path.join(bam_dir, "packages"))
             tar.add(os.path.join(bam_dir, "tests"), filter=windows_executable_filter)
@@ -161,6 +162,7 @@ def make_zip_distribution(options):
             zip_object.write(os.path.join(bam_dir, "env.bat"))
             zip_object.write(os.path.join(bam_dir, "env.sh"))
             zip_object.write(os.path.join(bam_dir, "License.md"))
+            zip_object.write(os.path.join(bam_dir, "MS-PL.md"))
             recursive_write(zip_object, os.path.join(bam_dir, "packages"))
             recursive_write(zip_object, os.path.join(bam_dir, "tests"))
         print >>sys.stdout, "Finished writing zip file_path %s" % zip_path
@@ -239,7 +241,6 @@ if __name__ == "__main__":
     tempDir = tempfile.mkdtemp()
     cloningDir = os.path.join(tempDir, "BuildAMation-%s" % options.version)
     os.makedirs(cloningDir)
-    # cloningDir = r"c:\users\mark\appdata\local\temp\tmpg4tul0"
     try:
         main(cloningDir, options)
     except Exception, e:
