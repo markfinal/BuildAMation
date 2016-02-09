@@ -1,3 +1,5 @@
+09-Feb-2016 Fixes #93. Feedback is now provided on the terminal when a package is successfully made.
+
 08-Feb-2016 ======== Version 1.0.1b2 Release ========
 
 08-Feb-2016 Fixes #132. Parsing C source files for header includes no longer tries to match whitespace between the quotes or angle brackets. Without that, any trailing inline comments containing quotes or angle brackets would be included in the regex match. (Assume header files containing spaces are the exception, rather than the rule.)
