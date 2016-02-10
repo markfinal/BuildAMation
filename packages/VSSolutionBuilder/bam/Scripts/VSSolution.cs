@@ -78,7 +78,10 @@ namespace VSSolutionBuilder
                     if (groups.Length > 0)
                     {
                         var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
-                        this.AddNestedEntity(solutionFolderName, project);
+                        lock (this)
+                        {
+                            this.AddNestedEntity(solutionFolderName, project);
+                        }
                     }
                 }
                 if (null == module.MetaData)
