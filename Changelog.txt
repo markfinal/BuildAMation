@@ -1,3 +1,5 @@
+11-Feb-2016 Fixes #123. Common directory names used in different contexts in paths used in Bam.Core.ModuleGroup are no longer identified as the same solution folder in VisualStudio.
+
 11-Feb-2016 Fixes #134. Added Bam.Core.OSUtilities.WindowsProgramFilesPath and WindowsProgramFilesx86Path properties, which return the locations of the 'Program Files' and 'Program Files (x86)' (on 64-bit Windows, otherwise 'Program Files'). Updated VisualC-*, Installer, WindowsSDK packages to use the new API. Tools should now be successfully located on both 64-bit and 32-bit editions of Windows.
 
 09-Feb-2016 Fixes #133. Clarified the terms of use of LimitedConcurrencyLevelTaskScheduler from https://msdn.microsoft.com/en-us/library/ee789351.aspx under the Microsoft Limited Public License (MS-PL.md). This code is used in the Core assembly, to control the number of threads in a build with the -j=N switch. This license is mentioned in the Bam command line output. The MS-PL license text is also distributed with BuildAMation. See Microsoft Developer Services Agreement (https://msdn.microsoft.com/en-us/cc300389.aspx), section 2b (Software on Documentation Portals) for details.

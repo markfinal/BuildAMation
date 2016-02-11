@@ -34,11 +34,19 @@ namespace VSSolutionBuilder
         HasGuid
     {
         public VSSolutionFolder(
-            string name)
+            string uniqueName,
+            string path)
             :
-            base("SolutionFolder" + name)
+            base("SolutionFolder" + uniqueName)
         {
+            this.Path = path;
             this.NestedEntities = new Bam.Core.Array<HasGuid>();
+        }
+
+        public string Path
+        {
+            get;
+            private set;
         }
 
         public Bam.Core.Array<HasGuid> NestedEntities
