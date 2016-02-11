@@ -46,7 +46,7 @@ namespace Bam.Core
         {
             if (null == item)
             {
-                throw new Exception("Cannot add null");
+                throw new Exception("Cannot add a null item to the end of an array");
             }
             this.list.Add(item);
         }
