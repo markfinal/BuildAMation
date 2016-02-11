@@ -43,7 +43,7 @@ namespace VisualC
             }
 
             // TODO: get this from the registry
-            this.Meta.Add("InstallDir", @"C:\Program Files (x86)\Microsoft Visual Studio 14.0");
+            this.Meta.Add("InstallDir", Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 14.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)));
             this.Meta.Add("PlatformToolset", "v140");
         }
 
@@ -62,12 +62,12 @@ namespace VisualC
             return this.Meta.ContainsKey(index);
         }
 
-        public string
+        public Bam.Core.TokenizedString
         InstallDir
         {
             get
             {
-                return this.Meta["InstallDir"] as string;
+                return this.Meta["InstallDir"] as Bam.Core.TokenizedString;
             }
         }
 
@@ -80,6 +80,9 @@ namespace VisualC
             }
         }
 
+        // TODO: note that msvcr*.dll no longer exists from VisualStudio 2015
+        // it is replaced by the universal crt, which is in the Windows SDK: https://blogs.msdn.microsoft.com/vcblog/2015/03/03/introducing-the-universal-crt/
+        // but also part of the Windows 10 OS
         Bam.Core.TokenizedString
         VisualCCommon.IRuntimeLibraryPathMeta.MSVCR(
             C.EBit depth)
@@ -87,10 +90,10 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcr120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/msvcr140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcr120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/msvcr140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
@@ -102,10 +105,10 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcp120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcp120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);

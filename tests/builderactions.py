@@ -59,7 +59,10 @@ def vssolution_post(package, options, flavour, output_messages, error_messages):
         # location of MSBuild changed in VS2013
         if visualc_major_version >= 12:
             # VS2013 onwards path for MSBuild
-            ms_build_path = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe" % visualc_version
+            if os.environ.has_key("ProgramFiles(x86)"):
+                ms_build_path = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe" % visualc_version
+            else:
+                ms_build_path = r"C:\Program Files\MSBuild\%s\bin\MSBuild.exe" % visualc_version
         else:
             ms_build_path = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe" % msBuildVersionToNetMapping[visualc_version]
         for config in options.configurations:

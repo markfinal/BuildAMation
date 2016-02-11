@@ -36,7 +36,8 @@ namespace WindowsSDK
     {
         public WinResourceCompiler()
         {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(@"C:\Program Files (x86)\Windows Kits\8.1\bin\x64\rc.exe"));
+            var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(0)/Windows Kits/8.1/bin/$(1)/rc.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path, architecture)));
             this.Macros.AddVerbatim("objext", ".res");
         }
 

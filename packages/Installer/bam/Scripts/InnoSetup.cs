@@ -138,7 +138,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim(@"C:\Program Files (x86)\Inno Setup 5\ISCC.exe");
+                return Bam.Core.TokenizedString.Create("$(0)/Inno Setup 5/ISCC.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
             }
         }
     }
