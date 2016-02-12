@@ -311,5 +311,39 @@ namespace Bam.Core
             get;
             private set;
         }
+
+        /// <summary>
+        /// Retrieve the path to 'Program Files'. This is the path where native architecture programs are installed.
+        /// The same path is returned on both 32-bit and 64-bit editions of Windows.
+        /// </summary>
+        public static TokenizedString WindowsProgramFilesPath
+        {
+            get
+            {
+                if (!IsWindowsHosting)
+                {
+                    throw new Exception("Only available on Windows");
+                }
+                return TokenizedString.CreateVerbatim(System.Environment.GetEnvironmentVariable("ProgramFiles"));
+            }
+        }
+
+        /// <summary>
+        /// Retrive the path to 'Program Files (x86)'. This is the path where 32-bit architecture programs are installed.
+        /// On 32-bit Windows, this is the same as WindowsProgramFilesPath.
+        /// On 64-bit Windows, it is a different path.
+        /// </summary>
+        public static TokenizedString WindowsProgramFilesx86Path
+        {
+            get
+            {
+                if (!IsWindowsHosting)
+                {
+                    throw new Exception("Only available on Windows");
+                }
+                var envVar = Is64BitHosting ? System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") : System.Environment.GetEnvironmentVariable("ProgramFiles");
+                return TokenizedString.CreateVerbatim(envVar);
+            }
+        }
     }
 }

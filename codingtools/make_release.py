@@ -88,7 +88,10 @@ def build():
     sys.stdout.flush()
     if platform.system() == "Windows":
         # assume Visual Studio 2013
-        buildtool = r"C:\Program Files (x86)\MSBuild\12.0\bin\MSBuild.exe"
+        if os.environ.has_key("ProgramFiles(x86)"):
+            buildtool = r"C:\Program Files (x86)\MSBuild\12.0\bin\MSBuild.exe"
+        else:
+            buildtool = r"C:\Program Files\MSBuild\12.0\bin\MSBuild.exe"
         if not os.path.isfile(buildtool):
             raise RuntimeError("Unable to locate msbuild at '%s'" % buildtool)
     elif platform.system() == "Darwin" or platform.system() == "Linux":

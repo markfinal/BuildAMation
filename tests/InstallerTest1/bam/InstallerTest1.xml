@@ -15,7 +15,6 @@
     <Package name="Publisher" />
     <Package name="VisualC" version="12.0" />
     <Package name="VSSolutionBuilder" />
-    <Package name="WindowsSDK" version="8.1" />
     <Package name="XcodeBuilder" />
   </Dependents>
   <BamAssemblies>

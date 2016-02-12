@@ -43,8 +43,11 @@ namespace VisualC
             }
 
             // TODO: get this from the registry
-            this.Meta.Add("InstallDir", @"C:\Program Files (x86)\Microsoft Visual Studio 12.0");
-            this.Meta.Add("PlatformToolset", "v120");
+            this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 12.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
+            this.PlatformToolset = "v120";
+            this.VCXProjToolsVersion = "12.0";
+            this.VCXProjFiltersToolsVersion = "4.0";
+            this.UseWindowsSDKPublicPatches = false;
         }
 
         public override object this[string index]
@@ -62,12 +65,17 @@ namespace VisualC
             return this.Meta.ContainsKey(index);
         }
 
-        public string
+        public Bam.Core.TokenizedString
         InstallDir
         {
             get
             {
-                return this.Meta["InstallDir"] as string;
+                return this.Meta["InstallDir"] as Bam.Core.TokenizedString;
+            }
+
+            private set
+            {
+                this.Meta["InstallDir"] = value;
             }
         }
 
@@ -78,6 +86,53 @@ namespace VisualC
             {
                 return this.Meta["PlatformToolset"] as string;
             }
+
+            private set
+            {
+                this.Meta["PlatformToolset"] = value;
+            }
+        }
+
+        public string
+        VCXProjToolsVersion
+        {
+            get
+            {
+                return this.Meta["VCXProjToolsVersion"] as string;
+            }
+
+            private set
+            {
+                this.Meta["VCXProjToolsVersion"] = value;
+            }
+        }
+
+        public string
+        VCXProjFiltersToolsVersion
+        {
+            get
+            {
+                return this.Meta["VCXProjFiltersToolsVersion"] as string;
+            }
+
+            private set
+            {
+                this.Meta["VCXProjFiltersToolsVersion"] = value;
+            }
+        }
+
+        public bool
+        UseWindowsSDKPublicPatches
+        {
+            get
+            {
+                return (bool)this.Meta["RequiresWindowsSDK"];
+            }
+
+            private set
+            {
+                this.Meta["RequiresWindowsSDK"] = value;
+            }
         }
 
         Bam.Core.TokenizedString
@@ -87,10 +142,10 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcr120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC120.CRT/msvcr120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcr120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC120.CRT/msvcr120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
@@ -102,10 +157,10 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x86\Microsoft.VC120.CRT\msvcp120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC120.CRT/msvcp120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.Meta["InstallDir"] + @"\VC\redist\x64\Microsoft.VC120.CRT\msvcp120.dll");
+                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC120.CRT/msvcp120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);

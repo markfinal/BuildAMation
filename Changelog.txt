@@ -1,3 +1,13 @@
+12-Feb-2016 Fixes #137. ToolsVersion attribute written into .vcxproj and .vcxproj.filters is now part of the VisualC metadata. VisualC-12.0 has .vcxproj ToolsVersion 12.0, while VisualC-14.0 has 14.0. Both have filters ToolVersion of 4.0.
+
+12-Feb-2016 Fixes #136. Added WindowsSDK-10. Note that this also references files from the 8.1 SDK version as well. VisualC-14.0 depends on WindowsSDK-10.
+
+12-Feb-2016 Fixes #135. Each VisualC-N package specifies its WindowsSDK as there is general coherence between versions. VisualC-12.0 specifies WindowsSDK-8.1. Only specify a WindowsSDK version in a master package if you wish to override this default.
+
+11-Feb-2016 Fixes #123. Common directory names used in different contexts in paths used in Bam.Core.ModuleGroup are no longer identified as the same solution folder in VisualStudio.
+
+11-Feb-2016 Fixes #134. Added Bam.Core.OSUtilities.WindowsProgramFilesPath and WindowsProgramFilesx86Path properties, which return the locations of the 'Program Files' and 'Program Files (x86)' (on 64-bit Windows, otherwise 'Program Files'). Updated VisualC-*, Installer, WindowsSDK packages to use the new API. Tools should now be successfully located on both 64-bit and 32-bit editions of Windows.
+
 09-Feb-2016 Fixes #133. Clarified the terms of use of LimitedConcurrencyLevelTaskScheduler from https://msdn.microsoft.com/en-us/library/ee789351.aspx under the Microsoft Limited Public License (MS-PL.md). This code is used in the Core assembly, to control the number of threads in a build with the -j=N switch. This license is mentioned in the Bam command line output. The MS-PL license text is also distributed with BuildAMation. See Microsoft Developer Services Agreement (https://msdn.microsoft.com/en-us/cc300389.aspx), section 2b (Software on Documentation Portals) for details.
 
 09-Feb-2016 Fixes #101. For all C module collections with compilable output, a new base class CCompilableModuleContainer is now used. This new class derives from the previous base class, CModuleContainer. This is due to the AddFile method in CModuleContainer not being compatible with a HeaderFileCollection, and so the class hierarchy has been split between compilable and non-compilable collections. An explicit C.HeaderFile module can now be added to a HeaderFileCollection using the AddFile method.

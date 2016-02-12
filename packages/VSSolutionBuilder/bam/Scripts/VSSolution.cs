@@ -37,17 +37,19 @@ namespace VSSolutionBuilder
 
         private void
         AddNestedEntity(
-            string fullpath,
+            string parentpath,
+            string currentpath,
             VSProject project,
             VSSolutionFolder parent = null)
         {
-            var split = fullpath.Split('/');
+            var split = currentpath.Split('/');
             var path = split[0];
-            if (!this.SolutionFolders.ContainsKey(path))
+            var keyPath = string.Join("/", parentpath, path);
+            if (!this.SolutionFolders.ContainsKey(keyPath))
             {
-                this.SolutionFolders.Add(path, new VSSolutionFolder(path));
+                this.SolutionFolders.Add(keyPath, new VSSolutionFolder(keyPath, path));
             }
-            var folder = this.SolutionFolders[path];
+            var folder = this.SolutionFolders[keyPath];
             if (null != parent)
             {
                 parent.NestedEntities.AddUnique(folder);
@@ -58,7 +60,7 @@ namespace VSSolutionBuilder
             }
             else
             {
-                this.AddNestedEntity(string.Join("/", split.Skip(1)), project, folder);
+                this.AddNestedEntity(keyPath, string.Join("/", split.Skip(1)), project, folder);
             }
         }
 
@@ -78,7 +80,10 @@ namespace VSSolutionBuilder
                     if (groups.Length > 0)
                     {
                         var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
-                        this.AddNestedEntity(solutionFolderName, project);
+                        lock (this)
+                        {
+                            this.AddNestedEntity(".", solutionFolderName, project);
+                        }
                     }
                 }
                 if (null == module.MetaData)
@@ -129,11 +134,13 @@ namespace VSSolutionBuilder
             }
             foreach (var folder in this.SolutionFolders)
             {
+                var folderPath = folder.Value.Path;
+                var folderGuid = folder.Value.GuidString;
                 content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
                     SolutionFolderGuid.ToString("B").ToUpper(),
-                    folder.Key,
-                    folder.Key,
-                    folder.Value.GuidString);
+                    folderPath,
+                    folderPath,
+                    folderGuid);
                 content.AppendLine();
                 content.AppendLine("EndProject");
             }

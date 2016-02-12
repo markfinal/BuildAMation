@@ -27,20 +27,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace WindowsSDK
 {
-    public static class Configure
+    public static partial class CommandLineImplementation
     {
-        static Configure()
+        public static void
+        Convert(
+            this ICommonWinResourceCompilerSettings settings,
+            Bam.Core.StringArray commandLine)
         {
-            var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            InstallPath = Bam.Core.TokenizedString.CreateVerbatim(visualCMeta.InstallDir);
-        }
-
-        public static Bam.Core.TokenizedString InstallPath
-        {
-            get;
-            private set;
+            if (settings.NoLogo.HasValue && settings.NoLogo.Value)
+            {
+                commandLine.Add("-NOLOGO");
+            }
         }
     }
 }

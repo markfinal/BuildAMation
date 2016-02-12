@@ -39,7 +39,8 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
 
-            this.Macros.Add("InstallPath", Configure.InstallPath);
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("InstallPath", meta.InstallDir);
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
             this.Macros.AddVerbatim("objext", ".obj");
 
@@ -50,6 +51,12 @@ namespace VisualCCommon
                 var compilation = settings as C.ICommonCompilerSettings;
                 compilation.SystemIncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
             });
+
+            if (meta.UseWindowsSDKPublicPatches)
+            {
+                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
+                this.UsePublicPatches(windowsSDK);
+            }
         }
 
         public override Bam.Core.TokenizedString Executable

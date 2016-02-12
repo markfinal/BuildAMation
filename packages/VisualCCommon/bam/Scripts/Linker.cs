@@ -37,7 +37,8 @@ namespace VisualCCommon
             string libPath)
         {
             // TODO: positional tokens?
-            this.Macros.Add("InstallPath", Configure.InstallPath);
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("InstallPath", meta.InstallDir);
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
             this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(InstallPath)" + toolPath));
             this.Macros.AddVerbatim("exeext", ".exe");

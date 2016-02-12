@@ -3,6 +3,7 @@
   <Description>Microsoft VisualC 2015 support (Community edition)</Description>
   <Dependents>
     <Package name="VisualCCommon" />
+    <Package name="WindowsSDK" version="10" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="0" />

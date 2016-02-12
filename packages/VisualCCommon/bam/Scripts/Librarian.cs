@@ -36,7 +36,8 @@ namespace VisualCCommon
     {
         public Librarian()
         {
-            this.Macros.Add("InstallPath", Configure.InstallPath);
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("InstallPath", meta.InstallDir);
             this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin\lib.exe"));
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");

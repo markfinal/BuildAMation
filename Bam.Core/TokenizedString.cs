@@ -349,7 +349,7 @@ namespace Bam.Core
             }
             if (!this.Verbatim && !this.IsExpanded)
             {
-                throw new Exception("TokenizedString {0} was not expanded", this.OriginalString);
+                throw new Exception("TokenizedString {0} has not been parsed and expanded", this.OriginalString);
             }
             return this.ParsedString;
         }
