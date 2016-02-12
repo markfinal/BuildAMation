@@ -4,7 +4,6 @@
   <Dependents>
     <Package name="C" />
     <Package name="VisualStudioProcessor" />
-    <Package name="WindowsSDK" version="8.1" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="0" />
