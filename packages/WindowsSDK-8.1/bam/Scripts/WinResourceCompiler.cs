@@ -37,7 +37,9 @@ namespace WindowsSDK
         public WinResourceCompiler()
         {
             var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(0)/Windows Kits/8.1/bin/$(1)/rc.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path, architecture)));
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("WindowsSDK");
+            var installDir = meta["InstallDir"] as Bam.Core.TokenizedString;
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(0)/bin/$(1)/rc.exe", null, new Bam.Core.TokenizedStringArray(installDir, architecture)));
             this.Macros.AddVerbatim("objext", ".res");
         }
 
