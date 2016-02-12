@@ -43,8 +43,9 @@ namespace VisualC
             }
 
             // TODO: get this from the registry
-            this.Meta.Add("InstallDir", Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 14.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)));
-            this.Meta.Add("PlatformToolset", "v140");
+            this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 14.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
+            this.PlatformToolset = "v140";
+            this.UseWindowsSDKPublicPatches = true; // headers like stdio.h are in WindowsSDK 10
         }
 
         public override object this[string index]
@@ -69,6 +70,11 @@ namespace VisualC
             {
                 return this.Meta["InstallDir"] as Bam.Core.TokenizedString;
             }
+
+            private set
+            {
+                this.Meta["InstallDir"] = value;
+            }
         }
 
         public string
@@ -77,6 +83,25 @@ namespace VisualC
             get
             {
                 return this.Meta["PlatformToolset"] as string;
+            }
+
+            private set
+            {
+                this.Meta["PlatformToolset"] = value;
+            }
+        }
+
+        public bool
+        UseWindowsSDKPublicPatches
+        {
+            get
+            {
+                return (bool)this.Meta["RequiresWindowsSDK"];
+            }
+
+            private set
+            {
+                this.Meta["RequiresWindowsSDK"] = value;
             }
         }
 

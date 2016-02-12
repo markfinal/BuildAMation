@@ -51,6 +51,12 @@ namespace VisualCCommon
                 var compilation = settings as C.ICommonCompilerSettings;
                 compilation.SystemIncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
             });
+
+            if (meta.UseWindowsSDKPublicPatches)
+            {
+                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
+                this.UsePublicPatches(windowsSDK);
+            }
         }
 
         public override Bam.Core.TokenizedString Executable
