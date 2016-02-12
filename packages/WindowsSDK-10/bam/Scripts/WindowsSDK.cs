@@ -47,6 +47,8 @@ namespace WindowsSDK
                 if (null != compilation)
                 {
                     compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\$(1)\ucrt", installDir10, v10));
+                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir81));
+                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir81));
                 }
 
                 var linking = settings as C.ICommonLinkerSettings;
