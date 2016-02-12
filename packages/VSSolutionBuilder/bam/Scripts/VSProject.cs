@@ -311,7 +311,9 @@ namespace VSSolutionBuilder
 
             var projectEl = this.CreateRootProject(document);
             projectEl.SetAttribute("DefaultTargets", "Build");
-            projectEl.SetAttribute("ToolsVersion", "12.0"); // TODO: get from VisualC package
+
+            var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            projectEl.SetAttribute("ToolsVersion", visualCMeta.VCXProjToolsVersion);
 
             // define configurations in the project
             var configurationItemGroup = document.CreateVSItemGroup("ProjectConfigurations", projectEl);

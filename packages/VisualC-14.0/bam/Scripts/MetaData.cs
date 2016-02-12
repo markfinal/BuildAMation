@@ -45,6 +45,8 @@ namespace VisualC
             // TODO: get this from the registry
             this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 14.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
             this.PlatformToolset = "v140";
+            this.VCXProjToolsVersion = "14.0";
+            this.VCXProjFiltersToolsVersion = "4.0";
             this.UseWindowsSDKPublicPatches = true; // headers like stdio.h are in WindowsSDK 10
         }
 
@@ -88,6 +90,34 @@ namespace VisualC
             private set
             {
                 this.Meta["PlatformToolset"] = value;
+            }
+        }
+
+        public string
+        VCXProjToolsVersion
+        {
+            get
+            {
+                return this.Meta["VCXProjToolsVersion"] as string;
+            }
+
+            private set
+            {
+                this.Meta["VCXProjToolsVersion"] = value;
+            }
+        }
+
+        public string
+        VCXProjFiltersToolsVersion
+        {
+            get
+            {
+                return this.Meta["VCXProjFiltersToolsVersion"] as string;
+            }
+
+            private set
+            {
+                this.Meta["VCXProjFiltersToolsVersion"] = value;
             }
         }
 

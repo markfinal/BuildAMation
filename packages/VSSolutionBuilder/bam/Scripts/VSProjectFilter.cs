@@ -74,7 +74,8 @@ namespace VSSolutionBuilder
             var document = new System.Xml.XmlDocument();
 
             var projectEl = this.CreateRootProject(document);
-            projectEl.SetAttribute("ToolsVersion", "4.0"); // TODO: get this number from VisualC
+            var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            projectEl.SetAttribute("ToolsVersion", visualCMeta.VCXProjFiltersToolsVersion);
 
             var filtersEl = document.CreateVSItemGroup(parentEl: projectEl);
 
