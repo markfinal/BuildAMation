@@ -1,3 +1,5 @@
+12-Feb-2016 Fixes #136. Added WindowsSDK-10. Note that this also references files from the 8.1 SDK version as well. VisualC-14.0 depends on WindowsSDK-10.
+
 12-Feb-2016 Fixes #135. Each VisualC-N package specifies its WindowsSDK as there is general coherence between versions. VisualC-12.0 specifies WindowsSDK-8.1. Only specify a WindowsSDK version in a master package if you wish to override this default.
 
 11-Feb-2016 Fixes #123. Common directory names used in different contexts in paths used in Bam.Core.ModuleGroup are no longer identified as the same solution folder in VisualStudio.
