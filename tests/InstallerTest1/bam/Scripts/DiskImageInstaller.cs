@@ -1,3 +1,4 @@
+#region License
 // Copyright (c) 2010-2016, Mark Final
 // All rights reserved.
 //
@@ -25,38 +26,51 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#include "staticlibrary.h"
-#include "dynamiclibrary.h"
-
-#ifdef __cplusplus
-#include <iostream>
-#else
-#include <stdio.h>
-#endif
-
-#ifdef _WINDOWS
-#include <Windows.h>
-int APIENTRY
-WinMain(
-    HINSTANCE hInstance,
-    HINSTANCE hPrevInstance,
-    LPSTR lpCmdLine,
-    int nCmdShow)
+#endregion // License
+using Bam.Core;
+namespace InstallerTest1
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)lpCmdLine;
-    (void)nCmdShow;
-#else
-int
-main()
-{
-#endif
-    int result = DynamicLibraryFunction(StaticLibraryFunction(42));
-#ifdef __cplusplus
-    std::cout << "Result was " << result << std::endl;
-#else
-    printf("Result was %i\n", result);
-#endif
-    return result;
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class CExecutableDMG :
+        Installer.DiskImage
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.PrivatePatch(settings =>
+                {
+                    var dmgSettings = settings as Installer.IDiskImageSettings;
+                    dmgSettings.ImageSize = "128m";
+                });
+
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_DiskImageInstaller");
+
+            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class CxxExecutableDMG :
+        Installer.DiskImage
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.PrivatePatch(settings =>
+            {
+                var dmgSettings = settings as Installer.IDiskImageSettings;
+                dmgSettings.ImageSize = "128m";
+            });
+
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
+
+            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+        }
+    }
 }

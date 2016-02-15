@@ -1,3 +1,5 @@
+15-Feb-2016 InstallerTest1 updated to build two sets of installers, one with C only dependencies, and one with C++ dependencies. This is mostly to exercise the publishing of CRT DLLs with an installer.
+
 12-Feb-2016 Fixes #137. ToolsVersion attribute written into .vcxproj and .vcxproj.filters is now part of the VisualC metadata. VisualC-12.0 has .vcxproj ToolsVersion 12.0, while VisualC-14.0 has 14.0. Both have filters ToolVersion of 4.0.
 
 12-Feb-2016 Fixes #136. Added WindowsSDK-10. Note that this also references files from the 8.1 SDK version as well. VisualC-14.0 depends on WindowsSDK-10.
