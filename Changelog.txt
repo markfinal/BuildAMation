@@ -1,3 +1,5 @@
+16-Feb-2016 ======== Version 1.0.1b3 Release ========
+
 16-Feb-2016 Fixes #138. Recursively resolving package version ambiguity has been improved. If a package A has two versions in a package definition file, and each version of A depends on a different version of package B (and these are the only references to B), then prior to this fix, resolving which version of A is used (e.g. on the command line, --A.version=..., or specify the default in the master package definition file), would not automatically resolve B, even though there is no ambiguity anymore. A concrete example of this issue occurred with the VisualC packages, which depend on different versions of the WindowsSDK packages; specifying --VisualC.version=X still required --WindowsSDK.version=Y prior to the fix.
 
 16-Feb-2016 Fixes #143. VisualC-14.0 added to the test package definition files. VisualC-12.0 remains as the default.
