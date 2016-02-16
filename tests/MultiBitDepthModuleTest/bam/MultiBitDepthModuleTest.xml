@@ -10,7 +10,8 @@
     <Package name="Gcc" version="4.8" />
     <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
-    <Package name="VisualC" version="12.0" />
+    <Package name="VisualC" version="12.0" default="true" />
+    <Package name="VisualC" version="14.0" />
     <Package name="VSSolutionBuilder" />
     <Package name="XcodeBuilder" />
   </Dependents>

@@ -1,3 +1,5 @@
+16-Feb-2016 Fixes #143. VisualC-14.0 added to the test package definition files. VisualC-12.0 remains as the default.
+
 16-Feb-2016 Fixes #142. All C/C++ source files in tests now use C style comments, since files may be compiled on a variety of different tools and different build settings, which may not support C++ style comments.
 
 16-Feb-2016 Fixes #141. Before cleaning the build root (command line option -c|--clean), all files within it are stripped of the read-only attribute, to avoid an error occurring. Read-only files may have been introduced from a previous build using a collation module that preserved file attributes.
