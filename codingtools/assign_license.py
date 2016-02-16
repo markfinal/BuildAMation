@@ -87,6 +87,9 @@ def process_path(path, extension_list, excluded_files_list=[]):
         assign_license(path)
     else:
         for root, dirs, files in os.walk(path):
+            # ignore hidden files and directories
+            files = [f for f in files if not f[0] == '.']
+            dirs[:] = [d for d in dirs if not d[0] == '.']
             for file_path in files:
                 full_path = os.path.join(root, file_path)
                 if full_path in excluded_files_list:

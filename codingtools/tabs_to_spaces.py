@@ -22,6 +22,9 @@ def process_path(path, extension_list):
         convert_tabs_to_spaces(path)
     else:
         for root, dirs, files in os.walk(path):
+            # ignore hidden files and directories
+            files = [f for f in files if not f[0] == '.']
+            dirs[:] = [d for d in dirs if not d[0] == '.']
             for file_path in files:
                 file_ext = os.path.splitext(file_path)[1]
                 if file_ext in extension_list:
