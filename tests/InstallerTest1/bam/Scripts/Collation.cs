@@ -49,7 +49,10 @@ namespace InstallerTest1
                 (app.SourceModule as CExecutable).Linker is VisualCCommon.LinkerBase)
             {
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                this.IncludeFile(runtimeLibrary.MSVCR((app.SourceModule as C.CModule).BitDepth), ".", app);
+                foreach (var runtimelib in runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth))
+                {
+                    this.IncludeFile(runtimelib, ".", app);
+                }
             }
         }
     }
@@ -73,8 +76,14 @@ namespace InstallerTest1
                 (app.SourceModule as CxxExecutable).Linker is VisualCCommon.LinkerBase)
             {
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                this.IncludeFile(runtimeLibrary.MSVCR((app.SourceModule as C.CModule).BitDepth), ".", app);
-                this.IncludeFile(runtimeLibrary.MSVCP((app.SourceModule as C.CModule).BitDepth), ".", app);
+                foreach (var runtimelib in runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth))
+                {
+                    this.IncludeFile(runtimelib, ".", app);
+                }
+                foreach (var runtimelib in runtimeLibrary.CxxRuntimePaths((app.SourceModule as C.CModule).BitDepth))
+                {
+                    this.IncludeFile(runtimelib, ".", app);
+                }
             }
         }
     }

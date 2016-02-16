@@ -80,7 +80,10 @@ namespace Test5
                 (app.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
             {
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                this.IncludeFile(runtimeLibrary.MSVCR((app.SourceModule as MyDynamicLibTestApp).BitDepth), ".", app);
+                foreach (var libPath in runtimeLibrary.CRuntimePaths((app.SourceModule as MyDynamicLibTestApp).BitDepth))
+                {
+                    this.IncludeFile(libPath, ".", app);
+                }
             }
         }
     }

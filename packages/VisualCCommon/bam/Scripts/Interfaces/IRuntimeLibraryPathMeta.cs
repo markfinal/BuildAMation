@@ -31,8 +31,8 @@ namespace VisualCCommon
 {
     public interface IRuntimeLibraryPathMeta
     {
-        Bam.Core.TokenizedString MSVCR(C.EBit depth);
+        Bam.Core.TokenizedStringArray CRuntimePaths(C.EBit depth);
 
-        Bam.Core.TokenizedString MSVCP(C.EBit depth);
+        Bam.Core.TokenizedStringArray CxxRuntimePaths(C.EBit depth);
     }
 }

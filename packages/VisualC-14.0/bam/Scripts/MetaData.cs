@@ -135,39 +135,58 @@ namespace VisualC
             }
         }
 
-        // TODO: note that msvcr*.dll no longer exists from VisualStudio 2015
-        // it is replaced by the universal crt, which is in the Windows SDK: https://blogs.msdn.microsoft.com/vcblog/2015/03/03/introducing-the-universal-crt/
-        // but also part of the Windows 10 OS
-        Bam.Core.TokenizedString
-        VisualCCommon.IRuntimeLibraryPathMeta.MSVCR(
+        Bam.Core.TokenizedStringArray
+        VisualCCommon.IRuntimeLibraryPathMeta.CRuntimePaths(
             C.EBit depth)
         {
+            // only redist the VisualC specific version runtime, and the universal CRT
+            // don't redist the api-ms-win-crt-*-l1-1-0.dll files from the WindowsSDK, as I can find no reference
+            // to needing to do so
+
+            var windowsSDKMeta = Bam.Core.Graph.Instance.PackageMetaData<WindowsSDK.MetaData>("WindowsSDK");
+
+            var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/msvcr140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    {
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                    }
+                    break;
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/msvcr140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    {
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                    }
+                    break;
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
             }
+            return dynamicLibPaths;
         }
 
-        Bam.Core.TokenizedString VisualCCommon.IRuntimeLibraryPathMeta.MSVCP(C.EBit depth)
+        Bam.Core.TokenizedStringArray
+        VisualCCommon.IRuntimeLibraryPathMeta.CxxRuntimePaths(
+            C.EBit depth)
         {
+            var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    break;
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    break;
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
             }
+            return dynamicLibPaths;
         }
     }
 }
