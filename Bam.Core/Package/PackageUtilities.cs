@@ -429,6 +429,13 @@ namespace Bam.Core
                 Log.Info("Deleting build root '{0}'", Graph.Instance.BuildRoot);
                 try
                 {
+                    // make sure no files are read-only, which may have happened as part of collation preserving file attributes
+                    var dirInfo = new System.IO.DirectoryInfo(Graph.Instance.BuildRoot);
+                    foreach (var file in dirInfo.EnumerateFiles("*", System.IO.SearchOption.AllDirectories))
+                    {
+                        file.Attributes &= ~System.IO.FileAttributes.ReadOnly;
+                    }
+
                     System.IO.Directory.Delete(Graph.Instance.BuildRoot, true);
                 }
                 catch (System.IO.IOException ex)
