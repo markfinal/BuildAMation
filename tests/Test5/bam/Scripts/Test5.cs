@@ -80,7 +80,7 @@ namespace Test5
                 (app.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
             {
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                foreach (var libPath in runtimeLibrary.CRuntimePaths((app.SourceModule as MyDynamicLibTestApp).BitDepth))
+                foreach (var libPath in runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth))
                 {
                     this.IncludeFile(libPath, ".", app);
                 }
