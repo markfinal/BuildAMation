@@ -135,36 +135,46 @@ namespace VisualC
             }
         }
 
-        Bam.Core.TokenizedString
-        VisualCCommon.IRuntimeLibraryPathMeta.MSVCR(
+        Bam.Core.TokenizedStringArray
+        VisualCCommon.IRuntimeLibraryPathMeta.CRuntimePaths(
             C.EBit depth)
         {
+            var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC120.CRT/msvcr120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC120.CRT/msvcr120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    break;
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC120.CRT/msvcr120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC120.CRT/msvcr120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    break;
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
             }
+            return dynamicLibPaths;
         }
 
-        Bam.Core.TokenizedString VisualCCommon.IRuntimeLibraryPathMeta.MSVCP(C.EBit depth)
+        Bam.Core.TokenizedStringArray
+        VisualCCommon.IRuntimeLibraryPathMeta.CxxRuntimePaths(
+            C.EBit depth)
         {
+            var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC120.CRT/msvcp120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC120.CRT/msvcp120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    break;
 
                 case C.EBit.SixtyFour:
-                    return Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC120.CRT/msvcp120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC120.CRT/msvcp120.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    break;
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
             }
+            return dynamicLibPaths;
         }
     }
 }

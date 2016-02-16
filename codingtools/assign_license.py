@@ -31,19 +31,14 @@ def write_license_text(outfile, file_path):
             else:
                 outfile.write('// %s\n' % line)
         outfile.write('#endregion // License\n')
-    elif ext == '.cpp' or ext == '.mm':
-        for line in licenseText:
-            if not line:
-                outfile.write('//\n')
-            else:
-                outfile.write('// %s\n' % line)
-    elif ext == '.c' or ext == '.h' or ext == '.m':
+    elif ext == '.c' or ext == '.h' or ext == '.m' or ext == '.cpp' or ext == '.mm':
+        # always write C style comments, in case files are compiled on different flags/compilers
         outfile.write('/*\n')
         for line in licenseText:
             outfile.write('%s\n' % line)
         outfile.write('*/\n')
     else:
-        raise RuntimeError('Unsupported file_path extension for appending license, %s' % file_path)
+        raise RuntimeError('Unsupported file extension for appending license, %s' % file_path)
 
 
 def assign_license(file_path):
@@ -87,15 +82,20 @@ def assign_license(file_path):
         convert_line_endings(file_path)
 
 
-def process_path(path, extension_list):
+def process_path(path, extension_list, excluded_files_list=[]):
     if os.path.isfile(path):
         assign_license(path)
     else:
         for root, dirs, files in os.walk(path):
+            # ignore hidden files and directories
+            files = [f for f in files if not f[0] == '.']
+            dirs[:] = [d for d in dirs if not d[0] == '.']
             for file_path in files:
+                full_path = os.path.join(root, file_path)
+                if full_path in excluded_files_list:
+                    continue
                 file_ext = os.path.splitext(file_path)[1]
                 if file_ext in extension_list:
-                    full_path = os.path.join(root, file_path)
                     assign_license(full_path)
 
 if __name__ == "__main__":
@@ -106,5 +106,5 @@ if __name__ == "__main__":
             extensions = ['.cs']
         process_path(sys.argv[1], extensions)
     else:
-        process_path('.', ['.cs'])
+        process_path('.', ['.cs'], ['./Bam.Core/LimitedConcurrencyLevelTaskScheduler.cs'])
         process_path('tests', ['.h', '.c', '.cpp', '.m', '.mm'])

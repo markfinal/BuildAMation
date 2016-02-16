@@ -27,12 +27,52 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+using Bam.Core;
+namespace InstallerTest1
 {
-    public interface IRuntimeLibraryPathMeta
+    public sealed class CxxStaticLibrary :
+        C.StaticLibrary
     {
-        Bam.Core.TokenizedStringArray CRuntimePaths(C.EBit depth);
+        protected override void
+        Init(
+            Module parent)
+        {
+            base.Init(parent);
 
-        Bam.Core.TokenizedStringArray CxxRuntimePaths(C.EBit depth);
+            this.CreateHeaderContainer("$(packagedir)/source/staticlib/*.h");
+            this.CreateCxxSourceContainer("$(packagedir)/source/staticlib/*.cpp");
+
+            this.PublicPatch((settings, appliedTo) =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/staticlib"));
+                }
+            });
+        }
+    }
+
+    public sealed class CStaticLibrary :
+        C.StaticLibrary
+    {
+        protected override void
+        Init(
+            Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/source/staticlib/*.h");
+            this.CreateCSourceContainer("$(packagedir)/source/staticlib/*.cpp");
+
+            this.PublicPatch((settings, appliedTo) =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/staticlib"));
+                }
+            });
+        }
     }
 }

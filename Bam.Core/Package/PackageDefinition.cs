@@ -120,6 +120,7 @@ namespace Bam.Core
                 this.PackageRepositories.AddUnique(associatedRepo);
             }
             this.Description = string.Empty;
+            this.Parents = new Array<PackageDefinition>();
         }
 
         /// <summary>
@@ -1079,6 +1080,8 @@ namespace Bam.Core
                     throw new Exception(message.ToString());
                 }
 
+                candidates.First().Parents.AddUnique(current);
+
                 ResolveDependencies(candidates.First(), authenticated, candidatePackageDefinitions);
             }
         }
@@ -1312,6 +1315,15 @@ namespace Bam.Core
         /// </summary>
         /// <value>The meta data.</value>
         public PackageMetaData MetaData
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// List of PackageDefinitions which have stated that this package is a dependency.
+        /// </summary>
+        public Array<PackageDefinition> Parents
         {
             get;
             set;

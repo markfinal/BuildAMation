@@ -50,6 +50,10 @@ namespace WindowsSDK
                 }
 
                 installPath = key.GetValue("KitsRoot81") as string;
+                if (null == installPath)
+                {
+                    throw new Bam.Core.Exception("Unable to locate the registry value {0}\\KitsRoot81. Is the WindowsSDK 8.1 installed?", key.Name);
+                }
                 Bam.Core.Log.DebugMessage("Windows 8.1 SDK installation folder is {0}", installPath);
             }
 

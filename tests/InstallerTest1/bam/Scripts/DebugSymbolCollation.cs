@@ -27,12 +27,34 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+using Bam.Core;
+namespace InstallerTest1
 {
-    public interface IRuntimeLibraryPathMeta
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class CExecutableDebugSymbols :
+        Publisher.DebugSymbolCollation
     {
-        Bam.Core.TokenizedStringArray CRuntimePaths(C.EBit depth);
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
 
-        Bam.Core.TokenizedStringArray CxxRuntimePaths(C.EBit depth);
+            this.CreateSymbolsFrom<CExecutableRuntime>();
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class CxxExecutableDebugSymbols :
+        Publisher.DebugSymbolCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateSymbolsFrom<CxxExecutableRuntime>();
+        }
     }
 }

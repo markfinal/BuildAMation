@@ -49,6 +49,10 @@ namespace WindowsSDK
                 }
 
                 var installPath10 = key.GetValue("KitsRoot10") as string;
+                if (null == installPath10)
+                {
+                    throw new Bam.Core.Exception("Unable to locate the registry value {0}\\KitsRoot10. Is the WindowsSDK 10 installed?", key.Name);
+                }
                 Bam.Core.Log.DebugMessage("Windows 10 SDK installation folder is {0}", installPath10);
                 this.InstallDirSDK10 = Bam.Core.TokenizedString.CreateVerbatim(installPath10);
 
@@ -57,6 +61,10 @@ namespace WindowsSDK
                 this.SpecificVersion10 = Bam.Core.TokenizedString.CreateVerbatim("10.0.10240.0");
 
                 var installPath81 = key.GetValue("KitsRoot81") as string;
+                if (null == installPath81)
+                {
+                    throw new Bam.Core.Exception("Unable to locate the registry value {0}\\KitsRoot81. Is the WindowsSDK 8.1 installed?", key.Name);
+                }
                 Bam.Core.Log.DebugMessage("Windows 8.1 SDK installation folder is {0}", installPath81);
                 this.InstallDirSDK81 = Bam.Core.TokenizedString.CreateVerbatim(installPath81);
                 return;

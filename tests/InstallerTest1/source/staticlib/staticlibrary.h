@@ -32,4 +32,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 extern int StaticLibraryFunction(int);
 
-#endif // STATICLIBRARY_H
+#endif /* STATICLIBRARY_H */

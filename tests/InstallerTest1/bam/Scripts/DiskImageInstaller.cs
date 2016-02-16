@@ -27,12 +27,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+using Bam.Core;
+namespace InstallerTest1
 {
-    public interface IRuntimeLibraryPathMeta
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class CExecutableDMG :
+        Installer.DiskImage
     {
-        Bam.Core.TokenizedStringArray CRuntimePaths(C.EBit depth);
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
 
-        Bam.Core.TokenizedStringArray CxxRuntimePaths(C.EBit depth);
+            this.PrivatePatch(settings =>
+                {
+                    var dmgSettings = settings as Installer.IDiskImageSettings;
+                    dmgSettings.ImageSize = "128m";
+                });
+
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_DiskImageInstaller");
+
+            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class CxxExecutableDMG :
+        Installer.DiskImage
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.PrivatePatch(settings =>
+            {
+                var dmgSettings = settings as Installer.IDiskImageSettings;
+                dmgSettings.ImageSize = "128m";
+            });
+
+            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
+
+            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+        }
     }
 }
