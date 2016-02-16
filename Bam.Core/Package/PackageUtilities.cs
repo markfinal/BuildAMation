@@ -220,6 +220,83 @@ namespace Bam.Core
             return masterDefinitionFile;
         }
 
+        private static PackageDefinition
+        TryToResolveDuplicate(
+            PackageDefinition masterDefinitionFile,
+            string dupName,
+            System.Collections.Generic.IEnumerable<PackageDefinition> duplicates,
+            Array<PackageDefinition> packageDefinitions,
+            Array<StringArray> packageVersionSpecifiers,
+            Array<PackageDefinition> toRemove)
+        {
+            // command line specifications take precedence to resolve a duplicate
+            foreach (var specifier in packageVersionSpecifiers)
+            {
+                if (!specifier.Contains(dupName))
+                {
+                    continue;
+                }
+
+                foreach (var dupPackage in duplicates)
+                {
+                    if (specifier[1] == dupPackage.Version)
+                    {
+                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item != dupPackage)));
+                        return dupPackage;
+                    }
+                }
+
+                var noMatchMessage = new System.Text.StringBuilder();
+                noMatchMessage.AppendFormat("Command line version specified, {0}, could not resolve to one of the available versions of package {1}:", specifier[1], duplicates.First().Name);
+                noMatchMessage.AppendLine();
+                foreach (var dup in duplicates)
+                {
+                    noMatchMessage.AppendFormat("\t{0}", dup.Version);
+                    noMatchMessage.AppendLine();
+                }
+                throw new Exception(noMatchMessage.ToString());
+            }
+
+            // now look at the master dependency file, for any 'default' specifications
+            var masterDependency = masterDefinitionFile.Dependents.Where(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value).FirstOrDefault();
+            if (null != masterDependency)
+            {
+                toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item.Version != masterDependency.Item2)));
+                return packageDefinitions.Where(item => (item.Name == dupName) && (item.Version == masterDependency.Item2)).First();
+            }
+
+            return null;
+        }
+
+        private static Array<PackageDefinition>
+        PackagesToRemove(
+            Array<PackageDefinition> toRemove,
+            Array<PackageDefinition> packageDefinitions,
+            PackageDefinition masterDefinitionFile)
+        {
+            var additionalToRemove = new Array<PackageDefinition>();
+            foreach (var r in toRemove)
+            {
+                foreach (var p in packageDefinitions)
+                {
+                    if (p.Parents.Contains(r))
+                    {
+                        p.Parents.Remove(r);
+                    }
+                    if (0 == p.Parents.Count() && p != masterDefinitionFile && !toRemove.Contains(p))
+                    {
+                        additionalToRemove.AddUnique(p);
+                    }
+                }
+            }
+            if (additionalToRemove.Count() > 0)
+            {
+                // recurse
+                additionalToRemove.AddRangeUnique(PackagesToRemove(additionalToRemove, packageDefinitions, masterDefinitionFile));
+            }
+            return additionalToRemove;
+        }
+
         /// <summary>
         /// Scan though all package repositories for all package dependencies, and resolve any duplicate package names
         /// by either data in the package definition file, or on the command line, by specifying a particular version to
@@ -311,54 +388,25 @@ namespace Bam.Core
                 foreach (var dupName in duplicatePackageNames)
                 {
                     var duplicates = packageDefinitions.Where(item => item.Name == dupName);
-                    PackageDefinition resolvedDuplicate = null;
-                    // command line specifications take precedence to resolve a duplicate
-                    foreach (var specifier in packageVersionSpecifiers)
+                    var resolvedDuplicate = TryToResolveDuplicate(masterDefinitionFile, dupName, duplicates, packageDefinitions, packageVersionSpecifiers, toRemove);
+                    if (null != resolvedDuplicate)
                     {
-                        if (!specifier.Contains(dupName))
-                        {
-                            continue;
-                        }
-
-                        foreach (var dupPackage in duplicates)
-                        {
-                            if (specifier[1] == dupPackage.Version)
-                            {
-                                resolvedDuplicate = dupPackage;
-                                break;
-                            }
-                        }
-
-                        if (resolvedDuplicate != null)
-                        {
-                            break;
-                        }
-
-                        var noMatchMessage = new System.Text.StringBuilder();
-                        noMatchMessage.AppendFormat("Command line version specified, {0}, could not resolve to one of the available versions of package {1}:", specifier[1], duplicates.First().Name);
-                        noMatchMessage.AppendLine();
-                        foreach (var dup in duplicates)
-                        {
-                            noMatchMessage.AppendFormat("\t{0}", dup.Version);
-                            noMatchMessage.AppendLine();
-                        }
-                        throw new Exception(noMatchMessage.ToString());
-                    }
-
-                    if (resolvedDuplicate != null)
-                    {
-                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item != resolvedDuplicate)));
                         continue;
                     }
 
-                    // now look at the master dependency file, for any 'default' specifications
-                    var masterDependency = masterDefinitionFile.Dependents.Where(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value).FirstOrDefault();
-                    if (null != masterDependency)
+                    // try removing any packages that have already been resolved
+                    // which can remove additional packages (recursive check) because they had been added solely by those we are just about to remove
+                    toRemove.AddRangeUnique(PackagesToRemove(toRemove, packageDefinitions, masterDefinitionFile));
+                    packageDefinitions.RemoveAll(toRemove);
+                    toRemove.Clear();
+
+                    // and if that has reduced the duplicates for this package down to a single version, we're good to carry on
+                    if (1 == duplicates.Count())
                     {
-                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item.Version != masterDependency.Item2)));
                         continue;
                     }
 
+                    // otherwise, error
                     var resolveErrorMessage = new System.Text.StringBuilder();
                     resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve. Available versions of the package are:", duplicates.First().Name);
                     resolveErrorMessage.AppendLine();
@@ -370,6 +418,7 @@ namespace Bam.Core
                     throw new Exception(resolveErrorMessage.ToString());
                 }
 
+                // finally, clean up the package definition list to use, with all those that need to be deleted
                 packageDefinitions.RemoveAll(toRemove);
             }
 
