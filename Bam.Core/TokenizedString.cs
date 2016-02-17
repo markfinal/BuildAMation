@@ -53,7 +53,7 @@ namespace Bam.Core
     /// <item><description><code>@changeextension(path,ext)</code></description> Change the extension of the file in path, to ext.</item>
     /// <item><description><code>@removetrailingseperator(path)</code></description> Deprecated for removal in v1.1.0. Use removetrailingseparator.</item>
     /// <item><description><code>@removetrailingseparator(path)</code></description> Remove any directory separator characters from the end of path.</item>
-    /// <item><description><code>@relativeto(path,root)</code></description> Return the relative path from root.</item>
+    /// <item><description><code>@relativeto(path,baseDir)</code></description> Return the relative path from baseDir. If there is no common root between them, path is returned.</item>
     /// <item><description><code>@trimstart(path,totrim)</code></description> Trim string from the start of path.</item>
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
     /// <item><description><code>@ifnotempty(path,whennotempty,whenempty)</code></description> If path is not empty, replace the expression with that in whennotempty, otherwise use whenempty.</item>
@@ -666,10 +666,6 @@ namespace Bam.Core
                         var path = split[0];
                         var root = split[1] + System.IO.Path.DirectorySeparatorChar;
                         var relative = RelativePathUtilities.GetPath(path, root);
-                        if (relative.Equals(path))
-                        {
-                            throw new Exception("Unable to determine relative path of {0} from {1}", path, root);
-                        }
                         return relative;
                     }
 
