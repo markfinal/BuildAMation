@@ -161,7 +161,8 @@ namespace C.Cxx
         ExecuteInternal(
             ExecutionContext context)
         {
-            if (this.IsPrebuilt)
+            if (this.IsPrebuilt &&
+                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
             {
                 return;
             }
@@ -184,7 +185,8 @@ namespace C.Cxx
         GetExecutionPolicy(
             string mode)
         {
-            if (this.IsPrebuilt)
+            if (this.IsPrebuilt &&
+                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
             {
                 return;
             }

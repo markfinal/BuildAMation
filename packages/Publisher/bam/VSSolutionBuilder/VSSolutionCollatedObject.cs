@@ -66,7 +66,7 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            if (sender.SourceModule != null && sender.SourceModule.MetaData != null)
+            if (sender.SourceModule != null && sender.SourceModule.MetaData != null && VSSolutionBuilder.VSProject.IsBuildable(sender.SourceModule))
             {
                 var destinationPath = sender.Macros["CopyDir"].Parse();
 

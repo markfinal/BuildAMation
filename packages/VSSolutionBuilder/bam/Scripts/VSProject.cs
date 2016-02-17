@@ -408,5 +408,31 @@ namespace VSSolutionBuilder
             document.AppendChild(project);
             return project;
         }
+
+        public static bool
+        IsBuildable(
+            Bam.Core.Module module)
+        {
+            var project = module.MetaData as VSProject;
+            if (null == project)
+            {
+                return false;
+            }
+            var configuration = project.GetConfiguration(module);
+            switch (configuration.Type)
+            {
+                case VSProjectConfiguration.EType.Application:
+                case VSProjectConfiguration.EType.DynamicLibrary:
+                case VSProjectConfiguration.EType.StaticLibrary:
+                    return true;
+
+                case VSProjectConfiguration.EType.Utility:
+                    // TODO: do I also need to check the number of source files? could a utility project generate a usable output somehow, rather than just browsing information?
+                    return false;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized project type, {0}", configuration.Type);
+            }
+        }
     }
 }

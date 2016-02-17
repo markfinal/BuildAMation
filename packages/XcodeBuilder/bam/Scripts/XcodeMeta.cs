@@ -69,5 +69,13 @@ namespace XcodeBuilder
                 return true;
             }
         }
+
+        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

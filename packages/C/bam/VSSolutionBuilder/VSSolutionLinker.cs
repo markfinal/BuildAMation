@@ -35,6 +35,24 @@ namespace C
     public sealed partial class VSSolutionLinker :
         ILinkingPolicy
     {
+        private void
+        CreateHeaderOnlyLibrary(
+            ConsoleApplication sender,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
+        {
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(sender);
+            var config = project.GetConfiguration(sender);
+
+            config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+            config.EnableIntermediatePath();
+
+            foreach (var header in headers)
+            {
+                config.AddHeaderFile(header as HeaderFile);
+            }
+        }
+
         void
         ILinkingPolicy.Link(
             ConsoleApplication sender,
@@ -47,6 +65,10 @@ namespace C
         {
             if (0 == objectFiles.Count)
             {
+                if (headers.Count > 0)
+                {
+                    this.CreateHeaderOnlyLibrary(sender, headers);
+                }
                 return;
             }
 
@@ -107,7 +129,7 @@ namespace C
 
             foreach (var input in libraries)
             {
-                if (null != input.MetaData)
+                if ((null != input.MetaData) && VSSolutionBuilder.VSProject.IsBuildable(input))
                 {
                     if ((input is C.StaticLibrary) || (input is C.IDynamicLibrary))
                     {

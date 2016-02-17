@@ -203,5 +203,13 @@ namespace MakeFileBuilder
                 return false;
             }
         }
+
+        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 }

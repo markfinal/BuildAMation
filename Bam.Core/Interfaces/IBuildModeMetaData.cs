@@ -55,5 +55,16 @@ namespace Bam.Core
         {
             get;
         }
+
+        /// <summary>
+        /// If a module is marked as a prebuilt (i.e. module output is on disk, no build step is required), and if there are
+        /// associated files (e.g. header files in the case of C) that can be represented as a project, this property allows
+        /// the build system to generate that project.
+        /// </summary>
+        /// <value><c>true</c> if a non-buildable project can be generated for associated files; otherwise, <c>false</c>.</value>
+        bool CanCreatePrebuiltProjectForAssociatedFiles
+        {
+            get;
+        }
     }
 }
