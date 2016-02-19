@@ -427,8 +427,12 @@ namespace VSSolutionBuilder
                     return true;
 
                 case VSProjectConfiguration.EType.Utility:
-                    // TODO: do I also need to check the number of source files? could a utility project generate a usable output somehow, rather than just browsing information?
-                    return false;
+                    {
+                        // there are some utility projects just for copying files around (and no source files), which do need to build
+                        // so query whether the original module had the [C.Prebuilt] attribute
+                        var isPrebuilt = (module is C.CModule) && (module as C.CModule).IsPrebuilt;
+                        return !isPrebuilt;
+                    }
 
                 default:
                     throw new Bam.Core.Exception("Unrecognized project type, {0}", configuration.Type);
