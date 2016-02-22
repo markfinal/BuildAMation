@@ -73,6 +73,15 @@ namespace C
             }
         }
 
+        protected virtual Bam.Core.TokenizedString
+        IncludeDirectory
+        {
+            get
+            {
+                return this.CreateTokenizedString("@dir($(0))", this.InputPath);
+            }
+        }
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -86,8 +95,7 @@ namespace C
                     var compiler = settings as C.ICommonCompilerSettings;
                     if (null != compiler)
                     {
-                        var includeDir = this.CreateTokenizedString("@dir($(0))", this.InputPath);
-                        compiler.IncludePaths.AddUnique(includeDir);
+                        compiler.IncludePaths.AddUnique(this.IncludeDirectory);
                     }
                 });
         }

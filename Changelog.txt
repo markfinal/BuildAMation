@@ -1,3 +1,5 @@
+22-Feb-2016 Allow changing the header search path from C.ProceduralHeaderFile, by overriding the IncludeDirectory property.
+
 17-Feb-2016 Fixes #145. Modules using the C package that have the [C.Prebuilt] attribute now contribute any headers into a non-buildable project in VisualStudio. This is useful for browsing the headers and intellisense-like features of the IDE. The interface Bam.Core/Interfaces/IBuildModeMetaData.cs has been extended with a read-only Boolean property CanCreatePrebuiltProjectForAssociatedFiles, which each build mode must implement, indicating whether there is support for such prebuilt un-buildable projects.
 
 17-Feb-2016 Fixes #144. The TokenizedString post-function @relativeto(path,baseDir) will now return path if there is no common root found, rather than throw an exception.
