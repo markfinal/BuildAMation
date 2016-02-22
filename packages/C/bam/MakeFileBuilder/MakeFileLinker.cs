@@ -63,6 +63,10 @@ namespace C
             rule.AddTarget(executablePath);
             foreach (var module in objectFiles)
             {
+                if (!(module as C.ObjectFile).PerformCompilation)
+                {
+                    continue;
+                }
                 rule.AddPrerequisite(module, C.ObjectFile.Key);
             }
             foreach (var module in libraries)
