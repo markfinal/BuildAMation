@@ -39,6 +39,11 @@ namespace C
             Bam.Core.TokenizedString objectFilePath,
             Bam.Core.Module source)
         {
+            if (!sender.PerformCompilation)
+            {
+                return;
+            }
+
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
             if (!System.IO.Directory.Exists(objectFileDir))
             {

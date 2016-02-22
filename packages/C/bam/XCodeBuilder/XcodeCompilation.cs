@@ -39,6 +39,12 @@ namespace C
             Bam.Core.TokenizedString objectFilePath,
             Bam.Core.Module source)
         {
+            if (!sender.PerformCompilation)
+            {
+                // TODO: mark the object file as not compilable
+                return;
+            }
+
             var encapsulating = sender.GetEncapsulatingReferencedModule();
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;

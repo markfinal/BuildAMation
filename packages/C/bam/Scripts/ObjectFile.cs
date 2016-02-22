@@ -49,6 +49,7 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
+            this.PerformCompilation = true;
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
         }
 
@@ -124,6 +125,12 @@ namespace C
             }
         }
 
+        public bool PerformCompilation
+        {
+            get;
+            set;
+        }
+
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -145,6 +152,10 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
+            if (!this.PerformCompilation)
+            {
+                return;
+            }
             var graph = Bam.Core.Graph.Instance;
             var factory = graph.MetaData as System.Threading.Tasks.TaskFactory;
             this.EvaluationTask = factory.StartNew(() =>
