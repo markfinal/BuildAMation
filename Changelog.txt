@@ -1,3 +1,5 @@
+23-Feb-2016 Fixes #152. The linker in Mingw-4.8.1 now implements the C.ICommonLinkerSettingsWin interface, covering the subsystem and .def file.
+
 23-Feb-2016 Fixes #151. Added ExportDefinitionFile property (type: Bam.Core.TokenizedString) to C.ICommonLinkerSettingsWin, defaulting to null. This is for the .def file. If this is set to a valid path, it is passed to the linker and the contents used as the list of exported symbols for the binary. If the value remains null, the linker will generate a .def file based on metadata on symbols in the code.
 
 23-Feb-2016 Fixes #150. Needed to invoke Parse() on the Bam.Core.TokenizedStrings for RPath and RPathLink.

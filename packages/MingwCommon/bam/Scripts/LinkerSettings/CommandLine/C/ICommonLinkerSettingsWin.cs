@@ -27,74 +27,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace MingwCommon
 {
-    public sealed class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettingsWin,
-        C.ICommonLinkerSettings,
-        C.IAdditionalSettings
+    public static partial class CommandLineImplementation
     {
-        public LinkerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
+        public static void
+        Convert(
+            this C.ICommonLinkerSettingsWin settings,
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
-        }
+            switch (settings.SubSystem.Value)
+            {
+                case C.ESubsystem.Console:
+                    commandLine.Add("-Wl,-subsystem,console");
+                    break;
 
-        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
-        {
-            get;
-            set;
-        }
+                case C.ESubsystem.Windows:
+                    commandLine.Add("-Wl,-subsystem,windows");
+                    break;
 
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
-        {
-            get;
-            set;
-        }
-
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
+                default:
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
+            }
+            if (null != settings.ExportDefinitionFile)
+            {
+                // just add it into the command line
+                commandLine.Add(settings.ExportDefinitionFile.ParseAndQuoteIfNecessary());
+            }
         }
     }
 }
