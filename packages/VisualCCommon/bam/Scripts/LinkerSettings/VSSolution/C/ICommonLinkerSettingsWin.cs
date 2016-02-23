@@ -48,6 +48,10 @@ namespace VisualCCommon
                 default:
                     throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
             }
+            if (null != settings.ExportDefinitionFile)
+            {
+                vsSettingsGroup.AddSetting("ModuleDefinitionFile", settings.ExportDefinitionFile, condition);
+            }
         }
     }
 }

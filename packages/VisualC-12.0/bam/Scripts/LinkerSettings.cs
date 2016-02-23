@@ -66,6 +66,12 @@ namespace VisualC
             set;
         }
 
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
+        {
+            get;
+            set;
+        }
+
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;

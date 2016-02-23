@@ -45,5 +45,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Path to the export definition file (.def). Null by default, so that the linker auto-generates the .def file.
+        /// </summary>
+        /// <value>Path of the .def file, or null if the linker generates it.</value>
+        Bam.Core.TokenizedString ExportDefinitionFile
+        {
+            get;
+            set;
+        }
     }
 }

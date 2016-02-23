@@ -1,3 +1,5 @@
+23-Feb-2016 Fixes #151. Added ExportDefinitionFile property (type: Bam.Core.TokenizedString) to C.ICommonLinkerSettingsWin, defaulting to null. This is for the .def file. If this is set to a valid path, it is passed to the linker and the contents used as the list of exported symbols for the binary. If the value remains null, the linker will generate a .def file based on metadata on symbols in the code.
+
 23-Feb-2016 Fixes #150. Needed to invoke Parse() on the Bam.Core.TokenizedStrings for RPath and RPathLink.
 
 22-Feb-2016 Fixes #147. Added PerformCompilation boolean property to C.ObjectFile (and thus all derived types of object files). Default value is true. This is to allow the compilation of a source file to be disabled, and yet still appear in project files for browsing. Possible uses for this is for marking source files that are #included into other source files.

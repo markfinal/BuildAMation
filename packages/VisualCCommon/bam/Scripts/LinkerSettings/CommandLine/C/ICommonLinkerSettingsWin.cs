@@ -27,50 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C.DefaultSettings
+namespace VisualCCommon
 {
-    public static partial class DefaultSettingsExtensions
+    public static partial class CommandLineImplementation
     {
         public static void
-        Defaults(
+        Convert(
             this C.ICommonLinkerSettingsWin settings,
-            Bam.Core.Module module)
+            Bam.Core.StringArray commandLine)
         {
-            settings.SubSystem = ESubsystem.Console;
-        }
-
-        public static void
-        Empty(
-            this C.ICommonLinkerSettingsWin settings)
-        {
-        }
-
-        public static void
-        Intersect(
-            this C.ICommonLinkerSettingsWin shared,
-            C.ICommonLinkerSettingsWin other)
-        {
-            if (shared.SubSystem != other.SubSystem)
+            switch (settings.SubSystem.Value)
             {
-                shared.SubSystem = null;
+                case C.ESubsystem.Console:
+                    commandLine.Add("-SUBSYSTEM:CONSOLE");
+                    break;
+
+                case C.ESubsystem.Windows:
+                    commandLine.Add("-SUBSYSTEM:WINDOWS");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
             }
-        }
-
-        public static void
-        Delta(
-            this C.ICommonLinkerSettingsWin delta,
-            C.ICommonLinkerSettingsWin lhs,
-            C.ICommonLinkerSettingsWin rhs)
-        {
-            delta.SubSystem = (lhs.SubSystem != rhs.SubSystem) ? lhs.SubSystem : null;
-        }
-
-        public static void
-        Clone(
-            this C.ICommonLinkerSettingsWin settings,
-            C.ICommonLinkerSettingsWin other)
-        {
-            settings.SubSystem = other.SubSystem;
+            if (null != settings.ExportDefinitionFile)
+            {
+                commandLine.Add(System.String.Format("-DEF:{0}", settings.ExportDefinitionFile.ParseAndQuoteIfNecessary()));
+            }
         }
     }
 }
