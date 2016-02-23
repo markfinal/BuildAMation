@@ -45,7 +45,7 @@ namespace C
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
             var target = workspace.EnsureTargetExists(sender);
-            target.Type = XcodeBuilder.Target.EProductType.StaticLibrary; // TODO: is this the best option to avoid a link?
+            target.Type = XcodeBuilder.Target.EProductType.Utility;
             var configuration = target.GetConfiguration(sender);
             configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
 

@@ -1,3 +1,5 @@
+23-Feb-2016 Issue #122. Modifications to XcodeBuilder to generate a 'utility' project for cases of collating a prebuilt file. Xcode projects don't have an analogous target type to VisualStudio's utility, so a static library with no source files is used.
+
 23-Feb-2016 Fixes #147. C.ObjectFiles that are not compiled are now still browsable in Xcode projects.
 
 23-Feb-2016 Fixes #152. The linker in Mingw-4.8.1 now implements the C.ICommonLinkerSettingsWin interface, covering the subsystem and .def file.
