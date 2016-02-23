@@ -1,3 +1,5 @@
+23-Feb-2016 Fixes #150. Needed to invoke Parse() on the Bam.Core.TokenizedStrings for RPath and RPathLink.
+
 22-Feb-2016 Fixes #147. Added PerformCompilation boolean property to C.ObjectFile (and thus all derived types of object files). Default value is true. This is to allow the compilation of a source file to be disabled, and yet still appear in project files for browsing. Possible uses for this is for marking source files that are #included into other source files.
 
 22-Feb-2016 Allow changing the header search path from C.ProceduralHeaderFile, by overriding the IncludeDirectory property.
