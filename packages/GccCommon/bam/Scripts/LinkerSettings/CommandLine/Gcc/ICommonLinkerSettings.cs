@@ -42,11 +42,11 @@ namespace GccCommon
             }
             foreach (var rpath in settings.RPath)
             {
-                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
+                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath.Parse()));
             }
             foreach (var rpath in settings.RPathLink)
             {
-                commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath));
+                commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath.Parse()));
             }
         }
     }

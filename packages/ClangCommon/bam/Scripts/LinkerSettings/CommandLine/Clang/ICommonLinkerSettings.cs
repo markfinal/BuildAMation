@@ -38,7 +38,7 @@ namespace ClangCommon
         {
             foreach (var rpath in settings.RPath)
             {
-                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath));
+                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath.Parse()));
             }
         }
     }

@@ -39,6 +39,11 @@ namespace C
             Bam.Core.TokenizedString objectFilePath,
             Bam.Core.Module source)
         {
+            if (!sender.PerformCompilation)
+            {
+                return;
+            }
+
             var commandLineArgs = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLineArgs);
 

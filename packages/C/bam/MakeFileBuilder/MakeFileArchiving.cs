@@ -48,6 +48,10 @@ namespace C
             rule.AddTarget(libraryPath);
             foreach (var input in objectFiles)
             {
+                if (!(input as C.ObjectFile).PerformCompilation)
+                {
+                    continue;
+                }
                 rule.AddPrerequisite(input, C.ObjectFile.Key);
             }
 

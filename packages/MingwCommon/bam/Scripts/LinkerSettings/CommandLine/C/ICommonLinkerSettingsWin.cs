@@ -27,31 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace MingwCommon
 {
-    public sealed class XcodeHeaderLibrary :
-        IHeaderLibraryPolicy
+    public static partial class CommandLineImplementation
     {
-        void
-        IHeaderLibraryPolicy.HeadersOnly(
-            HeaderLibrary sender,
-            Bam.Core.ExecutionContext context,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
+        public static void
+        Convert(
+            this C.ICommonLinkerSettingsWin settings,
+            Bam.Core.StringArray commandLine)
         {
-            if (0 == headers.Count)
+            switch (settings.SubSystem.Value)
             {
-                return;
+                case C.ESubsystem.Console:
+                    commandLine.Add("-Wl,-subsystem,console");
+                    break;
+
+                case C.ESubsystem.Windows:
+                    commandLine.Add("-Wl,-subsystem,windows");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
             }
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(sender);
-            target.Type = XcodeBuilder.Target.EProductType.Utility;
-            var configuration = target.GetConfiguration(sender);
-            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
-
-            foreach (var header in headers)
+            if (null != settings.ExportDefinitionFile)
             {
-                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
+                // just add it into the command line
+                commandLine.Add(settings.ExportDefinitionFile.ParseAndQuoteIfNecessary());
             }
         }
     }

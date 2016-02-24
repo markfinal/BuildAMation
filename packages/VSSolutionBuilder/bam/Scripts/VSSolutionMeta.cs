@@ -126,5 +126,13 @@ namespace VSSolutionBuilder
                 return true;
             }
         }
+
+        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }

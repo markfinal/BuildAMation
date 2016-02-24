@@ -82,6 +82,7 @@ namespace C
                 target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
             }
 
+            var excludedSource = new XcodeBuilder.MultiConfigurationValue();
             if (objectFiles.Count > 1)
             {
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
@@ -99,6 +100,11 @@ namespace C
 
                 foreach (var objFile in objectFiles)
                 {
+                    if (!(objFile as C.ObjectFile).PerformCompilation)
+                    {
+                        excludedSource.Add((objFile as C.ObjectFile).InputPath.Parse());
+                    }
+
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     if (null != deltaSettings)
@@ -126,10 +132,17 @@ namespace C
                 (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
                 foreach (var objFile in objectFiles)
                 {
+                    if (!(objFile as C.ObjectFile).PerformCompilation)
+                    {
+                        excludedSource.Add((objFile as C.ObjectFile).InputPath.Parse());
+                    }
+
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
                     configuration.BuildFiles.Add(buildFile);
                 }
             }
+
+            configuration["EXCLUDED_SOURCE_FILE_NAMES"] = excludedSource;
 
             // add library search paths prior to converting linker settings
             var linker = sender.Settings as C.ICommonLinkerSettings;

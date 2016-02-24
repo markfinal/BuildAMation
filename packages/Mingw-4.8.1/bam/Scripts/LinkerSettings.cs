@@ -32,6 +32,7 @@ namespace Mingw
     public sealed class LinkerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings
     {
@@ -46,6 +47,18 @@ namespace Mingw
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
+        }
+
+        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
+        {
+            get;
+            set;
         }
 
         C.EBit C.ICommonLinkerSettings.Bits

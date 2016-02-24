@@ -54,6 +54,10 @@ namespace C
                 include: source.GeneratedPaths[C.SourceFile.Key],
                 uniqueToProject: true);
             settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + sender.CreateTokenizedString("@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)", objectFilePath).Parse());
+            if (!sender.PerformCompilation)
+            {
+                settingsGroup.AddSetting("ExcludedFromBuild", true);
+            }
             sender.MetaData = settingsGroup;
         }
     }

@@ -27,28 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace C.DefaultSettings
 {
-    public static partial class CommandLineImplementation
+    public static partial class DefaultSettingsExtensions
     {
         public static void
-        Convert(
+        Defaults(
             this C.ICommonLinkerSettingsWin settings,
-            Bam.Core.StringArray commandLine)
+            Bam.Core.Module module)
         {
-            switch (settings.SubSystem.Value)
-            {
-                case C.ESubsystem.Console:
-                    commandLine.Add("-SUBSYSTEM:CONSOLE");
-                    break;
-
-                case C.ESubsystem.Windows:
-                    commandLine.Add("-SUBSYSTEM:WINDOWS");
-                    break;
-
-                default:
-                    throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
-            }
+            settings.SubSystem = ESubsystem.Console;
+            settings.ExportDefinitionFile = null;
         }
     }
 }

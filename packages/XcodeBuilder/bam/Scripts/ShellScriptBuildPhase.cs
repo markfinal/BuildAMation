@@ -153,7 +153,8 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}shellPath = {1};", indent2, this.ShellPath);
             text.AppendLine();
-            var scriptContent = this.GenerateScript(this.AssociatedTarget);
+            // set -e on bash will fail the script if any command returns a non-zero exit code
+            var scriptContent = "set -e" + System.Environment.NewLine + this.GenerateScript(this.AssociatedTarget);
             text.AppendFormat("{0}shellScript = \"{1}\";", indent2, scriptContent);
             text.AppendLine();
             if (!this.ShowEnvironmentInLog)

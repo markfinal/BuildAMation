@@ -40,18 +40,33 @@ namespace Publisher
             var sourcePath = sender.SourcePath;
             if (null == sender.Reference)
             {
-                // the main file is not copied anywhere, as we copy required files around it where Xcode wrote the main file
-                // this is managed by the Collation class, querying the build mode for where publishing is relative to
-                // ignore any subdirectory on this module
-
-                // convert the executable into an app bundle, if EPublishingType.WindowedApplication has been used as the type
-                if ((sender.SubDirectory != null) && sender.SubDirectory.Parse().Contains(".app/"))
+                if ((null != sender.SourceModule.MetaData) || (sender.SourceModule is CollatedObject))
                 {
-                    var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
-                    target.MakeApplicationBundle();
-                }
+                    // the main file is not copied anywhere, as we copy required files around it where Xcode wrote the main file
+                    // this is managed by the Collation class, querying the build mode for where publishing is relative to
+                    // ignore any subdirectory on this module
 
-                return;
+                    // convert the executable into an app bundle, if EPublishingType.WindowedApplication has been used as the type
+                    if ((sender.SubDirectory != null) && sender.SubDirectory.Parse().Contains(".app/"))
+                    {
+                        var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
+                        target.MakeApplicationBundle();
+                    }
+
+                    return;
+                }
+                else
+                {
+                    // the main reference file was a prebuilt - so create a new project to handle copying files
+
+                    var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                    var target = workspace.EnsureTargetExists(sender.SourceModule);
+                    var configuration = target.GetConfiguration(sender.SourceModule);
+
+                    target.Type = XcodeBuilder.Target.EProductType.Utility;
+                    configuration.SetProductName(sender.SourceModule.Macros["modulename"]);
+                    //Bam.Core.Log.MessageAll("Configuration {0} for {1}", configuration.Name, sender.SourceModule.ToString());
+                }
             }
 
             var commandLine = new Bam.Core.StringArray();
@@ -72,24 +87,50 @@ namespace Publisher
                     return;
                 }
 
-                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2} {3}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    destinationPath,
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-
                 var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
+                if (target.Type != XcodeBuilder.Target.EProductType.Utility)
+                {
+                    commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2} {3}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        destinationPath,
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                }
+                else
+                {
+                    commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        sourcePath.Parse(),
+                        destinationPath,
+                        sender.SubDirectory.Parse(),
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                }
+
                 var configuration = target.GetConfiguration(sender.SourceModule);
-                target.AddPostBuildCommands(commands, configuration);
+                if (target.Type != XcodeBuilder.Target.EProductType.Utility)
+                {
+                    target.AddPostBuildCommands(commands, configuration);
+                }
+                else
+                {
+                    target.AddPreBuildCommands(commands, configuration);
+                }
             }
             else
             {
+                var target = sender.Reference.SourceModule.MetaData as XcodeBuilder.Target;
+
                 var isSymlink = (sender is CollatedSymbolicLink);
 
                 var destinationFolder = "$CONFIGURATION_BUILD_DIR";
                 if (sender.Reference != null)
                 {
                     destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
+                }
+                if (target.Type == XcodeBuilder.Target.EProductType.Utility)
+                {
+                    destinationFolder = destinationPath;
                 }
 
                 if (isSymlink)
@@ -132,9 +173,15 @@ namespace Publisher
                     }
                 }
 
-                var target = sender.Reference.SourceModule.MetaData as XcodeBuilder.Target;
                 var configuration = target.GetConfiguration(sender.Reference.SourceModule);
-                target.AddPostBuildCommands(commands, configuration);
+                if (target.Type != XcodeBuilder.Target.EProductType.Utility)
+                {
+                    target.AddPostBuildCommands(commands, configuration);
+                }
+                else
+                {
+                    target.AddPreBuildCommands(commands, configuration);
+                }
             }
         }
     }

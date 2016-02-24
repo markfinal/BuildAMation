@@ -327,6 +327,12 @@ namespace Publisher
             return reference.SubDirectory.Parse().Contains(".app");
         }
 
+        public CollatedObject InitialReference
+        {
+            get;
+            private set;
+        }
+
         /// <summary>
         /// Collate the main application file in the publishing root. Use the publishing type to determine 
         /// what kind of application this will be.
@@ -378,6 +384,8 @@ namespace Publisher
                     this.AddOSXChangeIDNameForBinary(copyFileModule);
                 }
             }
+
+            this.InitialReference = copyFileModule;
 
             return copyFileModule;
         }
@@ -526,6 +534,7 @@ namespace Publisher
                 parameterizedFilePath,
                 null,
                 Bam.Core.TokenizedString.CreateVerbatim(subdir));
+            this.InitialReference = copyFileModule;
             return copyFileModule;
         }
 

@@ -1,3 +1,33 @@
+24-Feb-2016 Fixes #157. Xcode custom shell scripts now fail the build if any commands run return a non-zero exit code. This uses 'set -e', which bash will exit immediately if any command executed fails.
+
+24-Feb-2016 Fixes #156. Publisher.Collation exposes a read-only property, InitialReference, which is set to the first collated file, that is used as a reference point for all future objects to be collated. This information is useful to IDE project generation.
+
+24-Feb-2016 Fixes #155. Scanning for #includes in C source files now implicitly searches the same directory as the source file for any headers. Since the compiler does not need that path explicitly added to the header search paths in order to find sibling headers, it is a valid path to scan for them.
+
+24-Feb-2016 Fixes #154. Scanning for #includes in C source files no longer assumes a space space after #include. Zero or more whitespace characters are now accepted.
+
+24-Feb-2016 Added some documentation for macros added to Core assembly objects.
+
+24-Feb-2016 Issue #153. If a module is created with a parent (i.e. it's a child of a collection), then that module now has access to two new TokenizedString macros: parentmodulename, encapsulatedparentmodulename. The former is the 'modulename' macro of the parent. The latter is the 'modulename' macro of the parent's encapsulating module. These can be identical, if the parent is a referenced module. These macros are useful for path generation for procedurally generated source, in order to generate a unique path.
+
+23-Feb-2016 Issue #122. Modifications to XcodeBuilder to generate a 'utility' project for cases of collating a prebuilt file. Xcode projects don't have an analogous target type to VisualStudio's utility, so a static library with no source files is used.
+
+23-Feb-2016 Fixes #147. C.ObjectFiles that are not compiled are now still browsable in Xcode projects.
+
+23-Feb-2016 Fixes #152. The linker in Mingw-4.8.1 now implements the C.ICommonLinkerSettingsWin interface, covering the subsystem and .def file.
+
+23-Feb-2016 Fixes #151. Added ExportDefinitionFile property (type: Bam.Core.TokenizedString) to C.ICommonLinkerSettingsWin, defaulting to null. This is for the .def file. If this is set to a valid path, it is passed to the linker and the contents used as the list of exported symbols for the binary. If the value remains null, the linker will generate a .def file based on metadata on symbols in the code.
+
+23-Feb-2016 Fixes #150. Needed to invoke Parse() on the Bam.Core.TokenizedStrings for RPath and RPathLink.
+
+22-Feb-2016 Fixes #147. Added PerformCompilation boolean property to C.ObjectFile (and thus all derived types of object files). Default value is true. This is to allow the compilation of a source file to be disabled, and yet still appear in project files for browsing. Possible uses for this is for marking source files that are #included into other source files. This change adds VisualStudio support.
+
+22-Feb-2016 Allow changing the header search path from C.ProceduralHeaderFile, by overriding the IncludeDirectory property.
+
+17-Feb-2016 Fixes #145. Modules using the C package that have the [C.Prebuilt] attribute now contribute any headers into a non-buildable project in VisualStudio. This is useful for browsing the headers and intellisense-like features of the IDE. The interface Bam.Core/Interfaces/IBuildModeMetaData.cs has been extended with a read-only Boolean property CanCreatePrebuiltProjectForAssociatedFiles, which each build mode must implement, indicating whether there is support for such prebuilt un-buildable projects.
+
+17-Feb-2016 Fixes #144. The TokenizedString post-function @relativeto(path,baseDir) will now return path if there is no common root found, rather than throw an exception.
+
 16-Feb-2016 ======== Version 1.0.1b3 Release ========
 
 16-Feb-2016 Fixes #138. Recursively resolving package version ambiguity has been improved. If a package A has two versions in a package definition file, and each version of A depends on a different version of package B (and these are the only references to B), then prior to this fix, resolving which version of A is used (e.g. on the command line, --A.version=..., or specify the default in the master package definition file), would not automatically resolve B, even though there is no ambiguity anymore. A concrete example of this issue occurred with the VisualC packages, which depend on different versions of the WindowsSDK packages; specifying --VisualC.version=X still required --WindowsSDK.version=Y prior to the fix.

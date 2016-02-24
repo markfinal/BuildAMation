@@ -285,7 +285,8 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (this.IsPrebuilt)
+            if (this.IsPrebuilt &&
+                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
             {
                 return;
             }
@@ -300,7 +301,8 @@ namespace C
         GetExecutionPolicy(
             string mode)
         {
-            if (this.IsPrebuilt)
+            if (this.IsPrebuilt &&
+                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
             {
                 return;
             }
@@ -312,7 +314,7 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
-            if (this.IsPrebuilt)
+            if (this.IsPrebuilt) // never check, even if there are headers
             {
                 return;
             }

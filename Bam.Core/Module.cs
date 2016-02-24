@@ -44,7 +44,13 @@ namespace Bam.Core
 
         /// <summary>
         /// Protected constructor (use Init function in general use to configure a module) for a new module.
-        /// Defines all standard macros settings, etc
+        /// This defines the standard macros for all modules:
+        /// 'packagedir'
+        /// 'packagename'
+        /// 'packagebuilddir'
+        /// 'modulename'
+        /// 'OutputName'
+        /// 'config'
         /// </summary>
         // private so that the factory method must be used
         protected Module()
@@ -135,6 +141,9 @@ namespace Bam.Core
 
         /// <summary>
         /// Create the specified module type T, given an optional parent and pre-init callback.
+        /// If a parent is provided, two macros are defined:
+        /// 'parentmodulename' which is linked to the parent module's 'modulename' macro
+        /// 'encapsulatedparentmodulename' which is linked to the parent's encapsulated module's 'modulename' macro
         /// </summary>
         /// <param name="parent">Parent.</param>
         /// <param name="preInitCallback">Pre init callback.</param>
@@ -152,6 +161,13 @@ namespace Bam.Core
                 }
 
                 var module = new T();
+                if (null != parent)
+                {
+                    module.Macros.Add("parentmodulename", parent.Macros["modulename"]);
+
+                    var encapsulatingParent = parent.GetEncapsulatingReferencedModule();
+                    module.Macros.Add("encapsulatedparentmodulename", encapsulatingParent.Macros["modulename"]);
+                }
                 if (preInitCallback != null)
                 {
                     preInitCallback(module);
@@ -671,6 +687,9 @@ namespace Bam.Core
         /// dependency graph. For identification, walking up the hierarchy of dependees will eventually find a referenced
         /// module, and this is that module's encapsulating module.
         /// It is useful for logical grouping, such as build sub-folder names.
+        /// Macros added to the module:
+        /// 'encapsulatingmodulename'
+        /// 'encapsulatingbuilddir'
         /// </summary>
         /// <returns>The encapsulating referenced module.</returns>
         public Module

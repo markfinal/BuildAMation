@@ -40,7 +40,8 @@ namespace XcodeBuilder
             Executable,
             DynamicLibrary,
             ApplicationBundle,
-            ObjFile
+            ObjFile,
+            Utility
         }
 
         public Target(
@@ -506,6 +507,10 @@ namespace XcodeBuilder
             case EProductType.ObjFile:
                 return "com.apple.product-type.objfile";
 
+            case EProductType.Utility:
+                // this is analogous to the VisualStudio 'utility' project - nothing needs building, just pre/post build steps
+                return "com.apple.product-type.library.static";
+
             default:
                 throw new Bam.Core.Exception("Unrecognized product type, {0}, for module {1}", this.Type.ToString(), this.Module.ToString());
             }
@@ -525,8 +530,15 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, this.ConfigurationList.GUID, this.ConfigurationList.Parent.IsA, this.ConfigurationList.Parent.Name);
             text.AppendLine();
-            if ((null != this.BuildPhases) && (this.BuildPhases.Count > 0))
+            if (((null != this.BuildPhases) && (this.BuildPhases.Count > 0)) ||
+                (null != this.PreBuildBuildPhase) ||
+                (null != this.PostBuildBuildPhase))
             {
+                // make sure that pre-build phases appear first
+                // then any regular build phases
+                // and then post-build phases.
+                // any of these can be missing
+
                 text.AppendFormat("{0}buildPhases = (", indent2);
                 text.AppendLine();
                 System.Action<BuildPhase> dumpPhase = (phase) =>
@@ -538,9 +550,12 @@ namespace XcodeBuilder
                 {
                     dumpPhase(this.PreBuildBuildPhase);
                 }
-                foreach (var phase in this.BuildPhases)
+                if (null != this.BuildPhases)
                 {
-                    dumpPhase(phase);
+                    foreach (var phase in this.BuildPhases)
+                    {
+                        dumpPhase(phase);
+                    }
                 }
                 if (null != this.PostBuildBuildPhase)
                 {

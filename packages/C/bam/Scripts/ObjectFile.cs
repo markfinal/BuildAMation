@@ -49,6 +49,7 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
+            this.PerformCompilation = true;
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
         }
 
@@ -124,6 +125,12 @@ namespace C
             }
         }
 
+        public bool PerformCompilation
+        {
+            get;
+            set;
+        }
+
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -145,6 +152,10 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
+            if (!this.PerformCompilation)
+            {
+                return;
+            }
             var graph = Bam.Core.Graph.Instance;
             var factory = graph.MetaData as System.Threading.Tasks.TaskFactory;
             this.EvaluationTask = factory.StartNew(() =>
@@ -195,6 +206,8 @@ namespace C
                 }
 
                 var includeSearchPaths = (this.Settings as C.ICommonCompilerSettings).IncludePaths;
+                // implicitly search the same directory as the source path, as this is not needed to be explicitly on the include path list
+                includeSearchPaths.AddUnique(this.CreateTokenizedString("@dir($(0))", this.InputPath));
 
                 var filesToSearch = new System.Collections.Generic.Queue<string>();
                 filesToSearch.Enqueue(sourcePath);
@@ -211,9 +224,10 @@ namespace C
                     }
 
                     // never know if developers are consistent with #include "header.h" or #include <header.h> so look for both
+                    // nor the amount of whitespace after #include
                     var matches = System.Text.RegularExpressions.Regex.Matches(
                         fileContents,
-                        "^\\s*#include [\"<]([^\\s]*)[\">]",
+                        "^\\s*#include\\s*[\"<]([^\\s]*)[\">]",
                         System.Text.RegularExpressions.RegexOptions.Multiline);
                     if (0 == matches.Count)
                     {

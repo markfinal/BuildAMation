@@ -408,5 +408,35 @@ namespace VSSolutionBuilder
             document.AppendChild(project);
             return project;
         }
+
+        public static bool
+        IsBuildable(
+            Bam.Core.Module module)
+        {
+            var project = module.MetaData as VSProject;
+            if (null == project)
+            {
+                return false;
+            }
+            var configuration = project.GetConfiguration(module);
+            switch (configuration.Type)
+            {
+                case VSProjectConfiguration.EType.Application:
+                case VSProjectConfiguration.EType.DynamicLibrary:
+                case VSProjectConfiguration.EType.StaticLibrary:
+                    return true;
+
+                case VSProjectConfiguration.EType.Utility:
+                    {
+                        // there are some utility projects just for copying files around (and no source files), which do need to build
+                        // so query whether the original module had the [C.Prebuilt] attribute
+                        var isPrebuilt = (module is C.CModule) && (module as C.CModule).IsPrebuilt;
+                        return !isPrebuilt;
+                    }
+
+                default:
+                    throw new Bam.Core.Exception("Unrecognized project type, {0}", configuration.Type);
+            }
+        }
     }
 }

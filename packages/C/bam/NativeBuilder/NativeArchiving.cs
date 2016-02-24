@@ -51,6 +51,10 @@ namespace C
 
             foreach (var input in objectFiles)
             {
+                if (!(input as C.ObjectFile).PerformCompilation)
+                {
+                    continue;
+                }
                 commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToString());
             }
 
