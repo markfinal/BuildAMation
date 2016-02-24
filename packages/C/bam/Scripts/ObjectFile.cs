@@ -222,9 +222,10 @@ namespace C
                     }
 
                     // never know if developers are consistent with #include "header.h" or #include <header.h> so look for both
+                    // nor the amount of whitespace after #include
                     var matches = System.Text.RegularExpressions.Regex.Matches(
                         fileContents,
-                        "^\\s*#include [\"<]([^\\s]*)[\">]",
+                        "^\\s*#include\\s*[\"<]([^\\s]*)[\">]",
                         System.Text.RegularExpressions.RegexOptions.Multiline);
                     if (0 == matches.Count)
                     {
