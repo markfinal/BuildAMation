@@ -556,6 +556,8 @@ namespace Bam.Core
 
         /// <summary>
         /// Assign the array of package definitions to the Graph.
+        /// Macros added to the Graph are:
+        /// 'masterpackagename'
         /// </summary>
         /// <param name="packages">Array of package definitions.</param>
         public void
@@ -613,6 +615,8 @@ namespace Bam.Core
 
         /// <summary>
         /// Get or set the build root to write all build output to.
+        /// Macros added to the graph:
+        /// 'buildroot'
         /// </summary>
         /// <value>The build root.</value>
         public string BuildRoot
