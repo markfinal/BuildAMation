@@ -206,6 +206,8 @@ namespace C
                 }
 
                 var includeSearchPaths = (this.Settings as C.ICommonCompilerSettings).IncludePaths;
+                // implicitly search the same directory as the source path, as this is not needed to be explicitly on the include path list
+                includeSearchPaths.AddUnique(this.CreateTokenizedString("@dir($(0))", this.InputPath));
 
                 var filesToSearch = new System.Collections.Generic.Queue<string>();
                 filesToSearch.Enqueue(sourcePath);
