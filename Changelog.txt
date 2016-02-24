@@ -1,3 +1,5 @@
+24-Feb-2016 Issue #153. If a module is created with a parent (i.e. it's a child of a collection), then that module now has access to two new TokenizedString macros: parentmodulename, encapsulatedparentmodulename. The former is the 'modulename' macro of the parent. The latter is the 'modulename' macro of the parent's encapsulating module. These can be identical, if the parent is a referenced module. These macros are useful for path generation for procedurally generated source, in order to generate a unique path.
+
 23-Feb-2016 Issue #122. Modifications to XcodeBuilder to generate a 'utility' project for cases of collating a prebuilt file. Xcode projects don't have an analogous target type to VisualStudio's utility, so a static library with no source files is used.
 
 23-Feb-2016 Fixes #147. C.ObjectFiles that are not compiled are now still browsable in Xcode projects.

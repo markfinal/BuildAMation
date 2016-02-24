@@ -135,6 +135,9 @@ namespace Bam.Core
 
         /// <summary>
         /// Create the specified module type T, given an optional parent and pre-init callback.
+        /// If a parent is provided, two macros are defined:
+        /// parentmodulename which is linked to the parent module's 'modulename' macro
+        /// encapsulatedparentmodulename which is linked to the parent's encapsulated module's 'modulename' macro
         /// </summary>
         /// <param name="parent">Parent.</param>
         /// <param name="preInitCallback">Pre init callback.</param>
@@ -152,6 +155,13 @@ namespace Bam.Core
                 }
 
                 var module = new T();
+                if (null != parent)
+                {
+                    module.Macros.Add("parentmodulename", parent.Macros["modulename"]);
+
+                    var encapsulatingParent = parent.GetEncapsulatingReferencedModule();
+                    module.Macros.Add("encapsulatedparentmodulename", encapsulatingParent.Macros["modulename"]);
+                }
                 if (preInitCallback != null)
                 {
                     preInitCallback(module);
