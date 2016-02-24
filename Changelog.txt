@@ -1,3 +1,5 @@
+24-Feb-2016 Fixes #156. Publisher.Collation exposes a read-only property, InitialReference, which is set to the first collated file, that is used as a reference point for all future objects to be collated. This information is useful to IDE project generation.
+
 24-Feb-2016 Fixes #155. Scanning for #includes in C source files now implicitly searches the same directory as the source file for any headers. Since the compiler does not need that path explicitly added to the header search paths in order to find sibling headers, it is a valid path to scan for them.
 
 24-Feb-2016 Fixes #154. Scanning for #includes in C source files no longer assumes a space space after #include. Zero or more whitespace characters are now accepted.
