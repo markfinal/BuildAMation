@@ -127,8 +127,8 @@ namespace C.DefaultSettings
             {
                 shared.OmitFramePointer = null;
             }
-            shared.DisableWarnings = new Bam.Core.StringArray(shared.DisableWarnings.Intersect(other.DisableWarnings));
-            shared.PreprocessorUndefines = new Bam.Core.StringArray(shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines));
+            shared.DisableWarnings = shared.DisableWarnings.Intersect(other.DisableWarnings);
+            shared.PreprocessorUndefines = shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines);
         }
 
         public static void
@@ -147,8 +147,8 @@ namespace C.DefaultSettings
             delta.Optimization = (lhs.Optimization != rhs.Optimization) ? lhs.Optimization : null;
             delta.TargetLanguage = (lhs.TargetLanguage != rhs.TargetLanguage) ? lhs.TargetLanguage : null;
             delta.OmitFramePointer = (lhs.OmitFramePointer != rhs.OmitFramePointer) ? lhs.OmitFramePointer : null;
-            delta.DisableWarnings = new Bam.Core.StringArray(lhs.DisableWarnings.Except(rhs.DisableWarnings));
-            delta.PreprocessorUndefines = new Bam.Core.StringArray(lhs.PreprocessorUndefines.Except(rhs.PreprocessorUndefines));
+            delta.DisableWarnings = lhs.DisableWarnings.Complement(rhs.DisableWarnings);
+            delta.PreprocessorUndefines = lhs.PreprocessorUndefines.Complement(rhs.PreprocessorUndefines);
         }
 
         public static void

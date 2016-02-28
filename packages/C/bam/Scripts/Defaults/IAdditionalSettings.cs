@@ -28,7 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using System.Linq;
 namespace C.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
@@ -56,7 +55,7 @@ namespace C.DefaultSettings
             this C.IAdditionalSettings shared,
             C.IAdditionalSettings other)
         {
-            shared.AdditionalSettings = new Bam.Core.StringArray(shared.AdditionalSettings.Intersect(other.AdditionalSettings));
+            shared.AdditionalSettings = shared.AdditionalSettings.Intersect(other.AdditionalSettings);
         }
 
         public static void
@@ -65,7 +64,7 @@ namespace C.DefaultSettings
             C.IAdditionalSettings lhs,
             C.IAdditionalSettings rhs)
         {
-            delta.AdditionalSettings = new Bam.Core.StringArray(lhs.AdditionalSettings.Except(rhs.AdditionalSettings));
+            delta.AdditionalSettings = lhs.AdditionalSettings.Complement(rhs.AdditionalSettings);
         }
 
         public static void
