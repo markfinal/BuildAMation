@@ -33,8 +33,7 @@ namespace Bam.Core
     /// Array of strings class, derived from the Array class.
     /// </summary>
     public sealed class StringArray :
-        Array<string>,
-        ISetOperations<StringArray>
+        Array<string>
     {
         /// <summary>
         /// Create an instance.
@@ -179,22 +178,28 @@ namespace Bam.Core
             this.list = newList;
         }
 
-        #region ISetOperations implementation
-
-        StringArray
-        ISetOperations<StringArray>.Complement(
+        /// <summary>
+        /// Find all strings that exist in two lists.
+        /// </summary>
+        /// <param name="other">The second list to intersect with.</param>
+        /// <returns>The string array containing just those elements in both string arrays.</returns>
+        public StringArray
+        Intersect(
             StringArray other)
         {
-            return new StringArray((this as Array<string>).Complement(other as Array<string>));
+            return new StringArray(base.Intersect(other));
         }
 
-        StringArray
-        ISetOperations<StringArray>.Intersect(
+        /// <summary>
+        /// Find all strings in this but not in <paramref name="other"/>
+        /// </summary>
+        /// <param name="other">The other string array</param>
+        /// <returns>The string array containing the complement of the two string arrays.</returns>
+        public StringArray
+        Complement(
             StringArray other)
         {
-            return new StringArray((this as Array<string>).Intersect(other as Array<string>));
+            return new StringArray(base.Complement(other));
         }
-
-        #endregion
     }
 }

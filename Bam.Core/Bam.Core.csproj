@@ -92,7 +92,6 @@
     <Compile Include="Interfaces\IModuleExecution.cs" />
     <Compile Include="Interfaces\IModuleGroup.cs" />
     <Compile Include="Interfaces\IPackageMetaDataConfigure.cs" />
-    <Compile Include="Interfaces\ISetOperations.cs" />
     <Compile Include="Interfaces\ISettingsBase.cs" />
     <Compile Include="Interfaces\ISitePolicy.cs" />
     <Compile Include="Interfaces\ITool.cs" />

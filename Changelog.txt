@@ -1,3 +1,5 @@
+28-Feb-2016 Fixes #160. Removed obsolete Bam.Core.ISetOperations interface. This was used pre-v1.0.0 and pre-LINQ support. Only referenced in Bam.Core.StringArray, and now replaced with an improved version that works better with the Bam.Core.Array base class.
+
 25-Feb-2016 Fixes #158. C.ProceduralHeaderFile does not write a header inclusion guard if the override to GuardString returns null.
 
 24-Feb-2016 Fixes #157. Xcode custom shell scripts now fail the build if any commands run return a non-zero exit code. This uses 'set -e', which bash will exit immediately if any command executed fails.
