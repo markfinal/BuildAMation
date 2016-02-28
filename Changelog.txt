@@ -1,3 +1,5 @@
+28-Feb-2016 Bam.Core.TokenizedStringArray and C.PreprocessorDefinitions now include Intersect and Complement functions, which simplify compiler settings code.
+
 28-Feb-2016 Simplified settings code for compilers with the updated Bam.Core.StringArray.Intersect and Complement functions.
 
 28-Feb-2016 Fixes #160. Removed obsolete Bam.Core.ISetOperations interface. This was used pre-v1.0.0 and pre-LINQ support. Only referenced in Bam.Core.StringArray, and now replaced with an improved version that works better with the Bam.Core.Array base class.

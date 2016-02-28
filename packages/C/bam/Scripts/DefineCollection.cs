@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     /// <summary>
@@ -155,6 +156,20 @@ namespace C
                 }
             }
             return content.ToString();
+        }
+
+        public PreprocessorDefinitions
+        Intersect(
+            PreprocessorDefinitions other)
+        {
+            return new PreprocessorDefinitions(System.Linq.Enumerable.Intersect(this, other));
+        }
+
+        public PreprocessorDefinitions
+        Complement(
+            PreprocessorDefinitions other)
+        {
+            return new PreprocessorDefinitions(System.Linq.Enumerable.Except(this, other));
         }
     }
 }

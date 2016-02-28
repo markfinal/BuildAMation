@@ -28,7 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using System.Linq;
 namespace C.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
@@ -100,9 +99,9 @@ namespace C.DefaultSettings
             {
                 shared.Bits = null;
             }
-            shared.PreprocessorDefines = new PreprocessorDefinitions(shared.PreprocessorDefines.Intersect(other.PreprocessorDefines));
-            shared.IncludePaths = new Bam.Core.TokenizedStringArray(shared.IncludePaths.Intersect(other.IncludePaths));
-            shared.SystemIncludePaths = new Bam.Core.TokenizedStringArray(shared.SystemIncludePaths.Intersect(other.SystemIncludePaths));
+            shared.PreprocessorDefines = shared.PreprocessorDefines.Intersect(other.PreprocessorDefines);
+            shared.IncludePaths = shared.IncludePaths.Intersect(other.IncludePaths);
+            shared.SystemIncludePaths = shared.SystemIncludePaths.Intersect(other.SystemIncludePaths);
             if (shared.OutputType != other.OutputType)
             {
                 shared.OutputType = null;
@@ -138,9 +137,9 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettings rhs)
         {
             delta.Bits = (lhs.Bits != rhs.Bits) ? lhs.Bits : null;
-            delta.PreprocessorDefines = new PreprocessorDefinitions(lhs.PreprocessorDefines.Except(rhs.PreprocessorDefines));
-            delta.IncludePaths = new Bam.Core.TokenizedStringArray(lhs.IncludePaths.Except(rhs.IncludePaths));
-            delta.SystemIncludePaths = new Bam.Core.TokenizedStringArray(lhs.SystemIncludePaths.Except(rhs.SystemIncludePaths));
+            delta.PreprocessorDefines = lhs.PreprocessorDefines.Complement(rhs.PreprocessorDefines);
+            delta.IncludePaths = lhs.IncludePaths.Complement(rhs.IncludePaths);
+            delta.SystemIncludePaths = lhs.SystemIncludePaths.Complement(rhs.SystemIncludePaths);
             delta.OutputType = (lhs.OutputType != rhs.OutputType) ? lhs.OutputType : null;
             delta.DebugSymbols = (lhs.DebugSymbols != rhs.DebugSymbols) ? lhs.DebugSymbols : null;
             delta.WarningsAsErrors = (lhs.WarningsAsErrors != rhs.WarningsAsErrors) ? lhs.WarningsAsErrors : null;
