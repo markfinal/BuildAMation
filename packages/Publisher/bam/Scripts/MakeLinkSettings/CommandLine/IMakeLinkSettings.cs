@@ -52,6 +52,10 @@ namespace Publisher
                 {
                     // no switch
                 }
+                if (settings.DoNotDereferenceTarget)
+                {
+                    // no switch
+                }
             }
             else
             {
@@ -66,6 +70,10 @@ namespace Publisher
                 if (settings.SymbolicLink)
                 {
                     commandLine.Add("-s");
+                }
+                if (settings.DoNotDereferenceTarget)
+                {
+                    commandLine.Add("-n");
                 }
             }
         }

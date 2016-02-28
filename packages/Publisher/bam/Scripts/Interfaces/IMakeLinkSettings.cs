@@ -50,5 +50,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool DoNotDereferenceTarget
+        {
+            get;
+            set;
+        }
     }
 }

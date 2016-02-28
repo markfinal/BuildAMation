@@ -67,5 +67,11 @@ namespace Publisher
             get;
             set;
         }
+
+        bool IMakeLinkSettings.DoNotDereferenceTarget
+        {
+            get;
+            set;
+        }
     }
 }
