@@ -95,37 +95,16 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettings shared,
             C.ICommonCompilerSettings other)
         {
-            if (shared.Bits != other.Bits)
-            {
-                shared.Bits = null;
-            }
+            shared.Bits = shared.Bits.Intersect(other.Bits);
             shared.PreprocessorDefines = shared.PreprocessorDefines.Intersect(other.PreprocessorDefines);
             shared.IncludePaths = shared.IncludePaths.Intersect(other.IncludePaths);
             shared.SystemIncludePaths = shared.SystemIncludePaths.Intersect(other.SystemIncludePaths);
-            if (shared.OutputType != other.OutputType)
-            {
-                shared.OutputType = null;
-            }
-            if (shared.DebugSymbols != other.DebugSymbols)
-            {
-                shared.DebugSymbols = null;
-            }
-            if (shared.WarningsAsErrors != other.WarningsAsErrors)
-            {
-                shared.WarningsAsErrors = null;
-            }
-            if (shared.Optimization != other.Optimization)
-            {
-                shared.Optimization = null;
-            }
-            if (shared.TargetLanguage != other.TargetLanguage)
-            {
-                shared.TargetLanguage = null;
-            }
-            if (shared.OmitFramePointer != other.OmitFramePointer)
-            {
-                shared.OmitFramePointer = null;
-            }
+            shared.OutputType = shared.OutputType.Intersect(other.OutputType);
+            shared.DebugSymbols = shared.DebugSymbols.Intersect(other.DebugSymbols);
+            shared.WarningsAsErrors = shared.WarningsAsErrors.Intersect(other.WarningsAsErrors);
+            shared.Optimization = shared.Optimization.Intersect(other.Optimization);
+            shared.TargetLanguage = shared.TargetLanguage.Intersect(other.TargetLanguage);
+            shared.OmitFramePointer = shared.OmitFramePointer.Intersect(other.OmitFramePointer);
             shared.DisableWarnings = shared.DisableWarnings.Intersect(other.DisableWarnings);
             shared.PreprocessorUndefines = shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines);
         }
@@ -136,16 +115,16 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettings lhs,
             C.ICommonCompilerSettings rhs)
         {
-            delta.Bits = (lhs.Bits != rhs.Bits) ? lhs.Bits : null;
+            delta.Bits = lhs.Bits.Complement(rhs.Bits);
             delta.PreprocessorDefines = lhs.PreprocessorDefines.Complement(rhs.PreprocessorDefines);
             delta.IncludePaths = lhs.IncludePaths.Complement(rhs.IncludePaths);
             delta.SystemIncludePaths = lhs.SystemIncludePaths.Complement(rhs.SystemIncludePaths);
-            delta.OutputType = (lhs.OutputType != rhs.OutputType) ? lhs.OutputType : null;
-            delta.DebugSymbols = (lhs.DebugSymbols != rhs.DebugSymbols) ? lhs.DebugSymbols : null;
-            delta.WarningsAsErrors = (lhs.WarningsAsErrors != rhs.WarningsAsErrors) ? lhs.WarningsAsErrors : null;
-            delta.Optimization = (lhs.Optimization != rhs.Optimization) ? lhs.Optimization : null;
-            delta.TargetLanguage = (lhs.TargetLanguage != rhs.TargetLanguage) ? lhs.TargetLanguage : null;
-            delta.OmitFramePointer = (lhs.OmitFramePointer != rhs.OmitFramePointer) ? lhs.OmitFramePointer : null;
+            delta.OutputType = lhs.OutputType.Complement(rhs.OutputType);
+            delta.DebugSymbols = lhs.DebugSymbols.Complement(rhs.DebugSymbols);
+            delta.WarningsAsErrors = lhs.WarningsAsErrors.Complement(rhs.WarningsAsErrors);
+            delta.Optimization = lhs.Optimization.Complement(rhs.Optimization);
+            delta.TargetLanguage = lhs.TargetLanguage.Complement(rhs.TargetLanguage);
+            delta.OmitFramePointer = lhs.OmitFramePointer.Complement(rhs.OmitFramePointer);
             delta.DisableWarnings = lhs.DisableWarnings.Complement(rhs.DisableWarnings);
             delta.PreprocessorUndefines = lhs.PreprocessorUndefines.Complement(rhs.PreprocessorUndefines);
         }

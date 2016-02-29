@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using C;
 namespace VisualCCommon.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
@@ -46,18 +47,9 @@ namespace VisualCCommon.DefaultSettings
             this VisualCCommon.ICommonCompilerSettings shared,
             VisualCCommon.ICommonCompilerSettings other)
         {
-            if (shared.NoLogo != other.NoLogo)
-            {
-                shared.NoLogo = null;
-            }
-            if (shared.RuntimeLibrary != other.RuntimeLibrary)
-            {
-                shared.RuntimeLibrary = null;
-            }
-            if (shared.WarningLevel != other.WarningLevel)
-            {
-                shared.WarningLevel = null;
-            }
+            shared.NoLogo = shared.NoLogo.Intersect(other.NoLogo);
+            shared.RuntimeLibrary = shared.RuntimeLibrary.Intersect(other.RuntimeLibrary);
+            shared.WarningLevel = shared.WarningLevel.Intersect(other.WarningLevel);
         }
 
         public static void
@@ -66,9 +58,9 @@ namespace VisualCCommon.DefaultSettings
             VisualCCommon.ICommonCompilerSettings lhs,
             VisualCCommon.ICommonCompilerSettings rhs)
         {
-            delta.NoLogo = (lhs.NoLogo != rhs.NoLogo) ? lhs.NoLogo : null;
-            delta.RuntimeLibrary = (lhs.RuntimeLibrary != rhs.RuntimeLibrary) ? lhs.RuntimeLibrary : null;
-            delta.WarningLevel = (lhs.WarningLevel != rhs.WarningLevel) ? lhs.WarningLevel : null;
+            delta.NoLogo = lhs.NoLogo.Complement(rhs.NoLogo);
+            delta.RuntimeLibrary = lhs.RuntimeLibrary.Complement(rhs.RuntimeLibrary);
+            delta.WarningLevel = lhs.WarningLevel.Complement(rhs.WarningLevel);
         }
 
         public static void

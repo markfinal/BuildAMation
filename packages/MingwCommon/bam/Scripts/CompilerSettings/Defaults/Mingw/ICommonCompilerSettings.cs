@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using C;
 namespace MingwCommon.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
@@ -47,22 +48,10 @@ namespace MingwCommon.DefaultSettings
             this MingwCommon.ICommonCompilerSettings shared,
             MingwCommon.ICommonCompilerSettings other)
         {
-            if (shared.AllWarnings != other.AllWarnings)
-            {
-                shared.AllWarnings = null;
-            }
-            if (shared.ExtraWarnings != other.ExtraWarnings)
-            {
-                shared.ExtraWarnings = null;
-            }
-            if (shared.Pedantic != other.Pedantic)
-            {
-                shared.Pedantic = null;
-            }
-            if (shared.Visibility != other.Visibility)
-            {
-                shared.Visibility = null;
-            }
+            shared.AllWarnings = shared.AllWarnings.Intersect(other.AllWarnings);
+            shared.ExtraWarnings = shared.ExtraWarnings.Intersect(other.ExtraWarnings);
+            shared.Pedantic = shared.Pedantic.Intersect(other.Pedantic);
+            shared.Visibility = shared.Visibility.Intersect(other.Visibility);
         }
 
         public static void
@@ -71,10 +60,10 @@ namespace MingwCommon.DefaultSettings
             MingwCommon.ICommonCompilerSettings lhs,
             MingwCommon.ICommonCompilerSettings rhs)
         {
-            delta.AllWarnings = (lhs.AllWarnings != rhs.AllWarnings) ? lhs.AllWarnings : null;
-            delta.ExtraWarnings = (lhs.ExtraWarnings != rhs.ExtraWarnings) ? lhs.ExtraWarnings : null;
-            delta.Pedantic = (lhs.Pedantic != rhs.Pedantic) ? lhs.Pedantic : null;
-            delta.Visibility = (lhs.Visibility != rhs.Visibility) ? lhs.Visibility : null;
+            delta.AllWarnings = lhs.AllWarnings.Complement(rhs.AllWarnings);
+            delta.ExtraWarnings = lhs.ExtraWarnings.Complement(rhs.ExtraWarnings);
+            delta.Pedantic = lhs.Pedantic.Complement(rhs.Pedantic);
+            delta.Visibility = lhs.Visibility.Complement(rhs.Visibility);
         }
 
         public static void

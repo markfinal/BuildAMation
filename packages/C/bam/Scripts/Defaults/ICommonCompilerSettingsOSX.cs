@@ -52,10 +52,7 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsOSX other)
         {
             shared.FrameworkSearchPaths = shared.FrameworkSearchPaths.Intersect(other.FrameworkSearchPaths);
-            if (shared.MinimumVersionSupported != other.MinimumVersionSupported)
-            {
-                shared.MinimumVersionSupported = null;
-            }
+            shared.MinimumVersionSupported = shared.MinimumVersionSupported.Intersect(other.MinimumVersionSupported);
         }
 
         public static void
@@ -65,7 +62,7 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsOSX rhs)
         {
             delta.FrameworkSearchPaths = lhs.FrameworkSearchPaths.Complement(rhs.FrameworkSearchPaths);
-            delta.MinimumVersionSupported = (lhs.MinimumVersionSupported != rhs.MinimumVersionSupported) ? lhs.MinimumVersionSupported : null;
+            delta.MinimumVersionSupported = lhs.MinimumVersionSupported.Complement(rhs.MinimumVersionSupported);
         }
 
         public static void

@@ -46,18 +46,9 @@ namespace C.Cxx.DefaultSettings
             this C.ICxxOnlyCompilerSettings shared,
             C.ICxxOnlyCompilerSettings other)
         {
-            if (shared.ExceptionHandler != other.ExceptionHandler)
-            {
-                shared.ExceptionHandler = null;
-            }
-            if (shared.LanguageStandard != other.LanguageStandard)
-            {
-                shared.LanguageStandard = null;
-            }
-            if (shared.StandardLibrary != other.StandardLibrary)
-            {
-                shared.StandardLibrary = null;
-            }
+            shared.ExceptionHandler = shared.ExceptionHandler.Intersect(other.ExceptionHandler);
+            shared.LanguageStandard = shared.LanguageStandard.Intersect(other.LanguageStandard);
+            shared.StandardLibrary = shared.StandardLibrary.Intersect(other.StandardLibrary);
         }
 
         public static void
@@ -66,9 +57,9 @@ namespace C.Cxx.DefaultSettings
             C.ICxxOnlyCompilerSettings lhs,
             C.ICxxOnlyCompilerSettings rhs)
         {
-            delta.ExceptionHandler = (lhs.ExceptionHandler != rhs.ExceptionHandler) ? lhs.ExceptionHandler : null;
-            delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
-            delta.StandardLibrary = (lhs.StandardLibrary != rhs.StandardLibrary) ? lhs.StandardLibrary : null;
+            delta.ExceptionHandler = lhs.ExceptionHandler.Complement(rhs.ExceptionHandler);
+            delta.LanguageStandard = lhs.LanguageStandard.Complement(rhs.LanguageStandard);
+            delta.StandardLibrary = lhs.StandardLibrary.Complement(rhs.StandardLibrary);
         }
 
         public static void

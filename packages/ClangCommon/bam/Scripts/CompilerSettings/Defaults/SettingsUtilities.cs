@@ -27,41 +27,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C.DefaultSettings
+namespace ClangCommon
 {
-    public static partial class DefaultSettingsExtensions
+    public static class SettingsUtilities
     {
-        public static void
-        Defaults(
-            this C.ICOnlyCompilerSettings settings,
-            Bam.Core.Module module)
-        {
-            settings.LanguageStandard = ELanguageStandard.C89;
-        }
-
-        public static void
+        public static EVisibility?
         Intersect(
-            this C.ICOnlyCompilerSettings shared,
-            C.ICOnlyCompilerSettings other)
+            this EVisibility? lhs,
+            EVisibility? rhs)
         {
-            shared.LanguageStandard = shared.LanguageStandard.Intersect(other.LanguageStandard);
+            return (lhs == rhs) ? lhs : null;
         }
 
-        public static void
-        Delta(
-            this C.ICOnlyCompilerSettings delta,
-            C.ICOnlyCompilerSettings lhs,
-            C.ICOnlyCompilerSettings rhs)
+        public static EVisibility?
+        Complement(
+            this EVisibility? lhs,
+            EVisibility? rhs)
         {
-            delta.LanguageStandard = lhs.LanguageStandard.Complement(rhs.LanguageStandard);
-        }
-
-        public static void
-        Clone(
-            this C.ICOnlyCompilerSettings settings,
-            C.ICOnlyCompilerSettings other)
-        {
-            settings.LanguageStandard = other.LanguageStandard;
+            return (lhs != rhs) ? lhs : null;
         }
     }
 }
