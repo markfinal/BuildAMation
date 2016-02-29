@@ -396,23 +396,45 @@ namespace Bam.Core
 
                     // try removing any packages that have already been resolved
                     // which can remove additional packages (recursive check) because they had been added solely by those we are just about to remove
-                    toRemove.AddRangeUnique(PackagesToRemove(toRemove, packageDefinitions, masterDefinitionFile));
+                    packageDefinitions.RemoveAll(PackagesToRemove(toRemove, packageDefinitions, masterDefinitionFile));
                     packageDefinitions.RemoveAll(toRemove);
-                    toRemove.Clear();
 
                     // and if that has reduced the duplicates for this package down to a single version, we're good to carry on
-                    if (1 == duplicates.Count())
+                    var numDuplicates = duplicates.Count();
+                    if (1 == numDuplicates)
                     {
+                        toRemove.Clear();
                         continue;
                     }
 
                     // otherwise, error
                     var resolveErrorMessage = new System.Text.StringBuilder();
-                    resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve. Available versions of the package are:", duplicates.First().Name);
-                    resolveErrorMessage.AppendLine();
-                    foreach (var dup in duplicates)
+                    if (numDuplicates > 0)
                     {
-                        resolveErrorMessage.AppendFormat("\t{0}", dup.Version);
+                        resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve.", dupName);
+                        resolveErrorMessage.AppendLine();
+                        resolveErrorMessage.AppendLine("Available versions of the package are:");
+                        foreach (var dup in duplicates)
+                        {
+                            resolveErrorMessage.AppendFormat("\t{0}", dup.Version);
+                            resolveErrorMessage.AppendLine();
+                        }
+                    }
+                    else
+                    {
+                        resolveErrorMessage.AppendFormat("No version of package {0} has been determined to be available.", dupName);
+                        resolveErrorMessage.AppendLine();
+                        if (toRemove.Count() > 0)
+                        {
+                            resolveErrorMessage.AppendFormat("If there were any references to {0}, they may have been removed from consideration by the following packages being discarded:", dupName);
+                            resolveErrorMessage.AppendLine();
+                            foreach (var removed in toRemove)
+                            {
+                                resolveErrorMessage.AppendFormat("\t{0}", removed.FullName);
+                                resolveErrorMessage.AppendLine();
+                            }
+                        }
+                        resolveErrorMessage.AppendFormat("Please add an explicit dependency to (a version of) the {0} package either in your master package or one of its dependencies.", dupName);
                         resolveErrorMessage.AppendLine();
                     }
                     throw new Exception(resolveErrorMessage.ToString());

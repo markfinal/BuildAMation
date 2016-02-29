@@ -1,3 +1,5 @@
+29-Feb-2016 Fixes #165. The improvement to multiple package resolution in issue #138 could lead to a situation where all references to a dependent package are removed from consideration. Such a case occurs when package A is not referenced by the master package, but only by different versions of a dependent package B. Suppose one version of B does not reference A, but that version is chosen for use. All references of package A are removed because the unused versions of package B are removed, leaving no reference to package A. The error report in this case was not useful, so this has been improved.
+
 29-Feb-2016 Issue #162. VisualC.MetaData now exposes a Bam.Core.TokenizedStringArray property called RequiredExecutablePaths, that are added to the PATH environment variable to run all of the VisualStudio command line tools. In particular, this addresses VisualStudio 2012 storing mspdb*.dll in Common7/IDE while later versions store it in VC/bin.
 
 29-Feb-2016 Issue #162. All versions of VisualC packages will now throw an exception if the installation directory for VisualStudio does not exist.
