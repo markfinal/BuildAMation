@@ -44,6 +44,10 @@ namespace VisualC
 
             // TODO: get this from the registry
             this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 12.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
+            if (!System.IO.Directory.Exists(this.InstallDir.Parse()))
+            {
+                throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2013 installed?", this.InstallDir.Parse());
+            }
             this.PlatformToolset = "v120";
             this.VCXProjToolsVersion = "12.0";
             this.VCXProjFiltersToolsVersion = "4.0";

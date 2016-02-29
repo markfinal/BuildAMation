@@ -1,3 +1,5 @@
+29-Feb-2016 Issue #162. All versions of VisualC packages will now throw an exception if the installation directory for VisualStudio does not exist.
+
 29-Feb-2016 Issue #164. Simplified compiler interface Intersect and Delta extension methods, by adding extension methods to each datatype used as properties in those interfaces, to performan intersection and complement operation on the data. This has not changed behaviour - just simplified the code for future improvements.
 
 29-Feb-2016 Issue #162. Added VisualStudio 2012 support.
