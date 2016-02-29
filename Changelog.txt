@@ -1,3 +1,5 @@
+29-Feb-2016 Issue #162. Added VisualStudio 2012 support.
+
 28-Feb-2016 Fixes #161. Added Boolean property, DoNotDereferenceTarget, to the Publisher.IMakeLinkSettings interface, defaulting to true. When used with symbolic links to directories repeatedly, this stops circular links from being created, as the existing symlink is not followed. In this context, it does require the Force property to be set to true (it is by default). On OSX, the circular link was created on the second build run where frameworks were published, causing a subsequent clean build to fail.
 
 28-Feb-2016 Bam.Core.TokenizedStringArray and C.PreprocessorDefinitions now include Intersect and Complement functions, which simplify compiler settings code.
