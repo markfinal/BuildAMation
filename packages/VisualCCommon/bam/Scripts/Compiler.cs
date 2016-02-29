@@ -44,7 +44,10 @@ namespace VisualCCommon
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
             this.Macros.AddVerbatim("objext", ".obj");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString(@"$(InstallPath)\Common7\IDE")));
+            if (null != meta.RequiredExecutablePaths)
+            {
+                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
+            }
 
             this.PublicPatch((settings, appliedTo) =>
             {

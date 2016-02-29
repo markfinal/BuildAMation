@@ -1,3 +1,5 @@
+29-Feb-2016 Issue #162. VisualC.MetaData now exposes a Bam.Core.TokenizedStringArray property called RequiredExecutablePaths, that are added to the PATH environment variable to run all of the VisualStudio command line tools. In particular, this addresses VisualStudio 2012 storing mspdb*.dll in Common7/IDE while later versions store it in VC/bin.
+
 29-Feb-2016 Issue #162. All versions of VisualC packages will now throw an exception if the installation directory for VisualStudio does not exist.
 
 29-Feb-2016 Issue #164. Simplified compiler interface Intersect and Delta extension methods, by adding extension methods to each datatype used as properties in those interfaces, to performan intersection and complement operation on the data. This has not changed behaviour - just simplified the code for future improvements.

@@ -52,6 +52,7 @@ namespace VisualC
             this.VCXProjToolsVersion = "4.0";
             this.VCXProjFiltersToolsVersion = "4.0";
             this.UseWindowsSDKPublicPatches = false;
+            this.RequiredExecutablePaths = new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create("$(0)/Common7/IDE", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
         }
 
         public override object this[string index]
@@ -136,6 +137,20 @@ namespace VisualC
             private set
             {
                 this.Meta["RequiresWindowsSDK"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedStringArray
+        RequiredExecutablePaths
+        {
+            get
+            {
+                return this.Meta["AdditionalPATHs"] as Bam.Core.TokenizedStringArray;
+            }
+
+            private set
+            {
+                this.Meta["AdditionalPATHs"] = value;
             }
         }
 
