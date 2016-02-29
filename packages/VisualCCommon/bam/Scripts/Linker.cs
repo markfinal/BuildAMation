@@ -53,6 +53,11 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
 
+            if (null != meta.RequiredExecutablePaths)
+            {
+                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
+            }
+
             this.PublicPatch((settings, appliedTo) =>
             {
                 var linking = settings as C.ICommonLinkerSettings;
@@ -157,7 +162,14 @@ namespace VisualCCommon
             base(@"\VC\bin\x86_amd64\link.exe", @"\VC\lib\amd64")
         {
             // some DLLs exist only in the 32-bit bin folder
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
+            if (this.EnvironmentVariables.ContainsKey("PATH"))
+            {
+                this.EnvironmentVariables["PATH"].AddRangeUnique(new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
+            }
+            else
+            {
+                this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
+            }
         }
     }
 }

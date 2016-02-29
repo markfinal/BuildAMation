@@ -44,7 +44,10 @@ namespace VisualCCommon
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
             this.Macros.AddVerbatim("objext", ".obj");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString(@"$(InstallPath)\Common7\IDE")));
+            if (null != meta.RequiredExecutablePaths)
+            {
+                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
+            }
 
             this.PublicPatch((settings, appliedTo) =>
             {
@@ -148,7 +151,14 @@ namespace VisualCCommon
         {
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\x86_amd64\cl.exe"));
             // some DLLs exist only in the 32-bit bin folder
-            this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
+            if (this.EnvironmentVariables.ContainsKey("PATH"))
+            {
+                this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
+            }
+            else
+            {
+                this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
+            }
         }
 
         protected override void

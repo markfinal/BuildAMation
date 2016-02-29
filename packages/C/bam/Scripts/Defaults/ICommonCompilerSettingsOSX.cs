@@ -51,11 +51,8 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettingsOSX shared,
             C.ICommonCompilerSettingsOSX other)
         {
-            shared.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(shared.FrameworkSearchPaths.Intersect(other.FrameworkSearchPaths));
-            if (shared.MinimumVersionSupported != other.MinimumVersionSupported)
-            {
-                shared.MinimumVersionSupported = null;
-            }
+            shared.FrameworkSearchPaths = shared.FrameworkSearchPaths.Intersect(other.FrameworkSearchPaths);
+            shared.MinimumVersionSupported = shared.MinimumVersionSupported.Intersect(other.MinimumVersionSupported);
         }
 
         public static void
@@ -64,8 +61,8 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsOSX lhs,
             C.ICommonCompilerSettingsOSX rhs)
         {
-            delta.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray(lhs.FrameworkSearchPaths.Except(rhs.FrameworkSearchPaths));
-            delta.MinimumVersionSupported = (lhs.MinimumVersionSupported != rhs.MinimumVersionSupported) ? lhs.MinimumVersionSupported : null;
+            delta.FrameworkSearchPaths = lhs.FrameworkSearchPaths.Complement(rhs.FrameworkSearchPaths);
+            delta.MinimumVersionSupported = lhs.MinimumVersionSupported.Complement(rhs.MinimumVersionSupported);
         }
 
         public static void

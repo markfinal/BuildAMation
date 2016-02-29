@@ -27,14 +27,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+namespace ClangCommon
 {
-    public sealed partial class CxxCompilerOptionCollection :
-        VisualCCommon.CxxCompilerOptionCollection
+    public static class SettingsUtilities
     {
-        public
-        CxxCompilerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
+        public static EVisibility?
+        Intersect(
+            this EVisibility? lhs,
+            EVisibility? rhs)
+        {
+            return (lhs == rhs) ? lhs : null;
+        }
+
+        public static EVisibility?
+        Complement(
+            this EVisibility? lhs,
+            EVisibility? rhs)
+        {
+            return (lhs != rhs) ? lhs : null;
+        }
     }
 }

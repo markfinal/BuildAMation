@@ -44,10 +44,7 @@ namespace C.DefaultSettings
             this C.ICOnlyCompilerSettings shared,
             C.ICOnlyCompilerSettings other)
         {
-            if (shared.LanguageStandard != other.LanguageStandard)
-            {
-                shared.LanguageStandard = null;
-            }
+            shared.LanguageStandard = shared.LanguageStandard.Intersect(other.LanguageStandard);
         }
 
         public static void
@@ -56,7 +53,7 @@ namespace C.DefaultSettings
             C.ICOnlyCompilerSettings lhs,
             C.ICOnlyCompilerSettings rhs)
         {
-            delta.LanguageStandard = (lhs.LanguageStandard != rhs.LanguageStandard) ? lhs.LanguageStandard : null;
+            delta.LanguageStandard = lhs.LanguageStandard.Complement(rhs.LanguageStandard);
         }
 
         public static void

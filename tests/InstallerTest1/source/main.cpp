@@ -44,21 +44,22 @@ WinMain(
     HINSTANCE hPrevInstance,
     LPSTR lpCmdLine,
     int nCmdShow)
-{
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)lpCmdLine;
-    (void)nCmdShow;
 #else
 int
 main()
-{
 #endif
+{
     int result = DynamicLibraryFunction(StaticLibraryFunction(42));
 #ifdef __cplusplus
     std::cout << "Result was " << result << std::endl;
 #else
     printf("Result was %i\n", result);
+#endif
+#ifdef _WINDOWS
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+    (void)nCmdShow;
 #endif
     return result;
 }

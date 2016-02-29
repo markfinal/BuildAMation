@@ -29,12 +29,52 @@
 #endregion // License
 namespace VisualC
 {
-    public sealed partial class CxxCompilerOptionCollection :
-        VisualCCommon.CxxCompilerOptionCollection
+    public class ArchiverSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject,
+        C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
+        VisualCCommon.ICommonArchiverSettings
     {
-        public
-        CxxCompilerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
+        public ArchiverSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
+        }
+
+        void
+        VisualStudioProcessor.IConvertToProject.Convert(
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
+        }
+
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        bool VisualCCommon.ICommonArchiverSettings.NoLogo
+        {
+            get;
+            set;
+        }
     }
 }

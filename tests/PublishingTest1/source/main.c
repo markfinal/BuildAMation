@@ -114,8 +114,9 @@ getParentDirectory(
 {
     size_t len = strlen(exePath);
     char *copy = malloc(len + 1);
+    char *lastPathSep = 0;
     strcpy(copy, exePath);
-    char *lastPathSep = strrchr(copy, pathSep);
+    lastPathSep = strrchr(copy, pathSep);
     if (0 == lastPathSep)
     {
         free(copy);
@@ -253,6 +254,7 @@ main(
     char *exePath = argv[0];
     char *exeDir = getParentDirectory(exePath);
     int exitStatus = 0;
+    char *libDir = 0;
 
     /* check if single data file exists next to executable */
     exitStatus += validateTestFile1(exeDir);
@@ -260,7 +262,7 @@ main(
     /* check if directory (and all files/subdirs within) exists next to executable */
     exitStatus += validateTestDir1(exeDir);
 
-    char *libDir = joinPaths(exeDir, "lib");
+    libDir = joinPaths(exeDir, "lib");
     /* check directory again, but in a different location, and a different name */
     exitStatus += validateTestDir1_renamed(libDir, "testdir1_renamed");
 

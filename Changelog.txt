@@ -1,3 +1,27 @@
+29-Feb-2016 Issue #162. Added VisualC-11.0 and VisualC-10.0 as non-default dependents to the test packages.
+
+29-Feb-2016 Issue #162. Added limited support for VisualStudio 2010. Testing has only been performed on the Express edition, which 1) only has a 32-bit compiler (64-bit support is separate download), 2) does not contain redistributable runtime DLLs, 3) does not support solution folders. The professional edition may not have some of these limitations.
+
+29-Feb-2016 Fixes #165. The improvement to multiple package resolution in issue #138 could lead to a situation where all references to a dependent package are removed from consideration. Such a case occurs when package A is not referenced by the master package, but only by different versions of a dependent package B. Suppose one version of B does not reference A, but that version is chosen for use. All references of package A are removed because the unused versions of package B are removed, leaving no reference to package A. The error report in this case was not useful, so this has been improved.
+
+29-Feb-2016 Issue #162. VisualC.MetaData now exposes a Bam.Core.TokenizedStringArray property called RequiredExecutablePaths, that are added to the PATH environment variable to run all of the VisualStudio command line tools. In particular, this addresses VisualStudio 2012 storing mspdb*.dll in Common7/IDE while later versions store it in VC/bin.
+
+29-Feb-2016 Issue #162. All versions of VisualC packages will now throw an exception if the installation directory for VisualStudio does not exist.
+
+29-Feb-2016 Issue #164. Simplified compiler interface Intersect and Delta extension methods, by adding extension methods to each datatype used as properties in those interfaces, to performan intersection and complement operation on the data. This has not changed behaviour - just simplified the code for future improvements.
+
+29-Feb-2016 Issue #162. Added VisualStudio 2012 support.
+
+28-Feb-2016 Fixes #161. Added Boolean property, DoNotDereferenceTarget, to the Publisher.IMakeLinkSettings interface, defaulting to true. When used with symbolic links to directories repeatedly, this stops circular links from being created, as the existing symlink is not followed. In this context, it does require the Force property to be set to true (it is by default). On OSX, the circular link was created on the second build run where frameworks were published, causing a subsequent clean build to fail.
+
+28-Feb-2016 Bam.Core.TokenizedStringArray and C.PreprocessorDefinitions now include Intersect and Complement functions, which simplify compiler settings code.
+
+28-Feb-2016 Simplified settings code for compilers with the updated Bam.Core.StringArray.Intersect and Complement functions.
+
+28-Feb-2016 Fixes #160. Removed obsolete Bam.Core.ISetOperations interface. This was used pre-v1.0.0 and pre-LINQ support. Only referenced in Bam.Core.StringArray, and now replaced with an improved version that works better with the Bam.Core.Array base class.
+
+25-Feb-2016 Fixes #158. C.ProceduralHeaderFile does not write a header inclusion guard if the override to GuardString returns null.
+
 24-Feb-2016 Fixes #157. Xcode custom shell scripts now fail the build if any commands run return a non-zero exit code. This uses 'set -e', which bash will exit immediately if any command executed fails.
 
 24-Feb-2016 Fixes #156. Publisher.Collation exposes a read-only property, InitialReference, which is set to the first collated file, that is used as a reference point for all future objects to be collated. This information is useful to IDE project generation.

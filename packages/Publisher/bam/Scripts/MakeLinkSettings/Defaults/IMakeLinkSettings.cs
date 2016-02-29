@@ -39,6 +39,7 @@ namespace Publisher.DefaultSettings
             settings.Force = true;
             settings.Verbose = true;
             settings.SymbolicLink = true;
+            settings.DoNotDereferenceTarget = true;
         }
     }
 }

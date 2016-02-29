@@ -169,16 +169,19 @@ namespace VSSolutionBuilder
             content.AppendLine("\tGlobalSection(SolutionProperties) = preSolution");
             content.AppendLine("\t\tHideSolutionNode = FALSE");
             content.AppendLine("\tEndGlobalSection");
-            content.AppendLine("\tGlobalSection(NestedProjects) = preSolution");
-            foreach (var folder in this.SolutionFolders)
+            if (this.SolutionFolders.Count() > 0)
             {
-                foreach (var nested in folder.Value.NestedEntities)
+                content.AppendLine("\tGlobalSection(NestedProjects) = preSolution");
+                foreach (var folder in this.SolutionFolders)
                 {
-                    content.AppendFormat("\t\t{0} = {1}", nested.GuidString, folder.Value.GuidString);
-                    content.AppendLine();
+                    foreach (var nested in folder.Value.NestedEntities)
+                    {
+                        content.AppendFormat("\t\t{0} = {1}", nested.GuidString, folder.Value.GuidString);
+                        content.AppendLine();
+                    }
                 }
+                content.AppendLine("\tEndGlobalSection");
             }
-            content.AppendLine("\tEndGlobalSection");
             content.AppendLine("EndGlobal");
 
             return content;

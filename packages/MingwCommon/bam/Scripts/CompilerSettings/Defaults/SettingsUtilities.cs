@@ -27,15 +27,24 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+namespace MingwCommon
 {
-    // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection :
-        VisualCCommon.CCompilerOptionCollection
+    public static class SettingsUtilities
     {
-        public
-        CCompilerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
+        public static EVisibility?
+        Intersect(
+            this EVisibility? lhs,
+            EVisibility? rhs)
+        {
+            return (lhs == rhs) ? lhs : null;
+        }
+
+        public static EVisibility?
+        Complement(
+            this EVisibility? lhs,
+            EVisibility? rhs)
+        {
+            return (lhs != rhs) ? lhs : null;
+        }
     }
 }

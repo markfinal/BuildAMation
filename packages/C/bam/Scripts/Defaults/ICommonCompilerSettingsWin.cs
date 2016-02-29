@@ -50,10 +50,7 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettingsWin shared,
             C.ICommonCompilerSettingsWin other)
         {
-            if (shared.CharacterSet != other.CharacterSet)
-            {
-                shared.CharacterSet = null;
-            }
+            shared.CharacterSet = shared.CharacterSet.Intersect(other.CharacterSet);
         }
 
         public static void
@@ -62,7 +59,7 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettingsWin lhs,
             C.ICommonCompilerSettingsWin rhs)
         {
-            delta.CharacterSet = (lhs.CharacterSet != rhs.CharacterSet) ? lhs.CharacterSet : null;
+            delta.CharacterSet = lhs.CharacterSet.Complement(rhs.CharacterSet);
         }
 
         public static void

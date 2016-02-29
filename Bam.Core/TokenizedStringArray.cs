@@ -93,5 +93,29 @@ namespace Bam.Core
         {
            this.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(item));
         }
+
+        /// <summary>
+        /// Find all TokenizedStrings that exist in two lists.
+        /// </summary>
+        /// <param name="other">The second list to intersect with.</param>
+        /// <returns>The TokenizedStringArray containing just those elements in both TokenizedStringArrays.</returns>
+        public TokenizedStringArray
+        Intersect(
+            TokenizedStringArray other)
+        {
+            return new TokenizedStringArray(base.Intersect(other));
+        }
+
+        /// <summary>
+        /// Find all TokenizedStrings in this but not in <paramref name="other"/>
+        /// </summary>
+        /// <param name="other">The other TokenizedStringArray</param>
+        /// <returns>The TokenizedStringArray containing the complement of the two TokenizedStringArrays.</returns>
+        public TokenizedStringArray
+        Complement(
+            TokenizedStringArray other)
+        {
+            return new TokenizedStringArray(base.Complement(other));
+        }
     }
 }

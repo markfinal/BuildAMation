@@ -27,28 +27,54 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Bam.Core
+namespace VisualC
 {
-    // TODO: these may be redundant with Linq
-    /// <summary>
-    /// Interface for common set operations.
-    /// </summary>
-    public interface ISetOperations<T>
+    public class ArchiverSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject,
+        C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
+        VisualCCommon.ICommonArchiverSettings
     {
-        /// <summary>
-        /// Obtain the complement (those in A but not in B) of two instances.
-        /// </summary>
-        /// <param name="other">Other.</param>
-        T
-        Complement(
-            T other);
+        public ArchiverSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
-        /// <summary>
-        /// Obtain the intersection (those both in A and B) of two instances.
-        /// </summary>
-        /// <param name="other">Other.</param>
-        T
-        Intersect(
-            T other);
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
+        }
+
+        void
+        VisualStudioProcessor.IConvertToProject.Convert(
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
+        }
+
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        bool VisualCCommon.ICommonArchiverSettings.NoLogo
+        {
+            get;
+            set;
+        }
     }
 }

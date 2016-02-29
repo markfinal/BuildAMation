@@ -27,14 +27,55 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+using Bam.Core;
+namespace C.DefaultSettings
 {
-    public sealed partial class LinkerOptionCollection :
-        VisualCCommon.LinkerOptionCollection
+    public static partial class DefaultSettingsExtensions
     {
-        public
-        LinkerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
+        public static void
+        Defaults(
+            this C.IAdditionalSettings settings,
+            Bam.Core.Module module)
+        {
+            if (null == settings.AdditionalSettings)
+            {
+                settings.AdditionalSettings = new Bam.Core.StringArray();
+            }
+        }
+
+        public static void
+        Empty(
+            this C.IAdditionalSettings settings)
+        {
+            settings.AdditionalSettings = new Bam.Core.StringArray();
+        }
+
+        public static void
+        Intersect(
+            this C.IAdditionalSettings shared,
+            C.IAdditionalSettings other)
+        {
+            shared.AdditionalSettings = shared.AdditionalSettings.Intersect(other.AdditionalSettings);
+        }
+
+        public static void
+        Delta(
+            this C.IAdditionalSettings delta,
+            C.IAdditionalSettings lhs,
+            C.IAdditionalSettings rhs)
+        {
+            delta.AdditionalSettings = lhs.AdditionalSettings.Complement(rhs.AdditionalSettings);
+        }
+
+        public static void
+        Clone(
+            this C.IAdditionalSettings settings,
+            C.IAdditionalSettings other)
+        {
+            foreach (var path in other.AdditionalSettings)
+            {
+                settings.AdditionalSettings.AddUnique(path);
+            }
+        }
     }
 }

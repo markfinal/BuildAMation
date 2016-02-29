@@ -27,17 +27,18 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace VisualC
 {
-    public sealed class MakeLinkSettings :
-        Bam.Core.Settings,
+    public class LinkerSettings :
+        C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
-        IMakeLinkSettings
+        VisualStudioProcessor.IConvertToProject,
+        C.ICommonLinkerSettingsWin,
+        C.ICommonLinkerSettings,
+        C.IAdditionalSettings,
+        VisualCCommon.ICommonLinkerSettings
     {
-        public MakeLinkSettings()
-        {}
-
-        public MakeLinkSettings(
+        public LinkerSettings(
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
@@ -47,28 +48,67 @@ namespace Publisher
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
         }
 
-        bool IMakeLinkSettings.Force
+        void
+        VisualStudioProcessor.IConvertToProject.Convert(
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
+        }
+
+        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
         {
             get;
             set;
         }
 
-        bool IMakeLinkSettings.Verbose
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
         {
             get;
             set;
         }
 
-        bool IMakeLinkSettings.SymbolicLink
+        C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
             set;
         }
 
-        bool IMakeLinkSettings.DoNotDereferenceTarget
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
+        {
+            get;
+            set;
+        }
+
+        bool C.ICommonLinkerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        bool VisualCCommon.ICommonLinkerSettings.NoLogo
         {
             get;
             set;

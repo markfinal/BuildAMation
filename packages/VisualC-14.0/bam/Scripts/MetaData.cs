@@ -44,10 +44,15 @@ namespace VisualC
 
             // TODO: get this from the registry
             this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 14.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
+            if (!System.IO.Directory.Exists(this.InstallDir.Parse()))
+            {
+                throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2015 installed?", this.InstallDir.Parse());
+            }
             this.PlatformToolset = "v140";
             this.VCXProjToolsVersion = "14.0";
             this.VCXProjFiltersToolsVersion = "4.0";
             this.UseWindowsSDKPublicPatches = true; // headers like stdio.h are in WindowsSDK 10
+            this.RequiredExecutablePaths = new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create("$(0)/Common7/IDE", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
         }
 
         public override object this[string index]
@@ -132,6 +137,20 @@ namespace VisualC
             private set
             {
                 this.Meta["RequiresWindowsSDK"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedStringArray
+        RequiredExecutablePaths
+        {
+            get
+            {
+                return this.Meta["AdditionalPATHs"] as Bam.Core.TokenizedStringArray;
+            }
+
+            private set
+            {
+                this.Meta["AdditionalPATHs"] = value;
             }
         }
 

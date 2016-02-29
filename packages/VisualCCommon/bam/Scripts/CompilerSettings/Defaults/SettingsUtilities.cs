@@ -27,15 +27,40 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+namespace VisualCCommon
 {
-    // Not sealed since the C++ compiler inherits from it
-    public partial class CCompilerOptionCollection :
-        VisualCCommon.CCompilerOptionCollection
+    public static class SettingsUtilities
     {
-        public
-        CCompilerOptionCollection(
-            Bam.Core.DependencyNode node) : base(node)
-        {}
+        public static ERuntimeLibrary?
+        Intersect(
+            this ERuntimeLibrary? lhs,
+            ERuntimeLibrary? rhs)
+        {
+            return (lhs == rhs) ? lhs : null;
+        }
+
+        public static ERuntimeLibrary?
+        Complement(
+            this ERuntimeLibrary? lhs,
+            ERuntimeLibrary? rhs)
+        {
+            return (lhs != rhs) ? lhs : null;
+        }
+
+        public static EWarningLevel?
+        Intersect(
+            this EWarningLevel? lhs,
+            EWarningLevel? rhs)
+        {
+            return (lhs == rhs) ? lhs : null;
+        }
+
+        public static EWarningLevel?
+        Complement(
+            this EWarningLevel? lhs,
+            EWarningLevel? rhs)
+        {
+            return (lhs != rhs) ? lhs : null;
+        }
     }
 }

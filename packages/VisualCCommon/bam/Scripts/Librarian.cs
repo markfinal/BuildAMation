@@ -41,6 +41,11 @@ namespace VisualCCommon
             this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin\lib.exe"));
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");
+
+            if (null != meta.RequiredExecutablePaths)
+            {
+                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
+            }
         }
 
         public override Bam.Core.Settings
