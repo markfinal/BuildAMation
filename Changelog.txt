@@ -1,3 +1,5 @@
+29-Feb-2016 Issue #162. Added VisualC-11.0 and VisualC-10.0 as non-default dependents to the test packages.
+
 29-Feb-2016 Issue #162. Added limited support for VisualStudio 2010. Testing has only been performed on the Express edition, which 1) only has a 32-bit compiler (64-bit support is separate download), 2) does not contain redistributable runtime DLLs, 3) does not support solution folders. The professional edition may not have some of these limitations.
 
 29-Feb-2016 Fixes #165. The improvement to multiple package resolution in issue #138 could lead to a situation where all references to a dependent package are removed from consideration. Such a case occurs when package A is not referenced by the master package, but only by different versions of a dependent package B. Suppose one version of B does not reference A, but that version is chosen for use. All references of package A are removed because the unused versions of package B are removed, leaving no reference to package A. The error report in this case was not useful, so this has been improved.
