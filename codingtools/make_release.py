@@ -33,7 +33,6 @@ dirsToDelete = [
     "packages/QMakeBuilder",
     "packages/VisualC-8.0",
     "packages/VisualC-9.0",
-    "packages/VisualC-10.0",
     "packages/WindowsSDK-6.0A",
     "packages/WindowsSDK-7.1",
     "packages/XmlUtilities"
