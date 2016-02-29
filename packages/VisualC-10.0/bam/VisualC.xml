@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="VisualC" version="10.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Microsoft VisualC 2010 support (Express edition)</Description>
   <Dependents>
     <Package name="VisualCCommon" />
+    <Package name="WindowsSDK" version="8.1" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="0" />
