@@ -77,6 +77,7 @@ namespace Bam.Core
             var initialScriptFile = System.IO.Path.Combine(scriptsDir, packageName) + ".cs";
             using (System.IO.TextWriter writer = new System.IO.StreamWriter(initialScriptFile))
             {
+                writer.NewLine = "\n";
                 writer.WriteLine("using Bam.Core;");
                 writer.WriteLine("namespace {0}", packageName);
                 writer.WriteLine("{");
