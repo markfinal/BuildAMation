@@ -38,7 +38,7 @@
 
 24-Feb-2016 Fixes #155. Scanning for #includes in C source files now implicitly searches the same directory as the source file for any headers. Since the compiler does not need that path explicitly added to the header search paths in order to find sibling headers, it is a valid path to scan for them.
 
-24-Feb-2016 Fixes #154. Scanning for #includes in C source files no longer assumes a space space after #include. Zero or more whitespace characters are now accepted.
+24-Feb-2016 Fixes #154. Scanning for #includes in C source files no longer assumes a single space after #include. Zero or more whitespace characters are now accepted.
 
 24-Feb-2016 Added some documentation for macros added to Core assembly objects.
 
