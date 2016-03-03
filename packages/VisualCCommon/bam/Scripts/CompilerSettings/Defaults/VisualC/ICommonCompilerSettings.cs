@@ -40,6 +40,7 @@ namespace VisualCCommon.DefaultSettings
             settings.NoLogo = true;
             settings.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
             settings.WarningLevel = EWarningLevel.Level1;
+            settings.EnableLanguageExtensions = true; // only because Windows.h does not compile without this, even with WIN32_LEAN_AND_MEAN
         }
 
         public static void
@@ -50,6 +51,7 @@ namespace VisualCCommon.DefaultSettings
             shared.NoLogo = shared.NoLogo.Intersect(other.NoLogo);
             shared.RuntimeLibrary = shared.RuntimeLibrary.Intersect(other.RuntimeLibrary);
             shared.WarningLevel = shared.WarningLevel.Intersect(other.WarningLevel);
+            shared.EnableLanguageExtensions = shared.EnableLanguageExtensions.Intersect(other.EnableLanguageExtensions);
         }
 
         public static void
@@ -61,6 +63,7 @@ namespace VisualCCommon.DefaultSettings
             delta.NoLogo = lhs.NoLogo.Complement(rhs.NoLogo);
             delta.RuntimeLibrary = lhs.RuntimeLibrary.Complement(rhs.RuntimeLibrary);
             delta.WarningLevel = lhs.WarningLevel.Complement(rhs.WarningLevel);
+            delta.EnableLanguageExtensions = lhs.EnableLanguageExtensions.Complement(rhs.EnableLanguageExtensions);
         }
 
         public static void
@@ -71,6 +74,7 @@ namespace VisualCCommon.DefaultSettings
             settings.NoLogo = other.NoLogo;
             settings.RuntimeLibrary = other.RuntimeLibrary;
             settings.WarningLevel = other.WarningLevel;
+            settings.EnableLanguageExtensions = other.EnableLanguageExtensions;
         }
     }
 }

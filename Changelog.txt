@@ -1,3 +1,5 @@
+03-Mar-2016 Fixes #169. Added Boolean setting property, EnableLanguageExtensions, to VisualCCommon.ICommonCompilerSettings. Defaults to true, since Windows.h does not compile without it, even with WIN32_LEAN_AND_MEAN defined.
+
 03-Mar-2016 Issue #164. Mingw, Clang, and Gcc compiler properties, AllWarnings, ExtraWarnings, Pedantic, and StrictAliasing, command line conversion will now add the appropriate command when the properties are set to False.
 
 03-Mar-2016 Issue #164. C.ICommonCompilerSettings.WarningsAsError command line conversion will now add the appropriate command when this property is set to False.
