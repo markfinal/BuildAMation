@@ -49,6 +49,10 @@ namespace GccCommon
                 {
                     commandLine.Add("-Wall");
                 }
+                else
+                {
+                    commandLine.Add("-Wno-all");
+                }
             }
             if (settings.ExtraWarnings.HasValue)
             {
@@ -56,12 +60,20 @@ namespace GccCommon
                 {
                     commandLine.Add("-Wextra");
                 }
+                else
+                {
+                    commandLine.Add("-Wno-extra");
+                }
             }
             if (settings.Pedantic.HasValue)
             {
                 if (settings.Pedantic.Value)
                 {
-                    commandLine.Add("-pedantic");
+                    commandLine.Add("-Wpedantic");
+                }
+                else
+                {
+                    commandLine.Add("-Wno-pedantic");
                 }
             }
             if (settings.Visibility.HasValue)
@@ -89,6 +101,10 @@ namespace GccCommon
                 if (settings.StrictAliasing.Value)
                 {
                     commandLine.Add("-fstrict-aliasing");
+                }
+                else
+                {
+                    commandLine.Add("-fno-strict-aliasing");
                 }
             }
         }

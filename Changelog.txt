@@ -1,3 +1,5 @@
+03-Mar-2016 Issue #164. Mingw, Clang, and Gcc compiler properties, AllWarnings, ExtraWarnings, Pedantic, and StrictAliasing, command line conversion will now add the appropriate command when the properties are set to False.
+
 03-Mar-2016 Issue #164. C.ICommonCompilerSettings.WarningsAsError command line conversion will now add the appropriate command when this property is set to False.
 
 03-Mar-2016 Fixes #146. Making a new package writes the initial .cs file in bam/Scripts with \n EOLs on all platforms, to be consistent with other files written by Bam.
