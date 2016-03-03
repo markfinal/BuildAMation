@@ -120,6 +120,10 @@ namespace VisualCCommon
                 {
                     commandLine.Add("-WX");
                 }
+                else
+                {
+                    commandLine.Add("-WX-");
+                }
             }
             if (settings.OutputType.HasValue)
             {

@@ -141,6 +141,10 @@ namespace GccCommon
                 {
                     commandLine.Add("-Werror");
                 }
+                else
+                {
+                    commandLine.Add("-Wno-error");
+                }
             }
             if (settings.OutputType.HasValue)
             {

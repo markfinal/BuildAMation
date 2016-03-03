@@ -1,3 +1,5 @@
+03-Mar-2016 Issue #164. C.ICommonCompilerSettings.WarningsAsError command line conversion will now add the appropriate command when this property is set to False.
+
 03-Mar-2016 Fixes #146. Making a new package writes the initial .cs file in bam/Scripts with \n EOLs on all platforms, to be consistent with other files written by Bam.
 
 03-Mar-2016 Fixes #163. Added StrictAliasing property to MingwCommon.ICommonCompilerSettings. Defaults to true in optimized builds, false in debug. This is consistent with the same property defined for Clang and Gcc.
