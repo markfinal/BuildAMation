@@ -1,3 +1,5 @@
+03-Mar-2016 Fixes #163. Added StrictAliasing property to MingwCommon.ICommonCompilerSettings. Defaults to true in optimized builds, false in debug. This is consistent with the same property defined for Clang and Gcc.
+
 29-Feb-2016 Issue #162. Added VisualC-11.0 and VisualC-10.0 as non-default dependents to the test packages.
 
 29-Feb-2016 Issue #162. Added limited support for VisualStudio 2010. Testing has only been performed on the Express edition, which 1) only has a 32-bit compiler (64-bit support is separate download), 2) does not contain redistributable runtime DLLs, 3) does not support solution folders. The professional edition may not have some of these limitations.

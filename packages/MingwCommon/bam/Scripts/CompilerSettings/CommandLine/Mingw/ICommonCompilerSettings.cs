@@ -77,6 +77,13 @@ namespace MingwCommon
                     throw new Bam.Core.Exception("Unrecognized visibility, {0}", settings.Visibility.Value.ToString());
                 }
             }
+            if (settings.StrictAliasing.HasValue)
+            {
+                if (settings.StrictAliasing.Value)
+                {
+                    commandLine.Add("-fstrict-aliasing");
+                }
+            }
         }
     }
 }
