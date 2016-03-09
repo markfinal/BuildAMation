@@ -35,6 +35,7 @@ namespace C
     /// Optionally override the GuardString property to customize the header include guard text. Otherwise this is the basename of the generated file in upper-case with a _H suffix.
     /// A hash of the contents is persisted on disk, so that changes to the contents will cause the file to be rebuilt.
     /// </summary>
+    [Bam.Core.EvaluationRequired(true)]
     public abstract class ProceduralHeaderFile :
         C.HeaderFile
     {

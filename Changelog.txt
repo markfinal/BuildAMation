@@ -1,3 +1,5 @@
+09-Mar-2016 Fixes #167. The attribute Bam.Core.EvaluationRequiredAttribute can now be applied to individual modules. Previously, it was only applicable to classes implementing Bam.Core.IBuildModeMetaData, i.e. defining the evaluation behaviour for the entire build mode. For project generation build modes, modules that perform tasks outside of the project, e.g. procedural file generation, should be always evaluated, so that they are not regenerated unnecessarily when the project is rebuilt (and not cleaned). C.ProceduralHeaderFile now uses the attribute to do just this, which reduces rebuild times after projects are regenerated.
+
 03-Mar-2016 Fixes #169. Added Boolean setting property, EnableLanguageExtensions, to VisualCCommon.ICommonCompilerSettings. Defaults to true, since Windows.h does not compile without it, even with WIN32_LEAN_AND_MEAN defined.
 
 03-Mar-2016 Issue #164. Mingw, Clang, and Gcc compiler properties, AllWarnings, ExtraWarnings, Pedantic, and StrictAliasing, command line conversion will now add the appropriate command when the properties are set to False.
