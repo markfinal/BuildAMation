@@ -51,5 +51,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        bool? EnableLanguageExtensions
+        {
+            get;
+            set;
+        }
     }
 }

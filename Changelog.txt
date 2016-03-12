@@ -1,3 +1,15 @@
+09-Mar-2016 Fixes #167. The attribute Bam.Core.EvaluationRequiredAttribute can now be applied to individual modules. Previously, it was only applicable to classes implementing Bam.Core.IBuildModeMetaData, i.e. defining the evaluation behaviour for the entire build mode. For project generation build modes, modules that perform tasks outside of the project, e.g. procedural file generation, should be always evaluated, so that they are not regenerated unnecessarily when the project is rebuilt (and not cleaned). C.ProceduralHeaderFile now uses the attribute to do just this, which reduces rebuild times after projects are regenerated.
+
+03-Mar-2016 Fixes #169. Added Boolean setting property, EnableLanguageExtensions, to VisualCCommon.ICommonCompilerSettings. Defaults to true, since Windows.h does not compile without it, even with WIN32_LEAN_AND_MEAN defined.
+
+03-Mar-2016 Issue #164. Mingw, Clang, and Gcc compiler properties, AllWarnings, ExtraWarnings, Pedantic, and StrictAliasing, command line conversion will now add the appropriate command when the properties are set to False.
+
+03-Mar-2016 Issue #164. C.ICommonCompilerSettings.WarningsAsError command line conversion will now add the appropriate command when this property is set to False.
+
+03-Mar-2016 Fixes #146. Making a new package writes the initial .cs file in bam/Scripts with \n EOLs on all platforms, to be consistent with other files written by Bam.
+
+03-Mar-2016 Fixes #163. Added StrictAliasing property to MingwCommon.ICommonCompilerSettings. Defaults to true in optimized builds, false in debug. This is consistent with the same property defined for Clang and Gcc.
+
 29-Feb-2016 Issue #162. Added VisualC-11.0 and VisualC-10.0 as non-default dependents to the test packages.
 
 29-Feb-2016 Issue #162. Added limited support for VisualStudio 2010. Testing has only been performed on the Express edition, which 1) only has a 32-bit compiler (64-bit support is separate download), 2) does not contain redistributable runtime DLLs, 3) does not support solution folders. The professional edition may not have some of these limitations.
@@ -28,7 +40,7 @@
 
 24-Feb-2016 Fixes #155. Scanning for #includes in C source files now implicitly searches the same directory as the source file for any headers. Since the compiler does not need that path explicitly added to the header search paths in order to find sibling headers, it is a valid path to scan for them.
 
-24-Feb-2016 Fixes #154. Scanning for #includes in C source files no longer assumes a space space after #include. Zero or more whitespace characters are now accepted.
+24-Feb-2016 Fixes #154. Scanning for #includes in C source files no longer assumes a single space after #include. Zero or more whitespace characters are now accepted.
 
 24-Feb-2016 Added some documentation for macros added to Core assembly objects.
 

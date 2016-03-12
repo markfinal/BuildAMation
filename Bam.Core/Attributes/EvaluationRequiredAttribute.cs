@@ -30,8 +30,12 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Attribute to apply to a class implementing Bam.Core.IBuildModeMetaData, used by the core
-    /// assembly to determine whether module evaluation is required.
+    /// There are two use cases for this attribute:
+    /// 1) for a class implementing Bam.Core.IBuildModeMetaData (i.e. a build mode), the attribute is used to determine
+    /// whether the build mode requires module evaluation to be executed. The default behaviour is NOT to require evaluation.
+    /// 2) for a module class, the attribute is used to identify individual modules that override the build mode evaluation behaviour.
+    /// i.e. to force evaluation on modules that perform actions slightly differently to other modules for the build mode. For example,
+    /// for project generation build modes, some modules may procedurally generate files outside of the project build.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class)]
     public sealed class EvaluationRequiredAttribute :

@@ -175,5 +175,11 @@ namespace VisualC
             get;
             set;
         }
+
+        bool? VisualCCommon.ICommonCompilerSettings.EnableLanguageExtensions
+        {
+            get;
+            set;
+        }
     }
 }

@@ -207,6 +207,7 @@ namespace Bam
 
             using (System.IO.TextWriter writer = new System.IO.StreamWriter(path))
             {
+                writer.NewLine = "\n";
                 writer.WriteLine("{0}namespace Bam", indent(0));
                 writer.WriteLine("{0}{{", indent(0));
                 writer.WriteLine("{0}class Program", indent(1));

@@ -87,22 +87,39 @@ namespace Bam.Core
         CheckIfModulesNeedRebuilding(
             System.Type metaType)
         {
+            var graph = Graph.Instance;
+            var modulesNeedEvaluating = new Array<Module>();
+
             // not all build modes need to determine if modules are up-to-date
             var evaluationRequiredAttr =
                 metaType.GetCustomAttributes(typeof(EvaluationRequiredAttribute), false) as EvaluationRequiredAttribute[];
             if (0 == evaluationRequiredAttr.Length)
             {
-                Log.DebugMessage("No Bam.Core.EvaluationRequired attribute on build mode metadata, assume rebuilds necessary");
-                return false;
+                // query if any individual modules override this
+                foreach (var rank in graph.Reverse())
+                {
+                    foreach (Module module in rank)
+                    {
+                        var moduleEvaluationRequiredAttr = module.GetType().GetCustomAttributes(typeof(EvaluationRequiredAttribute), true) as EvaluationRequiredAttribute[];
+                        if (moduleEvaluationRequiredAttr.Length > 0 && moduleEvaluationRequiredAttr[0].Enabled)
+                        {
+                            modulesNeedEvaluating.Add(module);
+                        }
+                    }
+                }
+
+                if (0 == modulesNeedEvaluating.Count)
+                {
+                    Log.DebugMessage("No Bam.Core.EvaluationRequired attribute on build mode metadata, assume rebuilds necessary");
+                    return false;
+                }
             }
 
-            if (!evaluationRequiredAttr[0].Enabled)
+            if ((evaluationRequiredAttr.Length > 0) && !evaluationRequiredAttr[0].Enabled && 0 == modulesNeedEvaluating.Count)
             {
                 Log.DebugMessage("Module evaluation disabled");
                 return false;
             }
-
-            Log.DebugMessage("Module evaluation enabled");
 
             var cancellationSource = new System.Threading.CancellationTokenSource();
             var cancellationToken = cancellationSource.Token;
@@ -120,13 +137,25 @@ namespace Bam.Core
                     continuationOpts,
                     scheduler);
 
-            var graph = Graph.Instance;
             graph.MetaData = factory;
 
-            foreach (var rank in graph.Reverse())
+            if (0 == modulesNeedEvaluating.Count)
             {
-                foreach (Module module in rank)
+                Log.DebugMessage("Module evaluation enabled for build mode {0}", graph.Mode);
+                foreach (var rank in graph.Reverse())
                 {
+                    foreach (Module module in rank)
+                    {
+                        module.Evaluate();
+                    }
+                }
+            }
+            else
+            {
+                Log.DebugMessage("Module evaluation disabled for build mode {0}, but enabled for individual modules:", graph.Mode);
+                foreach (var module in modulesNeedEvaluating)
+                {
+                    Log.DebugMessage("\tEvaluation for module {0}", module.GetType().ToString());
                     module.Evaluate();
                 }
             }

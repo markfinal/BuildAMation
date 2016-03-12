@@ -59,6 +59,11 @@ namespace VisualCCommon
                     vsSettingsGroup.AddSetting("WarningLevel", System.String.Format("Level{0}", settings.WarningLevel.Value.ToString("D")), condition);
                 }
             }
+
+            if (settings.EnableLanguageExtensions.HasValue)
+            {
+                vsSettingsGroup.AddSetting("DisableLanguageExtensions", !settings.EnableLanguageExtensions.Value, condition);
+            }
         }
     }
 }

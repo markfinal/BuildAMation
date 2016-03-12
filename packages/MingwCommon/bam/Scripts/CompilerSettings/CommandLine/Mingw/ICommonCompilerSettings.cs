@@ -42,6 +42,10 @@ namespace MingwCommon
                 {
                     commandLine.Add("-Wall");
                 }
+                else
+                {
+                    commandLine.Add("-Wno-all");
+                }
             }
             if (settings.ExtraWarnings.HasValue)
             {
@@ -49,12 +53,20 @@ namespace MingwCommon
                 {
                     commandLine.Add("-Wextra");
                 }
+                else
+                {
+                    commandLine.Add("-Wno-extra");
+                }
             }
             if (settings.Pedantic.HasValue)
             {
                 if (settings.Pedantic.Value)
                 {
-                    commandLine.Add("-pedantic");
+                    commandLine.Add("-Wpedantic");
+                }
+                else
+                {
+                    commandLine.Add("-Wno-pedantic");
                 }
             }
             if (settings.Visibility.HasValue)
@@ -75,6 +87,17 @@ namespace MingwCommon
                     break;
                 default:
                     throw new Bam.Core.Exception("Unrecognized visibility, {0}", settings.Visibility.Value.ToString());
+                }
+            }
+            if (settings.StrictAliasing.HasValue)
+            {
+                if (settings.StrictAliasing.Value)
+                {
+                    commandLine.Add("-fstrict-aliasing");
+                }
+                else
+                {
+                    commandLine.Add("-fno-strict-aliasing");
                 }
             }
         }

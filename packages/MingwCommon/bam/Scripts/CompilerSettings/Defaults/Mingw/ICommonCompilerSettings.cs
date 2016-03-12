@@ -41,6 +41,7 @@ namespace MingwCommon.DefaultSettings
             settings.ExtraWarnings = false;
             settings.Pedantic = false;
             settings.Visibility = EVisibility.Hidden;
+            settings.StrictAliasing = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
         }
 
         public static void
@@ -52,6 +53,7 @@ namespace MingwCommon.DefaultSettings
             shared.ExtraWarnings = shared.ExtraWarnings.Intersect(other.ExtraWarnings);
             shared.Pedantic = shared.Pedantic.Intersect(other.Pedantic);
             shared.Visibility = shared.Visibility.Intersect(other.Visibility);
+            shared.StrictAliasing = shared.StrictAliasing.Intersect(other.StrictAliasing);
         }
 
         public static void
@@ -64,6 +66,7 @@ namespace MingwCommon.DefaultSettings
             delta.ExtraWarnings = lhs.ExtraWarnings.Complement(rhs.ExtraWarnings);
             delta.Pedantic = lhs.Pedantic.Complement(rhs.Pedantic);
             delta.Visibility = lhs.Visibility.Complement(rhs.Visibility);
+            delta.StrictAliasing = lhs.StrictAliasing.Complement(rhs.StrictAliasing);
         }
 
         public static void
@@ -75,6 +78,7 @@ namespace MingwCommon.DefaultSettings
             settings.ExtraWarnings = other.ExtraWarnings;
             settings.Pedantic = other.Pedantic;
             settings.Visibility = other.Visibility;
+            settings.StrictAliasing = other.StrictAliasing;
         }
     }
 }

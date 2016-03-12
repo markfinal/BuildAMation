@@ -56,5 +56,11 @@ namespace MingwCommon
             get;
             set;
         }
+
+        bool? StrictAliasing
+        {
+            get;
+            set;
+        }
     }
 }

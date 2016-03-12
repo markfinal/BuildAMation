@@ -51,8 +51,28 @@ namespace DeltaSettingsTest1
                 item.PrivatePatch(settings =>
                     {
                         var compiler = settings as C.ICommonCompilerSettings;
+
+                        // delta a boolean setting
                         compiler.WarningsAsErrors = false;
+
+                        // delta a custom class setting
                         compiler.PreprocessorDefines.Remove("D_COMMON");
+                    }));
+
+            source.Children.Where(item => (item as C.ObjectFile).InputPath.Parse().Contains("d.c")).ToList().ForEach(item =>
+                item.PrivatePatch(settings =>
+                    {
+                        // delta an enumeration setting
+                        var vcCompiler = settings as VisualCCommon.ICommonCompilerSettings;
+                        if (null != vcCompiler)
+                        {
+                            vcCompiler.WarningLevel = VisualCCommon.EWarningLevel.Level3;
+                        }
+                        var clangCompiler = settings as ClangCommon.ICommonCompilerSettings;
+                        if (null != clangCompiler)
+                        {
+                            clangCompiler.Visibility = ClangCommon.EVisibility.Default;
+                        }
                     }));
         }
     }

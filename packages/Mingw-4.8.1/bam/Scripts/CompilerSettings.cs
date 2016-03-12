@@ -170,5 +170,11 @@ namespace Mingw
             get;
             set;
         }
+
+        bool? MingwCommon.ICommonCompilerSettings.StrictAliasing
+        {
+            get;
+            set;
+        }
     }
 }
