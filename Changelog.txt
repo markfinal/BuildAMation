@@ -1,3 +1,7 @@
+18-Mar-2016 ======== Version 1.0.1b4 Release ========
+
+12-Mar-2016 Fixes #170. The CachedPackageAssembly directory written to the build root, containing the compiled assembly for the last build, is now hidden.
+
 09-Mar-2016 Fixes #167. The attribute Bam.Core.EvaluationRequiredAttribute can now be applied to individual modules. Previously, it was only applicable to classes implementing Bam.Core.IBuildModeMetaData, i.e. defining the evaluation behaviour for the entire build mode. For project generation build modes, modules that perform tasks outside of the project, e.g. procedural file generation, should be always evaluated, so that they are not regenerated unnecessarily when the project is rebuilt (and not cleaned). C.ProceduralHeaderFile now uses the attribute to do just this, which reduces rebuild times after projects are regenerated.
 
 03-Mar-2016 Fixes #169. Added Boolean setting property, EnableLanguageExtensions, to VisualCCommon.ICommonCompilerSettings. Defaults to true, since Windows.h does not compile without it, even with WIN32_LEAN_AND_MEAN defined.
