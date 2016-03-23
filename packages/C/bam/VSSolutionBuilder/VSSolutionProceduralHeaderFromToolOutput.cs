@@ -40,7 +40,10 @@ namespace C
             TokenizedString outputPath,
             ICommandLineTool tool)
         {
-            var encapsulating = sender.GetEncapsulatingReferencedModule();
+            // need to drill up to the real user of the header
+            var generatedHeader = sender.GetEncapsulatingReferencedModule();
+            var firstUse = generatedHeader.Dependees[0];
+            var encapsulating = firstUse.GetEncapsulatingReferencedModule();
 
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
