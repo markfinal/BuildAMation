@@ -159,6 +159,11 @@ class ClangCommon(ConfigOptions):
         ConfigOptions.register_option("Darwin", ("Clang.version", "Set the Clang version"))
 
 
+class Clang32(ClangCommon):
+    def __init__(self):
+        super(Clang32, self).__init__("32")
+
+
 class Clang64(ClangCommon):
     def __init__(self):
         super(Clang64, self).__init__("64")
@@ -172,6 +177,7 @@ gcc = GccCommon("*")
 gcc32 = Gcc32()
 gcc64 = Gcc64()
 clang = ClangCommon("*")
+clang32 = Clang32()
 clang64 = Clang64()
 
 
