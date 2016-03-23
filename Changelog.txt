@@ -1,3 +1,5 @@
+23-Mar-2016 Fixes #166. Python test harness has a new option, --C.bitdepth, which can be 32 or 64, to limit build tests for those bitdepths. If no option is specified, then 32 and 64-bit builds will be tested, where supported.
+
 23-Mar-2016 Fixes #148. Circular module references now result in an exception being thrown.
 
 23-Mar-2016 Fixes #113. Speculative fix to synchronization issue with a multithreaded Xcode build seen just once.
