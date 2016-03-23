@@ -186,11 +186,28 @@ namespace Bam.Core
             Environment env,
             string ns)
         {
-            this.BuildEnvironment = env;
             var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
             var allTypes = assembly.GetTypes();
-            var allPackageTypes = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)) && type.IsSealed);
-            foreach (var moduleType in allPackageTypes)
+            var allModuleTypesInPackage = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)));
+            if (0 == allModuleTypesInPackage.Count())
+            {
+                throw new Exception("No modules found in the namespace '{0}'. Please define some modules in the build scripts to use {0} as a master package.", ns);
+            }
+            var allTopLevelModuleTypesInPackage = allModuleTypesInPackage.Where(type => type.IsSealed);
+            if (0 == allTopLevelModuleTypesInPackage.Count())
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("No top-level modules found in the namespace '{0}'. Please mark some of the modules below as 'sealed' to identify them as top-level, and thus buildable when {0} is the master package:", ns);
+                message.AppendLine();
+                foreach (var moduleType in allModuleTypesInPackage)
+                {
+                    message.AppendFormat("\t{0}", moduleType.ToString());
+                    message.AppendLine();
+                }
+                throw new Exception(message.ToString());
+            }
+            this.BuildEnvironment = env;
+            foreach (var moduleType in allTopLevelModuleTypesInPackage)
             {
                 var newModule = MakeModuleOfType(moduleType);
                 if (newModule != null)
@@ -201,7 +218,15 @@ namespace Bam.Core
             this.BuildEnvironment = null;
             if (0 == this.TopLevelModules.Count)
             {
-                throw new Exception("No modules found in the namespace '{0}'", ns);
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Namespace '{0}' contains top-level modules, but none could be instantiated", ns);
+                message.AppendLine();
+                foreach (var moduleType in allModuleTypesInPackage)
+                {
+                    message.AppendFormat("\t{0}", moduleType.ToString());
+                    message.AppendLine();
+                }
+                throw new Exception(message.ToString());
             }
             // remove all top level modules that have a reference count > 1
             foreach (var tlm in this.TopLevelModules.Reverse<Module>())
