@@ -63,6 +63,30 @@ namespace C
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
             meta.CommonMetaData.Directories.AddUnique(objectFileDir);
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+
+            // add dependencies, such as procedurally generated headers
+            foreach (var dep in sender.Dependents)
+            {
+                if (null == dep.MetaData)
+                {
+                    continue;
+                }
+                if (dep is C.SourceFile)
+                {
+                    continue;
+                }
+                var depMeta = dep.MetaData as MakeFileBuilder.MakeFileMeta;
+                foreach (var depRule in depMeta.Rules)
+                {
+                    foreach (var depTarget in depRule.Targets)
+                    {
+                        if (!depTarget.IsPhony)
+                        {
+                            rule.AddOrderOnlyDependency(depTarget.Path.Parse());
+                        }
+                    }
+                }
+            }
         }
     }
 }
