@@ -40,11 +40,12 @@ class TestSetup:
             raise RuntimeError("Unknown platform " + platform)
         return configurations
 
-    def get_variations(self, builder, excluded_variations):
+    def get_variations(self, builder, excluded_variations, bitdepth):
         variations = set()
         for i in self._get_list_of_test_configurations(builder):
             if not excluded_variations or i.get_name() not in excluded_variations:
-                variations.add(i)
+                if bitdepth == "*" or bitdepth == i.arch():
+                    variations.add(i)
         return variations
 
 
@@ -67,10 +68,13 @@ def test_option_setup(opt_parser):
 class ConfigOptions(object):
     _allOptions = {}
 
-    def __init__(self, name):
+    def __init__(self, name, arch):
         self._name = name
+        self._arch = arch
         self._platforms = []
         self._argList = []
+        if ("32" == arch or "64" == arch):
+            self._argList.append("--C.bitdepth=%s"%arch)
 
     def get_name(self):
         return self._name
@@ -80,6 +84,9 @@ class ConfigOptions(object):
 
     def platforms(self):
         return self._platforms
+
+    def arch(self):
+        return self._arch
 
     def __repr__(self):
         return self._name
@@ -96,75 +103,81 @@ class ConfigOptions(object):
 
 
 class VisualCCommon(ConfigOptions):
-    def __init__(self):
-        super(VisualCCommon, self).__init__("VisualC")
+    def __init__(self, arch):
+        super(VisualCCommon, self).__init__("VisualC", arch)
         self._argList.append("--C.toolchain=VisualC")
-        self._platforms = ["Win32", "x64"]
+        self._platforms = []
+        if arch == "32":
+            self._platforms.append("Win32")
+        elif arch == "64":
+            self._platforms.append("x64")
+        elif arch == "*":
+            self._platforms.extend(["Win32","x64"])
+        else:
+            raise RuntimeError("Unrecognized arch: %s" % arch)
         ConfigOptions.register_option("Windows", ("VisualC.version", "Set the VisualC version"))
         ConfigOptions.register_option("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
 
 
 class VisualC64(VisualCCommon):
     def __init__(self):
-        super(VisualC64, self).__init__()
-        self._argList.append("--C.bitdepth=64")
-        self._platforms.remove("Win32")
+        super(VisualC64, self).__init__("64")
 
 
 class VisualC32(VisualCCommon):
     def __init__(self):
-        super(VisualC32, self).__init__()
-        self._argList.append("--C.bitdepth=32")
-        self._platforms.remove("x64")
+        super(VisualC32, self).__init__("32")
 
 
 class Mingw32(ConfigOptions):
     def __init__(self):
-        super(Mingw32, self).__init__("Mingw")
-        self._argList.append("--C.bitdepth=32")
+        super(Mingw32, self).__init__("Mingw", "32")
         self._argList.append("--C.toolchain=Mingw")
         ConfigOptions.register_option("Windows", ("Mingw.version", "Set the Mingw version"))
 
 
 class GccCommon(ConfigOptions):
-    def __init__(self):
-        super(GccCommon, self).__init__("Gcc")
+    def __init__(self, arch):
+        super(GccCommon, self).__init__("Gcc", arch)
         ConfigOptions.register_option("Linux", ("GCC.version", "Set the GCC version"))
 
 
 class Gcc64(GccCommon):
     def __init__(self):
-        super(Gcc64, self).__init__()
-        self._argList.append("--C.bitdepth=64")
+        super(Gcc64, self).__init__("64")
 
 
 class Gcc32(GccCommon):
     def __init__(self):
-        super(Gcc32, self).__init__()
-        self._argList.append("--C.bitdepth=32")
+        super(Gcc32, self).__init__("32")
 
 
 class ClangCommon(ConfigOptions):
-    def __init__(self):
-        super(ClangCommon, self).__init__("Clang")
+    def __init__(self, arch):
+        super(ClangCommon, self).__init__("Clang", arch)
         self._argList.append("--Xcode.generateSchemes")  # TODO: this is only for the Xcode build mode
         ConfigOptions.register_option("Darwin", ("Clang.version", "Set the Clang version"))
 
 
+class Clang32(ClangCommon):
+    def __init__(self):
+        super(Clang32, self).__init__("32")
+
+
 class Clang64(ClangCommon):
     def __init__(self):
-        super(Clang64, self).__init__()
-        self._argList.append("--C.bitdepth=64")
+        super(Clang64, self).__init__("64")
 
 
-visualc = VisualCCommon()
+visualc = VisualCCommon("*")
 visualc64 = VisualC64()
 visualc32 = VisualC32()
 mingw32 = Mingw32()
-gcc = GccCommon()
+gcc = GccCommon("*")
 gcc32 = Gcc32()
 gcc64 = Gcc64()
-clang = ClangCommon()
+clang = ClangCommon("*")
+clang32 = Clang32()
 clang64 = Clang64()
 
 
