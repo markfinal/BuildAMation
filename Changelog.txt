@@ -1,3 +1,5 @@
+23-Mar-2016 Fixes #174. Added C.ProceduralHeaderFileFromToolOutput module, requiring a module implementing Bam.Core.ICommandLineTool, whose stdout is captured and used as the contents of the generated header file. Supported on Native, MakeFile and VSSolution build modes.
+
 23-Mar-2016 The CommandLineProcessor.Execute overload taking an executable path, now defaults to no command line arguments.
 
 23-Mar-2016 Fixes #175. Bam now throws different exceptions to distinguish between a package with no modules defined, a package used as master but no modules are buildable (i.e. their classes are sealed), and when buildable modules fail to be instantiated.
