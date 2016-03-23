@@ -67,7 +67,7 @@ namespace CommandLineProcessor
         Execute(
             Bam.Core.ExecutionContext context,
             string executablePath,
-            Bam.Core.StringArray commandLineArguments,
+            Bam.Core.StringArray commandLineArguments = null,
             string workingDirectory = null,
             Bam.Core.StringArray inheritedEnvironmentVariables = null,
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> addedEnvironmentVariables = null,
@@ -143,7 +143,7 @@ namespace CommandLineProcessor
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardInput = true;
 
-            var arguments = commandLineArguments.ToString(' ');
+            var arguments = commandLineArguments != null ? commandLineArguments.ToString(' ') : string.Empty;
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 //TODO: should this include the length of the executable path too?

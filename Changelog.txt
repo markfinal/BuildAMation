@@ -1,3 +1,5 @@
+23-Mar-2016 The CommandLineProcessor.Execute overload taking an executable path, now defaults to no command line arguments.
+
 23-Mar-2016 Fixes #175. Bam now throws different exceptions to distinguish between a package with no modules defined, a package used as master but no modules are buildable (i.e. their classes are sealed), and when buildable modules fail to be instantiated.
 
 23-Mar-2016 Fixes #166. Python test harness has a new option, --C.bitdepth, which can be 32 or 64, to limit build tests for those bitdepths. If no option is specified, then 32 and 64-bit builds will be tested, where supported.
