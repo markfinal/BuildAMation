@@ -221,6 +221,10 @@ namespace Bam.Core
         InternalDependsOn(
             Module module)
         {
+            if (this == module)
+            {
+                throw new Exception("Circular reference. Module {0} cannot depend on itself", this.ToString());
+            }
             if (this.DependentsList.Contains(module))
             {
                 return;
@@ -266,6 +270,10 @@ namespace Bam.Core
         InternalRequires(
             Module module)
         {
+            if (this == module)
+            {
+                throw new Exception("Circular reference. Module {0} cannot require itself", this.ToString());
+            }
             if (this.RequiredDependentsList.Contains(module))
             {
                 return;
