@@ -42,11 +42,14 @@ namespace XcodeBuilder
         AddBuildFile(
             BuildFile other)
         {
-            var existingBuildFile = this.BuildFiles.Where(item => item.GUID == other.GUID).FirstOrDefault();
-            if (null == existingBuildFile)
+            lock (this.BuildFiles)
             {
-                this.BuildFiles.Add(other);
-                other.Parent = this;
+                var existingBuildFile = this.BuildFiles.Where(item => item.GUID == other.GUID).FirstOrDefault();
+                if (null == existingBuildFile)
+                {
+                    this.BuildFiles.Add(other);
+                    other.Parent = this;
+                }
             }
         }
 

@@ -157,14 +157,17 @@ namespace XcodeBuilder
         GetConfiguration(
             Bam.Core.Module module)
         {
-            var moduleConfig = module.BuildEnvironment.Configuration;
-            var existingConfig = this.ConfigurationList.Where(item => item.Config == moduleConfig).FirstOrDefault();
-            if (null != existingConfig)
+            lock (this.ConfigurationList)
             {
-                return existingConfig;
+                var moduleConfig = module.BuildEnvironment.Configuration;
+                var existingConfig = this.ConfigurationList.Where(item => item.Config == moduleConfig).FirstOrDefault();
+                if (null != existingConfig)
+                {
+                    return existingConfig;
+                }
+                var config = this.Project.EnsureTargetConfigurationExists(module, this.ConfigurationList);
+                return config;
             }
-            var config = this.Project.EnsureTargetConfigurationExists(module, this.ConfigurationList);
-            return config;
         }
 
         public void

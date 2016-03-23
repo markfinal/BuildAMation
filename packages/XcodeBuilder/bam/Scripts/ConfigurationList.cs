@@ -66,12 +66,15 @@ namespace XcodeBuilder
         AddConfiguration(
             Configuration config)
         {
-            var existingConfig = this.Configurations.Where(item => item.GUID == config.GUID).FirstOrDefault();
-            if (null != existingConfig)
+            lock (this.Configurations)
             {
-                return;
+                var existingConfig = this.Configurations.Where(item => item.GUID == config.GUID).FirstOrDefault();
+                if (null != existingConfig)
+                {
+                    return;
+                }
+                this.Configurations.Add(config);
             }
-            this.Configurations.Add(config);
         }
 
         public override void

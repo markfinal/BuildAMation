@@ -1,3 +1,5 @@
+23-Mar-2016 Fixes #113. Speculative fix to synchronization issue with a multithreaded Xcode build seen just once.
+
 23-Mar-2016 Fixes #103. Adding a dependent package using bam and the command line option, --adddependent, now validates that the package both exists (in the current list of package repositories in the definition file), and that there is no ambiguity over which version of a package was intended.
 
 23-Mar-2016 Fixes #176. Added C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo, defaulting to true, enabling RTTI during compilation. Supported by VisualC, Mingw, Gcc, Clang, in all build modes.
