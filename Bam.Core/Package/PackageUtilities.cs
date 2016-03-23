@@ -104,22 +104,34 @@ namespace Bam.Core
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
 
             var masterPackage = GetMasterPackage();
-            // TODO: no checking if this package exists
-            // TODO: is this dependent already present?
             if (null != masterPackage.Dependents.Where(item => item.Item1 == packageName && item.Item2 == packageVersion).FirstOrDefault())
             {
                 if (null != packageVersion)
                 {
-                    throw new Exception("Dependency {0}, version {1}, already exists", packageName, packageVersion);
+                    throw new Exception("Package dependency {0}, version {1}, is already present", packageName, packageVersion);
                 }
                 else
                 {
-                    throw new Exception("Dependency {0} already exists", packageName);
+                    throw new Exception("Package dependency {0} is already present", packageName);
                 }
             }
 
-            masterPackage.Dependents.Add(new System.Tuple<string, string, bool?>(packageName, packageVersion, null));
+            var newDepTuple = new System.Tuple<string, string, bool?>(packageName, packageVersion, null);
+            masterPackage.Dependents.Add(newDepTuple);
+            // TODO: this is unfortunate having to write the file in order to use it with IdentifyAllPackages
             masterPackage.Write();
+
+            // validate that the addition is ok
+            try
+            {
+                PackageUtilities.IdentifyAllPackages();
+            }
+            catch (Exception exception)
+            {
+                masterPackage.Dependents.Remove(newDepTuple);
+                masterPackage.Write();
+                throw new Exception(exception, "Failed to add dependent. Are all necessary package repositories specified?");
+            }
         }
 
         /// <summary>

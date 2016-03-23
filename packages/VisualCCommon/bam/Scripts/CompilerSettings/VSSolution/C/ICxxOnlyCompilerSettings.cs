@@ -62,6 +62,12 @@ namespace VisualCCommon
                 };
                 vsSettingsGroup.AddSetting("ExceptionHandling", exceptionHandler(), condition);
             }
+            if (settings.EnableRunTimeTypeInfo.HasValue)
+            {
+                vsSettingsGroup.AddSetting("RuntimeTypeInfo", settings.EnableRunTimeTypeInfo.Value, condition);
+            }
+            // CL automatically supports language standards
+            // No different standard library
         }
     }
 }

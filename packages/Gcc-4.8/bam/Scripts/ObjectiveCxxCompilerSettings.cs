@@ -136,6 +136,12 @@ namespace Gcc
             set;
         }
 
+        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
+        {
+            get;
+            set;
+        }
+
         C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
             get;

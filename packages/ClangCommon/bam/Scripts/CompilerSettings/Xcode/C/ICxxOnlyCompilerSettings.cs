@@ -54,6 +54,10 @@ namespace ClangCommon
                     throw new Bam.Core.Exception("Unrecognized exception handler option, {0}", settings.ExceptionHandler.Value.ToString());
                 }
             }
+            if (settings.EnableRunTimeTypeInfo.HasValue)
+            {
+                configuration["GCC_ENABLE_CPP_RTTI"] = new XcodeBuilder.UniqueConfigurationValue(settings.EnableRunTimeTypeInfo.Value ? "YES" : "NO");
+            }
             if (settings.LanguageStandard.HasValue)
             {
                 switch (settings.LanguageStandard.Value)

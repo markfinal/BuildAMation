@@ -47,6 +47,16 @@ namespace C
         }
 
         /// <summary>
+        /// Enable or disable RTTI.
+        /// </summary>
+        /// <value>true to enable, false to disable.</value>
+        bool? EnableRunTimeTypeInfo
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// The C++ language standard to compile against.
         /// </summary>
         /// <value>The language standard.</value>
