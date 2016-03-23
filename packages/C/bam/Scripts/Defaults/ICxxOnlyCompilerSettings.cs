@@ -37,6 +37,7 @@ namespace C.Cxx.DefaultSettings
             Bam.Core.Module module)
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
+            settings.EnableRunTimeTypeInfo = true;
             settings.LanguageStandard = ELanguageStandard.Cxx98;
             settings.StandardLibrary = EStandardLibrary.NotSet;
         }
@@ -47,6 +48,7 @@ namespace C.Cxx.DefaultSettings
             C.ICxxOnlyCompilerSettings other)
         {
             shared.ExceptionHandler = shared.ExceptionHandler.Intersect(other.ExceptionHandler);
+            shared.EnableRunTimeTypeInfo = shared.EnableRunTimeTypeInfo.Intersect(other.EnableRunTimeTypeInfo);
             shared.LanguageStandard = shared.LanguageStandard.Intersect(other.LanguageStandard);
             shared.StandardLibrary = shared.StandardLibrary.Intersect(other.StandardLibrary);
         }
@@ -58,6 +60,7 @@ namespace C.Cxx.DefaultSettings
             C.ICxxOnlyCompilerSettings rhs)
         {
             delta.ExceptionHandler = lhs.ExceptionHandler.Complement(rhs.ExceptionHandler);
+            delta.EnableRunTimeTypeInfo = lhs.EnableRunTimeTypeInfo.Complement(rhs.EnableRunTimeTypeInfo);
             delta.LanguageStandard = lhs.LanguageStandard.Complement(rhs.LanguageStandard);
             delta.StandardLibrary = lhs.StandardLibrary.Complement(rhs.StandardLibrary);
         }
@@ -68,6 +71,7 @@ namespace C.Cxx.DefaultSettings
             C.ICxxOnlyCompilerSettings other)
         {
             settings.ExceptionHandler = other.ExceptionHandler;
+            settings.EnableRunTimeTypeInfo = other.EnableRunTimeTypeInfo;
             settings.LanguageStandard = other.LanguageStandard;
             settings.StandardLibrary = other.StandardLibrary;
         }

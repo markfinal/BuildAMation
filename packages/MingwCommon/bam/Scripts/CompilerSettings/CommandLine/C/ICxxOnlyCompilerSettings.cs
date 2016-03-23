@@ -53,6 +53,17 @@ namespace MingwCommon
                         throw new Bam.Core.Exception("Unrecognized exception handler option, {0}", settings.ExceptionHandler.Value.ToString());
                 }
             }
+            if (settings.EnableRunTimeTypeInfo.HasValue)
+            {
+                if (settings.EnableRunTimeTypeInfo.Value)
+                {
+                    commandLine.Add("-frtti");
+                }
+                else
+                {
+                    commandLine.Add("-fno-rtti");
+                }
+            }
             if (settings.LanguageStandard.HasValue)
             {
                 switch (settings.LanguageStandard.Value)

@@ -1,3 +1,5 @@
+23-Mar-2016 Fixes #176. Added C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo, defaulting to true, enabling RTTI during compilation. Supported by VisualC, Mingw, Gcc, Clang, in all build modes.
+
 18-Mar-2016 ======== Version 1.0.1b4 Release ========
 
 12-Mar-2016 Fixes #170. The CachedPackageAssembly directory written to the build root, containing the compiled assembly for the last build, is now hidden.

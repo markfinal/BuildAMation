@@ -56,6 +56,19 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unrecognized exception handler option, {0}", settings.ExceptionHandler.Value.ToString());
                 }
             }
+            if (settings.EnableRunTimeTypeInfo.HasValue)
+            {
+                if (settings.EnableRunTimeTypeInfo.Value)
+                {
+                    commandLine.Add("-GR");
+                }
+                else
+                {
+                    commandLine.Add("-GR-");
+                }
+            }
+            // CL automatically supports language standards
+            // No different standard library
         }
     }
 }
