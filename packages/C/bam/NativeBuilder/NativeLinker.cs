@@ -73,8 +73,7 @@ namespace C
             Bam.Core.TokenizedString executablePath,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries)
         {
             if (sender.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation)
             {

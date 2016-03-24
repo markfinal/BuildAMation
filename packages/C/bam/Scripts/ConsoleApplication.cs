@@ -294,7 +294,7 @@ namespace C
             var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
             var linked = this.linkedModules.ToReadOnlyCollection();
             var executable = this.GeneratedPaths[Key];
-            this.Policy.Link(this, context, executable, source, headers, linked, null);
+            this.Policy.Link(this, context, executable, source, headers, linked);
         }
 
         protected override void
