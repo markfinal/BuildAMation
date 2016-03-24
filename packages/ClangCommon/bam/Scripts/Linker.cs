@@ -56,6 +56,27 @@ namespace ClangCommon
             return System.String.Format("-l{0}", libName);
         }
 
+        public override Bam.Core.TokenizedString
+        GetLibraryPath(
+            C.CModule library)
+        {
+            if (library is C.StaticLibrary)
+            {
+                return library.GeneratedPaths[C.StaticLibrary.Key];
+            }
+            else if (library is C.IDynamicLibrary)
+            {
+                return library.GeneratedPaths[C.DynamicLibrary.Key];
+            }
+            else if ((library is C.CSDKModule) ||
+                     (library is C.HeaderLibrary) ||
+                     (library is C.OSXFramework))
+            {
+                return null;
+            }
+            throw new Bam.Core.Exception("Unsupported library type, {0}", library.GetType().ToString());
+        }
+
         public override void
         ProcessLibraryDependency(
             C.CModule executable,

@@ -92,37 +92,25 @@ namespace VisualCCommon
             }
         }
 
-        private static Bam.Core.TokenizedString
+        public override Bam.Core.TokenizedString
         GetLibraryPath(
-            Bam.Core.Module module)
+            C.CModule library)
         {
-            if (module is C.StaticLibrary)
+            if (library is C.StaticLibrary)
             {
-                return module.GeneratedPaths[C.StaticLibrary.Key];
+                return library.GeneratedPaths[C.StaticLibrary.Key];
             }
-            else if (module is C.IDynamicLibrary)
+            else if (library is C.IDynamicLibrary)
             {
-                return module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
+                return library.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
             }
-            else if (module is C.CSDKModule)
+            else if ((library is C.CSDKModule) ||
+                     (library is C.HeaderLibrary) ||
+                     (library is C.OSXFramework))
             {
-                // collection of libraries, none in particular
                 return null;
             }
-            else if (module is C.HeaderLibrary)
-            {
-                // no library
-                return null;
-            }
-            else if (module is C.OSXFramework)
-            {
-                // dealt with elsewhere
-                return null;
-            }
-            else
-            {
-                throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
-            }
+            throw new Bam.Core.Exception("Unsupported library type, {0}", library.GetType().ToString());
         }
 
         public override void
@@ -130,7 +118,7 @@ namespace VisualCCommon
             C.CModule executable,
             C.CModule library)
         {
-            var fullLibraryPath = GetLibraryPath(library);
+            var fullLibraryPath = this.GetLibraryPath(library);
             if (null == fullLibraryPath)
             {
                 return;

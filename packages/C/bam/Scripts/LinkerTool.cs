@@ -32,6 +32,9 @@ namespace C
     public abstract class LinkerTool :
         Bam.Core.PreBuiltTool
     {
+        public abstract Bam.Core.TokenizedString GetLibraryPath(
+            CModule library);
+
         public abstract void ProcessLibraryDependency(
             CModule executable,
             CModule library);

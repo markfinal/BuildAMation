@@ -1,3 +1,5 @@
+24-Mar-2016 Issue #174. Classes deriving C.LinkerTool now requires the overload of the new abstract method, GetLibraryPath, accepting a C.CModule argument.
+
 24-Mar-2016 Fixes #178. Added Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation, and utility function Bam.Core.ExecuteReasoning.DeferredUntilBuild, which can be used to identify modules that must defer their evaluation until after the build starts, e.g. those modules that rely on part of the build to generate their data. It is up to the policy writers of the build mode to handle deferred evaluation.
 
 23-Mar-2016 Fixes #174. Added C.ProceduralHeaderFileFromToolOutput module, requiring a module implementing Bam.Core.ICommandLineTool, whose stdout is captured and used as the contents of the generated header file. Supported in all build modes.
