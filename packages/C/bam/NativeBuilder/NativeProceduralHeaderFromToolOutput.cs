@@ -49,11 +49,38 @@ namespace C
             {
                 System.IO.Directory.CreateDirectory(destDir);
             }
-            using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(destPath))
+
+            var tempPath = System.IO.Path.GetTempFileName();
+            using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(tempPath))
             {
                 writeFile.Write(context.OutputStringBuilder.ToString());
             }
-            Bam.Core.Log.Info("Written procedurally generated header : {0}, from the output of {1}", destPath, toolPath);
+
+            var moveFile = true;
+            if (System.IO.File.Exists(destPath))
+            {
+                // compare contents
+                using (System.IO.TextReader existingFile = new System.IO.StreamReader(destPath))
+                {
+                    var contents = existingFile.ReadToEnd();
+                    var contentsL = contents.Length;
+                    var oldL = context.OutputStringBuilder.ToString().Length;
+                    if (contents.Equals(context.OutputStringBuilder.ToString()))
+                    {
+                        moveFile = false;
+                    }
+                }
+            }
+            if (moveFile)
+            {
+                Bam.Core.Log.Info("Written procedurally generated header : {0}, from the output of {1}", destPath, toolPath);
+                System.IO.File.Delete(destPath);
+                System.IO.File.Move(tempPath, destPath);
+            }
+            else
+            {
+                Bam.Core.Log.Info("{0} contents have not changed", destPath);
+            }
             context.OutputStringBuilder.Clear();
         }
     }

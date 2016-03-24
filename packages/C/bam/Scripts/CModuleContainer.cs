@@ -189,8 +189,20 @@ namespace C
                     }
                     if (null != child.ReasonToExecute)
                     {
-                        this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
-                        return;
+                        switch (child.ReasonToExecute.Reason)
+                        {
+                            case Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer:
+                                {
+                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
+                                    return;
+                                }
+
+                            case Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation:
+                                {
+                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(child.ReasonToExecute.OutputFilePath);
+                                    return;
+                                }
+                        }
                     }
                 }
             }

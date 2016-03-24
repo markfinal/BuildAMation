@@ -32,6 +32,25 @@ namespace C
     public sealed class NativeCompilation :
         ICompilationPolicy
     {
+        private static bool
+        DeferredEvaluationRequiresBuild(
+            ObjectFile sender)
+        {
+            var objectFileWriteTime = System.IO.File.GetLastWriteTime(sender.GeneratedPaths[C.ObjectFile.Key].Parse());
+            foreach (var dep in sender.Dependents)
+            {
+                if (dep is C.HeaderFile)
+                {
+                    var dependencyWriteTime = System.IO.File.GetLastWriteTime((dep as C.HeaderFile).InputPath.Parse());
+                    if (dependencyWriteTime > objectFileWriteTime)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         void
         ICompilationPolicy.Compile(
             ObjectFile sender,
@@ -42,6 +61,13 @@ namespace C
             if (!sender.PerformCompilation)
             {
                 return;
+            }
+            if (sender.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation)
+            {
+                if (!DeferredEvaluationRequiresBuild(sender))
+                {
+                    return;
+                }
             }
 
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());

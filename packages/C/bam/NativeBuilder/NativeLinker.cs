@@ -27,12 +27,45 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace C
 {
     public sealed class NativeLinker :
         ILinkingPolicy
     {
+        private static bool
+        DeferredEvaluationRequiresBuild(
+            ConsoleApplication sender,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
+            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries)
+        {
+            var exeWriteTime = System.IO.File.GetLastWriteTime(sender.GeneratedPaths[C.ConsoleApplication.Key].Parse());
+            foreach (var library in libraries)
+            {
+                if ((library.ReasonToExecute != null) && (library.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation))
+                {
+                    // Note: on Windows, this is checking the IMPORT library path, so if the API of the library has not changed
+                    // then it's likely this library is older than the DLL, thus not re-linking this binary, which is the correc thing to do
+                    var libraryFileWriteTime = System.IO.File.GetLastWriteTime((sender.Tool as C.LinkerTool).GetLibraryPath(library as CModule).Parse());
+                    if (libraryFileWriteTime > exeWriteTime)
+                    {
+                        return true;
+                    }
+                }
+            }
+            foreach (var input in objectFiles)
+            {
+                if ((input.ReasonToExecute != null) && (input.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation))
+                {
+                    var objectFileWriteTime = System.IO.File.GetLastWriteTime(input.GeneratedPaths[C.ObjectFile.Key].Parse());
+                    if (objectFileWriteTime > exeWriteTime)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         void
         ILinkingPolicy.Link(
             ConsoleApplication sender,
@@ -43,6 +76,14 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> frameworks)
         {
+            if (sender.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation)
+            {
+                if (!DeferredEvaluationRequiresBuild(sender, objectFiles, libraries))
+                {
+                    return;
+                }
+            }
+
             // any libraries added prior to here, need to be moved to the end
             // they are external dependencies, and thus all built modules (to be added now) may have
             // a dependency on them (and not vice versa)

@@ -332,8 +332,16 @@ namespace C
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
-                    return;
+                    switch (source.ReasonToExecute.Reason)
+                    {
+                        case ExecuteReasoning.EReason.InputFileIsNewer:
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                            return;
+
+                        case ExecuteReasoning.EReason.DeferredEvaluation:
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
+                            return;
+                    }
                 }
             }
             foreach (var source in this.sourceModules)
@@ -344,8 +352,16 @@ namespace C
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
-                    return;
+                    switch (source.ReasonToExecute.Reason)
+                    {
+                        case ExecuteReasoning.EReason.InputFileIsNewer:
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                            return;
+
+                        case ExecuteReasoning.EReason.DeferredEvaluation:
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
+                            return;
+                    }
                 }
             }
         }
