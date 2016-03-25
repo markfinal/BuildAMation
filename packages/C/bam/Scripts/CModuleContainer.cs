@@ -181,6 +181,7 @@ namespace C
             this.ReasonToExecute = null;
             try
             {
+                Bam.Core.TokenizedString lastDeferredEvaluationPath = null;
                 foreach (var child in this.children)
                 {
                     if (null != child.EvaluationTask)
@@ -198,12 +199,15 @@ namespace C
                                 }
 
                             case Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation:
-                                {
-                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(child.ReasonToExecute.OutputFilePath);
-                                    return;
-                                }
+                                lastDeferredEvaluationPath = child.ReasonToExecute.OutputFilePath;
+                                break;
                         }
                     }
+                }
+                if (lastDeferredEvaluationPath != null)
+                {
+                    // deferred evaluation can only be considered when other reasons to execute have been exhausted
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(lastDeferredEvaluationPath);
                 }
             }
             catch (System.AggregateException exception)
