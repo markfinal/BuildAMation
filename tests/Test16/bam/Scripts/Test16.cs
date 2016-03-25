@@ -43,8 +43,7 @@ namespace Test16
 
             this.CompileAndLinkAgainst<Test15.StaticLibrary2>(source);
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
@@ -64,10 +63,18 @@ namespace Test16
 
             this.CompileAndLinkAgainst<Test15.DynamicLibrary2>(source);
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+            else if (this.Linker is GccCommon.LinkerBase)
+            {
+                this.PrivatePatch(settings =>
+                    {
+                        var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN");
+                    });
             }
         }
     }
