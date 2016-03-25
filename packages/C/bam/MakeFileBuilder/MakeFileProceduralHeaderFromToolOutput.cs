@@ -44,17 +44,14 @@ namespace C
             var rule = meta.AddRule();
             rule.AddTarget(outputPath);
 
-            var output = outputPath.Parse();
-            var outputDir = System.IO.Path.GetDirectoryName(output);
+            rule.AddPrerequisite(tool.Executable);
 
             var args = new Bam.Core.StringArray();
-            args.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
+            args.Add("$< > $@");
             rule.AddShellCommand(args.ToString(' '));
 
+            var outputDir = System.IO.Path.GetDirectoryName(outputPath.Parse());
             meta.CommonMetaData.Directories.AddUnique(outputDir);
-
-            // make sure the tool exists first
-            rule.AddOrderOnlyDependency(tool.Executable.Parse());
         }
     }
 

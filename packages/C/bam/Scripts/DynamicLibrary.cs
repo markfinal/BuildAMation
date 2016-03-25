@@ -35,10 +35,12 @@ namespace C
     /// </summary>
     public class DynamicLibrary :
         ConsoleApplication,
-        IDynamicLibrary
+        IDynamicLibrary,
+        IForwardedLibraries
     {
         private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
         private SharedObjectSymbolicLinkTool SymlinkTool;
+        private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
 
         protected override void
         Init(
@@ -134,6 +136,19 @@ namespace C
             }
         }
 
+        public override void
+        CompilePubliclyAndLinkAgainst<DependentModule>(
+            CModule affectedSource,
+            params CModule[] additionalSources)
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
+            {
+                this.forwardedDeps.AddUnique(dependent);
+            }
+            base.CompilePubliclyAndLinkAgainst<DependentModule>(affectedSource, additionalSources);
+        }
+
         protected sealed override void
         ExecuteInternal(
             ExecutionContext context)
@@ -173,6 +188,14 @@ namespace C
                 var className = "C." + mode + "SharedObjectSymbolicLink";
                 this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
                 this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
+            }
+        }
+
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
+        {
+            get
+            {
+                return this.forwardedDeps.ToReadOnlyCollection();
             }
         }
     }

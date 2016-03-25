@@ -208,6 +208,7 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
+            var requiresDeferredEvaluation = false;
             foreach (var source in this.sourceModules)
             {
                 if (null != source.EvaluationTask)
@@ -216,9 +217,22 @@ namespace C
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
-                    return;
+                    switch (source.ReasonToExecute.Reason)
+                    {
+                        case Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer:
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                            return;
+
+                        case Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation:
+                            requiresDeferredEvaluation = true;
+                            break;
+                    }
                 }
+            }
+            if (requiresDeferredEvaluation)
+            {
+                // deferred evaluation can only be considered when other reasons to execute have been exhausted
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
             }
         }
     }

@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test14
 {
-    public sealed class StaticLibrary1 :
+    sealed class StaticLibrary1 :
         C.StaticLibrary
     {
         protected override void
@@ -48,6 +48,33 @@ namespace Test14
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
+        }
+    }
+
+    sealed class DynamicLibrary1 :
+        C.DynamicLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary1.h");
+            this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary1.c");
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                    }
+                });
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
         }
     }
 }

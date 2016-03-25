@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test15
 {
-    public sealed class StaticLibrary2 :
+    sealed class StaticLibrary2 :
         C.StaticLibrary
     {
         protected override void
@@ -50,6 +50,32 @@ namespace Test15
                 });
 
             this.CompileAgainstPublicly<Test14.StaticLibrary1>(source);
+        }
+    }
+
+    sealed class DynamicLibrary2 :
+        C.DynamicLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary2.h");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary2.c");
+            this.PublicPatch((settings, appliedTo) =>
+            {
+                var compiler = settings as C.ICommonCompilerSettings;
+                if (null != compiler)
+                {
+                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                }
+            });
+
+            // because DynamicLibrary1 pokes out of the public API of DynamicLibrary2, the dependency has to be marked
+            // as 'public' so that forwarding occurs
+            this.CompilePubliclyAndLinkAgainst<Test14.DynamicLibrary1>(source);
         }
     }
 }

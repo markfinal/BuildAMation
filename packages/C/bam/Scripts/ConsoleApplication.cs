@@ -234,7 +234,7 @@ namespace C
         /// <param name="affectedSource">Required source module.</param>
         /// <param name="affectedSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
+        public virtual void
         CompilePubliclyAndLinkAgainst<DependentModule>(
             CModule affectedSource,
             params CModule[] additionalSources) where DependentModule : CModule, new()
@@ -294,7 +294,7 @@ namespace C
             var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
             var linked = this.linkedModules.ToReadOnlyCollection();
             var executable = this.GeneratedPaths[Key];
-            this.Policy.Link(this, context, executable, source, headers, linked, null);
+            this.Policy.Link(this, context, executable, source, headers, linked);
         }
 
         protected override void
@@ -324,6 +324,7 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
+            var requiresDeferredEvaluation = false;
             foreach (var source in this.linkedModules)
             {
                 if (null != source.EvaluationTask)
@@ -332,8 +333,16 @@ namespace C
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
-                    return;
+                    switch (source.ReasonToExecute.Reason)
+                    {
+                        case ExecuteReasoning.EReason.InputFileIsNewer:
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                            return;
+
+                        case ExecuteReasoning.EReason.DeferredEvaluation:
+                            requiresDeferredEvaluation = true;
+                            break;
+                    }
                 }
             }
             foreach (var source in this.sourceModules)
@@ -344,9 +353,22 @@ namespace C
                 }
                 if (null != source.ReasonToExecute)
                 {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
-                    return;
+                    switch (source.ReasonToExecute.Reason)
+                    {
+                        case ExecuteReasoning.EReason.InputFileIsNewer:
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                            return;
+
+                        case ExecuteReasoning.EReason.DeferredEvaluation:
+                            requiresDeferredEvaluation = true;
+                            break;
+                    }
                 }
+            }
+            if (requiresDeferredEvaluation)
+            {
+                // deferred evaluation can only be considered when other reasons to execute have been exhausted
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
             }
         }
     }

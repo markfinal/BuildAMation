@@ -82,7 +82,7 @@ namespace C
                     {
                         if (!depTarget.IsPhony)
                         {
-                            rule.AddOrderOnlyDependency(depTarget.Path.Parse());
+                            rule.AddPrerequisite(depTarget.Path);
                         }
                     }
                 }

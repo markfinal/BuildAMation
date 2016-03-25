@@ -83,7 +83,7 @@ namespace C
         public override void
         Evaluate()
         {
-            // always evaluate, as the contents are not determined until after the build starts
+            this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[C.HeaderFile.Key]);
         }
 
         protected override void GetExecutionPolicy(string mode)
