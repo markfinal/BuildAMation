@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef STATICLIBRARY2_H
 #define STATICLIBRARY2_H
 
-// note that the header from the dependency is purposefully in this module's public API
+/* note that the header from the dependency is purposefully in this module's public API */
 #include "staticlibrary1.h"
 
 extern int StaticLibrary2Function(char);

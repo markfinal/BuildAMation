@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main()
 {
-    // because dynamiclibrary1 is in the public API of dynamiclibrary2, functions from
-    // dynamiclibrary1 can be used directly, but which may never have been referenced by dynamiclibrary2
+    /* because dynamiclibrary1 is in the public API of dynamiclibrary2, functions from
+       dynamiclibrary1 can be used directly, but which may never have been referenced by dynamiclibrary2 */
     return DynamicLibrary2Function('m') + DynamicLibrary1ExtraFunction();
 }

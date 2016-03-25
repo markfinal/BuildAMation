@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef DYNAMICLIBRARY2_H
 #define DYNAMICLIBRARY2_H
 
-// note that the header from the dependency is purposefully in this module's public API
+/* note that the header from the dependency is purposefully in this module's public API */
 #include "dynamiclibrary1.h"
 
 /* specific platform settings */
