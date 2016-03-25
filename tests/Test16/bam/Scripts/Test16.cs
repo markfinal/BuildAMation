@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test16
 {
-    public sealed class Application :
+    public sealed class StaticApplication :
         C.ConsoleApplication
     {
         protected override void
@@ -39,7 +39,7 @@ namespace Test16
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/static_main.c");
 
             this.CompileAndLinkAgainst<Test15.StaticLibrary2>(source);
 
@@ -48,6 +48,42 @@ namespace Test16
             {
                 this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
+        }
+    }
+
+    sealed class DynamicApplication :
+        C.ConsoleApplication
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamic_main.c");
+
+            this.CompileAndLinkAgainst<Test15.DynamicLibrary2>(source);
+
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+        }
+    }
+
+    sealed class DynamicApplicationRuntime :
+        Publisher.Collation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Test14.DynamicLibrary1>(C.DynamicLibrary.Key, ".", app);
+            this.Include<Test15.DynamicLibrary2>(C.DynamicLibrary.Key, ".", app);
         }
     }
 }

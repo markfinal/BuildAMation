@@ -27,12 +27,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef STATICLIBRARY2_H
-#define STATICLIBRARY2_H
+#include "dynamiclibrary2.h"
+#include "dynamiclibrary1.h"
 
-// note that the header from the dependency is purposefully in this module's public API
-#include "staticlibrary1.h"
-
-extern int StaticLibrary2Function(char);
-
-#endif /* STATICLIBRARY1_H */
+int DynamicLibrary2Function(char c)
+{
+    return DynamicLibrary1Function(c) + 42;
+}

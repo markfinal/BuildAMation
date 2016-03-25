@@ -27,12 +27,33 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#ifndef STATICLIBRARY2_H
-#define STATICLIBRARY2_H
+#ifndef DYNAMICLIBRARY1_H
+#define DYNAMICLIBRARY1_H
 
-// note that the header from the dependency is purposefully in this module's public API
-#include "staticlibrary1.h"
+/* specific platform settings */
+#if defined(_WIN32)
+#define DYNAMICLIBRARY1_EXPORT __declspec(dllexport)
+#define DYNAMICLIBRARY1_IMPORT __declspec(dllimport)
+#elif __GNUC__ >= 4
+#define DYNAMICLIBRARY1_EXPORT __attribute__ ((visibility("default")))
+#endif
 
-extern int StaticLibrary2Function(char);
+/* defaults */
+#ifndef DYNAMICLIBRARY1_EXPORT
+#define DYNAMICLIBRARY1_EXPORT /* empty */
+#endif
+#ifndef DYNAMICLIBRARY1_IMPORT
+#define DYNAMICLIBRARY1_IMPORT /* empty */
+#endif
 
-#endif /* STATICLIBRARY1_H */
+#if defined(D_BAM_DYNAMICLIBRARY_BUILD)
+#define DYNAMICLIBRARY1_API DYNAMICLIBRARY1_EXPORT
+#else
+#define DYNAMICLIBRARY1_API DYNAMICLIBRARY1_IMPORT
+#endif
+
+extern DYNAMICLIBRARY1_API int DynamicLibrary1Function(char);
+
+extern DYNAMICLIBRARY1_API int DynamicLibrary1ExtraFunction();
+
+#endif /* DYNAMICLIBRARY1_H */
