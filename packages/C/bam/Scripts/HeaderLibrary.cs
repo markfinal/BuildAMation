@@ -82,6 +82,11 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Compile against DependentModule.
+        /// As this is a header only library, this dependency implies a public inheritence of DependentModule's public patches.
+        /// </summary>
+        /// <typeparam name="DependentModule">1st generic type</typeparam>
         public void
         CompileAgainst<DependentModule>() where DependentModule : CModule, new()
         {

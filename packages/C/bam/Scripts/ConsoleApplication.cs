@@ -37,7 +37,7 @@ namespace C
         CModule
     {
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
-        private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
+        protected Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
         private ILinkingPolicy Policy = null;
 
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ExecutableFile");
@@ -159,6 +159,7 @@ namespace C
 
         /// <summary>
         /// Application is linked against the DependentModule type.
+        /// Any public patches of DependentModule are applied privately to the Application.
         /// </summary>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
@@ -167,7 +168,7 @@ namespace C
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.linkedModules.Add(dependent);
-            this.UsePublicPatches(dependent);
+            this.UsePublicPatchesPrivately(dependent);
         }
 
         /// <summary>
@@ -225,23 +226,7 @@ namespace C
                 source.UsePublicPatches(dependent);
             }
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
-        }
-
-        /// <summary>
-        /// Specified sources and the application compiles and links against the DependentModule, and the
-        /// application uses patches from the dependent.
-        /// </summary>
-        /// <param name="affectedSource">Required source module.</param>
-        /// <param name="affectedSources">Optional list of additional sources.</param>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public virtual void
-        CompilePubliclyAndLinkAgainst<DependentModule>(
-            CModule affectedSource,
-            params CModule[] additionalSources) where DependentModule : CModule, new()
-        {
-            this.CompileAndLinkAgainst<DependentModule>(affectedSource, additionalSources);
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            this.UsePublicPatches(dependent);
+            this.UsePublicPatchesPrivately(dependent);
         }
 
         private void

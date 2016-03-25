@@ -45,7 +45,7 @@ namespace Test8
 
             if (this.Linker is VisualCCommon.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
 
                 this.PrivatePatch(settings =>
                     {

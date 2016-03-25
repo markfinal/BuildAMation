@@ -368,15 +368,29 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Instruct a module to use the public patches from module.
+        /// Instruct this module to use the public patches, and any inherited patches, from the dependent module.
+        /// All inherited patches will be forwarded onto any uses of this module.
         /// </summary>
-        /// <param name="module">Module.</param>
+        /// <param name="module">Dependent module containing patches to use.</param>
         public void
         UsePublicPatches(
             Module module)
         {
-            this.ExternalPatches.Add(module.PublicPatches);
-            this.ExternalPatches.AddRange(module.ExternalPatches);
+            this.PublicInheritedPatches.Add(module.PublicPatches);
+            this.PublicInheritedPatches.AddRange(module.PublicInheritedPatches);
+        }
+
+        /// <summary>
+        /// Instruct this module to use the public patches from the dependent module.
+        /// All patches will be used privately to this module.
+        /// </summary>
+        /// <param name="module">Dependent module containing patches to use.</param>
+        public void
+        UsePublicPatchesPrivately(
+            Module module)
+        {
+            this.PrivateInheritedPatches.Add(module.PublicPatches);
+            this.PrivateInheritedPatches.AddRange(module.PublicInheritedPatches);
         }
 
         /// <summary>
@@ -389,7 +403,7 @@ namespace Bam.Core
             {
                 return (this.PrivatePatches.Count() > 0) ||
                        (this.PublicPatches.Count() > 0) ||
-                       (this.ExternalPatches.Count() > 0);
+                       (this.PublicInheritedPatches.Count() > 0);
             }
         }
 
@@ -461,7 +475,8 @@ namespace Bam.Core
 
         private System.Collections.Generic.List<PrivatePatchDelegate> PrivatePatches = new System.Collections.Generic.List<PrivatePatchDelegate>();
         private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();
-        private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> ExternalPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
+        private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PublicInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
+        private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PrivateInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
 
         /// <summary>
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
@@ -584,9 +599,19 @@ namespace Bam.Core
 
         /// <summary>
         /// Apply any patches set on the module with the settings for its tool.
+        /// Order of evaluation is:
+        /// 1. If this is a child module, and honourParents is true, apply private patches from the parent.
+        /// 2. Apply private patches of this.
+        /// 3. Apply inherited private patches of this.
+        /// 4. If this is a child module, and honourParents is true, apply public patches from the parent.
+        /// 5. Apply public patches of this.
+        /// 6. If this is a child module, and honourParents is true, apply any inherited patches from the parent.
+        /// 7. Apply inherited public patches of this.
+        /// Inherited patches are the mechanism for transient dependencies, where dependencies filter up the module hierarchy.
+        /// See UsePublicPatches and UsePublicPatchesPrivately.
         /// </summary>
-        /// <param name="settings">Settings.</param>
-        /// <param name="honourParents">If set to <c>true</c> honour parents takes private patches from any parent module
+        /// <param name="settings">Settings object to apply patches to.</param>
+        /// <param name="honourParents">If set to <c>true</c>, honourParents takes patches from any parent module
         /// and also invokes those if this module is a child.</param>
         public void
         ApplySettingsPatches(
@@ -611,6 +636,13 @@ namespace Bam.Core
             {
                 patch(settings);
             }
+            foreach (var patchList in this.PrivateInheritedPatches)
+            {
+                foreach (var patch in patchList)
+                {
+                    patch(settings, this);
+                }
+            }
             if (parentModule != null)
             {
                 foreach (var patch in parentModule.PublicPatches)
@@ -624,7 +656,7 @@ namespace Bam.Core
             }
             if (parentModule != null)
             {
-                foreach (var patchList in parentModule.ExternalPatches)
+                foreach (var patchList in parentModule.PublicInheritedPatches)
                 {
                     foreach (var patch in patchList)
                     {
@@ -632,7 +664,7 @@ namespace Bam.Core
                     }
                 }
             }
-            foreach (var patchList in this.ExternalPatches)
+            foreach (var patchList in this.PublicInheritedPatches)
             {
                 foreach (var patch in patchList)
                 {

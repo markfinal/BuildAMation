@@ -39,14 +39,11 @@ namespace PublishingTest1
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
-                if (this.Linker is VisualCCommon.LinkerBase)
-                {
-                    this.LinkAgainst<WindowsSDK.WindowsSDK>();
-                }
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
         }
     }

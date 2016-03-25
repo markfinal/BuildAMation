@@ -159,17 +159,40 @@ namespace C.Cxx
             this.UsePublicPatches(dependent);
         }
 
-        public override void
+        /// <summary>
+        /// Specified sources and the application compiles and links against the DependentModule, and the
+        /// application uses patches from the dependent.
+        /// </summary>
+        /// <param name="affectedSource">Required source module.</param>
+        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public void
         CompilePubliclyAndLinkAgainst<DependentModule>(
             CModule affectedSource,
-            params CModule[] additionalSources)
+            params CModule[] additionalSources) where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
                 this.forwardedDeps.AddUnique(dependent);
             }
-            base.CompilePubliclyAndLinkAgainst<DependentModule>(affectedSource, additionalSources);
+            this.CompileAndLinkAgainst<DependentModule>(affectedSource, additionalSources);
+            this.UsePublicPatches(dependent);
+        }
+
+        /// <summary>
+        /// DynamicLibrary is linked against the DependentModule type.
+        /// Any public patches of DependentModule are applied publicly to the DynamicLibrary, and will be inherited
+        /// by any module depending on the DynamicLibrary.
+        /// </summary>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public void
+        LinkPubliclyAgainst<DependentModule>() where DependentModule : CModule, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.DependsOn(dependent);
+            this.linkedModules.Add(dependent);
+            this.UsePublicPatches(dependent);
         }
 
         protected sealed override void
