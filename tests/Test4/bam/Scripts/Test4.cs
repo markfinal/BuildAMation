@@ -42,7 +42,7 @@ namespace Test4
             this.LinkAgainst<MyStaticLib>();
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
+            this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
@@ -52,10 +52,9 @@ namespace Test4
                     }
                 });
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
-                this.CompilePubliclyAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
             }
         }
     }
@@ -72,10 +71,10 @@ namespace Test4
             this.CreateHeaderContainer("$(packagedir)/include/staticlibrary.h");
             var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary.c");
             source.PublicPatch((settings, appliedTo) =>
-            {
-                var compiler = settings as C.ICommonCompilerSettings;
-                compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
-            });
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                });
         }
     }
 }

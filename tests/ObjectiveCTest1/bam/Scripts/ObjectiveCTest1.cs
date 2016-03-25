@@ -30,6 +30,7 @@
 using Bam.Core;
 namespace ObjectiveCTest1
 {
+    [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Posix)]
     sealed class Program :
         C.ConsoleApplication
     {

@@ -44,10 +44,9 @@ namespace InstallerTest1
             this.CompileAndLinkAgainst<CStaticLibrary>(source);
             this.CompileAndLinkAgainst<CDynamicLibrary>(source);
 
-            if (this.BuildEnvironment.Platform.Includes(EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
 
             this.PrivatePatch(settings =>
@@ -85,7 +84,7 @@ namespace InstallerTest1
                     });
                 if (this.Linker is VisualCCommon.LinkerBase)
                 {
-                    this.LinkAgainst<WindowsSDK.WindowsSDK>();
+                    this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
                 }
             }
 

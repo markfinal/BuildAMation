@@ -76,6 +76,11 @@ namespace Test15
             // because DynamicLibrary1 pokes out of the public API of DynamicLibrary2, the dependency has to be marked
             // as 'public' so that forwarding occurs
             this.CompilePubliclyAndLinkAgainst<Test14.DynamicLibrary1>(source);
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
         }
     }
 }
