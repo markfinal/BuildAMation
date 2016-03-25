@@ -234,7 +234,7 @@ namespace C
         /// <param name="affectedSource">Required source module.</param>
         /// <param name="affectedSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
+        public virtual void
         CompilePubliclyAndLinkAgainst<DependentModule>(
             CModule affectedSource,
             params CModule[] additionalSources) where DependentModule : CModule, new()
