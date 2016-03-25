@@ -42,7 +42,7 @@ namespace Test4
             this.LinkAgainst<MyStaticLib>();
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
+            this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
