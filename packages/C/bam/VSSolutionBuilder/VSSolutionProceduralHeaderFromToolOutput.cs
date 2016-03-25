@@ -40,27 +40,18 @@ namespace C
             TokenizedString outputPath,
             ICommandLineTool tool)
         {
-            // need to drill up to the real user of the header
-            var generatedHeader = sender.GetEncapsulatingReferencedModule();
-            var firstUse = generatedHeader.Dependees[0];
-            var encapsulating = firstUse.GetEncapsulatingReferencedModule();
-
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(encapsulating);
-            var config = project.GetConfiguration(encapsulating);
+            var toolProject = (tool as Bam.Core.Module).MetaData as VSSolutionBuilder.VSProject;
+            var toolConfig = toolProject.GetConfiguration(tool as Bam.Core.Module);
 
             var output = outputPath.Parse();
 
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", System.IO.Path.GetDirectoryName(output)));
             commands.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
-            config.AddPreBuildCommands(commands);
+            toolConfig.AddPostBuildCommands(commands);
 
-            var toolProject = (tool as Bam.Core.Module).MetaData as VSSolutionBuilder.VSProject;
-            if (null != toolProject)
-            {
-                project.RequiresProject(toolProject);
-            }
+            // alias the tool's project so that inter-project dependencies can be set up
+            sender.MetaData = toolProject;
         }
     }
 }
