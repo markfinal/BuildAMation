@@ -40,27 +40,18 @@ namespace C
             TokenizedString outputPath,
             ICommandLineTool tool)
         {
-            // need to drill up to the real user of the header
-            var generatedHeader = sender.GetEncapsulatingReferencedModule();
-            var firstUse = generatedHeader.Dependees[0];
-            var encapsulating = firstUse.GetEncapsulatingReferencedModule();
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(encapsulating);
-            var configuration = target.GetConfiguration(encapsulating);
+            var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
+            var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
 
             var output = outputPath.Parse();
 
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));
             commands.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
-            target.AddPreBuildCommands(commands, configuration);
+            toolTarget.AddPostBuildCommands(commands, toolConfiguration);
 
-            var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
-            if (null != toolTarget)
-            {
-                target.Requires(toolTarget);
-            }
+            // alias the tool's target so that inter-target dependencies can be set up
+            sender.MetaData = toolTarget;
         }
     }
 }

@@ -1,3 +1,5 @@
+25-Mar-2016 Fixes #182. When the C# assembly for all the packages in a build fails to compile, an improved error message is now displayed, hinting at using the command line option in bam for enabling debug symbols, and the option to generate a debuggable project in one of the applicable IDEs (VisualStudio/Xamarin Studio/MonoDevelop).
+
 25-Mar-2016 Fixes #180. C.DynamicLibrary and C.Cxx.DynamicLibrary that identify dynamic library dependencies with CompilePubliclyAndLinkAgainst now forward those dependencies on, just like how StaticLibraries already do. If the public API in dynamic library D is exposed in the public API of dynamic library E, then it is legal for a compilation step dependent on D to invoke calls in E that were not resolved during D's link. This change simplifies writing build scripts in that transient dynamic dependencies no longer need to be manually specified.
 
 24-Mar-2016 Fixes #179. Removed the 'frameworks' argument from the C.ILinkingPolicy.Link function, as it is never used. Passing OSX frameworks to the linker is performed via the setting in C.ICommonLinkerSettingsOSX.
