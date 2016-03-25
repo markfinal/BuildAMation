@@ -99,11 +99,7 @@ namespace Bam.Core
             }
             else
             {
-                var compiledSuccessfully = PackageUtilities.CompilePackageAssembly();
-                if (!compiledSuccessfully)
-                {
-                    throw new Exception("Package compilation failed");
-                }
+                PackageUtilities.CompilePackageAssembly();
                 PackageUtilities.LoadPackageAssembly();
             }
 

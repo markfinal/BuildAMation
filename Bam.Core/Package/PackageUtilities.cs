@@ -487,11 +487,11 @@ namespace Bam.Core
 
         /// <summary>
         /// Compile the package assembly, using all the source files from the dependent packages.
+        /// Throws Bam.Core.Exceptions if package compilation fails.
         /// </summary>
-        /// <returns><c>true</c>, if package assembly was compiled, <c>false</c> otherwise.</returns>
         /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions. Default is true.</param>
         /// <param name="enableClean">If set to <c>true</c> cleaning the build root is allowed. Default is true.</param>
-        public static bool
+        public static void
         CompilePackageAssembly(
             bool enforceBamAssemblyVersions = true,
             bool enableClean = true)
@@ -616,8 +616,7 @@ namespace Bam.Core
                                 Graph.Instance.ScriptAssemblyPathname = cachedAssemblyPathname;
 
                                 assemblyCompileProfile.StopProfile();
-
-                                return true;
+                                return;
                             }
                             else
                             {
@@ -723,12 +722,26 @@ namespace Bam.Core
 
                 if (results.Errors.HasErrors || results.Errors.HasWarnings)
                 {
-                    Log.ErrorMessage("Failed to compile package '{0}'. There are {1} errors.", Graph.Instance.MasterPackage.FullName, results.Errors.Count);
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("Failed to compile package '{0}'. There are {1} errors.", Graph.Instance.MasterPackage.FullName, results.Errors.Count);
+                    message.AppendLine();
                     foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
                     {
-                        Log.ErrorMessage("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
+                        message.AppendFormat("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
+                        message.AppendLine();
                     }
-                    return false;
+                    if (!Graph.Instance.CompileWithDebugSymbols)
+                    {
+                        message.AppendLine();
+                        ICommandLineArgument debugOption = new Options.UseDebugSymbols();
+                        message.AppendFormat("Use the {0}/{1} command line option with bam for more accurate error messages.", debugOption.LongName, debugOption.ShortName);
+                        message.AppendLine();
+                    }
+                    message.AppendLine();
+                    ICommandLineArgument createDebugProjectOption = new Options.CreateDebugProject();
+                    message.AppendFormat("Use the {0}/{1} command line option with bam to create an editable IDE project containing the build scripts.", createDebugProjectOption.LongName, createDebugProjectOption.ShortName);
+                    message.AppendLine();
+                    throw new Exception(message.ToString());
                 }
 
                 if (!Graph.Instance.CompileWithDebugSymbols)
@@ -752,8 +765,6 @@ namespace Bam.Core
             }
 
             assemblyCompileProfile.StopProfile();
-
-            return true;
         }
 
         /// <summary>
