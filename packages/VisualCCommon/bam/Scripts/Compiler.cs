@@ -58,7 +58,7 @@ namespace VisualCCommon
             if (meta.UseWindowsSDKPublicPatches)
             {
                 var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
-                this.UsePublicPatchesPrivately(windowsSDK);
+                this.UsePublicPatches(windowsSDK);
             }
         }
 
