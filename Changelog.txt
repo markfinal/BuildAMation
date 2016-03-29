@@ -1,3 +1,5 @@
+29-Mar-2016 Fixes #187. C's DynamicLibrary and Cxx.DynamicLibrary module function LinkPubliclyAgainst() did not forward the dependent onto callers of the dynamic libraries. This may be required in some multi-module software systems that have interdependencies.
+
 29-Mar-2016 Fixes #185. Binary builds of BuildAMation are now tagged as 'AnyCPU' to be clear that they are not tied to a specific platform architecture.
 
 29-Mar-2016 Fixes #184. Regression introduced in v1.0.1 beta 5 in VisualC 2015 support for finding C standard library headers, which are in the WindowsSDK 10.

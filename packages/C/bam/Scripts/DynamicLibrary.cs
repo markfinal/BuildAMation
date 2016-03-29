@@ -169,6 +169,10 @@ namespace C
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
             this.linkedModules.Add(dependent);
+            if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
+            {
+                this.forwardedDeps.AddUnique(dependent);
+            }
             this.UsePublicPatches(dependent);
         }
 
