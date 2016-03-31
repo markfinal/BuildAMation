@@ -1,3 +1,5 @@
+31-Mar-2016 Fixes #189. For VSSolution and Xcode build modes, non C.CModule dependencies (i.e. custom tools in the form of projects or targets) on C source containers are now translated to order-only dependencies. This can be useful for utility projects that copy headers for a public API.
+
 31-Mar-2016 Fixes #188. C's LinkAgainst and LinkPubliclyAgainst did not include forwarded libraries on the dependent module, inconsistently with similar functions CompileAndLinkAgainst and CompilePubliclyAndLinkAgainst. The result was potential unresolved symbols during the link.
 
 29-Mar-2016 Fixes #187. C's DynamicLibrary and Cxx.DynamicLibrary module function LinkPubliclyAgainst() did not forward the dependent onto callers of the dynamic libraries. This may be required in some multi-module software systems that have interdependencies.

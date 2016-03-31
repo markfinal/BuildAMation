@@ -59,6 +59,24 @@ namespace C
                 settingsGroup.AddSetting("ExcludedFromBuild", true);
             }
             sender.MetaData = settingsGroup;
+
+            // any non-C module projects should be order-only dependencies
+            foreach (var dependent in sender.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
+                if (null != dependentProject)
+                {
+                    project.RequiresProject(dependentProject);
+                }
+            }
         }
     }
 }
