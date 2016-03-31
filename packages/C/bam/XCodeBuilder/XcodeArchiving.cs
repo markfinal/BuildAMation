@@ -153,6 +153,38 @@ namespace C
                     target.Requires(requiredTarget);
                 }
             }
+            // any non-C module targets should be order-only dependencies
+            // note: this is unlikely to happen, as StaticLibraries don't have hard 'dependencies'
+            // because there is no fixed 'link' action at the end
+            foreach (var dependent in sender.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
+                if (null != dependentTarget)
+                {
+                    target.Requires(dependentTarget);
+                }
+            }
+            // however, there may be forwarded libraries, and these are useful order only dependents
+            foreach (var dependent in (sender as IForwardedLibraries).ForwardedLibraries)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
+                if (null != dependentTarget)
+                {
+                    target.Requires(dependentTarget);
+                }
+            }
         }
     }
 }
