@@ -322,24 +322,24 @@ namespace Bam.Core
             bool allowDuplicates = false,
             bool enforceBamAssemblyVersions = true)
         {
-            var packageRepos = new System.Collections.Generic.Queue<string>();
+            var packageRepos = new System.Collections.Generic.Queue<System.Tuple<string,PackageDefinition>>();
             foreach (var repo in Graph.Instance.PackageRepositories)
             {
-                if (packageRepos.Contains(repo))
+                if (packageRepos.Any(item => item.Item1 == repo))
                 {
                     continue;
                 }
-                packageRepos.Enqueue(repo);
+                packageRepos.Enqueue(System.Tuple.Create<string,PackageDefinition>(repo, null));
             }
 
             var masterDefinitionFile = GetMasterPackage(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
-                if (packageRepos.Contains(repo))
+                if (packageRepos.Any(item => item.Item1 == repo))
                 {
                     continue;
                 }
-                packageRepos.Enqueue(repo);
+                packageRepos.Enqueue(System.Tuple.Create(repo, masterDefinitionFile));
             }
 
             // read the definition files of any package found in the package roots
@@ -347,10 +347,16 @@ namespace Bam.Core
             candidatePackageDefinitions.Add(masterDefinitionFile);
             while (packageRepos.Count > 0)
             {
-                var repo = packageRepos.Dequeue();
+                var repoTuple = packageRepos.Dequeue();
+                var repo = repoTuple.Item1;
                 if (!System.IO.Directory.Exists(repo))
                 {
-                    throw new Exception("Package repository directory {0} does not exist", repo);
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat("Package repository directory {0} does not exist.", repo);
+                    message.AppendLine();
+                    message.AppendFormat("Repository requested from {0}", repoTuple.Item2.XMLFilename);
+                    message.AppendLine();
+                    throw new Exception(message.ToString());
                 }
                 var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
 
@@ -377,7 +383,7 @@ namespace Bam.Core
                         {
                             continue;
                         }
-                        packageRepos.Enqueue(newRepo);
+                        packageRepos.Enqueue(System.Tuple.Create(newRepo, definitionFile));
                     }
                 }
             }
