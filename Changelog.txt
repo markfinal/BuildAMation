@@ -1,3 +1,5 @@
+01-Apr-2016 Fixes #190. Xcode target dependencies (order only dependencies) are now deferred until the end of the build, since they require fully defined Targets, which may not be the case for any dependencies on static libraries.
+
 01-Apr-2016 Fixes #199. The C link command in generated MakeFiles now filters prerequisites for object files, since dependent libraries would be specified more than once otherwise.
 
 01-Apr-2016 Updated error message if a module is attempted to be created after a build has started.
