@@ -1,3 +1,13 @@
+01-Apr-2016 Fixes #193. Valid TokenizedStrings containing @, but which were not functions, e.g. OSX install names like @executable_path/../Frameworks threw an exception. This was an attempt to catch mismatching parentheses on a real function call. If a closing parenthesis is missing, an exception will be thrown due to .NET regex balancing groups being used. However, if an opening parenthesis is missing, this is not yet detected.
+
+31-Mar-2016 Fixes #190. For VSSolution and Xcode build modes, C.StaticLibrary projects/targets did not have all necessary order-only dependencies, due to the internals deferring an explicit dependency until a link step using the static library. Inspecting these deferred dependencies in IDE project generation, allows order only dependencies to be added to ensure that all requirements in order to build a static library are enforced. This showed up in IDE projects in the case where a dependent of a static library wrote files necessary for the compilation of the static library. The Native build mode has a finer level of granularity of dependencies, and this issue was not present on that.
+
+31-Mar-2016 Fixes #189. For VSSolution and Xcode build modes, non C.CModule dependencies (i.e. custom tools in the form of projects or targets) on C source containers are now translated to order-only dependencies. This can be useful for utility projects that copy headers for a public API.
+
+31-Mar-2016 Fixes #188. C's LinkAgainst and LinkPubliclyAgainst did not include forwarded libraries on the dependent module, inconsistently with similar functions CompileAndLinkAgainst and CompilePubliclyAndLinkAgainst. The result was potential unresolved symbols during the link.
+
+29-Mar-2016 Fixes #187. C's DynamicLibrary and Cxx.DynamicLibrary module function LinkPubliclyAgainst() did not forward the dependent onto callers of the dynamic libraries. This may be required in some multi-module software systems that have interdependencies.
+
 29-Mar-2016 Fixes #185. Binary builds of BuildAMation are now tagged as 'AnyCPU' to be clear that they are not tied to a specific platform architecture.
 
 29-Mar-2016 Fixes #184. Regression introduced in v1.0.1 beta 5 in VisualC 2015 support for finding C standard library headers, which are in the WindowsSDK 10.

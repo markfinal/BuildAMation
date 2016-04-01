@@ -37,7 +37,7 @@ namespace C
         CModule
     {
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
-        protected Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
+        private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
         private ILinkingPolicy Policy = null;
 
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ExecutableFile");
@@ -167,7 +167,7 @@ namespace C
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
-            this.linkedModules.Add(dependent);
+            this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
         }
 
@@ -210,7 +210,6 @@ namespace C
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.DependsOn(dependent);
-            this.linkedModules.Add(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
             if (additionalSources.Length > 0)
@@ -229,10 +228,11 @@ namespace C
             this.UsePublicPatchesPrivately(dependent);
         }
 
-        private void
+        protected void
         LinkAllForwardedDependenciesFromLibraries(
             Bam.Core.Module module)
         {
+            this.linkedModules.Add(module);
             var withForwarded = module as IForwardedLibraries;
             if (null == withForwarded)
             {

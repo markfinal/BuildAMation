@@ -108,6 +108,8 @@ namespace C
                 }
             }
             // any non-C module projects should be order-only dependencies
+            // note: this is unlikely to happen, as StaticLibraries don't have hard 'dependencies'
+            // because there is no fixed 'link' action at the end
             foreach (var dependent in sender.Dependents)
             {
                 if (null == dependent.MetaData)
@@ -115,6 +117,19 @@ namespace C
                     continue;
                 }
                 if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
+                if (null != dependentProject)
+                {
+                    project.RequiresProject(dependentProject);
+                }
+            }
+            // however, there may be forwarded libraries, and these are useful order only dependents
+            foreach (var dependent in (sender as IForwardedLibraries).ForwardedLibraries)
+            {
+                if (null == dependent.MetaData)
                 {
                     continue;
                 }

@@ -76,6 +76,24 @@ namespace C
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
                 (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
             }
+
+            // any non-C module targets should be order-only dependencies
+            foreach (var dependent in sender.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
+                if (null != dependentTarget)
+                {
+                    target.Requires(dependentTarget);
+                }
+            }
         }
     }
 }
