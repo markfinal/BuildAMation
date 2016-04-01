@@ -49,7 +49,7 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/bin/$(OutputName)$(exeext)"));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {

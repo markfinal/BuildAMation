@@ -1,3 +1,5 @@
+01-Apr-2016 Fixes #198. Object files, static libraries, dynamic libraries, plugins and executables write to different paths (obj, lib and bin subdirectories) so that there is no clash between the mirrored directory tree for object files and a final executable name. For instance, if an application module called FooBar has source files in a folder called FooBar under the package directory, Linux and OSX would previously have had a collision between the directory containing object files, and the executable name. This only happened for platforms where executables do not have an extension.
+
 01-Apr-2016 Fixes #196. XcodeBuilder exposes Flex and Bison source file types (XcodeBuilder.FileReference.EFileType), and a function to add a source file of a particular type to a target (XcodeBuilder.Target.EnsureFileOfTypeExists). This is in support of the bam-parser repository (https://github.com/markfinal/bam-parser.git).
 
 01-Apr-2016 Fixes #195. Failure to find a specific package now also reports which package requested it.

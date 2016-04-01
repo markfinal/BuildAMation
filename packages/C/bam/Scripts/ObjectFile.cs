@@ -69,7 +69,7 @@ namespace C
                 this.SourceModule = value;
                 this.DependsOn(value);
                 this.GeneratedPaths[Key] = this.CreateTokenizedString(
-                    "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
+                    "$(packagebuilddir)/$(moduleoutputdir)/obj/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
                     value.GeneratedPaths[SourceFile.Key]);
             }
         }
