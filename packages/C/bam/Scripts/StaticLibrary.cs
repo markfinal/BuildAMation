@@ -48,7 +48,15 @@ namespace C
         {
             base.Init(parent);
             this.Librarian = DefaultToolchain.Librarian(this.BitDepth);
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/lib/$(libprefix)$(OutputName)$(libext)"));
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)"));
+        }
+
+        public override string CustomOutputSubDirectory
+        {
+            get
+            {
+                return "lib";
+            }
         }
 
         // TODO: what is this for?

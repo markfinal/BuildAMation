@@ -59,6 +59,10 @@ namespace XcodeBuilder
             Bam.Core.Module currentModule,
             Bam.Core.Module encapsulatingModule)
         {
+            // Note:
+            // 1: only using the current configuration because Xcode is rather limited in the directory hierarchy of where to write files to,
+            //    otherwise files cannot be found. Keep to the lowest common denominator
+            // 2: not using Bam.Core.Module.ModuleSpecificOutputSubDirectory for the same reason
             return Bam.Core.TokenizedString.CreateVerbatim(currentModule.BuildEnvironment.Configuration.ToString());
         }
 

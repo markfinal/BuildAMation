@@ -53,6 +53,14 @@ namespace C
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
         }
 
+        public override string CustomOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+
         SourceFile IRequiresSourceModule.Source
         {
             get
@@ -69,7 +77,7 @@ namespace C
                 this.SourceModule = value;
                 this.DependsOn(value);
                 this.GeneratedPaths[Key] = this.CreateTokenizedString(
-                    "$(packagebuilddir)/$(moduleoutputdir)/obj/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
+                    "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
                     value.GeneratedPaths[SourceFile.Key]);
             }
         }
