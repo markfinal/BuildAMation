@@ -98,12 +98,11 @@ namespace Publisher
                 }
                 else
                 {
-                    commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
+                    commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
                         sourcePath.Parse(),
                         destinationPath,
-                        sender.SubDirectory.Parse(),
                         CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }
 
