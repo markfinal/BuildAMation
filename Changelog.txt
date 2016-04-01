@@ -1,3 +1,5 @@
+01-Apr-2016 Fixes #195. Failure to find a specific package now also reports which package requested it.
+
 01-Apr-2016 Fixes #191. Failure to find a requested package repository now reports which package requested it.
 
 01-Apr-2016 Fixes #193. Valid TokenizedStrings containing @, but which were not functions, e.g. OSX install names like @executable_path/../Frameworks threw an exception. This was an attempt to catch mismatching parentheses on a real function call. If a closing parenthesis is missing, an exception will be thrown due to .NET regex balancing groups being used. However, if an opening parenthesis is missing, this is not yet detected.

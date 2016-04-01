@@ -1052,6 +1052,7 @@ namespace Bam.Core
                     {
                         message.AppendFormat(" and version {0}", depVersion);
                     }
+                    message.AppendFormat(" required by {0}", current.XMLFilename);
                     message.AppendLine();
                     var packageRepos = new StringArray();
                     Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
@@ -1067,7 +1068,8 @@ namespace Bam.Core
                     {
                         message.AppendFormat(" and version {0}", depVersion);
                     }
-                    message.AppendLine(" from the following package definition files:");
+                    message.AppendFormat(" required by {0} from the following package definition files:", current.XMLFilename);
+                    message.AppendLine();
                     foreach (var candidate in candidates)
                     {
                         message.AppendFormat(candidate.XMLFilename);
