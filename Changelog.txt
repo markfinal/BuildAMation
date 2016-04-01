@@ -1,3 +1,5 @@
+01-Apr-2016 Fixes #200. C.SettingsBase.SharedInterfaces, which is invoked to determine the intersection of settings interfaces for all source files of a library or application in an IDE project build, was ignoring the precedence (Bam.Core.SettingsPrecendenceAttribute), and could lead to interfaces being converted in an incorrect order, resulting in compilation failures. Such an example is for Clang, that has the AllWarnings property, that must be applied before any warning suppression, which is in another interface.
+
 01-Apr-2016 Fixes #190. Xcode target dependencies (order only dependencies) are now deferred until the end of the build, since they require fully defined Targets, which may not be the case for any dependencies on static libraries.
 
 01-Apr-2016 Fixes #199. The C link command in generated MakeFiles now filters prerequisites for object files, since dependent libraries would be specified more than once otherwise.
