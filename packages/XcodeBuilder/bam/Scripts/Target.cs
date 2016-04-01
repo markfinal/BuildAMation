@@ -304,11 +304,19 @@ namespace XcodeBuilder
         EnsureHeaderFileExists(
             Bam.Core.TokenizedString path)
         {
+            this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile);
+        }
+
+        public void
+        EnsureFileOfTypeExists(
+            Bam.Core.TokenizedString path,
+            FileReference.EFileType type)
+        {
             lock (this)
             {
                 var fileRef = this.Project.EnsureFileReferenceExists(
                     path,
-                    FileReference.EFileType.HeaderFile,
+                    type,
                     sourceTree: FileReference.ESourceTree.Absolute);
                 this.AddFileRefToGroup(fileRef);
             }
