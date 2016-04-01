@@ -844,5 +844,19 @@ namespace Bam.Core
                 return AllModules.Count;
             }
         }
+
+        /// <summary>
+        /// Virtual string property specifying a subdirectory name appended to the macro 'moduleoutputdir'
+        /// that can be used to further improve the uniqueness of where built files are written.
+        /// Default is null to indicate no subdirectory.
+        /// </summary>
+        public virtual string
+        CustomOutputSubDirectory
+        {
+            get
+            {
+                return null;
+            }
+        }
     }
 }

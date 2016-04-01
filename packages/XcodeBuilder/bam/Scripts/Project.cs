@@ -348,8 +348,9 @@ namespace XcodeBuilder
         }
 
         public void
-        FixupPerConfigurationData()
+        ResolveDeferredSetup()
         {
+            // any per-configuration files excluded from the build
             foreach (var target in this.Targets.Values)
             {
                 if (null == target.SourcesBuildPhase)
@@ -369,6 +370,11 @@ namespace XcodeBuilder
                         config["EXCLUDED_SOURCE_FILE_NAMES"] = excluded;
                     }
                 }
+            }
+            // any target dependencies (now that all projects have been filled out)
+            foreach (var target in this.Targets.Values)
+            {
+                target.ResolveTargetDependencies();
             }
         }
 

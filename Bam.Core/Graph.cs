@@ -117,7 +117,10 @@ namespace Bam.Core
         {
             if (null == this.BuildEnvironmentInternal)
             {
-                throw new Exception("Unable to find a module within a patch - please change the calling code to invoke this outside of the patch, but in the module's Init method");
+                var message = new System.Text.StringBuilder();
+                message.AppendLine("Unable to find a module either within a patch or after the build has started.");
+                message.AppendLine("If called within a patch function, please modify the calling code to invoke this call within the module's Init method.");
+                throw new Exception(message.ToString());
             }
             var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
             var matches = referencedModules.Where(item => item.GetType() == typeof(T));

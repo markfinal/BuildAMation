@@ -65,6 +65,14 @@ namespace C
             });
         }
 
+        public override string CustomOutputSubDirectory
+        {
+            get
+            {
+                return "bin";
+            }
+        }
+
         protected Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;

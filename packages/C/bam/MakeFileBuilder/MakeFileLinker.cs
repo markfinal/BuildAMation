@@ -60,8 +60,13 @@ namespace C
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(executablePath);
+            string objExt = null; // try to get the object file extension from a compiled source file
             foreach (var module in objectFiles)
             {
+                if (null == objExt)
+                {
+                    objExt = module.Tool.Macros["objext"].Parse();
+                }
                 if (!(module as C.ObjectFile).PerformCompilation)
                 {
                     continue;
@@ -101,8 +106,11 @@ namespace C
 
             var tool = sender.Tool as Bam.Core.ICommandLineTool;
             var commands = new System.Text.StringBuilder();
-            commands.AppendFormat("{0} $^ {1} {2}",
+            // if there were no object files, you probably intended to use all prerequisites anyway
+            var filter = (null != objExt) ? System.String.Format("$(filter %{0},$^)", objExt) : "$^";
+            commands.AppendFormat("{0} {1} {2} {3}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
+                filter,
                 commandLineArgs.ToString(' '),
                 CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(commands.ToString());

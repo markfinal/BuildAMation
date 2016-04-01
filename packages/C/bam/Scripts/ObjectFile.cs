@@ -53,6 +53,14 @@ namespace C
             this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
         }
 
+        public override string CustomOutputSubDirectory
+        {
+            get
+            {
+                return "obj";
+            }
+        }
+
         SourceFile IRequiresSourceModule.Source
         {
             get

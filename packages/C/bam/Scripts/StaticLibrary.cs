@@ -51,6 +51,14 @@ namespace C
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)"));
         }
 
+        public override string CustomOutputSubDirectory
+        {
+            get
+            {
+                return "lib";
+            }
+        }
+
         // TODO: what is this for?
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source
         {

@@ -109,7 +109,15 @@ namespace C
                     sharedInterfaces = sharedInterfaces.Intersect(interfaces);
                 }
             }
-            return new Bam.Core.TypeArray(sharedInterfaces);
+            return new Bam.Core.TypeArray(sharedInterfaces.OrderByDescending(item =>
+                {
+                    var precedenceAttribs = item.GetCustomAttributes(typeof(Bam.Core.SettingsPrecedenceAttribute), false);
+                    if (precedenceAttribs.Length > 0)
+                    {
+                        return (precedenceAttribs[0] as Bam.Core.SettingsPrecedenceAttribute).Order;
+                    }
+                    return 0;
+                }));
         }
 
         public static SettingsBase

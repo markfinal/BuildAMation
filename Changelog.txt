@@ -1,3 +1,15 @@
+01-Apr-2016 Fixes #122. Another update to Xcode support for copying files, such as for copying headers for a public API, in which the subdirectory is not needed. (This is now consistent with the VSSolution builder code.)
+
+01-Apr-2016 Fixes #200. C.SettingsBase.SharedInterfaces, which is invoked to determine the intersection of settings interfaces for all source files of a library or application in an IDE project build, was ignoring the precedence (Bam.Core.SettingsPrecendenceAttribute), and could lead to interfaces being converted in an incorrect order, resulting in compilation failures. Such an example is for Clang, that has the AllWarnings property, that must be applied before any warning suppression, which is in another interface.
+
+01-Apr-2016 Fixes #190. Xcode target dependencies (order only dependencies) are now deferred until the end of the build, since they require fully defined Targets, which may not be the case for any dependencies on static libraries.
+
+01-Apr-2016 Fixes #199. The C link command in generated MakeFiles now filters prerequisites for object files, since dependent libraries would be specified more than once otherwise.
+
+01-Apr-2016 Updated error message if a module is attempted to be created after a build has started.
+
+01-Apr-2016 Fixes #198. Modules can now specify a custom subdirectory string to apply after the 'moduleoutputdir' macro, by means of the CustomOutputSubDirectory property. By default this is null. C.ObjectFile overrides this as 'obj', C.ConsoleApplication as 'bin', and C.StaticLibrary as 'lib'. This is to avoid any collisions between the mirrored directory tree for object files and a final executable name. For instance, if an application module called FooBar has source files in a folder called FooBar under the package directory, Linux and OSX would previously have had a collision between the directory containing object files, and the executable name. This only happened for platforms where executables do not have an extension. This new property is intended to used by the per-build-mode function ModuleOutputDirectory; and currently in use in Native, MakeFile and VSSolution build modes. It is not used by Xcode, because Xcode projects are more limited in where output files can reside.
+
 01-Apr-2016 Fixes #196. XcodeBuilder exposes Flex and Bison source file types (XcodeBuilder.FileReference.EFileType), and a function to add a source file of a particular type to a target (XcodeBuilder.Target.EnsureFileOfTypeExists). This is in support of the bam-parser repository (https://github.com/markfinal/bam-parser.git).
 
 01-Apr-2016 Fixes #195. Failure to find a specific package now also reports which package requested it.

@@ -116,7 +116,13 @@ namespace VSSolutionBuilder
             Bam.Core.Module currentModule,
             Bam.Core.Module encapsulatingModule)
         {
-            return Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.Combine(encapsulatingModule.GetType().Name, currentModule.BuildEnvironment.Configuration.ToString()));
+            var outputDir = System.IO.Path.Combine(encapsulatingModule.GetType().Name, currentModule.BuildEnvironment.Configuration.ToString());
+            var moduleSubDir = currentModule.CustomOutputSubDirectory;
+            if (null != moduleSubDir)
+            {
+                outputDir = System.IO.Path.Combine(outputDir, moduleSubDir);
+            }
+            return Bam.Core.TokenizedString.CreateVerbatim(outputDir);
         }
 
         bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable

@@ -97,7 +97,7 @@ namespace XcodeBuilder
             var generateProjectSchemes = Bam.Core.CommandLineProcessor.Evaluate(new Options.GenerateXcodeSchemes());
             foreach (var project in this.ProjectMap.Values)
             {
-                project.FixupPerConfigurationData();
+                project.ResolveDeferredSetup();
 
                 var text = new System.Text.StringBuilder();
                 text.AppendLine("// !$*UTF8*$!");

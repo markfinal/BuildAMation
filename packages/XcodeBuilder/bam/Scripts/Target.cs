@@ -59,6 +59,7 @@ namespace XcodeBuilder
             project.ConfigurationLists.Add(configList);
 
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
+            this.ProposedTargetDependencies = new Bam.Core.Array<Target>();
         }
 
         private Bam.Core.Module Module
@@ -95,6 +96,12 @@ namespace XcodeBuilder
         {
             get;
             private set;
+        }
+
+        private Bam.Core.Array<Target> ProposedTargetDependencies
+        {
+            get;
+            set;
         }
 
         public Bam.Core.Array<BuildPhase> BuildPhases
@@ -349,11 +356,15 @@ namespace XcodeBuilder
         {
             lock (this)
             {
-                var existingTargetDep = this.TargetDependencies.Where(item => item.Dependency == other).FirstOrDefault();
-                if (null != existingTargetDep)
-                {
-                    return;
-                }
+                this.ProposedTargetDependencies.AddUnique(other);
+            }
+        }
+
+        public void
+        ResolveTargetDependencies()
+        {
+            foreach (var other in this.ProposedTargetDependencies)
+            {
                 if (this.Project == other.Project)
                 {
                     var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == this.Project) && (item.Remote == other)).FirstOrDefault();
