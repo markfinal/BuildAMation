@@ -1,3 +1,5 @@
+01-Apr-2016 Fixes #196. XcodeBuilder exposes Flex and Bison source file types (XcodeBuilder.FileReference.EFileType), and a function to add a source file of a particular type to a target (XcodeBuilder.Target.EnsureFileOfTypeExists). This is in support of the bam-parser repository (https://github.com/markfinal/bam-parser.git).
+
 01-Apr-2016 Fixes #195. Failure to find a specific package now also reports which package requested it.
 
 01-Apr-2016 Fixes #191. Failure to find a requested package repository now reports which package requested it.

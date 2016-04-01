@@ -70,6 +70,12 @@ namespace XcodeBuilder
             case FileReference.EFileType.Project:
                 return "wrapper.pb-project";
 
+            case FileReference.EFileType.LexFile:
+                return "sourcecode.lex";
+
+            case FileReference.EFileType.YaccFile:
+                return "sourcecode.yacc";
+
             default:
                 throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
             }
@@ -123,7 +129,9 @@ namespace XcodeBuilder
             DynamicLibrary,
             WrapperFramework,
             ApplicationBundle,
-            Project
+            Project,
+            YaccFile,
+            LexFile
         }
 
         public enum ESourceTree
