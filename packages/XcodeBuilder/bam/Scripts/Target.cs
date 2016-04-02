@@ -382,6 +382,12 @@ namespace XcodeBuilder
                 }
                 else
                 {
+                    if (null == other.FileReference)
+                    {
+                        Bam.Core.Log.DebugMessage("Project {0} cannot be a target dependency as it has no output FileReference", other.Name);
+                        continue;
+                    }
+
                     var fileRef = this.Project.EnsureFileReferenceExists(
                         other.Project.ProjectDir,
                         FileReference.EFileType.Project,
