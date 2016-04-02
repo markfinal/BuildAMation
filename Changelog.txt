@@ -1,3 +1,5 @@
+02-Apr-2016 Fixes #190. Addendum: Xcode projects with no build output (e.g. those that just copy headers) cannot be added as a target dependency (i.e. an order dependency) due to limitations of how target dependencies are managed in Xcode projects.
+
 01-Apr-2016 Fixes #122. Another update to Xcode support for copying files, such as for copying headers for a public API, in which the subdirectory is not needed. (This is now consistent with the VSSolution builder code.)
 
 01-Apr-2016 Fixes #200. C.SettingsBase.SharedInterfaces, which is invoked to determine the intersection of settings interfaces for all source files of a library or application in an IDE project build, was ignoring the precedence (Bam.Core.SettingsPrecendenceAttribute), and could lead to interfaces being converted in an incorrect order, resulting in compilation failures. Such an example is for Clang, that has the AllWarnings property, that must be applied before any warning suppression, which is in another interface.
