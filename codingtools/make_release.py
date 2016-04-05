@@ -176,7 +176,7 @@ def make_tar_docs_distribution(options):
     cwd = os.getcwd()
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
-        tar_path = os.path.join(checkout_dir, "BuildAMation-%s-docs.tgz" % options.version)
+        tar_path = os.path.join(checkout_dir, "BuildAMation-%s-apidocs.tgz" % options.version)
         print >>sys.stdout, "Writing tar file_path %s" % tar_path
         sys.stdout.flush()
         os.chdir(checkout_dir)
@@ -192,7 +192,7 @@ def make_zip_docs_distribution(options):
     cwd = os.getcwd()
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
-        zip_path = os.path.join(checkout_dir, "BuildAMation-%s-docs.zip" % options.version)
+        zip_path = os.path.join(checkout_dir, "BuildAMation-%s-apidocs.zip" % options.version)
         print >>sys.stdout, "Writing zip file_path %s" % zip_path
         sys.stdout.flush()
         os.chdir(checkout_dir)
