@@ -262,6 +262,23 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Extend a container of C object files with another, potentially from another module. Note that module types must match.
+        /// Private patches are inherited.
+        /// Public patches are used internally to compile against, but are not exposed further.
+        /// </summary>
+        /// <typeparam name="DependentModule">Container module type to embed into the specified container.</typeparam>
+        /// <param name="affectedSource">Container to be extended.</param>
+        public void
+        ExtendSource<DependentModule>(
+            CModuleContainer<ObjectFile> affectedSource)
+            where DependentModule : CModuleContainer<ObjectFile>, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            affectedSource.ExtendWith(dependent);
+            affectedSource.UsePublicPatchesPrivately(dependent);
+        }
+
         public LinkerTool Linker
         {
             get

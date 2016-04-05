@@ -1,3 +1,5 @@
+05-Apr-2016 Issue #197. Added ExtendSource and ExtendSourcePublicly functions to ConsoleApplication and DynamicLibrary (both C and C++ flavours), that allow containers of object files to be extended. This allows source to be grouped into a separate container module, and then merged into concrete modules. This is a mechanism analogous to linking a static library into a dynamic library, in a cross-platform environment and without any limitations of the current toolchain. ExtendSource will use any public patches on the standalone container for build only, while ExtendSourcePublicly will additional forward the patch to any callers.
+
 05-Apr-2016 Issue #197. Added Bam.Core.Module.CloneWithPrivatePatches, which clones an existing module (matching its type), but also copies any private patches applied to that module, and its parent container. This is part of merging source containers. No copying of public patches is performed, as this is dependent upon the context.
 
 05-Apr-2016 Issue #197. Bam.Core.Module.ApplySettingsPatches now honours any PrivateInheritedPatches from a parent container module. This can be the case where source containers are merged.

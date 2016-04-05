@@ -150,6 +150,37 @@ namespace C
             return modulesCreated;
         }
 
+        /// <summary>
+        /// Take a container of source, and clone each of its children and embed them into a container of the same type.
+        /// This is a mechanism for essentially embedding the object files that would be in a static library into a dynamic
+        /// library in a cross-platform way.
+        /// In the clone, private patches are copied both from the container, and also from each child in turn.
+        /// No use of any public patches is made here.
+        /// </summary>
+        /// <param name="otherSource">The container of object files to embed into the current container.</param>
+        public void
+        ExtendWith(
+            CModuleContainer<ChildModuleType> otherSource)
+        {
+            foreach (var child in otherSource.Children)
+            {
+                var clonedChild = Bam.Core.Module.CloneWithPrivatePatches(child, this);
+
+                if (clonedChild is IRequiresSourceModule)
+                {
+                    (clonedChild as IRequiresSourceModule).Source = (child as IRequiresSourceModule).Source;
+                }
+                else
+                {
+                    clonedChild.InputPath.Aliased(child.InputPath);
+                }
+
+                (clonedChild as Bam.Core.IChildModule).Parent = this;
+                this.children.Add(clonedChild);
+                this.DependsOn(clonedChild);
+            }
+        }
+
         // note that this is 'new' to hide the version in Bam.Core.Module
         // C# does not support return type covariance (https://en.wikipedia.org/wiki/Covariant_return_type)
         public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children
