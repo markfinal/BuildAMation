@@ -80,8 +80,8 @@ def update_version_numbers(options):
                       line.rstrip())
         print line
     doxyconfig_path = os.path.join(os.getcwd(), "docsrc", "BuildAMationDoxy")
-    for line in fileinput.input(common_assembly_info_path, inplace=1):  # , backup='.bk'):
-        if line.starts_with('PROJECT_NUMBER'):
+    for line in fileinput.input(doxyconfig_path, inplace=1):  # , backup='.bk'):
+        if line.startswith('PROJECT_NUMBER'):
             print "PROJECT_NUMBER = %s" % options.version
         else:
             print line
