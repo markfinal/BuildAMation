@@ -16,6 +16,7 @@ Feel free to fork BuildAMation to make changes, and submit pull requests.
 
 ## Requirements
 * Please log an issue before making a bug fix. Discussions will be made in the Issue tracker.
+    * If there are edge cases or known problems with a new feature, or bug fix, that remain unresolved after committing, please create additional issues so that these can be tracked.
 * Please either add a new, or modify an existing, test to exercise your change.
     * If adding a new test, add it to the list of tests to run in tests/bamtests.py, for each valid build mode on each valid platform.
     * Run the tests with a wide-range of applicable toolchain versions.
