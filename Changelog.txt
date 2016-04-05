@@ -1,3 +1,5 @@
+05-Apr-2016 Issue #197. Bam.Core.Module.ApplySettingsPatches now honours any PrivateInheritedPatches from a parent container module. This can be the case where source containers are merged.
+
 05-Apr-2016 Fixes #203. Updating version numbers in the make_release script no longer swallows stdout messages if an exception occurs.
 
 05-Apr-2016 Fixes #202. Generating API documentation now updates the version number.

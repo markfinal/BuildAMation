@@ -636,6 +636,16 @@ namespace Bam.Core
             {
                 patch(settings);
             }
+            if (parentModule != null)
+            {
+                foreach (var patchList in parentModule.PrivateInheritedPatches)
+                {
+                    foreach (var patch in patchList)
+                    {
+                        patch(settings, this);
+                    }
+                }
+            }
             foreach (var patchList in this.PrivateInheritedPatches)
             {
                 foreach (var patch in patchList)
