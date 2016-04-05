@@ -189,6 +189,30 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Clone an existing module, and copy its private patches into the clone. If the source
+        /// module has a parent, private patches from the parent are also copied.
+        /// </summary>
+        /// <typeparam name="T">Type of the module to clone.</typeparam>
+        /// <param name="source">Module to be cloned.</param>
+        /// <param name="parent">Optional parent module for the clone, should it be a child of a container.</param>
+        /// <param name="preInitCallback">Optional pre-Init callback to be invoked during creation.</param>
+        /// <returns>The cloned module</returns>
+        public static T
+        CloneWithPrivatePatches<T>(
+            T source,
+            Module parent = null,
+            PreInitDelegate<T> preInitCallback = null) where T : Module, new()
+        {
+            var clone = Create<T>(parent, preInitCallback);
+            clone.PrivatePatches.AddRange(source.PrivatePatches);
+            if (source is IChildModule)
+            {
+                clone.PrivatePatches.AddRange((source as IChildModule).Parent.PrivatePatches);
+            }
+            return clone;
+        }
+
+        /// <summary>
         /// Register a path against a particular key for the module. Useful for output paths that are referenced in dependents.
         /// </summary>
         /// <param name="key">Key.</param>
