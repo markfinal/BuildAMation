@@ -21,6 +21,7 @@ Feel free to fork BuildAMation to make changes, and submit pull requests.
     * If adding a new test, add it to the list of tests to run in tests/bamtests.py, for each valid build mode on each valid platform.
     * Run the tests with a wide-range of applicable toolchain versions.
 * Additions should be demonstrated to be compatible with all build modes. There are some exceptions to this rule (e.g. publishing) but these should be discussed in the Issue tracker.
+* All changes should be thread-safe where possible. Exercise changes (more than once) with the ```-j=0``` command line option to ensure there are no threading issues.
 * For each commit, modify Changelog.txt and reference the issue number. Please provide change descriptions that will be beneficial to other readers. Include a date when the change was made. The format for each line in Changelog.txt is
 ```
 dd-mmm-yyyy <Fixes|Issue> #<number>. <Description of change>
