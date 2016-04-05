@@ -131,6 +131,7 @@ def make_tar_distribution(options):
             if os.path.isdir(os.path.join(bam_dir, "bin")):
                 tar.add(os.path.join(bam_dir, "bin"), filter=windows_executable_filter)
             tar.add(os.path.join(bam_dir, "Changelog.txt"))
+            tar.add(os.path.join(bam_dir, "CONTRIBUTING.md"))
             tar.add(os.path.join(bam_dir, "env.bat"))
             tar.add(os.path.join(bam_dir, "env.sh"))
             tar.add(os.path.join(bam_dir, "MS-PL.md"))
@@ -160,6 +161,7 @@ def make_zip_distribution(options):
             if os.path.isdir(os.path.join(bam_dir, "bin")):
                 recursive_write(zip_object, os.path.join(bam_dir, "bin"))
             zip_object.write(os.path.join(bam_dir, "Changelog.txt"))
+            zip_object.write(os.path.join(bam_dir, "CONTRIBUTING.md"))
             zip_object.write(os.path.join(bam_dir, "env.bat"))
             zip_object.write(os.path.join(bam_dir, "env.sh"))
             zip_object.write(os.path.join(bam_dir, "License.md"))
