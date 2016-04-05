@@ -73,18 +73,26 @@ def clean_clone():
 
 
 def update_version_numbers(options):
+    # fileinput redirects sys.stdout, so be sure that any issues result in fileinput close being called
+    # can't use 'with' as "FileInput instance has no attribute '__exit__'"
     common_assembly_info_path = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
-    for line in fileinput.input(common_assembly_info_path, inplace=1):  # , backup='.bk'):
-        line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)',
-                      'AssemblyInformationalVersion("%s")' % options.version,
-                      line.rstrip())
-        print line
+    try:
+        for line in fileinput.input(common_assembly_info_path, inplace=1):  # , backup='.bk'):
+            line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)',
+                          'AssemblyInformationalVersion("%s")' % options.version,
+                          line.rstrip())
+            print line
+    finally:
+        fileinput.close()
     doxyconfig_path = os.path.join(os.getcwd(), "docsrc", "BuildAMationDoxy")
-    for line in fileinput.input(doxyconfig_path, inplace=1):  # , backup='.bk'):
-        if line.startswith('PROJECT_NUMBER'):
-            print "PROJECT_NUMBER = %s" % options.version,
-        else:
-            print line,
+    try:
+        for line in fileinput.input(doxyconfig_path, inplace=1):  # , backup='.bk'):
+            if line.startswith('PROJECT_NUMBER'):
+                print "PROJECT_NUMBER = %s" % options.version,
+            else:
+                print line,
+    finally:
+        fileinput.close()
 
 
 def build():
