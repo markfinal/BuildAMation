@@ -22,5 +22,11 @@ Feel free to fork BuildAMation to make changes, and submit pull requests.
 ```
 dd-mmm-yyyy <Fixes|Issue> #<number>. <Description of change>
 ```
+* Commit messages use the same text as for the Changelog.txt line, but replace the date with an abbreviation of which part of the source tree was modified as an indication of what changed. Copying and pasting from the Changelog entry is encouraged. For example, here are changes to the Core assembly, and individual packages, in separate commits:
+```
+[Core] Fixes #123. Added function Bam.Core.foobar that does ...
+[packages,C] Fixes #456. Modified the output path for dynamic libraries ...
+[packages,Gcc,5.0] Fixes #789. Added C++14 support to ....
+```
 * Please follow the coding style in existing source files.
 * Preference is to use a minimal number of ```using``` statements, so code is explicit about the namespaces for functions. There are some exceptions to this, including binding extension methods. Use of ```var``` for automatic type deduction of variables to reduce statement length.
