@@ -30,12 +30,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef DYNAMIC_LIB_H
 #define DYNAMIC_LIB_H
 
-extern void
-#ifdef DYNAMICLIB_SOURCE
-__declspec(dllexport)
-#else
-__declspec(dllimport)
+/* specific platform settings */
+#if defined(_WIN32)
+ #define DYNAMICLIB_API_EXPORT __declspec(dllexport)
+ #define DYNAMICLIB_API_IMPORT __declspec(dllimport)
+#elif __GNUC__ >= 4
+  #define DYNAMICLIB_API_EXPORT __attribute__ ((visibility("default")))
 #endif
-NormalDynamicFunction();
+
+/* defaults */
+#ifndef DYNAMICLIB_API_EXPORT
+ #define DYNAMICLIB_API_EXPORT /* empty */
+#endif
+#ifndef DYNAMICLIB_API_IMPORT
+ #define DYNAMICLIB_API_IMPORT /* empty */
+#endif
+
+/* Note: could have used D_BAM_DYNAMICLIBRARY_BUILD, but this demonstrates things better */
+#if defined(DYNAMICLIB_SOURCE)
+#define DYNAMICLIB_API DYNAMICLIB_API_EXPORT
+#else
+#define DYNAMICLIB_API DYNAMICLIB_API_IMPORT
+#endif
+
+extern DYNAMICLIB_API void NormalDynamicFunction();
 
 #endif /* DYNAMIC_LIB_H */
