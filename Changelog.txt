@@ -1,3 +1,5 @@
+05-Apr-2016 ======== Version 1.0.1 Release ========
+
 05-Apr-2016 Doc packages are now titled 'apidocs' to be clear what they contain.
 
 02-Apr-2016 Fixes #190. Addendum: Xcode projects with no build output (e.g. those that just copy headers) cannot be added as a target dependency (i.e. an order dependency) due to limitations of how target dependencies are managed in Xcode projects.
