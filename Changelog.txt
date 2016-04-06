@@ -1,3 +1,5 @@
+06-Apr-2016 Issue #197. Added a new parameter to Bam.Core.Module.Create, postInitCallback, of type Bam.Core.Module.PostInitDelegate. This is similar to the PreInitDelegate, but invoked after the Module's Init function is called. This is also now an optional parameter to CloneWithPrivatePatches. This is to allow custom configuration of Module data.
+
 06-Apr-2016 Issue #197. Added Bam.Core.ICloneModule, which modules can implement if Bam.Core.Module.CloneWithPrivatePatches is insufficient. For example, if the module has properties that must be assigned in a particular order.
 
 05-Apr-2016 Issue #197. Added new test, EmbedStaticIntoDynamicLibrary, to exercise ExtendSource and ExtendSourcePublicly.

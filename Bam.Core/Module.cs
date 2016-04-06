@@ -135,23 +135,33 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Define the delegate that can be invoked between module construction and Init being called.
+        /// Define the delegate that can be invoked after module construction but before Init has been called.
         /// </summary>
+        /// <typeparam name="T">Type of the module that has been created.</typeparam>
+        /// <param name="module">Module that has been created, but Init has yet to be called.</param>
         public delegate void PreInitDelegate<T>(T module);
 
         /// <summary>
-        /// Create the specified module type T, given an optional parent and pre-init callback.
+        /// Define the delegate that can be invoked after module construction and Init have both been called.
+        /// </summary>
+        /// <param name="module">The module that has just been created and initialized.</param>
+        public delegate void PostInitDelegate(Module module);
+
+        /// <summary>
+        /// Create the specified module type T, given an optional parent module (for collections), pre-init and post-init callbacks.
         /// If a parent is provided, two macros are defined:
         /// 'parentmodulename' which is linked to the parent module's 'modulename' macro
         /// 'encapsulatedparentmodulename' which is linked to the parent's encapsulated module's 'modulename' macro
         /// </summary>
-        /// <param name="parent">Parent.</param>
-        /// <param name="preInitCallback">Pre init callback.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        /// <param name="parent">Parent module for which this new module is intended as a child.</param>
+        /// <param name="preInitCallback">Callback invoked after module creation, but prior to Init.</param>
+        /// <param name="postInitCallback">Callback invoked after Init.</param>
+        /// <typeparam name="T">The type of the module to create.</typeparam>
         public static T
         Create<T>(
             Module parent = null,
-            PreInitDelegate<T> preInitCallback = null) where T : Module, new()
+            PreInitDelegate<T> preInitCallback = null,
+            PostInitDelegate postInitCallback = null) where T : Module, new()
         {
             try
             {
@@ -173,6 +183,10 @@ namespace Bam.Core
                     preInitCallback(module);
                 }
                 module.Init(parent);
+                if (postInitCallback != null)
+                {
+                    postInitCallback(module);
+                }
                 module.GetExecutionPolicy(Graph.Instance.Mode);
                 AllModules.Add(module);
                 return module;
@@ -196,14 +210,16 @@ namespace Bam.Core
         /// <param name="source">Module to be cloned.</param>
         /// <param name="parent">Optional parent module for the clone, should it be a child of a container.</param>
         /// <param name="preInitCallback">Optional pre-Init callback to be invoked during creation.</param>
+        /// <param name="postInitCallback">Optional post-Init callback to be invoked after Init has returned.</param>
         /// <returns>The cloned module</returns>
         public static T
         CloneWithPrivatePatches<T>(
             T source,
             Module parent = null,
-            PreInitDelegate<T> preInitCallback = null) where T : Module, new()
+            PreInitDelegate<T> preInitCallback = null,
+            PostInitDelegate postInitCallback = null) where T : Module, new()
         {
-            var clone = Create<T>(parent, preInitCallback);
+            var clone = Create<T>(parent, preInitCallback, postInitCallback);
             clone.PrivatePatches.AddRange(source.PrivatePatches);
             if (source is IChildModule)
             {
