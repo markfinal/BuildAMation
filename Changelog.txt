@@ -1,3 +1,5 @@
+06-Apr-2016 Fixes #204. C.ICommonLinkerSettings.Libraries are now honoured in Xcode projects. Since Xcode projects require full paths to libraries, library search paths are searched to find each library. If they are not found, SDK library paths are searched. If the library is not found, then an exception is raised.
+
 06-Apr-2016 Issue #204. Added test LinkPrebuiltLibrary, to exercise linking libraries that already exist, and aren't built as part of a Bam build.
 
 06-Apr-2016 Issue #197. CModuleContainer.ExtendWith now identifies any cloned object files with sources that implement Bam.Core.ICloneModule. This is to identify cases where the source file has been procedurally generated, and thus also requires cloning, so that the source generation is also merged into the module ExtendWith was invoked on.

@@ -49,6 +49,8 @@ namespace Clang
             {
                 this.MinimumVersionSupported = this.SDK;
             }
+
+            this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
         }
 
         public override object this[string index]
@@ -97,6 +99,19 @@ namespace Clang
             get
             {
                 return this.Meta["LastUpgradeCheck"] as string;
+            }
+        }
+
+        public string SDKPath
+        {
+            get
+            {
+                return this.Meta["SDKPath"] as string;
+            }
+
+            private set
+            {
+                this.Meta["SDKPath"] = value;
             }
         }
     }

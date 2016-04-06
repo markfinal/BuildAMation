@@ -256,6 +256,7 @@ namespace XcodeBuilder
                 case ESourceTree.NA:
                 case ESourceTree.Absolute:
                 case ESourceTree.Group:
+                case ESourceTree.SDKRoot:
                     path = this.Path.Parse();
                     break;
 
