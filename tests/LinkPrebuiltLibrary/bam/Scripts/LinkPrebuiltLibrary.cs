@@ -19,6 +19,10 @@ namespace LinkPrebuiltLibrary
                 {
                     linker.Libraries.AddUnique("-lcurses");
                 }
+                else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                {
+                        linker.Libraries.AddUnique("-ldl");
+                }
                 else
                 {
                 }
