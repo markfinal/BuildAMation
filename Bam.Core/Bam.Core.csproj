@@ -86,6 +86,7 @@
     <Compile Include="Graph.cs" />
     <Compile Include="Interfaces\IBuildModeMetaData.cs" />
     <Compile Include="Interfaces\IChildModule.cs" />
+    <Compile Include="Interfaces\ICloneModule.cs" />
     <Compile Include="Interfaces\ICommandLineArgument.cs" />
     <Compile Include="Interfaces\ICommandLineTool.cs" />
     <Compile Include="Interfaces\IInputPath.cs" />
