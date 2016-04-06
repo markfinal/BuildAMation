@@ -10,23 +10,36 @@ namespace LinkPrebuiltLibrary
         {
             base.Init(parent);
 
-            this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
 
             this.PrivatePatch(settings =>
-            {
-                var linker = settings as C.ICommonLinkerSettings;
-                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
                 {
-                    linker.Libraries.AddUnique("-lcurses");
-                }
-                else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-                {
+                    var linker = settings as C.ICommonLinkerSettings;
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+                    {
+                        linker.Libraries.AddUnique("-lcurses");
+                    }
+                    else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                    {
                         linker.Libraries.AddUnique("-ldl");
-                }
-                else
-                {
-                }
-            });
+                    }
+                    else
+                    {
+                        if (this.Linker is VisualCCommon.LinkerBase)
+                        {
+                            linker.Libraries.AddUnique("Ws2_32.lib");
+                        }
+                        else
+                        {
+                            linker.Libraries.AddUnique("-lws2_32");
+                        }
+                    }
+                });
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+            }
         }
     }
 }
