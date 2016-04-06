@@ -166,18 +166,33 @@ namespace C
             {
                 var clonedChild = Bam.Core.Module.CloneWithPrivatePatches(child, this);
 
+                // attach the cloned object file into the container so parentage is clear for macros
+                (clonedChild as Bam.Core.IChildModule).Parent = this;
+                this.children.Add(clonedChild);
+                this.DependsOn(clonedChild);
+
+                // source might be a buildable module (derived from C.SourceFile), or non-buildable module (C.SourceFile), or just a path
                 if (clonedChild is IRequiresSourceModule)
                 {
-                    (clonedChild as IRequiresSourceModule).Source = (child as IRequiresSourceModule).Source;
+                    var sourceOfChild = (child as IRequiresSourceModule).Source;
+                    if (sourceOfChild is Bam.Core.ICloneModule)
+                    {
+                        (sourceOfChild as Bam.Core.ICloneModule).Clone(this, (newModule) =>
+                            {
+                                // associate the cloned source, to the cloned object file
+                                // might need to happen prior to type-specific post-cloning ops
+                                (clonedChild as IRequiresSourceModule).Source = newModule as SourceFile;
+                            });
+                    }
+                    else
+                    {
+                        (clonedChild as IRequiresSourceModule).Source = sourceOfChild;
+                    }
                 }
                 else
                 {
                     clonedChild.InputPath.Aliased(child.InputPath);
                 }
-
-                (clonedChild as Bam.Core.IChildModule).Parent = this;
-                this.children.Add(clonedChild);
-                this.DependsOn(clonedChild);
             }
         }
 
