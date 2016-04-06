@@ -1,5 +1,5 @@
 #if defined(D_BAM_PLATFORM_OSX)
-#include <ncurses.h>
+#include <curses.h>
 #elif defined(D_BAM_PLATFORM_LINUX)
 #include <dlfcn.h>
 #elif defined(D_BAM_PLATFORM_WINDOWS)
