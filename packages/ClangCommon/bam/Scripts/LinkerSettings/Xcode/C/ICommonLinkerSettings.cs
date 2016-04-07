@@ -65,7 +65,9 @@ namespace ClangCommon
                     continue;
                 }
                 // look for dylibs first
-                var results = System.IO.Directory.GetFiles(realSearchpath, System.String.Format("lib{0}.dylib", libname));
+                var pattern = System.String.Format("lib{0}.dylib", libname);
+                Bam.Core.Log.DebugMessage("Searching {0} for {1}", realSearchpath, pattern);
+                var results = System.IO.Directory.GetFiles(realSearchpath, pattern);
                 if (results.Length > 0)
                 {
                     if (results.Length > 1)
@@ -81,7 +83,9 @@ namespace ClangCommon
                 else
                 {
                     // then static libs
-                    results = System.IO.Directory.GetFiles(realSearchpath, System.String.Format("lib{0}.a", libname));
+                    pattern = System.String.Format("lib{0}.a", libname);
+                    Bam.Core.Log.DebugMessage("Searching {0} for {1}", realSearchpath, pattern);
+                    results = System.IO.Directory.GetFiles(realSearchpath, pattern);
                     if (results.Length > 0)
                     {
                         if (results.Length > 1)
@@ -107,7 +111,9 @@ namespace ClangCommon
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
             var searchPath = System.String.Format("{0}/usr/lib", meta.SDKPath);
-            var results = System.IO.Directory.GetFiles(searchPath, System.String.Format("lib{0}.dylib", libname));
+            var pattern = System.String.Format("lib{0}.dylib", libname);
+            Bam.Core.Log.DebugMessage("Searching {0} for {1}", searchPath, pattern);
+            var results = System.IO.Directory.GetFiles(searchPath, pattern);
             if (results.Length > 0)
             {
                 if (results.Length > 1)
@@ -119,6 +125,24 @@ namespace ClangCommon
                     System.String.Format("usr/lib/lib{0}.dylib", libname),
                     XcodeBuilder.FileReference.EFileType.DynamicLibrary,
                     XcodeBuilder.FileReference.ESourceTree.SDKRoot);
+            }
+            else
+            {
+                pattern = System.String.Format("lib{0}.a", libname);
+                Bam.Core.Log.DebugMessage("Searching {0} for {1}", searchPath, pattern);
+                results = System.IO.Directory.GetFiles(searchPath, pattern);
+                if (results.Length > 0)
+                {
+                    if (results.Length > 1)
+                    {
+                        throw new Bam.Core.Exception("Found {0} instances of {1} static libraries in {2}. Which was intended?", results.Length, libname, searchPath);
+                    }
+                    return CreateLinkableReferences(
+                        target,
+                        System.String.Format("usr/lib/lib{0}.a", libname),
+                        XcodeBuilder.FileReference.EFileType.Archive,
+                        XcodeBuilder.FileReference.ESourceTree.SDKRoot);
+                }
             }
             return null;
         }
