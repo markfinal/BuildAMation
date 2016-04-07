@@ -71,9 +71,15 @@ namespace MingwCommon
                     case C.Cxx.ELanguageStandard.Cxx98:
                         commandLine.Add("-std=c++98");
                         break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx98:
+                        commandLine.Add("-std=gnu++98");
+                        break;
+
                     case C.Cxx.ELanguageStandard.Cxx11:
                         commandLine.Add("-std=c++11");
                         break;
+
                     default:
                         throw new Bam.Core.Exception("Invalid C++ language standard, {0}", settings.LanguageStandard.Value.ToString());
                 }

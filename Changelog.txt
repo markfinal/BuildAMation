@@ -1,3 +1,5 @@
+07-Apr-2016 Fixes #205. Mingw now also supports the C.Cxx.ELanguageStandard.GnuCxx98 mode.
+
 06-Apr-2016 Fixes #204. C.ICommonLinkerSettings.Libraries are now honoured in Xcode projects. Since Xcode projects require full paths to libraries, library search paths are searched to find each library. If they are not found, SDK library paths are searched. If the library is not found, then an exception is raised.
 
 06-Apr-2016 Issue #204. Added test LinkPrebuiltLibrary, to exercise linking libraries that already exist, and aren't built as part of a Bam build.
