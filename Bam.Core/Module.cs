@@ -642,11 +642,12 @@ namespace Bam.Core
         /// Order of evaluation is:
         /// 1. If this is a child module, and honourParents is true, apply private patches from the parent.
         /// 2. Apply private patches of this.
-        /// 3. Apply inherited private patches of this.
-        /// 4. If this is a child module, and honourParents is true, apply public patches from the parent.
-        /// 5. Apply public patches of this.
-        /// 6. If this is a child module, and honourParents is true, apply any inherited patches from the parent.
-        /// 7. Apply inherited public patches of this.
+        /// 3. If this is a child module, and honourParents is true, apply inherited private patches from the parent.
+        /// 4. Apply inherited private patches of this.
+        /// 5. If this is a child module, and honourParents is true, apply public patches from the parent.
+        /// 6. Apply public patches of this.
+        /// 7. If this is a child module, and honourParents is true, apply any inherited patches from the parent.
+        /// 8. Apply inherited public patches of this.
         /// Inherited patches are the mechanism for transient dependencies, where dependencies filter up the module hierarchy.
         /// See UsePublicPatches and UsePublicPatchesPrivately.
         /// </summary>
