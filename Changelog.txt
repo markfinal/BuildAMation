@@ -1,3 +1,5 @@
+08-Apr-2016 Fixes #207. Added predication on the settings type in VisualCCommon.Compiler's PublicPatch for C.ICommonCompilerSettings. This would have resulted in a Null reference exception if applied to any module Settings class that doesn't implement that interface. This could happen for procedurally generated source files with custom Settings.
+
 07-Apr-2016 Fixes #205. Mingw now also supports the C.Cxx.ELanguageStandard.GnuCxx98 mode.
 
 06-Apr-2016 Fixes #204. C.ICommonLinkerSettings.Libraries are now honoured in Xcode projects. Since Xcode projects require full paths to libraries, library search paths are searched to find each library. If they are not found, SDK library paths are searched. If the library is not found, then an exception is raised.

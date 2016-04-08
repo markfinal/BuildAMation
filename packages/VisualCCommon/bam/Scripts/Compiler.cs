@@ -50,10 +50,13 @@ namespace VisualCCommon
             }
 
             this.PublicPatch((settings, appliedTo) =>
-            {
-                var compilation = settings as C.ICommonCompilerSettings;
-                compilation.SystemIncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
-            });
+                {
+                    var compilation = settings as C.ICommonCompilerSettings;
+                    if (null != compilation)
+                    {
+                        compilation.SystemIncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
+                    }
+                });
 
             if (meta.UseWindowsSDKPublicPatches)
             {
