@@ -31,6 +31,122 @@ namespace ClangCommon
 {
     public static partial class XcodeLinkerImplementation
     {
+        private static XcodeBuilder.BuildFile
+        CreateLinkableReferences(
+            XcodeBuilder.Target target,
+            string pathToLibrary,
+            XcodeBuilder.FileReference.EFileType type,
+            XcodeBuilder.FileReference.ESourceTree sourcetree)
+        {
+            var fileRef = target.Project.EnsureFileReferenceExists(
+                Bam.Core.TokenizedString.CreateVerbatim(pathToLibrary),
+                XcodeBuilder.FileReference.EFileType.Archive,
+                true,
+                sourcetree);
+            var buildFile = target.EnsureFrameworksBuildFileExists(
+                fileRef.Path,
+                XcodeBuilder.FileReference.EFileType.Archive);
+            target.Project.MainGroup.AddChild(fileRef);
+            return buildFile;
+        }
+
+        private static XcodeBuilder.BuildFile
+        FindLibraryInLibrarySearchPaths(
+            XcodeBuilder.Target target,
+            C.ICommonLinkerSettings settings,
+            string libname)
+        {
+            foreach (var searchPath in settings.LibraryPaths)
+            {
+                var realSearchpath = searchPath.Parse();
+                // some lib paths might not exist yet
+                if (!System.IO.Directory.Exists(realSearchpath))
+                {
+                    continue;
+                }
+                // look for dylibs first
+                var pattern = System.String.Format("lib{0}.dylib", libname);
+                Bam.Core.Log.DebugMessage("Searching {0} for {1}", realSearchpath, pattern);
+                var results = System.IO.Directory.GetFiles(realSearchpath, pattern);
+                if (results.Length > 0)
+                {
+                    if (results.Length > 1)
+                    {
+                        throw new Bam.Core.Exception("Found {0} instances of {1} dynamic libraries in {2}. Which was intended?", results.Length, libname, realSearchpath);
+                    }
+                    return CreateLinkableReferences(
+                        target,
+                        System.String.Format("{0}/lib{1}.dylib", realSearchpath, libname),
+                        XcodeBuilder.FileReference.EFileType.DynamicLibrary,
+                        XcodeBuilder.FileReference.ESourceTree.Absolute);
+                }
+                else
+                {
+                    // then static libs
+                    pattern = System.String.Format("lib{0}.a", libname);
+                    Bam.Core.Log.DebugMessage("Searching {0} for {1}", realSearchpath, pattern);
+                    results = System.IO.Directory.GetFiles(realSearchpath, pattern);
+                    if (results.Length > 0)
+                    {
+                        if (results.Length > 1)
+                        {
+                            throw new Bam.Core.Exception("Found {0} instances of {1} static libraries in {2}. Which was intended?", results.Length, libname, realSearchpath);
+                        }
+                        return CreateLinkableReferences(
+                            target,
+                            System.String.Format("{0}/lib{1}.a", realSearchpath, libname),
+                            XcodeBuilder.FileReference.EFileType.Archive,
+                            XcodeBuilder.FileReference.ESourceTree.Absolute);
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static XcodeBuilder.BuildFile
+        FindLibraryInSDKSearchPaths(
+            XcodeBuilder.Target target,
+            C.ICommonLinkerSettings settings,
+            string libname)
+        {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            var searchPath = System.String.Format("{0}/usr/lib", meta.SDKPath);
+            var pattern = System.String.Format("lib{0}.dylib", libname);
+            Bam.Core.Log.DebugMessage("Searching {0} for {1}", searchPath, pattern);
+            var results = System.IO.Directory.GetFiles(searchPath, pattern);
+            if (results.Length > 0)
+            {
+                if (results.Length > 1)
+                {
+                    throw new Bam.Core.Exception("Found {0} instances of {1} dynamic libraries in {2}. Which was intended?", results.Length, libname, searchPath);
+                }
+                return CreateLinkableReferences(
+                    target,
+                    System.String.Format("usr/lib/lib{0}.dylib", libname),
+                    XcodeBuilder.FileReference.EFileType.DynamicLibrary,
+                    XcodeBuilder.FileReference.ESourceTree.SDKRoot);
+            }
+            else
+            {
+                pattern = System.String.Format("lib{0}.a", libname);
+                Bam.Core.Log.DebugMessage("Searching {0} for {1}", searchPath, pattern);
+                results = System.IO.Directory.GetFiles(searchPath, pattern);
+                if (results.Length > 0)
+                {
+                    if (results.Length > 1)
+                    {
+                        throw new Bam.Core.Exception("Found {0} instances of {1} static libraries in {2}. Which was intended?", results.Length, libname, searchPath);
+                    }
+                    return CreateLinkableReferences(
+                        target,
+                        System.String.Format("usr/lib/lib{0}.a", libname),
+                        XcodeBuilder.FileReference.EFileType.Archive,
+                        XcodeBuilder.FileReference.ESourceTree.SDKRoot);
+                }
+            }
+            return null;
+        }
+
         public static void
         Convert(
             this C.ICommonLinkerSettings settings,
@@ -98,6 +214,26 @@ namespace ClangCommon
                     option.Add(path.Parse());
                 }
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
+            }
+            foreach (var path in settings.Libraries)
+            {
+                var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                var encapsulating = module.GetEncapsulatingReferencedModule();
+                var target = workspace.EnsureTargetExists(encapsulating);
+                var libname = path.Replace("-l", string.Empty);
+
+                // need to find where this library is because Xcode requires a path to it
+                // first check all of the library paths
+                var buildFile = FindLibraryInLibrarySearchPaths(target, settings, libname);
+                if (null == buildFile)
+                {
+                    // no match, so try the current SDK path
+                    buildFile = FindLibraryInSDKSearchPaths(target, settings, libname);
+                    if (null == buildFile)
+                    {
+                        throw new Bam.Core.Exception("Unable to find library {0} on any search path or in the SDK", path);
+                    }
+                }
             }
             if (settings.DebugSymbols)
             {

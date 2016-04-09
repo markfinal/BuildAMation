@@ -150,6 +150,52 @@ namespace C
             return modulesCreated;
         }
 
+        /// <summary>
+        /// Take a container of source, and clone each of its children and embed them into a container of the same type.
+        /// This is a mechanism for essentially embedding the object files that would be in a static library into a dynamic
+        /// library in a cross-platform way.
+        /// In the clone, private patches are copied both from the container, and also from each child in turn.
+        /// No use of any public patches is made here.
+        /// </summary>
+        /// <param name="otherSource">The container of object files to embed into the current container.</param>
+        public void
+        ExtendWith(
+            CModuleContainer<ChildModuleType> otherSource)
+        {
+            foreach (var child in otherSource.Children)
+            {
+                var clonedChild = Bam.Core.Module.CloneWithPrivatePatches(child, this);
+
+                // attach the cloned object file into the container so parentage is clear for macros
+                (clonedChild as Bam.Core.IChildModule).Parent = this;
+                this.children.Add(clonedChild);
+                this.DependsOn(clonedChild);
+
+                // source might be a buildable module (derived from C.SourceFile), or non-buildable module (C.SourceFile), or just a path
+                if (clonedChild is IRequiresSourceModule)
+                {
+                    var sourceOfChild = (child as IRequiresSourceModule).Source;
+                    if (sourceOfChild is Bam.Core.ICloneModule)
+                    {
+                        (sourceOfChild as Bam.Core.ICloneModule).Clone(this, (newModule) =>
+                            {
+                                // associate the cloned source, to the cloned object file
+                                // might need to happen prior to type-specific post-cloning ops
+                                (clonedChild as IRequiresSourceModule).Source = newModule as SourceFile;
+                            });
+                    }
+                    else
+                    {
+                        (clonedChild as IRequiresSourceModule).Source = sourceOfChild;
+                    }
+                }
+                else
+                {
+                    clonedChild.InputPath.Aliased(child.InputPath);
+                }
+            }
+        }
+
         // note that this is 'new' to hide the version in Bam.Core.Module
         // C# does not support return type covariance (https://en.wikipedia.org/wiki/Covariant_return_type)
         public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children

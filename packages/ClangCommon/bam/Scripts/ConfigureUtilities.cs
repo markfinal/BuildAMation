@@ -55,6 +55,13 @@ namespace ClangCommon
             }
         }
 
+        public static string
+        GetSDKPath(
+            string sdkVersion)
+        {
+            return RunExecutable("xcrun", System.String.Format("--sdk {0} -show-sdk-path", sdkVersion));
+        }
+
         private static string
         RunExecutable(
             string executable,

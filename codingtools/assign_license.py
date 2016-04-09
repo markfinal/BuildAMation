@@ -106,5 +106,5 @@ if __name__ == "__main__":
             extensions = ['.cs']
         process_path(sys.argv[1], extensions)
     else:
-        process_path('.', ['.cs'], ['./Bam.Core/LimitedConcurrencyLevelTaskScheduler.cs'])
+        process_path('.', ['.cs'], [os.sep.join(['.', 'Bam.Core', 'LimitedConcurrencyLevelTaskScheduler.cs'])])
         process_path('tests', ['.h', '.c', '.cpp', '.m', '.mm'])
