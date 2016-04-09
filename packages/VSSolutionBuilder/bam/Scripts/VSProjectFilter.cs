@@ -37,19 +37,18 @@ namespace VSSolutionBuilder
         private void
         AddFilters(
             Bam.Core.Module module,
-            Bam.Core.TokenizedString filterPath)
+            string filterPath)
         {
-            var path = filterPath.Parse();
-            if (!this.Filters.ContainsKey(path))
+            if (!this.Filters.ContainsKey(filterPath))
             {
-                this.Filters.Add(path, new Bam.Core.Array<VSSettingsGroup>());
+                this.Filters.Add(filterPath, new Bam.Core.Array<VSSettingsGroup>());
             }
-            if (!path.Contains(System.IO.Path.DirectorySeparatorChar))
+            if (!filterPath.Contains(System.IO.Path.DirectorySeparatorChar))
             {
                 return;
             }
-            // the entire hierarchy needs to be added, even if they are empty
-            var parent = module.CreateTokenizedString("@dir($(0))", filterPath);
+            // the entire hierarchy needs to be added, even if there are no files in each subdirectory
+            var parent = System.IO.Path.GetDirectoryName(filterPath);
             this.AddFilters(module, parent);
         }
 
@@ -57,7 +56,7 @@ namespace VSSolutionBuilder
         AddFile(
             VSSettingsGroup sourceGroup)
         {
-            this.AddFilters(sourceGroup.Module, sourceGroup.RelativeDirectory);
+            this.AddFilters(sourceGroup.Module, sourceGroup.RelativeDirectory.Parse());
             var filter = this.Filters[sourceGroup.RelativeDirectory.Parse()];
             if (filter.Any(item => item.Include.Parse() == sourceGroup.Include.Parse()))
             {
