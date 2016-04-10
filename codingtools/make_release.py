@@ -17,6 +17,9 @@ filesToDelete = [
     ".gitignore"
 ]
 
+# these are folders that will never appear in a distribution
+# either because they have no place there
+# or they are much older packages that have not been upgraded
 dirsToDelete = [
     "codingtools",
     "packages/Clang-3.1",
@@ -37,23 +40,18 @@ dirsToDelete = [
     "packages/WindowsSDK-7.1",
     "packages/XmlUtilities"
 ]
-# TODO remove .git
 
 
-def clone_buildamation(directory_path, options):
-    branch = options.branch
-    if not branch:
-        # this is a tag
-        branch = "v%s" % options.version
+def clone_buildamation(path_to_clone_at, options):
     args = [
         "git",
         "clone",
         "--depth",
         "1",
         "--branch",
-        branch,
+        options.tag,
         "https://github.com/markfinal/BuildAMation",
-        directory_path
+        path_to_clone_at
     ]
     print "Running: %s" % ' '.join(args)
     subprocess.check_call(args)
@@ -61,7 +59,7 @@ def clone_buildamation(directory_path, options):
     sys.stdout.flush()
 
 
-def clean_clone():
+def remove_unnecessary_files_from_clone():
     for file_path in filesToDelete:
         print >>sys.stdout, "Deleting file_path %s" % file_path
         sys.stdout.flush()
@@ -72,8 +70,8 @@ def clean_clone():
         shutil.rmtree(directory)
 
 
-def update_version_numbers(options):
-    # fileinput redirects sys.stdout, so be sure that any issues result in fileinput close being called
+def update_version_numbers_in_files(options):
+    # fileinput redirects sys.stdout, so be sure that any issues result in fileinput close() being called
     # can't use 'with' as "FileInput instance has no attribute '__exit__'"
     common_assembly_info_path = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
     try:
@@ -95,7 +93,7 @@ def update_version_numbers(options):
         fileinput.close()
 
 
-def build():
+def build_software():
     print >>sys.stdout, "Starting build in %s" % os.getcwd()
     sys.stdout.flush()
     if platform.system() == "Windows":
@@ -116,6 +114,8 @@ def build():
 
 
 def build_documentation(options):
+    if not options.doxygenpath:
+        return
     args = [options.doxygenpath, "docsrc/BuildAMationDoxy"]
     print "Running: %s" % ' '.join(args)
     subprocess.check_call(args)
@@ -126,8 +126,6 @@ def make_tar_distribution(options):
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
         tar_path = os.path.join(checkout_dir, "BuildAMation-%s-AnyCPU.tgz" % options.version)
-        print >>sys.stdout, "Writing tar file_path %s" % tar_path
-        sys.stdout.flush()
         os.chdir(checkout_dir)
 
         def windows_executable_filter(tarinfo):
@@ -152,7 +150,7 @@ def make_tar_distribution(options):
             tar.add(os.path.join(bam_dir, "License.md"))
             tar.add(os.path.join(bam_dir, "packages"))
             tar.add(os.path.join(bam_dir, "tests"), filter=windows_executable_filter)
-        print >>sys.stdout, "Finished writing tar file_path %s" % tar_path
+        print >>sys.stdout, "-> Tar distribution: %s" % tar_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
@@ -163,8 +161,6 @@ def make_zip_distribution(options):
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
         zip_path = os.path.join(checkout_dir, "BuildAMation-%s-AnyCPU.zip" % options.version)
-        print >>sys.stdout, "Writing zip file_path %s" % zip_path
-        sys.stdout.flush()
         os.chdir(checkout_dir)
 
         def recursive_write(zip_object, dir_to_add):
@@ -182,35 +178,35 @@ def make_zip_distribution(options):
             zip_object.write(os.path.join(bam_dir, "MS-PL.md"))
             recursive_write(zip_object, os.path.join(bam_dir, "packages"))
             recursive_write(zip_object, os.path.join(bam_dir, "tests"))
-        print >>sys.stdout, "Finished writing zip file_path %s" % zip_path
+        print >>sys.stdout, "-> Zip distribution: %s" % zip_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
 
 
 def make_tar_docs_distribution(options):
+    if not options.doxygenpath:
+        return
     cwd = os.getcwd()
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
         tar_path = os.path.join(checkout_dir, "BuildAMation-%s-apidocs.tgz" % options.version)
-        print >>sys.stdout, "Writing tar file_path %s" % tar_path
-        sys.stdout.flush()
         os.chdir(checkout_dir)
         with tarfile.open(tar_path, "w:gz") as tar:
             tar.add(os.path.join(bam_dir, "docs"))
-        print >>sys.stdout, "Finished writing tar file_path %s" % tar_path
+        print >>sys.stdout, "-> Tar API documentation: %s" % tar_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
 
 
 def make_zip_docs_distribution(options):
+    if not options.doxygenpath:
+        return
     cwd = os.getcwd()
     try:
         checkout_dir, bam_dir = os.path.split(cwd)
         zip_path = os.path.join(checkout_dir, "BuildAMation-%s-apidocs.zip" % options.version)
-        print >>sys.stdout, "Writing zip file_path %s" % zip_path
-        sys.stdout.flush()
         os.chdir(checkout_dir)
 
         def recursive_write(zip_object, dir_to_add):
@@ -219,22 +215,25 @@ def make_zip_docs_distribution(options):
                     zip_object.write(os.path.join(root, file_path))
         with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_object:
             recursive_write(zip_object, os.path.join(bam_dir, "docs"))
-        print >>sys.stdout, "Finished writing zip file_path %s" % zip_path
+        print >>sys.stdout, "-> Zip API documentation %s" % zip_path
         sys.stdout.flush()
     finally:
         os.chdir(cwd)
 
 
-def main(directory_path, options):
+def main(options):
     print >>sys.stdout, "Creating BuildAMation version %s" % options.version
     sys.stdout.flush()
-    clone_buildamation(directory_path, options)
     cwd = os.getcwd()
+    if options.tag:
+        cloningDir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.version)
+        os.makedirs(cloningDir)
+        clone_buildamation(cloningDir, options)
+        os.chdir(cloningDir)
+        remove_unnecessary_files_from_clone()
+        update_version_numbers_in_files(options)
     try:
-        os.chdir(directory_path)
-        clean_clone()
-        update_version_numbers(options)
-        build()
+        build_software()
         build_documentation(options)
         make_tar_distribution(options)
         make_zip_distribution(options)
@@ -246,26 +245,22 @@ def main(directory_path, options):
 
 if __name__ == "__main__":
     parser = OptionParser()
-    parser.add_option("-v", "--version", dest="version", help="Version to create")
-    parser.add_option("-b", "--branch", dest="branch", default=None, help="Override for branch to clone")
-    parser.add_option("-d", "--doxygen", dest="doxygenpath", default=None, help="Path to the doxygen executable")
+    parser.add_option("-t", "--tag", dest="tag", default=None, help="Git tag/branch to clone and build. Default is to use the existing clone, but version numbers are not modified")
+    parser.add_option("-v", "--version", dest="version", default=None, help="Override version to build. Required if the existing clone is used")
+    parser.add_option("-d", "--doxygen", dest="doxygenpath", default=None, help="Path to the doxygen executable. If not supplied, the documentation is not generated")
     (options, args) = parser.parse_args()
+    if not options.tag and not options.version:
+        parser.error("Building the current clone requires the version to be specified")
     if not options.version:
-        parser.error("Must supply a version")
-    if not options.doxygenpath:
-        parser.error("Must supply the path to the doxygen executable")
-        
-    tempDir = tempfile.mkdtemp()
-    cloningDir = os.path.join(tempDir, "BuildAMation-%s" % options.version)
-    os.makedirs(cloningDir)
+        options.version = options.tag[1:] # tags and branches use the format 'vmajor.minor.patch[phase]'
+
     try:
-        main(cloningDir, options)
+        main(options)
     except Exception, e:
         print >>sys.stdout, "*** Failure reason: %s" % str(e)
         sys.stdout.flush()
     finally:
-        print >>sys.stdout, "Deleting clone"
-        sys.stdout.flush()
+        pass
         # shutil.rmtree(cloningDir)
     print >>sys.stdout, "Done"
     sys.stdout.flush()
