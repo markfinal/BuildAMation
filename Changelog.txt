@@ -1,3 +1,5 @@
+10-Apr-2016 Fixes #212. Wrapped System.Threading.CancellationTokenSource in a using block to fix the resource leak identified by a Coverity scan.
+
 10-Apr-2016 Fixes #210. Add support in make_release.py to generate a build using the Coverity static analysis tools.
 
 10-Apr-2016 Fixes #211. Cleaned up make_release.py script to accept a git tag, and optionally a version number.
