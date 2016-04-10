@@ -93,9 +93,15 @@ def update_version_numbers_in_files(options):
         fileinput.close()
 
 
-def build_software():
+def build_software(options):
     print >>sys.stdout, "Starting build in %s" % os.getcwd()
     sys.stdout.flush()
+    build_args = []
+    if options.coveritypath:
+        os.environ["PATH"] += os.pathsep + options.coveritypath
+        build_args.extend(["cov-build", "--dir", "cov-int"])
+        if os.path.isdir('cov-int'):
+            shutil.rmtree('cov-int')
     if platform.system() == "Windows":
         # assume Visual Studio 2013
         if os.environ.has_key("ProgramFiles(x86)"):
@@ -104,11 +110,17 @@ def build_software():
             buildtool = r"C:\Program Files\MSBuild\12.0\bin\MSBuild.exe"
         if not os.path.isfile(buildtool):
             raise RuntimeError("Unable to locate msbuild at '%s'" % buildtool)
+        build_args.append(buildtool)
     elif platform.system() == "Darwin" or platform.system() == "Linux":
-        buildtool = "xbuild"
+        build_args.append("xbuild")
     else:
         raise RuntimeError("Unrecognized platform, %s" % platform.system())
-    subprocess.check_call([buildtool, "/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
+    build_args.extend(["/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
+    if options.coveritypath:
+        build_args.append("/t:Rebuild")
+    print >>sys.stdout, "Running command: %s" % ' '.join(build_args)
+    sys.stdout.flush()
+    subprocess.check_call(build_args)
     print >>sys.stdout, "Finished build"
     sys.stdout.flush()
 
@@ -119,6 +131,23 @@ def build_documentation(options):
     args = [options.doxygenpath, "docsrc/BuildAMationDoxy"]
     print "Running: %s" % ' '.join(args)
     subprocess.check_call(args)
+
+
+def make_coverity_distribution(options):
+    if not options.coveritypath:
+        return
+    cwd = os.getcwd()
+    try:
+        checkout_dir, bam_dir = os.path.split(cwd)
+        tar_path = os.path.join(checkout_dir, "BuildAMation.tgz")
+
+        with tarfile.open(tar_path, "w:gz") as tar:
+            tar.add("cov-int")
+        print >>sys.stdout, "-> Coverity scan: %s" % tar_path
+        sys.stdout.flush()
+    finally:
+        os.chdir(cwd)
+        shutil.rmtree('cov-int')
 
 
 def make_tar_distribution(options):
@@ -233,8 +262,9 @@ def main(options):
         remove_unnecessary_files_from_clone()
         update_version_numbers_in_files(options)
     try:
-        build_software()
+        build_software(options)
         build_documentation(options)
+        make_coverity_distribution(options)
         make_tar_distribution(options)
         make_zip_distribution(options)
         make_tar_docs_distribution(options)
@@ -248,6 +278,7 @@ if __name__ == "__main__":
     parser.add_option("-t", "--tag", dest="tag", default=None, help="Git tag/branch to clone and build. Default is to use the existing clone, but version numbers are not modified")
     parser.add_option("-v", "--version", dest="version", default=None, help="Override version to build. Required if the existing clone is used")
     parser.add_option("-d", "--doxygen", dest="doxygenpath", default=None, help="Path to the doxygen executable. If not supplied, the documentation is not generated")
+    parser.add_option("-c", "--coverity", dest="coveritypath", default=None, help="Path to the Coverity bin directory to use Coverity during a build")
     (options, args) = parser.parse_args()
     if not options.tag and not options.version:
         parser.error("Building the current clone requires the version to be specified")

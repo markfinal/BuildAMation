@@ -1,3 +1,5 @@
+10-Apr-2016 Fixes #210. Add support in make_release.py to generate a build using the Coverity static analysis tools.
+
 10-Apr-2016 Fixes #211. Cleaned up make_release.py script to accept a git tag, and optionally a version number.
 
 09-Apr-2016 Fixes #208. Address performance issues identified by SlimTune in generating file filters for VisualStudio projects. A large project tested (a solution with 99 projects) showed a 50% reduction in time spent executing the dependency graph afer this change.
