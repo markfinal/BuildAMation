@@ -1,3 +1,25 @@
+11-Apr-2016 ======== Version 1.0.2 beta 1 Release ========
+
+11-Apr-2016 Fixes #209. Xcode generation now supports identifying .tbd files, new in Xcode 7, which are text based dylib definition files. The LinkPrebuiltLibrary exercises this when targeting Xcode7.
+
+11-Apr-2016 Fixes #218. Removed unused code from Bam.Core.TimingProfileUtilities that had been identified by Coverity scan.
+
+11-Apr-2016 Fixes #217. Fetching the rank of a ModuleCollection from the Bam.Core.DependencyGraph used a comparison for a default System.Collections.Generic.Dictionary<int, ModuleCollection> which Coverity scan identified as logically dead code (equivalent to null, even though that doesn't compile), suggesting all ModuleCollections should have a valid rank index (which isn't true). Regardless, the code has been tidied up to eliminate ambiguity.
+
+11-Apr-2016 Fixes #216. In Bam.Core.Settings.InitializeAllInterfaces, refactor so that cached interfaces for each module type are both stored and extracted under a synchronization lock. Coverity scan previously identified that a potential data race existed, as the indexer was used outside of the lock.
+
+11-Apr-2016 Fixes #215. In Bam.Core.Module.CloneWithPrivatePatches, check the return value from Module.Create before dereferencing it. This is an unlikely scenario, as the source module of the same type already exists, but was identified in static analysis from Coverity scan.
+
+11-Apr-2016 Fixes #214. Simplified checks for a valid timing profile, displayed with --stats. Fixes an ordering issue found by a Coverity scan.
+
+10-Apr-2016 Fixes #213. Removed Bam.Core.XmlResolver class. It was only used to resolve the relative pathname to the schema, which can be specified on the XmlReaderSettings in a much simpler way. Also resolves a resource leak identified by a Coverity scan.
+
+10-Apr-2016 Fixes #212. Wrapped System.Threading.CancellationTokenSource in a using block to fix the resource leak identified by a Coverity scan.
+
+10-Apr-2016 Fixes #210. Add support in make_release.py to generate a build using the Coverity static analysis tools.
+
+10-Apr-2016 Fixes #211. Cleaned up make_release.py script to accept a git tag, and optionally a version number.
+
 09-Apr-2016 Fixes #208. Address performance issues identified by SlimTune in generating file filters for VisualStudio projects. A large project tested (a solution with 99 projects) showed a 50% reduction in time spent executing the dependency graph afer this change.
 
 08-Apr-2016 Fixes #207. Added predication on the settings type in VisualCCommon.Compiler's PublicPatch for C.ICommonCompilerSettings. This would have resulted in a Null reference exception if applied to any module Settings class that doesn't implement that interface. This could happen for procedurally generated source files with custom Settings.

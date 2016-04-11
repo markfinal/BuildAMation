@@ -45,6 +45,10 @@ namespace Bam.Core
         RegisterProfile(
             TimeProfile profile)
         {
+            if (null == profile)
+            {
+                throw new Exception("Timing profile is invalid");
+            }
             Profiles.Add(profile);
         }
 
@@ -54,8 +58,6 @@ namespace Bam.Core
         public static void
         DumpProfiles()
         {
-            var additionalDetails = false;
-
             var profileHeader = "Profile";
             var minutesHeader = "Minutes";
             var secondsHeader = "Seconds";
@@ -117,24 +119,17 @@ namespace Bam.Core
             var cumulativeTime = new System.TimeSpan();
             foreach (var profile in Profiles)
             {
-                var elapsedTime = (null != profile) ? profile.Elapsed : new System.TimeSpan(0);
+                var elapsedTime = profile.Elapsed;
                 if (ETimingProfiles.TimedTotal != profile.Profile)
                 {
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
                 }
 
-                string diffString = null;
-                if (additionalDetails && (ETimingProfiles.TimedTotal != profile.Profile))
-                {
-                    var diff = profile.Start - Profiles.First().Stop;
-                    diffString = diff.Milliseconds.ToString();
-                }
-
                 var minuteString = elapsedTime.Minutes.ToString();
                 var secondString = elapsedTime.Seconds.ToString();
                 var millisecondString = elapsedTime.Milliseconds.ToString();
-                var startTimeString = (null != profile) ? profile.Start.ToString(TimeProfile.DateTimeFormat) : "0";
-                var stopTimeString = (null != profile) ? profile.Stop.ToString(TimeProfile.DateTimeFormat) : "0";
+                var startTimeString = profile.Start.ToString(TimeProfile.DateTimeFormat);
+                var stopTimeString = profile.Stop.ToString(TimeProfile.DateTimeFormat);
 
                 if (ETimingProfiles.TimedTotal == profile.Profile)
                 {
@@ -156,7 +151,7 @@ namespace Bam.Core
                     Log.Info(horizontalRule);
                 }
 
-                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11} {12}",
+                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11}",
                          profile.Profile.ToString(),
                          new string(' ', maxNameLength - profile.Profile.ToString().Length),
                          new string(' ', maxMinuteLength - minuteString.Length),
@@ -168,8 +163,7 @@ namespace Bam.Core
                          new string(' ', maxTimeLength - startTimeString.Length),
                          startTimeString,
                          new string(' ', maxTimeLength - stopTimeString.Length),
-                         stopTimeString,
-                         diffString);
+                         stopTimeString);
             }
             Log.Info(horizontalRule);
         }

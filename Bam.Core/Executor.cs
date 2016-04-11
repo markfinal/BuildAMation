@@ -121,42 +121,44 @@ namespace Bam.Core
                 return false;
             }
 
-            var cancellationSource = new System.Threading.CancellationTokenSource();
-            var cancellationToken = cancellationSource.Token;
-
-            // LongRunning is absolutely necessary in order to achieve paralleism
-            var creationOpts = System.Threading.Tasks.TaskCreationOptions.LongRunning;
-            var continuationOpts = System.Threading.Tasks.TaskContinuationOptions.LongRunning;
-
-            var threadCount = 1;
-            var scheduler = new LimitedConcurrencyLevelTaskScheduler(threadCount);
-
-            var factory = new System.Threading.Tasks.TaskFactory(
-                    cancellationToken,
-                    creationOpts,
-                    continuationOpts,
-                    scheduler);
-
-            graph.MetaData = factory;
-
-            if (0 == modulesNeedEvaluating.Count)
+            using (var cancellationSource = new System.Threading.CancellationTokenSource())
             {
-                Log.DebugMessage("Module evaluation enabled for build mode {0}", graph.Mode);
-                foreach (var rank in graph.Reverse())
+                var cancellationToken = cancellationSource.Token;
+
+                // LongRunning is absolutely necessary in order to achieve paralleism
+                var creationOpts = System.Threading.Tasks.TaskCreationOptions.LongRunning;
+                var continuationOpts = System.Threading.Tasks.TaskContinuationOptions.LongRunning;
+
+                var threadCount = 1;
+                var scheduler = new LimitedConcurrencyLevelTaskScheduler(threadCount);
+
+                var factory = new System.Threading.Tasks.TaskFactory(
+                        cancellationToken,
+                        creationOpts,
+                        continuationOpts,
+                        scheduler);
+
+                graph.MetaData = factory;
+
+                if (0 == modulesNeedEvaluating.Count)
                 {
-                    foreach (Module module in rank)
+                    Log.DebugMessage("Module evaluation enabled for build mode {0}", graph.Mode);
+                    foreach (var rank in graph.Reverse())
                     {
-                        module.Evaluate();
+                        foreach (Module module in rank)
+                        {
+                            module.Evaluate();
+                        }
                     }
                 }
-            }
-            else
-            {
-                Log.DebugMessage("Module evaluation disabled for build mode {0}, but enabled for individual modules:", graph.Mode);
-                foreach (var module in modulesNeedEvaluating)
+                else
                 {
-                    Log.DebugMessage("\tEvaluation for module {0}", module.GetType().ToString());
-                    module.Evaluate();
+                    Log.DebugMessage("Module evaluation disabled for build mode {0}, but enabled for individual modules:", graph.Mode);
+                    foreach (var module in modulesNeedEvaluating)
+                    {
+                        Log.DebugMessage("\tEvaluation for module {0}", module.GetType().ToString());
+                        module.Evaluate();
+                    }
                 }
             }
 
@@ -198,90 +200,92 @@ namespace Bam.Core
             System.Exception abortException = null;
             if (threadCount > 1)
             {
-                var cancellationSource = new System.Threading.CancellationTokenSource();
-                var cancellationToken = cancellationSource.Token;
-
-                // LongRunning is absolutely necessary in order to achieve paralleism
-                var creationOpts = System.Threading.Tasks.TaskCreationOptions.LongRunning;
-                var continuationOpts = System.Threading.Tasks.TaskContinuationOptions.LongRunning;
-
-                var scheduler = new LimitedConcurrencyLevelTaskScheduler(threadCount);
-
-                var factory = new System.Threading.Tasks.TaskFactory(
-                        cancellationToken,
-                        creationOpts,
-                        continuationOpts,
-                        scheduler);
-
-                var tasks = new Array<System.Threading.Tasks.Task>();
-                foreach (var rank in graph.Reverse())
+                using (var cancellationSource = new System.Threading.CancellationTokenSource())
                 {
-                    foreach (var module in rank)
-                    {
-                        var context = new ExecutionContext(useEvaluation, explainRebuild, immediateOutput);
-                        var task = factory.StartNew(() =>
-                            {
-                                if (cancellationToken.IsCancellationRequested)
-                                {
-                                    return;
-                                }
-                                var depTasks = new Array<System.Threading.Tasks.Task>();
-                                foreach (var dep in module.Dependents)
-                                {
-                                    if (null == dep.ExecutionTask)
-                                    {
-                                        continue;
-                                    }
-                                    depTasks.Add(dep.ExecutionTask);
-                                }
-                                foreach (var dep in module.Requirements)
-                                {
-                                    if (null == dep.ExecutionTask)
-                                    {
-                                        continue;
-                                    }
-                                    depTasks.Add(dep.ExecutionTask);
-                                }
-                                System.Threading.Tasks.Task.WaitAll(depTasks.ToArray());
-                                if (cancellationToken.IsCancellationRequested)
-                                {
-                                    return;
-                                }
+                    var cancellationToken = cancellationSource.Token;
 
-                                try
+                    // LongRunning is absolutely necessary in order to achieve paralleism
+                    var creationOpts = System.Threading.Tasks.TaskCreationOptions.LongRunning;
+                    var continuationOpts = System.Threading.Tasks.TaskContinuationOptions.LongRunning;
+
+                    var scheduler = new LimitedConcurrencyLevelTaskScheduler(threadCount);
+
+                    var factory = new System.Threading.Tasks.TaskFactory(
+                            cancellationToken,
+                            creationOpts,
+                            continuationOpts,
+                            scheduler);
+
+                    var tasks = new Array<System.Threading.Tasks.Task>();
+                    foreach (var rank in graph.Reverse())
+                    {
+                        foreach (var module in rank)
+                        {
+                            var context = new ExecutionContext(useEvaluation, explainRebuild, immediateOutput);
+                            var task = factory.StartNew(() =>
                                 {
-                                    (module as IModuleExecution).Execute(context);
-                                }
-                                catch (Exception ex)
-                                {
-                                    abortException = ex;
-                                    cancellationSource.Cancel();
-                                }
-                                finally
-                                {
-                                    if (context.OutputStringBuilder != null && context.OutputStringBuilder.Length > 0)
+                                    if (cancellationToken.IsCancellationRequested)
                                     {
-                                        Log.Info(context.OutputStringBuilder.ToString());
+                                        return;
                                     }
-                                    if (context.ErrorStringBuilder != null && context.ErrorStringBuilder.Length > 0)
+                                    var depTasks = new Array<System.Threading.Tasks.Task>();
+                                    foreach (var dep in module.Dependents)
                                     {
-                                        Log.Info(context.ErrorStringBuilder.ToString());
+                                        if (null == dep.ExecutionTask)
+                                        {
+                                            continue;
+                                        }
+                                        depTasks.Add(dep.ExecutionTask);
                                     }
-                                }
-                            });
-                        tasks.Add(task);
-                        module.ExecutionTask = task;
+                                    foreach (var dep in module.Requirements)
+                                    {
+                                        if (null == dep.ExecutionTask)
+                                        {
+                                            continue;
+                                        }
+                                        depTasks.Add(dep.ExecutionTask);
+                                    }
+                                    System.Threading.Tasks.Task.WaitAll(depTasks.ToArray());
+                                    if (cancellationToken.IsCancellationRequested)
+                                    {
+                                        return;
+                                    }
+
+                                    try
+                                    {
+                                        (module as IModuleExecution).Execute(context);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        abortException = ex;
+                                        cancellationSource.Cancel();
+                                    }
+                                    finally
+                                    {
+                                        if (context.OutputStringBuilder != null && context.OutputStringBuilder.Length > 0)
+                                        {
+                                            Log.Info(context.OutputStringBuilder.ToString());
+                                        }
+                                        if (context.ErrorStringBuilder != null && context.ErrorStringBuilder.Length > 0)
+                                        {
+                                            Log.Info(context.ErrorStringBuilder.ToString());
+                                        }
+                                    }
+                                });
+                            tasks.Add(task);
+                            module.ExecutionTask = task;
+                        }
                     }
-                }
-                try
-                {
-                    System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
-                }
-                catch (System.AggregateException exception)
-                {
-                    if (!(exception.InnerException is System.Threading.Tasks.TaskCanceledException))
+                    try
                     {
-                        throw new Exception(exception, "Error during threaded build");
+                        System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+                    }
+                    catch (System.AggregateException exception)
+                    {
+                        if (!(exception.InnerException is System.Threading.Tasks.TaskCanceledException))
+                        {
+                            throw new Exception(exception, "Error during threaded build");
+                        }
                     }
                 }
             }

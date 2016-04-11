@@ -76,6 +76,9 @@ namespace XcodeBuilder
             case FileReference.EFileType.YaccFile:
                 return "sourcecode.yacc";
 
+            case FileReference.EFileType.TextBasedDylibDefinition:
+                return "sourcecode.text-based-dylib-definition";
+
             default:
                 throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
             }
@@ -131,7 +134,8 @@ namespace XcodeBuilder
             ApplicationBundle,
             Project,
             YaccFile,
-            LexFile
+            LexFile,
+            TextBasedDylibDefinition
         }
 
         public enum ESourceTree

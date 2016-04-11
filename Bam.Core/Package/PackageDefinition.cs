@@ -61,16 +61,32 @@ namespace Bam.Core
             }
         }
 
+        private static string XmlNamespace
+        {
+            get
+            {
+                return "http://www.buildamation.com";
+            }
+        }
+
+        private static string RelativePathToLatestSchema
+        {
+            get
+            {
+                return "./Schema/BamPackageDefinitionV1.xsd";
+            }
+        }
+
         private void
         Validate()
         {
             var settings = new System.Xml.XmlReaderSettings();
+            settings.Schemas.Add(XmlNamespace, System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, RelativePathToLatestSchema));
             settings.ValidationType = System.Xml.ValidationType.Schema;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
             settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
             settings.ValidationEventHandler += new System.Xml.Schema.ValidationEventHandler(ValidationCallBack);
-            settings.XmlResolver = new XmlResolver();
 
             // Create the XmlReader object.
             using (var reader = System.Xml.XmlReader.Create(this.XMLFilename, settings))
@@ -208,13 +224,12 @@ namespace Bam.Core
             this.Dependents.Sort();
 
             var document = new System.Xml.XmlDocument();
-            var namespaceURI = "http://www.buildamation.com";
+            var namespaceURI = XmlNamespace;
             var packageDefinition = document.CreateElement("PackageDefinition", namespaceURI);
             {
                 var xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 var schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
-                var mostRecentSchemaRelativePath = "./Schema/BamPackageDefinitionV1.xsd";
-                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, mostRecentSchemaRelativePath);
+                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, RelativePathToLatestSchema);
                 packageDefinition.Attributes.Append(schemaAttribute);
                 packageDefinition.SetAttribute("name", this.Name);
                 if (null != this.Version)
@@ -456,6 +471,7 @@ namespace Bam.Core
             Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
 
             var xmlReaderSettings = new System.Xml.XmlReaderSettings();
+            xmlReaderSettings.Schemas.Add(XmlNamespace, System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, RelativePathToLatestSchema));
             xmlReaderSettings.CheckCharacters = true;
             xmlReaderSettings.CloseInput = true;
             xmlReaderSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
@@ -466,7 +482,6 @@ namespace Bam.Core
                 xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
             }
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
-            xmlReaderSettings.XmlResolver = new XmlResolver();
 
             // try reading the current schema version first
             if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations, enforceBamAssemblyVersions))

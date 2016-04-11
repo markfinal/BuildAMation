@@ -65,16 +65,16 @@ namespace Bam.Core
         /// Determine the rank index of the provided collection of modules.
         /// </summary>
         /// <param name="collection">Module collection whose rank is to be determined.</param>
-        /// <returns>The index of the specified module collection.</returns>
+        /// <returns>The index of the specified module collection, or -1 if it does not exist.</returns>
         public int this[ModuleCollection collection]
         {
             get
             {
                 var pairs = this.graph.Where(item => item.Value == collection);
-                var first = pairs.FirstOrDefault();
-                if (!first.Equals(default(System.Collections.Generic.Dictionary<int, ModuleCollection>)))
+                if (pairs.Count() > 0)
                 {
-                    return first.Key;
+                    // TODO: I think it's highly unlikely that count > 1, so does this have to be catered for?
+                    return pairs.ElementAt(0).Key;
                 }
                 return -1;
             }
