@@ -1,3 +1,5 @@
+11-Apr-2016 Fixes #209. Xcode generation now supports identifying .tbd files, new in Xcode 7, which are text based dylib definition files. The LinkPrebuiltLibrary exercises this when targeting Xcode7.
+
 11-Apr-2016 Fixes #218. Removed unused code from Bam.Core.TimingProfileUtilities that had been identified by Coverity scan.
 
 11-Apr-2016 Fixes #217. Fetching the rank of a ModuleCollection from the Bam.Core.DependencyGraph used a comparison for a default System.Collections.Generic.Dictionary<int, ModuleCollection> which Coverity scan identified as logically dead code (equivalent to null, even though that doesn't compile), suggesting all ModuleCollections should have a valid rank index (which isn't true). Regardless, the code has been tidied up to eliminate ambiguity.
