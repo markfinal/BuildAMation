@@ -143,7 +143,7 @@ namespace ClangCommon
                     target,
                     results.Item1.Replace(meta.SDKPath,string.Empty).TrimStart(new [] { '/'}),
                     results.Item2,
-                    XcodeBuilder.FileReference.ESourceTree.Absolute);
+                    XcodeBuilder.FileReference.ESourceTree.SDKRoot);
             }
             return null;
         }
