@@ -45,6 +45,10 @@ namespace Bam.Core
         RegisterProfile(
             TimeProfile profile)
         {
+            if (null == profile)
+            {
+                throw new Exception("Timing profile is invalid");
+            }
             Profiles.Add(profile);
         }
 
@@ -117,7 +121,7 @@ namespace Bam.Core
             var cumulativeTime = new System.TimeSpan();
             foreach (var profile in Profiles)
             {
-                var elapsedTime = (null != profile) ? profile.Elapsed : new System.TimeSpan(0);
+                var elapsedTime = profile.Elapsed;
                 if (ETimingProfiles.TimedTotal != profile.Profile)
                 {
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
@@ -133,8 +137,8 @@ namespace Bam.Core
                 var minuteString = elapsedTime.Minutes.ToString();
                 var secondString = elapsedTime.Seconds.ToString();
                 var millisecondString = elapsedTime.Milliseconds.ToString();
-                var startTimeString = (null != profile) ? profile.Start.ToString(TimeProfile.DateTimeFormat) : "0";
-                var stopTimeString = (null != profile) ? profile.Stop.ToString(TimeProfile.DateTimeFormat) : "0";
+                var startTimeString = profile.Start.ToString(TimeProfile.DateTimeFormat);
+                var stopTimeString = profile.Stop.ToString(TimeProfile.DateTimeFormat);
 
                 if (ETimingProfiles.TimedTotal == profile.Profile)
                 {
