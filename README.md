@@ -1,3 +1,8 @@
+<a href="https://scan.coverity.com/projects/markfinal-buildamation">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/8526/badge.svg"/>
+</a>
+
 BuildAMation (Bam) is a build system and project generator written in C#, tuned for C and C++ code, for building software on Windows, Linux and OSX desktop platforms.
 
 > Writing multi-platform desktop software?  
