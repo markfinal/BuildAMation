@@ -220,6 +220,10 @@ namespace Bam.Core
             PostInitDelegate postInitCallback = null) where T : Module, new()
         {
             var clone = Create<T>(parent, preInitCallback, postInitCallback);
+            if (null == clone)
+            {
+                throw new Exception("Making a clone has failed, even though the source module exists. This is unexpected behaviour. Please report it with details for reproduction.");
+            }
             clone.PrivatePatches.AddRange(source.PrivatePatches);
             if (source is IChildModule)
             {

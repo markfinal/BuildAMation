@@ -1,3 +1,5 @@
+11-Apr-2016 Fixes #215. In Bam.Core.Module.CloneWithPrivatePatches, check the return value from Module.Create before dereferencing it. This is an unlikely scenario, as the source module of the same type already exists, but was identified in static analysis from Coverity scan.
+
 11-Apr-2016 Fixes #214. Simplified checks for a valid timing profile, displayed with --stats. Fixes an ordering issue found by a Coverity scan.
 
 10-Apr-2016 Fixes #213. Removed Bam.Core.XmlResolver class. It was only used to resolve the relative pathname to the schema, which can be specified on the XmlReaderSettings in a much simpler way. Also resolves a resource leak identified by a Coverity scan.
