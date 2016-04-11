@@ -1,3 +1,5 @@
+11-Apr-2016 ======== Version 1.0.2 beta 1 Release ========
+
 11-Apr-2016 Fixes #209. Xcode generation now supports identifying .tbd files, new in Xcode 7, which are text based dylib definition files. The LinkPrebuiltLibrary exercises this when targeting Xcode7.
 
 11-Apr-2016 Fixes #218. Removed unused code from Bam.Core.TimingProfileUtilities that had been identified by Coverity scan.
