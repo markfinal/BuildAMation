@@ -58,8 +58,6 @@ namespace Bam.Core
         public static void
         DumpProfiles()
         {
-            var additionalDetails = false;
-
             var profileHeader = "Profile";
             var minutesHeader = "Minutes";
             var secondsHeader = "Seconds";
@@ -127,13 +125,6 @@ namespace Bam.Core
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
                 }
 
-                string diffString = null;
-                if (additionalDetails && (ETimingProfiles.TimedTotal != profile.Profile))
-                {
-                    var diff = profile.Start - Profiles.First().Stop;
-                    diffString = diff.Milliseconds.ToString();
-                }
-
                 var minuteString = elapsedTime.Minutes.ToString();
                 var secondString = elapsedTime.Seconds.ToString();
                 var millisecondString = elapsedTime.Milliseconds.ToString();
@@ -160,7 +151,7 @@ namespace Bam.Core
                     Log.Info(horizontalRule);
                 }
 
-                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11} {12}",
+                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11}",
                          profile.Profile.ToString(),
                          new string(' ', maxNameLength - profile.Profile.ToString().Length),
                          new string(' ', maxMinuteLength - minuteString.Length),
@@ -172,8 +163,7 @@ namespace Bam.Core
                          new string(' ', maxTimeLength - startTimeString.Length),
                          startTimeString,
                          new string(' ', maxTimeLength - stopTimeString.Length),
-                         stopTimeString,
-                         diffString);
+                         stopTimeString);
             }
             Log.Info(horizontalRule);
         }
