@@ -1,3 +1,5 @@
+11-Apr-2016 Fixes #217. Fetching the rank of a ModuleCollection from the Bam.Core.DependencyGraph used a comparison for a default System.Collections.Generic.Dictionary<int, ModuleCollection> which Coverity scan identified as logically dead code (equivalent to null, even though that doesn't compile), suggesting all ModuleCollections should have a valid rank index (which isn't true). Regardless, the code has been tidied up to eliminate ambiguity.
+
 11-Apr-2016 Fixes #216. In Bam.Core.Settings.InitializeAllInterfaces, refactor so that cached interfaces for each module type are both stored and extracted under a synchronization lock. Coverity scan previously identified that a potential data race existed, as the indexer was used outside of the lock.
 
 11-Apr-2016 Fixes #215. In Bam.Core.Module.CloneWithPrivatePatches, check the return value from Module.Create before dereferencing it. This is an unlikely scenario, as the source module of the same type already exists, but was identified in static analysis from Coverity scan.
