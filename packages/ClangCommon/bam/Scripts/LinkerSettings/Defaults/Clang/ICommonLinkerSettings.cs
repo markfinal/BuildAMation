@@ -37,6 +37,11 @@ namespace ClangCommon.DefaultSettings
             Bam.Core.Module module)
         {
             settings.RPath = new Bam.Core.TokenizedStringArray();
+            if (!(module is C.DynamicLibrary) && !(module is C.Cxx.DynamicLibrary))
+            {
+                // only applied to executables, not dylibs, nor plugins
+                settings.RPath.AddUnique("@executable_path");
+            }
         }
     }
 }
