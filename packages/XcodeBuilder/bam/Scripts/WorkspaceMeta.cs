@@ -86,6 +86,75 @@ namespace XcodeBuilder
             return module.MetaData as Target;
         }
 
+        private static bool
+        AreTextFilesIdentical(
+            string targetPath,
+            string tempPath)
+        {
+            var targetSize = new System.IO.FileInfo(targetPath).Length;
+            var tempSize = new System.IO.FileInfo(targetPath).Length;
+            if (targetSize != tempSize)
+            {
+                return false;
+            }
+            using (System.IO.TextReader targetReader = new System.IO.StreamReader(targetPath))
+            {
+                using (System.IO.TextReader tempReader = new System.IO.StreamReader(tempPath))
+                {
+                    var targetContents = targetReader.ReadToEnd();
+                    var tempContents = tempReader.ReadToEnd();
+                    if (0 != System.String.Compare(targetContents, tempContents, false))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private static void
+        WriteXMLIfDifferent(
+            string targetPath,
+            System.Xml.XmlWriterSettings settings,
+            System.Xml.XmlDocument document)
+        {
+            // TODO: when GUIDs are deterministic across rebuilds, this can be re-enabled, see issue #222
+            var targetExists = false;//System.IO.File.Exists(targetPath);
+            var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
+            using (var xmlwriter = System.Xml.XmlWriter.Create(writePath, settings))
+            {
+                //Bam.Core.Log.MessageAll("Writing {0}", writePath);
+                document.WriteTo(xmlwriter);
+            }
+            if (targetExists && !AreTextFilesIdentical(targetPath, writePath))
+            {
+                //Bam.Core.Log.MessageAll("\tXML has changed, moving {0} to {1}", writePath, targetPath);
+                System.IO.File.Delete(targetPath);
+                System.IO.File.Move(writePath, targetPath);
+            }
+        }
+
+        private static void
+        WriteProjectFileIfDifferent(
+            string targetPath,
+            System.Text.StringBuilder contents)
+        {
+            // TODO: when GUIDs are deterministic across rebuilds, this can be re-enabled, see issue #222
+            var targetExists = false;//System.IO.File.Exists(targetPath);
+            var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
+            using (var writer = new System.IO.StreamWriter(writePath))
+            {
+                //Bam.Core.Log.MessageAll("Writing {0}", writePath);
+                writer.Write(contents);
+            }
+            if (targetExists && !AreTextFilesIdentical(targetPath, writePath))
+            {
+                //Bam.Core.Log.MessageAll("\tText has changed, moving {0} to {1}", writePath, targetPath);
+                System.IO.File.Delete(targetPath);
+                System.IO.File.Move(writePath, targetPath);
+            }
+        }
+
         public string
         Serialize()
         {
@@ -127,11 +196,7 @@ namespace XcodeBuilder
                     System.IO.Directory.CreateDirectory(projectDir.Parse());
                 }
 
-                //Bam.Core.Log.DebugMessage(text.ToString());
-                using (var writer = new System.IO.StreamWriter(project.ProjectPath))
-                {
-                    writer.Write(text.ToString());
-                }
+                WriteProjectFileIfDifferent(project.ProjectPath, text);
 
                 if (generateProjectSchemes)
                 {
@@ -158,11 +223,7 @@ namespace XcodeBuilder
             settings.NewLineChars = System.Environment.NewLine;
             settings.Indent = true;
             settings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
-
-            using (var xmlwriter = System.Xml.XmlWriter.Create(workspacePath.Parse(), settings))
-            {
-                workspaceDoc.WriteTo(xmlwriter);
-            }
+            WriteXMLIfDifferent(workspacePath.Parse(), settings, workspaceDoc);
 
             return workspaceDirectory;
         }
