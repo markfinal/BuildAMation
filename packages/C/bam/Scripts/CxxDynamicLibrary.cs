@@ -76,7 +76,7 @@ namespace C.Cxx
                 var osxLinker = settings as C.ICommonLinkerSettingsOSX;
                 if (null != osxLinker)
                 {
-                    osxLinker.InstallName = this.CreateTokenizedString("@executable_path/@filename($(LinkOutput))");
+                    osxLinker.InstallName = this.CreateTokenizedString("@rpath/@filename($(LinkOutput))");
                 }
             });
         }
