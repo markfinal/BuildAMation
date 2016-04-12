@@ -444,13 +444,11 @@ namespace Bam.Core
         /// Read an existing XML file into the instance.
         /// </summary>
         /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
-        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public void
         Read(
-            bool validateSchemaLocation,
-            bool enforceBamAssemblyVersions)
+            bool validateSchemaLocation)
         {
-            this.Read(validateSchemaLocation, true, enforceBamAssemblyVersions);
+            this.Read(validateSchemaLocation, true);
 
             var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
@@ -461,12 +459,10 @@ namespace Bam.Core
         /// </summary>
         /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
         /// <param name="validatePackageLocations">If set to <c>true</c> validate package locations.</param>
-        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public void
         Read(
             bool validateSchemaLocation,
-            bool validatePackageLocations,
-            bool enforceBamAssemblyVersions)
+            bool validatePackageLocations)
         {
             Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
 
@@ -484,7 +480,7 @@ namespace Bam.Core
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
 
             // try reading the current schema version first
-            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations, enforceBamAssemblyVersions))
+            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations))
             {
                 if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
@@ -596,8 +592,7 @@ namespace Bam.Core
 
         private bool
         ReadBamAssemblies(
-            System.Xml.XmlReader xmlReader,
-            bool enforceVersions)
+            System.Xml.XmlReader xmlReader)
         {
             var rootName = "BamAssemblies";
             if (rootName != xmlReader.Name)
@@ -626,38 +621,14 @@ namespace Bam.Core
                 if (!System.String.IsNullOrEmpty(majorVersion))
                 {
                     var major = System.Convert.ToInt32(majorVersion);
-                    if (enforceVersions && major > bamVersion.Major)
-                    {
-                        throw new Exception("This version of BuildAMation, {0}, does not satisfy minimum requirements v{1}.0.0, from package {2}",
-                            Graph.Instance.ProcessState.VersionString,
-                            majorVersion,
-                            this.Name);
-                    }
                     var minorVersion = xmlReader.GetAttribute("minor");
                     if (!System.String.IsNullOrEmpty(minorVersion))
                     {
                         var minor = System.Convert.ToInt32(minorVersion);
-                        if (enforceVersions && minor > bamVersion.Minor)
-                        {
-                            throw new Exception("This version of BuildAMation, {0}, does not satisfy minimum requirements v{1}.{2}.0, from package {3}",
-                                Graph.Instance.ProcessState.VersionString,
-                                majorVersion,
-                                minorVersion,
-                                this.Name);
-                        }
                         var patchVersion = xmlReader.GetAttribute("patch");
                         if (!System.String.IsNullOrEmpty(patchVersion))
                         {
                             var patch = System.Convert.ToInt32(patchVersion);
-                            if (enforceVersions && patch > bamVersion.Build)
-                            {
-                                throw new Exception("This version of BuildAMation, {0}, does not satisfy minimum requirements v{1}.{2}.{3}, from package {4}",
-                                    Graph.Instance.ProcessState.VersionString,
-                                    majorVersion,
-                                    minorVersion,
-                                    patchVersion,
-                                    this.Name);
-                            }
                             this.BamAssemblies.AddUnique(new BamAssemblyDescription(assemblyName, major, minor, patch));
                         }
                         else
@@ -804,13 +775,11 @@ namespace Bam.Core
         /// <param name="readerSettings">Reader settings.</param>
         /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
         /// <param name="validatePackageLocations">If set to <c>true</c> validate package locations.</param>
-        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         protected bool
         ReadCurrent(
             System.Xml.XmlReaderSettings readerSettings,
             bool validateSchemaLocation,
-            bool validatePackageLocations,
-            bool enforceBamAssemblyVersions)
+            bool validatePackageLocations)
         {
             try
             {
@@ -851,7 +820,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadBamAssemblies(xmlReader, enforceBamAssemblyVersions))
+                        else if (ReadBamAssemblies(xmlReader))
                         {
                             // all done
                         }
@@ -1344,6 +1313,37 @@ namespace Bam.Core
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// For each Bam assembly required by this package, validate that the version it specifies is at least
+        /// that for the current version of Bam. Throw an exception if the version is insufficient.
+        /// </summary>
+        public void
+        ValidateBamAssemblyRequirements()
+        {
+            foreach (var asm in this.BamAssemblies)
+            {
+                if (asm.Name == "Bam.Core")
+                {
+                    var bamVersion = Graph.Instance.ProcessState.Version;
+                    if (asm.MajorVersion > bamVersion.Major ||
+                        asm.MinorVersion > bamVersion.Minor ||
+                        asm.PatchVersion > bamVersion.Build)
+                    {
+                        throw new Exception("This version of BuildAMation, v{0}, does not satisfy minimum requirements v{1}.{2}.{3}, from package {4}",
+                            Graph.Instance.ProcessState.VersionString,
+                            asm.MajorVersion,
+                            asm.MinorVersion,
+                            asm.PatchVersion,
+                            this.Name);
+                    }
+                }
+                else
+                {
+                    Log.DebugMessage("Unknown Bam assembly, {0}", asm.Name);
+                }
+            }
         }
     }
 }
