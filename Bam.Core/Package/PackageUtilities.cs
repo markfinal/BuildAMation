@@ -227,7 +227,7 @@ namespace Bam.Core
             }
 
             var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !Graph.Instance.ForceDefinitionFileUpdate);
-            masterDefinitionFile.Read(true);
+            masterDefinitionFile.Read();
             return masterDefinitionFile;
         }
 
@@ -372,7 +372,7 @@ namespace Bam.Core
                     }
 
                     var definitionFile = new PackageDefinition(packageDefinitionPath, !Graph.Instance.ForceDefinitionFileUpdate);
-                    definitionFile.Read(true);
+                    definitionFile.Read();
                     candidatePackageDefinitions.Add(definitionFile);
 
                     foreach (var newRepo in definitionFile.PackageRepositories)

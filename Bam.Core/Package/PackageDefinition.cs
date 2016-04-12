@@ -443,12 +443,12 @@ namespace Bam.Core
         /// <summary>
         /// Read an existing XML file into the instance.
         /// </summary>
-        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
+        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location. Defaults to <c>true</c>.</param>
         public void
         Read(
-            bool validateSchemaLocation)
+            bool validateSchemaLocation = true)
         {
-            this.Read(validateSchemaLocation, true);
+            this.ReadInternal(validateSchemaLocation);
 
             var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
@@ -458,11 +458,9 @@ namespace Bam.Core
         /// Read an existing XML file into the instance.
         /// </summary>
         /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
-        /// <param name="validatePackageLocations">If set to <c>true</c> validate package locations.</param>
-        public void
-        Read(
-            bool validateSchemaLocation,
-            bool validatePackageLocations)
+        private void
+        ReadInternal(
+            bool validateSchemaLocation)
         {
             Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
 
@@ -480,7 +478,7 @@ namespace Bam.Core
             xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
 
             // try reading the current schema version first
-            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation, validatePackageLocations))
+            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation))
             {
                 if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
@@ -548,8 +546,7 @@ namespace Bam.Core
 
         private bool
         ReadDependents(
-            System.Xml.XmlReader xmlReader,
-            bool validatePackageLocations)
+            System.Xml.XmlReader xmlReader)
         {
             var rootName = "Dependents";
             if (rootName != xmlReader.Name)
@@ -774,12 +771,10 @@ namespace Bam.Core
         /// <returns><c>true</c>, if current was  read, <c>false</c> otherwise.</returns>
         /// <param name="readerSettings">Reader settings.</param>
         /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
-        /// <param name="validatePackageLocations">If set to <c>true</c> validate package locations.</param>
         protected bool
         ReadCurrent(
             System.Xml.XmlReaderSettings readerSettings,
-            bool validateSchemaLocation,
-            bool validatePackageLocations)
+            bool validateSchemaLocation)
         {
             try
             {
@@ -816,7 +811,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadDependents(xmlReader, validatePackageLocations))
+                        else if (ReadDependents(xmlReader))
                         {
                             // all done
                         }

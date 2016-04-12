@@ -1,3 +1,5 @@
+12-Apr-2016 Fixes #220. Removed unused argument 'validatePackageLocations' used during reading package definition files. To avoid function ambiguity, one of the Bam.Core.PackageDefinition.Read functions has been renamed to ReadInternal and made private. To perform a read on an existing PackageDefinition object, call the Read() function (no arguments required).
+
 12-Apr-2016 Fixes #219. The minimum version of Bam assemblies specified by package definition files are now only checked for just those packages used to compile into an assembly. Previously, all packages found on all inspected repositories were checked, which could result in false positives.
 
 11-Apr-2016 ======== Version 1.0.2 beta 1 Release ========
