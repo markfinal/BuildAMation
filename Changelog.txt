@@ -1,3 +1,5 @@
+12-Apr-2016 Issue #171. If VisualStudio projects, filters and solution files already exist from a previous Bam build, and a non-clean build is performed, only those files that are different to what is already on disk are written back. On large projects this significantly reduces the reload time in the VisualStudio IDE when the change to the Bam build scripts has only a small influence on the project files.
+
 12-Apr-2016 Fixes #221. OSX DynamicLibraries and Plugins now default to using an install name of @rpath/libname, rather than @executable_path/libname. OSX applications (not dylibs nor plugins) now have a default RPath of @executable_path, to balance out the install name change for basic applications. Using @rpath is a more flexible method for being able to identify where dylibs have been installed.
 
 12-Apr-2016 Fixes #220. Removed unused argument 'validatePackageLocations' used during reading package definition files. To avoid function ambiguity, one of the Bam.Core.PackageDefinition.Read functions has been renamed to ReadInternal and made private. To perform a read on an existing PackageDefinition object, call the Read() function (no arguments required).

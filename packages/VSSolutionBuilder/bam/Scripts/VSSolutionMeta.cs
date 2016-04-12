@@ -59,6 +59,73 @@ namespace VSSolutionBuilder
             return content.ToString();
         }
 
+        private static bool
+        AreTextFilesIdentical(
+            string targetPath,
+            string tempPath)
+        {
+            var targetSize = new System.IO.FileInfo(targetPath).Length;
+            var tempSize = new System.IO.FileInfo(targetPath).Length;
+            if (targetSize != tempSize)
+            {
+                return false;
+            }
+            using (System.IO.TextReader targetReader = new System.IO.StreamReader(targetPath))
+            {
+                using (System.IO.TextReader tempReader = new System.IO.StreamReader(tempPath))
+                {
+                    var targetContents = targetReader.ReadToEnd();
+                    var tempContents = tempReader.ReadToEnd();
+                    if (0 != System.String.Compare(targetContents, tempContents, false))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private static void
+        WriteXMLIfDifferent(
+            string targetPath,
+            System.Xml.XmlWriterSettings settings,
+            System.Xml.XmlDocument document)
+        {
+            var targetExists = System.IO.File.Exists(targetPath);
+            var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
+            using (var xmlwriter = System.Xml.XmlWriter.Create(writePath, settings))
+            {
+                document.WriteTo(xmlwriter);
+            }
+            Bam.Core.Log.DebugMessage(PrettyPrintXMLDoc(document));
+            if (targetExists && !AreTextFilesIdentical(targetPath, writePath))
+            {
+                Bam.Core.Log.DebugMessage("\tXML has changed, moving {0} to {1}", writePath, targetPath);
+                System.IO.File.Delete(targetPath);
+                System.IO.File.Move(writePath, targetPath);
+            }
+        }
+
+        private static void
+        WriteSolutionFileIfDifferent(
+            string targetPath,
+            System.Text.StringBuilder contents)
+        {
+            var targetExists = System.IO.File.Exists(targetPath);
+            var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
+            using (var writer = new System.IO.StreamWriter(writePath))
+            {
+                writer.Write(contents);
+            }
+            Bam.Core.Log.DebugMessage(contents.ToString());
+            if (targetExists && !AreTextFilesIdentical(targetPath, writePath))
+            {
+                Bam.Core.Log.DebugMessage("\tText has changed, moving {0} to {1}", writePath, targetPath);
+                System.IO.File.Delete(targetPath);
+                System.IO.File.Move(writePath, targetPath);
+            }
+        }
+
         public static void
         PostExecution()
         {
@@ -85,30 +152,14 @@ namespace VSSolutionBuilder
                     System.IO.Directory.CreateDirectory(projectPathDir);
                 }
 
-                var projectXML = project.Serialize();
-                using (var xmlwriter = System.Xml.XmlWriter.Create(project.ProjectPath, xmlWriterSettings))
-                {
-                    projectXML.WriteTo(xmlwriter);
-                }
-                Bam.Core.Log.DebugMessage(PrettyPrintXMLDoc(projectXML));
-
-                var projectFilterXML = project.Filter.Serialize();
-                using (var xmlwriter = System.Xml.XmlWriter.Create(project.ProjectPath + ".filters", xmlWriterSettings))
-                {
-                    projectFilterXML.WriteTo(xmlwriter);
-                }
-                Bam.Core.Log.DebugMessage(PrettyPrintXMLDoc(projectFilterXML));
+                WriteXMLIfDifferent(project.ProjectPath, xmlWriterSettings, project.Serialize());
+                WriteXMLIfDifferent(project.ProjectPath + ".filters", xmlWriterSettings, project.Filter.Serialize());
             }
 
             var solutionPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).sln", null).Parse();
-            var solutionContents = solution.Serialize();
-            using (var writer = new System.IO.StreamWriter(solutionPath))
-            {
-                writer.Write(solutionContents);
-            }
-            Bam.Core.Log.DebugMessage(solutionContents.ToString());
+            WriteSolutionFileIfDifferent(solutionPath, solution.Serialize());
 
-            Bam.Core.Log.Info("Successfully created Visual Studio solution file for package '{0}'\n\t{1}", graph.MasterPackage.Name, solutionPath);
+            Bam.Core.Log.Info("Successfully created Visual Studio solution for package '{0}'\n\t{1}", graph.MasterPackage.Name, solutionPath);
         }
 
         Bam.Core.TokenizedString
