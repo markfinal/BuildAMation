@@ -216,10 +216,8 @@ namespace Bam.Core
         /// Get the package in which Bam is executed.
         /// </summary>
         /// <returns>The master package.</returns>
-        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public static PackageDefinition
-        GetMasterPackage(
-            bool enforceBamAssemblyVersions = true)
+        GetMasterPackage()
         {
             var workingDir = Graph.Instance.ProcessState.WorkingDirectory;
             var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
@@ -229,7 +227,7 @@ namespace Bam.Core
             }
 
             var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !Graph.Instance.ForceDefinitionFileUpdate);
-            masterDefinitionFile.Read(true, enforceBamAssemblyVersions);
+            masterDefinitionFile.Read();
             return masterDefinitionFile;
         }
 
@@ -332,7 +330,7 @@ namespace Bam.Core
                 packageRepos.Enqueue(System.Tuple.Create<string,PackageDefinition>(repo, null));
             }
 
-            var masterDefinitionFile = GetMasterPackage(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
+            var masterDefinitionFile = GetMasterPackage();
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
                 if (packageRepos.Any(item => item.Item1 == repo))
@@ -374,7 +372,7 @@ namespace Bam.Core
                     }
 
                     var definitionFile = new PackageDefinition(packageDefinitionPath, !Graph.Instance.ForceDefinitionFileUpdate);
-                    definitionFile.Read(true, enforceBamAssemblyVersions);
+                    definitionFile.Read();
                     candidatePackageDefinitions.Add(definitionFile);
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
@@ -461,6 +459,16 @@ namespace Bam.Core
 
                 // finally, clean up the package definition list to use, with all those that need to be deleted
                 packageDefinitions.RemoveAll(toRemove);
+            }
+
+            if (enforceBamAssemblyVersions)
+            {
+                // for all packages that make up this assembly, ensure that their requirements on the version of the Bam
+                // assemblies are upheld, prior to compiling the code
+                foreach (var pkgDefn in packageDefinitions)
+                {
+                    pkgDefn.ValidateBamAssemblyRequirements();
+                }
             }
 
             Graph.Instance.SetPackageDefinitions(packageDefinitions);
