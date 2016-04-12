@@ -40,7 +40,8 @@ namespace ClangCommon.DefaultSettings
             if (!(module is C.DynamicLibrary) && !(module is C.Cxx.DynamicLibrary))
             {
                 // only applied to executables, not dylibs, nor plugins
-                settings.RPath.AddUnique("@executable_path");
+                // note the trailing slash - required for OSX < 10.10
+                settings.RPath.AddUnique("@executable_path/");
             }
         }
     }
