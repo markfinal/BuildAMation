@@ -33,10 +33,18 @@ namespace XcodeBuilder
         Object
     {
         public BuildFile(
-            FileReference fileRef)
+            FileReference fileRef,
+            Target target)
         {
             this.IsA = "PBXBuildFile";
             this.FileRef = fileRef;
+            this.OwningTarget = target;
+        }
+
+        public Target OwningTarget
+        {
+            get;
+            private set;
         }
 
         private FileReference TheFileRef;

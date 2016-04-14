@@ -30,6 +30,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "staticlib.h"
 #include <stdio.h>
 
+#ifdef __cplusplus
+    #ifdef COMPILE_AS_C
+    #error For C++ compilation, COMPILE_AS_C must not be defined
+    #endif
+    #ifndef COMPILE_AS_CXX
+    #error For C++ compilation, COMPILE_AS_CXX must be defined
+    #endif
+#else
+    #ifndef COMPILE_AS_C
+    #error For C++ compilation, COMPILE_AS_C must be defined
+    #endif
+    #ifdef COMPILE_AS_CXX
+    #error For C compilation, COMPILE_AS_CXX must not be defined
+    #endif
+#endif
+
 void
 StaticFunctionEmbeddedIntoDynamic()
 {

@@ -202,7 +202,7 @@ namespace XcodeBuilder
                 path,
                 type,
                 sourceTree: FileReference.ESourceTree.Absolute);
-            var buildFile = this.Project.EnsureBuildFileExists(fileRef);
+            var buildFile = this.Project.EnsureBuildFileExists(fileRef, this);
             return buildFile;
         }
 
@@ -338,13 +338,13 @@ namespace XcodeBuilder
                 this.EnsureFrameworksBuildPhaseExists();
                 if (this.Project == other.Project)
                 {
-                    var linkedBuildFile = this.Project.EnsureBuildFileExists(other.FileReference);
+                    var linkedBuildFile = this.Project.EnsureBuildFileExists(other.FileReference, this);
                     this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
                 }
                 else
                 {
                     var fileRefAlias = other.FileReference.MakeLinkableAlias(this.Module, this.Project);
-                    var linkedBuildFile = this.Project.EnsureBuildFileExists(fileRefAlias);
+                    var linkedBuildFile = this.Project.EnsureBuildFileExists(fileRefAlias, this);
                     this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
                 }
             }
