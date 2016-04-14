@@ -246,16 +246,17 @@ namespace XcodeBuilder
 
         public BuildFile
         EnsureBuildFileExists(
-            FileReference fileRef)
+            FileReference fileRef,
+            Target target)
         {
             lock (this.BuildFiles)
             {
-                var existingBuildFile = this.BuildFiles.Where(item => item.FileRef == fileRef).FirstOrDefault();
+                var existingBuildFile = this.BuildFiles.Where(item => item.FileRef == fileRef && item.OwningTarget == target).FirstOrDefault();
                 if (null != existingBuildFile)
                 {
                     return existingBuildFile;
                 }
-                var newBuildFile = new BuildFile(fileRef);
+                var newBuildFile = new BuildFile(fileRef, target);
                 this.BuildFiles.Add(newBuildFile);
                 return newBuildFile;
             }

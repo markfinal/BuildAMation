@@ -54,6 +54,10 @@ namespace EmbedStaticIntoDynamicLibrary
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.PreprocessorDefines.Add("STATICLIB_SOURCE");
+
+                    // the source files are shared for both C and C++ compilation
+                    // but this option will only be set when compiled as C - the preprocessor checks this
+                    compiler.PreprocessorDefines.Add("COMPILE_AS_C");
                 });
         }
     }
@@ -82,6 +86,10 @@ namespace EmbedStaticIntoDynamicLibrary
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.PreprocessorDefines.Add("STATICLIB_SOURCE");
+
+                    // the source files are shared for both C and C++ compilation
+                    // but this option will only be set when compiled as C++ - the preprocessor checks this
+                    compiler.PreprocessorDefines.Add("COMPILE_AS_CXX");
                 });
         }
     }
