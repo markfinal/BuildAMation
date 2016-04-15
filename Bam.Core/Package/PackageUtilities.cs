@@ -396,10 +396,11 @@ namespace Bam.Core
             // now resolve any duplicate names using defaults
             // unless duplicates are allowed
             var duplicatePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() > 1).Select(item => item.Key);
+            var uniquePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() == 1).Select(item => item.Key);
+            var versionSpeciferArgs = new Options.PackageDefaultVersion();
+            var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
             if ((duplicatePackageNames.Count() > 0) && !allowDuplicates)
             {
-                var versionSpeciferArgs = new Options.PackageDefaultVersion();
-                var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
                 var toRemove = new Array<PackageDefinition>();
 
                 foreach (var dupName in duplicatePackageNames)
@@ -459,6 +460,30 @@ namespace Bam.Core
 
                 // finally, clean up the package definition list to use, with all those that need to be deleted
                 packageDefinitions.RemoveAll(toRemove);
+            }
+
+            // ensure that all packages with a single version in the definition files, does not have a command line override
+            // that refers to a completely different version
+            foreach (var uniquePkgName in uniquePackageNames)
+            {
+                foreach (var versionSpecifier in packageVersionSpecifiers)
+                {
+                    if (!versionSpecifier.Contains(uniquePkgName))
+                    {
+                        continue;
+                    }
+
+                    var versionFromDefinition = packageDefinitions.Where(item => item.Name == uniquePkgName).First().Version;
+                    if (versionSpecifier[1] != versionFromDefinition)
+                    {
+                        var noMatchMessage = new System.Text.StringBuilder();
+                        noMatchMessage.AppendFormat("Command line version specified, {0}, could not resolve to one of the available versions of package {1}:", versionSpecifier[1], uniquePkgName);
+                        noMatchMessage.AppendLine();
+                        noMatchMessage.AppendFormat("\t{0}", versionFromDefinition);
+                        noMatchMessage.AppendLine();
+                        throw new Exception(noMatchMessage.ToString());
+                    }
+                }
             }
 
             if (enforceBamAssemblyVersions)
