@@ -43,16 +43,17 @@ namespace Bam.Core
         static protected System.Collections.Generic.List<Module> AllModules = new System.Collections.Generic.List<Module>();
 
         /// <summary>
-        /// Protected constructor (use Init function in general use to configure a module) for a new module.
+        /// Protected constructor (use Init function in general use to configure a module) for a new module. Use Module.Create
+        /// to create new instances of a module.
         /// This defines the standard macros for all modules:
-        /// 'packagedir'
-        /// 'packagename'
-        /// 'packagebuilddir'
-        /// 'modulename'
-        /// 'OutputName'
-        /// 'config'
+        /// 'bampackagedir' - the directory in which the 'bam' directory resides
+        /// 'packagedir' - same as 'bampackagedir' unless a Bam.Core.PackageDirectoryRedirect attribute is specified
+        /// 'packagename' - name of the package
+        /// 'packagebuilddir' - equivalent to $(buildroot)/$(packagename)
+        /// 'modulename' - name of the module
+        /// 'OutputName' - the 'main' part of the filename for the output of the module, but may have a module specific prefix and/or suffix
+        /// 'config' - the textual name of the configuration for the module
         /// </summary>
-        // private so that the factory method must be used
         protected Module()
         {
             var graph = Graph.Instance;
@@ -84,7 +85,8 @@ namespace Bam.Core
                 }
             }
             this.PackageDefinition = packageDefinition;
-            this.Macros.AddVerbatim("packagedir", packageDefinition.GetPackageDirectory());
+            this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
+            this.AddRedirectedPackageDirectory();
             this.Macros.AddVerbatim("packagename", packageDefinition.Name);
             this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
             this.Macros.AddVerbatim("modulename", this.GetType().Name);
@@ -96,6 +98,39 @@ namespace Bam.Core
             this.BuildEnvironment = graph.BuildEnvironment;
             this.Macros.AddVerbatim("config", this.BuildEnvironment.Configuration.ToString());
             this.ReasonToExecute = ExecuteReasoning.Undefined();
+        }
+
+        private void
+        AddRedirectedPackageDirectory()
+        {
+            var allPackageDirRedirection = Graph.Instance.ScriptAssembly.GetCustomAttributes(typeof(PackageDirectoryRedirectAttribute), false);
+            if (allPackageDirRedirection.Length > 0)
+            {
+                foreach (PackageDirectoryRedirectAttribute packageDirRedirect in allPackageDirRedirection)
+                {
+                    if (packageDirRedirect.Name == PackageDefinition.Name)
+                    {
+                        if (null != packageDirRedirect.Version)
+                        {
+                            if (packageDirRedirect.Version != PackageDefinition.Version)
+                            {
+                                continue;
+                            }
+                        }
+
+                        if (RelativePathUtilities.IsPathAbsolute(packageDirRedirect.RedirectedPath))
+                        {
+                            this.Macros.AddVerbatim("packagedir", packageDirRedirect.RedirectedPath);
+                        }
+                        else
+                        {
+                            this.Macros.Add("packagedir", this.CreateTokenizedString("@normalize($(bampackagedir)/$(0))", Bam.Core.TokenizedString.CreateVerbatim(packageDirRedirect.RedirectedPath)));
+                        }
+                        return;
+                    }
+                }
+            }
+            this.Macros.Add("packagedir", this.CreateTokenizedString("$(bampackagedir)"));
         }
 
         /// <summary>
