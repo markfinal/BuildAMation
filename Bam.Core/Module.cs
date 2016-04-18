@@ -421,12 +421,30 @@ namespace Bam.Core
         /// <summary>
         /// Add a private patch to the current module. Usually this takes the form of a lambda function.
         /// </summary>
-        /// <param name="dlg">Dlg.</param>
+        /// <param name="dlg">The delegate to execute privately on the module.</param>
         public void
         PrivatePatch(
             PrivatePatchDelegate dlg)
         {
             this.PrivatePatches.Add(dlg);
+        }
+
+        /// <summary>
+        /// Add a closing patch to the current module, using the same delegate as a private patch.
+        /// There can only be one closing patch on a module.
+        /// It is always executed after all other patches, and thus can assume that the module's Settings object has all of its
+        /// properties in their final state just prior to execution.
+        /// </summary>
+        /// <param name="dlg">The delegate to execute as a closing patch on the module.</param>
+        public void
+        ClosingPatch(
+            PrivatePatchDelegate dlg)
+        {
+            if (null != this.TheClosingPatch)
+            {
+                throw new Exception("Module {0} already has a closing patch", this);
+            }
+            this.TheClosingPatch = dlg;
         }
 
         /// <summary>
@@ -438,7 +456,7 @@ namespace Bam.Core
         /// <summary>
         /// Add a public patch to the current module. Usually this takes the form of a lambda function.
         /// </summary>
-        /// <param name="dlg">Dlg.</param>
+        /// <param name="dlg">The delegate to execute on the module, and on its dependees.</param>
         public void
         PublicPatch(
             PublicPatchDelegate dlg)
@@ -482,7 +500,8 @@ namespace Bam.Core
             {
                 return (this.PrivatePatches.Count() > 0) ||
                        (this.PublicPatches.Count() > 0) ||
-                       (this.PublicInheritedPatches.Count() > 0);
+                       (this.PublicInheritedPatches.Count() > 0) ||
+                       (null != this.TheClosingPatch);
             }
         }
 
@@ -556,6 +575,7 @@ namespace Bam.Core
         private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PublicInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PrivateInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
+        private PrivatePatchDelegate TheClosingPatch = null;
 
         /// <summary>
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
@@ -687,6 +707,7 @@ namespace Bam.Core
         /// 6. Apply public patches of this.
         /// 7. If this is a child module, and honourParents is true, apply any inherited patches from the parent.
         /// 8. Apply inherited public patches of this.
+        /// Once all patches have been evaluated, if the module has a closing patch, this is now evaluated.
         /// Inherited patches are the mechanism for transient dependencies, where dependencies filter up the module hierarchy.
         /// See UsePublicPatches and UsePublicPatchesPrivately.
         /// </summary>
@@ -760,6 +781,10 @@ namespace Bam.Core
                 {
                     patch(settings, this);
                 }
+            }
+            if (null != TheClosingPatch)
+            {
+                TheClosingPatch(settings);
             }
         }
 
