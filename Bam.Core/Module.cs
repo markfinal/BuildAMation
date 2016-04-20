@@ -707,7 +707,8 @@ namespace Bam.Core
         /// 6. Apply public patches of this.
         /// 7. If this is a child module, and honourParents is true, apply any inherited patches from the parent.
         /// 8. Apply inherited public patches of this.
-        /// Once all patches have been evaluated, if the module has a closing patch, this is now evaluated.
+        /// Once all patches have been evaluated, if the module has a closing patch, this is now evaluated. If the module's
+        /// parent also has a closing patch, this is also evaluated.
         /// Inherited patches are the mechanism for transient dependencies, where dependencies filter up the module hierarchy.
         /// See UsePublicPatches and UsePublicPatchesPrivately.
         /// </summary>
@@ -785,6 +786,10 @@ namespace Bam.Core
             if (null != TheClosingPatch)
             {
                 TheClosingPatch(settings);
+            }
+            if (null != parentModule && null != parentModule.TheClosingPatch)
+            {
+                parentModule.TheClosingPatch(settings);
             }
         }
 

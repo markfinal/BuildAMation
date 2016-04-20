@@ -1,3 +1,5 @@
+20-Apr-2016 Fixes #229. If Bam.Core.Module.ClosingPatch was applied to a container of modules, it was not applied to any of its child modules.
+
 20-Apr-2016 ======== Version 1.0.2 beta 2 Release ========
 
 18-Apr-2016 Fixes #228. Added Bam.Core.Module.ClosingPatch. This is a patch using the same delegate as a private patch, but is guaranteed to be executed after all other patches, i.e. so that the Module's Settings object is in its final state (i.e. just before the settings are converted to a command line or project file). Only a single closing patch is possible per module. This allows some logic on the final settings to be evaluated, such as to set a macro to be used in other TokenizedStrings (since they are expanded after patches are evaluated), or to modify a setting (e.g. add a preprocessor define based on other settings).
