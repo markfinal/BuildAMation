@@ -63,6 +63,7 @@
     <Compile Include="Attributes\ConfigurationFilterAttribute.cs" />
     <Compile Include="Attributes\EvaluationRequiredAttribute.cs" />
     <Compile Include="Attributes\ModuleGroupAttribute.cs" />
+    <Compile Include="Attributes\PackageDirectoryRedirectAttribute.cs" />
     <Compile Include="Attributes\PlatformFilterAttribute.cs" />
     <Compile Include="Attributes\SettingsExtensionsAttribute.cs" />
     <Compile Include="Attributes\SettingsPrecedenceAttribute.cs" />

@@ -43,16 +43,17 @@ namespace Bam.Core
         static protected System.Collections.Generic.List<Module> AllModules = new System.Collections.Generic.List<Module>();
 
         /// <summary>
-        /// Protected constructor (use Init function in general use to configure a module) for a new module.
+        /// Protected constructor (use Init function in general use to configure a module) for a new module. Use Module.Create
+        /// to create new instances of a module.
         /// This defines the standard macros for all modules:
-        /// 'packagedir'
-        /// 'packagename'
-        /// 'packagebuilddir'
-        /// 'modulename'
-        /// 'OutputName'
-        /// 'config'
+        /// 'bampackagedir' - the directory in which the 'bam' directory resides
+        /// 'packagedir' - same as 'bampackagedir' unless a Bam.Core.PackageDirectoryRedirect attribute is specified
+        /// 'packagename' - name of the package
+        /// 'packagebuilddir' - equivalent to $(buildroot)/$(packagename)
+        /// 'modulename' - name of the module
+        /// 'OutputName' - the 'main' part of the filename for the output of the module, but may have a module specific prefix and/or suffix
+        /// 'config' - the textual name of the configuration for the module
         /// </summary>
-        // private so that the factory method must be used
         protected Module()
         {
             var graph = Graph.Instance;
@@ -84,7 +85,8 @@ namespace Bam.Core
                 }
             }
             this.PackageDefinition = packageDefinition;
-            this.Macros.AddVerbatim("packagedir", packageDefinition.GetPackageDirectory());
+            this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
+            this.AddRedirectedPackageDirectory();
             this.Macros.AddVerbatim("packagename", packageDefinition.Name);
             this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
             this.Macros.AddVerbatim("modulename", this.GetType().Name);
@@ -96,6 +98,39 @@ namespace Bam.Core
             this.BuildEnvironment = graph.BuildEnvironment;
             this.Macros.AddVerbatim("config", this.BuildEnvironment.Configuration.ToString());
             this.ReasonToExecute = ExecuteReasoning.Undefined();
+        }
+
+        private void
+        AddRedirectedPackageDirectory()
+        {
+            var allPackageDirRedirection = Graph.Instance.ScriptAssembly.GetCustomAttributes(typeof(PackageDirectoryRedirectAttribute), false);
+            if (allPackageDirRedirection.Length > 0)
+            {
+                foreach (PackageDirectoryRedirectAttribute packageDirRedirect in allPackageDirRedirection)
+                {
+                    if (packageDirRedirect.Name == PackageDefinition.Name)
+                    {
+                        if (null != packageDirRedirect.Version)
+                        {
+                            if (packageDirRedirect.Version != PackageDefinition.Version)
+                            {
+                                continue;
+                            }
+                        }
+
+                        if (RelativePathUtilities.IsPathAbsolute(packageDirRedirect.RedirectedPath))
+                        {
+                            this.Macros.AddVerbatim("packagedir", packageDirRedirect.RedirectedPath);
+                        }
+                        else
+                        {
+                            this.Macros.Add("packagedir", this.CreateTokenizedString("@normalize($(bampackagedir)/$(0))", Bam.Core.TokenizedString.CreateVerbatim(packageDirRedirect.RedirectedPath)));
+                        }
+                        return;
+                    }
+                }
+            }
+            this.Macros.Add("packagedir", this.CreateTokenizedString("$(bampackagedir)"));
         }
 
         /// <summary>
@@ -386,12 +421,30 @@ namespace Bam.Core
         /// <summary>
         /// Add a private patch to the current module. Usually this takes the form of a lambda function.
         /// </summary>
-        /// <param name="dlg">Dlg.</param>
+        /// <param name="dlg">The delegate to execute privately on the module.</param>
         public void
         PrivatePatch(
             PrivatePatchDelegate dlg)
         {
             this.PrivatePatches.Add(dlg);
+        }
+
+        /// <summary>
+        /// Add a closing patch to the current module, using the same delegate as a private patch.
+        /// There can only be one closing patch on a module.
+        /// It is always executed after all other patches, and thus can assume that the module's Settings object has all of its
+        /// properties in their final state just prior to execution.
+        /// </summary>
+        /// <param name="dlg">The delegate to execute as a closing patch on the module.</param>
+        public void
+        ClosingPatch(
+            PrivatePatchDelegate dlg)
+        {
+            if (null != this.TheClosingPatch)
+            {
+                throw new Exception("Module {0} already has a closing patch", this);
+            }
+            this.TheClosingPatch = dlg;
         }
 
         /// <summary>
@@ -403,7 +456,7 @@ namespace Bam.Core
         /// <summary>
         /// Add a public patch to the current module. Usually this takes the form of a lambda function.
         /// </summary>
-        /// <param name="dlg">Dlg.</param>
+        /// <param name="dlg">The delegate to execute on the module, and on its dependees.</param>
         public void
         PublicPatch(
             PublicPatchDelegate dlg)
@@ -447,7 +500,8 @@ namespace Bam.Core
             {
                 return (this.PrivatePatches.Count() > 0) ||
                        (this.PublicPatches.Count() > 0) ||
-                       (this.PublicInheritedPatches.Count() > 0);
+                       (this.PublicInheritedPatches.Count() > 0) ||
+                       (null != this.TheClosingPatch);
             }
         }
 
@@ -521,6 +575,7 @@ namespace Bam.Core
         private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PublicInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PrivateInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
+        private PrivatePatchDelegate TheClosingPatch = null;
 
         /// <summary>
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
@@ -652,6 +707,7 @@ namespace Bam.Core
         /// 6. Apply public patches of this.
         /// 7. If this is a child module, and honourParents is true, apply any inherited patches from the parent.
         /// 8. Apply inherited public patches of this.
+        /// Once all patches have been evaluated, if the module has a closing patch, this is now evaluated.
         /// Inherited patches are the mechanism for transient dependencies, where dependencies filter up the module hierarchy.
         /// See UsePublicPatches and UsePublicPatchesPrivately.
         /// </summary>
@@ -725,6 +781,10 @@ namespace Bam.Core
                 {
                     patch(settings, this);
                 }
+            }
+            if (null != TheClosingPatch)
+            {
+                TheClosingPatch(settings);
             }
         }
 

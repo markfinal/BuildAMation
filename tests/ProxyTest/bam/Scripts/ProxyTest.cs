@@ -27,41 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+[assembly:Bam.Core.PackageDirectoryRedirect("ProxyTest", "../FakePackage")]
 namespace ProxyTest
 {
     public sealed class ProxiedObjectFile :
         C.ObjectFile
     {
-        public ProxiedObjectFile()
-        {
-            this.Macros["proxypkgroot"] = this.CreateTokenizedString("$(packagedir)/../FakePackage");
-        }
-
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            this.InputPath = this.CreateTokenizedString("$(proxypkgroot)/main.c");
+            this.InputPath = this.CreateTokenizedString("$(packagedir)/main.c");
         }
     }
 
     public sealed class ProxiedObjectFileCollection :
         C.CObjectFileCollection
     {
-        public ProxiedObjectFileCollection()
-        {
-            this.Macros["proxypkgroot"] = this.CreateTokenizedString("$(packagedir)/../FakePackage");
-        }
-
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
 
-            this.AddFile("$(proxypkgroot)/main.c");
+            this.AddFile("$(packagedir)/main.c");
         }
     }
 }
