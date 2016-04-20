@@ -1,3 +1,5 @@
+20-Apr-2016 Fixes #230. If a C module container is constructed with wildcards, a fairly long sequence of commands, including LINQ, is needed to identify an individual (or group) of modules for compiled source files, given a filename. To avoid having to repeat this everywhere, a string indexer has been added to C.CModuleContainer, returning a list of object file modules whose source file matches the filename supplied. For example, if var source = this.CreateCxxSourceContainer(...); then all matching object file modules with the source file foobar.c can be found with source["foobar.c"]. The ForEach function can then be used on this to apply changes per module, for example, apply a private patch to change the compilation options on a single source file out of many.
+
 20-Apr-2016 Fixes #229. If Bam.Core.Module.ClosingPatch was applied to a container of modules, it was not applied to any of its child modules.
 
 20-Apr-2016 ======== Version 1.0.2 beta 2 Release ========

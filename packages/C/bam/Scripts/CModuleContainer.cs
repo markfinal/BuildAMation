@@ -198,11 +198,29 @@ namespace C
 
         // note that this is 'new' to hide the version in Bam.Core.Module
         // C# does not support return type covariance (https://en.wikipedia.org/wiki/Covariant_return_type)
+        /// <summary>
+        /// Return a read-only collection of the children of this container, using the ChildModuleType generic type for each module in the collection.
+        /// </summary>
         public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children
         {
             get
             {
                 return new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType>(base.Children.Select(item => item as ChildModuleType).ToList());
+            }
+        }
+
+        /// <summary>
+        /// Return a list of all child modules whose input path contains the specified filename.
+        /// A ForEach function can be applied to the results, to run the same action on each of the child modules.
+        /// </summary>
+        /// <param name="filename">The filename to match</param>
+        /// <returns>List of child modules.</returns>
+        public System.Collections.Generic.List<ChildModuleType>
+        this[string filename]
+        {
+            get
+            {
+                return this.children.Where(child => child.InputPath.Parse().Contains(filename)).ToList();
             }
         }
 
