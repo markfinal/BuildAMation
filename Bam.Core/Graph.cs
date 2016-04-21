@@ -63,7 +63,7 @@ namespace Bam.Core
             OSUtilities.SetupPlatform();
 
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
-            this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
+            this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, Array<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
             this.BuildEnvironmentInternal = null;
@@ -269,7 +269,7 @@ namespace Bam.Core
             set;
         }
 
-        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> ReferencedModules
+        private System.Collections.Generic.Dictionary<Environment, Array<Module>> ReferencedModules
         {
             get;
             set;
@@ -323,7 +323,7 @@ namespace Bam.Core
                 if (null != value)
                 {
                     this.Modules.Add(value, new System.Collections.Generic.List<Module>());
-                    this.ReferencedModules.Add(value, new System.Collections.Generic.List<Module>());
+                    this.ReferencedModules.Add(value, new Array<Module>());
                 }
             }
         }
@@ -550,6 +550,19 @@ namespace Bam.Core
             Module module)
         {
             return this.ReferencedModules[module.BuildEnvironment].Contains(module);
+        }
+
+        /// <summary>
+        /// Returns a read only collection of all the named/referenced/encapsulating modules
+        /// for the specified Environment.
+        /// </summary>
+        /// <returns>The collection of modules</returns>
+        /// <param name="env">The Environment to query for named modules.</param>
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module>
+        EncapsulatingModules(
+            Environment env)
+        {
+            return this.ReferencedModules[env].ToReadOnlyCollection();
         }
 
         /// <summary>

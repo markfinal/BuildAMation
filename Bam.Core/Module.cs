@@ -200,6 +200,7 @@ namespace Bam.Core
         {
             try
             {
+                var creationStartTime = System.DateTime.Now;
                 if (!CanCreate(typeof(T)))
                 {
                     return null;
@@ -224,6 +225,8 @@ namespace Bam.Core
                 }
                 module.GetExecutionPolicy(Graph.Instance.Mode);
                 AllModules.Add(module);
+                var creationEndTime = System.DateTime.Now;
+                module.CreationTime = (creationEndTime - creationStartTime);
                 return module;
             }
             catch (ModuleCreationException exception)
@@ -977,6 +980,16 @@ namespace Bam.Core
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Extract the time taken to create the instance of this module.
+        /// </summary>
+        /// <value>The init time.</value>
+        public System.TimeSpan CreationTime
+        {
+            get;
+            private set;
         }
     }
 }

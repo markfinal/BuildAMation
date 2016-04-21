@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
@@ -56,6 +57,16 @@ namespace Bam.Core
             Log.Info("Tokenized strings     : {0} ({1} unshared)", TokenizedString.Count, TokenizedString.UnsharedCount);
             TokenizedString.DumpCache();
             Log.Info("Modules               : {0}", Module.Count);
+            Log.Info("\nModule creation times");
+            foreach (var env in Graph.Instance.BuildEnvironments)
+            {
+                var encapsulatingModules = Graph.Instance.EncapsulatingModules(env);
+                Log.Info("Configuration {0} has {1} named/encapsulating modules, with the following creation times (ms):", encapsulatingModules.Count);
+                foreach (var module in encapsulatingModules.OrderByDescending(item => item.CreationTime))
+                {
+                    Log.Info("\t{0}\t{1}", module, module.CreationTime.TotalMilliseconds);
+                }
+            }
             TimingProfileUtilities.DumpProfiles();
         }
     }
