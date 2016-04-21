@@ -34,6 +34,17 @@ namespace Bam.Core
     /// </summary>
     public class TimeProfile
     {
+        static TimeProfile()
+        {
+            // in Mono at least, the very first stopwatch reading is very slow
+            // probably corresponding to loading dependencies, so do this first
+            // there appears to be no issue in creating many stopwatches
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            stopwatch.Stop();
+        }
+
+        private System.Diagnostics.Stopwatch stopWatch;
+
         /// <summary>
         /// Format for the time representation.
         /// </summary>
@@ -48,6 +59,7 @@ namespace Bam.Core
             ETimingProfiles profile)
         {
             this.Profile = profile;
+            this.stopWatch = new System.Diagnostics.Stopwatch();
         }
 
         /// <summary>
@@ -56,9 +68,7 @@ namespace Bam.Core
         public void
         StartProfile()
         {
-            var time = System.DateTime.Now;
-            this.Start = time;
-            Log.DebugMessage("Profile '{0}': start {1}", this.Profile.ToString(), time.ToString(DateTimeFormat));
+            this.stopWatch.Start();
         }
 
         /// <summary>
@@ -67,11 +77,9 @@ namespace Bam.Core
         public void
         StopProfile()
         {
-            var time = System.DateTime.Now;
-            this.Stop = time;
-            this.Elapsed = time - this.Start;
+            this.stopWatch.Stop();
+            this.Elapsed = new System.TimeSpan(this.stopWatch.ElapsedTicks);
             TimingProfileUtilities.RegisterProfile(this);
-            Log.DebugMessage("Profile '{0}': stop {1}", this.Profile.ToString(), time.ToString(DateTimeFormat));
         }
 
         /// <summary>
@@ -79,26 +87,6 @@ namespace Bam.Core
         /// </summary>
         /// <value>The profile.</value>
         public ETimingProfiles Profile
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Get the start time for the profile.
-        /// </summary>
-        /// <value>The start.</value>
-        public System.DateTime Start
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Get the stop time for the profile.
-        /// </summary>
-        /// <value>The stop.</value>
-        public System.DateTime Stop
         {
             get;
             private set;

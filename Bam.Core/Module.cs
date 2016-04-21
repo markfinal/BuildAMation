@@ -200,7 +200,7 @@ namespace Bam.Core
         {
             try
             {
-                var creationStartTime = System.DateTime.Now;
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
                 if (!CanCreate(typeof(T)))
                 {
                     return null;
@@ -225,8 +225,8 @@ namespace Bam.Core
                 }
                 module.GetExecutionPolicy(Graph.Instance.Mode);
                 AllModules.Add(module);
-                var creationEndTime = System.DateTime.Now;
-                module.CreationTime = (creationEndTime - creationStartTime);
+                stopwatch.Stop();
+                module.CreationTime = new System.TimeSpan(stopwatch.ElapsedTicks);
                 return module;
             }
             catch (ModuleCreationException exception)

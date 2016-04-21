@@ -62,14 +62,11 @@ namespace Bam.Core
             var minutesHeader = "Minutes";
             var secondsHeader = "Seconds";
             var millisecondsHeader = "Milliseconds";
-            var startTimeHeader = "Start";
-            var stopTimeHeader = "Stop";
 
             int maxNameLength = profileHeader.Length;
             int maxMinuteLength = minutesHeader.Length;
             int maxSecondLength = secondsHeader.Length;
             int maxMillisecondLength = millisecondsHeader.Length;
-            int maxTimeLength = 9;
             foreach (var profile in Profiles)
             {
                 int nameLength = profile.Profile.ToString().Length;
@@ -98,7 +95,7 @@ namespace Bam.Core
             }
 
             var header =
-                System.String.Format("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11}",
+                System.String.Format("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
                                      profileHeader,
                                      new string(' ', maxNameLength - profileHeader.Length),
                                      minutesHeader,
@@ -106,11 +103,7 @@ namespace Bam.Core
                                      secondsHeader,
                                      new string(' ', maxSecondLength - secondsHeader.Length),
                                      millisecondsHeader,
-                                     new string(' ', maxMillisecondLength - millisecondsHeader.Length),
-                                     new string(' ', maxTimeLength - startTimeHeader.Length),
-                                     startTimeHeader,
-                                     new string(' ', maxTimeLength - stopTimeHeader.Length),
-                                     stopTimeHeader);
+                                     new string(' ', maxMillisecondLength - millisecondsHeader.Length));
             var horizontalRule = new string('-', header.Length);
             Log.Info("\nTask timing");
             Log.Info(horizontalRule);
@@ -128,8 +121,6 @@ namespace Bam.Core
                 var minuteString = elapsedTime.Minutes.ToString();
                 var secondString = elapsedTime.Seconds.ToString();
                 var millisecondString = elapsedTime.Milliseconds.ToString();
-                var startTimeString = profile.Start.ToString(TimeProfile.DateTimeFormat);
-                var stopTimeString = profile.Stop.ToString(TimeProfile.DateTimeFormat);
 
                 if (ETimingProfiles.TimedTotal == profile.Profile)
                 {
@@ -151,7 +142,7 @@ namespace Bam.Core
                     Log.Info(horizontalRule);
                 }
 
-                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7} | {8}{9} | {10}{11}",
+                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
                          profile.Profile.ToString(),
                          new string(' ', maxNameLength - profile.Profile.ToString().Length),
                          new string(' ', maxMinuteLength - minuteString.Length),
@@ -159,11 +150,7 @@ namespace Bam.Core
                          new string(' ', maxSecondLength - secondString.Length),
                          secondString,
                          new string(' ', maxMillisecondLength - millisecondString.Length),
-                         millisecondString,
-                         new string(' ', maxTimeLength - startTimeString.Length),
-                         startTimeString,
-                         new string(' ', maxTimeLength - stopTimeString.Length),
-                         stopTimeString);
+                         millisecondString);
             }
             Log.Info(horizontalRule);
         }
