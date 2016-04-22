@@ -91,6 +91,7 @@ namespace Bam.Core
         // note: this is using balancing groups in order to handle nested function calls, or any other instances of parentheses in paths (e.g. Windows 'Program Files (x86)')
         private static readonly string PostFunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^\(\)]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))";
 
+        private static System.Collections.Generic.List<TokenizedString> VerbatimCache = new System.Collections.Generic.List<TokenizedString>();
         private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
 
         private static System.TimeSpan RegExTimeout = System.TimeSpan.FromSeconds(5);
@@ -200,48 +201,75 @@ namespace Bam.Core
                 return null;
             }
 
-            // strings can be created during the multithreaded phase
-            lock (Cache)
+            // strings can be created during the multithreaded phase, so synchronize on the cache used
+            if (verbatim)
             {
-                if (0 == (flags & EFlags.NoCache))
+                lock (VerbatimCache)
                 {
-                    var search = Cache.Where((ts) =>
+                    if (0 == (flags & EFlags.NoCache))
                     {
-                        // first check the simple states for equivalence
-                        if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource && ts.Verbatim == verbatim)
+                        var foundTS = VerbatimCache.FirstOrDefault((ts) =>
                         {
-                            // and then check the positional tokens, if they exist
-                            var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
-                                                    ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
-                            if (!samePosTokenCount)
+                            if (ts.OriginalString == tokenizedString)
                             {
-                                return false;
+                                return true;
                             }
-                            for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
+                            return false;
+                        });
+                        if (null != foundTS)
+                        {
+                            ++foundTS.RefCount;
+                            return foundTS;
+                        }
+                    }
+                    var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
+                    VerbatimCache.Add(newTS);
+                    return newTS;
+                }
+            }
+            else
+            {
+                lock (Cache)
+                {
+                    if (0 == (flags & EFlags.NoCache))
+                    {
+                        var foundTS = Cache.FirstOrDefault((ts) =>
+                        {
+                            // first check the simple states for equivalence
+                            if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource)
                             {
-                                // because positional tokens are TokenizedStrings, they will refer to the same object
-                                if (ts.PositionalTokens[i] != positionalTokens[i])
+                                // and then check the positional tokens, if they exist
+                                var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
+                                                        ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
+                                if (!samePosTokenCount)
                                 {
                                     return false;
                                 }
+                                for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
+                                {
+                                    // because positional tokens are TokenizedStrings, they will refer to the same object
+                                    if (ts.PositionalTokens[i] != positionalTokens[i])
+                                    {
+                                        return false;
+                                    }
+                                }
+                                return true;
                             }
-                            return true;
-                        }
-                        else
+                            else
+                            {
+                                return false;
+                            }
+                        });
+                        if (null != foundTS)
                         {
-                            return false;
+                            ++foundTS.RefCount;
+                            return foundTS;
                         }
-                    });
-                    var foundTS = search.FirstOrDefault();
-                    if (null != foundTS)
-                    {
-                        ++foundTS.RefCount;
-                        return foundTS;
                     }
+                    var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
+                    Cache.Add(newTS);
+                    return newTS;
                 }
-                var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
-                Cache.Add(newTS);
-                return newTS;
             }
         }
 
