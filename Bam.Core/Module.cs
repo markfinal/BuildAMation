@@ -63,6 +63,7 @@ namespace Bam.Core
             }
 
             graph.AddModule(this);
+            this.TokenizedStringCache = new System.Collections.Generic.List<TokenizedString>();
             this.Macros = new MacroList();
             // TODO: Can this be generalized to be a collection of files?
             this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
@@ -987,6 +988,15 @@ namespace Bam.Core
         /// </summary>
         /// <value>The init time.</value>
         public System.TimeSpan CreationTime
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Cache of TokenizedStrings that use macros from this module.
+        /// </summary>
+        public System.Collections.Generic.List<TokenizedString> TokenizedStringCache
         {
             get;
             private set;

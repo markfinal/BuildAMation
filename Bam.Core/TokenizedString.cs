@@ -92,7 +92,8 @@ namespace Bam.Core
         private static readonly string PostFunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^\(\)]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))";
 
         private static System.Collections.Generic.List<TokenizedString> VerbatimCache = new System.Collections.Generic.List<TokenizedString>();
-        private static System.Collections.Generic.List<TokenizedString> Cache = new System.Collections.Generic.List<TokenizedString>();
+        private static System.Collections.Generic.List<TokenizedString> NoModuleCache = new System.Collections.Generic.List<TokenizedString>();
+        private static System.Collections.Generic.List<TokenizedString> AllStrings = new System.Collections.Generic.List<TokenizedString>();
 
         private static System.TimeSpan RegExTimeout = System.TimeSpan.FromSeconds(5);
 
@@ -204,6 +205,7 @@ namespace Bam.Core
             // strings can be created during the multithreaded phase, so synchronize on the cache used
             if (verbatim)
             {
+                // covers all verbatim strings
                 lock (VerbatimCache)
                 {
                     if (0 == (flags & EFlags.NoCache))
@@ -224,19 +226,21 @@ namespace Bam.Core
                     }
                     var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
                     VerbatimCache.Add(newTS);
+                    AllStrings.Add(newTS);
                     return newTS;
                 }
             }
             else
             {
-                lock (Cache)
+                // covers all strings associated with a module (for macros), or no module but with positional arguments
+                var stringCache = (null != macroSource) ? macroSource.TokenizedStringCache : NoModuleCache;
+                lock (stringCache)
                 {
                     if (0 == (flags & EFlags.NoCache))
                     {
-                        var foundTS = Cache.FirstOrDefault((ts) =>
+                        var foundTS = stringCache.FirstOrDefault((ts) =>
                         {
-                            // first check the simple states for equivalence
-                            if (ts.OriginalString == tokenizedString && ts.ModuleWithMacros == macroSource)
+                            if (ts.OriginalString == tokenizedString)
                             {
                                 // and then check the positional tokens, if they exist
                                 var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
@@ -267,7 +271,8 @@ namespace Bam.Core
                         }
                     }
                     var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
-                    Cache.Add(newTS);
+                    stringCache.Add(newTS);
+                    AllStrings.Add(newTS);
                     return newTS;
                 }
             }
@@ -413,7 +418,7 @@ namespace Bam.Core
         ParseAll()
         {
             Log.Detail("Parsing strings");
-            foreach (var t in Cache)
+            foreach (var t in AllStrings)
             {
                 if (t.IsInline)
                 {
@@ -835,7 +840,7 @@ namespace Bam.Core
         {
             get
             {
-                return Cache.Count();
+                return AllStrings.Count();
             }
         }
 
@@ -848,7 +853,7 @@ namespace Bam.Core
         {
             get
             {
-                return Cache.Where(item => item.RefCount == 1).Count();
+                return AllStrings.Where(item => item.RefCount == 1).Count();
             }
         }
 
@@ -860,7 +865,7 @@ namespace Bam.Core
         DumpCache()
         {
             Log.DebugMessage("Tokenized string cache");
-            foreach (var item in Cache.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.IsAliased))
+            foreach (var item in AllStrings.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.IsAliased))
             {
                 Log.DebugMessage("#{0} {1}'{2}'{3} {4} {5}",
                     item.RefCount,
