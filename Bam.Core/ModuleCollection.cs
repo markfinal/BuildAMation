@@ -46,35 +46,8 @@ namespace Bam.Core
         Add(
             Module m)
         {
-            if (null != m.OwningRank)
-            {
-                if (this == m.OwningRank)
-                {
-                    return;
-                }
-                var originalRank = Graph.Instance.DependencyGraph[m.OwningRank];
-                var newRank = Graph.Instance.DependencyGraph[this];
-                if (newRank <= originalRank)
-                {
-                    return;
-                }
-                this.Move(m);
-            }
             this.Modules.Add(m);
-            var r = Graph.Instance.DependencyGraph[this];
             m.OwningRank = this;
-        }
-
-        private void
-        Move(
-            Module m)
-        {
-            if (null == m.OwningRank)
-            {
-                throw new Exception("Cannot move a module that has not been assigned");
-            }
-            m.OwningRank.Modules.Remove(m);
-            m.OwningRank = null;
         }
 
         /// <summary>

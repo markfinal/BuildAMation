@@ -1,3 +1,5 @@
+22-Apr-2016 Fixes #236. Using a new algorithm to sort module dependencies, that eliminates redundant re-processing of modules in the dependency graph. This should be a reasonable performance gain for projects with many modules.
+
 22-Apr-2016 Fixes #235. Bam.Core.TokenizedString now has separate caches for verbatim strings, strings using macros from a particular module, and strings that don't use a module but have positional arguments, in order to reduce n in the O(n) search for identical strings.
 
 21-Apr-2016 Fixes #232. Changed Core timing code to use System.Diagnostics.Stopwatch rather than System.DateTime.Now, as the former can make use of a high resolution timer if hardware supports it, or falls back to the system clock which DateTime.Now uses. Mono appears to have a high cost to the first call to any timer (although any number can be created afterwards), so this is pre-empted in a static constructor. Because of this change, the output of --stats is now different, as there is no start/end time to each profile taken.

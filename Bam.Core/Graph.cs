@@ -375,25 +375,76 @@ namespace Bam.Core
         }
 
         private void
-        InternalArrangeDependents(
-            Module m,
-            int rank)
+        SetModuleRank(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            Module module,
+            int rankIndex)
         {
-            // predicate required, because eventually there will be a module without a Tool, e.g. a Tool itself
-            if (m.Tool != null)
+            if (map.ContainsKey(module))
             {
-                if (null == m.Settings)
+                throw new Exception("Module {0} rank initialized more than once", module);
+            }
+            map.Add(module, rankIndex);
+        }
+
+        private void
+        MoveModuleRankBy(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            Module module,
+            int rankDelta)
+        {
+            if (!map.ContainsKey(module))
+            {
+                // a dependency hasn't yet been initialized, so don't try to move it
+                return;
+            }
+            map[module] += rankDelta;
+            foreach (var dep in module.Dependents)
+            {
+                MoveModuleRankBy(map, dep, rankDelta);
+            }
+            foreach (var dep in module.Requirements)
+            {
+                MoveModuleRankBy(map, dep, rankDelta);
+            }
+        }
+
+        private void
+        MoveModuleRankTo(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            Module module,
+            int rankIndex)
+        {
+            if (!map.ContainsKey(module))
+            {
+                throw new Exception("Module {0} has yet to be initialized", module);
+            }
+            var currentRank = map[module];
+            var rankDelta = rankIndex - currentRank;
+            MoveModuleRankBy(map, module, rankDelta);
+        }
+
+        private void
+        ProcessModule(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            System.Collections.Generic.Queue<Module> toProcess,
+            Module module,
+            int rankIndex)
+        {
+            if (module.Tool != null)
+            {
+                if (null == module.Settings)
                 {
-                    m.Requires(m.Tool);
-                    var child = m as IChildModule;
+                    module.Requires(module.Tool);
+                    var child = module as IChildModule;
                     if ((null == child) || (null == child.Parent))
                     {
                         // children inherit the settings from their parents
-                        m.UsePublicPatches(m.Tool);
+                        module.UsePublicPatches(module.Tool);
                     }
                     try
                     {
-                        m.Settings = (m.Tool as ITool).CreateDefaultSettings(m);
+                        module.Settings = (module.Tool as ITool).CreateDefaultSettings(module);
                     }
                     catch (System.TypeInitializationException ex)
                     {
@@ -401,27 +452,46 @@ namespace Bam.Core
                     }
                 }
             }
-            if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
+            if ((0 == module.Dependents.Count) && (0 == module.Requirements.Count))
             {
                 return;
             }
-            if (m is IModuleGroup)
+            if (module is IModuleGroup)
             {
-                var children = m.Children;
-                this.ApplyGroupDependenciesToChildren(m, children, m.Dependents);
-                this.ApplyGroupRequirementsToChildren(m, children, m.Requirements);
+                var children = module.Children;
+                this.ApplyGroupDependenciesToChildren(module, children, module.Dependents);
+                this.ApplyGroupRequirementsToChildren(module, children, module.Requirements);
             }
-            var nextRank = rank + 1;
-            var currentRank = this.DependencyGraph[nextRank];
-            foreach (var c in m.Dependents)
+            var nextRankIndex = rankIndex + 1;
+            foreach (var dep in module.Dependents)
             {
-                currentRank.Add(c);
-                this.InternalArrangeDependents(c, nextRank);
+                if (map.ContainsKey(dep))
+                {
+                    if (map[dep] < nextRankIndex)
+                    {
+                        MoveModuleRankTo(map, dep, nextRankIndex);
+                    }
+                }
+                else
+                {
+                    SetModuleRank(map, dep, nextRankIndex);
+                    toProcess.Enqueue(dep);
+                }
             }
-            foreach (var c in m.Requirements)
+            foreach (var dep in module.Requirements)
             {
-                currentRank.Add(c);
-                this.InternalArrangeDependents(c, nextRank);
+                if (map.ContainsKey(dep))
+                {
+                    if (map[dep] < nextRankIndex)
+                    {
+                        MoveModuleRankTo(map, dep, nextRankIndex);
+                    }
+                }
+                else
+                {
+                    SetModuleRank(map, dep, nextRankIndex);
+                    toProcess.Enqueue(dep);
+                }
             }
         }
 
@@ -434,11 +504,32 @@ namespace Bam.Core
         SortDependencies()
         {
             Log.Detail("Analysing module dependencies");
-            var currentRank = this.DependencyGraph[0];
-            foreach (var m in this.TopLevelModules)
+            var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
+            var modulesToProcess = new System.Collections.Generic.Queue<Module>();
+            // initialize the map with top-level modules
+            // and populate the to-process list
+            foreach (var module in this.TopLevelModules)
             {
-                currentRank.Add(m);
-                this.InternalArrangeDependents(m, 0);
+                SetModuleRank(moduleRanks, module, 0);
+                ProcessModule(moduleRanks, modulesToProcess, module, 0);
+            }
+            // process all modules by initializing them to a best-guess rank
+            // but then potentially moving them to a higher rank if they re-appear as dependencies
+            while (modulesToProcess.Count > 0)
+            {
+                var module = modulesToProcess.Dequeue();
+                ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
+            }
+            // assign modules, for each rank index, into collections
+            var maxRank = moduleRanks.Values.Max();
+            for (var i = 0; i <= maxRank; ++i)
+            {
+                var rankModules = moduleRanks.Where(x => x.Value == i);
+                var rank = this.DependencyGraph[i];
+                foreach (var pairs in rankModules)
+                {
+                    rank.Add(pairs.Key);
+                }
             }
             Module.CompleteModules();
         }
