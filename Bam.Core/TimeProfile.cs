@@ -78,7 +78,6 @@ namespace Bam.Core
         StopProfile()
         {
             this.stopWatch.Stop();
-            this.Elapsed = new System.TimeSpan(this.stopWatch.ElapsedTicks);
             TimingProfileUtilities.RegisterProfile(this);
         }
 
@@ -98,8 +97,10 @@ namespace Bam.Core
         /// <value>The elapsed.</value>
         public System.TimeSpan Elapsed
         {
-            get;
-            private set;
+            get
+            {
+                return this.stopWatch.Elapsed;
+            }
         }
     }
 }
