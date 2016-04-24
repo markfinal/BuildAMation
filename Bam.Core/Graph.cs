@@ -141,15 +141,33 @@ namespace Bam.Core
             return newModule;
         }
 
+        private System.Collections.Generic.Dictionary<System.Type, System.Func<Module>> compiledFindRefModuleCache = new System.Collections.Generic.Dictionary<System.Type, System.Func<Module>>();
+
         private Module
         MakeModuleOfType(
             System.Type moduleType)
         {
             try
             {
-                var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule");
-                var genericVersionForModuleType = findReferencedModuleMethod.MakeGenericMethod(moduleType);
-                var newModule = genericVersionForModuleType.Invoke(this, null) as Module;
+                if (!this.compiledFindRefModuleCache.ContainsKey(moduleType))
+                {
+                    // find method for the module type requested
+                    // (the caching is based on this being 'expensive' as it's based on reflection)
+                    var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule");
+                    var genericVersionForModuleType = findReferencedModuleMethod.MakeGenericMethod(moduleType);
+
+                    // now compile it, so that we don't have to repeat the above
+                    var instance = System.Linq.Expressions.Expression.Constant(this);
+                    var call = System.Linq.Expressions.Expression.Call(
+                        instance,
+                        genericVersionForModuleType);
+                    var lambda = System.Linq.Expressions.Expression.Lambda<System.Func<Module>>(call);
+                    var func = lambda.Compile();
+
+                    // and store it
+                    this.compiledFindRefModuleCache.Add(moduleType, func);
+                }
+                var newModule = this.compiledFindRefModuleCache[moduleType]();
                 return newModule;
             }
             catch (System.Reflection.TargetInvocationException ex)
