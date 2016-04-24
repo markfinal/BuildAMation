@@ -587,7 +587,7 @@ namespace Bam.Core
 
         private void
         InternalValidateGraph(
-            int parentRank,
+            int parentRankIndex,
             System.Collections.ObjectModel.ReadOnlyCollection<Module> modules)
         {
             foreach (var c in modules)
@@ -597,19 +597,18 @@ namespace Bam.Core
                 {
                     throw new Exception("Dependency has no rank");
                 }
-                var found = this.DependencyGraph.Where(item => item.Value == childCollection);
-                if (0 == found.Count())
+                try
+                {
+                    var childRank = this.DependencyGraph.First(item => item.Value == childCollection);
+                    var childRankIndex = childRank.Key;
+                    if (childRankIndex <= parentRankIndex)
+                    {
+                        throw new Exception("Dependent module {0} found at a lower rank {1} than the dependee {2}", c, childRankIndex, parentRankIndex);
+                    }
+                }
+                catch (System.InvalidOperationException)
                 {
                     throw new Exception("Module collection not found in graph");
-                }
-                if (found.Count() > 1)
-                {
-                    throw new Exception("Module collection found more than once in graph");
-                }
-                var childRank = found.First().Key;
-                if (childRank <= parentRank)
-                {
-                    throw new Exception("Dependent module {0} found at a lower rank than the dependee", c);
                 }
             }
         }

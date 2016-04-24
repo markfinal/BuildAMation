@@ -1,3 +1,5 @@
+24-Apr-2016 Issue #233. Bam.Core.Graph.Validate now uses fewer LINQ calls to validate the dependency graph.
+
 24-Apr-2016 Fixes #238. Bam.Core.Graph.MakeModuleOfType now both compiles a generic method (generic type is the Module type found through reflection), and caches that compiled function for reuse. This reduces the cost of using the same module type over and over (likely for things like source files and object files).
 
 24-Apr-2016 Fixes #237. On a build with multiple packages each referring to a common set of package repositories, directory enumeration was occurring repeatedly, incurring a performance penalty. Also, a directory structure containing packages in different subdirectories also tries to only scan (recursively) the parent directory, rather than both the parent and required subdirectories, redundantly.
