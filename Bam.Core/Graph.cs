@@ -123,8 +123,7 @@ namespace Bam.Core
                 throw new Exception(message.ToString());
             }
             var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
-            var matches = referencedModules.Where(item => item.GetType() == typeof(T));
-            var matchedModule = matches.FirstOrDefault();
+            var matchedModule = referencedModules.FirstOrDefault(item => item.GetType() == typeof(T));
             if (null != matchedModule)
             {
                 return matchedModule as T;

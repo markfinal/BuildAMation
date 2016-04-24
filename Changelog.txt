@@ -1,3 +1,5 @@
+24-Apr-2016 Issue #233. Bam.Core.Graph.FindReferencedModule now uses just LINQ's FirstOrDefault, rather than Where, followed by FirstOrDefault.
+
 24-Apr-2016 Fixes #239. XML reads of package definition files now use the same reader settings (constructed once), without cloning, with validation always enabled (as it was by default previously, but was optional), and no repeated path combining for each definition file read to generate the same path (to the Bam schema).
 
 24-Apr-2016 Issue #233. Bam.Core.Graph.Validate now uses fewer LINQ calls to validate the dependency graph.
