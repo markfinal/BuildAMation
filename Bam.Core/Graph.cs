@@ -63,7 +63,7 @@ namespace Bam.Core
             OSUtilities.SetupPlatform();
 
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
-            this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
+            this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, Array<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList();
             this.BuildEnvironmentInternal = null;
@@ -123,8 +123,7 @@ namespace Bam.Core
                 throw new Exception(message.ToString());
             }
             var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
-            var matches = referencedModules.Where(item => item.GetType() == typeof(T));
-            var matchedModule = matches.FirstOrDefault();
+            var matchedModule = referencedModules.FirstOrDefault(item => item.GetType() == typeof(T));
             if (null != matchedModule)
             {
                 return matchedModule as T;
@@ -141,15 +140,33 @@ namespace Bam.Core
             return newModule;
         }
 
+        private System.Collections.Generic.Dictionary<System.Type, System.Func<Module>> compiledFindRefModuleCache = new System.Collections.Generic.Dictionary<System.Type, System.Func<Module>>();
+
         private Module
         MakeModuleOfType(
             System.Type moduleType)
         {
             try
             {
-                var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule");
-                var genericVersionForModuleType = findReferencedModuleMethod.MakeGenericMethod(moduleType);
-                var newModule = genericVersionForModuleType.Invoke(this, null) as Module;
+                if (!this.compiledFindRefModuleCache.ContainsKey(moduleType))
+                {
+                    // find method for the module type requested
+                    // (the caching is based on this being 'expensive' as it's based on reflection)
+                    var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule");
+                    var genericVersionForModuleType = findReferencedModuleMethod.MakeGenericMethod(moduleType);
+
+                    // now compile it, so that we don't have to repeat the above
+                    var instance = System.Linq.Expressions.Expression.Constant(this);
+                    var call = System.Linq.Expressions.Expression.Call(
+                        instance,
+                        genericVersionForModuleType);
+                    var lambda = System.Linq.Expressions.Expression.Lambda<System.Func<Module>>(call);
+                    var func = lambda.Compile();
+
+                    // and store it
+                    this.compiledFindRefModuleCache.Add(moduleType, func);
+                }
+                var newModule = this.compiledFindRefModuleCache[moduleType]();
                 return newModule;
             }
             catch (System.Reflection.TargetInvocationException ex)
@@ -269,7 +286,7 @@ namespace Bam.Core
             set;
         }
 
-        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> ReferencedModules
+        private System.Collections.Generic.Dictionary<Environment, Array<Module>> ReferencedModules
         {
             get;
             set;
@@ -323,7 +340,7 @@ namespace Bam.Core
                 if (null != value)
                 {
                     this.Modules.Add(value, new System.Collections.Generic.List<Module>());
-                    this.ReferencedModules.Add(value, new System.Collections.Generic.List<Module>());
+                    this.ReferencedModules.Add(value, new Array<Module>());
                 }
             }
         }
@@ -375,25 +392,76 @@ namespace Bam.Core
         }
 
         private void
-        InternalArrangeDependents(
-            Module m,
-            int rank)
+        SetModuleRank(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            Module module,
+            int rankIndex)
         {
-            // predicate required, because eventually there will be a module without a Tool, e.g. a Tool itself
-            if (m.Tool != null)
+            if (map.ContainsKey(module))
             {
-                if (null == m.Settings)
+                throw new Exception("Module {0} rank initialized more than once", module);
+            }
+            map.Add(module, rankIndex);
+        }
+
+        private void
+        MoveModuleRankBy(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            Module module,
+            int rankDelta)
+        {
+            if (!map.ContainsKey(module))
+            {
+                // a dependency hasn't yet been initialized, so don't try to move it
+                return;
+            }
+            map[module] += rankDelta;
+            foreach (var dep in module.Dependents)
+            {
+                MoveModuleRankBy(map, dep, rankDelta);
+            }
+            foreach (var dep in module.Requirements)
+            {
+                MoveModuleRankBy(map, dep, rankDelta);
+            }
+        }
+
+        private void
+        MoveModuleRankTo(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            Module module,
+            int rankIndex)
+        {
+            if (!map.ContainsKey(module))
+            {
+                throw new Exception("Module {0} has yet to be initialized", module);
+            }
+            var currentRank = map[module];
+            var rankDelta = rankIndex - currentRank;
+            MoveModuleRankBy(map, module, rankDelta);
+        }
+
+        private void
+        ProcessModule(
+            System.Collections.Generic.Dictionary<Module, int> map,
+            System.Collections.Generic.Queue<Module> toProcess,
+            Module module,
+            int rankIndex)
+        {
+            if (module.Tool != null)
+            {
+                if (null == module.Settings)
                 {
-                    m.Requires(m.Tool);
-                    var child = m as IChildModule;
+                    module.Requires(module.Tool);
+                    var child = module as IChildModule;
                     if ((null == child) || (null == child.Parent))
                     {
                         // children inherit the settings from their parents
-                        m.UsePublicPatches(m.Tool);
+                        module.UsePublicPatches(module.Tool);
                     }
                     try
                     {
-                        m.Settings = (m.Tool as ITool).CreateDefaultSettings(m);
+                        module.Settings = (module.Tool as ITool).CreateDefaultSettings(module);
                     }
                     catch (System.TypeInitializationException ex)
                     {
@@ -401,27 +469,46 @@ namespace Bam.Core
                     }
                 }
             }
-            if ((0 == m.Dependents.Count) && (0 == m.Requirements.Count))
+            if ((0 == module.Dependents.Count) && (0 == module.Requirements.Count))
             {
                 return;
             }
-            if (m is IModuleGroup)
+            if (module is IModuleGroup)
             {
-                var children = m.Children;
-                this.ApplyGroupDependenciesToChildren(m, children, m.Dependents);
-                this.ApplyGroupRequirementsToChildren(m, children, m.Requirements);
+                var children = module.Children;
+                this.ApplyGroupDependenciesToChildren(module, children, module.Dependents);
+                this.ApplyGroupRequirementsToChildren(module, children, module.Requirements);
             }
-            var nextRank = rank + 1;
-            var currentRank = this.DependencyGraph[nextRank];
-            foreach (var c in m.Dependents)
+            var nextRankIndex = rankIndex + 1;
+            foreach (var dep in module.Dependents)
             {
-                currentRank.Add(c);
-                this.InternalArrangeDependents(c, nextRank);
+                if (map.ContainsKey(dep))
+                {
+                    if (map[dep] < nextRankIndex)
+                    {
+                        MoveModuleRankTo(map, dep, nextRankIndex);
+                    }
+                }
+                else
+                {
+                    SetModuleRank(map, dep, nextRankIndex);
+                    toProcess.Enqueue(dep);
+                }
             }
-            foreach (var c in m.Requirements)
+            foreach (var dep in module.Requirements)
             {
-                currentRank.Add(c);
-                this.InternalArrangeDependents(c, nextRank);
+                if (map.ContainsKey(dep))
+                {
+                    if (map[dep] < nextRankIndex)
+                    {
+                        MoveModuleRankTo(map, dep, nextRankIndex);
+                    }
+                }
+                else
+                {
+                    SetModuleRank(map, dep, nextRankIndex);
+                    toProcess.Enqueue(dep);
+                }
             }
         }
 
@@ -434,11 +521,32 @@ namespace Bam.Core
         SortDependencies()
         {
             Log.Detail("Analysing module dependencies");
-            var currentRank = this.DependencyGraph[0];
-            foreach (var m in this.TopLevelModules)
+            var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
+            var modulesToProcess = new System.Collections.Generic.Queue<Module>();
+            // initialize the map with top-level modules
+            // and populate the to-process list
+            foreach (var module in this.TopLevelModules)
             {
-                currentRank.Add(m);
-                this.InternalArrangeDependents(m, 0);
+                SetModuleRank(moduleRanks, module, 0);
+                ProcessModule(moduleRanks, modulesToProcess, module, 0);
+            }
+            // process all modules by initializing them to a best-guess rank
+            // but then potentially moving them to a higher rank if they re-appear as dependencies
+            while (modulesToProcess.Count > 0)
+            {
+                var module = modulesToProcess.Dequeue();
+                ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
+            }
+            // assign modules, for each rank index, into collections
+            var maxRank = moduleRanks.Values.Max();
+            for (var i = 0; i <= maxRank; ++i)
+            {
+                var rankModules = moduleRanks.Where(x => x.Value == i);
+                var rank = this.DependencyGraph[i];
+                foreach (var pairs in rankModules)
+                {
+                    rank.Add(pairs.Key);
+                }
             }
             Module.CompleteModules();
         }
@@ -478,7 +586,7 @@ namespace Bam.Core
 
         private void
         InternalValidateGraph(
-            int parentRank,
+            int parentRankIndex,
             System.Collections.ObjectModel.ReadOnlyCollection<Module> modules)
         {
             foreach (var c in modules)
@@ -488,19 +596,18 @@ namespace Bam.Core
                 {
                     throw new Exception("Dependency has no rank");
                 }
-                var found = this.DependencyGraph.Where(item => item.Value == childCollection);
-                if (0 == found.Count())
+                try
+                {
+                    var childRank = this.DependencyGraph.First(item => item.Value == childCollection);
+                    var childRankIndex = childRank.Key;
+                    if (childRankIndex <= parentRankIndex)
+                    {
+                        throw new Exception("Dependent module {0} found at a lower rank {1} than the dependee {2}", c, childRankIndex, parentRankIndex);
+                    }
+                }
+                catch (System.InvalidOperationException)
                 {
                     throw new Exception("Module collection not found in graph");
-                }
-                if (found.Count() > 1)
-                {
-                    throw new Exception("Module collection found more than once in graph");
-                }
-                var childRank = found.First().Key;
-                if (childRank <= parentRank)
-                {
-                    throw new Exception("Dependent module {0} found at a lower rank than the dependee", c);
                 }
             }
         }
@@ -550,6 +657,19 @@ namespace Bam.Core
             Module module)
         {
             return this.ReferencedModules[module.BuildEnvironment].Contains(module);
+        }
+
+        /// <summary>
+        /// Returns a read only collection of all the named/referenced/encapsulating modules
+        /// for the specified Environment.
+        /// </summary>
+        /// <returns>The collection of modules</returns>
+        /// <param name="env">The Environment to query for named modules.</param>
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module>
+        EncapsulatingModules(
+            Environment env)
+        {
+            return this.ReferencedModules[env].ToReadOnlyCollection();
         }
 
         /// <summary>

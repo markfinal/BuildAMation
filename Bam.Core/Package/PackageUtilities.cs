@@ -226,7 +226,7 @@ namespace Bam.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir), !Graph.Instance.ForceDefinitionFileUpdate);
+            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir));
             masterDefinitionFile.Read();
             return masterDefinitionFile;
         }
@@ -308,6 +308,42 @@ namespace Bam.Core
             return additionalToRemove;
         }
 
+        private static void
+        EnqueuePackageRepositoryToVisit(
+            System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>> reposToVisit,
+            string repoPath,
+            PackageDefinition sourcePackageDefinition)
+        {
+            // need to always pre-load the search paths (reposToVisit) with the repo that the master package resides in
+            if (null != sourcePackageDefinition)
+            {
+                // visited already? ignore
+                if (Graph.Instance.PackageRepositories.Contains(repoPath))
+                {
+                    return;
+                }
+                // visited parent already? ignore
+                if (Graph.Instance.PackageRepositories.Any(item => repoPath.StartsWith(item)))
+                {
+                    return;
+                }
+            }
+            // already planned to visit? ignore
+            if (reposToVisit.Any(item => item.Item1 == repoPath))
+            {
+                return;
+            }
+            // new path is a parent path of a repo waiting to be viewed? replace all children with the parent (as it's a recursive search)
+            if (reposToVisit.Any(item => item.Item1.StartsWith(repoPath)))
+            {
+                foreach (var repo in reposToVisit.Where(item => item.Item1.StartsWith(repoPath)).ToList())
+                {
+                    reposToVisit.Remove(repo);
+                }
+            }
+            reposToVisit.AddLast(System.Tuple.Create<string, PackageDefinition>(repoPath, sourcePackageDefinition));
+        }
+
         /// <summary>
         /// Scan though all package repositories for all package dependencies, and resolve any duplicate package names
         /// by either data in the package definition file, or on the command line, by specifying a particular version to
@@ -320,24 +356,16 @@ namespace Bam.Core
             bool allowDuplicates = false,
             bool enforceBamAssemblyVersions = true)
         {
-            var packageRepos = new System.Collections.Generic.Queue<System.Tuple<string,PackageDefinition>>();
+            var packageRepos = new System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>>();
             foreach (var repo in Graph.Instance.PackageRepositories)
             {
-                if (packageRepos.Any(item => item.Item1 == repo))
-                {
-                    continue;
-                }
-                packageRepos.Enqueue(System.Tuple.Create<string,PackageDefinition>(repo, null));
+                EnqueuePackageRepositoryToVisit(packageRepos, repo, null);
             }
 
             var masterDefinitionFile = GetMasterPackage();
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
-                if (packageRepos.Any(item => item.Item1 == repo))
-                {
-                    continue;
-                }
-                packageRepos.Enqueue(System.Tuple.Create(repo, masterDefinitionFile));
+                EnqueuePackageRepositoryToVisit(packageRepos, repo, masterDefinitionFile);
             }
 
             // read the definition files of any package found in the package roots
@@ -345,7 +373,8 @@ namespace Bam.Core
             candidatePackageDefinitions.Add(masterDefinitionFile);
             while (packageRepos.Count > 0)
             {
-                var repoTuple = packageRepos.Dequeue();
+                var repoTuple = packageRepos.First();
+                packageRepos.RemoveFirst();
                 var repo = repoTuple.Item1;
                 if (!System.IO.Directory.Exists(repo))
                 {
@@ -371,17 +400,13 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var definitionFile = new PackageDefinition(packageDefinitionPath, !Graph.Instance.ForceDefinitionFileUpdate);
+                    var definitionFile = new PackageDefinition(packageDefinitionPath);
                     definitionFile.Read();
                     candidatePackageDefinitions.Add(definitionFile);
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
-                        if (Graph.Instance.PackageRepositories.Contains(newRepo))
-                        {
-                            continue;
-                        }
-                        packageRepos.Enqueue(System.Tuple.Create(newRepo, definitionFile));
+                        EnqueuePackageRepositoryToVisit(packageRepos, newRepo, definitionFile);
                     }
                 }
             }

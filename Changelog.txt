@@ -1,3 +1,29 @@
+24-Apr-2016 Fixes #240. Updated the format of the table of task profiles at the end of the --stats output to make it easier to read.
+
+24-Apr-2016 Issue #233. Bam.Core.Graph.FindReferencedModule now uses just LINQ's FirstOrDefault, rather than Where, followed by FirstOrDefault.
+
+24-Apr-2016 Fixes #239. XML reads of package definition files now use the same reader settings (constructed once), without cloning, with validation always enabled (as it was by default previously, but was optional), and no repeated path combining for each definition file read to generate the same path (to the Bam schema).
+
+24-Apr-2016 Issue #233. Bam.Core.Graph.Validate now uses fewer LINQ calls to validate the dependency graph.
+
+24-Apr-2016 Fixes #238. Bam.Core.Graph.MakeModuleOfType now both compiles a generic method (generic type is the Module type found through reflection), and caches that compiled function for reuse. This reduces the cost of using the same module type over and over (likely for things like source files and object files).
+
+24-Apr-2016 Fixes #237. On a build with multiple packages each referring to a common set of package repositories, directory enumeration was occurring repeatedly, incurring a performance penalty. Also, a directory structure containing packages in different subdirectories also tries to only scan (recursively) the parent directory, rather than both the parent and required subdirectories, redundantly.
+
+22-Apr-2016 Fixes #236. Using a new algorithm to sort module dependencies, that eliminates redundant re-processing of modules in the dependency graph. This should be a reasonable performance gain for projects with many modules.
+
+22-Apr-2016 Fixes #235. Bam.Core.TokenizedString now has separate caches for verbatim strings, strings using macros from a particular module, and strings that don't use a module but have positional arguments, in order to reduce n in the O(n) search for identical strings.
+
+21-Apr-2016 Fixes #232. Changed Core timing code to use System.Diagnostics.Stopwatch rather than System.DateTime.Now, as the former can make use of a high resolution timer if hardware supports it, or falls back to the system clock which DateTime.Now uses. Mono appears to have a high cost to the first call to any timer (although any number can be created afterwards), so this is pre-empted in a static constructor. Because of this change, the output of --stats is now different, as there is no start/end time to each profile taken.
+
+21-Apr-2016 Fixes #231. Extended the --stats command line option to display the creation times of all named/referenced/encapsulating modules for each configuration built, as an aid for high level profiling.
+
+20-Apr-2016 Fixes #230. If a C module container is constructed with wildcards, a fairly long sequence of commands, including LINQ, is needed to identify an individual (or group) of modules for compiled source files, given a filename. To avoid having to repeat this everywhere, a string indexer has been added to C.CModuleContainer, returning a list of object file modules whose source file matches the filename supplied. For example, if var source = this.CreateCxxSourceContainer(...); then all matching object file modules with the source file foobar.c can be found with source["foobar.c"]. The ForEach function can then be used on this to apply changes per module, for example, apply a private patch to change the compilation options on a single source file out of many.
+
+20-Apr-2016 Fixes #229. If Bam.Core.Module.ClosingPatch was applied to a container of modules, it was not applied to any of its child modules.
+
+20-Apr-2016 ======== Version 1.0.2 beta 2 Release ========
+
 18-Apr-2016 Fixes #228. Added Bam.Core.Module.ClosingPatch. This is a patch using the same delegate as a private patch, but is guaranteed to be executed after all other patches, i.e. so that the Module's Settings object is in its final state (i.e. just before the settings are converted to a command line or project file). Only a single closing patch is possible per module. This allows some logic on the final settings to be evaluated, such as to set a macro to be used in other TokenizedStrings (since they are expanded after patches are evaluated), or to modify a setting (e.g. add a preprocessor define based on other settings).
 
 16-Apr-2016 Fixes #227. Added Bam.Core.PackageDirectoryRedirectAttribute, an attribute associated with an assembly, requiring a package name, an optional package version, and a redirected path. By default, the macro $(packagedir) is the directory containing the 'bam' folder. Should the source code for a package reside in a different location to that directory, this attribute can be placed anywhere in the compiled code for your packages, and the macro $(packagedir) is redirected to the specified path for that package. The redirect path can either be an absolute path, or a path relative to the directory containing the 'bam' folder. Such attributes could be placed in project specific locations, independent of package definitions. Modified the ProxyTest test package to demonstrate.

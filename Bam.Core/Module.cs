@@ -63,6 +63,7 @@ namespace Bam.Core
             }
 
             graph.AddModule(this);
+            this.TokenizedStringCache = new System.Collections.Generic.List<TokenizedString>();
             this.Macros = new MacroList();
             // TODO: Can this be generalized to be a collection of files?
             this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
@@ -200,6 +201,7 @@ namespace Bam.Core
         {
             try
             {
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
                 if (!CanCreate(typeof(T)))
                 {
                     return null;
@@ -224,6 +226,8 @@ namespace Bam.Core
                 }
                 module.GetExecutionPolicy(Graph.Instance.Mode);
                 AllModules.Add(module);
+                stopwatch.Stop();
+                module.CreationTime = new System.TimeSpan(stopwatch.ElapsedTicks);
                 return module;
             }
             catch (ModuleCreationException exception)
@@ -707,7 +711,8 @@ namespace Bam.Core
         /// 6. Apply public patches of this.
         /// 7. If this is a child module, and honourParents is true, apply any inherited patches from the parent.
         /// 8. Apply inherited public patches of this.
-        /// Once all patches have been evaluated, if the module has a closing patch, this is now evaluated.
+        /// Once all patches have been evaluated, if the module has a closing patch, this is now evaluated. If the module's
+        /// parent also has a closing patch, this is also evaluated.
         /// Inherited patches are the mechanism for transient dependencies, where dependencies filter up the module hierarchy.
         /// See UsePublicPatches and UsePublicPatchesPrivately.
         /// </summary>
@@ -785,6 +790,10 @@ namespace Bam.Core
             if (null != TheClosingPatch)
             {
                 TheClosingPatch(settings);
+            }
+            if (null != parentModule && null != parentModule.TheClosingPatch)
+            {
+                parentModule.TheClosingPatch(settings);
             }
         }
 
@@ -972,6 +981,25 @@ namespace Bam.Core
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Extract the time taken to create the instance of this module.
+        /// </summary>
+        /// <value>The init time.</value>
+        public System.TimeSpan CreationTime
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Cache of TokenizedStrings that use macros from this module.
+        /// </summary>
+        public System.Collections.Generic.List<TokenizedString> TokenizedStringCache
+        {
+            get;
+            private set;
         }
     }
 }
