@@ -36,8 +36,6 @@ namespace Bam.Core
     /// </summary>
     public class PackageDefinition
     {
-        private bool validate;
-
         private static void
         ValidationCallBack(
             object sender,
@@ -77,19 +75,34 @@ namespace Bam.Core
             }
         }
 
+        private static System.Xml.XmlReaderSettings CommonReaderSettings
+        {
+            get;
+            set;
+        }
+
+        static PackageDefinition()
+        {
+            var xmlReaderSettings = new System.Xml.XmlReaderSettings();
+            xmlReaderSettings.Schemas.Add(XmlNamespace, System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, RelativePathToLatestSchema));
+            xmlReaderSettings.CheckCharacters = true;
+            xmlReaderSettings.CloseInput = true;
+            xmlReaderSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
+            xmlReaderSettings.IgnoreComments = true;
+            xmlReaderSettings.IgnoreWhitespace = true;
+            xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
+            xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
+            xmlReaderSettings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
+            xmlReaderSettings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
+            xmlReaderSettings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
+            CommonReaderSettings = xmlReaderSettings;
+        }
+
         private void
         Validate()
         {
-            var settings = new System.Xml.XmlReaderSettings();
-            settings.Schemas.Add(XmlNamespace, System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, RelativePathToLatestSchema));
-            settings.ValidationType = System.Xml.ValidationType.Schema;
-            settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
-            settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
-            settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
-            settings.ValidationEventHandler += new System.Xml.Schema.ValidationEventHandler(ValidationCallBack);
-
             // Create the XmlReader object.
-            using (var reader = System.Xml.XmlReader.Create(this.XMLFilename, settings))
+            using (var reader = System.Xml.XmlReader.Create(this.XMLFilename, CommonReaderSettings))
             {
                 // Parse the file.
                 while (reader.Read()) ;
@@ -119,10 +132,8 @@ namespace Bam.Core
 
         private void
         Initialize(
-            string xmlFilename,
-            bool validate)
+            string xmlFilename)
         {
-            this.validate = validate;
             this.XMLFilename = xmlFilename;
             this.Dependents = new Array<System.Tuple<string, string, bool?>>();
             this.BamAssemblies = new Array<BamAssemblyDescription>();
@@ -143,13 +154,11 @@ namespace Bam.Core
         /// Construct a new instance, based from an existing XML filename.
         /// </summary>
         /// <param name="xmlFilename">Xml filename.</param>
-        /// <param name="validate">If set to <c>true</c> validate.</param>
         public
         PackageDefinition(
-            string xmlFilename,
-            bool validate)
+            string xmlFilename)
         {
-            this.Initialize(xmlFilename, validate);
+            this.Initialize(xmlFilename);
         }
 
         /// <summary>
@@ -166,7 +175,7 @@ namespace Bam.Core
         {
             var definitionName = (null != version) ? System.String.Format("{0}-{1}.xml", name, version) : name + ".xml";
             var xmlFilename = System.IO.Path.Combine(bamDirectory, definitionName);
-            this.Initialize(xmlFilename, validate);
+            this.Initialize(xmlFilename);
             this.Name = name;
             this.Version = version;
             if (null != version)
@@ -421,10 +430,7 @@ namespace Bam.Core
                 xmlWriter.WriteWhitespace(xmlWriterSettings.NewLineChars);
             }
 
-            if (this.validate)
-            {
-                this.Validate();
-            }
+            this.Validate();
         }
 
         private string
@@ -443,12 +449,10 @@ namespace Bam.Core
         /// <summary>
         /// Read an existing XML file into the instance.
         /// </summary>
-        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location. Defaults to <c>true</c>.</param>
         public void
-        Read(
-            bool validateSchemaLocation = true)
+        Read()
         {
-            this.ReadInternal(validateSchemaLocation);
+            this.ReadInternal();
 
             var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
@@ -457,28 +461,13 @@ namespace Bam.Core
         /// <summary>
         /// Read an existing XML file into the instance.
         /// </summary>
-        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
         private void
-        ReadInternal(
-            bool validateSchemaLocation)
+        ReadInternal()
         {
             Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
 
-            var xmlReaderSettings = new System.Xml.XmlReaderSettings();
-            xmlReaderSettings.Schemas.Add(XmlNamespace, System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, RelativePathToLatestSchema));
-            xmlReaderSettings.CheckCharacters = true;
-            xmlReaderSettings.CloseInput = true;
-            xmlReaderSettings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
-            xmlReaderSettings.IgnoreComments = true;
-            xmlReaderSettings.IgnoreWhitespace = true;
-            if (this.validate)
-            {
-                xmlReaderSettings.ValidationType = System.Xml.ValidationType.Schema;
-            }
-            xmlReaderSettings.ValidationEventHandler += ValidationCallBack;
-
             // try reading the current schema version first
-            if (this.ReadCurrent(xmlReaderSettings, validateSchemaLocation))
+            if (this.ReadCurrent())
             {
                 if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
@@ -770,27 +759,12 @@ namespace Bam.Core
         /// Read the XML file using the current schema.
         /// </summary>
         /// <returns><c>true</c>, if current was  read, <c>false</c> otherwise.</returns>
-        /// <param name="readerSettings">Reader settings.</param>
-        /// <param name="validateSchemaLocation">If set to <c>true</c> validate schema location.</param>
         protected bool
-        ReadCurrent(
-            System.Xml.XmlReaderSettings readerSettings,
-            bool validateSchemaLocation)
+        ReadCurrent()
         {
             try
             {
-                var settings = readerSettings.Clone();
-                if (this.validate)
-                {
-                    if (validateSchemaLocation)
-                    {
-                        settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessSchemaLocation;
-                    }
-                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ProcessIdentityConstraints;
-                    settings.ValidationFlags |= System.Xml.Schema.XmlSchemaValidationFlags.ReportValidationWarnings;
-                }
-
-                using (var xmlReader = System.Xml.XmlReader.Create(this.XMLFilename, settings))
+                using (var xmlReader = System.Xml.XmlReader.Create(this.XMLFilename, CommonReaderSettings))
                 {
                     var rootElementName = "PackageDefinition";
                     if (!xmlReader.ReadToFollowing(rootElementName))

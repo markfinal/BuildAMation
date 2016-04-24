@@ -1,3 +1,5 @@
+24-Apr-2016 Fixes #239. XML reads of package definition files now use the same reader settings (constructed once), without cloning, with validation always enabled (as it was by default previously, but was optional), and no repeated path combining for each definition file read to generate the same path (to the Bam schema).
+
 24-Apr-2016 Issue #233. Bam.Core.Graph.Validate now uses fewer LINQ calls to validate the dependency graph.
 
 24-Apr-2016 Fixes #238. Bam.Core.Graph.MakeModuleOfType now both compiles a generic method (generic type is the Module type found through reflection), and caches that compiled function for reuse. This reduces the cost of using the same module type over and over (likely for things like source files and object files).
