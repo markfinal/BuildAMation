@@ -58,7 +58,7 @@ namespace Bam.Core
         public static void
         DumpProfiles()
         {
-            var profileHeader = "Profile";
+            var profileHeader = "Task";
             var minutesHeader = "Minutes";
             var secondsHeader = "Seconds";
             var millisecondsHeader = "Milliseconds";
@@ -104,31 +104,35 @@ namespace Bam.Core
                                      new string(' ', maxSecondLength - secondsHeader.Length),
                                      millisecondsHeader,
                                      new string(' ', maxMillisecondLength - millisecondsHeader.Length));
-            var horizontalRule = new string('-', header.Length);
+            var sectionRule = new string('=', header.Length);
+            var profileRule = new string('-', header.Length);
             Log.Info("\nTask timing");
-            Log.Info(horizontalRule);
+            Log.Info(sectionRule);
             Log.Info(header);
-            Log.Info(horizontalRule);
+            Log.Info(sectionRule);
             var cumulativeTime = new System.TimeSpan();
             foreach (var profile in Profiles)
             {
+                var requiresProfileRule = true;
+
                 var elapsedTime = profile.Elapsed;
                 if (ETimingProfiles.TimedTotal != profile.Profile)
                 {
                     cumulativeTime = cumulativeTime.Add(elapsedTime);
                 }
 
-                var minuteString = elapsedTime.Minutes.ToString();
-                var secondString = elapsedTime.Seconds.ToString();
-                var millisecondString = elapsedTime.Milliseconds.ToString();
+                var minuteString = elapsedTime.Minutes > 0 ? elapsedTime.Minutes.ToString() : string.Empty;
+                var secondString = elapsedTime.Seconds > 0 ? elapsedTime.Seconds.ToString() : string.Empty;
+                var millisecondString = elapsedTime.Milliseconds > 0 ? elapsedTime.Milliseconds.ToString() : string.Empty;
 
                 if (ETimingProfiles.TimedTotal == profile.Profile)
                 {
-                    Log.Info(horizontalRule);
+                    Log.Info(sectionRule);
+                    Log.Info(sectionRule);
                     var cumulativeString = "CumulativeTotal";
-                    var cumulativeMinutesString = cumulativeTime.Minutes.ToString();
-                    var cumulativeSecondsString = cumulativeTime.Seconds.ToString();
-                    var cumulativeMillisecondsString = cumulativeTime.Milliseconds.ToString();
+                    var cumulativeMinutesString = cumulativeTime.Minutes > 0 ? cumulativeTime.Minutes.ToString() : string.Empty;
+                    var cumulativeSecondsString = cumulativeTime.Seconds > 0 ? cumulativeTime.Seconds.ToString() : string.Empty;
+                    var cumulativeMillisecondsString = cumulativeTime.Milliseconds > 0 ? cumulativeTime.Milliseconds.ToString() : string.Empty;
 
                     Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
                              cumulativeString,
@@ -139,7 +143,12 @@ namespace Bam.Core
                              cumulativeSecondsString,
                              new string(' ', maxMillisecondLength - cumulativeMillisecondsString.Length),
                          cumulativeMillisecondsString);
-                    Log.Info(horizontalRule);
+                    Log.Info(sectionRule);
+                    requiresProfileRule = false;
+                }
+                else if (ETimingProfiles.GraphExecution == profile.Profile)
+                {
+                    requiresProfileRule = false;
                 }
 
                 Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
@@ -151,8 +160,12 @@ namespace Bam.Core
                          secondString,
                          new string(' ', maxMillisecondLength - millisecondString.Length),
                          millisecondString);
+                if (requiresProfileRule)
+                {
+                    Log.Info(profileRule);
+                }
             }
-            Log.Info(horizontalRule);
+            Log.Info(sectionRule);
         }
     }
 }
