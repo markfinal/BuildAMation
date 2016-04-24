@@ -381,6 +381,10 @@ namespace Bam.Core
                         {
                             continue;
                         }
+                        if (packageRepos.Any(item => item.Item1 == newRepo))
+                        {
+                            continue;
+                        }
                         packageRepos.Enqueue(System.Tuple.Create(newRepo, definitionFile));
                     }
                 }

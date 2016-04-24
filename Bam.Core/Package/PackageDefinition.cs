@@ -538,6 +538,7 @@ namespace Bam.Core
                 var dir = xmlReader.GetAttribute("dir");
                 var bamDir = this.GetBamDirectory();
                 var absolutePackageRepoDir = RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
+                absolutePackageRepoDir = absolutePackageRepoDir.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
                 this.PackageRepositories.AddUnique(absolutePackageRepoDir);
             }
 

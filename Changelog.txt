@@ -1,3 +1,5 @@
+24-Apr-2016 Fixes #237. On a build with multiple packages each referring to a common set of package repositories, directory enumeration was occurring repeatedly, incurring a performance penalty.
+
 22-Apr-2016 Fixes #236. Using a new algorithm to sort module dependencies, that eliminates redundant re-processing of modules in the dependency graph. This should be a reasonable performance gain for projects with many modules.
 
 22-Apr-2016 Fixes #235. Bam.Core.TokenizedString now has separate caches for verbatim strings, strings using macros from a particular module, and strings that don't use a module but have positional arguments, in order to reduce n in the O(n) search for identical strings.
