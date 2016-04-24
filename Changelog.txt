@@ -1,4 +1,4 @@
-24-Apr-2016 Fixes #237. On a build with multiple packages each referring to a common set of package repositories, directory enumeration was occurring repeatedly, incurring a performance penalty.
+24-Apr-2016 Fixes #237. On a build with multiple packages each referring to a common set of package repositories, directory enumeration was occurring repeatedly, incurring a performance penalty. Also, a directory structure containing packages in different subdirectories also tries to only scan (recursively) the parent directory, rather than both the parent and required subdirectories, redundantly.
 
 22-Apr-2016 Fixes #236. Using a new algorithm to sort module dependencies, that eliminates redundant re-processing of modules in the dependency graph. This should be a reasonable performance gain for projects with many modules.
 
