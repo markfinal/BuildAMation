@@ -59,7 +59,7 @@ namespace Bam.Core
             }
 
             var builderPackageName = System.String.Format("{0}Builder", Graph.Instance.Mode);
-            var builderPackage = Graph.Instance.Packages.Where(item => item.Name == builderPackageName).FirstOrDefault();
+            var builderPackage = Graph.Instance.Packages.FirstOrDefault(item => item.Name == builderPackageName);
             if (null != builderPackage)
             {
                 return;
