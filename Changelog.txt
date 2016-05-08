@@ -1,3 +1,5 @@
+08-May-2016 Issue #233. Using LINQ's First and FirstOrDefault, instead of Where as well, to identify any 'default' package versions marked in the master package definition file.
+
 08-May-2016 Issue #233. The --showdefinition command now just uses LINQ's First function, rather than Where followed by First.
 
 24-Apr-2016 Fixes #240. Updated the format of the table of task profiles at the end of the --stats output to make it easier to read.

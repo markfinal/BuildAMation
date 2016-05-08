@@ -269,11 +269,11 @@ namespace Bam.Core
             }
 
             // now look at the master dependency file, for any 'default' specifications
-            var masterDependency = masterDefinitionFile.Dependents.Where(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value).FirstOrDefault();
+            var masterDependency = masterDefinitionFile.Dependents.FirstOrDefault(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value);
             if (null != masterDependency)
             {
                 toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item.Version != masterDependency.Item2)));
-                return packageDefinitions.Where(item => (item.Name == dupName) && (item.Version == masterDependency.Item2)).First();
+                return packageDefinitions.First(item => (item.Name == dupName) && (item.Version == masterDependency.Item2));
             }
 
             return null;
