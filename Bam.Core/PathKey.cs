@@ -51,11 +51,10 @@ namespace Bam.Core
         Generate(
             string key)
         {
-            var matches = GeneratedKeys.Where(item => (item.Id == key));
-            var first = matches.FirstOrDefault();
-            if (null != first)
+            var foundPathKey = GeneratedKeys.FirstOrDefault(item => (item.Id == key));
+            if (null != foundPathKey)
             {
-                return first;
+                return foundPathKey;
             }
             var newKey = new PathKey(key);
             GeneratedKeys.Add(newKey);

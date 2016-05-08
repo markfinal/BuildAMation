@@ -1,3 +1,5 @@
+08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to identify existing Bam.Core.PathKeys.
+
 08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to identify the package definition used for each Module created.
 
 08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to find packages with metadata attributes to create, and retrieve.
