@@ -1,4 +1,4 @@
-08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to find packages with metadata attributes.
+08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to find packages with metadata attributes to create, and retrieve.
 
 08-May-2016 Issue #233. Using LINQ's First and FirstOrDefault, instead of Where as well, to identify any 'default' package versions marked in the master package definition file.
 

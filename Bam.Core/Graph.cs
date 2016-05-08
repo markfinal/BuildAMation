@@ -753,7 +753,7 @@ namespace Bam.Core
             string packageName)
             where MetaDataType : class
         {
-            var package = Bam.Core.Graph.Instance.Packages.Where(item => item.Name == packageName).FirstOrDefault();
+            var package = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name == packageName);
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", packageName);
