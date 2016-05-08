@@ -498,7 +498,7 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var versionFromDefinition = packageDefinitions.Where(item => item.Name == uniquePkgName).First().Version;
+                    var versionFromDefinition = packageDefinitions.First(item => item.Name == uniquePkgName).Version;
                     if (versionSpecifier[1] != versionFromDefinition)
                     {
                         var noMatchMessage = new System.Text.StringBuilder();
