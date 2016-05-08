@@ -104,7 +104,7 @@ namespace Bam.Core
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
 
             var masterPackage = GetMasterPackage();
-            if (null != masterPackage.Dependents.Where(item => item.Item1 == packageName && item.Item2 == packageVersion).FirstOrDefault())
+            if (null != masterPackage.Dependents.FirstOrDefault(item => item.Item1 == packageName && item.Item2 == packageVersion))
             {
                 if (null != packageVersion)
                 {
@@ -395,7 +395,7 @@ namespace Bam.Core
                     var packageDefinitionPath = GetPackageDefinitionPathname(packageDir);
 
                     // ignore any duplicates (can be found due to nested repositories)
-                    if (null != candidatePackageDefinitions.Where(item => item.XMLFilename == packageDefinitionPath).FirstOrDefault())
+                    if (null != candidatePackageDefinitions.FirstOrDefault(item => item.XMLFilename == packageDefinitionPath))
                     {
                         continue;
                     }
