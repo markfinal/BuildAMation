@@ -43,7 +43,7 @@ namespace Bam.Core
         {
             var thisType = this.GetType();
             var configureInterfaceType = typeof(IPackageMetaDataConfigure<>).MakeGenericType(thisType);
-            var metaType = Graph.Instance.ScriptAssembly.GetTypes().Where(item => configureInterfaceType.IsAssignableFrom(item)).FirstOrDefault();
+            var metaType = Graph.Instance.ScriptAssembly.GetTypes().FirstOrDefault(item => configureInterfaceType.IsAssignableFrom(item));
             if (null == metaType)
             {
                 return;
