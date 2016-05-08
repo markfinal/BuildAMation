@@ -1169,7 +1169,7 @@ namespace Bam.Core
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
             {
-                var dep = Graph.Instance.Packages.Where(item => item.Name == dependent.Item1 && item.Version == dependent.Item2).First();
+                var dep = Graph.Instance.Packages.First(item => item.Name == dependent.Item1 && item.Version == dependent.Item2);
                 if (visitedPackages.Contains(dep))
                 {
                     continue;
