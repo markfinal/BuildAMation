@@ -186,6 +186,9 @@ namespace Bam.Core
 
             ExecutePreBuild(metaDataType);
 
+            // necessary if built with debug symbols
+            IOWrapper.CreateDirectoryIfNotExists(graph.BuildRoot);
+
             var threadCount = CommandLineProcessor.Evaluate(new Options.MultiThreaded());
             if (0 == threadCount)
             {
