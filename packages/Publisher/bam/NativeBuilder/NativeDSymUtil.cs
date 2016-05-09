@@ -40,10 +40,7 @@ namespace Publisher
             Bam.Core.TokenizedString copiedPath)
         {
             var copiedDir = System.IO.Path.GetDirectoryName(copiedPath.Parse());
-            if (!System.IO.Directory.Exists(copiedDir))
-            {
-                System.IO.Directory.CreateDirectory(copiedDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(copiedDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);

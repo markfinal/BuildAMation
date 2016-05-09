@@ -27,26 +27,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace Bam.Core
 {
-    public sealed class NativeStrip :
-        IStripToolPolicy
+    /// <summary>
+    /// Wrapper around IO functions in order to add value to any exceptions thrown.
+    /// </summary>
+    public static class IOWrapper
     {
-        void
-        IStripToolPolicy.Strip(
-            StripModule sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString originalPath,
-            Bam.Core.TokenizedString strippedPath)
+        /// <summary>
+        /// Wrapper around System.IO.Directory.CreateDirectory, catching exceptions thrown
+        /// and embedding them into a Bam.Core.Exception with more semantic detail.
+        /// No checks whether the directory already exists occur.
+        /// </summary>
+        /// <param name="directoryPath">Path to the directory to create.</param>
+        static public void
+        CreateDirectory(
+            string directoryPath)
         {
-            var strippedDir = System.IO.Path.GetDirectoryName(strippedPath.Parse());
-            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(strippedDir);
+            try
+            {
+                System.IO.Directory.CreateDirectory(directoryPath);
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception(ex, "Unable to create directory, {0}", directoryPath);
+            }
+        }
 
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-            commandLine.Add(originalPath.Parse());
-            commandLine.Add(System.String.Format("-o {0}", strippedPath.Parse()));
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+        /// <summary>
+        /// Conditionally create the directory, if it does not exist.
+        /// Any exceptions thrown from the directory creation are embedded into a Bam.Core.Exception
+        /// with more semantic detail.
+        /// </summary>
+        /// <param name="directoryPath">Path to the directory to create.</param>
+        static public void
+        CreateDirectoryIfNotExists(
+            string directoryPath)
+        {
+            if (!System.IO.Directory.Exists(directoryPath))
+            {
+                CreateDirectory(directoryPath);
+            }
         }
     }
 }

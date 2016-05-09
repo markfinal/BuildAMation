@@ -147,10 +147,7 @@ namespace VSSolutionBuilder
             foreach (var project in solution.Projects)
             {
                 var projectPathDir = System.IO.Path.GetDirectoryName(project.ProjectPath);
-                if (!System.IO.Directory.Exists(projectPathDir))
-                {
-                    System.IO.Directory.CreateDirectory(projectPathDir);
-                }
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(projectPathDir);
 
                 WriteXMLIfDifferent(project.ProjectPath, xmlWriterSettings, project.Serialize());
                 WriteXMLIfDifferent(project.ProjectPath + ".filters", xmlWriterSettings, project.Filter.Serialize());

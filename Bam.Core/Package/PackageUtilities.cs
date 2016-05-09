@@ -68,11 +68,11 @@ namespace Bam.Core
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
             var definition = new PackageDefinition(bamDir, packageName, packageVersion);
 
-            System.IO.Directory.CreateDirectory(bamDir);
+            IOWrapper.CreateDirectory(bamDir);
             definition.Write();
 
             var scriptsDir = System.IO.Path.Combine(bamDir, ScriptsSubFolder);
-            System.IO.Directory.CreateDirectory(scriptsDir);
+            IOWrapper.CreateDirectory(scriptsDir);
 
             var initialScriptFile = System.IO.Path.Combine(scriptsDir, packageName) + ".cs";
             using (System.IO.TextWriter writer = new System.IO.StreamWriter(initialScriptFile))
@@ -592,11 +592,6 @@ namespace Bam.Core
                 }
             }
 
-            if (!System.IO.Directory.Exists(Graph.Instance.BuildRoot))
-            {
-                System.IO.Directory.CreateDirectory(Graph.Instance.BuildRoot);
-            }
-
             BuildModeUtilities.ValidateBuildModePackage();
 
             var definitions = new StringArray();
@@ -778,7 +773,8 @@ namespace Bam.Core
                     throw new Exception("C# compiler does not support Resources");
                 }
 
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
+                // this will create the build root directory as necessary
+                IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
                 var results = Graph.Instance.CompileWithDebugSymbols ?
                     provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :

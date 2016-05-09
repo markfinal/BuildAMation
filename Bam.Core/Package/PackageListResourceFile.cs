@@ -82,10 +82,7 @@ namespace Bam.Core
             var masterPackage = Graph.Instance.MasterPackage;
 
             var projectDirectory = System.IO.Path.GetDirectoryName(projectPath);
-            if (!System.IO.Directory.Exists(projectDirectory))
-            {
-                System.IO.Directory.CreateDirectory(projectDirectory);
-            }
+            IOWrapper.CreateDirectoryIfNotExists(projectDirectory);
 
             var resourceFilePathName = System.IO.Path.Combine(projectDirectory, "PackageInfoResources.resx");
 

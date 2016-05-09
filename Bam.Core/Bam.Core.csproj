@@ -97,6 +97,7 @@
     <Compile Include="Interfaces\ISettingsBase.cs" />
     <Compile Include="Interfaces\ISitePolicy.cs" />
     <Compile Include="Interfaces\ITool.cs" />
+    <Compile Include="IOWrapper.cs" />
     <Compile Include="LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MacroList.cs" />

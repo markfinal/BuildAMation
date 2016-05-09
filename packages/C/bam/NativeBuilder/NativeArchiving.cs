@@ -72,10 +72,7 @@ namespace C
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
-            if (!System.IO.Directory.Exists(libraryFileDir))
-            {
-                System.IO.Directory.CreateDirectory(libraryFileDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(libraryFileDir);
 
             foreach (var input in objectFiles)
             {

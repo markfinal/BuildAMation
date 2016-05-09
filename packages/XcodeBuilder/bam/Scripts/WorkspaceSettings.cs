@@ -115,7 +115,7 @@ namespace XcodeBuilder
             // do not write a Byte-Ordering-Mark (BOM)
             var encoding = new System.Text.UTF8Encoding(false);
 
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(this.Path));
+            Bam.Core.IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(this.Path));
             using (var writer = new System.IO.StreamWriter(this.Path, false, encoding))
             {
                 var settings = new System.Xml.XmlWriterSettings();

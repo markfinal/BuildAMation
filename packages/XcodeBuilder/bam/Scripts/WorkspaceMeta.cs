@@ -191,10 +191,7 @@ namespace XcodeBuilder
                 text.AppendLine("}");
 
                 var projectDir = project.ProjectDir;
-                if (!System.IO.Directory.Exists(projectDir.Parse()))
-                {
-                    System.IO.Directory.CreateDirectory(projectDir.Parse());
-                }
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(projectDir.Parse());
 
                 WriteProjectFileIfDifferent(project.ProjectPath, text);
 
@@ -212,10 +209,7 @@ namespace XcodeBuilder
             var workspacePath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
             var workspaceDir = Bam.Core.TokenizedString.Create("@dir($(0))", null, positionalTokens: new Bam.Core.TokenizedStringArray(workspacePath));
             var workspaceDirectory = workspaceDir.Parse();
-            if (!System.IO.Directory.Exists(workspaceDirectory))
-            {
-                System.IO.Directory.CreateDirectory(workspaceDirectory);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(workspaceDirectory);
 
             var settings = new System.Xml.XmlWriterSettings();
             settings.OmitXmlDeclaration = false;
