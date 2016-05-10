@@ -42,10 +42,7 @@ namespace Installer
         {
             var tarPath = outputPath.ToString();
             var tarDir = System.IO.Path.GetDirectoryName(tarPath);
-            if (!System.IO.Directory.Exists(tarDir))
-            {
-                System.IO.Directory.CreateDirectory(tarDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(tarDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);

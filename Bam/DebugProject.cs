@@ -256,10 +256,7 @@ namespace Bam
             RootUri = new System.Uri(projectPathname);
 
             var projectDir = System.IO.Path.GetDirectoryName(projectPathname);
-            if (!System.IO.Directory.Exists(projectDir))
-            {
-                System.IO.Directory.CreateDirectory(projectDir);
-            }
+            Core.IOWrapper.CreateDirectoryIfNotExists(projectDir);
 
             var mainSourceFile = System.IO.Path.Combine(projectDir, "main.cs");
             WriteEntryPoint(mainSourceFile);

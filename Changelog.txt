@@ -1,3 +1,15 @@
+09-May-2016 Fixes #192. Bam.Core now exposes IOWrapper.CreateDirectory and IOWrapper.CreateDirectoryIfNotExists functions, which wrap around System.IO.Directory.CreateDirectory (and System.IO.Directory.Exists for the latter), but which importantly re-throw any exceptions caught from directory creation and includes the failing path in the exception message, which the System methods do not.
+
+08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to identify existing Bam.Core.PathKeys.
+
+08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to identify the package definition used for each Module created.
+
+08-May-2016 Issue #233. Using LINQ's FirstOrDefault, instead of Where as well, to find packages with metadata attributes to create, and retrieve.
+
+08-May-2016 Issue #233. Using LINQ's First and FirstOrDefault, instead of Where as well, to identify any 'default' package versions marked in the master package definition file.
+
+08-May-2016 Issue #233. The --showdefinition command now just uses LINQ's First function, rather than Where followed by First.
+
 24-Apr-2016 Fixes #240. Updated the format of the table of task profiles at the end of the --stats output to make it easier to read.
 
 24-Apr-2016 Issue #233. Bam.Core.Graph.FindReferencedModule now uses just LINQ's FirstOrDefault, rather than Where, followed by FirstOrDefault.

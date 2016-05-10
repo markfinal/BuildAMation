@@ -60,10 +60,7 @@ namespace Publisher
                 // synchronize, so that multiple modules don't try to create the same directories simultaneously
                 lock ((sender.Reference != null) ? sender.Reference : sender)
                 {
-                    if (!System.IO.Directory.Exists(destinationPath))
-                    {
-                        System.IO.Directory.CreateDirectory(destinationPath);
-                    }
+                    Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destinationPath);
                 }
             }
 

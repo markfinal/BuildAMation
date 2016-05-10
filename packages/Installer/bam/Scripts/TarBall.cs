@@ -80,10 +80,7 @@ namespace Installer
         {
             var path = this.ScriptPath.Parse();
             var dir = System.IO.Path.GetDirectoryName(path);
-            if (!System.IO.Directory.Exists(dir))
-            {
-                System.IO.Directory.CreateDirectory(dir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 foreach (var dep in this.Files)

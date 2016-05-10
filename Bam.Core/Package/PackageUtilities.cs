@@ -68,11 +68,11 @@ namespace Bam.Core
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
             var definition = new PackageDefinition(bamDir, packageName, packageVersion);
 
-            System.IO.Directory.CreateDirectory(bamDir);
+            IOWrapper.CreateDirectory(bamDir);
             definition.Write();
 
             var scriptsDir = System.IO.Path.Combine(bamDir, ScriptsSubFolder);
-            System.IO.Directory.CreateDirectory(scriptsDir);
+            IOWrapper.CreateDirectory(scriptsDir);
 
             var initialScriptFile = System.IO.Path.Combine(scriptsDir, packageName) + ".cs";
             using (System.IO.TextWriter writer = new System.IO.StreamWriter(initialScriptFile))
@@ -104,7 +104,7 @@ namespace Bam.Core
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
 
             var masterPackage = GetMasterPackage();
-            if (null != masterPackage.Dependents.Where(item => item.Item1 == packageName && item.Item2 == packageVersion).FirstOrDefault())
+            if (null != masterPackage.Dependents.FirstOrDefault(item => item.Item1 == packageName && item.Item2 == packageVersion))
             {
                 if (null != packageVersion)
                 {
@@ -269,11 +269,11 @@ namespace Bam.Core
             }
 
             // now look at the master dependency file, for any 'default' specifications
-            var masterDependency = masterDefinitionFile.Dependents.Where(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value).FirstOrDefault();
+            var masterDependency = masterDefinitionFile.Dependents.FirstOrDefault(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value);
             if (null != masterDependency)
             {
                 toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item.Version != masterDependency.Item2)));
-                return packageDefinitions.Where(item => (item.Name == dupName) && (item.Version == masterDependency.Item2)).First();
+                return packageDefinitions.First(item => (item.Name == dupName) && (item.Version == masterDependency.Item2));
             }
 
             return null;
@@ -395,7 +395,7 @@ namespace Bam.Core
                     var packageDefinitionPath = GetPackageDefinitionPathname(packageDir);
 
                     // ignore any duplicates (can be found due to nested repositories)
-                    if (null != candidatePackageDefinitions.Where(item => item.XMLFilename == packageDefinitionPath).FirstOrDefault())
+                    if (null != candidatePackageDefinitions.FirstOrDefault(item => item.XMLFilename == packageDefinitionPath))
                     {
                         continue;
                     }
@@ -498,7 +498,7 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var versionFromDefinition = packageDefinitions.Where(item => item.Name == uniquePkgName).First().Version;
+                    var versionFromDefinition = packageDefinitions.First(item => item.Name == uniquePkgName).Version;
                     if (versionSpecifier[1] != versionFromDefinition)
                     {
                         var noMatchMessage = new System.Text.StringBuilder();
@@ -590,11 +590,6 @@ namespace Bam.Core
                 {
                     Log.Info("Failed to delete build root, because {0}. Continuing", ex.Message);
                 }
-            }
-
-            if (!System.IO.Directory.Exists(Graph.Instance.BuildRoot))
-            {
-                System.IO.Directory.CreateDirectory(Graph.Instance.BuildRoot);
             }
 
             BuildModeUtilities.ValidateBuildModePackage();
@@ -778,7 +773,8 @@ namespace Bam.Core
                     throw new Exception("C# compiler does not support Resources");
                 }
 
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
+                // this will create the build root directory as necessary
+                IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
                 var results = Graph.Instance.CompileWithDebugSymbols ?
                     provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :

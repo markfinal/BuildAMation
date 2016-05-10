@@ -27,45 +27,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// Static utility class used to identify and use packages that expose a build mode.
+    /// Wrapper around IO functions in order to add value to any exceptions thrown.
     /// </summary>
-    public static class BuildModeUtilities
+    public static class IOWrapper
     {
         /// <summary>
-        /// Does the name of the package specified indicate it exposes a build mode. Ends with 'Builder'.
+        /// Wrapper around System.IO.Directory.CreateDirectory, catching exceptions thrown
+        /// and embedding them into a Bam.Core.Exception with more semantic detail.
+        /// No checks whether the directory already exists occur.
         /// </summary>
-        /// <returns><c>true</c> if is build mode package the specified packageName; otherwise, <c>false</c>.</returns>
-        /// <param name="packageName">Name of the package to query.</param>
-        public static bool
-        IsBuildModePackage(
-            string packageName)
+        /// <param name="directoryPath">Path to the directory to create.</param>
+        static public void
+        CreateDirectory(
+            string directoryPath)
         {
-            return packageName.EndsWith("Builder");
+            try
+            {
+                System.IO.Directory.CreateDirectory(directoryPath);
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception(ex, "Unable to create directory, {0}", directoryPath);
+            }
         }
 
         /// <summary>
-        /// Validates the package associated with the selected build mode.
+        /// Conditionally create the directory, if it does not exist.
+        /// Any exceptions thrown from the directory creation are embedded into a Bam.Core.Exception
+        /// with more semantic detail.
         /// </summary>
-        public static void
-        ValidateBuildModePackage()
+        /// <param name="directoryPath">Path to the directory to create.</param>
+        static public void
+        CreateDirectoryIfNotExists(
+            string directoryPath)
         {
-            if (null == Graph.Instance.Mode)
+            if (!System.IO.Directory.Exists(directoryPath))
             {
-                return;
+                CreateDirectory(directoryPath);
             }
-
-            var builderPackageName = System.String.Format("{0}Builder", Graph.Instance.Mode);
-            var builderPackage = Graph.Instance.Packages.FirstOrDefault(item => item.Name == builderPackageName);
-            if (null != builderPackage)
-            {
-                return;
-            }
-
-            throw new Exception("Builder package '{0}' was not specified as a dependency", builderPackageName);
         }
     }
 }

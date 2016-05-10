@@ -70,14 +70,14 @@ namespace Bam.Core
 
             // add the package root
             var packageNameSpace = graph.CommonModuleType.Peek().Namespace;
-            var packageDefinition = graph.Packages.Where(item => item.Name == packageNameSpace).FirstOrDefault();
+            var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
             if (null == packageDefinition)
             {
                 var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
                 if (includeTests && packageNameSpace.EndsWith(".tests"))
                 {
                     packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
-                    packageDefinition = graph.Packages.Where(item => item.Name == packageNameSpace).FirstOrDefault();
+                    packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
                 }
 
                 if (null == packageDefinition)

@@ -88,10 +88,7 @@ namespace Installer
             }
 
             var dmgDir = System.IO.Path.GetDirectoryName(diskImagePathName);
-            if (!System.IO.Directory.Exists(dmgDir))
-            {
-                System.IO.Directory.CreateDirectory(dmgDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dmgDir);
 
             // hdiutil convert myimg.dmg -format UDZO -o myoutputimg.dmg
             {

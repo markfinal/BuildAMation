@@ -45,10 +45,7 @@ namespace C
 
             var destPath = outputPath.Parse();
             var destDir = System.IO.Path.GetDirectoryName(destPath);
-            if (!System.IO.Directory.Exists(destDir))
-            {
-                System.IO.Directory.CreateDirectory(destDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
 
             var tempPath = System.IO.Path.GetTempFileName();
             using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(tempPath))

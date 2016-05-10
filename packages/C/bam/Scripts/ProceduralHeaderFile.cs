@@ -141,10 +141,7 @@ namespace C
             if (writeHashFile)
             {
                 var destDir = System.IO.Path.GetDirectoryName(hashFilePath);
-                if (!System.IO.Directory.Exists(destDir))
-                {
-                    System.IO.Directory.CreateDirectory(destDir);
-                }
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
                 using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(hashFilePath))
                 {
                     writeFile.NewLine = "\n";
@@ -159,10 +156,7 @@ namespace C
         {
             var destPath = this.GeneratedPaths[Key].Parse();
             var destDir = System.IO.Path.GetDirectoryName(destPath);
-            if (!System.IO.Directory.Exists(destDir))
-            {
-                System.IO.Directory.CreateDirectory(destDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
             using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(destPath))
             {
                 writeFile.NewLine = "\n";

@@ -40,10 +40,7 @@ namespace Publisher
             Bam.Core.TokenizedString strippedPath)
         {
             var strippedDir = System.IO.Path.GetDirectoryName(strippedPath.Parse());
-            if (!System.IO.Directory.Exists(strippedDir))
-            {
-                System.IO.Directory.CreateDirectory(strippedDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(strippedDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);

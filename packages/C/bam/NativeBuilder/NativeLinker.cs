@@ -96,10 +96,7 @@ namespace C
             linker.Libraries.AddRange(externalLibs);
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
-            if (!System.IO.Directory.Exists(executableDir))
-            {
-                System.IO.Directory.CreateDirectory(executableDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(executableDir);
 
             var commandLine = new Bam.Core.StringArray();
 

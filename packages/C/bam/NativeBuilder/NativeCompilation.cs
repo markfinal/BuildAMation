@@ -71,10 +71,7 @@ namespace C
             }
 
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            if (!System.IO.Directory.Exists(objectFileDir))
-            {
-                System.IO.Directory.CreateDirectory(objectFileDir);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(objectFileDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
