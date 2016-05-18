@@ -1,3 +1,5 @@
+18-May-2016 ======== Version 1.0.2 Release ========
+
 18-May-2016 Fixes #246. Added synchronization for more Xcode generation functions.
 
 10-May-2016 ======== Version 1.0.2 beta 3 Release ========
