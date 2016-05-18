@@ -1,3 +1,5 @@
+18-May-2016 Fixes #246. Added synchronization for more Xcode generation functions.
+
 10-May-2016 ======== Version 1.0.2 beta 3 Release ========
 
 09-May-2016 Fixes #192. Bam.Core now exposes IOWrapper.CreateDirectory and IOWrapper.CreateDirectoryIfNotExists functions, which wrap around System.IO.Directory.CreateDirectory (and System.IO.Directory.Exists for the latter), but which importantly re-throw any exceptions caught from directory creation and includes the failing path in the exception message, which the System methods do not.
