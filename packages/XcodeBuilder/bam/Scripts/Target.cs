@@ -183,13 +183,16 @@ namespace XcodeBuilder
             FileReference.EFileType type,
             Target.EProductType productType)
         {
-            this.SetProductType(productType);
-
-            var fileRef = this.Project.EnsureFileReferenceExists(path, type, sourceTree: FileReference.ESourceTree.BuiltProductsDir);
-            if (null == this.FileReference)
+            lock (this)
             {
-                this.FileReference = fileRef;
-                this.Project.ProductRefGroup.AddChild(fileRef);
+                this.SetProductType(productType);
+
+                var fileRef = this.Project.EnsureFileReferenceExists(path, type, sourceTree: FileReference.ESourceTree.BuiltProductsDir);
+                if (null == this.FileReference)
+                {
+                    this.FileReference = fileRef;
+                    this.Project.ProductRefGroup.AddChild(fileRef);
+                }
             }
         }
 
@@ -198,19 +201,21 @@ namespace XcodeBuilder
             Bam.Core.TokenizedString path,
             FileReference.EFileType type)
         {
-            var fileRef = this.Project.EnsureFileReferenceExists(
-                path,
-                type,
-                sourceTree: FileReference.ESourceTree.Absolute);
-            var buildFile = this.Project.EnsureBuildFileExists(fileRef, this);
-            return buildFile;
+            lock (this.Project)
+            {
+                var fileRef = this.Project.EnsureFileReferenceExists(
+                    path,
+                    type,
+                    sourceTree: FileReference.ESourceTree.Absolute);
+                var buildFile = this.Project.EnsureBuildFileExists(fileRef, this);
+                return buildFile;
+            }
         }
 
         private Group
         CreateGroupHierarchy(
             Bam.Core.TokenizedString path)
         {
-            Group group = null;
             lock (this.Project)
             {
                 var found = this.Project.GroupMap.Where(item => item.Key == path.Parse()).FirstOrDefault();
@@ -219,7 +224,7 @@ namespace XcodeBuilder
                     return found.Value;
                 }
                 var basename = this.Module.CreateTokenizedString("@basename($(0))", path).Parse();
-                group = new Group(basename);
+                var group = new Group(basename);
                 this.Project.Groups.Add(group);
                 this.Project.GroupMap.Add(path.Parse(), group);
                 if (path.Parse().Contains(System.IO.Path.DirectorySeparatorChar))
@@ -228,8 +233,8 @@ namespace XcodeBuilder
                     var parentGroup = this.CreateGroupHierarchy(parent);
                     parentGroup.AddChild(group);
                 }
+                return group;
             }
-            return group;
         }
 
         private void
@@ -311,7 +316,10 @@ namespace XcodeBuilder
         EnsureHeaderFileExists(
             Bam.Core.TokenizedString path)
         {
-            this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile);
+            lock (this)
+            {
+                this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile);
+            }
         }
 
         public void
