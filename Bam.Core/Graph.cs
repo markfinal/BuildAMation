@@ -129,15 +129,30 @@ namespace Bam.Core
                 return matchedModule as T;
             }
             this.CommonModuleType.Push(typeof(T));
-            var newModule = Module.Create<T>(preInitCallback: module =>
-                {
-                    if (null != module)
+            try
+            {
+                var newModule = Module.Create<T>(preInitCallback: module =>
                     {
-                        referencedModules.Add(module);
-                    }
-                });
-            this.CommonModuleType.Pop();
-            return newModule;
+                        if (null != module)
+                        {
+                            referencedModules.Add(module);
+                        }
+                    });
+                return newModule;
+            }
+            catch (UnableToBuildModuleException)
+            {
+                // remove the failed to create module from the referenced list
+                // and also any modules created in its Init function
+                //TokenizedString.RemoveEncapsulatedStrings(this.CommonModuleType.Peek());
+                Module.RemoveEncapsulatedModules(this.CommonModuleType.Peek());
+                referencedModules.Remove(referencedModules.First(item => item.GetType() == typeof(T)));
+                throw;
+            }
+            finally
+            {
+                this.CommonModuleType.Pop();
+            }
         }
 
         private System.Collections.Generic.Dictionary<System.Type, System.Func<Module>> compiledFindRefModuleCache = new System.Collections.Generic.Dictionary<System.Type, System.Func<Module>>();
@@ -169,6 +184,11 @@ namespace Bam.Core
                 var newModule = this.compiledFindRefModuleCache[moduleType]();
                 Log.DetailProgress(Module.Count.ToString());
                 return newModule;
+            }
+            catch (UnableToBuildModuleException exception)
+            {
+                Log.Info("Unable to instantiate module of type {0} because {1} from {2}", moduleType.ToString(), exception.Message, exception.ModuleType.ToString());
+                return null;
             }
             catch (System.Reflection.TargetInvocationException ex)
             {
@@ -875,7 +895,15 @@ namespace Bam.Core
             Environment env,
             System.Type type)
         {
-            return this.ReferencedModules[env].First(item => item.GetType() == type);
+            try
+            {
+                return this.ReferencedModules[env].First(item => item.GetType() == type);
+            }
+            catch (System.InvalidOperationException)
+            {
+                Log.ErrorMessage("Unable to locate a referenced module of type {0}", type.ToString());
+                throw;
+            }
         }
     }
 }

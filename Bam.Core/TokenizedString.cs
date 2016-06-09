@@ -427,7 +427,23 @@ namespace Bam.Core
                     Log.DebugMessage("Not parsing inline string: {0}", t.OriginalString);
                     continue;
                 }
-                t.Parse();
+
+                try
+                {
+                    t.Parse();
+                }
+                catch (Exception)
+                {
+                    if (t.ModuleWithMacros == null || Module.IsValid(t.ModuleWithMacros))
+                    {
+                        throw;
+                    }
+                    // if execution gets here, then the module with macros was invalid (deleted earlier probably)
+                    // so silently ignore this string
+
+                    // TODO: it would be better to delete strings added from deleted modules earlier, see
+                    // RemoveEncapsulatedStrings, but there is a problem with Parse() being invoked and missing macros
+                }
                 Log.DetailProgress("{0,3}%", (int)(++count * scale));
             }
         }
@@ -1014,5 +1030,25 @@ namespace Bam.Core
             }
             return modifiedString;
         }
+
+#if false
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="encapsulatingType"></param>
+        static public void
+        RemoveEncapsulatedStrings(
+            System.Type encapsulatingType)
+        {
+            var toRemove = AllStrings.Where(item => item.ModuleWithMacros != null && item.ModuleWithMacros.GetType() == encapsulatingType);
+            foreach (var i in toRemove.ToList())
+            {
+                Log.DebugMessage("Removing string {0} from {1}", i.OriginalString, encapsulatingType.ToString());
+                // TODO: Remove invokes equivalence, which invokes Parse(), which fails because of missing macros
+                // in the incomplete Module
+                AllStrings.Remove(i);
+            }
+        }
+#endif
     }
 }

@@ -234,6 +234,15 @@ namespace Bam.Core
                 module.CreationTime = new System.TimeSpan(stopwatch.ElapsedTicks);
                 return module;
             }
+            catch (UnableToBuildModuleException exception)
+            {
+                if (null == exception.ModuleType)
+                {
+                    exception.ModuleType = typeof(T);
+                    throw exception;
+                }
+                throw;
+            }
             catch (ModuleCreationException exception)
             {
                 // persist the module type from the inner-most module creation call
@@ -1003,6 +1012,35 @@ namespace Bam.Core
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// For the given module type, remove all module instances that are encapsulated by it.
+        /// This is used in the case where a module is unable to build.
+        /// </summary>
+        /// <param name="encapsulatingType">Type of the module that is the encapsulating module type to remove.</param>
+        static public void
+        RemoveEncapsulatedModules(
+            System.Type encapsulatingType)
+        {
+            var toRemove = AllModules.Where(item => item.EncapsulatingType == encapsulatingType);
+            foreach (var i in toRemove.ToList())
+            {
+                Log.DebugMessage("Removing {0} from {1}", i.ToString(), encapsulatingType.ToString());
+                AllModules.Remove(i);
+            }
+        }
+
+        /// <summary>
+        /// Query if a module is valid (exists in internal lists).
+        /// </summary>
+        /// <param name="module">Module instance to query.</param>
+        /// <returns></returns>
+        static public bool
+        IsValid(
+            Module module)
+        {
+            return AllModules.Contains(module);
         }
     }
 }

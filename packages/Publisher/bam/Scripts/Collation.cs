@@ -403,34 +403,45 @@ namespace Publisher
             string subdir,
             CollatedFile reference) where DependentModule : Bam.Core.Module, new()
         {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
+            try
             {
+                var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+                if (null == dependent)
+                {
+                    return null;
+                }
+
+                var copyFileModule = this.CreateCollatedFile(
+                    dependent,
+                    dependent.GeneratedPaths[key],
+                    reference,
+                    Bam.Core.TokenizedString.CreateVerbatim(subdir));
+
+                if (this.IsReferenceAWindowedApp(reference))
+                {
+                    if (C.ConsoleApplication.Key == key)
+                    {
+                        this.AddOSXChangeIDNameForBinary(copyFileModule);
+                    }
+                }
+                else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                {
+                    if ((dependent is C.IDynamicLibrary) && dependent.Macros.Contains("SOName"))
+                    {
+                        this.CopySONameSymlink(copyFileModule);
+                    }
+                }
+
+                return copyFileModule;
+            }
+            catch (Bam.Core.UnableToBuildModuleException exception)
+            {
+                Bam.Core.Log.Info("Not publishing {0} requested by {1} because {2}, but publishing will continue",
+                    typeof(DependentModule).ToString(),
+                    this.GetType().ToString(),
+                    exception.Message);
                 return null;
             }
-
-            var copyFileModule = this.CreateCollatedFile(
-                dependent,
-                dependent.GeneratedPaths[key],
-                reference,
-                Bam.Core.TokenizedString.CreateVerbatim(subdir));
-
-            if (this.IsReferenceAWindowedApp(reference))
-            {
-                if (C.ConsoleApplication.Key == key)
-                {
-                    this.AddOSXChangeIDNameForBinary(copyFileModule);
-                }
-            }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                if ((dependent is C.IDynamicLibrary) && dependent.Macros.Contains("SOName"))
-                {
-                    this.CopySONameSymlink(copyFileModule);
-                }
-            }
-
-            return copyFileModule;
         }
 
         /// <summary>

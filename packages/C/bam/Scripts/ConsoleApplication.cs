@@ -189,19 +189,29 @@ namespace C
         RequiredToExist<DependentModule>(
             params CModule[] affectedSources) where DependentModule : CModule, new()
         {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
+            try
             {
-                return;
-            }
-            this.Requires(dependent);
-            foreach (var source in affectedSources)
-            {
-                if (null == source)
+                var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+                if (null == dependent)
                 {
-                    continue;
+                    return;
                 }
-                source.UsePublicPatches(dependent);
+                this.Requires(dependent);
+                foreach (var source in affectedSources)
+                {
+                    if (null == source)
+                    {
+                        continue;
+                    }
+                    source.UsePublicPatches(dependent);
+                }
+            }
+            catch (Bam.Core.UnableToBuildModuleException exception)
+            {
+                Bam.Core.Log.Info("Unable to build {0} required by {1} because {2}, but the build will continue",
+                    typeof(DependentModule).ToString(),
+                    this.GetType().ToString(),
+                    exception.Message);
             }
         }
 
