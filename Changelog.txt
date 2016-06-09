@@ -1,3 +1,5 @@
+09-Jun-2016 ======== Version 1.0.3 beta 1 Release ========
+
 09-Jun-2016 Fixes #253. Modules can now throw an exception of type Bam.Core.UnableToBuildModuleException. For any other modules depending on such failing modules, these will also fail. A special case of this is a plugin. A plugin is a runtime-only dependency so, in theory, the primary application using the plugin can run (with limited features) without the plugin. As such, C.ConsoleApplication.RequiredToExist, and Publisher.Include, have been modified to detect the UnableToBuildModuleException, and ignore the dependency (with a warning to the console). A test, MissingDependencyTest1, has been added to exercise this functionality.
 
 09-Jun-2016 Fixes #252. Added progress information for Bam operations. This requires console cursor management support on the terminal that Bam is executed in. If no support is provided, no progress is displayed. The output under "Creating modules" is a tally of the number of modules created (the total is not known in advance). For the other steps in the Bam build, a percentage complete is shown, from 0 to 100%. Note that this does have a minor impact on performance.
