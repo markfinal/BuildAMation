@@ -1,3 +1,5 @@
+09-Jun-2016 Fixed #251. Mono 4.4 on OSX is now delivered as universal binaries, for both 32-bit and 64-bit support (previously was only 32-bit). Check if 64-bit hardware is available, and add --arch=64 to mono in such cases. See http://www.mono-project.com/docs/about-mono/releases/4.4.0/#bit-mono-for-os-x.
+
 09-Jun-2016 Fixes #249. Bam.Core.Module.GetEncapsulatingReferencedModule() has been simplified. It is no longer recursive, nor relies on a module having been added as a dependency. Instead it reuses information that had already been gathered in the Bam.Core.Graph during dependency graph population to identify the encapsulating module for every module.
 
 09-Jun-2016 Fixes #250. Test harness now defines what are valid options for configurations, bitdepth and build mode.

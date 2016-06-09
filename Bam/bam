@@ -20,6 +20,26 @@ while [ "$1" != "" ]; do
     shift
 done
 
+sysinfo=$( uname )
+if [[ $sysinfo == Darwin ]]
+then
+    is64bit=$(sysctl -n hw.cpu64bit_capable)
+    if [[ $is64bit == 1 ]]
+    then
+        # the first line of mono -V output looks like:
+        # Mono JIT compiler version 4.4.0 (mono-4.4.0-branch-c7-baseline/5995f74 Thu Jun  2 15:13:10 EDT 2016)
+        # so split on spaces, and grab the 5th element, which is the version number, and then split by periods
+        monoMajor=$(mono -V | sed -n 1p | awk -F ' ' '{print $5;}' | awk -F '.' '{print $1;}')
+        monoMinor=$(mono -V | sed -n 1p | awk -F ' ' '{print $5;}' | awk -F '.' '{print $2;}')
+
+        # mono 4.4 introduced a universal binary, so select 64-bit
+        if [[ $monoMajor -ge 4 && $monoMinor -ge 4 ]]
+        then
+            monoargs="$monoargs --arch=64"
+        fi
+    fi
+fi
+
 #echo mono $monoargs $curPath/bam.exe $args
 exec mono $monoargs $curPath/bam.exe $args
 
