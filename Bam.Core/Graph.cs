@@ -167,6 +167,7 @@ namespace Bam.Core
                     this.compiledFindRefModuleCache.Add(moduleType, func);
                 }
                 var newModule = this.compiledFindRefModuleCache[moduleType]();
+                Log.DetailProgress(Module.Count.ToString());
                 return newModule;
             }
             catch (System.Reflection.TargetInvocationException ex)
@@ -265,11 +266,14 @@ namespace Bam.Core
         ApplySettingsPatches()
         {
             Log.Detail("Apply settings to modules");
+            var scale = 100.0f / Module.Count;
+            var count = 0;
             foreach (var rank in this.DependencyGraph.Reverse())
             {
                 foreach (var module in rank.Value)
                 {
                     module.ApplySettingsPatches();
+                    Log.DetailProgress("{0,3}%", (int)(++count * scale));
                 }
             }
         }
@@ -523,12 +527,14 @@ namespace Bam.Core
             Log.Detail("Analysing module dependencies");
             var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
             var modulesToProcess = new System.Collections.Generic.Queue<Module>();
+            var scale = 100.0f / (2 * Module.Count);
             // initialize the map with top-level modules
             // and populate the to-process list
             foreach (var module in this.TopLevelModules)
             {
                 SetModuleRank(moduleRanks, module, 0);
                 ProcessModule(moduleRanks, modulesToProcess, module, 0);
+                Log.DetailProgress("{0,3}%", (int)((Module.Count - modulesToProcess.Count) * scale));
             }
             // process all modules by initializing them to a best-guess rank
             // but then potentially moving them to a higher rank if they re-appear as dependencies
@@ -536,6 +542,7 @@ namespace Bam.Core
             {
                 var module = modulesToProcess.Dequeue();
                 ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
+                Log.DetailProgress("{0,3}%", (int)((Module.Count - modulesToProcess.Count) * scale));
             }
             // assign modules, for each rank index, into collections
             var maxRank = moduleRanks.Values.Max();

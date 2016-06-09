@@ -418,6 +418,8 @@ namespace Bam.Core
         ParseAll()
         {
             Log.Detail("Parsing strings");
+            var scale = 100.0f / AllStrings.Count;
+            var count = 0;
             foreach (var t in AllStrings)
             {
                 if (t.IsInline)
@@ -426,6 +428,7 @@ namespace Bam.Core
                     continue;
                 }
                 t.Parse();
+                Log.DetailProgress("{0,3}%", (int)(++count * scale));
             }
         }
 
