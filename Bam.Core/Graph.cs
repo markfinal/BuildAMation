@@ -855,5 +855,20 @@ namespace Bam.Core
             get;
             private set;
         }
+
+        /// <summary>
+        /// Obtain the named referenced module for a given environment and the type of the module required.
+        /// An exception will be thrown if the type does not refer to any referenced module in that environment.
+        /// </summary>
+        /// <param name="env">Environment in which the referenced module was created.</param>
+        /// <param name="type">The type of the module requested.</param>
+        /// <returns>The instance of the referenced module requested.</returns>
+        public Module
+        GetReferencedModule(
+            Environment env,
+            System.Type type)
+        {
+            return this.ReferencedModules[env].First(item => item.GetType() == type);
+        }
     }
 }

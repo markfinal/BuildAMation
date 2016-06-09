@@ -68,8 +68,12 @@ namespace Bam.Core
             // TODO: Can this be generalized to be a collection of files?
             this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
 
+            // capture the details of the encapsulating module
+            this.EncapsulatingModule = null;
+            this.EncapsulatingType = graph.CommonModuleType.Peek();
+
             // add the package root
-            var packageNameSpace = graph.CommonModuleType.Peek().Namespace;
+            var packageNameSpace = this.EncapsulatingType.Namespace;
             var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
             if (null == packageDefinition)
             {
@@ -845,12 +849,27 @@ namespace Bam.Core
             private set;
         }
 
+        private System.Type
+        EncapsulatingType
+        {
+            get;
+            set;
+        }
+
+        private Module EncapsulatingModule
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// A referenced module is an encapsulating module, and can be considered to be uniquely identifiable by name.
         /// An unreferenced module belongs, in some part, to another module and perhaps many of them exist within the
-        /// dependency graph. For identification, walking up the hierarchy of dependees will eventually find a referenced
-        /// module, and this is that module's encapsulating module.
-        /// It is useful for logical grouping, such as build sub-folder names.
+        /// dependency graph.
+        /// For identification, a stack of referenced module type was recorded during dependency graph population, and as
+        /// all unreferenced modules belonging to that are created within it's Init function, the encapsulating module type
+        /// is at the top of the stack.
+        /// Knowledge of the encapsulating module is useful for logical grouping, such as build sub-folder names.
         /// Macros added to the module:
         /// 'encapsulatingmodulename'
         /// 'encapsulatingbuilddir'
@@ -859,34 +878,14 @@ namespace Bam.Core
         public Module
         GetEncapsulatingReferencedModule()
         {
-            if (Graph.Instance.IsReferencedModule(this))
+            if (null == this.EncapsulatingModule)
             {
-                return this;
+                var encapsulatingModule = Graph.Instance.GetReferencedModule(this.BuildEnvironment, this.EncapsulatingType);
+                this.Macros.AddVerbatim("encapsulatingmodulename", this.EncapsulatingType.Name);
+                this.Macros.Add("encapsulatingbuilddir", encapsulatingModule.Macros["packagebuilddir"]);
+                this.EncapsulatingModule = encapsulatingModule;
             }
-            if (this.DependeesList.Count > 1)
-            {
-                Log.DebugMessage("More than one dependee attached to {0}, so taking the first as the encapsulating module. This may be incorrect.", this.ToString());
-            }
-            if (this.RequiredDependeesList.Count > 1)
-            {
-                Log.DebugMessage("More than one requiree attached to {0}, so taking the first as the encapsulating module. This may be incorrect.", this.ToString());
-            }
-            Module encapsulating;
-            if (0 == this.DependeesList.Count)
-            {
-                if (0 == this.RequiredDependeesList.Count)
-                {
-                    throw new Exception("No dependees or requirees attached to {0}. Cannot determine the encapsulating module", this.ToString());
-                }
-                encapsulating = this.RequiredDependeesList[0].GetEncapsulatingReferencedModule();
-            }
-            else
-            {
-                encapsulating = this.DependeesList[0].GetEncapsulatingReferencedModule();
-            }
-            this.Macros.AddVerbatim("encapsulatingmodulename", encapsulating.GetType().Name);
-            this.Macros.Add("encapsulatingbuilddir", encapsulating.Macros["packagebuilddir"]);
-            return encapsulating;
+            return this.EncapsulatingModule;
         }
 
         private void
@@ -894,6 +893,7 @@ namespace Bam.Core
         {
             var graph = Graph.Instance;
             var encapsulatingModule = this.GetEncapsulatingReferencedModule();
+
             // TODO: there may have to be a more general module type for something that is not built, as this affects modules referred to prebuilts too
             // note that this cannot be a class, as modules already are derived from another base class (generally)
             if (!(encapsulatingModule is PreBuiltTool))

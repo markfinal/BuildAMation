@@ -1,3 +1,5 @@
+09-Jun-2016 Fixes #249. Bam.Core.Module.GetEncapsulatingReferencedModule() has been simplified. It is no longer recursive, nor relies on a module having been added as a dependency. Instead it reuses information that had already been gathered in the Bam.Core.Graph during dependency graph population to identify the encapsulating module for every module.
+
 09-Jun-2016 Fixes #250. Test harness now defines what are valid options for configurations, bitdepth and build mode.
 
 18-May-2016 ======== Version 1.0.2 Release ========
