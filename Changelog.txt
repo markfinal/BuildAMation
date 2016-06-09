@@ -1,3 +1,15 @@
+09-Jun-2016 ======== Version 1.0.3 beta 1 Release ========
+
+09-Jun-2016 Fixes #253. Modules can now throw an exception of type Bam.Core.UnableToBuildModuleException. For any other modules depending on such failing modules, these will also fail. A special case of this is a plugin. A plugin is a runtime-only dependency so, in theory, the primary application using the plugin can run (with limited features) without the plugin. As such, C.ConsoleApplication.RequiredToExist, and Publisher.Include, have been modified to detect the UnableToBuildModuleException, and ignore the dependency (with a warning to the console). A test, MissingDependencyTest1, has been added to exercise this functionality.
+
+09-Jun-2016 Fixes #252. Added progress information for Bam operations. This requires console cursor management support on the terminal that Bam is executed in. If no support is provided, no progress is displayed. The output under "Creating modules" is a tally of the number of modules created (the total is not known in advance). For the other steps in the Bam build, a percentage complete is shown, from 0 to 100%. Note that this does have a minor impact on performance.
+
+09-Jun-2016 Fixes #251. Mono 4.4 on OSX is now delivered as universal binaries, for both 32-bit and 64-bit support (previously was only 32-bit). Check if 64-bit hardware is available, and add --arch=64 to mono in such cases. See http://www.mono-project.com/docs/about-mono/releases/4.4.0/#bit-mono-for-os-x.
+
+09-Jun-2016 Fixes #249. Bam.Core.Module.GetEncapsulatingReferencedModule() has been simplified. It is no longer recursive, nor relies on a module having been added as a dependency. Instead it reuses information that had already been gathered in the Bam.Core.Graph during dependency graph population to identify the encapsulating module for every module.
+
+09-Jun-2016 Fixes #250. Test harness now defines what are valid options for configurations, bitdepth and build mode.
+
 18-May-2016 ======== Version 1.0.2 Release ========
 
 18-May-2016 Fixes #246. Added synchronization for more Xcode generation functions.

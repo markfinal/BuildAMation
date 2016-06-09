@@ -34,20 +34,40 @@ namespace Bam.Core
     /// </summary>
     public static class Log
     {
+        static private bool SupportsCursorManagement;
+
+        static Log()
+        {
+            try
+            {
+                System.Console.SetCursorPosition(System.Console.CursorLeft, System.Console.CursorTop);
+                SupportsCursorManagement = true;
+            }
+            catch (System.IO.IOException)
+            {
+                SupportsCursorManagement = false;
+            }
+        }
+
         /// <summary>
         /// Log a message, either to the debugger output window or the console.
         /// </summary>
         /// <param name="messageValue">Message to output.</param>
         /// <param name="isError">True if an error message, false if standard output.</param>
+        /// <param name="isProgressMeter">True if the text represents a progress meter. Cursor management on the console is required for this. Defaults to false.</param>
         private static void
         Message(
             string messageValue,
-            bool isError)
+            bool isError,
+            bool isProgressMeter = false)
         {
             if (System.Diagnostics.Debugger.IsAttached && !Graph.Instance.ProcessState.RunningMono)
             {
-                // In MonoDevelop, this goes nowhere that I can find...
-                System.Diagnostics.Debug.WriteLine(messageValue);
+                if (!isProgressMeter)
+                {
+                    // In MonoDevelop, this goes nowhere that I can find...
+                    System.Diagnostics.Debug.WriteLine(messageValue);
+                }
             }
             else
             {
@@ -57,7 +77,18 @@ namespace Bam.Core
                 }
                 else
                 {
-                    System.Console.Out.WriteLine(messageValue);
+                    if (isProgressMeter)
+                    {
+                        if (SupportsCursorManagement)
+                        {
+                            System.Console.Write(messageValue);
+                            System.Console.SetCursorPosition(System.Console.CursorLeft - messageValue.Length, System.Console.CursorTop);
+                        }
+                    }
+                    else
+                    {
+                        System.Console.Out.WriteLine(messageValue);
+                    }
                 }
             }
         }
@@ -174,6 +205,32 @@ namespace Bam.Core
                 else
                 {
                     Message(format, false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Utility function to log a progress meter only when verbosity mode is at least Detail.
+        /// Progress meters require console cursor management.
+        /// </summary>
+        /// <param name="format">Format of the progress meter.</param>
+        /// <param name="args">Arguments to fulfil the format string.</param>
+        public static void
+        DetailProgress(
+            string format,
+            params object[] args)
+        {
+            if (Graph.Instance.VerbosityLevel >= EVerboseLevel.Detail)
+            {
+                if (args.Length > 0)
+                {
+                    var formattedMessage = new System.Text.StringBuilder();
+                    formattedMessage.AppendFormat(EscapeString(format), args);
+                    Message(formattedMessage.ToString(), false, true);
+                }
+                else
+                {
+                    Message(format, false, true);
                 }
             }
         }

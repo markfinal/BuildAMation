@@ -129,15 +129,30 @@ namespace Bam.Core
                 return matchedModule as T;
             }
             this.CommonModuleType.Push(typeof(T));
-            var newModule = Module.Create<T>(preInitCallback: module =>
-                {
-                    if (null != module)
+            try
+            {
+                var newModule = Module.Create<T>(preInitCallback: module =>
                     {
-                        referencedModules.Add(module);
-                    }
-                });
-            this.CommonModuleType.Pop();
-            return newModule;
+                        if (null != module)
+                        {
+                            referencedModules.Add(module);
+                        }
+                    });
+                return newModule;
+            }
+            catch (UnableToBuildModuleException)
+            {
+                // remove the failed to create module from the referenced list
+                // and also any modules created in its Init function
+                //TokenizedString.RemoveEncapsulatedStrings(this.CommonModuleType.Peek());
+                Module.RemoveEncapsulatedModules(this.CommonModuleType.Peek());
+                referencedModules.Remove(referencedModules.First(item => item.GetType() == typeof(T)));
+                throw;
+            }
+            finally
+            {
+                this.CommonModuleType.Pop();
+            }
         }
 
         private System.Collections.Generic.Dictionary<System.Type, System.Func<Module>> compiledFindRefModuleCache = new System.Collections.Generic.Dictionary<System.Type, System.Func<Module>>();
@@ -167,7 +182,13 @@ namespace Bam.Core
                     this.compiledFindRefModuleCache.Add(moduleType, func);
                 }
                 var newModule = this.compiledFindRefModuleCache[moduleType]();
+                Log.DetailProgress(Module.Count.ToString());
                 return newModule;
+            }
+            catch (UnableToBuildModuleException exception)
+            {
+                Log.Info("Unable to instantiate module of type {0} because {1} from {2}", moduleType.ToString(), exception.Message, exception.ModuleType.ToString());
+                return null;
             }
             catch (System.Reflection.TargetInvocationException ex)
             {
@@ -265,11 +286,14 @@ namespace Bam.Core
         ApplySettingsPatches()
         {
             Log.Detail("Apply settings to modules");
+            var scale = 100.0f / Module.Count;
+            var count = 0;
             foreach (var rank in this.DependencyGraph.Reverse())
             {
                 foreach (var module in rank.Value)
                 {
                     module.ApplySettingsPatches();
+                    Log.DetailProgress("{0,3}%", (int)(++count * scale));
                 }
             }
         }
@@ -523,12 +547,14 @@ namespace Bam.Core
             Log.Detail("Analysing module dependencies");
             var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
             var modulesToProcess = new System.Collections.Generic.Queue<Module>();
+            var scale = 100.0f / (2 * Module.Count);
             // initialize the map with top-level modules
             // and populate the to-process list
             foreach (var module in this.TopLevelModules)
             {
                 SetModuleRank(moduleRanks, module, 0);
                 ProcessModule(moduleRanks, modulesToProcess, module, 0);
+                Log.DetailProgress("{0,3}%", (int)((Module.Count - modulesToProcess.Count) * scale));
             }
             // process all modules by initializing them to a best-guess rank
             // but then potentially moving them to a higher rank if they re-appear as dependencies
@@ -536,6 +562,7 @@ namespace Bam.Core
             {
                 var module = modulesToProcess.Dequeue();
                 ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
+                Log.DetailProgress("{0,3}%", (int)((Module.Count - modulesToProcess.Count) * scale));
             }
             // assign modules, for each rank index, into collections
             var maxRank = moduleRanks.Values.Max();
@@ -854,6 +881,29 @@ namespace Bam.Core
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Obtain the named referenced module for a given environment and the type of the module required.
+        /// An exception will be thrown if the type does not refer to any referenced module in that environment.
+        /// </summary>
+        /// <param name="env">Environment in which the referenced module was created.</param>
+        /// <param name="type">The type of the module requested.</param>
+        /// <returns>The instance of the referenced module requested.</returns>
+        public Module
+        GetReferencedModule(
+            Environment env,
+            System.Type type)
+        {
+            try
+            {
+                return this.ReferencedModules[env].First(item => item.GetType() == type);
+            }
+            catch (System.InvalidOperationException)
+            {
+                Log.ErrorMessage("Unable to locate a referenced module of type {0}", type.ToString());
+                throw;
+            }
         }
     }
 }

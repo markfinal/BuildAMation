@@ -80,6 +80,7 @@
     <Compile Include="Environment.cs" />
     <Compile Include="Exceptions\Exception.cs" />
     <Compile Include="Exceptions\ModuleCreationException.cs" />
+    <Compile Include="Exceptions\UnableToBuildModuleException.cs" />
     <Compile Include="ExecuteReasoning.cs" />
     <Compile Include="ExecutionContext.cs" />
     <Compile Include="ExecutionPolicyUtilities.cs" />

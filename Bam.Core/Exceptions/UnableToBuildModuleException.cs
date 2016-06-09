@@ -30,32 +30,44 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Specific exception class to throw when modules fail to create.
+    /// Exception class to throw for a module that is unable to build for some reason.
+    /// This is most useful for plugins, which could be considerd optional in a build
+    /// as they are dynamic runtime extensions. This exception type copes with developers
+    /// not having all dependencies in order to build a plugin.
     /// </summary>
-    public class ModuleCreationException :
+    public class UnableToBuildModuleException :
         Exception
     {
         /// <summary>
-        /// Constructs a new exception instance.
+        /// Construct an exception, with a message of failure, and the type of Module failing.
         /// </summary>
-        /// <param name="moduleType">Type of module that failed to be created.</param>
-        /// <param name="exception">Exception that had been thrown, usually deep in the package scripts, causing the failure.</param>
-        public ModuleCreationException(
-            System.Type moduleType,
-            System.Exception exception) :
-            base(exception, "Error creating module")
+        /// <param name="message">Failure message.</param>
+        /// <param name="moduleType">Type of module that is unable to build.</param>
+        public UnableToBuildModuleException(
+            string message,
+            System.Type moduleType) :
+            base(message)
         {
             this.ModuleType = moduleType;
         }
 
         /// <summary>
-        /// Gets the type of the module that failed to be created.
+        /// Construct an exception, with a message of failure. The type of module failing can be set later.
         /// </summary>
-        /// <value>The type of the module.</value>
+        /// <param name="message">Failure message.</param>
+        public UnableToBuildModuleException(
+            string message) :
+            base(message)
+        {
+        }
+
+        /// <summary>
+        /// Get or set the type of module unable to build.
+        /// </summary>
         public System.Type ModuleType
         {
             get;
-            private set;
+            set;
         }
     }
 }
