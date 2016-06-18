@@ -45,7 +45,7 @@ namespace WindowsSDK
             {
                 if (null == key)
                 {
-                    throw new Bam.Core.Exception("Windows SDKs were not installed");
+                    throw new Bam.Core.Exception("Unable to locate Windows SDK registry keys. Are any Windows SDKs installed?");
                 }
 
                 var installPath10 = key.GetValue("KitsRoot10") as string;
@@ -69,8 +69,6 @@ namespace WindowsSDK
                 this.InstallDirSDK81 = Bam.Core.TokenizedString.CreateVerbatim(installPath81);
                 return;
             }
-
-            throw new Bam.Core.Exception("Unable to locate Windows SDK registry keys");
         }
 
         public override object this[string index]

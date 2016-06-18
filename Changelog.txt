@@ -1,3 +1,5 @@
+18-Jun-2016 Fixes #258. WindowsSDK-10 package no longer causes a compilation failure in mono due to an errant throw after an unconditional function return.
+
 09-Jun-2016 ======== Version 1.0.3 beta 1 Release ========
 
 09-Jun-2016 Fixes #253. Modules can now throw an exception of type Bam.Core.UnableToBuildModuleException. For any other modules depending on such failing modules, these will also fail. A special case of this is a plugin. A plugin is a runtime-only dependency so, in theory, the primary application using the plugin can run (with limited features) without the plugin. As such, C.ConsoleApplication.RequiredToExist, and Publisher.Include, have been modified to detect the UnableToBuildModuleException, and ignore the dependency (with a warning to the console). A test, MissingDependencyTest1, has been added to exercise this functionality.
