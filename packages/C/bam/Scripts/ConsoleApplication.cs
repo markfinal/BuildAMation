@@ -391,5 +391,14 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
             }
         }
+
+        /// <summary>
+        /// Define the working directory to use in IDE projects for debugging (if supported).
+        /// </summary>
+        virtual public Bam.Core.TokenizedString WorkingDirectory
+        {
+            get;
+            set;
+        }
     }
 }

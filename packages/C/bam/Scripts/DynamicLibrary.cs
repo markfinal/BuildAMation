@@ -241,5 +241,13 @@ namespace C
                 return this.forwardedDeps.ToReadOnlyCollection();
             }
         }
+
+        public override TokenizedString WorkingDirectory
+        {
+            set
+            {
+                throw new System.NotSupportedException("Cannot set a working directory on a DLL");
+            }
+        }
     }
 }
