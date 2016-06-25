@@ -40,12 +40,13 @@ namespace VisualCCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].Parse()));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     commandLine.Add("-DLL");
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.DynamicLibrary.Key].Parse()));
+                    commandLine.Add(System.String.Format("-IMPLIB:{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].Parse()));
                     break;
             }
             foreach (var path in settings.LibraryPaths)
