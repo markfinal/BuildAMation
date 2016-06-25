@@ -52,7 +52,7 @@ namespace C
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Macros.Add("ImportLibraryName", this.Macros["OutputName"]);
+                this.Macros.Add("ImportLibraryName", Bam.Core.TokenizedString.CreateInline("$(OutputName)"));
                 this.RegisterGeneratedFile(ImportLibraryKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(ImportLibraryName)$(libext)"));
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
