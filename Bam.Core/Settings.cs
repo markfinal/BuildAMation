@@ -47,8 +47,6 @@ namespace Bam.Core
             public Bam.Core.Array<InterfaceData> Data = new Array<InterfaceData>();
         }
 
-        private static ISitePolicy LocalPolicy = null;
-
         // TODO: Could this be System.Collections.Concurrent.ConcurrentDictionary to avoid the explicit lock below?
         private static System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces> Cache = new System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces>();
 
@@ -85,28 +83,6 @@ namespace Bam.Core
                 }
 
                 return Cache[settingsType];
-            }
-        }
-
-        static Settings()
-        {
-            var localPolicies = Graph.Instance.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
-            var numLocalPolicies = localPolicies.Count();
-            if (numLocalPolicies > 0)
-            {
-                if (numLocalPolicies > 1)
-                {
-                    var message = new System.Text.StringBuilder();
-                    message.AppendLine("Too many site policies exist in the package assembly:");
-                    foreach (var policy in localPolicies)
-                    {
-                        message.AppendFormat("\t{0}", policy.ToString());
-                        message.AppendLine();
-                    }
-                    throw new Exception(message.ToString());
-                }
-
-                LocalPolicy = System.Activator.CreateInstance(localPolicies.First()) as ISitePolicy;
             }
         }
 
@@ -183,6 +159,16 @@ namespace Bam.Core
         /// </summary>
         /// <value>The module.</value>
         public Module Module
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Defines the local policy to use for all settings
+        /// </summary>
+        /// <value>The local policy.</value>
+        static public ISitePolicy LocalPolicy
         {
             get;
             set;
