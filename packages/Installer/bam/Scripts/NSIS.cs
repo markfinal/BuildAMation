@@ -169,6 +169,10 @@ namespace Installer
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.ScriptModule.AddFile(dependent, key);
         }
 
@@ -182,6 +186,10 @@ namespace Installer
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.ScriptModule.AddPath(dependent, key);
         }
 

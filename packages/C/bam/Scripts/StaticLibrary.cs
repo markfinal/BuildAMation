@@ -133,6 +133,10 @@ namespace C
             params CModule[] additionalSources) where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
             if (additionalSources.Length > 0)
@@ -173,6 +177,10 @@ namespace C
         {
             this.CompileAgainst<DependentModule>(affectedSource, additionalSources);
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.UsePublicPatches(dependent);
         }
 

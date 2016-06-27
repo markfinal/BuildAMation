@@ -142,6 +142,10 @@ namespace C.Cxx
             params CModule[] additionalSources) where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.DependsOn(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
@@ -173,6 +177,10 @@ namespace C.Cxx
             params CModule[] additionalSources) where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
                 this.forwardedDeps.AddUnique(dependent);
@@ -191,6 +199,10 @@ namespace C.Cxx
         LinkPubliclyAgainst<DependentModule>() where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.DependsOn(dependent);
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
@@ -212,6 +224,10 @@ namespace C.Cxx
             ObjectFileCollection affectedSource) where DependentModule : ObjectFileCollection, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             affectedSource.ExtendWith(dependent);
             this.UsePublicPatches(dependent);
         }

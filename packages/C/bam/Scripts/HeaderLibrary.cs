@@ -91,6 +91,10 @@ namespace C
         CompileAgainst<DependentModule>() where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.UsePublicPatches(dependent);
             if (dependent is HeaderLibrary)
             {
