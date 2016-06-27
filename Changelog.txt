@@ -1,3 +1,5 @@
+27-Jun-2016 Fixes #264. Site policies in 'tests' sub-namespaces of packages are only considered in test mode (-t/--tests on the command line).
+
 27-Jun-2016 Fixes #266. Checks for multiple classes in the compiled package assembly implementing Bam.Core.ISitePolicy has been moved to directly after package compilation. Previously this was after module creation, so if there were many modules and more than one site policy, there was a delay before the error was seen.
 
 27-Jun-2016 Fixes #265. Utility functions, such as CompileAgainst etc, in the C and Installer packages have been updated to cope with dependent modules not existing. For example, if a dependent module is filtered on some platforms, and yet the build script that depends on it is written in a platform agnostic way, these functions need to perform a nullop.

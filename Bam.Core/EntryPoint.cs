@@ -107,8 +107,14 @@ namespace Bam.Core
             packageMetaDataProfile.StartProfile();
 
             // validate that there is at most one local policy
+            // if test mode is enabled, then the '.tests' sub-namespaces are also checked
             {
                 var localPolicies = Graph.Instance.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
+                var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
+                if (!includeTests)
+                {
+                    localPolicies = localPolicies.Where(item => !item.Namespace.EndsWith(".tests"));
+                }
                 var numLocalPolicies = localPolicies.Count();
                 if (numLocalPolicies > 0)
                 {
