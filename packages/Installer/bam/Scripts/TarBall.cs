@@ -180,6 +180,10 @@ namespace Installer
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.InputFiles.AddFile(dependent, key);
         }
 
@@ -193,6 +197,10 @@ namespace Installer
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.InputFiles.AddPath(dependent, key);
         }
 

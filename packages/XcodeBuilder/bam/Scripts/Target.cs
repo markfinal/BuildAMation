@@ -62,10 +62,10 @@ namespace XcodeBuilder
             this.ProposedTargetDependencies = new Bam.Core.Array<Target>();
         }
 
-        private Bam.Core.Module Module
+        public Bam.Core.Module Module
         {
             get;
-            set;
+            private set;
         }
 
         public Project Project

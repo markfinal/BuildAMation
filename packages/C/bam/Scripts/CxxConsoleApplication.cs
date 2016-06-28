@@ -92,6 +92,10 @@ namespace C.Cxx
             where DependentModule : CModuleContainer<ObjectFile>, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             affectedSource.ExtendWith(dependent);
             affectedSource.UsePublicPatchesPrivately(dependent);
         }

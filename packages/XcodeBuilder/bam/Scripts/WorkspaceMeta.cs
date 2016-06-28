@@ -163,7 +163,7 @@ namespace XcodeBuilder
             workspaceEl.SetAttribute("version", "1.0");
             workspaceDoc.AppendChild(workspaceEl);
 
-            var generateProjectSchemes = Bam.Core.CommandLineProcessor.Evaluate(new Options.GenerateXcodeSchemes());
+            var generateProjectSchemes = true; // used to be based on a command line option, but now needed for working directory
             foreach (var project in this.ProjectMap.Values)
             {
                 project.ResolveDeferredSetup();

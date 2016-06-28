@@ -155,7 +155,6 @@ class Gcc32(GccCommon):
 class ClangCommon(ConfigOptions):
     def __init__(self, arch):
         super(ClangCommon, self).__init__("Clang", arch)
-        self._argList.append("--Xcode.generateSchemes")  # TODO: this is only for the Xcode build mode
         ConfigOptions.register_option("Darwin", ("Clang.version", "Set the Clang version"))
 
 

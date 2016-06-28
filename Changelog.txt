@@ -1,3 +1,21 @@
+28-Jun-2016 Fixes #268. MingwCommon.ICommonCompilerSettings now has a precedence set, in order for the warning enabling settings to appear before warning suppressions.
+
+28-Jun-2016 Fixes #267. Added 'ChangeDefaultSettings' test case, which exercise Bam.Core.ISitePolicy, to modify the defaults of any settings class from any package. If individuals or companies use this, then they can globally set the defaults to use for all projects, avoiding needing to patch each and every module.
+
+27-Jun-2016 Fixes #264. Site policies in 'tests' sub-namespaces of packages are only considered in test mode (-t/--tests on the command line).
+
+27-Jun-2016 Fixes #266. Checks for multiple classes in the compiled package assembly implementing Bam.Core.ISitePolicy has been moved to directly after package compilation. Previously this was after module creation, so if there were many modules and more than one site policy, there was a delay before the error was seen.
+
+27-Jun-2016 Fixes #265. Utility functions, such as CompileAgainst etc, in the C and Installer packages have been updated to cope with dependent modules not existing. For example, if a dependent module is filtered on some platforms, and yet the build script that depends on it is written in a platform agnostic way, these functions need to perform a nullop.
+
+25-Jun-2016 Fixes #262. Override the macro 'ImportLibraryName' to change the leafname of the import library of the DLL. This allows it to be different to the DLL name (the macro 'OutputName'). The default import library name matches the DLL name.
+
+25-Jun-2016 Fixes #261. VisualC Native dynamic library builds now specify the path of the import library on the linker command line. VisualStudio projects generated for DLLs already did this.
+
+23-Jun-2016 Fixes #244. Added the Bam.Core.TokenizedString property WorkingDirectory to C.ConsoleApplication (DynamicLibrary and Plugin derived classes throw an exception). VisualStudio and Xcode projects now use this in the project settings. Thanks to @joshmartel for the suggestion on how to implement this. As a side-effect in Xcode, the command line option --Xcode.generateSchemes, has been removed, as it is requirement to set the working directory.
+
+18-Jun-2016 Fixes #258. WindowsSDK-10 package no longer causes a compilation failure in mono due to an errant throw after an unconditional function return.
+
 09-Jun-2016 ======== Version 1.0.3 beta 1 Release ========
 
 09-Jun-2016 Fixes #253. Modules can now throw an exception of type Bam.Core.UnableToBuildModuleException. For any other modules depending on such failing modules, these will also fail. A special case of this is a plugin. A plugin is a runtime-only dependency so, in theory, the primary application using the plugin can run (with limited features) without the plugin. As such, C.ConsoleApplication.RequiredToExist, and Publisher.Include, have been modified to detect the UnableToBuildModuleException, and ignore the dependency (with a warning to the console). A test, MissingDependencyTest1, has been added to exercise this functionality.

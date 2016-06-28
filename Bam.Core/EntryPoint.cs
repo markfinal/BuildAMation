@@ -106,6 +106,34 @@ namespace Bam.Core
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();
 
+            // validate that there is at most one local policy
+            // if test mode is enabled, then the '.tests' sub-namespaces are also checked
+            {
+                var localPolicies = Graph.Instance.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
+                var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
+                if (!includeTests)
+                {
+                    localPolicies = localPolicies.Where(item => !item.Namespace.EndsWith(".tests"));
+                }
+                var numLocalPolicies = localPolicies.Count();
+                if (numLocalPolicies > 0)
+                {
+                    if (numLocalPolicies > 1)
+                    {
+                        var message = new System.Text.StringBuilder();
+                        message.AppendLine("Too many site policies exist in the package assembly:");
+                        foreach (var policy in localPolicies)
+                        {
+                            message.AppendFormat("\t{0}", policy.ToString());
+                            message.AppendLine();
+                        }
+                        throw new Exception(message.ToString());
+                    }
+
+                    Settings.LocalPolicy = System.Activator.CreateInstance(localPolicies.First()) as ISitePolicy;
+                }
+            }
+
             // get the metadata from the build mode package
             var graph = Graph.Instance;
             var metaName = System.String.Format("{0}Builder.{0}Meta", graph.Mode);

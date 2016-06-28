@@ -348,7 +348,7 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// An axion of Bam. Depend upon a list of modules.
+        /// An axiom of Bam. Depend upon a list of modules.
         /// </summary>
         /// <param name="modules">Modules.</param>
         public void

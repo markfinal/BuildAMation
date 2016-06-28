@@ -40,6 +40,7 @@ namespace VSSolutionBuilder
             base(module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse())
         {
             this.Solution = solution;
+            this.Module = module;
             this.ProjectPath = module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse();
             this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
@@ -50,6 +51,12 @@ namespace VSSolutionBuilder
             this.Filter = new VSProjectFilter();
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
+        }
+
+        public Bam.Core.Module Module
+        {
+            get;
+            private set;
         }
 
         private static C.EBit
@@ -302,6 +309,27 @@ namespace VSSolutionBuilder
                     document.CreateVSElement("LinkLibraryDependencies", value: "true", parentEl: projectRefEl);
                 }
             }
+        }
+
+        public System.Xml.XmlDocument
+        SerializeUserSettings()
+        {
+            var document = new System.Xml.XmlDocument();
+
+            var projectEl = this.CreateRootProject(document);
+            var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            projectEl.SetAttribute("ToolsVersion", visualCMeta.VCXProjToolsVersion);
+
+            // the working directory appears to need to be the same in all configurations
+            var el = document.CreateVSPropertyGroup(parentEl: projectEl);
+            var debuggerFlavour = document.CreateVSElement("DebuggerFlavor");
+            debuggerFlavour.InnerText = "WindowsLocalDebugger";
+            var workingDir = document.CreateVSElement("LocalDebuggerWorkingDirectory");
+            workingDir.InnerText = (this.Module as C.ConsoleApplication).WorkingDirectory.Parse();
+            el.AppendChild(debuggerFlavour);
+            el.AppendChild(workingDir);
+
+            return document;
         }
 
         public System.Xml.XmlDocument

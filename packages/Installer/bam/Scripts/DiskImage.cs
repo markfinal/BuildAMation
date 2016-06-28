@@ -82,6 +82,10 @@ namespace Installer
             Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.DependsOn(dependent);
             this.SourceFolderPath = dependent.GeneratedPaths[key];
         }

@@ -178,6 +178,12 @@ namespace XcodeBuilder
                     buildableRefEl.SetAttribute("ReferencedContainer",
                         "container:" + relative);
                 }
+
+                if ((target.Module is C.ConsoleApplication) && (target.Module as C.ConsoleApplication).WorkingDirectory != null)
+                {
+                    launchActionEl.SetAttribute("useCustomWorkingDirectory", "YES");
+                    launchActionEl.SetAttribute("customWorkingDirectory", (target.Module as C.ConsoleApplication).WorkingDirectory.Parse());
+                }
             }
         }
 

@@ -148,6 +148,10 @@ namespace C
             params CModule[] additionalSources) where DependentModule : HeaderLibrary, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.Requires(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
@@ -174,6 +178,10 @@ namespace C
         LinkAgainst<DependentModule>() where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.DependsOn(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
@@ -227,6 +235,10 @@ namespace C
             params CModule[] additionalSources) where DependentModule : CModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             this.DependsOn(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
@@ -285,6 +297,10 @@ namespace C
             where DependentModule : CModuleContainer<ObjectFile>, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
             affectedSource.ExtendWith(dependent);
             affectedSource.UsePublicPatchesPrivately(dependent);
         }
@@ -390,6 +406,15 @@ namespace C
                 // deferred evaluation can only be considered when other reasons to execute have been exhausted
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
             }
+        }
+
+        /// <summary>
+        /// Define the working directory to use in IDE projects for debugging (if supported).
+        /// </summary>
+        virtual public Bam.Core.TokenizedString WorkingDirectory
+        {
+            get;
+            set;
         }
     }
 }
