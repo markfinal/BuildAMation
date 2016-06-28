@@ -1,3 +1,5 @@
+28-Jun-2016 Fixes #268. MingwCommon.ICommonCompilerSettings now has a precedence set, in order for the warning enabling settings to appear before warning suppressions.
+
 28-Jun-2016 Fixes #267. Added 'ChangeDefaultSettings' test case, which exercise Bam.Core.ISitePolicy, to modify the defaults of any settings class from any package. If individuals or companies use this, then they can globally set the defaults to use for all projects, avoiding needing to patch each and every module.
 
 27-Jun-2016 Fixes #264. Site policies in 'tests' sub-namespaces of packages are only considered in test mode (-t/--tests on the command line).
