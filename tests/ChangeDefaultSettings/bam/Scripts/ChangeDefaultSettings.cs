@@ -64,7 +64,7 @@ namespace ChangeDefaultSettings
                 gccCompiler.Pedantic = true;
             }
 
-            var clangCompiler = settings as GccCommon.ICommonCompilerSettings;
+            var clangCompiler = settings as ClangCommon.ICommonCompilerSettings;
             if (null != clangCompiler)
             {
                 clangCompiler.AllWarnings = true;
