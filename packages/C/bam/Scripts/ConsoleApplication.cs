@@ -60,12 +60,15 @@ namespace C
                     this.RegisterGeneratedFile(PDBKey, this.IsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
                 }
 
-                var versionSource = Bam.Core.Module.Create<WinVersionResource>();
-                versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(OutputName)_version.rc");
-                versionSource.BinaryModule = this;
-                var rcContainer = this.CreateWinResourceContainer();
-                var versionRC = rcContainer.AddFile(versionSource);
-                DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
+                if (!this.IsPrebuilt)
+                {
+                    var versionSource = Bam.Core.Module.Create<WinVersionResource>();
+                    versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(OutputName)_version.rc");
+                    versionSource.BinaryModule = this;
+                    var rcContainer = this.CreateWinResourceContainer();
+                    var versionRC = rcContainer.AddFile(versionSource);
+                    DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
+                }
             }
             this.PrivatePatch(settings =>
                 {

@@ -1,3 +1,5 @@
+29-Jun-2016 Issue #259. Prebuilt binaries are not considered for a versioning .rc file on Windows.
+
 29-Jun-2016 Bam.Core.MacroList's constructor now accepts an optional name of the object owning it. This is only used in diagnostic messages. The API has not changed, as a default value is provided.
 
 29-Jun-2016 Fixes #259. All C binaries (applications, DLLs, plugins) now automatically generate an .rc (resource) file containing versioning information for that file. The macros 'MajorVersion', 'MinorVersion', 'PatchVersion' as already used in Linux and OSX, are used to generate the data. If a macro 'Description' exists on the binary module, this is used in the 'FileDescription' field in the generated .rc file. The current culture and codepage on the build machine are used to define the default language/codepage used in the .rc file. (Currently, automatic generation of different translations are not supported.)
