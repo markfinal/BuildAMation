@@ -62,6 +62,7 @@ namespace VSSolutionBuilder
 
             this.SettingGroups = new Bam.Core.Array<VSSettingsGroup>();
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
+            this.ResourceFiles = new Bam.Core.Array<VSSettingsGroup>();
 
             this.PreBuildCommands = new Bam.Core.StringArray();
             this.PostBuildCommands = new Bam.Core.StringArray();
@@ -204,6 +205,12 @@ namespace VSSolutionBuilder
         }
 
         private Bam.Core.Array<VSSettingsGroup> Sources
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<VSSettingsGroup> ResourceFiles
         {
             get;
             set;
@@ -354,6 +361,7 @@ namespace VSSolutionBuilder
                 (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(resource, settings, condition: this.ConditionText);
             }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
+            this.ResourceFiles.AddUnique(resourceGroup);
             this.Project.AddResourceFile(resourceGroup);
         }
 
@@ -362,6 +370,13 @@ namespace VSSolutionBuilder
             VSSettingsGroup sourceGroup)
         {
             return this.Sources.Contains(sourceGroup);
+        }
+
+        public bool
+        ContainsResourceFile(
+            VSSettingsGroup resourceFileGroup)
+        {
+            return this.ResourceFiles.Contains(resourceFileGroup);
         }
 
         public void
