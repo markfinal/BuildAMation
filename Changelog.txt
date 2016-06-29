@@ -1,3 +1,5 @@
+29-Jun-2016 Issue #259. C.ProceduralHeaderFileFromToolOutput and VisualCCommon.Compiler's public patches now also try to add include paths onto settings classes implementing the C.ICommonWinResourceCompilerSettings interface.
+
 29-Jun-2016 Issue #259. Added attribute C.Thirdparty, which optionally accepts a path to a Windows .rc resource file. If the path is set, then this is used instead of generating an .rc file for versioning. This is to allow builds of thirdparty software to use their own versioning.
 
 29-Jun-2016 Issue #259. Updated examples with dynamic libraries to define major, minor, and patch versions (to match the BuildAMation version), and define a Description macro to use in Windows versioning resource files.

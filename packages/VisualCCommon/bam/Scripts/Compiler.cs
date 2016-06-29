@@ -56,6 +56,12 @@ namespace VisualCCommon
                     {
                         compilation.SystemIncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
                     }
+
+                    var rcCompilation = settings as C.ICommonWinResourceCompilerSettings;
+                    if (null != rcCompilation)
+                    {
+                        rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
+                    }
                 });
 
             if (meta.UseWindowsSDKPublicPatches)
