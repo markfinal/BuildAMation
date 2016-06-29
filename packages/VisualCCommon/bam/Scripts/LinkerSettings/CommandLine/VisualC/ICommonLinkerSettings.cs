@@ -40,6 +40,14 @@ namespace VisualCCommon
             {
                 commandLine.Add("-NOLOGO");
             }
+            if (settings.GenerateManifest)
+            {
+                commandLine.Add("-MANIFEST");
+            }
+            else
+            {
+                commandLine.Add("-MANIFEST:NO");
+            }
         }
     }
 }

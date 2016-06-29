@@ -37,6 +37,7 @@ namespace VisualCCommon.DefaultSettings
             Bam.Core.Module module)
         {
             settings.NoLogo = true;
+            settings.GenerateManifest = true;
         }
     }
 }

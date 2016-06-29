@@ -274,6 +274,12 @@ namespace VSSolutionBuilder
             this.IntermediateDirectory = @"$(ProjectDir)\$(ProjectName)\$(Configuration)\";
         }
 
+        public bool EnableManifest
+        {
+            get;
+            set;
+        }
+
         public VSSettingsGroup
         GetSettingsGroup(
             VSSettingsGroup.ESettingsGroup group,
@@ -434,6 +440,7 @@ namespace VSSolutionBuilder
             {
                 document.CreateVSElement("TargetExt", value: this.TargetExt, parentEl: propGroup);
             }
+            document.CreateVSElement("GenerateManifest", value: this.EnableManifest.ToString().ToLower(), parentEl: propGroup);
         }
 
         public void

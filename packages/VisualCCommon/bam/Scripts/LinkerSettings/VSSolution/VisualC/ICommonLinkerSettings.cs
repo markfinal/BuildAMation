@@ -39,6 +39,11 @@ namespace VisualCCommon
             string condition)
         {
             vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo, condition);
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(module);
+            var config = project.GetConfiguration(module);
+            config.EnableManifest = settings.GenerateManifest;
         }
     }
 }
