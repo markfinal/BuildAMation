@@ -52,7 +52,6 @@ namespace MingwCommon
             }
         }
 
-
         public override string UseResponseFileOption
         {
             get
@@ -67,6 +66,13 @@ namespace MingwCommon
         {
             var settings = new Mingw.WinResourceCompilerSettings(module);
             return settings;
+        }
+
+        public override void
+        addCompilerSpecificRequirements(
+            C.WinResource resource)
+        {
+            // nothing to do
         }
     }
 }

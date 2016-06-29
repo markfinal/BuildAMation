@@ -32,6 +32,8 @@ namespace C
 {
     /// <summary>
     /// Derive from this class to generate a console application and link against the C runtime library.
+    /// On Windows, a versioning resource file is generated and linked into this binary. If a macro 'Description'
+    /// exists on this module, then it is used for the 'FileDescription' field in the resource file.
     /// </summary>
     public class ConsoleApplication :
         CModule
@@ -57,12 +59,19 @@ namespace C
                 {
                     this.RegisterGeneratedFile(PDBKey, this.IsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
                 }
+
+                var versionSource = Bam.Core.Module.Create<WinVersionResource>();
+                versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(OutputName)_version.rc");
+                versionSource.BinaryModule = this;
+                var rcContainer = this.CreateWinResourceContainer();
+                var versionRC = rcContainer.AddFile(versionSource);
+                DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
             }
             this.PrivatePatch(settings =>
-            {
-                var linker = settings as C.ICommonLinkerSettings;
-                linker.OutputType = ELinkerOutput.Executable;
-            });
+                {
+                    var linker = settings as C.ICommonLinkerSettings;
+                    linker.OutputType = ELinkerOutput.Executable;
+                });
         }
 
         public override string CustomOutputSubDirectory

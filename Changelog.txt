@@ -1,3 +1,5 @@
+29-Jun-2016 Fixes #259. All C binaries (applications, DLLs, plugins) now automatically generate an .rc (resource) file containing versioning information for that file. The macros 'MajorVersion', 'MinorVersion', 'PatchVersion' as already used in Linux and OSX, are used to generate the data. If a macro 'Description' exists on the binary module, this is used in the 'FileDescription' field in the generated .rc file. The current culture and codepage on the build machine are used to define the default language/codepage used in the .rc file. (Currently, automatic generation of different translations are not supported.)
+
 29-Jun-2016 Issue #259. Windows resource modules now accept include paths on the settings interface, C.ICommonWinResourceCompilerSettings.
 
 29-Jun-2016 Fixes #270. Changed the dynamic library extension in Mingw to .dll (was .so), to match the online documentation at https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Using_ld_the_GNU_Linker/win32.html.

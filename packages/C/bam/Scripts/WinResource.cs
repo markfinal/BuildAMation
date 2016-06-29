@@ -42,6 +42,18 @@ namespace C
             base.Init(parent);
             this.Compiler = DefaultToolchain.WinResource_Compiler(this.BitDepth);
         }
+
+        public void
+        CompileAgainst<DependentModule>() where DependentModule : CModule, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+            this.DependsOn(dependent);
+            this.UsePublicPatchesPrivately(dependent);
+        }
     }
 
     /// <summary>

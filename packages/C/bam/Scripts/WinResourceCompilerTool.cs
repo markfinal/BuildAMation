@@ -31,5 +31,9 @@ namespace C
 {
     public abstract class WinResourceCompilerTool :
         CompilerTool
-    { }
+    {
+        public abstract void
+        addCompilerSpecificRequirements(
+            WinResource resource);
+    }
 }
