@@ -41,8 +41,9 @@ namespace Bam.Core
     /// <para />
     /// Pre-functions are run before, and are identified by #name(...):
     /// <list type="bullet">
-    /// <item><description><code>#valid(expr)</code></description> If the expression is a valid
-    /// TokenizedString, expand it and use it, otherwise the entire function call is replaced with an empty string.</item>
+    /// <item><description><code>#valid(expr[,default])</code></description> If the expression is a valid
+    /// TokenizedString, expand it and use it, otherwise the entire function call is replaced with the 'default' expression, unless
+    /// this is omitted, and an empty string is used.</item>
     /// </list>
     /// Post-functions are run after token expansion, and are identified by @(...):
     /// <list type="bullet">
@@ -994,7 +995,9 @@ namespace Bam.Core
                 {
                     case "valid":
                         {
-                            var tokens = SplitIntoTokens(expression, TokenRegExPattern);
+                            var split = expression.Split(',');
+                            var replacement = (1 == split.Length) ? string.Empty : split[1];
+                            var tokens = SplitIntoTokens(split[0], TokenRegExPattern);
                             var allTokensValid = true;
                             foreach (var token in tokens)
                             {
@@ -1015,11 +1018,11 @@ namespace Bam.Core
 
                             if (allTokensValid)
                             {
-                                modifiedString = modifiedString.Replace(match.Value, expression);
+                                modifiedString = modifiedString.Replace(match.Value, split[0]);
                             }
                             else
                             {
-                                modifiedString = modifiedString.Replace(match.Value, string.Empty);
+                                modifiedString = modifiedString.Replace(match.Value, replacement);
                             }
                         }
                         break;

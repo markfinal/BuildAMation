@@ -1,3 +1,5 @@
+29-Jun-2016 Fixes #269. The TokenizedString pre-function, #valid, now accepts an optional second argument. The syntax is now #valid(expr[,fallback]). Previously, if expr was not valid, an empty string was replaced. Now, if fallback is provided, this is used instead of an empty string.
+
 28-Jun-2016 Fixes #268. MingwCommon.ICommonCompilerSettings now has a precedence set, in order for the warning enabling settings to appear before warning suppressions.
 
 28-Jun-2016 Fixes #267. Added 'ChangeDefaultSettings' test case, which exercise Bam.Core.ISitePolicy, to modify the defaults of any settings class from any package. If individuals or companies use this, then they can globally set the defaults to use for all projects, avoiding needing to patch each and every module.
