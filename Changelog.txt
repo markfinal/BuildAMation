@@ -1,3 +1,5 @@
+29-Jun-2016 Fixes #270. Changed the dynamic library extension in Mingw to .dll (was .so), to match the online documentation at https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/4/html/Using_ld_the_GNU_Linker/win32.html.
+
 29-Jun-2016 Fixes #269. The TokenizedString pre-function, #valid, now accepts an optional second argument. The syntax is now #valid(expr[,fallback]). Previously, if expr was not valid, an empty string was replaced. Now, if fallback is provided, this is used instead of an empty string.
 
 28-Jun-2016 Fixes #268. MingwCommon.ICommonCompilerSettings now has a precedence set, in order for the warning enabling settings to appear before warning suppressions.
