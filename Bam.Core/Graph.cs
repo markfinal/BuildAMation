@@ -905,5 +905,14 @@ namespace Bam.Core
                 throw;
             }
         }
+
+        /// <summary>
+        /// Obtain the IProductDefinition instance (if it exists) from the package assembly.
+        /// </summary>
+        public IProductDefinition ProductDefinition
+        {
+            get;
+            set;
+        }
     }
 }
