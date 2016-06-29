@@ -1,3 +1,5 @@
+29-Jun-2016 Fixes #259. Generation of Windows version resource file now uses any data in the implementation of a Bam.Core.IProductDefinition in the package assembly.
+
 29-Jun-2016 Fixes #273. Added Bam.Core.IProductDefinition, and an accessor on Bam.Core.Graph.ProductDefinition. At most one implementation of an IProductDefinition should be present in a package assembly. Properties on the interface are, Name (of product), MajorVersion, MinorVersion, PatchVersion (assuming semantic versioning), IsPreRelease (boolean), copyright notice, company name.
 
 29-Jun-2016 Fixes #272. Added VisualCCommon.ICommonLinkerSettings.GenerateManifest boolean option, defaults to true. Can be used to avoid an error if a resource file refers to an external manifest file.
