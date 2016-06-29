@@ -1,3 +1,5 @@
+29-Jun-2016 Issue #259. Only the MajorVersion macro on a binary is assumed valid for Windows .rc versioning. MinorVersion and PatchVersion can be missing; if so, they will fallback to 0.
+
 29-Jun-2016 Issue #259. Prebuilt binaries are not considered for a versioning .rc file on Windows.
 
 29-Jun-2016 Bam.Core.MacroList's constructor now accepts an optional name of the object owning it. This is only used in diagnostic messages. The API has not changed, as a default value is provided.
