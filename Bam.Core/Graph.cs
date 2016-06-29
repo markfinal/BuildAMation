@@ -65,7 +65,7 @@ namespace Bam.Core
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, Array<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
-            this.Macros = new MacroList();
+            this.Macros = new MacroList(this.GetType().FullName);
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
             this.DependencyGraph = new DependencyGraph();

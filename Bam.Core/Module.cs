@@ -64,7 +64,7 @@ namespace Bam.Core
 
             graph.AddModule(this);
             this.TokenizedStringCache = new System.Collections.Generic.List<TokenizedString>();
-            this.Macros = new MacroList();
+            this.Macros = new MacroList(this.GetType().FullName);
             // TODO: Can this be generalized to be a collection of files?
             this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
 
