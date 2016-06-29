@@ -62,12 +62,22 @@ namespace C
 
                 if (!this.IsPrebuilt)
                 {
-                    var versionSource = Bam.Core.Module.Create<WinVersionResource>();
-                    versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(OutputName)_version.rc");
-                    versionSource.BinaryModule = this;
                     var rcContainer = this.CreateWinResourceContainer();
-                    var versionRC = rcContainer.AddFile(versionSource);
-                    DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
+                    if (this.ThirdpartyWindowsVersionResourcePath != null)
+                    {
+                        var versionRC = rcContainer.AddFiles(this.ThirdpartyWindowsVersionResourcePath);
+                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC[0] as WinResource);
+                        this.WindowsVersionResource = versionRC[0] as WinResource;
+                    }
+                    else
+                    {
+                        var versionSource = Bam.Core.Module.Create<WinVersionResource>();
+                        versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(OutputName)_version.rc");
+                        versionSource.BinaryModule = this;
+                        var versionRC = rcContainer.AddFile(versionSource);
+                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
+                        this.WindowsVersionResource = versionRC;
+                    }
                 }
             }
             this.PrivatePatch(settings =>
@@ -427,6 +437,16 @@ namespace C
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Reference to the module generated internally for Windows versioning of this binary.
+        /// This can be used to attach local patches or dependencies, e.g. to satisfy header search paths.
+        /// </summary>
+        public WinResource WindowsVersionResource
+        {
+            get;
+            private set;
         }
     }
 }
