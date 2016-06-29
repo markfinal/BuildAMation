@@ -31,6 +31,23 @@ namespace MingwCommon
 {
     public static partial class CommandLineImplementation
     {
+        private static string
+        GetShortPathName(
+            string longPath)
+        {
+            var shortPath = new System.Text.StringBuilder(longPath.Length + 1);
+
+            if (0 == GetShortPathName(longPath, shortPath, shortPath.Capacity))
+            {
+                return longPath;
+            }
+
+            return shortPath.ToString();
+        }
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        private static extern System.Int32 GetShortPathName(string path, System.Text.StringBuilder shortPath, System.Int32 shortPathLength);
+
         public static void
         Convert(
             this C.ICommonWinResourceCompilerSettings settings,
@@ -39,6 +56,21 @@ namespace MingwCommon
             if (settings.Verbose.HasValue && settings.Verbose.Value)
             {
                 commandLine.Add("-v");
+            }
+            foreach (var path in settings.IncludePaths)
+            {
+                var realpath = path.Parse();
+                if (path.ContainsSpace)
+                {
+                    // windres cannot cope with paths with spaces, even when quoted
+                    // https://sourceware.org/bugzilla/show_bug.cgi?id=4356
+                    var shortPath = GetShortPathName(realpath);
+                    commandLine.Add(System.String.Format("--include-dir={0}", shortPath));
+                }
+                else
+                {
+                    commandLine.Add(System.String.Format("--include-dir={0}", realpath));
+                }
             }
 
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;

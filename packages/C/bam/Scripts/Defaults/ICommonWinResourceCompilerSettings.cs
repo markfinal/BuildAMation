@@ -37,6 +37,7 @@ namespace C.DefaultSettings
             Bam.Core.Module module)
         {
             settings.Verbose = false;
+            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
         }
     }
 }
