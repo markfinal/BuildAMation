@@ -164,6 +164,12 @@ namespace Test9
         {
             base.Init(parent);
 
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test9: Example C dynamic library");
+
             this.CreateHeaderContainer("$(packagedir)/include/library_c.h");
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
@@ -189,6 +195,12 @@ namespace Test9
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test9: Example C++ dynamic library");
 
             this.CreateHeaderContainer("$(packagedir)/include/library_cpp.h");
 

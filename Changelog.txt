@@ -1,3 +1,5 @@
+29-Jun-2016 Issue #259. Updated examples with dynamic libraries to define major, minor, and patch versions (to match the BuildAMation version), and define a Description macro to use in Windows versioning resource files.
+
 29-Jun-2016 Issue #259. Only the MajorVersion macro on a binary is assumed valid for Windows .rc versioning. MinorVersion and PatchVersion can be missing; if so, they will fallback to 0.
 
 29-Jun-2016 Issue #259. Prebuilt binaries are not considered for a versioning .rc file on Windows.
