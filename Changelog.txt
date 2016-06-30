@@ -1,3 +1,5 @@
+30-Jun-2016 ======== Version 1.0.3 beta 2 Release ========
+
 29-Jun-2016 Fixes #274. VisualStudio projects are now aware of resource files per configuration.
 
 29-Jun-2016 Fixes #259. Generation of Windows version resource file now uses any data in the implementation of a Bam.Core.IProductDefinition in the package assembly.
