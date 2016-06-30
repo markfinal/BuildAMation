@@ -48,6 +48,13 @@ namespace WindowsSDK
                     compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir));
                 }
 
+                var rcCompilation = settings as C.ICommonWinResourceCompilerSettings;
+                if (null != rcCompilation)
+                {
+                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir));
+                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir));
+                }
+
                 var linking = settings as C.ICommonLinkerSettings;
                 if (null != linking)
                 {

@@ -27,27 +27,22 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+namespace C
 {
-    public static partial class CommandLineImplementation
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
+    public class ThirdpartyAttribute :
+        System.Attribute
     {
-        public static void
-        Convert(
-            this C.ICommonWinResourceCompilerSettings settings,
-            Bam.Core.StringArray commandLine)
+        public ThirdpartyAttribute(
+            string windowsVersionResourcePath = null)
         {
-            if (settings.Verbose.HasValue && settings.Verbose.Value)
-            {
-                commandLine.Add("-v");
-            }
+            this.WindowsVersionResourcePath = windowsVersionResourcePath;
+        }
 
-            foreach (var path in settings.IncludePaths)
-            {
-                commandLine.Add(System.String.Format("-i{0}", path.ParseAndQuoteIfNecessary()));
-            }
-
-            var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
-            commandLine.Add(System.String.Format("-Fo{0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
+        public string WindowsVersionResourcePath
+        {
+            get;
+            private set;
         }
     }
 }

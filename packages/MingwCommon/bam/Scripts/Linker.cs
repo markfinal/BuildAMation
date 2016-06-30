@@ -40,9 +40,9 @@ namespace MingwCommon
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(0)\bin", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.AddVerbatim("exeext", ".exe");
             this.Macros.AddVerbatim("dynamicprefix", "lib");
-            this.Macros.AddVerbatim("dynamicext", ".so");
+            this.Macros.AddVerbatim("dynamicext", ".dll");
             this.Macros.AddVerbatim("pluginprefix", "lib");
-            this.Macros.AddVerbatim("pluginext", ".so");
+            this.Macros.AddVerbatim("pluginext", ".dll");
             this.Macros.AddVerbatim("libprefix", "lib");
             this.Macros.AddVerbatim("libext", ".a");
 

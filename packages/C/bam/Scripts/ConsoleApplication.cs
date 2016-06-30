@@ -32,6 +32,8 @@ namespace C
 {
     /// <summary>
     /// Derive from this class to generate a console application and link against the C runtime library.
+    /// On Windows, a versioning resource file is generated and linked into this binary. If a macro 'Description'
+    /// exists on this module, then it is used for the 'FileDescription' field in the resource file.
     /// </summary>
     public class ConsoleApplication :
         CModule
@@ -57,12 +59,32 @@ namespace C
                 {
                     this.RegisterGeneratedFile(PDBKey, this.IsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
                 }
+
+                if (!this.IsPrebuilt)
+                {
+                    var rcContainer = this.CreateWinResourceContainer();
+                    if (this.ThirdpartyWindowsVersionResourcePath != null)
+                    {
+                        var versionRC = rcContainer.AddFiles(this.ThirdpartyWindowsVersionResourcePath);
+                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC[0] as WinResource);
+                        this.WindowsVersionResource = versionRC[0] as WinResource;
+                    }
+                    else
+                    {
+                        var versionSource = Bam.Core.Module.Create<WinVersionResource>();
+                        versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(config)/$(OutputName)_version.rc");
+                        versionSource.BinaryModule = this;
+                        var versionRC = rcContainer.AddFile(versionSource);
+                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
+                        this.WindowsVersionResource = versionRC;
+                    }
+                }
             }
             this.PrivatePatch(settings =>
-            {
-                var linker = settings as C.ICommonLinkerSettings;
-                linker.OutputType = ELinkerOutput.Executable;
-            });
+                {
+                    var linker = settings as C.ICommonLinkerSettings;
+                    linker.OutputType = ELinkerOutput.Executable;
+                });
         }
 
         public override string CustomOutputSubDirectory
@@ -415,6 +437,16 @@ namespace C
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Reference to the module generated internally for Windows versioning of this binary.
+        /// This can be used to attach local patches or dependencies, e.g. to satisfy header search paths.
+        /// </summary>
+        public WinResource WindowsVersionResource
+        {
+            get;
+            private set;
         }
     }
 }

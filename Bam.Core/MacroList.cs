@@ -36,10 +36,20 @@ namespace Bam.Core
     {
         /// <summary>
         /// Construct an instance of a MacroList.
+        /// Optionally define the name of the owner of this list.
         /// </summary>
-        public MacroList()
+        /// <param name="owner">Optional name of the object owning this list</param>
+        public MacroList(
+            string owner = null)
         {
             this.DictInternal = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+            this.Owner = owner;
+        }
+
+        private string Owner
+        {
+            get;
+            set;
         }
 
         private static string
@@ -60,7 +70,7 @@ namespace Bam.Core
                 var fKey = FormattedKey(key);
                 if (!this.Dict.ContainsKey(fKey))
                 {
-                    throw new Exception("Unable to locate macro '{0}'", fKey);
+                    throw new Exception("{0}'s macros do not include one called '{1}'", this.Owner != null ? this.Owner : "unknown", fKey);
                 }
                 return this.Dict[fKey];
             }

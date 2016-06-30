@@ -27,27 +27,67 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+namespace Bam.Core
 {
-    public static partial class CommandLineImplementation
+    /// <summary>
+    /// Interface to allow users to define a 'product' in their package builds.
+    /// </summary>
+    public interface IProductDefinition
     {
-        public static void
-        Convert(
-            this C.ICommonWinResourceCompilerSettings settings,
-            Bam.Core.StringArray commandLine)
+        /// <summary>
+        /// Name of the software product.
+        /// </summary>
+        string Name
         {
-            if (settings.Verbose.HasValue && settings.Verbose.Value)
-            {
-                commandLine.Add("-v");
-            }
+            get;
+        }
 
-            foreach (var path in settings.IncludePaths)
-            {
-                commandLine.Add(System.String.Format("-i{0}", path.ParseAndQuoteIfNecessary()));
-            }
+        /// <summary>
+        /// Major version number of the software product, assuming semantic versioning.
+        /// </summary>
+        int? MajorVersion
+        {
+            get;
+        }
 
-            var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
-            commandLine.Add(System.String.Format("-Fo{0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
+        /// <summary>
+        /// Minor version number of the software product, assuming semantic versioning.
+        /// </summary>
+        int? MinorVersion
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Patch version number of the software product, assuming semantic versioning.
+        /// </summary>
+        int? PatchVersion
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Is the software product version a pre-release?
+        /// </summary>
+        bool IsPrerelease
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Copyright notice of the software product
+        /// </summary>
+        string CopyrightNotice
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Name of the company that wrote/owns the software product
+        /// </summary>
+        string CompanyName
+        {
+            get;
         }
     }
 }

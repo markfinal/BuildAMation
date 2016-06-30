@@ -41,6 +41,11 @@ namespace WindowsSDK
                 commandLine.Add("-v");
             }
 
+            foreach (var path in settings.IncludePaths)
+            {
+                commandLine.Add(System.String.Format("-i{0}", path.ParseAndQuoteIfNecessary()));
+            }
+
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
             commandLine.Add(System.String.Format("-Fo{0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
         }

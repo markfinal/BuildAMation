@@ -39,6 +39,12 @@ namespace Test13
         {
             base.Init(parent);
 
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test13: Example dynamic library A");
+
             this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryA.h");
             this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryA.c");
             this.PublicPatch((settings, appliedTo) =>
@@ -66,6 +72,12 @@ namespace Test13
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test13: Example dynamic library B");
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryB.h");
             this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryB.c");

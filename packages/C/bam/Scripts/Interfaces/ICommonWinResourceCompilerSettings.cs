@@ -45,5 +45,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// List of paths to search for user headers, i.e. those quoted with double quotes.
+        /// </summary>
+        /// <value>The include paths.</value>
+        Bam.Core.TokenizedStringArray IncludePaths
+        {
+            get;
+            set;
+        }
     }
 }

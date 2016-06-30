@@ -103,6 +103,12 @@ namespace EmbedStaticIntoDynamicLibrary
         {
             base.Init(parent);
 
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("EmbedStaticIntoDynamicLibrary: Example C dynamic library");
+
             var source = this.CreateCSourceContainer("$(packagedir)/source/dynamic/*.c");
             source.PrivatePatch(settings =>
                 {
@@ -137,6 +143,12 @@ namespace EmbedStaticIntoDynamicLibrary
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("EmbedStaticIntoDynamicLibrary: Example C++ dynamic library");
 
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/dynamic/*.c");
             source.PrivatePatch(settings =>

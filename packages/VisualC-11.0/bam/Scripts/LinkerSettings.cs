@@ -113,5 +113,11 @@ namespace VisualC
             get;
             set;
         }
+
+        bool VisualCCommon.ICommonLinkerSettings.GenerateManifest
+        {
+            get;
+            set;
+        }
     }
 }

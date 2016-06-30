@@ -91,11 +91,12 @@ namespace Bam.Core
                 throw new Exception("No build configurations were specified");
             }
 
+            var graph = Graph.Instance;
             if (null != packageAssembly)
             {
                 PackageUtilities.IdentifyAllPackages();
-                Graph.Instance.ScriptAssembly = packageAssembly;
-                Graph.Instance.ScriptAssemblyPathname = packageAssembly.Location;
+                graph.ScriptAssembly = packageAssembly;
+                graph.ScriptAssemblyPathname = packageAssembly.Location;
             }
             else
             {
@@ -109,7 +110,7 @@ namespace Bam.Core
             // validate that there is at most one local policy
             // if test mode is enabled, then the '.tests' sub-namespaces are also checked
             {
-                var localPolicies = Graph.Instance.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
+                var localPolicies = graph.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
                 var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
                 if (!includeTests)
                 {
@@ -134,8 +135,29 @@ namespace Bam.Core
                 }
             }
 
+            // find a product definition
+            {
+                var productDefinitions = graph.ScriptAssembly.GetTypes().Where(t => typeof(IProductDefinition).IsAssignableFrom(t));
+                var numProductDefinitions = productDefinitions.Count();
+                if (numProductDefinitions > 0)
+                {
+                    if (numProductDefinitions > 1)
+                    {
+                        var message = new System.Text.StringBuilder();
+                        message.AppendLine("Too many product definitions exist in the package assembly:");
+                        foreach (var def in productDefinitions)
+                        {
+                            message.AppendFormat("\t{0}", def.ToString());
+                            message.AppendLine();
+                        }
+                        throw new Exception(message.ToString());
+                    }
+
+                    graph.ProductDefinition = System.Activator.CreateInstance(productDefinitions.First()) as IProductDefinition;
+                }
+            }
+
             // get the metadata from the build mode package
-            var graph = Graph.Instance;
             var metaName = System.String.Format("{0}Builder.{0}Meta", graph.Mode);
             var metaDataType = graph.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)

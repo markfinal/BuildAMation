@@ -55,6 +55,12 @@ namespace Mingw
             set;
         }
 
+        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
+        {
+            get;
+            set;
+        }
+
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;

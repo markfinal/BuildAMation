@@ -41,6 +41,12 @@ namespace Test7
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("ExplicitDynamicLibrary");
 
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test7: Example dynamic library");
+
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
             this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
             this.PublicPatch((settings, appliedTo) =>

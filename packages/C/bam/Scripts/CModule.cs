@@ -48,7 +48,19 @@ namespace C
             this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new Options.DefaultBitDepth());
         }
 
+        /// <summary>
+        /// Query whether the module has the C.Prebuilt attribute assigned to it.
+        /// </summary>
         public bool IsPrebuilt
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Query whether the module has the C.Thirdparty attribute assigned to it, and extract the Windows version .rc resource path.
+        /// </summary>
+        public string ThirdpartyWindowsVersionResourcePath
         {
             get;
             private set;
@@ -61,6 +73,16 @@ namespace C
             base.Init(parent);
 
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
+
+            var thirdpartyAttrs = this.GetType().GetCustomAttributes(typeof(ThirdpartyAttribute), true) as ThirdpartyAttribute[];
+            if (thirdpartyAttrs.Length > 0)
+            {
+                if (thirdpartyAttrs.Length > 1)
+                {
+                    throw new Bam.Core.Exception("Too many {0} attributes on {1}", typeof(ThirdpartyAttribute).ToString(), this.GetType().ToString());
+                }
+                this.ThirdpartyWindowsVersionResourcePath = thirdpartyAttrs[0].WindowsVersionResourcePath;
+            }
 
             // if there is a parent from which this module is created, inherit bitdepth
             if (null != parent)

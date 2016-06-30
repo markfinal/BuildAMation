@@ -37,5 +37,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        bool GenerateManifest
+        {
+            get;
+            set;
+        }
     }
 }

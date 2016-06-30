@@ -416,6 +416,13 @@ namespace VSSolutionBuilder
                 var resourceGroup = document.CreateVSItemGroup(parentEl: projectEl);
                 foreach (var group in this.Resources)
                 {
+                    foreach (var config in this.Configurations)
+                    {
+                        if (!config.Value.ContainsResourceFile(group))
+                        {
+                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                        }
+                    }
                     group.Serialize(document, resourceGroup);
                 }
             }

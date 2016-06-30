@@ -77,6 +77,12 @@ namespace C
                     {
                         compiler.IncludePaths.AddUnique(this.IncludeDirectory);
                     }
+
+                    var rcCompiler = settings as C.ICommonWinResourceCompilerSettings;
+                    if (null != rcCompiler)
+                    {
+                        rcCompiler.IncludePaths.AddUnique(this.IncludeDirectory);
+                    }
                 });
         }
 

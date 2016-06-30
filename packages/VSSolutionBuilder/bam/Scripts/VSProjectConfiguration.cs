@@ -62,6 +62,7 @@ namespace VSSolutionBuilder
 
             this.SettingGroups = new Bam.Core.Array<VSSettingsGroup>();
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
+            this.ResourceFiles = new Bam.Core.Array<VSSettingsGroup>();
 
             this.PreBuildCommands = new Bam.Core.StringArray();
             this.PostBuildCommands = new Bam.Core.StringArray();
@@ -209,6 +210,12 @@ namespace VSSolutionBuilder
             set;
         }
 
+        private Bam.Core.Array<VSSettingsGroup> ResourceFiles
+        {
+            get;
+            set;
+        }
+
         private Bam.Core.StringArray PreBuildCommands
         {
             get;
@@ -272,6 +279,12 @@ namespace VSSolutionBuilder
         EnableIntermediatePath()
         {
             this.IntermediateDirectory = @"$(ProjectDir)\$(ProjectName)\$(Configuration)\";
+        }
+
+        public bool EnableManifest
+        {
+            get;
+            set;
         }
 
         public VSSettingsGroup
@@ -348,6 +361,7 @@ namespace VSSolutionBuilder
                 (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(resource, settings, condition: this.ConditionText);
             }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
+            this.ResourceFiles.AddUnique(resourceGroup);
             this.Project.AddResourceFile(resourceGroup);
         }
 
@@ -356,6 +370,13 @@ namespace VSSolutionBuilder
             VSSettingsGroup sourceGroup)
         {
             return this.Sources.Contains(sourceGroup);
+        }
+
+        public bool
+        ContainsResourceFile(
+            VSSettingsGroup resourceFileGroup)
+        {
+            return this.ResourceFiles.Contains(resourceFileGroup);
         }
 
         public void
@@ -434,6 +455,7 @@ namespace VSSolutionBuilder
             {
                 document.CreateVSElement("TargetExt", value: this.TargetExt, parentEl: propGroup);
             }
+            document.CreateVSElement("GenerateManifest", value: this.EnableManifest.ToString().ToLower(), parentEl: propGroup);
         }
 
         public void

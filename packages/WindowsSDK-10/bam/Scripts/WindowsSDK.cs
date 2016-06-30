@@ -51,6 +51,14 @@ namespace WindowsSDK
                     compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir81));
                 }
 
+                var rcCompilation = settings as C.ICommonWinResourceCompilerSettings;
+                if (null != rcCompilation)
+                {
+                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\$(1)\ucrt", installDir10, v10));
+                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir81));
+                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir81));
+                }
+
                 var linking = settings as C.ICommonLinkerSettings;
                 if (null != linking)
                 {

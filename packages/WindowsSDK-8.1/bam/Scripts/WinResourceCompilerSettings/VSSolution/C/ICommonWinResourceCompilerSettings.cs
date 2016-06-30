@@ -42,6 +42,12 @@ namespace WindowsSDK
             {
                 vsSettingsGroup.AddSetting("ShowProgress", settings.Verbose.Value, condition);
             }
+
+            if (settings.IncludePaths.Count > 0)
+            {
+                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true);
+            }
+
             vsSettingsGroup.AddSetting("ResourceOutputFileName", module.GeneratedPaths[C.ObjectFile.Key].Parse(), condition);
         }
     }
