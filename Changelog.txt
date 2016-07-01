@@ -1,3 +1,5 @@
+01-Jul-2016 Fixes #278. VisualCCommon conversions of the C.ICommonLinkerSettings now honours the Bits property, converting it to the MACHINE linker option (both command lines and .vcxproject settings).
+
 01-Jul-2016 Fixes #277. WindowsSDK packages now depend explicitly on the VSSolutionBuilder package, for the scripts implementing the resource compiler.
 
 01-Jul-2016 Fixes #276. Two static libraries with cyclic dependencies are not detected with the Bam.Core.Module.DependsOn check, because there is no explicit dependency on them (it is deferred until link time). Added a static library specific check for cyclic dependencies. Added CyclicDependenciesTest2, that will fail, to test for this.

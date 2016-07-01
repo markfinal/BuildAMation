@@ -38,6 +38,19 @@ namespace VisualCCommon
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
+            switch (settings.Bits)
+            {
+                case C.EBit.ThirtyTwo:
+                    vsSettingsGroup.AddSetting("TargetMachine", "MachineX86", condition);
+                    break;
+
+                case C.EBit.SixtyFour:
+                    vsSettingsGroup.AddSetting("TargetMachine", "MachineX64", condition);
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unknown machine bit depth, {0}", settings.Bits.ToString());
+            }
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
