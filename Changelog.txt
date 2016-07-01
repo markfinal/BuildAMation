@@ -1,3 +1,5 @@
+01-Jul-2016 Fixes #276. Bam.Core.Module.DependsOn now checks for cyclic dependencies, and will throw an exception if found. Added CyclicDependenciesTest1, that will fail, to test for this.
+
 30-Jun-2016 ======== Version 1.0.3 beta 2 Release ========
 
 29-Jun-2016 Fixes #274. VisualStudio projects are now aware of resource files per configuration.
