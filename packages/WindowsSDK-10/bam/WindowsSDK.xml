@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="WindowsSDK" version="10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
   <Description>Microsoft Windows SDK v10</Description>
+  <Dependents>
+    <Package name="VSSolutionBuilder" />
+  </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="0" />
   </BamAssemblies>
