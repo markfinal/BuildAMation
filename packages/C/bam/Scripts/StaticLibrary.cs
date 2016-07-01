@@ -158,6 +158,14 @@ namespace C
             else
             {
                 // this delays the dependency until a link
+                // because there is no explicit DependsOn call, perform a cyclic dependency check here too
+                if (dependent is IForwardedLibraries)
+                {
+                    if ((dependent as IForwardedLibraries).ForwardedLibraries.Contains(this))
+                    {
+                        throw new Bam.Core.Exception("Cyclic dependency found between {0} and {1}", this.ToString(), dependent.ToString());
+                    }
+                }
                 this.forwardedDeps.AddUnique(dependent);
             }
         }

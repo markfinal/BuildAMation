@@ -1,3 +1,13 @@
+01-Jul-2016 Fixes #275. Added BuildStartTime property to Bam.Core.ProcessState, as the time that the BAM process was launched. Retrieve this through Bam.Core.Graph.Instance.ProcessState.BuildStartTime. This is intended as a potentially useful piece of information that can be used alongside IProductDefinition.
+
+01-Jul-2016 Fixes #278. VisualCCommon conversions of the C.ICommonLinkerSettings now honours the Bits property, converting it to the MACHINE linker option (both command lines and .vcxproject settings).
+
+01-Jul-2016 Fixes #277. WindowsSDK packages now depend explicitly on the VSSolutionBuilder package, for the scripts implementing the resource compiler.
+
+01-Jul-2016 Fixes #276. Two static libraries with cyclic dependencies are not detected with the Bam.Core.Module.DependsOn check, because there is no explicit dependency on them (it is deferred until link time). Added a static library specific check for cyclic dependencies. Added CyclicDependenciesTest2, that will fail, to test for this.
+
+01-Jul-2016 Fixes #276. Bam.Core.Module.DependsOn now checks for cyclic dependencies, and will throw an exception if found. Added CyclicDependenciesTest1, that will fail, to test for this.
+
 30-Jun-2016 ======== Version 1.0.3 beta 2 Release ========
 
 29-Jun-2016 Fixes #274. VisualStudio projects are now aware of resource files per configuration.

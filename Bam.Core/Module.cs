@@ -325,6 +325,10 @@ namespace Bam.Core
             {
                 return;
             }
+            if (this.DependeesList.Contains(module))
+            {
+                throw new Exception("Cyclic dependency found between {0} and {1}", this.ToString(), module.ToString());
+            }
             this.DependentsList.Add(module);
             module.DependeesList.Add(this);
         }
