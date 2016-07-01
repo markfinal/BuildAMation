@@ -117,6 +117,8 @@ namespace Bam.Core
             this.Version = assemblyVersion;
             this.VersionString = productVersion;
             this.TargetFrameworkVersion = targetFrameworkName;
+
+            this.BuildStartTime = System.Diagnostics.Process.GetCurrentProcess().StartTime;
         }
 
         /// <summary>
@@ -174,6 +176,15 @@ namespace Bam.Core
         /// </summary>
         /// <value>The target framework version.</value>
         public string TargetFrameworkVersion
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Retrieve the time that bam was launched.
+        /// </summary>
+        public System.DateTime BuildStartTime
         {
             get;
             private set;
