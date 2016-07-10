@@ -220,7 +220,12 @@ namespace C
         {
             get
             {
-                return this.children.Where(child => child.InputPath.Parse().Contains(filename)).ToList();
+                var validSources = this.children.Where(child => child.InputPath.Parse().Contains(filename));
+                if (!validSources.Any())
+                {
+                    throw new Bam.Core.Exception("No source files found matching '{0}' in module {1}", filename, Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString());
+                }
+                return validSources.ToList();
             }
         }
 
