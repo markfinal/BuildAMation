@@ -1,4 +1,10 @@
-01-Jul-2016 Fixes #275. Added BuildStartTime property to Bam.Core.ProcessState, as the time that the BAM process was launched. Retrieve this through Bam.Core.Graph.Instance.ProcessState.BuildStartTime. This is intended as a potentially useful piece of information that can be used alongside IProductDefinition.
+12-Jul-2016 ======== Version 1.0.3 beta 3 Release ========
+
+12-Jul-2016 Fixes #260. C module classes that depend on object files (e.g. object file collections, static libraries, applications/dynamic libraries) now also check whether any of the object files do not exist, as well as are newer. In Native builds, this ensures that the module that already exists, is re-executed, when a new source file is added to it.
+
+10-Jul-2016 Fixes #279. The string indexer on C.CModuleContainer, used to identify individual source files (generally for subsequent settings patching), now throws an exception when there is no match for the filename provided.
+
+01-Jul-2016 Fixes #275. Added BuildStartTime property to Bam.Core.ProcessState, as the time that the BAM process was launched (type System.DateTime). Retrieve this through Bam.Core.Graph.Instance.ProcessState.BuildStartTime. This is intended as a potentially useful piece of information that can be used alongside IProductDefinition.
 
 01-Jul-2016 Fixes #278. VisualCCommon conversions of the C.ICommonLinkerSettings now honours the Bits property, converting it to the MACHINE linker option (both command lines and .vcxproject settings).
 
