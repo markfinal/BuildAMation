@@ -261,6 +261,7 @@ namespace C
                     {
                         switch (child.ReasonToExecute.Reason)
                         {
+                            case Bam.Core.ExecuteReasoning.EReason.FileDoesNotExist:
                             case Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer:
                                 {
                                     this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(child.ReasonToExecute.OutputFilePath, child.ReasonToExecute.OutputFilePath);
