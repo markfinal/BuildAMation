@@ -1,3 +1,5 @@
+26-Jul-2016 Fixes #257. If a shared object symlink is missing, an incremental build will regenerate it.
+
 12-Jul-2016 ======== Version 1.0.3 beta 3 Release ========
 
 12-Jul-2016 Fixes #260. C module classes that depend on object files (e.g. object file collections, static libraries, applications/dynamic libraries) now also check whether any of the object files do not exist, as well as are newer. In Native builds, this ensures that the module that already exists, is re-executed, when a new source file is added to it.
