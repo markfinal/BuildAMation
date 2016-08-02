@@ -368,7 +368,7 @@ namespace C
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
 
-        public sealed override void
+        public override void
         Evaluate()
         {
             this.ReasonToExecute = null;
