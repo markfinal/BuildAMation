@@ -64,6 +64,9 @@ namespace VSSolutionBuilder
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
             this.ResourceFiles = new Bam.Core.Array<VSSettingsGroup>();
 
+            this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
+            this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
+
             this.PreBuildCommands = new Bam.Core.StringArray();
             this.PostBuildCommands = new Bam.Core.StringArray();
         }
@@ -211,6 +214,18 @@ namespace VSSolutionBuilder
         }
 
         private Bam.Core.Array<VSSettingsGroup> ResourceFiles
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<VSProject> OrderOnlyDependentProjects
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<VSProject> LinkDependentProjects
         {
             get;
             set;
@@ -365,6 +380,22 @@ namespace VSSolutionBuilder
             this.Project.AddResourceFile(resourceGroup);
         }
 
+        public void
+        RequiresProject(
+            VSProject project)
+        {
+            this.OrderOnlyDependentProjects.AddUnique(project);
+            this.Project.AddOrderOnlyDependency(project);
+        }
+
+        public void
+        LinkAgainstProject(
+            VSProject project)
+        {
+            this.LinkDependentProjects.AddUnique(project);
+            this.Project.AddLinkDependency(project);
+        }
+
         public bool
         ContainsSource(
             VSSettingsGroup sourceGroup)
@@ -377,6 +408,20 @@ namespace VSSolutionBuilder
             VSSettingsGroup resourceFileGroup)
         {
             return this.ResourceFiles.Contains(resourceFileGroup);
+        }
+
+        public bool
+        ContainsOrderOnlyDependency(
+            VSProject project)
+        {
+            return this.OrderOnlyDependentProjects.Contains(project);
+        }
+
+        public bool
+        ContainsLinkDependency(
+            VSProject project)
+        {
+            return this.LinkDependentProjects.Contains(project);
         }
 
         public void

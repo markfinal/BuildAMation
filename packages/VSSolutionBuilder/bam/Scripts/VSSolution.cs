@@ -156,12 +156,28 @@ namespace VSSolutionBuilder
             content.AppendLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
             foreach (var project in this.Projects)
             {
+                var guid = project.GuidString;
+                var thisProjectConfigs = new Bam.Core.StringArray();
+
+                // write the configurations for which build steps have been defined
                 foreach (var config in project.Configurations)
                 {
-                    var guid = project.GuidString;
-                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {1}", guid, config.Value.FullName);
+                    var configName = config.Value.FullName;
+                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {1}", guid, configName);
                     content.AppendLine();
-                    content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, config.Value.FullName);
+                    content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, configName);
+                    content.AppendLine();
+                    thisProjectConfigs.AddUnique(configName);
+                }
+
+                // now cater for any configurations that the project does not support
+                var unsupportedConfigs = configs.Complement(thisProjectConfigs) as Bam.Core.StringArray;
+                foreach (var uConfig in unsupportedConfigs)
+                {
+                    // a missing "XX.YY.Build.0" line means not configured to build
+                    // also, the remapping between config names seems a little arbitrary, but seems to work
+                    // might be related to the project not having an ProjectConfiguration for the unsupported config
+                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {2}", guid, uConfig, thisProjectConfigs[0]);
                     content.AppendLine();
                 }
             }

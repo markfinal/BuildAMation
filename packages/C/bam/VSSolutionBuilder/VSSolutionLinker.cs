@@ -132,7 +132,7 @@ namespace C
                 {
                     if ((input is C.StaticLibrary) || (input is C.IDynamicLibrary))
                     {
-                        project.LinkAgainstProject(solution.EnsureProjectExists(input));
+                        config.LinkAgainstProject(solution.EnsureProjectExists(input));
                     }
                     else if ((input is C.CSDKModule) || (input is C.HeaderLibrary))
                     {
@@ -188,7 +188,7 @@ namespace C
                 var requiredProject = required.MetaData as VSSolutionBuilder.VSProject;
                 if (null != requiredProject)
                 {
-                    project.RequiresProject(requiredProject);
+                    config.RequiresProject(requiredProject);
                 }
             }
             // any non-C module projects should be order-only dependencies
@@ -205,7 +205,7 @@ namespace C
                 var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
                 if (null != dependentProject)
                 {
-                    project.RequiresProject(dependentProject);
+                    config.RequiresProject(dependentProject);
                 }
             }
         }

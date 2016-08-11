@@ -104,7 +104,7 @@ namespace C
                 var requiredProject = required.MetaData as VSSolutionBuilder.VSProject;
                 if (null != requiredProject)
                 {
-                    project.RequiresProject(requiredProject);
+                    config.RequiresProject(requiredProject);
                 }
             }
             // any non-C module projects should be order-only dependencies
@@ -123,7 +123,7 @@ namespace C
                 var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
                 if (null != dependentProject)
                 {
-                    project.RequiresProject(dependentProject);
+                    config.RequiresProject(dependentProject);
                 }
             }
             // however, there may be forwarded libraries, and these are useful order only dependents
@@ -136,7 +136,7 @@ namespace C
                 var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
                 if (null != dependentProject)
                 {
-                    project.RequiresProject(dependentProject);
+                    config.RequiresProject(dependentProject);
                 }
             }
         }
