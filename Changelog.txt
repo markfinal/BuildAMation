@@ -1,3 +1,5 @@
+12-Aug-2016 Fixes #284. The dependency sorting algorithm introduced in v1.0.2 (issue #236), although faster, introduced an ordered list of (module,rankindex) pairs where the rank indices may be sparsely distributed. This resulted in a structure on the dependency graph that could have empty collections of Modules. Thus, although the order of modules is correct to satisfy dependencies, redundant processing was occurring on those empty ranks. This change filters out any gaps between rank indices in the data, so that there are no empty Module collections, and final rank indices are contiguous, so there is no wasted processing during dependency graph evaluation.
+
 12-Aug-2016 Fixes #283. VisualStudio projects now honour header files in specific configurations.
 
 11-Aug-2016 Fixes #282. Dependencies on VisualStudio projects that are specific to a configuration are now honoured in the .vcxproj and .sln files. Note that this is breaking change in the API for VSSolutionBuilder.VSProject. Dependent projects must now be made dependent on the project configuration, not just the project.

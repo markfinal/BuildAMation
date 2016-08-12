@@ -564,16 +564,22 @@ namespace Bam.Core
                 ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
                 Log.DetailProgress("{0,3}%", (int)((Module.Count - modulesToProcess.Count) * scale));
             }
+            // moduleRanks[*].Value is now sparse - there may be gaps between successive ranks with modules
+            // this needs to be collapsed so that the rank indices are contiguous (the order is correct, the indices are just wrong)
+
             // assign modules, for each rank index, into collections
-            var maxRank = moduleRanks.Values.Max();
-            for (var i = 0; i <= maxRank; ++i)
+            var count = 0;
+            var contiguousRankIndex = 0;
+            var lastRankIndex = 0;
+            foreach (var nextModule in moduleRanks.OrderBy(item => item.Value))
             {
-                var rankModules = moduleRanks.Where(x => x.Value == i);
-                var rank = this.DependencyGraph[i];
-                foreach (var pairs in rankModules)
+                if (lastRankIndex != nextModule.Value)
                 {
-                    rank.Add(pairs.Key);
+                    lastRankIndex = nextModule.Value;
+                    contiguousRankIndex++;
                 }
+                var rank = this.DependencyGraph[contiguousRankIndex];
+                rank.Add(nextModule.Key);
             }
             Module.CompleteModules();
         }
