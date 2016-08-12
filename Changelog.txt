@@ -1,3 +1,5 @@
+12-Aug-2016 Fixes #283. VisualStudio projects now honour header files in specific configurations.
+
 11-Aug-2016 Fixes #282. Dependencies on VisualStudio projects that are specific to a configuration are now honoured in the .vcxproj and .sln files. Note that this is breaking change in the API for VSSolutionBuilder.VSProject. Dependent projects must now be made dependent on the project configuration, not just the project.
 
 02-Aug-2016 ======== Version 1.0.3 Release ========

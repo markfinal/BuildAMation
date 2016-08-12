@@ -418,6 +418,13 @@ namespace VSSolutionBuilder
                 var headersGroup = document.CreateVSItemGroup(parentEl: projectEl);
                 foreach (var group in this.Headers)
                 {
+                    foreach (var config in this.Configurations)
+                    {
+                        if (!config.Value.ContainsHeader(group))
+                        {
+                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                        }
+                    }
                     group.Serialize(document, headersGroup);
                 }
             }

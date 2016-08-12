@@ -62,6 +62,7 @@ namespace VSSolutionBuilder
 
             this.SettingGroups = new Bam.Core.Array<VSSettingsGroup>();
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
+            this.Headers = new Bam.Core.Array<VSSettingsGroup>();
             this.ResourceFiles = new Bam.Core.Array<VSSettingsGroup>();
 
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
@@ -213,6 +214,12 @@ namespace VSSolutionBuilder
             set;
         }
 
+        private Bam.Core.Array<VSSettingsGroup> Headers
+        {
+            get;
+            set;
+        }
+
         private Bam.Core.Array<VSSettingsGroup> ResourceFiles
         {
             get;
@@ -340,6 +347,7 @@ namespace VSSolutionBuilder
             C.HeaderFile header)
         {
             var headerGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Header, header.InputPath);
+            this.Headers.AddUnique(headerGroup);
             this.Project.AddHeader(headerGroup);
         }
 
@@ -401,6 +409,13 @@ namespace VSSolutionBuilder
             VSSettingsGroup sourceGroup)
         {
             return this.Sources.Contains(sourceGroup);
+        }
+
+        public bool
+        ContainsHeader(
+            VSSettingsGroup headerGroup)
+        {
+            return this.Headers.Contains(headerGroup);
         }
 
         public bool
