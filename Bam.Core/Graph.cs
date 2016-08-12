@@ -547,7 +547,7 @@ namespace Bam.Core
             Log.Detail("Analysing module dependencies");
             var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
             var modulesToProcess = new System.Collections.Generic.Queue<Module>();
-            var scale = 100.0f / (2 * Module.Count);
+            var scale = 100.0f / (3 * Module.Count);
             // initialize the map with top-level modules
             // and populate the to-process list
             foreach (var module in this.TopLevelModules)
@@ -568,7 +568,7 @@ namespace Bam.Core
             // this needs to be collapsed so that the rank indices are contiguous (the order is correct, the indices are just wrong)
 
             // assign modules, for each rank index, into collections
-            var count = 0;
+            var count = Module.Count;
             var contiguousRankIndex = 0;
             var lastRankIndex = 0;
             foreach (var nextModule in moduleRanks.OrderBy(item => item.Value))
@@ -580,6 +580,7 @@ namespace Bam.Core
                 }
                 var rank = this.DependencyGraph[contiguousRankIndex];
                 rank.Add(nextModule.Key);
+                Log.DetailProgress("{0,3}%", (int)(count++ * scale));
             }
             Module.CompleteModules();
         }

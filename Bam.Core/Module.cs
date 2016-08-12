@@ -934,8 +934,8 @@ namespace Bam.Core
         static public void
         CompleteModules()
         {
-            var scale = 100.0f / (2 * AllModules.Count);
-            var count = AllModules.Count;
+            var scale = 100.0f / (3 * AllModules.Count);
+            var count = 2 * AllModules.Count;
             foreach (var module in AllModules.Reverse<Module>())
             {
                 module.Complete();
