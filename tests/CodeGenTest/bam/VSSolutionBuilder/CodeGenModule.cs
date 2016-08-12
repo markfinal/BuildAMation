@@ -53,7 +53,7 @@ namespace CodeGenTest
             config.AddPreBuildCommand(command.ToString());
 
             var compilerProject = solution.EnsureProjectExists(compiler as Bam.Core.Module);
-            project.RequiresProject(compilerProject);
+            config.RequiresProject(compilerProject);
         }
     }
 }
