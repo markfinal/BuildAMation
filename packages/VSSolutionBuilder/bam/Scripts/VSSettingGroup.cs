@@ -45,10 +45,12 @@ namespace VSSolutionBuilder
         }
 
         public VSSettingsGroup(
+            VSProject project,
             Bam.Core.Module module,
             ESettingsGroup group,
             Bam.Core.TokenizedString include = null)
         {
+            this.Project = project;
             this.Module = module;
             this.Group = group;
             this.Include = include;
@@ -57,6 +59,12 @@ namespace VSSolutionBuilder
                 this.RelativeDirectory = module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", include);
             }
             this.Settings = new Bam.Core.Array<VSSetting>();
+        }
+
+        private VSProject Project
+        {
+            get;
+            set;
         }
 
         public Bam.Core.Module Module
@@ -124,23 +132,57 @@ namespace VSSolutionBuilder
             }
         }
 
+        private string
+        toRelativePath(
+            Bam.Core.TokenizedString path)
+        {
+            var contatenated = new System.Text.StringBuilder();
+            var pathString = path.Parse();
+            var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
+            if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
+            {
+                contatenated.Append("$(ProjectDir)");
+            }
+            contatenated.AppendFormat("{0}", relative);
+            return contatenated.ToString();
+        }
+
         public void
         AddSetting(
             string name,
             Bam.Core.TokenizedString path,
             string condition = null,
-            bool inheritExisting = false)
+            bool inheritExisting = false,
+            bool isPath = false)
         {
             lock (this.Settings)
             {
-                var stringValue = path.Parse();
+                var stringValue = isPath ? toRelativePath(path) : path.Parse();
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
                 {
-                    throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, stringValue);
+                    throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.Parse());
                 }
 
                 this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
             }
+        }
+
+        private string
+        toRelativePaths(
+            Bam.Core.TokenizedStringArray paths)
+        {
+            var contatenated = new System.Text.StringBuilder();
+            foreach (var path in paths)
+            {
+                var pathString = path.Parse();
+                var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
+                if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
+                {
+                    contatenated.Append("$(ProjectDir)");
+                }
+                contatenated.AppendFormat("{0};", relative);
+            }
+            return contatenated.ToString();
         }
 
         public void
@@ -148,7 +190,8 @@ namespace VSSolutionBuilder
             string name,
             Bam.Core.TokenizedStringArray value,
             string condition = null,
-            bool inheritExisting = false)
+            bool inheritExisting = false,
+            bool arePaths = false)
         {
             lock (this.Settings)
             {
@@ -156,10 +199,10 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
-                var linearized = value.ToString(';');
+                var linearized = arePaths ? this.toRelativePaths(value) : value.ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
-                    var settingOption = this.Settings.Where(item => item.Name == name && item.Condition == condition).First();
+                    var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);
                     if (settingOption.Value.Contains(linearized))
                     {
                         return;
@@ -191,7 +234,7 @@ namespace VSSolutionBuilder
                 var linearized = value.ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
-                    var settingOption = this.Settings.Where(item => item.Name == name && item.Condition == condition).First();
+                    var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);
                     if (settingOption.Value.Contains(linearized))
                     {
                         return;
@@ -199,7 +242,7 @@ namespace VSSolutionBuilder
                     throw new Bam.Core.Exception("Cannot append {3}, to the option {0} as it already exists for condition {1}: {2}",
                         name,
                         condition,
-                        this.Settings.Where(item => item.Name == name && item.Condition == condition).First().Value.ToString(),
+                        settingOption.Value.ToString(),
                         linearized);
                 }
 
@@ -272,7 +315,16 @@ namespace VSSolutionBuilder
             var group = document.CreateVSElement(this.GetGroupName(), parentEl: parentEl);
             if (null != this.Include)
             {
-                group.SetAttribute("Include", this.Include.Parse());
+                var path = this.Include.Parse();
+                var relPath = Bam.Core.RelativePathUtilities.GetPath(path, this.Project.ProjectPath);
+                if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
+                {
+                    group.SetAttribute("Include", relPath);
+                }
+                else
+                {
+                    group.SetAttribute("Include", System.String.Format("$(ProjectDir){0}", relPath));
+                }
             }
             foreach (var setting in this.Settings.OrderBy(pair => pair.Name))
             {

@@ -336,7 +336,9 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                var newGroup = uniqueToProject ? this.Project.GetUniqueSettingsGroup(this.Module, group, include) : new VSSettingsGroup(this.Module, group, include);
+                var newGroup = uniqueToProject ?
+                    this.Project.GetUniqueSettingsGroup(this.Module, group, include) :
+                    new VSSettingsGroup(this.Project, this.Module, group, include);
                 this.SettingGroups.Add(newGroup);
                 return newGroup;
             }
@@ -535,13 +537,13 @@ namespace VSSolutionBuilder
 
             if (this.PreBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.PreBuild);
+                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PreBuild);
                 preBuildGroup.AddSetting("Command", this.PreBuildCommands.ToString(System.Environment.NewLine));
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }
             if (this.PostBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.PostBuild);
+                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PostBuild);
                 preBuildGroup.AddSetting("Command", this.PostBuildCommands.ToString(System.Environment.NewLine));
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }

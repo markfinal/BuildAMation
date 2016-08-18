@@ -34,6 +34,18 @@ namespace VSSolutionBuilder
     {
         private System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>> Filters = new System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>>();
 
+        public VSProjectFilter(
+            VSProject project)
+        {
+            this.Project = project;
+        }
+
+        private VSProject Project
+        {
+            get;
+            set;
+        }
+
         private void
         AddFilters(
             Bam.Core.Module module,
@@ -62,7 +74,7 @@ namespace VSSolutionBuilder
             {
                 return;
             }
-            var newGroup = new VSSettingsGroup(sourceGroup.Module, sourceGroup.Group, sourceGroup.Include);
+            var newGroup = new VSSettingsGroup(this.Project, sourceGroup.Module, sourceGroup.Group, sourceGroup.Include);
             newGroup.AddSetting("Filter", sourceGroup.RelativeDirectory);
             filter.AddUnique(newGroup);
         }

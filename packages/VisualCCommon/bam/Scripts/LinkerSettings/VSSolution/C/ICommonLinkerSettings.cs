@@ -79,7 +79,7 @@ namespace VisualCCommon
                 vsSettingsGroup.AddSetting("GenerateDebugInformation", true, condition);
                 if (null != module.GeneratedPaths[C.ConsoleApplication.PDBKey])
                 {
-                    vsSettingsGroup.AddSetting("ProgramDatabaseFile", module.GeneratedPaths[C.ConsoleApplication.PDBKey], condition);
+                    vsSettingsGroup.AddSetting("ProgramDatabaseFile", module.GeneratedPaths[C.ConsoleApplication.PDBKey], condition, isPath: true);
                 }
             }
         }

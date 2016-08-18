@@ -57,7 +57,7 @@ namespace VisualCCommon
 
             if (settings.IncludePaths.Count > 0)
             {
-                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true);
+                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true, arePaths: true);
             }
 
             if (settings.OmitFramePointer.HasValue)

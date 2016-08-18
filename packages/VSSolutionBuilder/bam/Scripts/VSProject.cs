@@ -48,7 +48,7 @@ namespace VSSolutionBuilder
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
             this.Others = new Bam.Core.Array<VSSettingsGroup>();
             this.Resources = new Bam.Core.Array<VSSettingsGroup>();
-            this.Filter = new VSProjectFilter();
+            this.Filter = new VSProjectFilter(this);
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
         }
@@ -135,7 +135,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                var newGroup = new VSSettingsGroup(module, group, include);
+                var newGroup = new VSSettingsGroup(this, module, group, include);
                 this.ProjectSettings.Add(newGroup);
                 return newGroup;
             }
