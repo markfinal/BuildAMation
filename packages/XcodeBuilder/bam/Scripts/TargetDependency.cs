@@ -45,6 +45,19 @@ namespace XcodeBuilder
             project.TargetDependencies.AddUnique(this);
         }
 
+        public TargetDependency(
+            Project project,
+            string name,
+            ContainerItemProxy proxy)
+        {
+            this.IsA = "PBXTargetDependency";
+            this.Name = name;
+            this.Dependency = null;
+            this.Proxy = proxy;
+
+            project.TargetDependencies.AddUnique(this);
+        }
+
         public Target Dependency
         {
             get;
@@ -78,6 +91,11 @@ namespace XcodeBuilder
             if (null != this.Dependency)
             {
                 text.AppendFormat("{0}target = {1} /* {2} */;", indent2, this.Dependency.GUID, this.Dependency.Name);
+                text.AppendLine();
+            }
+            else
+            {
+                text.AppendFormat("{0}name = {1};", indent2, this.Name);
                 text.AppendLine();
             }
             text.AppendFormat("{0}targetProxy = {1} /* {2} */;", indent2, this.Proxy.GUID, this.Proxy.Name);

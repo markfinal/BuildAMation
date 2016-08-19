@@ -371,56 +371,83 @@ namespace XcodeBuilder
         public void
         ResolveTargetDependencies()
         {
-            foreach (var other in this.ProposedTargetDependencies)
+            foreach (var depTarget in this.ProposedTargetDependencies)
             {
-                if (this.Project == other.Project)
+                if (this.Project == depTarget.Project)
                 {
-                    var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == this.Project) && (item.Remote == other)).FirstOrDefault();
-                    if (null == itemProxy)
+                    var nativeTargetItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
+                        item => (item.ContainerPortal == this.Project) && (item.Remote == depTarget));
+                    if (null == nativeTargetItemProxy)
                     {
-                        itemProxy = new ContainerItemProxy(this.Project, this.Project, other, false);
+                        nativeTargetItemProxy = new ContainerItemProxy(this.Project, depTarget);
                     }
 
-                    var dependency = this.TargetDependencies.Where(item => (item.Dependency == other) && (item.Proxy == itemProxy)).FirstOrDefault();
+                    var dependency = this.TargetDependencies.FirstOrDefault(
+                        item => (item.Dependency == depTarget) && (item.Proxy == nativeTargetItemProxy));
                     if (null == dependency)
                     {
-                        dependency = new TargetDependency(this.Project, other, itemProxy);
+                        dependency = new TargetDependency(this.Project, depTarget, nativeTargetItemProxy);
                         this.TargetDependencies.AddUnique(dependency);
                     }
                 }
                 else
                 {
-                    if (null == other.FileReference)
+                    if (null == depTarget.FileReference)
                     {
-                        Bam.Core.Log.DebugMessage("Project {0} cannot be a target dependency as it has no output FileReference", other.Name);
+                        Bam.Core.Log.DebugMessage("Project {0} cannot be a target dependency as it has no output FileReference", depTarget.Name);
                         continue;
                     }
 
-                    var fileRef = this.Project.EnsureFileReferenceExists(
-                        other.Project.ProjectDir,
+                    var dependentProjectFileRef = this.Project.EnsureFileReferenceExists(
+                        depTarget.Project.ProjectDir,
                         FileReference.EFileType.Project,
                         explicitType: false,
                         sourceTree: FileReference.ESourceTree.Absolute);
-                    this.Project.MainGroup.AddChild(fileRef);
+                    this.Project.MainGroup.AddChild(dependentProjectFileRef);
 
-                    var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == fileRef) && (item.Remote == other)).FirstOrDefault();
-                    if (null == itemProxy)
+                    // need a ContainerItemProxy for the dependent NativeTarget
+                    // which is associated with a local PBXTargetDependency
+                    var nativeTargetItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
+                        item => (item.ContainerPortal == dependentProjectFileRef) && (item.Remote == depTarget));
+                    if (null == nativeTargetItemProxy)
                     {
-                        itemProxy = new ContainerItemProxy(this.Project, fileRef, other, false);
+                        nativeTargetItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget);
                     }
 
-                    var refProxy = this.Project.ReferenceProxies.Where(item => item.RemoteRef == itemProxy).FirstOrDefault();
+                    var targetDependency = this.TargetDependencies.FirstOrDefault(
+                        item => (item.Dependency == null) && (item.Proxy == nativeTargetItemProxy));
+                    if (null == targetDependency)
+                    {
+                        // no 'target', but does have the name of the dependent
+                        targetDependency = new TargetDependency(this.Project, depTarget.Name, nativeTargetItemProxy);
+                        this.TargetDependencies.AddUnique(targetDependency);
+                    }
+
+                    // need a ContainerItemProxy for the filereference of the dependent NativeTarget
+                    // which is associated with a local PBXReferenceProxy
+                    var dependentFileRefItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
+                        item => (item.ContainerPortal == dependentProjectFileRef) && (item.Remote == depTarget.FileReference));
+                    if (null == dependentFileRefItemProxy)
+                    {
+                        dependentFileRefItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget.FileReference);
+                    }
+
+                    var refProxy = this.Project.ReferenceProxies.FirstOrDefault(
+                        item => item.RemoteRef == dependentFileRefItemProxy);
                     if (null == refProxy)
                     {
                         refProxy = new ReferenceProxy(
                             this.Project,
-                            other.FileReference.Type,
-                            other.FileReference.Path,
-                            itemProxy,
-                            other.FileReference.SourceTree);
+                            depTarget.FileReference.Type,
+                            depTarget.FileReference.Path,
+                            dependentFileRefItemProxy,
+                            depTarget.FileReference.SourceTree);
                     }
 
-                    var productRefGroup = this.Project.Groups.Where(item => item.Children.Contains(refProxy)).FirstOrDefault();
+                    // TODO: all PBXReferenceProxies could go into the same group
+                    // but at the moment, a group is made for each
+                    var productRefGroup = this.Project.Groups.FirstOrDefault(
+                        item => item.Children.Contains(refProxy));
                     if (null == productRefGroup)
                     {
                         productRefGroup = new Group("Products");
@@ -428,17 +455,11 @@ namespace XcodeBuilder
                         this.Project.Groups.Add(productRefGroup);
                     }
 
-                    var productRef = this.Project.ProjectReferences.Where(item => item.Key == productRefGroup).FirstOrDefault();
+                    var productRef = this.Project.ProjectReferences.FirstOrDefault(
+                        item => item.Key == productRefGroup);
                     if (productRef.Equals(default(System.Collections.Generic.Dictionary<Group, FileReference>)))
                     {
-                        this.Project.ProjectReferences.Add(productRefGroup, fileRef);
-                    }
-
-                    var dependency = this.TargetDependencies.Where(item => (item.Dependency == null) && (item.Proxy == itemProxy)).FirstOrDefault();
-                    if (null == dependency)
-                    {
-                        dependency = new TargetDependency(this.Project, null, itemProxy);
-                        this.TargetDependencies.AddUnique(dependency);
+                        this.Project.ProjectReferences.Add(productRefGroup, dependentProjectFileRef);
                     }
                 }
             }

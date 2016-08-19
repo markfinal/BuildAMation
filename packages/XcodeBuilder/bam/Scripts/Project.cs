@@ -530,19 +530,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXGroup section */");
                 text.AppendLine();
             }
-            if (this.ReferenceProxies.Count > 0)
-            {
-                text.AppendLine();
-                text.AppendFormat("/* Begin PBXReferenceProxy section */");
-                text.AppendLine();
-                foreach (var proxy in this.ReferenceProxies.OrderBy(key => key.GUID))
-                {
-                    proxy.Serialize(text, indentLevel);
-                }
-                text.AppendFormat("/* End PBXReferenceProxy section */");
-                text.AppendLine();
-            }
-            if (this.Targets.Count > 0)
+            if (this.Targets.Count > 0) // NativeTargets
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXNativeTarget section */");
@@ -555,6 +543,18 @@ namespace XcodeBuilder
                 text.AppendLine();
             }
             this.InternalSerialize(text, indentLevel); //this is the PBXProject :)
+            if (this.ReferenceProxies.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXReferenceProxy section */");
+                text.AppendLine();
+                foreach (var proxy in this.ReferenceProxies.OrderBy(key => key.GUID))
+                {
+                    proxy.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXReferenceProxy section */");
+                text.AppendLine();
+            }
             if (this.ShellScriptsBuildPhases.Count > 0)
             {
                 text.AppendLine();

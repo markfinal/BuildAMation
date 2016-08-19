@@ -32,19 +32,49 @@ namespace XcodeBuilder
     public sealed class ContainerItemProxy :
         Object
     {
-        public ContainerItemProxy(
+        private ContainerItemProxy(
             Project project,
-            Object portal,
-            Object reference,
-            bool inThisProject)
+            Object portal)
         {
             this.IsA = "PBXContainerItemProxy";
             this.Name = "PBXContainerItemProxy";
             this.ContainerPortal = portal;
-            this.ProxyType = inThisProject ? 1 : 2;
-            this.Remote = reference;
-
             project.ContainerItemProxies.AddUnique(this);
+        }
+
+        // for NativeTargets in a different Project
+        public ContainerItemProxy(
+            Project project,
+            Object portal,
+            Target reference)
+            :
+            this(project, portal)
+        {
+            this.Remote = reference;
+            this.ProxyType = 1;
+        }
+
+        // for NativeTargets in the same Project
+        public ContainerItemProxy(
+            Project projectAndPortal,
+            Target reference)
+            :
+            this(projectAndPortal, projectAndPortal)
+        {
+            this.Remote = reference;
+            this.ProxyType = 2;
+        }
+
+        // for FileReferences in a different Project
+        public ContainerItemProxy(
+            Project project,
+            Object portal,
+            FileReference reference)
+            :
+            this(project, portal)
+        {
+            this.Remote = reference;
+            this.ProxyType = 2;
         }
 
         public Object ContainerPortal
