@@ -429,7 +429,8 @@ namespace XcodeBuilder
                         item => (item.ContainerPortal == dependentProjectFileRef) && (item.Remote == depTarget.FileReference));
                     if (null == dependentFileRefItemProxy)
                     {
-                        dependentFileRefItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget.FileReference);
+                        // note, uses the name of the Target, not the FileReference
+                        dependentFileRefItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget.FileReference, depTarget.Name);
                     }
 
                     var refProxy = this.Project.ReferenceProxies.FirstOrDefault(
@@ -457,7 +458,7 @@ namespace XcodeBuilder
 
                     var productRef = this.Project.ProjectReferences.FirstOrDefault(
                         item => item.Key == productRefGroup);
-                    if (productRef.Equals(default(System.Collections.Generic.Dictionary<Group, FileReference>)))
+                    if (null == productRef.Key)
                     {
                         this.Project.ProjectReferences.Add(productRefGroup, dependentProjectFileRef);
                     }

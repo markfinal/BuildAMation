@@ -39,6 +39,7 @@ namespace XcodeBuilder
             this.IsA = "PBXContainerItemProxy";
             this.Name = "PBXContainerItemProxy";
             this.ContainerPortal = portal;
+            this.RemoteName = null;
             project.ContainerItemProxies.AddUnique(this);
         }
 
@@ -69,12 +70,14 @@ namespace XcodeBuilder
         public ContainerItemProxy(
             Project project,
             Object portal,
-            FileReference reference)
+            FileReference reference,
+            string refName)
             :
             this(project, portal)
         {
             this.Remote = reference;
             this.ProxyType = 2;
+            this.RemoteName = refName;
         }
 
         public Object ContainerPortal
@@ -93,6 +96,12 @@ namespace XcodeBuilder
         {
             get;
             private set;
+        }
+
+        private string RemoteName
+        {
+            get;
+            set;
         }
 
         public override void
@@ -119,7 +128,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}remoteGlobalIDString = {1};", indent2, this.Remote.GUID);
             text.AppendLine();
-            text.AppendFormat("{0}remoteInfo = {1};", indent2, this.Remote.Name);
+            text.AppendFormat("{0}remoteInfo = {1};", indent2, (null != this.RemoteName) ? this.RemoteName : this.Remote.Name);
             text.AppendLine();
             text.AppendFormat("{0}}};", indent);
             text.AppendLine();

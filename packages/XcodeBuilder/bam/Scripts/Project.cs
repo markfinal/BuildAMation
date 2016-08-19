@@ -425,13 +425,13 @@ namespace XcodeBuilder
                 text.AppendLine();
                 foreach (var projectRef in this.ProjectReferences)
                 {
-                    text.AppendFormat("{0}{", indent3);
+                    text.AppendFormat("{0}{{", indent3);
                     text.AppendLine();
                     text.AppendFormat("{0}ProductGroup = {1} /* {2} */;", indent4, projectRef.Key.GUID, projectRef.Key.Name);
                     text.AppendLine();
                     text.AppendFormat("{0}ProjectRef = {1} /* {2} */;", indent4, projectRef.Value.GUID, projectRef.Value.Name);
                     text.AppendLine();
-                    text.AppendFormat("{0}},", indent3);
+                    text.AppendFormat("{0}}},", indent3);
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);
