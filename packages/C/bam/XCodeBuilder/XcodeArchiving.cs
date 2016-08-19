@@ -86,7 +86,9 @@ namespace C
                 {
                     if (!(objFile as C.ObjectFile).PerformCompilation)
                     {
-                        excludedSource.Add((objFile as C.ObjectFile).InputPath.Parse());
+                        var fullPath = (objFile as C.ObjectFile).InputPath.Parse();
+                        var filename = System.IO.Path.GetFileName(fullPath);
+                        excludedSource.Add(filename);
                     }
 
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
@@ -118,7 +120,9 @@ namespace C
                 {
                     if (!(objFile as C.ObjectFile).PerformCompilation)
                     {
-                        excludedSource.Add((objFile as C.ObjectFile).InputPath.Parse());
+                        var fullPath = (objFile as C.ObjectFile).InputPath.Parse();
+                        var filename = System.IO.Path.GetFileName(fullPath);
+                        excludedSource.Add(filename);
                     }
 
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;

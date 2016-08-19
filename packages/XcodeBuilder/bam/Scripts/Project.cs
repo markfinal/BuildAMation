@@ -366,7 +366,9 @@ namespace XcodeBuilder
                         var excluded = new MultiConfigurationValue();
                         foreach (var file in diff)
                         {
-                            excluded.Add(file.FileRef.Path.Parse());
+                            var fullPath = file.FileRef.Path.Parse();
+                            var filename = System.IO.Path.GetFileName(fullPath);
+                            excluded.Add(filename);
                         }
                         config["EXCLUDED_SOURCE_FILE_NAMES"] = excluded;
                     }

@@ -1,3 +1,5 @@
+19-Aug-2016 Fixes #108. Xcode's EXCLUDED_SOURCE_FILE_NAME list appears to be satisfied with just leafnames. This of course does assume that there are no duplicate leafnames in different directories in the source.
+
 18-Aug-2016 Issue #14. VisualStudio projects now have the majority of paths written as relative to the project file, where appropriate. Some paths that have yet to be converted are those in pre and post build commands.
 
 12-Aug-2016 Fixes #284. If there were very sparsely distributed rank indices as mentioned below, the progress updates would stall during module dependency analysis. The stall has been removed, but there was unmetered progress that is now fixed.
