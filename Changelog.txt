@@ -1,3 +1,5 @@
+19-Aug-2016 Issue #14. Xcode projects now have the majority of paths written as relative to the project file, where appropriate. Some paths that have yet to be converted are those in custom build rules.
+
 19-Aug-2016 Fixes #287. Xcode cross-project target dependencies now write the correct number of PBXContainerItemProxy elements into the project file. Project references are now written.
 
 19-Aug-2016 Fixes #108. Xcode's EXCLUDED_SOURCE_FILE_NAME list appears to be satisfied with just leafnames. This of course does assume that there are no duplicate leafnames in different directories in the source.

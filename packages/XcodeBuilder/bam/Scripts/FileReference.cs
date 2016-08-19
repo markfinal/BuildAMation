@@ -159,7 +159,8 @@ namespace XcodeBuilder
             EFileType type,
             Project project,
             bool explicitType = false,
-            ESourceTree sourceTree = ESourceTree.NA)
+            ESourceTree sourceTree = ESourceTree.NA,
+            string relativePath = null)
             :
             this()
         {
@@ -168,6 +169,7 @@ namespace XcodeBuilder
             this.Project = project;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
+            this.RelativePath = relativePath;
         }
 
         public FileReference
@@ -220,6 +222,12 @@ namespace XcodeBuilder
             private set;
         }
 
+        private string RelativePath
+        {
+            get;
+            set;
+        }
+
         public void
         MakeApplicationBundle()
         {
@@ -259,13 +267,17 @@ namespace XcodeBuilder
             {
                 case ESourceTree.NA:
                 case ESourceTree.Absolute:
-                case ESourceTree.Group:
                 case ESourceTree.SDKRoot:
                     path = this.Path.Parse();
                     break;
 
                 case ESourceTree.BuiltProductsDir:
                     path = System.IO.Path.GetFileName(this.Path.Parse());
+                    break;
+
+                case ESourceTree.Group:
+                case ESourceTree.SourceRoot:
+                    path = (null != this.RelativePath) ? this.RelativePath : this.Path.Parse();
                     break;
 
                 default:

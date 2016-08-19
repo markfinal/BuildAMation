@@ -45,7 +45,7 @@ namespace XcodeBuilder
             var projectPath = module.CreateTokenizedString("$(xcodeprojectdir)/project.pbxproj");
             this.ProjectPath = projectPath.Parse();
 
-            this.SourceRoot = module.CreateTokenizedString("$(packagedir)").Parse();
+            this.SourceRoot = module.CreateTokenizedString("$(packagedir)/").Parse();
             this.BuildRoot = module.CreateTokenizedString("$(buildroot)").Parse();
 
             this.Module = module;
@@ -102,7 +102,7 @@ namespace XcodeBuilder
         {
             get
             {
-                return this.Module.PackageDefinition.GetBuildDirectory();
+                return this.Module.PackageDefinition.GetBuildDirectory() + "/";
             }
         }
 
@@ -244,6 +244,27 @@ namespace XcodeBuilder
             }
         }
 
+        public FileReference
+        EnsureFileReferenceExists(
+            Bam.Core.TokenizedString path,
+            string relativePath,
+            FileReference.EFileType type,
+            bool explicitType = true,
+            FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
+        {
+            lock (this.FileReferences)
+            {
+                var existingFileRef = this.FileReferences.Where(item => item.Path.Equals(path)).FirstOrDefault();
+                if (null != existingFileRef)
+                {
+                    return existingFileRef;
+                }
+                var newFileRef = new FileReference(path, type, this, explicitType, sourceTree, relativePath: relativePath);
+                this.FileReferences.Add(newFileRef);
+                return newFileRef;
+            }
+        }
+
         public BuildFile
         EnsureBuildFileExists(
             FileReference fileRef,
@@ -275,16 +296,19 @@ namespace XcodeBuilder
                 }
 
                 // add configuration to project
-                var projectConfig = new Configuration(config);
+                var projectConfig = new Configuration(config, this);
                 projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
                 projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
                 // reset SRCROOT, or it is taken to be where the workspace is
-                projectConfig["SRCROOT"] = new UniqueConfigurationValue(this.SourceRoot);
+                var pkgdir = this.Module.Macros["packagedir"].Parse() + "/";
+                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetPath(pkgdir, this.ProjectDir.Parse());
+                projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
                 // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
                 // needed so that built products are no longer 'red' in the IDE
-                projectConfig["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
+                var relativeSymRoot = Bam.Core.RelativePathUtilities.GetPath(this.BuiltProductsDir, this.SourceRoot);
+                projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot);
 
                 // all intermediate files generated are relative to this
                 projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
@@ -320,7 +344,7 @@ namespace XcodeBuilder
                 // if a new target config is needed, then a new project config is needed too
                 this.EnsureProjectConfigurationExists(module);
 
-                var newConfig = new Configuration(module.BuildEnvironment.Configuration);
+                var newConfig = new Configuration(module.BuildEnvironment.Configuration, this);
                 this.AllConfigurations.Add(newConfig);
                 configList.AddConfiguration(newConfig);
 
@@ -615,6 +639,18 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End XCConfigurationList section */");
                 text.AppendLine();
             }
+        }
+
+        public string
+        GetRelativePathToProject(
+            Bam.Core.TokenizedString inputPath)
+        {
+            var relPath = Bam.Core.RelativePathUtilities.GetPath(inputPath.Parse(), this.ProjectDir.Parse());
+            if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
+            {
+                return null;
+            }
+            return relPath;
         }
     }
 }

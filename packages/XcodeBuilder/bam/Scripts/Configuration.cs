@@ -36,14 +36,22 @@ namespace XcodeBuilder
         private System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
 
         public Configuration(
-            Bam.Core.EConfiguration config)
+            Bam.Core.EConfiguration config,
+            Project project)
         {
             this.IsA = "XCBuildConfiguration";
             this.Name = config.ToString();
             this.Config = config;
+            this.Project = project;
             this.PreBuildCommands = new Bam.Core.StringArray();
             this.PostBuildCommands = new Bam.Core.StringArray();
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
+        }
+
+        public Project Project
+        {
+            get;
+            private set;
         }
 
         public Bam.Core.EConfiguration Config

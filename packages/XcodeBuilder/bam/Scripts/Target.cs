@@ -203,10 +203,21 @@ namespace XcodeBuilder
         {
             lock (this.Project)
             {
+                var relativePath = this.Project.GetRelativePathToProject(path);
+                var sourceTree = FileReference.ESourceTree.NA;
+                if (null == relativePath)
+                {
+                    sourceTree = FileReference.ESourceTree.Absolute;
+                }
+                else
+                {
+                    sourceTree = FileReference.ESourceTree.SourceRoot;
+                }
                 var fileRef = this.Project.EnsureFileReferenceExists(
                     path,
+                    relativePath,
                     type,
-                    sourceTree: FileReference.ESourceTree.Absolute);
+                    sourceTree: sourceTree);
                 var buildFile = this.Project.EnsureBuildFileExists(fileRef, this);
                 return buildFile;
             }
@@ -318,21 +329,25 @@ namespace XcodeBuilder
         {
             lock (this)
             {
-                this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile);
+                var relativePath = this.Project.GetRelativePathToProject(path);
+                this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile, relativePath: relativePath);
             }
         }
 
         public void
         EnsureFileOfTypeExists(
             Bam.Core.TokenizedString path,
-            FileReference.EFileType type)
+            FileReference.EFileType type,
+            string relativePath = null)
         {
             lock (this)
             {
+                var sourceTree = (relativePath != null) ? FileReference.ESourceTree.SourceRoot : FileReference.ESourceTree.Absolute;
                 var fileRef = this.Project.EnsureFileReferenceExists(
                     path,
+                    relativePath,
                     type,
-                    sourceTree: FileReference.ESourceTree.Absolute);
+                    sourceTree: sourceTree);
                 this.AddFileRefToGroup(fileRef);
             }
         }
@@ -398,11 +413,23 @@ namespace XcodeBuilder
                         continue;
                     }
 
+                    var relativePath = this.Project.GetRelativePathToProject(depTarget.Project.ProjectDir);
+                    var sourceTree = FileReference.ESourceTree.NA;
+                    if (null == relativePath)
+                    {
+                        sourceTree = FileReference.ESourceTree.Absolute;
+                    }
+                    else
+                    {
+                        sourceTree = FileReference.ESourceTree.Group; // note: not relative to SOURCE
+                    }
+
                     var dependentProjectFileRef = this.Project.EnsureFileReferenceExists(
                         depTarget.Project.ProjectDir,
+                        relativePath,
                         FileReference.EFileType.Project,
                         explicitType: false,
-                        sourceTree: FileReference.ESourceTree.Absolute);
+                        sourceTree: sourceTree);
                     this.Project.MainGroup.AddChild(dependentProjectFileRef);
 
                     // need a ContainerItemProxy for the dependent NativeTarget

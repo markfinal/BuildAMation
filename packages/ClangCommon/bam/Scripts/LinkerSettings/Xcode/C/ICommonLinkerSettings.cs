@@ -212,7 +212,16 @@ namespace ClangCommon
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.LibraryPaths)
                 {
-                    option.Add(path.Parse());
+                    var fullPath = path.Parse();
+                    var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
+                    if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
+                    {
+                        option.Add(fullPath);
+                    }
+                    else
+                    {
+                        option.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
+                    }
                 }
                 configuration["LIBRARY_SEARCH_PATHS"] = option;
             }
