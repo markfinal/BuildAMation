@@ -267,7 +267,7 @@ namespace XcodeBuilder
         {
             lock (this.FileReferences)
             {
-                var existingFileRef = this.FileReferences.Where(item => item.Path.Equals(path)).FirstOrDefault();
+                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.Equals(path));
                 if (null != existingFileRef)
                 {
                     return existingFileRef;
@@ -288,7 +288,7 @@ namespace XcodeBuilder
         {
             lock (this.FileReferences)
             {
-                var existingFileRef = this.FileReferences.Where(item => item.Path.Equals(path)).FirstOrDefault();
+                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.Equals(path));
                 if (null != existingFileRef)
                 {
                     return existingFileRef;
@@ -306,7 +306,7 @@ namespace XcodeBuilder
         {
             lock (this.BuildFiles)
             {
-                var existingBuildFile = this.BuildFiles.Where(item => item.FileRef == fileRef && item.OwningTarget == target).FirstOrDefault();
+                var existingBuildFile = this.BuildFiles.FirstOrDefault(item => item.FileRef == fileRef && item.OwningTarget == target);
                 if (null != existingBuildFile)
                 {
                     return existingBuildFile;
@@ -370,7 +370,7 @@ namespace XcodeBuilder
             lock (configList)
             {
                 var config = module.BuildEnvironment.Configuration;
-                var existingConfig = configList.Where(item => item.Config == config).FirstOrDefault();
+                var existingConfig = configList.FirstOrDefault(item => item.Config == config);
                 if (null != existingConfig)
                 {
                     return existingConfig;

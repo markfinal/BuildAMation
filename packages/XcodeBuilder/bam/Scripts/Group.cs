@@ -97,7 +97,7 @@ namespace XcodeBuilder
             }
             lock (this.Children)
             {
-                var existingRef = this.Children.Where(item => item.GUID == other.GUID).FirstOrDefault();
+                var existingRef = this.Children.FirstOrDefault(item => item.GUID == other.GUID);
                 if (null == existingRef)
                 {
                     this.Children.Add(other);

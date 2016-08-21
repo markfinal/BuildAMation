@@ -69,7 +69,7 @@ namespace XcodeBuilder
         {
             lock (this.Configurations)
             {
-                var existingConfig = this.Configurations.Where(item => item.GUID == config.GUID).FirstOrDefault();
+                var existingConfig = this.Configurations.FirstOrDefault(item => item.GUID == config.GUID);
                 if (null != existingConfig)
                 {
                     return;

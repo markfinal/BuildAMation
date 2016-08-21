@@ -160,7 +160,7 @@ namespace XcodeBuilder
             lock (this.ConfigurationList)
             {
                 var moduleConfig = module.BuildEnvironment.Configuration;
-                var existingConfig = this.ConfigurationList.Where(item => item.Config == moduleConfig).FirstOrDefault();
+                var existingConfig = this.ConfigurationList.FirstOrDefault(item => item.Config == moduleConfig);
                 if (null != existingConfig)
                 {
                     return existingConfig;
@@ -222,7 +222,7 @@ namespace XcodeBuilder
         {
             lock (this.Project)
             {
-                var found = this.Project.GroupMap.Where(item => item.Key == path.Parse()).FirstOrDefault();
+                var found = this.Project.GroupMap.FirstOrDefault(item => item.Key == path.Parse());
                 if (!found.Equals(default(System.Collections.Generic.KeyValuePair<string, Group>)))
                 {
                     return found.Value;

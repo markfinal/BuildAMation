@@ -276,7 +276,7 @@ namespace Publisher
                         else
                         {
                             // assume that debug symbols have been extracted into a separate file
-                            var debugSymbols = debugSymbolDependent.Dependents.Where(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req).FirstOrDefault();
+                            var debugSymbols = debugSymbolDependent.Dependents.FirstOrDefault(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req);
                             if (null == debugSymbols)
                             {
                                 throw new Bam.Core.Exception("Unable to locate debug symbol generation for {0}", req.SourceModule.ToString());
@@ -292,7 +292,7 @@ namespace Publisher
                     else if (Bam.Core.OSUtilities.IsLinuxHosting)
                     {
                         // assume that debug symbols have been extracted into a separate file
-                        var debugSymbols = debugSymbolDependent.Dependents.Where(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req).FirstOrDefault();
+                        var debugSymbols = debugSymbolDependent.Dependents.FirstOrDefault(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req);
                         if (null == debugSymbols)
                         {
                             throw new Bam.Core.Exception("Unable to locate debug symbol generation for {0}", req.SourceModule.ToString());

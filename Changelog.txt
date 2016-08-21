@@ -1,3 +1,5 @@
+21-Aug-2016 Collapsed LINQ queries of the form .Where(<expr>).FirstOrDefault() to .FirstOrDefault(<expr>).
+
 21-Aug-2016 Fixes #222. Xcode project object UUIDs now use a different algorithm to create them (96-bit hexadecimal values), but also use the construction arguments of each type of Object to both make the UUID unique in the project, but also make them deterministic. Generating the same project will therefore yield an identical project file.
 
 19-Aug-2016 Issue #14. Xcode projects now have the majority of paths written as relative to the project file, where appropriate. Some paths that have yet to be converted are those in custom build rules.
