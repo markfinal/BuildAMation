@@ -1,3 +1,5 @@
+21-Aug-2016 Fixes #171. Enabled Xcode minimal changes on incremental BuildAMation builds, so that only projects that have changed contents are rewritten. This has been enabled due to the fix to issue #222 for deterministic UUIDs used in Xcode projects.
+
 21-Aug-2016 Collapsed LINQ queries of the form .Where(<expr>).FirstOrDefault() to .FirstOrDefault(<expr>).
 
 21-Aug-2016 Fixes #222. Xcode project object UUIDs now use a different algorithm to create them (96-bit hexadecimal values), but also use the construction arguments of each type of Object to both make the UUID unique in the project, but also make them deterministic. Generating the same project will therefore yield an identical project file.
