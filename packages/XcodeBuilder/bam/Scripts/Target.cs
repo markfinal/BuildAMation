@@ -47,11 +47,10 @@ namespace XcodeBuilder
         public Target(
             Bam.Core.Module module,
             Project project)
+            :
+            base(project, module.GetType().Name, "PBXNativeTarget", project.GUID)
         {
-            this.IsA = "PBXNativeTarget";
-            this.Name = module.GetType().Name;
             this.Module = module;
-            this.Project = project;
             this.Type = EProductType.NA;
 
             var configList = new ConfigurationList(this);
@@ -63,12 +62,6 @@ namespace XcodeBuilder
         }
 
         public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
-
-        public Project Project
         {
             get;
             private set;
@@ -167,12 +160,12 @@ namespace XcodeBuilder
             lock (this.ConfigurationList)
             {
                 var moduleConfig = module.BuildEnvironment.Configuration;
-                var existingConfig = this.ConfigurationList.Where(item => item.Config == moduleConfig).FirstOrDefault();
+                var existingConfig = this.ConfigurationList.FirstOrDefault(item => item.Config == moduleConfig);
                 if (null != existingConfig)
                 {
                     return existingConfig;
                 }
-                var config = this.Project.EnsureTargetConfigurationExists(module, this.ConfigurationList);
+                var config = this.Project.EnsureTargetConfigurationExists(module, this);
                 return config;
             }
         }
@@ -203,10 +196,21 @@ namespace XcodeBuilder
         {
             lock (this.Project)
             {
+                var relativePath = this.Project.GetRelativePathToProject(path);
+                var sourceTree = FileReference.ESourceTree.NA;
+                if (null == relativePath)
+                {
+                    sourceTree = FileReference.ESourceTree.Absolute;
+                }
+                else
+                {
+                    sourceTree = FileReference.ESourceTree.SourceRoot;
+                }
                 var fileRef = this.Project.EnsureFileReferenceExists(
                     path,
+                    relativePath,
                     type,
-                    sourceTree: FileReference.ESourceTree.Absolute);
+                    sourceTree: sourceTree);
                 var buildFile = this.Project.EnsureBuildFileExists(fileRef, this);
                 return buildFile;
             }
@@ -218,13 +222,13 @@ namespace XcodeBuilder
         {
             lock (this.Project)
             {
-                var found = this.Project.GroupMap.Where(item => item.Key == path.Parse()).FirstOrDefault();
+                var found = this.Project.GroupMap.FirstOrDefault(item => item.Key == path.Parse());
                 if (!found.Equals(default(System.Collections.Generic.KeyValuePair<string, Group>)))
                 {
                     return found.Value;
                 }
                 var basename = this.Module.CreateTokenizedString("@basename($(0))", path).Parse();
-                var group = new Group(basename);
+                var group = new Group(this, basename, path);
                 this.Project.Groups.Add(group);
                 this.Project.GroupMap.Add(path.Parse(), group);
                 if (path.Parse().Contains(System.IO.Path.DirectorySeparatorChar))
@@ -265,7 +269,7 @@ namespace XcodeBuilder
             {
                 if (null == this.SourcesBuildPhase)
                 {
-                    this.SourcesBuildPhase = new SourcesBuildPhase();
+                    this.SourcesBuildPhase = new SourcesBuildPhase(this);
                     if (null == this.BuildPhases)
                     {
                         this.BuildPhases = new Bam.Core.Array<BuildPhase>();
@@ -290,7 +294,7 @@ namespace XcodeBuilder
                 {
                     return;
                 }
-                var frameworks = new FrameworksBuildPhase();
+                var frameworks = new FrameworksBuildPhase(this);
                 this.Project.FrameworksBuildPhases.Add(frameworks);
                 this.BuildPhases.Add(frameworks);
                 this.FrameworksBuildPhase = frameworks;
@@ -318,21 +322,25 @@ namespace XcodeBuilder
         {
             lock (this)
             {
-                this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile);
+                var relativePath = this.Project.GetRelativePathToProject(path);
+                this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile, relativePath: relativePath);
             }
         }
 
         public void
         EnsureFileOfTypeExists(
             Bam.Core.TokenizedString path,
-            FileReference.EFileType type)
+            FileReference.EFileType type,
+            string relativePath = null)
         {
             lock (this)
             {
+                var sourceTree = (relativePath != null) ? FileReference.ESourceTree.SourceRoot : FileReference.ESourceTree.Absolute;
                 var fileRef = this.Project.EnsureFileReferenceExists(
                     path,
+                    relativePath,
                     type,
-                    sourceTree: FileReference.ESourceTree.Absolute);
+                    sourceTree: sourceTree);
                 this.AddFileRefToGroup(fileRef);
             }
         }
@@ -371,74 +379,111 @@ namespace XcodeBuilder
         public void
         ResolveTargetDependencies()
         {
-            foreach (var other in this.ProposedTargetDependencies)
+            foreach (var depTarget in this.ProposedTargetDependencies)
             {
-                if (this.Project == other.Project)
+                if (this.Project == depTarget.Project)
                 {
-                    var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == this.Project) && (item.Remote == other)).FirstOrDefault();
-                    if (null == itemProxy)
+                    var nativeTargetItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
+                        item => (item.ContainerPortal == this.Project) && (item.Remote == depTarget));
+                    if (null == nativeTargetItemProxy)
                     {
-                        itemProxy = new ContainerItemProxy(this.Project, this.Project, other, false);
+                        nativeTargetItemProxy = new ContainerItemProxy(this.Project, depTarget);
                     }
 
-                    var dependency = this.TargetDependencies.Where(item => (item.Dependency == other) && (item.Proxy == itemProxy)).FirstOrDefault();
+                    // note that target dependencies can be shared in a project by many Targets
+                    // but each Target needs a reference to it
+                    var dependency = this.Project.TargetDependencies.FirstOrDefault(
+                        item => (item.Dependency == depTarget) && (item.Proxy == nativeTargetItemProxy));
                     if (null == dependency)
                     {
-                        dependency = new TargetDependency(this.Project, other, itemProxy);
-                        this.TargetDependencies.AddUnique(dependency);
+                        dependency = new TargetDependency(this.Project, depTarget, nativeTargetItemProxy);
                     }
+                    this.TargetDependencies.AddUnique(dependency);
                 }
                 else
                 {
-                    if (null == other.FileReference)
+                    if (null == depTarget.FileReference)
                     {
-                        Bam.Core.Log.DebugMessage("Project {0} cannot be a target dependency as it has no output FileReference", other.Name);
+                        Bam.Core.Log.DebugMessage("Project {0} cannot be a target dependency as it has no output FileReference", depTarget.Name);
                         continue;
                     }
 
-                    var fileRef = this.Project.EnsureFileReferenceExists(
-                        other.Project.ProjectDir,
-                        FileReference.EFileType.Project,
-                        explicitType: false,
-                        sourceTree: FileReference.ESourceTree.Absolute);
-                    this.Project.MainGroup.AddChild(fileRef);
-
-                    var itemProxy = this.Project.ContainerItemProxies.Where(item => (item.ContainerPortal == fileRef) && (item.Remote == other)).FirstOrDefault();
-                    if (null == itemProxy)
+                    var relativePath = this.Project.GetRelativePathToProject(depTarget.Project.ProjectDir);
+                    var sourceTree = FileReference.ESourceTree.NA;
+                    if (null == relativePath)
                     {
-                        itemProxy = new ContainerItemProxy(this.Project, fileRef, other, false);
+                        sourceTree = FileReference.ESourceTree.Absolute;
+                    }
+                    else
+                    {
+                        sourceTree = FileReference.ESourceTree.Group; // note: not relative to SOURCE
                     }
 
-                    var refProxy = this.Project.ReferenceProxies.Where(item => item.RemoteRef == itemProxy).FirstOrDefault();
+                    var dependentProjectFileRef = this.Project.EnsureFileReferenceExists(
+                        depTarget.Project.ProjectDir,
+                        relativePath,
+                        FileReference.EFileType.Project,
+                        explicitType: false,
+                        sourceTree: sourceTree);
+                    this.Project.MainGroup.AddChild(dependentProjectFileRef);
+
+                    // need a ContainerItemProxy for the dependent NativeTarget
+                    // which is associated with a local PBXTargetDependency
+                    var nativeTargetItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
+                        item => (item.ContainerPortal == dependentProjectFileRef) && (item.Remote == depTarget));
+                    if (null == nativeTargetItemProxy)
+                    {
+                        nativeTargetItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget);
+                    }
+
+                    // note that target dependencies can be shared in a project by many Targets
+                    // but each Target needs a reference to it
+                    var targetDependency = this.Project.TargetDependencies.FirstOrDefault(
+                        item => (item.Dependency == null) && (item.Name == depTarget.Name) && (item.Proxy == nativeTargetItemProxy));
+                    if (null == targetDependency)
+                    {
+                        // no 'target', but does have the name of the dependent
+                        targetDependency = new TargetDependency(this.Project, depTarget.Name, nativeTargetItemProxy);
+                    }
+                    this.TargetDependencies.AddUnique(targetDependency);
+
+                    // need a ContainerItemProxy for the filereference of the dependent NativeTarget
+                    // which is associated with a local PBXReferenceProxy
+                    var dependentFileRefItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
+                        item => (item.ContainerPortal == dependentProjectFileRef) && (item.Remote == depTarget.FileReference));
+                    if (null == dependentFileRefItemProxy)
+                    {
+                        // note, uses the name of the Target, not the FileReference
+                        dependentFileRefItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget.FileReference, depTarget.Name);
+                    }
+
+                    var refProxy = this.Project.ReferenceProxies.FirstOrDefault(
+                        item => item.RemoteRef == dependentFileRefItemProxy);
                     if (null == refProxy)
                     {
                         refProxy = new ReferenceProxy(
                             this.Project,
-                            other.FileReference.Type,
-                            other.FileReference.Path,
-                            itemProxy,
-                            other.FileReference.SourceTree);
+                            depTarget.FileReference.Type,
+                            depTarget.FileReference.Path,
+                            dependentFileRefItemProxy,
+                            depTarget.FileReference.SourceTree);
                     }
 
-                    var productRefGroup = this.Project.Groups.Where(item => item.Children.Contains(refProxy)).FirstOrDefault();
+                    // TODO: all PBXReferenceProxies could go into the same group
+                    // but at the moment, a group is made for each
+                    var productRefGroup = this.Project.Groups.FirstOrDefault(
+                        item => item.Children.Contains(refProxy));
                     if (null == productRefGroup)
                     {
-                        productRefGroup = new Group("Products");
-                        productRefGroup.AddChild(refProxy);
+                        productRefGroup = new Group(this.Project, "Products", refProxy);
                         this.Project.Groups.Add(productRefGroup);
                     }
 
-                    var productRef = this.Project.ProjectReferences.Where(item => item.Key == productRefGroup).FirstOrDefault();
-                    if (productRef.Equals(default(System.Collections.Generic.Dictionary<Group, FileReference>)))
+                    var productRef = this.Project.ProjectReferences.FirstOrDefault(
+                        item => item.Key == productRefGroup);
+                    if (null == productRef.Key)
                     {
-                        this.Project.ProjectReferences.Add(productRefGroup, fileRef);
-                    }
-
-                    var dependency = this.TargetDependencies.Where(item => (item.Dependency == null) && (item.Proxy == itemProxy)).FirstOrDefault();
-                    if (null == dependency)
-                    {
-                        dependency = new TargetDependency(this.Project, null, itemProxy);
-                        this.TargetDependencies.AddUnique(dependency);
+                        this.Project.ProjectReferences.Add(productRefGroup, dependentProjectFileRef);
                     }
                 }
             }

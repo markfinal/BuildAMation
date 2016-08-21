@@ -74,7 +74,7 @@ namespace C
                 var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
                 if (null != dependentProject)
                 {
-                    project.RequiresProject(dependentProject);
+                    config.RequiresProject(dependentProject);
                 }
             }
         }

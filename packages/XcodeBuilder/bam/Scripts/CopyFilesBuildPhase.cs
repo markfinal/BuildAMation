@@ -47,10 +47,11 @@ namespace XcodeBuilder
         }
 
         public CopyFilesBuildPhase(
-            string name)
+            string name,
+            Target target)
+            :
+            base(target.Project, name, "PBXCopyFilesBuildPhase", target.GUID)
         {
-            this.Name = name;
-            this.IsA = "PBXCopyFilesBuildPhase";
             this.DestinationPath = string.Empty;
             this.SubFolderSpec = ESubFolderSpec.AbsolutePath;
         }

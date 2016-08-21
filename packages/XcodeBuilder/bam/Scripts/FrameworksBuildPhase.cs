@@ -32,11 +32,11 @@ namespace XcodeBuilder
     public sealed class FrameworksBuildPhase :
         BuildPhase
     {
-        public FrameworksBuildPhase()
-        {
-            this.Name = "Frameworks";
-            this.IsA = "PBXFrameworksBuildPhase";
-        }
+        public FrameworksBuildPhase(
+            Target target)
+            :
+            base(target.Project, "Frameworks", "PBXFrameworksBuildPhase", target.GUID)
+        {}
 
         protected override string BuildActionMask
         {

@@ -158,7 +158,7 @@ namespace VSSolutionBuilder
             }
 
             var solutionPath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).sln", null).Parse();
-            WriteSolutionFileIfDifferent(solutionPath, solution.Serialize());
+            WriteSolutionFileIfDifferent(solutionPath, solution.Serialize(solutionPath));
 
             Bam.Core.Log.Info("Successfully created Visual Studio solution for package '{0}'\n\t{1}", graph.MasterPackage.Name, solutionPath);
         }

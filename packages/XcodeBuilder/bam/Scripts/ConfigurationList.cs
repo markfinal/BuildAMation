@@ -36,8 +36,9 @@ namespace XcodeBuilder
     {
         public ConfigurationList(
             Object parent)
+            :
+            base(parent.Project, null, "XCConfigurationList", parent.GUID)
         {
-            this.IsA = "XCConfigurationList";
             this.Parent = parent;
             this.Configurations = new System.Collections.Generic.List<Configuration>();
         }
@@ -68,7 +69,7 @@ namespace XcodeBuilder
         {
             lock (this.Configurations)
             {
-                var existingConfig = this.Configurations.Where(item => item.GUID == config.GUID).FirstOrDefault();
+                var existingConfig = this.Configurations.FirstOrDefault(item => item.GUID == config.GUID);
                 if (null != existingConfig)
                 {
                     return;

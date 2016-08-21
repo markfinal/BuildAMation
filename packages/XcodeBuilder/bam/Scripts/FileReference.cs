@@ -149,25 +149,21 @@ namespace XcodeBuilder
             SDKRoot /* relative to SDK root */
         }
 
-        private FileReference()
-        {
-            this.IsA = "PBXFileReference";
-        }
-
         public FileReference(
             Bam.Core.TokenizedString path,
             EFileType type,
             Project project,
             bool explicitType = false,
-            ESourceTree sourceTree = ESourceTree.NA)
+            ESourceTree sourceTree = ESourceTree.NA,
+            string relativePath = null)
             :
-            this()
+            base(project, path.Parse(), "PBXFileReference", type.ToString(), project.GUID, explicitType.ToString(), sourceTree.ToString(), relativePath)
         {
             this.Path = path;
             this.Type = type;
-            this.Project = project;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
+            this.RelativePath = relativePath;
         }
 
         public FileReference
@@ -182,30 +178,16 @@ namespace XcodeBuilder
                 sourceTree: ESourceTree.Group);
         }
 
-        private Bam.Core.TokenizedString ThePath;
         public Bam.Core.TokenizedString Path
         {
-            get
-            {
-                return this.ThePath;
-            }
-            private set
-            {
-                this.ThePath = value;
-                this.Name = System.IO.Path.GetFileName(value.Parse());
-            }
+            get;
+            private set;
         }
 
         public EFileType Type
         {
             get;
             private set;
-        }
-
-        private Project Project
-        {
-            get;
-            set;
         }
 
         private bool ExplicitType
@@ -218,6 +200,12 @@ namespace XcodeBuilder
         {
             get;
             private set;
+        }
+
+        private string RelativePath
+        {
+            get;
+            set;
         }
 
         public void
@@ -259,13 +247,17 @@ namespace XcodeBuilder
             {
                 case ESourceTree.NA:
                 case ESourceTree.Absolute:
-                case ESourceTree.Group:
                 case ESourceTree.SDKRoot:
                     path = this.Path.Parse();
                     break;
 
                 case ESourceTree.BuiltProductsDir:
                     path = System.IO.Path.GetFileName(this.Path.Parse());
+                    break;
+
+                case ESourceTree.Group:
+                case ESourceTree.SourceRoot:
+                    path = (null != this.RelativePath) ? this.RelativePath : this.Path.Parse();
                     break;
 
                 default:

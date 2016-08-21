@@ -106,7 +106,8 @@ namespace VSSolutionBuilder
         }
 
         public System.Text.StringBuilder
-        Serialize()
+        Serialize(
+            string solutionPath)
         {
             var ProjectTypeGuid = System.Guid.Parse("8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942");
             var SolutionFolderGuid = System.Guid.Parse("2150E333-8FDC-42A3-9474-1A3956D46DE8");
@@ -119,10 +120,11 @@ namespace VSSolutionBuilder
             var configs = new Bam.Core.StringArray();
             foreach (var project in this.Projects)
             {
+                var relativeProjectPath = Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, solutionPath);
                 content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
                     ProjectTypeGuid.ToString("B").ToUpper(),
                     System.IO.Path.GetFileNameWithoutExtension(project.ProjectPath),
-                    project.ProjectPath, // TODO: relative to the solution file
+                    relativeProjectPath,
                     project.GuidString);
                 content.AppendLine();
                 content.AppendLine("EndProject");
@@ -156,12 +158,28 @@ namespace VSSolutionBuilder
             content.AppendLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
             foreach (var project in this.Projects)
             {
+                var guid = project.GuidString;
+                var thisProjectConfigs = new Bam.Core.StringArray();
+
+                // write the configurations for which build steps have been defined
                 foreach (var config in project.Configurations)
                 {
-                    var guid = project.GuidString;
-                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {1}", guid, config.Value.FullName);
+                    var configName = config.Value.FullName;
+                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {1}", guid, configName);
                     content.AppendLine();
-                    content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, config.Value.FullName);
+                    content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, configName);
+                    content.AppendLine();
+                    thisProjectConfigs.AddUnique(configName);
+                }
+
+                // now cater for any configurations that the project does not support
+                var unsupportedConfigs = configs.Complement(thisProjectConfigs) as Bam.Core.StringArray;
+                foreach (var uConfig in unsupportedConfigs)
+                {
+                    // a missing "XX.YY.Build.0" line means not configured to build
+                    // also, the remapping between config names seems a little arbitrary, but seems to work
+                    // might be related to the project not having an ProjectConfiguration for the unsupported config
+                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {2}", guid, uConfig, thisProjectConfigs[0]);
                     content.AppendLine();
                 }
             }

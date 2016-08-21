@@ -158,6 +158,10 @@ namespace XcodeBuilder
         public string
         Serialize()
         {
+            var workspacePath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
+            var workspaceDir = Bam.Core.TokenizedString.Create("@dir($(0))", null, positionalTokens: new Bam.Core.TokenizedStringArray(workspacePath));
+            var workspaceDirectory = workspaceDir.Parse();
+
             var workspaceDoc = new System.Xml.XmlDocument();
             var workspaceEl = workspaceDoc.CreateElement("Workspace");
             workspaceEl.SetAttribute("version", "1.0");
@@ -201,14 +205,12 @@ namespace XcodeBuilder
                     projectSchemeCache.Serialize();
                 }
 
+                var relativeProjectDir = Bam.Core.RelativePathUtilities.GetPath(projectDir.Parse(), workspaceDirectory);
                 var workspaceFileRef = workspaceDoc.CreateElement("FileRef");
-                workspaceFileRef.SetAttribute("location", System.String.Format("group:{0}", projectDir));
+                workspaceFileRef.SetAttribute("location", System.String.Format("group:{0}", relativeProjectDir));
                 workspaceEl.AppendChild(workspaceFileRef);
             }
 
-            var workspacePath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
-            var workspaceDir = Bam.Core.TokenizedString.Create("@dir($(0))", null, positionalTokens: new Bam.Core.TokenizedStringArray(workspacePath));
-            var workspaceDirectory = workspaceDir.Parse();
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(workspaceDirectory);
 
             var settings = new System.Xml.XmlWriterSettings();

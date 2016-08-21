@@ -45,10 +45,10 @@ namespace WindowsSDK
 
             if (settings.IncludePaths.Count > 0)
             {
-                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true);
+                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true, arePaths: true);
             }
 
-            vsSettingsGroup.AddSetting("ResourceOutputFileName", module.GeneratedPaths[C.ObjectFile.Key].Parse(), condition);
+            vsSettingsGroup.AddSetting("ResourceOutputFileName", module.GeneratedPaths[C.ObjectFile.Key], condition, isPath: true);
         }
     }
 }

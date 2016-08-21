@@ -38,9 +38,9 @@ namespace XcodeBuilder
             Target target,
             string name,
             GenerateScriptDelegate generateScript)
+            :
+            base(target.Project, name, "PBXShellScriptBuildPhase", target.GUID, generateScript.ToString())
         {
-            this.Name = name;
-            this.IsA = "PBXShellScriptBuildPhase";
             this.ShellPath = "/bin/sh";
             this.ShowEnvironmentInLog = true;
             this.InputPaths = new Bam.Core.StringArray();

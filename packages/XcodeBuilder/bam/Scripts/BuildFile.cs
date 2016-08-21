@@ -35,8 +35,9 @@ namespace XcodeBuilder
         public BuildFile(
             FileReference fileRef,
             Target target)
+            :
+            base(target.Project, System.IO.Path.GetFileName(fileRef.Path.Parse()), "PBXBuildFile", fileRef.GUID, target.GUID)
         {
-            this.IsA = "PBXBuildFile";
             this.FileRef = fileRef;
             this.OwningTarget = target;
         }
@@ -47,18 +48,10 @@ namespace XcodeBuilder
             private set;
         }
 
-        private FileReference TheFileRef;
         public FileReference FileRef
         {
-            get
-            {
-                return this.TheFileRef;
-            }
-            private set
-            {
-                this.TheFileRef = value;
-                this.Name = System.IO.Path.GetFileName(value.Path.Parse());
-            }
+            get;
+            private set;
         }
 
         public Bam.Core.StringArray Settings
@@ -80,7 +73,7 @@ namespace XcodeBuilder
         {
             var indent = new string('\t', indentLevel);
             text.AppendFormat("{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
-                indent, this.GUID, this.TheFileRef.GUID,
+                indent, this.GUID, this.FileRef.GUID,
                 this.Name,
                 (null != this.Parent) ? this.Parent.Name : "Unknown",
                 this.IsA);
@@ -92,7 +85,7 @@ namespace XcodeBuilder
                 compilerFlags = compilerFlags.Replace("\"", "\\\\\"");
                 text.AppendFormat("settings = {{COMPILER_FLAGS = \"{0}\"; }}; ", compilerFlags);
             }
-            text.AppendFormat("}};", indent, this.GUID, this.TheFileRef.GUID);
+            text.AppendFormat("{0}}};", indent);
             text.AppendLine();
         }
     }

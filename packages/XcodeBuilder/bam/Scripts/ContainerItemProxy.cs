@@ -32,19 +32,53 @@ namespace XcodeBuilder
     public sealed class ContainerItemProxy :
         Object
     {
+        private ContainerItemProxy(
+            Project project,
+            Object portal,
+            Object remote)
+            :
+            base(project, null, "PBXContainerItemProxy", project.GUID, portal.GUID, remote.GUID)
+        {
+            this.ContainerPortal = portal;
+            this.RemoteName = null;
+            project.ContainerItemProxies.AddUnique(this);
+        }
+
+        // for NativeTargets in a different Project
         public ContainerItemProxy(
             Project project,
             Object portal,
-            Object reference,
-            bool inThisProject)
+            Target reference)
+            :
+            this(project, portal, reference as Object) // 'as' is to disambiguate the constructors
         {
-            this.IsA = "PBXContainerItemProxy";
-            this.Name = "PBXContainerItemProxy";
-            this.ContainerPortal = portal;
-            this.ProxyType = inThisProject ? 1 : 2;
             this.Remote = reference;
+            this.ProxyType = 1;
+        }
 
-            project.ContainerItemProxies.AddUnique(this);
+        // for NativeTargets in the same Project
+        public ContainerItemProxy(
+            Project projectAndPortal,
+            Target reference)
+            :
+            this(projectAndPortal, projectAndPortal, reference)
+        {
+            this.Remote = reference;
+            this.ProxyType = 2;
+        }
+
+        // for FileReferences in a different Project
+        public ContainerItemProxy(
+            Project project,
+            Object portal,
+            FileReference reference,
+            string refName)
+            :
+            this(project, portal, reference)
+        {
+            this.Remote = reference;
+            this.ProxyType = 2;
+            this.RemoteName = refName;
         }
 
         public Object ContainerPortal
@@ -63,6 +97,12 @@ namespace XcodeBuilder
         {
             get;
             private set;
+        }
+
+        private string RemoteName
+        {
+            get;
+            set;
         }
 
         public override void
@@ -89,7 +129,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}remoteGlobalIDString = {1};", indent2, this.Remote.GUID);
             text.AppendLine();
-            text.AppendFormat("{0}remoteInfo = {1};", indent2, this.Remote.Name);
+            text.AppendFormat("{0}remoteInfo = {1};", indent2, (null != this.RemoteName) ? this.RemoteName : this.Remote.Name);
             text.AppendLine();
             text.AppendFormat("{0}}};", indent);
             text.AppendLine();

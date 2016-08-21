@@ -36,16 +36,16 @@ namespace XcodeBuilder
         public Project(
             Bam.Core.Module module,
             string name)
+            :
+            base(null, name, "PBXProject")
         {
-            this.IsA = "PBXProject";
-            this.Name = name;
             this.ProjectDir = module.CreateTokenizedString("$(buildroot)/$(packagename).xcodeproj");
             module.Macros.Add("xcodeprojectdir", this.ProjectDir);
 
             var projectPath = module.CreateTokenizedString("$(xcodeprojectdir)/project.pbxproj");
             this.ProjectPath = projectPath.Parse();
 
-            this.SourceRoot = module.CreateTokenizedString("$(packagedir)").Parse();
+            this.SourceRoot = module.CreateTokenizedString("$(packagedir)/").Parse();
             this.BuildRoot = module.CreateTokenizedString("$(buildroot)").Parse();
 
             this.Module = module;
@@ -66,12 +66,46 @@ namespace XcodeBuilder
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
             this.ProjectReferences = new System.Collections.Generic.Dictionary<Group, FileReference>();
 
-            this.Groups.Add(new Group()); // main group
-            this.Groups.Add(new Group("Products")); // product ref group
+            this.Groups.Add(new Group(this, null)); // main group
+            this.Groups.Add(new Group(this, "Products")); // product ref group
             this.MainGroup.AddChild(this.ProductRefGroup);
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
+        }
+
+        private System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
+
+        public void
+        AddGUID(
+            string guid,
+            Object objectForGuid)
+        {
+            if (this.ExistingGUIDs.ContainsKey(guid))
+            {
+                // enable the log code path to view all clashes, rather than aborting on the first
+                #if true
+                throw new Bam.Core.Exception("GUID clash between {0}({1})[in {2}] and {3}({4})[in {5}]: {6}",
+                                             objectForGuid.Name,
+                                             objectForGuid.IsA,
+                                             objectForGuid.Project.Name,
+                                             this.ExistingGUIDs[guid].Name,
+                                             this.ExistingGUIDs[guid].IsA,
+                                             this.ExistingGUIDs[guid].Project.Name,
+                                             guid);
+                #else
+                Bam.Core.Log.MessageAll("GUID clash between {0}({1})[in {2}] and {3}({4})[in {5}]: {6}",
+                                             objectForGuid.Name,
+                                             objectForGuid.IsA,
+                                             objectForGuid.Project.Name,
+                                             this.ExistingGUIDs[guid].Name,
+                                             this.ExistingGUIDs[guid].IsA,
+                                             this.ExistingGUIDs[guid].Project.Name,
+                                             guid);
+                return;
+                #endif
+            }
+            this.ExistingGUIDs.Add(guid, objectForGuid);
         }
 
         public string SourceRoot
@@ -102,7 +136,7 @@ namespace XcodeBuilder
         {
             get
             {
-                return this.Module.PackageDefinition.GetBuildDirectory();
+                return this.Module.PackageDefinition.GetBuildDirectory() + "/";
             }
         }
 
@@ -233,12 +267,33 @@ namespace XcodeBuilder
         {
             lock (this.FileReferences)
             {
-                var existingFileRef = this.FileReferences.Where(item => item.Path.Equals(path)).FirstOrDefault();
+                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.Equals(path));
                 if (null != existingFileRef)
                 {
                     return existingFileRef;
                 }
                 var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
+                this.FileReferences.Add(newFileRef);
+                return newFileRef;
+            }
+        }
+
+        public FileReference
+        EnsureFileReferenceExists(
+            Bam.Core.TokenizedString path,
+            string relativePath,
+            FileReference.EFileType type,
+            bool explicitType = true,
+            FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
+        {
+            lock (this.FileReferences)
+            {
+                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.Equals(path));
+                if (null != existingFileRef)
+                {
+                    return existingFileRef;
+                }
+                var newFileRef = new FileReference(path, type, this, explicitType, sourceTree, relativePath: relativePath);
                 this.FileReferences.Add(newFileRef);
                 return newFileRef;
             }
@@ -251,7 +306,7 @@ namespace XcodeBuilder
         {
             lock (this.BuildFiles)
             {
-                var existingBuildFile = this.BuildFiles.Where(item => item.FileRef == fileRef && item.OwningTarget == target).FirstOrDefault();
+                var existingBuildFile = this.BuildFiles.FirstOrDefault(item => item.FileRef == fileRef && item.OwningTarget == target);
                 if (null != existingBuildFile)
                 {
                     return existingBuildFile;
@@ -275,16 +330,19 @@ namespace XcodeBuilder
                 }
 
                 // add configuration to project
-                var projectConfig = new Configuration(config);
+                var projectConfig = new Configuration(config, this, null);
                 projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
                 projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
                 // reset SRCROOT, or it is taken to be where the workspace is
-                projectConfig["SRCROOT"] = new UniqueConfigurationValue(this.SourceRoot);
+                var pkgdir = this.Module.Macros["packagedir"].Parse() + "/";
+                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetPath(pkgdir, this.ProjectDir.Parse());
+                projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
                 // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
                 // needed so that built products are no longer 'red' in the IDE
-                projectConfig["SYMROOT"] = new UniqueConfigurationValue(this.BuiltProductsDir);
+                var relativeSymRoot = Bam.Core.RelativePathUtilities.GetPath(this.BuiltProductsDir, this.SourceRoot);
+                projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot);
 
                 // all intermediate files generated are relative to this
                 projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
@@ -306,12 +364,13 @@ namespace XcodeBuilder
         public Configuration
         EnsureTargetConfigurationExists(
             Bam.Core.Module module,
-            ConfigurationList configList)
+            Target target)
         {
+            var configList = target.ConfigurationList;
             lock (configList)
             {
                 var config = module.BuildEnvironment.Configuration;
-                var existingConfig = configList.Where(item => item.Config == config).FirstOrDefault();
+                var existingConfig = configList.FirstOrDefault(item => item.Config == config);
                 if (null != existingConfig)
                 {
                     return existingConfig;
@@ -320,7 +379,7 @@ namespace XcodeBuilder
                 // if a new target config is needed, then a new project config is needed too
                 this.EnsureProjectConfigurationExists(module);
 
-                var newConfig = new Configuration(module.BuildEnvironment.Configuration);
+                var newConfig = new Configuration(module.BuildEnvironment.Configuration, this, target);
                 this.AllConfigurations.Add(newConfig);
                 configList.AddConfiguration(newConfig);
 
@@ -366,7 +425,9 @@ namespace XcodeBuilder
                         var excluded = new MultiConfigurationValue();
                         foreach (var file in diff)
                         {
-                            excluded.Add(file.FileRef.Path.Parse());
+                            var fullPath = file.FileRef.Path.Parse();
+                            var filename = System.IO.Path.GetFileName(fullPath);
+                            excluded.Add(filename);
                         }
                         config["EXCLUDED_SOURCE_FILE_NAMES"] = excluded;
                     }
@@ -423,13 +484,13 @@ namespace XcodeBuilder
                 text.AppendLine();
                 foreach (var projectRef in this.ProjectReferences)
                 {
-                    text.AppendFormat("{0}{", indent3);
+                    text.AppendFormat("{0}{{", indent3);
                     text.AppendLine();
                     text.AppendFormat("{0}ProductGroup = {1} /* {2} */;", indent4, projectRef.Key.GUID, projectRef.Key.Name);
                     text.AppendLine();
                     text.AppendFormat("{0}ProjectRef = {1} /* {2} */;", indent4, projectRef.Value.GUID, projectRef.Value.Name);
                     text.AppendLine();
-                    text.AppendFormat("{0}},", indent3);
+                    text.AppendFormat("{0}}},", indent3);
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);
@@ -528,19 +589,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXGroup section */");
                 text.AppendLine();
             }
-            if (this.ReferenceProxies.Count > 0)
-            {
-                text.AppendLine();
-                text.AppendFormat("/* Begin PBXReferenceProxy section */");
-                text.AppendLine();
-                foreach (var proxy in this.ReferenceProxies.OrderBy(key => key.GUID))
-                {
-                    proxy.Serialize(text, indentLevel);
-                }
-                text.AppendFormat("/* End PBXReferenceProxy section */");
-                text.AppendLine();
-            }
-            if (this.Targets.Count > 0)
+            if (this.Targets.Count > 0) // NativeTargets
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXNativeTarget section */");
@@ -553,6 +602,18 @@ namespace XcodeBuilder
                 text.AppendLine();
             }
             this.InternalSerialize(text, indentLevel); //this is the PBXProject :)
+            if (this.ReferenceProxies.Count > 0)
+            {
+                text.AppendLine();
+                text.AppendFormat("/* Begin PBXReferenceProxy section */");
+                text.AppendLine();
+                foreach (var proxy in this.ReferenceProxies.OrderBy(key => key.GUID))
+                {
+                    proxy.Serialize(text, indentLevel);
+                }
+                text.AppendFormat("/* End PBXReferenceProxy section */");
+                text.AppendLine();
+            }
             if (this.ShellScriptsBuildPhases.Count > 0)
             {
                 text.AppendLine();
@@ -613,6 +674,18 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End XCConfigurationList section */");
                 text.AppendLine();
             }
+        }
+
+        public string
+        GetRelativePathToProject(
+            Bam.Core.TokenizedString inputPath)
+        {
+            var relPath = Bam.Core.RelativePathUtilities.GetPath(inputPath.Parse(), this.ProjectDir.Parse());
+            if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
+            {
+                return null;
+            }
+            return relPath;
         }
     }
 }

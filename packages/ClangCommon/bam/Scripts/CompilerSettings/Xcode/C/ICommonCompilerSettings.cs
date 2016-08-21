@@ -77,7 +77,16 @@ namespace ClangCommon
                 var paths = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.IncludePaths)
                 {
-                    paths.Add(path.ToString());
+                    var fullPath = path.Parse();
+                    var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
+                    if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
+                    {
+                        paths.Add(fullPath);
+                    }
+                    else
+                    {
+                        paths.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
+                    }
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }

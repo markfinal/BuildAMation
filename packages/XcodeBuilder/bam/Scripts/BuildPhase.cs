@@ -33,7 +33,13 @@ namespace XcodeBuilder
     public abstract class BuildPhase :
         Object
     {
-        protected BuildPhase()
+        protected BuildPhase(
+            Project project,
+            string name,
+            string isa,
+            params string[] hashComponents)
+            :
+            base(project, name, isa, hashComponents)
         {
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
         }
@@ -44,7 +50,7 @@ namespace XcodeBuilder
         {
             lock (this.BuildFiles)
             {
-                var existingBuildFile = this.BuildFiles.Where(item => item.GUID == other.GUID).FirstOrDefault();
+                var existingBuildFile = this.BuildFiles.FirstOrDefault(item => item.GUID == other.GUID);
                 if (null == existingBuildFile)
                 {
                     this.BuildFiles.Add(other);

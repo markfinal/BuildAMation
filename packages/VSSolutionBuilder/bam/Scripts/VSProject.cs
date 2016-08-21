@@ -48,7 +48,7 @@ namespace VSSolutionBuilder
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
             this.Others = new Bam.Core.Array<VSSettingsGroup>();
             this.Resources = new Bam.Core.Array<VSSettingsGroup>();
-            this.Filter = new VSProjectFilter();
+            this.Filter = new VSProjectFilter(this);
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
         }
@@ -135,7 +135,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                var newGroup = new VSSettingsGroup(module, group, include);
+                var newGroup = new VSSettingsGroup(this, module, group, include);
                 this.ProjectSettings.Add(newGroup);
                 return newGroup;
             }
@@ -186,7 +186,7 @@ namespace VSSolutionBuilder
         }
 
         public void
-        RequiresProject(
+        AddOrderOnlyDependency(
             VSProject dependentProject)
         {
             lock (this)
@@ -200,7 +200,7 @@ namespace VSSolutionBuilder
         }
 
         public void
-        LinkAgainstProject(
+        AddLinkDependency(
             VSProject dependentProject)
         {
             lock (this)
@@ -290,11 +290,20 @@ namespace VSSolutionBuilder
                 var itemGroupEl = document.CreateVSItemGroup(parentEl: parentEl);
                 foreach (var project in this.OrderOnlyDependentProjects)
                 {
-                    var projectRefEl = document.CreateVSElement("ProjectReference", parentEl: itemGroupEl);
-                    projectRefEl.SetAttribute("Include", Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, this.ProjectPath));
+                    foreach (var config in this.Configurations)
+                    {
+                        if (!config.Value.ContainsOrderOnlyDependency(project))
+                        {
+                            continue;
+                        }
 
-                    document.CreateVSElement("Project", value: project.Guid.ToString("B"), parentEl: projectRefEl);
-                    document.CreateVSElement("LinkLibraryDependencies", value: "false", parentEl: projectRefEl);
+                        var projectRefEl = document.CreateVSElement("ProjectReference", parentEl: itemGroupEl);
+                        projectRefEl.SetAttribute("Include", Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, this.ProjectPath));
+                        projectRefEl.SetAttribute("Condition", config.Value.ConditionText);
+
+                        document.CreateVSElement("Project", value: project.Guid.ToString("B"), parentEl: projectRefEl);
+                        document.CreateVSElement("LinkLibraryDependencies", value: "false", parentEl: projectRefEl);
+                    }
                 }
             }
             if (this.LinkDependentProjects.Count > 0)
@@ -302,11 +311,20 @@ namespace VSSolutionBuilder
                 var itemGroupEl = document.CreateVSItemGroup(parentEl: parentEl);
                 foreach (var project in this.LinkDependentProjects)
                 {
-                    var projectRefEl = document.CreateVSElement("ProjectReference", parentEl: itemGroupEl);
-                    projectRefEl.SetAttribute("Include", Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, this.ProjectPath));
+                    foreach (var config in this.Configurations)
+                    {
+                        if (!config.Value.ContainsLinkDependency(project))
+                        {
+                            continue;
+                        }
 
-                    document.CreateVSElement("Project", value: project.Guid.ToString("B"), parentEl: projectRefEl);
-                    document.CreateVSElement("LinkLibraryDependencies", value: "true", parentEl: projectRefEl);
+                        var projectRefEl = document.CreateVSElement("ProjectReference", parentEl: itemGroupEl);
+                        projectRefEl.SetAttribute("Include", Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, this.ProjectPath));
+                        projectRefEl.SetAttribute("Condition", config.Value.ConditionText);
+
+                        document.CreateVSElement("Project", value: project.Guid.ToString("B"), parentEl: projectRefEl);
+                        document.CreateVSElement("LinkLibraryDependencies", value: "true", parentEl: projectRefEl);
+                    }
                 }
             }
         }
@@ -400,6 +418,13 @@ namespace VSSolutionBuilder
                 var headersGroup = document.CreateVSItemGroup(parentEl: projectEl);
                 foreach (var group in this.Headers)
                 {
+                    foreach (var config in this.Configurations)
+                    {
+                        if (!config.Value.ContainsHeader(group))
+                        {
+                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                        }
+                    }
                     group.Serialize(document, headersGroup);
                 }
             }
