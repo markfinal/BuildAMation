@@ -118,8 +118,7 @@ namespace XcodeBuilder
             System.Xml.XmlWriterSettings settings,
             System.Xml.XmlDocument document)
         {
-            // TODO: when GUIDs are deterministic across rebuilds, this can be re-enabled, see issue #222
-            var targetExists = false;//System.IO.File.Exists(targetPath);
+            var targetExists = System.IO.File.Exists(targetPath);
             var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
             using (var xmlwriter = System.Xml.XmlWriter.Create(writePath, settings))
             {
@@ -139,8 +138,7 @@ namespace XcodeBuilder
             string targetPath,
             System.Text.StringBuilder contents)
         {
-            // TODO: when GUIDs are deterministic across rebuilds, this can be re-enabled, see issue #222
-            var targetExists = false;//System.IO.File.Exists(targetPath);
+            var targetExists = System.IO.File.Exists(targetPath);
             var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
             using (var writer = new System.IO.StreamWriter(writePath))
             {
