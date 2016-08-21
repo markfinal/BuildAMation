@@ -34,10 +34,11 @@ namespace XcodeBuilder
     {
         private ContainerItemProxy(
             Project project,
-            Object portal)
+            Object portal,
+            Object remote)
+            :
+            base(project, null, "PBXContainerItemProxy", project.GUID, portal.GUID, remote.GUID)
         {
-            this.IsA = "PBXContainerItemProxy";
-            this.Name = "PBXContainerItemProxy";
             this.ContainerPortal = portal;
             this.RemoteName = null;
             project.ContainerItemProxies.AddUnique(this);
@@ -49,7 +50,7 @@ namespace XcodeBuilder
             Object portal,
             Target reference)
             :
-            this(project, portal)
+            this(project, portal, reference as Object) // 'as' is to disambiguate the constructors
         {
             this.Remote = reference;
             this.ProxyType = 1;
@@ -60,7 +61,7 @@ namespace XcodeBuilder
             Project projectAndPortal,
             Target reference)
             :
-            this(projectAndPortal, projectAndPortal)
+            this(projectAndPortal, projectAndPortal, reference)
         {
             this.Remote = reference;
             this.ProxyType = 2;
@@ -73,7 +74,7 @@ namespace XcodeBuilder
             FileReference reference,
             string refName)
             :
-            this(project, portal)
+            this(project, portal, reference)
         {
             this.Remote = reference;
             this.ProxyType = 2;

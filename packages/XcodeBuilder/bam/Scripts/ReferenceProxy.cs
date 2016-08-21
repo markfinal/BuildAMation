@@ -38,9 +38,9 @@ namespace XcodeBuilder
             Bam.Core.TokenizedString path,
             Object remoteRef,
             FileReference.ESourceTree sourceTree)
+            :
+            base(project, null, "PBXReferenceProxy", project.GUID, fileType.ToString(), path.Parse(), remoteRef.GUID, sourceTree.ToString())
         {
-            this.IsA = "PBXReferenceProxy";
-            this.Name = "PBXReferenceProxy";
             this.FileType = fileType;
             this.Path = path;
             this.RemoteRef = remoteRef;

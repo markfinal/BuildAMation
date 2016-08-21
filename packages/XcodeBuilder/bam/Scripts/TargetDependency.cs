@@ -36,9 +36,9 @@ namespace XcodeBuilder
             Project project,
             Target dependency,
             ContainerItemProxy proxy)
+            :
+            base(project, null, "PBXTargetDependency", project.GUID, dependency.GUID, proxy.GUID)
         {
-            this.IsA = "PBXTargetDependency";
-            this.Name = "PBXTargetDependency";
             this.Dependency = dependency;
             this.Proxy = proxy;
 
@@ -49,9 +49,9 @@ namespace XcodeBuilder
             Project project,
             string name,
             ContainerItemProxy proxy)
+            :
+            base(project, name, "PBXTargetDependency", project.GUID, name, proxy.GUID)
         {
-            this.IsA = "PBXTargetDependency";
-            this.Name = name;
             this.Dependency = null;
             this.Proxy = proxy;
 

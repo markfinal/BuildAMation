@@ -149,11 +149,6 @@ namespace XcodeBuilder
             SDKRoot /* relative to SDK root */
         }
 
-        private FileReference()
-        {
-            this.IsA = "PBXFileReference";
-        }
-
         public FileReference(
             Bam.Core.TokenizedString path,
             EFileType type,
@@ -162,11 +157,10 @@ namespace XcodeBuilder
             ESourceTree sourceTree = ESourceTree.NA,
             string relativePath = null)
             :
-            this()
+            base(project, path.Parse(), "PBXFileReference", type.ToString(), project.GUID, explicitType.ToString(), sourceTree.ToString(), relativePath)
         {
             this.Path = path;
             this.Type = type;
-            this.Project = project;
             this.SourceTree = sourceTree;
             this.ExplicitType = explicitType;
             this.RelativePath = relativePath;
@@ -184,30 +178,16 @@ namespace XcodeBuilder
                 sourceTree: ESourceTree.Group);
         }
 
-        private Bam.Core.TokenizedString ThePath;
         public Bam.Core.TokenizedString Path
         {
-            get
-            {
-                return this.ThePath;
-            }
-            private set
-            {
-                this.ThePath = value;
-                this.Name = System.IO.Path.GetFileName(value.Parse());
-            }
+            get;
+            private set;
         }
 
         public EFileType Type
         {
             get;
             private set;
-        }
-
-        private Project Project
-        {
-            get;
-            set;
         }
 
         private bool ExplicitType

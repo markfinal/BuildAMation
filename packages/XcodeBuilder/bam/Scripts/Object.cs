@@ -31,23 +31,62 @@ namespace XcodeBuilder
 {
     public abstract class Object
     {
-        protected Object()
+        protected Object(
+            Project project,
+            string name,
+            string isa,
+            params string[] hashComponents)
         {
-            this.GUID = MakeGUID();
-            this.Name = "Please Provide Name";
-            this.IsA = "Undefined Xcode Object Type";
+            this.Project = project;
+            if (null == project)
+            {
+                if (this is Project)
+                {
+                    this.Project = this as Project;
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Invalid project");
+                }
+            }
+            this.Name = name;
+            this.IsA = isa;
+            this.GUID = this.MakeGUID(name, isa, hashComponents);
         }
 
-        private static string
-        MakeGUID()
+        private string
+        MakeGUID(
+            string name,
+            string isa,
+            params string[] hashComponents)
         {
-            var guid = System.Guid.NewGuid();
-            var toString = guid.ToString("N").ToUpper(); // this is 32 characters long
+            // create the string to hash
+            var source = new System.Text.StringBuilder();
+            source.Append(name);
+            source.Append(isa);
+            foreach (var comp in hashComponents)
+            {
+                source.Append(comp);
+            }
+            var md5 = System.Security.Cryptography.MD5.Create();
+            var inputBytes = System.Text.Encoding.ASCII.GetBytes(source.ToString());
+            var hash = md5.ComputeHash(inputBytes);
+            var stringBuilder = new System.Text.StringBuilder();
+            // Xcode GUIDs are 96-bits, so take the least significant bits
+            for (var i = 0; i < 12; ++i)
+            {
+                stringBuilder.Append(hash[i].ToString("X2"));
+            }
+            var guid = stringBuilder.ToString();
+            // ensure that the generating UUID is unique within the project
+            this.Project.AddGUID(guid, this);
+            return guid;
+        }
 
-            // cannot create a 24-char (96 bit) GUID, so just chop off the front and rear 4 characters
-            // this ought to be random enough
-            var toString24Chars = toString.Substring(4, 24);
-            return toString24Chars;
+        public Project Project
+        {
+            get;
+            private set;
         }
 
         public string GUID
@@ -59,13 +98,13 @@ namespace XcodeBuilder
         public string Name
         {
             get;
-            protected set;
+            private set;
         }
 
         public string IsA
         {
             get;
-            protected set;
+            private set;
         }
 
         public abstract void

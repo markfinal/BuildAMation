@@ -34,18 +34,39 @@ namespace XcodeBuilder
         Object
     {
         public Group(
-            string name = null) :
-            this(name, "<group>")
-        {}
-
-        private Group(
-            string name,
-            string sourceTree)
+            Project project,
+            string name)
+            :
+            base(project, name, "PBXGroup")
         {
-            this.IsA = "PBXGroup";
-            this.Name = name;
+            this.SourceTree = "<group>";
             this.Children = new System.Collections.Generic.List<Object>();
-            this.SourceTree = sourceTree;
+        }
+
+        public Group(
+            Target target,
+            string name,
+            Bam.Core.TokenizedString fullPath)
+            :
+            base(target.Project, name, "PBXGroup", fullPath.Parse())
+        {
+            this.SourceTree = "<group>";
+            this.Children = new System.Collections.Generic.List<Object>();
+        }
+
+        public Group(
+            Project project,
+            string name,
+            params Object[] children)
+            :
+            base(project, name, "PBXGroup", children.ToList().ConvertAll(item => item.GUID).ToArray())
+        {
+            this.SourceTree = "<group>";
+            this.Children = new System.Collections.Generic.List<Object>();
+            foreach (var child in children)
+            {
+                this.AddChild(child);
+            }
         }
 
         public string SourceTree

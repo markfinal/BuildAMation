@@ -36,9 +36,9 @@ namespace XcodeBuilder
         public Project(
             Bam.Core.Module module,
             string name)
+            :
+            base(null, name, "PBXProject")
         {
-            this.IsA = "PBXProject";
-            this.Name = name;
             this.ProjectDir = module.CreateTokenizedString("$(buildroot)/$(packagename).xcodeproj");
             module.Macros.Add("xcodeprojectdir", this.ProjectDir);
 
@@ -66,12 +66,46 @@ namespace XcodeBuilder
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
             this.ProjectReferences = new System.Collections.Generic.Dictionary<Group, FileReference>();
 
-            this.Groups.Add(new Group()); // main group
-            this.Groups.Add(new Group("Products")); // product ref group
+            this.Groups.Add(new Group(this, null)); // main group
+            this.Groups.Add(new Group(this, "Products")); // product ref group
             this.MainGroup.AddChild(this.ProductRefGroup);
 
             var configList = new ConfigurationList(this);
             this.ConfigurationLists.Add(configList);
+        }
+
+        private System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
+
+        public void
+        AddGUID(
+            string guid,
+            Object objectForGuid)
+        {
+            if (this.ExistingGUIDs.ContainsKey(guid))
+            {
+                // enable the log code path to view all clashes, rather than aborting on the first
+                #if true
+                throw new Bam.Core.Exception("GUID clash between {0}({1})[in {2}] and {3}({4})[in {5}]: {6}",
+                                             objectForGuid.Name,
+                                             objectForGuid.IsA,
+                                             objectForGuid.Project.Name,
+                                             this.ExistingGUIDs[guid].Name,
+                                             this.ExistingGUIDs[guid].IsA,
+                                             this.ExistingGUIDs[guid].Project.Name,
+                                             guid);
+                #else
+                Bam.Core.Log.MessageAll("GUID clash between {0}({1})[in {2}] and {3}({4})[in {5}]: {6}",
+                                             objectForGuid.Name,
+                                             objectForGuid.IsA,
+                                             objectForGuid.Project.Name,
+                                             this.ExistingGUIDs[guid].Name,
+                                             this.ExistingGUIDs[guid].IsA,
+                                             this.ExistingGUIDs[guid].Project.Name,
+                                             guid);
+                return;
+                #endif
+            }
+            this.ExistingGUIDs.Add(guid, objectForGuid);
         }
 
         public string SourceRoot
@@ -296,7 +330,7 @@ namespace XcodeBuilder
                 }
 
                 // add configuration to project
-                var projectConfig = new Configuration(config, this);
+                var projectConfig = new Configuration(config, this, null);
                 projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
                 projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
@@ -330,8 +364,9 @@ namespace XcodeBuilder
         public Configuration
         EnsureTargetConfigurationExists(
             Bam.Core.Module module,
-            ConfigurationList configList)
+            Target target)
         {
+            var configList = target.ConfigurationList;
             lock (configList)
             {
                 var config = module.BuildEnvironment.Configuration;
@@ -344,7 +379,7 @@ namespace XcodeBuilder
                 // if a new target config is needed, then a new project config is needed too
                 this.EnsureProjectConfigurationExists(module);
 
-                var newConfig = new Configuration(module.BuildEnvironment.Configuration, this);
+                var newConfig = new Configuration(module.BuildEnvironment.Configuration, this, target);
                 this.AllConfigurations.Add(newConfig);
                 configList.AddConfiguration(newConfig);
 

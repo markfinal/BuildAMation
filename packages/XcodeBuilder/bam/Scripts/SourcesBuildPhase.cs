@@ -32,11 +32,11 @@ namespace XcodeBuilder
     public sealed class SourcesBuildPhase :
         BuildPhase
     {
-        public SourcesBuildPhase()
-        {
-            this.Name = "Sources";
-            this.IsA = "PBXSourcesBuildPhase";
-        }
+        public SourcesBuildPhase(
+            Target target)
+            :
+            base(target.Project, "Sources", "PBXSourcesBuildPhase", target.GUID)
+        {}
 
         protected override string BuildActionMask
         {

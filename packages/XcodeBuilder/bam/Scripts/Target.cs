@@ -47,11 +47,10 @@ namespace XcodeBuilder
         public Target(
             Bam.Core.Module module,
             Project project)
+            :
+            base(project, module.GetType().Name, "PBXNativeTarget", project.GUID)
         {
-            this.IsA = "PBXNativeTarget";
-            this.Name = module.GetType().Name;
             this.Module = module;
-            this.Project = project;
             this.Type = EProductType.NA;
 
             var configList = new ConfigurationList(this);
@@ -63,12 +62,6 @@ namespace XcodeBuilder
         }
 
         public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
-
-        public Project Project
         {
             get;
             private set;
@@ -172,7 +165,7 @@ namespace XcodeBuilder
                 {
                     return existingConfig;
                 }
-                var config = this.Project.EnsureTargetConfigurationExists(module, this.ConfigurationList);
+                var config = this.Project.EnsureTargetConfigurationExists(module, this);
                 return config;
             }
         }
@@ -235,7 +228,7 @@ namespace XcodeBuilder
                     return found.Value;
                 }
                 var basename = this.Module.CreateTokenizedString("@basename($(0))", path).Parse();
-                var group = new Group(basename);
+                var group = new Group(this, basename, path);
                 this.Project.Groups.Add(group);
                 this.Project.GroupMap.Add(path.Parse(), group);
                 if (path.Parse().Contains(System.IO.Path.DirectorySeparatorChar))
@@ -276,7 +269,7 @@ namespace XcodeBuilder
             {
                 if (null == this.SourcesBuildPhase)
                 {
-                    this.SourcesBuildPhase = new SourcesBuildPhase();
+                    this.SourcesBuildPhase = new SourcesBuildPhase(this);
                     if (null == this.BuildPhases)
                     {
                         this.BuildPhases = new Bam.Core.Array<BuildPhase>();
@@ -301,7 +294,7 @@ namespace XcodeBuilder
                 {
                     return;
                 }
-                var frameworks = new FrameworksBuildPhase();
+                var frameworks = new FrameworksBuildPhase(this);
                 this.Project.FrameworksBuildPhases.Add(frameworks);
                 this.BuildPhases.Add(frameworks);
                 this.FrameworksBuildPhase = frameworks;
@@ -397,13 +390,15 @@ namespace XcodeBuilder
                         nativeTargetItemProxy = new ContainerItemProxy(this.Project, depTarget);
                     }
 
-                    var dependency = this.TargetDependencies.FirstOrDefault(
+                    // note that target dependencies can be shared in a project by many Targets
+                    // but each Target needs a reference to it
+                    var dependency = this.Project.TargetDependencies.FirstOrDefault(
                         item => (item.Dependency == depTarget) && (item.Proxy == nativeTargetItemProxy));
                     if (null == dependency)
                     {
                         dependency = new TargetDependency(this.Project, depTarget, nativeTargetItemProxy);
-                        this.TargetDependencies.AddUnique(dependency);
                     }
+                    this.TargetDependencies.AddUnique(dependency);
                 }
                 else
                 {
@@ -441,14 +436,16 @@ namespace XcodeBuilder
                         nativeTargetItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget);
                     }
 
-                    var targetDependency = this.TargetDependencies.FirstOrDefault(
-                        item => (item.Dependency == null) && (item.Proxy == nativeTargetItemProxy));
+                    // note that target dependencies can be shared in a project by many Targets
+                    // but each Target needs a reference to it
+                    var targetDependency = this.Project.TargetDependencies.FirstOrDefault(
+                        item => (item.Dependency == null) && (item.Name == depTarget.Name) && (item.Proxy == nativeTargetItemProxy));
                     if (null == targetDependency)
                     {
                         // no 'target', but does have the name of the dependent
                         targetDependency = new TargetDependency(this.Project, depTarget.Name, nativeTargetItemProxy);
-                        this.TargetDependencies.AddUnique(targetDependency);
                     }
+                    this.TargetDependencies.AddUnique(targetDependency);
 
                     // need a ContainerItemProxy for the filereference of the dependent NativeTarget
                     // which is associated with a local PBXReferenceProxy
@@ -478,8 +475,7 @@ namespace XcodeBuilder
                         item => item.Children.Contains(refProxy));
                     if (null == productRefGroup)
                     {
-                        productRefGroup = new Group("Products");
-                        productRefGroup.AddChild(refProxy);
+                        productRefGroup = new Group(this.Project, "Products", refProxy);
                         this.Project.Groups.Add(productRefGroup);
                     }
 

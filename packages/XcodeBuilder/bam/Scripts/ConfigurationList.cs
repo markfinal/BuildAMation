@@ -36,8 +36,9 @@ namespace XcodeBuilder
     {
         public ConfigurationList(
             Object parent)
+            :
+            base(parent.Project, null, "XCConfigurationList", parent.GUID)
         {
-            this.IsA = "XCConfigurationList";
             this.Parent = parent;
             this.Configurations = new System.Collections.Generic.List<Configuration>();
         }

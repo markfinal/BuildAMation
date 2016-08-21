@@ -33,7 +33,13 @@ namespace XcodeBuilder
     public abstract class BuildPhase :
         Object
     {
-        protected BuildPhase()
+        protected BuildPhase(
+            Project project,
+            string name,
+            string isa,
+            params string[] hashComponents)
+            :
+            base(project, name, isa, hashComponents)
         {
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
         }

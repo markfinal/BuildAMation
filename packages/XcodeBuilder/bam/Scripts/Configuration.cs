@@ -37,21 +37,15 @@ namespace XcodeBuilder
 
         public Configuration(
             Bam.Core.EConfiguration config,
-            Project project)
+            Project project,
+            Target target)
+            :
+            base(project, config.ToString(), "XCBuildConfiguration", project.GUID, (target != null) ? target.GUID : string.Empty)
         {
-            this.IsA = "XCBuildConfiguration";
-            this.Name = config.ToString();
             this.Config = config;
-            this.Project = project;
             this.PreBuildCommands = new Bam.Core.StringArray();
             this.PostBuildCommands = new Bam.Core.StringArray();
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
-        }
-
-        public Project Project
-        {
-            get;
-            private set;
         }
 
         public Bam.Core.EConfiguration Config
