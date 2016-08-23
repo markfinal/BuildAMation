@@ -55,9 +55,10 @@ namespace VisualCCommon
                 vsSettingsGroup.AddSetting("DisableSpecificWarnings", settings.DisableWarnings, condition, inheritExisting: true);
             }
 
-            if (settings.IncludePaths.Count > 0)
+            if (settings.IncludePaths.Count > 0 || settings.SystemIncludePaths.Count > 0)
             {
-                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true, arePaths: true);
+                var combined = new Bam.Core.TokenizedStringArray(settings.IncludePaths.Union(settings.SystemIncludePaths));
+                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", combined, condition, inheritExisting: true, arePaths: true);
             }
 
             if (settings.OmitFramePointer.HasValue)
