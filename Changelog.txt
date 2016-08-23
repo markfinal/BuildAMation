@@ -1,3 +1,5 @@
+23-Aug-2016 Issue #14. Paths that are in the special folders (c:\Program Files or c:\Program Files (x86)) are no longer translated to relative paths in VisualStudio projects.
+
 21-Aug-2016 Fixes #171. Enabled Xcode minimal changes on incremental BuildAMation builds, so that only projects that have changed contents are rewritten. This has been enabled due to the fix to issue #222 for deterministic UUIDs used in Xcode projects.
 
 21-Aug-2016 Collapsed LINQ queries of the form .Where(<expr>).FirstOrDefault() to .FirstOrDefault(<expr>).

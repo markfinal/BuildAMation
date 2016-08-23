@@ -136,8 +136,16 @@ namespace VSSolutionBuilder
         toRelativePath(
             Bam.Core.TokenizedString path)
         {
-            var contatenated = new System.Text.StringBuilder();
+            var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
+            var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
+
             var pathString = path.Parse();
+            if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
+            {
+                return pathString;
+            }
+
+            var contatenated = new System.Text.StringBuilder();
             var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
             if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
             {
@@ -171,10 +179,18 @@ namespace VSSolutionBuilder
         toRelativePaths(
             Bam.Core.TokenizedStringArray paths)
         {
+            var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
+            var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
+
             var contatenated = new System.Text.StringBuilder();
             foreach (var path in paths)
             {
                 var pathString = path.Parse();
+                if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
+                {
+                    contatenated.AppendFormat("{0};", pathString);
+                    continue;
+                }
                 var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
                 if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
                 {
