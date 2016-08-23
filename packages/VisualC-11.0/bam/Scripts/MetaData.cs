@@ -48,6 +48,7 @@ namespace VisualC
             {
                 throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2012 installed?", this.InstallDir.Parse());
             }
+            this.SolutionFormatVersion = "12.00";
             this.PlatformToolset = "v110";
             this.VCXProjToolsVersion = "4.0";
             this.VCXProjFiltersToolsVersion = "4.0";
@@ -81,6 +82,20 @@ namespace VisualC
             private set
             {
                 this.Meta["InstallDir"] = value;
+            }
+        }
+
+        public string
+        SolutionFormatVersion
+        {
+            get
+            {
+                return this.Meta["SolutionFormatVersion"] as string;
+            }
+
+            private set
+            {
+                this.Meta["SolutionFormatVersion"] = value;
             }
         }
 

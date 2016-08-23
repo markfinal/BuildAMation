@@ -1,3 +1,5 @@
+23-Aug-2016 Fixes #285. VisualStudio solution files now embed a format version number dependent on the VisualC package used.
+
 23-Aug-2016 Fixes #286. C.ICommonCompilerSettings.SystemIncludePaths are now honoured in VSSolution build mode. These are merged into any C.ICommonCompilerSettings.IncludePaths, with non-system paths appearing first (consistent with Native build mode behaviour).
 
 23-Aug-2016 Issue #14. Paths that are in the special folders (c:\Program Files or c:\Program Files (x86)) are no longer translated to relative paths in VisualStudio projects.
