@@ -114,8 +114,9 @@ namespace VSSolutionBuilder
 
             var content = new System.Text.StringBuilder();
 
-            // TODO: obviously dependent on version
-            content.AppendLine(@"Microsoft Visual Studio Solution File, Format Version 12.00");
+            var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            content.AppendFormat(@"Microsoft Visual Studio Solution File, Format Version {0}", visualCMeta.SolutionFormatVersion);
+            content.AppendLine();
 
             var configs = new Bam.Core.StringArray();
             foreach (var project in this.Projects)

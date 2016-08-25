@@ -100,11 +100,9 @@ namespace C
             {
                 this.Requires(dependent);
             }
-            else
-            {
-                // this delays the dependency until a link
-                this.forwardedDeps.AddUnique(dependent);
-            }
+            // this delays the dependency until a link
+            // (and recursively checks the dependent for more forwarded dependencies)
+            this.forwardedDeps.AddUnique(dependent);
         }
     }
 }
