@@ -38,7 +38,7 @@ namespace HeaderLibraryTest2
             base.Init(parent);
 
             this.CreateHeaderContainer("$(packagedir)/include/baselib/*.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/baselib/*.c");
+            this.CreateCSourceContainer("$(packagedir)/source/baselib/*.c");
 
             this.PublicPatch((settings, appliedTo) =>
                 {
