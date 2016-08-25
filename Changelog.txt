@@ -1,3 +1,5 @@
+25-Aug-2016 ======== Version 1.0.4 beta 1 Release ========
+
 25-Aug-2016 Fixes #90. HeaderLibraries are now considered for forwarded dependencies when required by another HeaderLibrary or StaticLibrary. This captures any dependents on that HeaderLibrary which are required by a future link step.
 
 25-Aug-2016 Issue #90. Added test HeaderLibraryTest2, to exercise a header library having a dependency on a static library, and an application then uses the header library. The static library dependency must be forwarded to the application link step.
