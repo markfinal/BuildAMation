@@ -1,3 +1,5 @@
+08-Sep-2016 Xcode Target.EnsureFileOfTypeExists() now accepts an optional argument to say that the file type is not explicit, i.e. it is then a lastKnownFileType. Defaults to true (type is explicit), as was previous behaviour.
+
 08-Sep-2016 Xcode FileReferences now include the Text type.
 
 25-Aug-2016 ======== Version 1.0.4 beta 1 Release ========
