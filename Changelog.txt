@@ -1,3 +1,5 @@
+08-Sep-2016 Xcode FileReferences now include the Text type.
+
 25-Aug-2016 ======== Version 1.0.4 beta 1 Release ========
 
 25-Aug-2016 Fixes #90. HeaderLibraries are now considered for forwarded dependencies when required by another HeaderLibrary or StaticLibrary. This captures any dependents on that HeaderLibrary which are required by a future link step.
