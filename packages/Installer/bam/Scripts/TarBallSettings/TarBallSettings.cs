@@ -84,5 +84,11 @@ namespace Installer
                 }
             }
         }
+
+        string ITarBallSettings.TransformRegEx
+        {
+            get;
+            set;
+        }
     }
 }

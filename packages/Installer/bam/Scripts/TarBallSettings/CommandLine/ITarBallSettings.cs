@@ -56,6 +56,19 @@ namespace Installer
             default:
                 throw new Bam.Core.Exception("Unknown compression type, {0}", settings.CompressionType.ToString());
             }
+
+            if (!System.String.IsNullOrEmpty(settings.TransformRegEx))
+            {
+                if (!Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    commandLine.Add("--transform");
+                    commandLine.Add(settings.TransformRegEx);
+                }
+                else
+                {
+                    Bam.Core.Log.Detail("tar --transform not supported on OSX");
+                }
+            }
         }
     }
 }

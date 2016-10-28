@@ -1,3 +1,5 @@
+28-Oct-2016 Fixes #77. Installer.ITarBallSettings now supports a TransformRegEx string property. When set, the --transform option is passed to tar, allowing transformations of incoming paths to archived paths. Using a reg-ex of "'s,^.,somethingelse,'" essentially prefixes all paths starting with . with a directory 'somethingelse' instead. Thus, extracting the tar no longer extracts into the current directory. Note that the tar utility's --transform option is NOT supported on OSX.
+
 08-Sep-2016 Xcode Target.EnsureFileOfTypeExists() now accepts an optional argument to say that the file type is not explicit, i.e. it is then a lastKnownFileType. Defaults to true (type is explicit), as was previous behaviour.
 
 08-Sep-2016 Xcode FileReferences now include the Text type.

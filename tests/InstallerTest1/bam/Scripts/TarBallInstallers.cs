@@ -48,6 +48,10 @@ namespace InstallerTest1
                 {
                     var tarSettings = settings as Installer.ITarBallSettings;
                     tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                    {
+                        tarSettings.TransformRegEx = "'s,^.,toplevelfolder,'";
+                    }
                 });
         }
     }
