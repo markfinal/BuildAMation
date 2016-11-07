@@ -235,18 +235,21 @@ namespace Publisher
                 throw new Bam.Core.Exception("Collating a directory requires a collated file as reference");
             }
 
+            // copying a directory must not have a trailing slash on the source directory path
+            // otherwise the leafname ends up being duplicated
+            var fixedSourcePath = this.CreateTokenizedString("@removetrailingseparator($(0))", sourcePath);
             var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
             {
                 module.Macros["CopyDir"] = GenerateDirectoryCopyDestination(
                     module,
                     reference.GeneratedPaths[CollatedObject.Key],
                     subDirectory,
-                    sourcePath);
+                    fixedSourcePath);
             });
             this.Requires(copyDirectoryModule);
 
             copyDirectoryModule.SourceModule = sourceModule;
-            copyDirectoryModule.SourcePath = sourcePath;
+            copyDirectoryModule.SourcePath = fixedSourcePath;
             copyDirectoryModule.Reference = reference;
             copyDirectoryModule.SubDirectory = subDirectory;
             return copyDirectoryModule;
@@ -597,11 +600,13 @@ namespace Publisher
                 foreach (var dirData in framework.DirectoriesToPublish)
                 {
                     var dir = dirData.SourcePath;
+                    // copying a directory must not have a trailing slash on the source directory path
+                    // otherwise the leafname ends up being duplicated
                     var copyDir = this.CreateCollatedDirectory(
                         dependent,
-                        this.CreateTokenizedString("$(0)/$(1)", frameworkPath, dir),
+                        this.CreateTokenizedString("$(0)/@removetrailingseparator($(1))", frameworkPath, dir),
                         reference,
-                        this.CreateTokenizedString("$(0)/$(1)", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
+                        this.CreateTokenizedString("$(0)/@dir(@removetrailingseparator($(1)))", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
                     dirPublishedModules.AddUnique(copyDir);
                 }
             }

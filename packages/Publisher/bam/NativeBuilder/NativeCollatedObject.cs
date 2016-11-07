@@ -65,8 +65,10 @@ namespace Publisher
             }
 
             var copySource = sourcePath.ParseAndQuoteIfNecessary();
-            if (sender is CollatedDirectory && sender.Tool is CopyFilePosix & sender.Macros["CopiedFilename"].IsAliased)
+            if (sender is CollatedDirectory && sender.Tool is CopyFilePosix && sender.Macros["CopiedFilename"].IsAliased)
             {
+                // TODO: document this
+                // it has something to do with renaming a directory during a collation copy
                 copySource = System.String.Format("{0}/*", copySource);
             }
 
