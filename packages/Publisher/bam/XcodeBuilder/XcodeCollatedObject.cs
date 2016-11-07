@@ -157,7 +157,7 @@ namespace Publisher
                             commandLine.ToString(' '),
                             copySource,
                             destinationFolder,
-                            sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath).Parse(),
+                            sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),)", sender.SubDirectory).Parse(),
                             CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     }
                     else
