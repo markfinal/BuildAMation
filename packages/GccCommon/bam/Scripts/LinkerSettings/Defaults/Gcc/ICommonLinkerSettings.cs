@@ -39,6 +39,7 @@ namespace GccCommon.DefaultSettings
             settings.CanUseOrigin = false;
             settings.RPath = new Bam.Core.TokenizedStringArray();
             settings.RPathLink = new Bam.Core.TokenizedStringArray();
+            settings.VersionScript = null;
         }
     }
 }

@@ -102,5 +102,11 @@ namespace Gcc
             get;
             set;
         }
+
+        Bam.Core.TokenizedString GccCommon.ICommonLinkerSettings.VersionScript
+        {
+            get;
+            set;
+        }
     }
 }

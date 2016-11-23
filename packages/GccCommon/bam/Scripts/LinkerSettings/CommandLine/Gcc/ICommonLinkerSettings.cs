@@ -48,6 +48,10 @@ namespace GccCommon
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath.Parse()));
             }
+            if (null != settings.VersionScript)
+            {
+                commandLine.Add(System.String.Format("-Wl,--version-script={0}", settings.VersionScript.Parse()));
+            }
         }
     }
 }

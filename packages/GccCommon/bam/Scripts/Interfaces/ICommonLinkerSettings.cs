@@ -50,5 +50,11 @@ namespace GccCommon
             get;
             set;
         }
+
+        Bam.Core.TokenizedString VersionScript
+        {
+            get;
+            set;
+        }
     }
 }
