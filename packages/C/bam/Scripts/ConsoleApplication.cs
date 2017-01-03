@@ -284,7 +284,7 @@ namespace C
         LinkAllForwardedDependenciesFromLibraries(
             Bam.Core.Module module)
         {
-            this.linkedModules.Add(module);
+            this.linkedModules.AddUnique(module);
             var withForwarded = module as IForwardedLibraries;
             if (null == withForwarded)
             {
@@ -295,13 +295,7 @@ namespace C
             foreach (var forwarded in withForwarded.ForwardedLibraries)
             {
                 this.DependsOn(forwarded);
-                // some linkers require a specific order of libraries in order to resolve symbols
-                // so that if an existing library is later referenced, it needs to be moved later
-                if (this.linkedModules.Contains(forwarded))
-                {
-                    this.linkedModules.Remove(forwarded);
-                }
-                this.linkedModules.Add(forwarded);
+                this.linkedModules.AddUnique(forwarded);
                 this.LinkAllForwardedDependenciesFromLibraries(forwarded);
             }
         }
@@ -350,7 +344,9 @@ namespace C
             }
             var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
             var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
-            var linked = this.linkedModules.ToReadOnlyCollection();
+            // some linkers require a specific order of libraries in order to resolve symbols
+            // so that if an existing library is later referenced, it needs to be moved later
+            var linked = OrderLibrariesWithDecreasingDependencies(this.linkedModules);
             var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, context, executable, source, headers, linked);
         }
