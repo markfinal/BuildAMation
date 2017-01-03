@@ -98,6 +98,10 @@ namespace C
                 {
                     continue;
                 }
+                else if (module is HeaderLibrary)
+                {
+                    continue;
+                }
                 else
                 {
                     throw new Bam.Core.Exception("Unknown module library type: {0}", module.GetType());
