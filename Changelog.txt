@@ -1,3 +1,5 @@
+04-Jan-2017 ======== Version 1.0.4 beta 2 Release ========
+
 03-Jan-2017 Fixes #295. Handle HeaderLibrary modules during MakeFile dependency analysis.
 
 03-Jan-2017 Fixes #294. Rewrote recursive functions to determine all libraries to link, that had significant performance cost during module construction. Calculations are now performed just before the link step, rather than for each module. The rewrite is still recursive, in order to find all dependents (e.g. when a static library depends on another static library, both need to be linked), but occurs on the final list of libraries (rather than incrementally, and thus repeatedly for common dependencies), and only when absolutely needed. This is for single pass linkers, e.g. gcc, but is applied for all toolchains.
