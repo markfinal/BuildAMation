@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -117,6 +117,42 @@ namespace C
                 }
             }
             return list;
+        }
+
+        protected static System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>
+        OrderLibrariesWithDecreasingDependencies(
+            Bam.Core.Array<Bam.Core.Module> libs)
+        {
+            // work on a copy of the flattened list of libraries, as the modules may be rearranged
+            var flatLibs = new Bam.Core.Array<Bam.Core.Module>(libs);
+            // now ensure that the order of the libraries is such that those with the least number of dependents
+            // are at the end
+            // this is O(N^2) and some modules may be moved more than once
+            for (var i = 0; i < flatLibs.Count;)
+            {
+                var ontoNext = true;
+                for (var j = i + 1; j < flatLibs.Count; ++j)
+                {
+                    if (!(flatLibs[j] is IForwardedLibraries))
+                    {
+                        continue;
+                    }
+                    // if any other module has the first as a dependent, move the dependent to the end
+                    if ((flatLibs[j] as IForwardedLibraries).ForwardedLibraries.Contains(flatLibs[i]))
+                    {
+                        var temp = flatLibs[i];
+                        flatLibs.Remove(temp);
+                        flatLibs.Add(temp);
+                        ontoNext = false;
+                        break;
+                    }
+                }
+                if (ontoNext)
+                {
+                    ++i;
+                }
+            }
+            return flatLibs.ToReadOnlyCollection();
         }
 
         protected T

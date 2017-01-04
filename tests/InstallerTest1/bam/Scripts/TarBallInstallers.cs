@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,10 @@ namespace InstallerTest1
                 {
                     var tarSettings = settings as Installer.ITarBallSettings;
                     tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                    {
+                        tarSettings.TransformRegEx = "'s,^.,toplevelfolder,'";
+                    }
                 });
         }
     }

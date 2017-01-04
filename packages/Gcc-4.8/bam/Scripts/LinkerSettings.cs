@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -98,6 +98,12 @@ namespace Gcc
         }
 
         Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPathLink
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.TokenizedString GccCommon.ICommonLinkerSettings.VersionScript
         {
             get;
             set;

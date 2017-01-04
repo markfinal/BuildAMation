@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,10 @@ namespace GccCommon
             foreach (var rpath in settings.RPathLink)
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath.Parse()));
+            }
+            if (null != settings.VersionScript)
+            {
+                commandLine.Add(System.String.Format("-Wl,--version-script={0}", settings.VersionScript.Parse()));
             }
         }
     }

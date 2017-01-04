@@ -1,3 +1,21 @@
+03-Jan-2017 Fixes #295. Handle HeaderLibrary modules during MakeFile dependency analysis.
+
+03-Jan-2017 Fixes #294. Rewrote recursive functions to determine all libraries to link, that had significant performance cost during module construction. Calculations are now performed just before the link step, rather than for each module. The rewrite is still recursive, in order to find all dependents (e.g. when a static library depends on another static library, both need to be linked), but occurs on the final list of libraries (rather than incrementally, and thus repeatedly for common dependencies), and only when absolutely needed. This is for single pass linkers, e.g. gcc, but is applied for all toolchains.
+
+23-Nov-2016 Fixes #293. Added GccCommon.ICommonLinkerSettings.VersionScript property, a Bam.Core.TokenizedString, defaulting to null. If set to an existing file path, then this is passed to ld as a version script. Added C.VersionScript abstract class, as a baseclass module helper for creating version scripts. There is no implementation for determining the exported symbols to list in the version script as it will vary between projects; instead a derived class should implement the Contents property to write an appropriate version script. The dynamic library module can then depend on the module derived from C.VersionScript.
+
+07-Nov-2016 Fixes #291. Xcode publishing of OSX frameworks with helper application bundles no longer duplicate the bundle leafname.
+
+07-Nov-2016 Fixes #292. Native build mode publishing of OSX frameworks including helper application bundles no longer duplicate the bundle leafname in stripped collation.
+
+28-Oct-2016 Fixes #77. Installer.ITarBallSettings now supports a TransformRegEx string property. When set, the --transform option is passed to tar, allowing transformations of incoming paths to archived paths. Using a reg-ex of "'s,^.,somethingelse,'" essentially prefixes all paths starting with . with a directory 'somethingelse' instead. Thus, extracting the tar no longer extracts into the current directory. Note that the tar utility's --transform option is NOT supported on OSX.
+
+08-Sep-2016 Xcode Target.EnsureFileOfTypeExists() now accepts an optional argument to say that the file type is not explicit, i.e. it is then a lastKnownFileType. Defaults to true (type is explicit), as was previous behaviour.
+
+08-Sep-2016 Xcode FileReferences now include the Text type.
+
+25-Aug-2016 ======== Version 1.0.4 beta 1 Release ========
+
 25-Aug-2016 Fixes #90. HeaderLibraries are now considered for forwarded dependencies when required by another HeaderLibrary or StaticLibrary. This captures any dependents on that HeaderLibrary which are required by a future link step.
 
 25-Aug-2016 Issue #90. Added test HeaderLibraryTest2, to exercise a header library having a dependency on a static library, and an application then uses the header library. The static library dependency must be forwarded to the application link step.

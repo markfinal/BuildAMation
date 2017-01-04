@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -95,6 +95,10 @@ namespace C
                     continue;
                 }
                 else if (module is OSXFramework)
+                {
+                    continue;
+                }
+                else if (module is HeaderLibrary)
                 {
                     continue;
                 }

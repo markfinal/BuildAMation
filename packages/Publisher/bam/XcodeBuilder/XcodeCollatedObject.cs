@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -157,7 +157,7 @@ namespace Publisher
                             commandLine.ToString(' '),
                             copySource,
                             destinationFolder,
-                            sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath).Parse(),
+                            sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),)", sender.SubDirectory).Parse(),
                             CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     }
                     else

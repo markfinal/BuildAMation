@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -83,6 +83,12 @@ namespace Installer
                     throw new Bam.Core.Exception("Unknown tar compression, {0}", value.ToString());
                 }
             }
+        }
+
+        string ITarBallSettings.TransformRegEx
+        {
+            get;
+            set;
         }
     }
 }

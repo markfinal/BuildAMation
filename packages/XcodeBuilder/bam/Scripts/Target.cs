@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -331,7 +331,8 @@ namespace XcodeBuilder
         EnsureFileOfTypeExists(
             Bam.Core.TokenizedString path,
             FileReference.EFileType type,
-            string relativePath = null)
+            string relativePath = null,
+            bool explicitType = true)
         {
             lock (this)
             {
@@ -340,6 +341,7 @@ namespace XcodeBuilder
                     path,
                     relativePath,
                     type,
+                    explicitType: explicitType,
                     sourceTree: sourceTree);
                 this.AddFileRefToGroup(fileRef);
             }

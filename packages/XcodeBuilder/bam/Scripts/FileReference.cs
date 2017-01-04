@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -79,6 +79,9 @@ namespace XcodeBuilder
             case FileReference.EFileType.TextBasedDylibDefinition:
                 return "sourcecode.text-based-dylib-definition";
 
+            case FileReference.EFileType.TextFile:
+                return "text";
+
             default:
                 throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
             }
@@ -135,7 +138,8 @@ namespace XcodeBuilder
             Project,
             YaccFile,
             LexFile,
-            TextBasedDylibDefinition
+            TextBasedDylibDefinition,
+            TextFile
         }
 
         public enum ESourceTree

@@ -1,5 +1,5 @@
 #region License
-// Copyright (c) 2010-2016, Mark Final
+// Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ namespace Bam.Core
             EVerboseLevel level)
         {
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("BuildAMation (Bam) v{0} (c) Mark Final, 2010-2016. Licensed under BSD 3-clause. See License.md.",
+            message.AppendFormat("BuildAMation (Bam) v{0} (c) Mark Final, 2010-2017. Licensed under BSD 3-clause. See License.md.",
                 Core.Graph.Instance.ProcessState.VersionString);
             message.AppendLine();
             message.Append("Parts of this software are licensed under the Microsoft Limited Public License (MS-PL). See MS-PL.md.");
