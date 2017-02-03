@@ -372,13 +372,15 @@ namespace C
             {
                 return;
             }
-            var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
+            var binaryPath = this.GeneratedPaths[Key].Parse();
+            var exists = System.IO.File.Exists(binaryPath);
             if (!exists)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
             var requiresDeferredEvaluation = false;
+            var binaryWriteTime = System.IO.File.GetLastWriteTime(binaryPath);
             foreach (var source in this.linkedModules)
             {
                 if (null != source.EvaluationTask)
@@ -399,6 +401,10 @@ namespace C
                             break;
                     }
                 }
+                // TODO: there could be a chance that a library is up-to-date from a previous build, and yet
+                // it is not detected for a link step
+                // however, the inputs here could be static libraries, or dynamic libraries, or import libraries
+                // so there is more variety in the Generated key enumeration
             }
             foreach (var source in this.sourceModules)
             {
@@ -418,6 +424,33 @@ namespace C
                         case ExecuteReasoning.EReason.DeferredEvaluation:
                             requiresDeferredEvaluation = true;
                             break;
+                    }
+                }
+                else
+                {
+                    // if an object file is built, but for some reason (e.g. previous build failure), not been linked
+                    if (source is Bam.Core.IModuleGroup)
+                    {
+                        foreach (var objectFile in source.Children)
+                        {
+                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.Key].Parse();
+                            var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
+                            if (objectFileWriteTime > binaryWriteTime)
+                            {
+                                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], objectFile.GeneratedPaths[ObjectFile.Key]);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var objectFilePath = source.GeneratedPaths[ObjectFile.Key].Parse();
+                        var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
+                        if (objectFileWriteTime > binaryWriteTime)
+                        {
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.GeneratedPaths[ObjectFile.Key]);
+                            return;
+                        }
                     }
                 }
             }

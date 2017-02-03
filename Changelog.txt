@@ -1,3 +1,5 @@
+03-Feb-2016 Fixes #297. C/C++ static library archiving and binary linking may now perform additional timestamp checks on source files to ensure they are up-to-date in Native builds. This covers an edge case of failing to archive or link in incremental builds, when all dependent source files had been compiled in a previous build. The repo case for this is an SCM update of a number of source file in static libraries and applications, and compilation of all static library source is completed, but the application source fails to compile, and the static libraries are not re-archived; a subsequent build correcting the compilation error will result in link errors because the static libraries are still out of date.
+
 04-Jan-2017 ======== Version 1.0.4 beta 2 Release ========
 
 03-Jan-2017 Fixes #295. Handle HeaderLibrary modules during MakeFile dependency analysis.
