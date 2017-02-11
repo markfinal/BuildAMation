@@ -215,6 +215,14 @@ namespace Publisher
                         this.GeneratedPaths[Key]);
                 });
             this.Requires(copyFileModule);
+            if (null != reference &&
+                null != reference.SourceModule &&
+                null != sourceModule &&
+                reference.SourceModule != sourceModule) // in case a different key (e.g. import library) is published from the same module
+            {
+                // ensuring that non-Native builders set up order-only dependencies for additional published only modules
+                reference.SourceModule.Requires(sourceModule);
+            }
 
             copyFileModule.SourceModule = sourceModule;
             copyFileModule.SourcePath = sourcePath;
@@ -239,14 +247,21 @@ namespace Publisher
             // otherwise the leafname ends up being duplicated
             var fixedSourcePath = this.CreateTokenizedString("@removetrailingseparator($(0))", sourcePath);
             var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
-            {
-                module.Macros["CopyDir"] = GenerateDirectoryCopyDestination(
-                    module,
-                    reference.GeneratedPaths[CollatedObject.Key],
-                    subDirectory,
-                    fixedSourcePath);
-            });
+                {
+                    module.Macros["CopyDir"] = GenerateDirectoryCopyDestination(
+                        module,
+                        reference.GeneratedPaths[CollatedObject.Key],
+                        subDirectory,
+                        fixedSourcePath);
+                });
             this.Requires(copyDirectoryModule);
+            if (null != reference.SourceModule &&
+                null != sourceModule &&
+                reference.SourceModule != sourceModule) // in case a different key from the same module is published
+            {
+                // ensuring that non-Native builders set up order-only dependencies for additional published only modules
+                reference.SourceModule.Requires(sourceModule);
+            }
 
             copyDirectoryModule.SourceModule = sourceModule;
             copyDirectoryModule.SourcePath = fixedSourcePath;
@@ -268,13 +283,20 @@ namespace Publisher
             }
 
             var copySymlinkModule = Bam.Core.Module.Create<CollatedSymbolicLink>(preInitCallback: module =>
-            {
-                module.Macros["CopyDir"] = GenerateSymbolicLinkCopyDestination(
-                    module,
-                    reference.GeneratedPaths[CollatedObject.Key],
-                    subDirectory);
-            });
+                {
+                    module.Macros["CopyDir"] = GenerateSymbolicLinkCopyDestination(
+                        module,
+                        reference.GeneratedPaths[CollatedObject.Key],
+                        subDirectory);
+                });
             this.Requires(copySymlinkModule);
+            if (null != reference.SourceModule &&
+                null != sourceModule &&
+                reference.SourceModule != sourceModule) // in case a different key from the same module is published
+            {
+                // ensuring that non-Native builders set up order-only dependencies for additional published only modules
+                reference.SourceModule.Requires(sourceModule);
+            }
 
             copySymlinkModule.SourceModule = sourceModule;
             copySymlinkModule.SourcePath = sourcePath;

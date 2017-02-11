@@ -193,7 +193,8 @@ namespace VSSolutionBuilder
             {
                 if (this.LinkDependentProjects.Contains(dependentProject))
                 {
-                    throw new Bam.Core.Exception("Project already exists as a link dependency");
+                    Bam.Core.Log.DebugMessage("Project {0} already contains a link dependency on {1}. There is no need to add it as an order-only dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                    return;
                 }
                 this.OrderOnlyDependentProjects.AddUnique(dependentProject);
             }
@@ -207,7 +208,8 @@ namespace VSSolutionBuilder
             {
                 if (this.OrderOnlyDependentProjects.Contains(dependentProject))
                 {
-                    throw new Bam.Core.Exception("Project already exists as an order only dependency");
+                    Bam.Core.Log.DebugMessage("Project {0} already contains an order-only dependency on {1}. Removing the order-only dependency, and upgrading to a link dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                    this.OrderOnlyDependentProjects.Remove(dependentProject);
                 }
                 this.LinkDependentProjects.AddUnique(dependentProject);
             }
