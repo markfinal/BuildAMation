@@ -102,6 +102,24 @@ namespace C
             };
 
         /// <summary>
+        /// Create a container for matching source files, for preprocessed assembly.
+        /// </summary>
+        /// <returns>The assembled source container.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public virtual AssembledObjectFileCollection
+        CreateAssemblerSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateContainer<AssembledObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, null);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        /// <summary>
         /// Create a container for matching source files, to compile as C.
         /// </summary>
         /// <returns>The C source container.</returns>

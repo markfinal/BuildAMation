@@ -27,60 +27,43 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace C
 {
-    public enum EWarningLevel
+    /// <summary>
+    /// Common assembler settings available on all toolchains
+    /// </summary>
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonAssemblerSettings :
+        Bam.Core.ISettingsBase
     {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3,
-        Level4
-    }
+        /// <summary>
+        /// Compile with debug symbols.
+        /// </summary>
+        /// <value>The debug symbols.</value>
+        bool DebugSymbols
+        {
+            get;
+            set;
+        }
 
-    public enum EAssemblerWarningLevel
-    {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3
-    }
+        /// <summary>
+        /// Define what output the compiler generates.
+        /// </summary>
+        /// <value>The type of the output.</value>
+        C.ECompilerOutput OutputType
+        {
+            get;
+            set;
+        }
 
-    public enum EDebugType
-    {
-        Embedded = 1,
-        ProgramDatabase = 3,
-        ProgramDatabaseEditAndContinue = 4
-    }
-
-    public enum EBrowseInformation
-    {
-        None = 0,
-        Full = 1,
-        NoLocalSymbols = 2
-    }
-
-    public enum EManagedCompilation
-    {
-        NoCLR = 0,
-        CLR = 1,
-        PureCLR = 2,
-        SafeCLR = 3,
-        OldSyntaxCLR = 4
-    }
-
-    public enum EBasicRuntimeChecks
-    {
-        None = 0,
-        StackFrame = 1,
-        UninitializedVariables = 2,
-        StackFrameAndUninitializedVariables = 3
-    }
-
-    public enum EInlineFunctionExpansion
-    {
-        None = 0,
-        OnlyInline = 1,
-        AnySuitable = 2
+        /// <summary>
+        /// Compile with all warnings as errors.
+        /// </summary>
+        /// <value>The warnings as errors.</value>
+        bool WarningsAsErrors
+        {
+            get;
+            set;
+        }
     }
 }

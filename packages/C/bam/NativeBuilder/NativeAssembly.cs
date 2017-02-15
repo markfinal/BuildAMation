@@ -27,60 +27,30 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace C
 {
-    public enum EWarningLevel
+    public sealed class NativeAssembly :
+        IAssemblerPolicy
     {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3,
-        Level4
-    }
+        void
+        IAssemblerPolicy.Assemble(
+            AssembledObjectFile sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
+        {
+            if (!sender.PerformCompilation)
+            {
+                return;
+            }
 
-    public enum EAssemblerWarningLevel
-    {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3
-    }
+            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(objectFileDir);
 
-    public enum EDebugType
-    {
-        Embedded = 1,
-        ProgramDatabase = 3,
-        ProgramDatabaseEditAndContinue = 4
-    }
-
-    public enum EBrowseInformation
-    {
-        None = 0,
-        Full = 1,
-        NoLocalSymbols = 2
-    }
-
-    public enum EManagedCompilation
-    {
-        NoCLR = 0,
-        CLR = 1,
-        PureCLR = 2,
-        SafeCLR = 3,
-        OldSyntaxCLR = 4
-    }
-
-    public enum EBasicRuntimeChecks
-    {
-        None = 0,
-        StackFrame = 1,
-        UninitializedVariables = 2,
-        StackFrameAndUninitializedVariables = 3
-    }
-
-    public enum EInlineFunctionExpansion
-    {
-        None = 0,
-        OnlyInline = 1,
-        AnySuitable = 2
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+            commandLine.Add(source.GeneratedPaths[SourceFile.Key].ParseAndQuoteIfNecessary());
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
+        }
     }
 }

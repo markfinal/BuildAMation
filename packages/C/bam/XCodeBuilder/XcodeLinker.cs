@@ -99,9 +99,9 @@ namespace C
 
                 foreach (var objFile in objectFiles)
                 {
-                    if (!(objFile as C.ObjectFile).PerformCompilation)
+                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFile).InputPath.Parse();
+                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }
@@ -133,9 +133,9 @@ namespace C
                 (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
                 foreach (var objFile in objectFiles)
                 {
-                    if (!(objFile as C.ObjectFile).PerformCompilation)
+                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFile).InputPath.Parse();
+                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }

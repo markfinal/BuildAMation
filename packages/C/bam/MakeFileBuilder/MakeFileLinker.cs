@@ -67,7 +67,7 @@ namespace C
                 {
                     objExt = module.Tool.Macros["objext"].Parse();
                 }
-                if (!(module as C.ObjectFile).PerformCompilation)
+                if (!(module as C.ObjectFileBase).PerformCompilation)
                 {
                     continue;
                 }

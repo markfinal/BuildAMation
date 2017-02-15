@@ -76,6 +76,17 @@ namespace C
             }
         }
 
+        public AssembledObjectFileCollection
+        CreateAssemblerSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateContainer<AssembledObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
         public CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,

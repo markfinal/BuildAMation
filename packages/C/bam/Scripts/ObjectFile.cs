@@ -33,92 +33,16 @@ namespace C
     /// Object file compiled against C.
     /// </summary>
     public class ObjectFile :
-        CModule,
-        Bam.Core.IChildModule,
-        Bam.Core.IInputPath,
-        IRequiresSourceModule
+        ObjectFileBase
     {
-        private Bam.Core.Module Parent = null;
         private ICompilationPolicy Policy = null;
-        private SourceFile SourceModule;
-
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Compiled Object File");
 
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.PerformCompilation = true;
-            this.Compiler = DefaultToolchain.C_Compiler(this.BitDepth);
-        }
-
-        public override string CustomOutputSubDirectory
-        {
-            get
-            {
-                return "obj";
-            }
-        }
-
-        SourceFile IRequiresSourceModule.Source
-        {
-            get
-            {
-                return this.SourceModule;
-            }
-
-            set
-            {
-                if (null != this.SourceModule)
-                {
-                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.Parse());
-                }
-                this.SourceModule = value;
-                this.DependsOn(value);
-                this.GeneratedPaths[Key] = this.CreateTokenizedString(
-                    "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
-                    value.GeneratedPaths[SourceFile.Key]);
-            }
-        }
-
-        public Bam.Core.TokenizedString InputPath
-        {
-            get
-            {
-                if (null == this.SourceModule)
-                {
-                    throw new Bam.Core.Exception("Source module not yet set on this object file");
-                }
-                return this.SourceModule.InputPath;
-            }
-            set
-            {
-                if (null != this.SourceModule)
-                {
-                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.Parse());
-                }
-
-                // this cannot be a referenced module, since there will be more than one object
-                // of this type (generally)
-                // but this does mean there may be many instances of this 'type' of module
-                // and for multi-configuration builds there may be many instances of the same path
-                var source = Bam.Core.Module.Create<SourceFile>();
-                source.InputPath = value;
-                (this as IRequiresSourceModule).Source = source;
-            }
-        }
-
-        Bam.Core.Module Bam.Core.IChildModule.Parent
-        {
-            get
-            {
-                return this.Parent;
-            }
-            set
-            {
-                this.Parent = value;
-            }
+            this.Tool = DefaultToolchain.C_Compiler(this.BitDepth);
         }
 
         public CompilerTool Compiler
@@ -131,12 +55,6 @@ namespace C
             {
                 this.Tool = value;
             }
-        }
-
-        public bool PerformCompilation
-        {
-            get;
-            set;
         }
 
         protected override void

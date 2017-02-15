@@ -27,60 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace C
 {
-    public enum EWarningLevel
+    public sealed class VSSolutionAssembly :
+        IAssemblerPolicy
     {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3,
-        Level4
-    }
+        void
+        IAssemblerPolicy.Assemble(
+            AssembledObjectFile sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
+        {
+            var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-    public enum EAssemblerWarningLevel
-    {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3
-    }
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
 
-    public enum EDebugType
-    {
-        Embedded = 1,
-        ProgramDatabase = 3,
-        ProgramDatabaseEditAndContinue = 4
-    }
+            var output = objectFilePath.Parse();
 
-    public enum EBrowseInformation
-    {
-        None = 0,
-        Full = 1,
-        NoLocalSymbols = 2
-    }
+            var args = new Bam.Core.StringArray();
+            args.Add(CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool));
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(args);
+            args.Add("%(FullPath)");
 
-    public enum EManagedCompilation
-    {
-        NoCLR = 0,
-        CLR = 1,
-        PureCLR = 2,
-        SafeCLR = 3,
-        OldSyntaxCLR = 4
-    }
-
-    public enum EBasicRuntimeChecks
-    {
-        None = 0,
-        StackFrame = 1,
-        UninitializedVariables = 2,
-        StackFrameAndUninitializedVariables = 3
-    }
-
-    public enum EInlineFunctionExpansion
-    {
-        None = 0,
-        OnlyInline = 1,
-        AnySuitable = 2
+            var customBuild = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild, include: sender.InputPath, uniqueToProject: true);
+            customBuild.AddSetting("Command", args.ToString(' '), condition: config.ConditionText);
+            customBuild.AddSetting("Message", System.String.Format("Assembling {0}", System.IO.Path.GetFileName(sender.InputPath.Parse())), condition: config.ConditionText);
+            customBuild.AddSetting("Outputs", output, condition: config.ConditionText);
+            sender.MetaData = customBuild;
+        }
     }
 }

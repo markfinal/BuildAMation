@@ -47,7 +47,7 @@ namespace DeltaSettingsTest1
                     compiler.PreprocessorDefines.Add("D_COMMON");
                 });
 
-            source.Children.Where(item => (item as C.ObjectFile).InputPath.Parse().Contains("c.c")).ToList().ForEach(item =>
+            source.Children.Where(item => (item as C.ObjectFileBase).InputPath.Parse().Contains("c.c")).ToList().ForEach(item =>
                 item.PrivatePatch(settings =>
                     {
                         var compiler = settings as C.ICommonCompilerSettings;
@@ -59,7 +59,7 @@ namespace DeltaSettingsTest1
                         compiler.PreprocessorDefines.Remove("D_COMMON");
                     }));
 
-            source.Children.Where(item => (item as C.ObjectFile).InputPath.Parse().Contains("d.c")).ToList().ForEach(item =>
+            source.Children.Where(item => (item as C.ObjectFileBase).InputPath.Parse().Contains("d.c")).ToList().ForEach(item =>
                 item.PrivatePatch(settings =>
                     {
                         // delta an enumeration setting

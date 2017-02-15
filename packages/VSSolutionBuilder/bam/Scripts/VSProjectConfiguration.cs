@@ -64,6 +64,7 @@ namespace VSSolutionBuilder
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
             this.Headers = new Bam.Core.Array<VSSettingsGroup>();
             this.ResourceFiles = new Bam.Core.Array<VSSettingsGroup>();
+            this.AssemblyFiles = new Bam.Core.Array<VSSettingsGroup>();
 
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
@@ -221,6 +222,12 @@ namespace VSSolutionBuilder
         }
 
         private Bam.Core.Array<VSSettingsGroup> ResourceFiles
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles
         {
             get;
             set;
@@ -391,6 +398,16 @@ namespace VSSolutionBuilder
         }
 
         public void
+        AddAssemblyFile(
+            C.AssembledObjectFile module)
+        {
+            var settings = module.MetaData as VSSettingsGroup;
+            var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, module.InputPath);
+            this.AssemblyFiles.AddUnique(assemblyGroup);
+            this.Project.AddAssemblyFile(assemblyGroup);
+        }
+
+        public void
         RequiresProject(
             VSProject project)
         {
@@ -425,6 +442,13 @@ namespace VSSolutionBuilder
             VSSettingsGroup resourceFileGroup)
         {
             return this.ResourceFiles.Contains(resourceFileGroup);
+        }
+
+        public bool
+        ContainsAssemblyFile(
+            VSSettingsGroup assemblyFileGroup)
+        {
+            return this.AssemblyFiles.Contains(assemblyFileGroup);
         }
 
         public bool

@@ -86,7 +86,7 @@ namespace C
 
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
 
-            var realObjectFiles = objectFiles.Where(item => !(item is WinResource));
+            var realObjectFiles = objectFiles.Where(item => !((item is WinResource) || (item is AssembledObjectFile)));
             if (realObjectFiles.Count() > 1)
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
@@ -124,6 +124,12 @@ namespace C
             foreach (var resObj in resourceObjectFiles)
             {
                 config.AddResourceFile(resObj as WinResource, resObj.Settings);
+            }
+
+            var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
+            foreach (var asmObj in assembledObjectFiles)
+            {
+                config.AddAssemblyFile(asmObj as AssembledObjectFile);
             }
 
             foreach (var input in libraries)

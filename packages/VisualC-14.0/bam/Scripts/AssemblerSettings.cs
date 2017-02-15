@@ -27,60 +27,62 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace VisualC
 {
-    public enum EWarningLevel
+    public class AssemblerSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonAssemblerSettings,
+        C.IAdditionalSettings,
+        VisualCCommon.ICommonAssemblerSettings
     {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3,
-        Level4
-    }
+        public AssemblerSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
-    public enum EAssemblerWarningLevel
-    {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3
-    }
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
+        }
 
-    public enum EDebugType
-    {
-        Embedded = 1,
-        ProgramDatabase = 3,
-        ProgramDatabaseEditAndContinue = 4
-    }
+        bool C.ICommonAssemblerSettings.DebugSymbols
+        {
+            get;
+            set;
+        }
 
-    public enum EBrowseInformation
-    {
-        None = 0,
-        Full = 1,
-        NoLocalSymbols = 2
-    }
+        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
+        {
+            get;
+            set;
+        }
 
-    public enum EManagedCompilation
-    {
-        NoCLR = 0,
-        CLR = 1,
-        PureCLR = 2,
-        SafeCLR = 3,
-        OldSyntaxCLR = 4
-    }
+        bool C.ICommonAssemblerSettings.WarningsAsErrors
+        {
+            get;
+            set;
+        }
 
-    public enum EBasicRuntimeChecks
-    {
-        None = 0,
-        StackFrame = 1,
-        UninitializedVariables = 2,
-        StackFrameAndUninitializedVariables = 3
-    }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
 
-    public enum EInlineFunctionExpansion
-    {
-        None = 0,
-        OnlyInline = 1,
-        AnySuitable = 2
+        bool VisualCCommon.ICommonAssemblerSettings.NoLogo
+        {
+            get;
+            set;
+        }
+
+        VisualCCommon.EAssemblerWarningLevel VisualCCommon.ICommonAssemblerSettings.WarningLevel
+        {
+            get;
+            set;
+        }
     }
 }

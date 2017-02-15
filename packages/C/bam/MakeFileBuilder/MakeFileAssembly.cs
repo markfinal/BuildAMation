@@ -27,60 +27,38 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace C
 {
-    public enum EWarningLevel
+    public sealed class MakeFileAssembly :
+        IAssemblerPolicy
     {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3,
-        Level4
-    }
+        void
+        IAssemblerPolicy.Assemble(
+            AssembledObjectFile sender,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
+        {
+            if (!sender.PerformCompilation)
+            {
+                return;
+            }
 
-    public enum EAssemblerWarningLevel
-    {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3
-    }
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
+            var rule = meta.AddRule();
+            rule.AddTarget(objectFilePath);
+            rule.AddPrerequisite(source, C.SourceFile.Key);
 
-    public enum EDebugType
-    {
-        Embedded = 1,
-        ProgramDatabase = 3,
-        ProgramDatabaseEditAndContinue = 4
-    }
+            var outputPath = objectFilePath.Parse();
 
-    public enum EBrowseInformation
-    {
-        None = 0,
-        Full = 1,
-        NoLocalSymbols = 2
-    }
+            var args = new Bam.Core.StringArray();
+            args.Add(CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool));
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(args);
+            args.Add("$<");
+            rule.AddShellCommand(args.ToString(' '));
 
-    public enum EManagedCompilation
-    {
-        NoCLR = 0,
-        CLR = 1,
-        PureCLR = 2,
-        SafeCLR = 3,
-        OldSyntaxCLR = 4
-    }
-
-    public enum EBasicRuntimeChecks
-    {
-        None = 0,
-        StackFrame = 1,
-        UninitializedVariables = 2,
-        StackFrameAndUninitializedVariables = 3
-    }
-
-    public enum EInlineFunctionExpansion
-    {
-        None = 0,
-        OnlyInline = 1,
-        AnySuitable = 2
+            meta.CommonMetaData.Directories.AddUnique(System.IO.Path.GetDirectoryName(outputPath));
+        }
     }
 }
+

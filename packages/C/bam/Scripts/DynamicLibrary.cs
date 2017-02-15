@@ -105,6 +105,16 @@ namespace C
             return collection;
         }
 
+        public sealed override AssembledObjectFileCollection
+        CreateAssemblerSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateAssemblerSourceContainer(wildcardPath, macroModuleOverride, filter);
+            return collection;
+        }
+
         /// <summary>
         /// Specified sources compile against DependentModule, and re-exports the public patches
         /// from the dependent, e.g. if the headers of the dynamic library require include paths from

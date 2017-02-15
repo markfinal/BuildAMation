@@ -29,43 +29,42 @@
 #endregion // License
 namespace C
 {
-    public sealed class MakeFileLibrarian :
-        IArchivingPolicy
+    public sealed class XcodeAssembly :
+        IAssemblerPolicy
     {
         void
-        IArchivingPolicy.Archive(
-            StaticLibrary sender,
+        IAssemblerPolicy.Assemble(
+            AssembledObjectFile sender,
             Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString libraryPath,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
+            Bam.Core.TokenizedString objectFilePath,
+            Bam.Core.Module source)
         {
-            var commandLineArgs = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLineArgs);
+            var encapsulating = sender.GetEncapsulatingReferencedModule();
 
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-            rule.AddTarget(libraryPath);
-            foreach (var input in objectFiles)
-            {
-                if (!(input as C.ObjectFileBase).PerformCompilation)
-                {
-                    continue;
-                }
-                rule.AddPrerequisite(input, C.ObjectFile.Key);
-            }
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(encapsulating);
+            var configuration = target.GetConfiguration(encapsulating);
 
-            var tool = sender.Tool as Bam.Core.ICommandLineTool;
-            var command = new System.Text.StringBuilder();
-            command.AppendFormat("{0} {1} $^ {2}",
-                CommandLineProcessor.Processor.StringifyTool(tool),
-                commandLineArgs.ToString(' '),
-                CommandLineProcessor.Processor.TerminatingArgs(tool));
-            rule.AddShellCommand(command.ToString());
+            var output = objectFilePath.Parse();
+            var sourcePath = sender.InputPath.Parse();
 
-            var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
-            meta.CommonMetaData.Directories.AddUnique(libraryFileDir);
-            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+            var commands = new Bam.Core.StringArray();
+            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));
+
+            var args = new Bam.Core.StringArray();
+            args.Add(CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool));
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(args);
+            args.Add(sourcePath);
+
+            var commandLine = args.ToString(' ');
+
+            commands.Add(System.String.Format("if [[ ! -e {0} || {1} -nt {0} ]]", output, sourcePath));
+            commands.Add("then");
+            commands.Add(System.String.Format("\techo {0}", commandLine));
+            commands.Add(System.String.Format("\t{0}", commandLine));
+            commands.Add("fi");
+
+            target.AddPreBuildCommands(commands, configuration);
         }
     }
 }
