@@ -27,74 +27,54 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+namespace ClangCommon
 {
-    public class AssemblerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonAssemblerSettings,
-        C.IAdditionalSettings,
-        VisualCCommon.ICommonAssemblerSettings
+    public abstract class AssemblerBase :
+        C.AssemblerTool
     {
-        public AssemblerSettings(
-            Bam.Core.Module module)
+        protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+
+        protected AssemblerBase()
         {
-            this.InitializeAllInterfaces(module, false, true);
+            this.Macros.AddVerbatim("objext", ".o");
+
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
+        public override Bam.Core.TokenizedString Executable
         {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
+            get
+            {
+                return Bam.Core.TokenizedString.CreateVerbatim("xcrun");
+            }
         }
 
-        bool C.ICommonAssemblerSettings.DebugSymbols
+        public override Bam.Core.TokenizedStringArray InitialArguments
         {
-            get;
-            set;
+            get
+            {
+                return this.arguments;
+            }
+        }
+    }
+
+    [C.RegisterAssembler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
+    [C.RegisterAssembler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
+    public class Assembler :
+        AssemblerBase
+    {
+        public Assembler()
+        {
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
         }
 
-        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
-            get;
-            set;
-        }
-
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonAssemblerSettings.NoLogo
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.EAssemblerWarningLevel VisualCCommon.ICommonAssemblerSettings.WarningLevel
-        {
-            get;
-            set;
+            var settings = new Clang.AssemblerSettings(module);
+            return settings;
         }
     }
 }

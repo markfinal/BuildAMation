@@ -27,14 +27,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+namespace Clang
 {
     public class AssemblerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
-        VisualCCommon.ICommonAssemblerSettings
+        ClangCommon.ICommonAssemblerSettings
     {
         public AssemblerSettings(
             Bam.Core.Module module)
@@ -46,7 +46,7 @@ namespace VisualC
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
+            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineAssemblerImplementation), this, commandLine);
         }
 
         bool C.ICommonAssemblerSettings.DebugSymbols
@@ -80,18 +80,6 @@ namespace VisualC
         }
 
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonAssemblerSettings.NoLogo
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.EAssemblerWarningLevel VisualCCommon.ICommonAssemblerSettings.WarningLevel
         {
             get;
             set;

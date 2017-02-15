@@ -27,9 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+namespace ClangCommon
 {
-    public static partial class CommandLineImplementation
+    public static partial class CommandLineAssemblerImplementation
     {
         public static void
         Convert(
@@ -39,22 +39,26 @@ namespace VisualCCommon
             var module = (settings as Bam.Core.Settings).Module;
             if (settings.DebugSymbols)
             {
-                commandLine.Add("-Zi");
+                commandLine.Add("-g");
             }
             switch (settings.OutputType)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLine.Add(System.String.Format("-c -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-c -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                     break;
                 case C.ECompilerOutput.Preprocess:
-                    commandLine.Add(System.String.Format("-EP -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-E -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
                     break;
                 default:
                     throw new Bam.Core.Exception("Unknown output type, {0}", settings.OutputType.ToString());
             }
             if (settings.WarningsAsErrors)
             {
-                commandLine.Add("-WX");
+                commandLine.Add("-Werror");
+            }
+            else
+            {
+                commandLine.Add("-Wno-error");
             }
             foreach (var path in settings.IncludePaths)
             {

@@ -27,74 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+using C;
+namespace ClangCommon.DefaultSettings
 {
-    public class AssemblerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonAssemblerSettings,
-        C.IAdditionalSettings,
-        VisualCCommon.ICommonAssemblerSettings
+    public static partial class DefaultSettingsExtensions
     {
-        public AssemblerSettings(
+        public static void
+        Defaults(
+            this ICommonAssemblerSettings settings,
             Bam.Core.Module module)
         {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonAssemblerSettings.NoLogo
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.EAssemblerWarningLevel VisualCCommon.ICommonAssemblerSettings.WarningLevel
-        {
-            get;
-            set;
         }
     }
 }

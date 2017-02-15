@@ -27,21 +27,11 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace C.DefaultSettings
+namespace ClangCommon
 {
-    public static partial class DefaultSettingsExtensions
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonAssemblerSettings :
+        Bam.Core.ISettingsBase
     {
-        public static void
-        Defaults(
-            this C.ICommonAssemblerSettings settings,
-            Bam.Core.Module module)
-        {
-            settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
-            settings.OutputType = ECompilerOutput.CompileOnly;
-            settings.WarningsAsErrors = true;
-            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
-            settings.PreprocessorDefines = new PreprocessorDefinitions();
-        }
     }
 }

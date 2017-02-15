@@ -37,7 +37,7 @@ namespace C
         Bam.Core.ISettingsBase
     {
         /// <summary>
-        /// Compile with debug symbols.
+        /// Assemble with debug symbols.
         /// </summary>
         /// <value>The debug symbols.</value>
         bool DebugSymbols
@@ -47,7 +47,7 @@ namespace C
         }
 
         /// <summary>
-        /// Define what output the compiler generates.
+        /// Define what output the assembler generates.
         /// </summary>
         /// <value>The type of the output.</value>
         C.ECompilerOutput OutputType
@@ -57,10 +57,30 @@ namespace C
         }
 
         /// <summary>
-        /// Compile with all warnings as errors.
+        /// Assemble with all warnings as errors.
         /// </summary>
         /// <value>The warnings as errors.</value>
         bool WarningsAsErrors
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// List of paths to search for user headers, i.e. those quoted with double quotes.
+        /// </summary>
+        /// <value>The include paths.</value>
+        Bam.Core.TokenizedStringArray IncludePaths
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// List of preprocessor defines, of the form key or key=value.
+        /// </summary>
+        /// <value>The preprocessor defines.</value>
+        C.PreprocessorDefinitions PreprocessorDefines
         {
             get;
             set;
