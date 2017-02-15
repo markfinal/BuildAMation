@@ -401,7 +401,6 @@ namespace VSSolutionBuilder
         AddAssemblyFile(
             C.AssembledObjectFile module)
         {
-            var settings = module.MetaData as VSSettingsGroup;
             var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, module.InputPath);
             this.AssemblyFiles.AddUnique(assemblyGroup);
             this.Project.AddAssemblyFile(assemblyGroup);
