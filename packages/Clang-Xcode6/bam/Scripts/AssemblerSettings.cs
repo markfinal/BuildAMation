@@ -32,6 +32,7 @@ namespace Clang
     public class AssemblerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
+        XcodeProjectProcessor.IConvertToProject,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ClangCommon.ICommonAssemblerSettings
@@ -47,6 +48,14 @@ namespace Clang
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineAssemblerImplementation), this, commandLine);
+        }
+
+        void
+        XcodeProjectProcessor.IConvertToProject.Convert(
+            Bam.Core.Module module,
+            XcodeBuilder.Configuration configuration)
+        {
+            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeAssemblerImplementation), this, module, configuration);
         }
 
         bool C.ICommonAssemblerSettings.DebugSymbols

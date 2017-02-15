@@ -82,6 +82,9 @@ namespace XcodeBuilder
             case FileReference.EFileType.TextFile:
                 return "text";
 
+            case FileReference.EFileType.Assembler:
+                return "sourecode.asm";
+
             default:
                 throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
             }
@@ -139,7 +142,8 @@ namespace XcodeBuilder
             YaccFile,
             LexFile,
             TextBasedDylibDefinition,
-            TextFile
+            TextFile,
+            Assembler
         }
 
         public enum ESourceTree

@@ -27,71 +27,22 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Clang
+namespace ClangCommon
 {
-    public class AssemblerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        XcodeProjectProcessor.IConvertToProject,
-        C.ICommonAssemblerSettings,
-        C.IAdditionalSettings,
-        ClangCommon.ICommonAssemblerSettings
+    public static partial class XcodeAssemblerImplementation
     {
-        public AssemblerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineAssemblerImplementation), this, commandLine);
-        }
-
-        void
-        XcodeProjectProcessor.IConvertToProject.Convert(
+        public static void
+        Convert(
+            this C.IAdditionalSettings settings,
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeAssemblerImplementation), this, module, configuration);
-        }
-
-        bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
+            var extraSettings = new XcodeBuilder.MultiConfigurationValue();
+            foreach (var extra in settings.AdditionalSettings)
+            {
+                extraSettings.Add(extra);
+            }
+            configuration["OTHER_CFLAGS"] = extraSettings;
         }
     }
 }

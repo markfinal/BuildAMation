@@ -43,28 +43,39 @@ namespace C
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
             var target = workspace.EnsureTargetExists(encapsulating);
-            var configuration = target.GetConfiguration(encapsulating);
 
-            var output = objectFilePath.Parse();
-            var sourcePath = sender.InputPath.Parse();
+            var fileType = XcodeBuilder.FileReference.EFileType.Assembler;
 
-            var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));
+            var buildFile = target.EnsureSourceBuildFileExists(source.GeneratedPaths[C.SourceFile.Key], fileType);
+            buildFile.Settings = new Bam.Core.StringArray("-x none"); // since most sources will specify a language as a default
+            sender.MetaData = buildFile;
 
-            var args = new Bam.Core.StringArray();
-            args.Add(CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool));
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(args);
-            args.Add(sourcePath);
+            // this is for stand-alone object files
+            if (encapsulating == sender || encapsulating == (sender as Bam.Core.IChildModule).Parent)
+            {
+                target.Type = XcodeBuilder.Target.EProductType.ObjFile;
+                var configuration = target.GetConfiguration(sender);
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+                (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
+            }
 
-            var commandLine = args.ToString(' ');
-
-            commands.Add(System.String.Format("if [[ ! -e {0} || {1} -nt {0} ]]", output, sourcePath));
-            commands.Add("then");
-            commands.Add(System.String.Format("\techo {0}", commandLine));
-            commands.Add(System.String.Format("\t{0}", commandLine));
-            commands.Add("fi");
-
-            target.AddPreBuildCommands(commands, configuration);
+            // any non-C module targets should be order-only dependencies
+            foreach (var dependent in sender.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
+                if (null != dependentTarget)
+                {
+                    target.Requires(dependentTarget);
+                }
+            }
         }
     }
 }
