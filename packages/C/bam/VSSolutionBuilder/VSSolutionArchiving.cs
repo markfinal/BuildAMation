@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     public sealed class VSSolutionLibrarian :
@@ -59,7 +60,9 @@ namespace C
             }
 
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
-            if (objectFiles.Count > 1)
+
+            var realObjectFiles = objectFiles.Where(item => !((item is WinResource) || (item is AssembledObjectFile)));
+            if (realObjectFiles.Any())
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
@@ -69,16 +72,32 @@ namespace C
                 };
 
                 var sharedSettings = C.SettingsBase.SharedSettings(
-                    objectFiles,
+                    realObjectFiles,
                     typeof(VisualCCommon.VSSolutionImplementation),
                     typeof(VisualStudioProcessor.IConvertToProject),
                     vsConvertParameterTypes);
                 (sharedSettings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
 
-                foreach (var objFile in objectFiles)
+                foreach (var objFile in realObjectFiles)
                 {
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
+                }
+
+                // now handle the other object file types
+
+                // TODO: if there were many resource files, this could also have a common settings group? Not sure if VS supports this
+                // and it's not as likely to have many resource files, as it would have many source files
+                var resourceObjectFiles = objectFiles.Where(item => item is WinResource);
+                foreach (var resObj in resourceObjectFiles)
+                {
+                    config.AddResourceFile(resObj as WinResource, resObj.Settings);
+                }
+
+                var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
+                foreach (var asmObj in assembledObjectFiles)
+                {
+                    config.AddAssemblyFile(asmObj as AssembledObjectFile);
                 }
             }
             else

@@ -68,7 +68,7 @@ namespace C
             }
 
             var excludedSource = new XcodeBuilder.MultiConfigurationValue();
-            var realObjectFiles = objectFiles.Where(item => !(item is AssembledObjectFile));
+            var realObjectFiles = objectFiles.Where(item => !(item is AssembledObjectFile)); // C,C++,ObjC,ObjC++
             if (realObjectFiles.Any())
             {
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
@@ -114,11 +114,19 @@ namespace C
                     }
                     configuration.BuildFiles.Add(buildFile);
                 }
+
+                // now deal with other object file types
+                var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
+                foreach (var asmObj in assembledObjectFiles)
+                {
+                    var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
+                    configuration.BuildFiles.Add(buildFile);
+                }
             }
             else
             {
-                (realObjectFiles.First().Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
-                foreach (var objFile in realObjectFiles)
+                (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
+                foreach (var objFile in objectFiles)
                 {
                     if (!(objFile as C.ObjectFileBase).PerformCompilation)
                     {
@@ -130,13 +138,6 @@ namespace C
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
                     configuration.BuildFiles.Add(buildFile);
                 }
-            }
-
-            var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
-            foreach (var asmObj in assembledObjectFiles)
-            {
-                var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
-                configuration.BuildFiles.Add(buildFile);
             }
 
             configuration["EXCLUDED_SOURCE_FILE_NAMES"] = excludedSource;
