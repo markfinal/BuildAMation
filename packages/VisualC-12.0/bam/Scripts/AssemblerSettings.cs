@@ -67,6 +67,18 @@ namespace VisualC
             set;
         }
 
+        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
+        {
+            get;
+            set;
+        }
+
+        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
+        {
+            get;
+            set;
+        }
+
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
