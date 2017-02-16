@@ -39,6 +39,27 @@ namespace C.ObjCxx.DefaultSettings
         }
 
         public static void
+        Empty(
+            this C.IObjectiveCxxOnlyCompilerSettings settings)
+        {
+        }
+
+        public static void
+        Intersect(
+            this C.IObjectiveCxxOnlyCompilerSettings shared,
+            C.IObjectiveCxxOnlyCompilerSettings other)
+        {
+        }
+
+        public static void
+        Delta(
+            this C.IObjectiveCxxOnlyCompilerSettings delta,
+            C.IObjectiveCxxOnlyCompilerSettings lhs,
+            C.IObjectiveCxxOnlyCompilerSettings rhs)
+        {
+        }
+
+        public static void
         Clone(
             this C.IObjectiveCxxOnlyCompilerSettings settings,
             C.IObjectiveCxxOnlyCompilerSettings other)
