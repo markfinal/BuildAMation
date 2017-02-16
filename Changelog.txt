@@ -1,3 +1,5 @@
+16-Feb-2017 Fixes #301. Corrected error message when a Settings interface did not implement a Clone extension method, but the Settings needed to be cloned (for creating delta settings).
+
 15-Feb-2017 Fixes #300. C.ProceduralHeaderFile and ProceduralHeaderFileFromToolOutput have had their public patches extended to support C.ICommonAssemblySettings.
 
 15-Feb-2017 Fixes #299. Added support for assembler tools in the C package. Assemblers have been provided for VisualC on Windows (ml, ml64), Clang on macOS (clang), and Gcc on Linux (gcc). Native, VisualStudio, MakeFile, and Xcode support is provided. Note that the class C.ObjectFile has been split, into C.ObjectFileBase (the base class for different types of ObjectFile), C.ObjectFile derives from ObjectFileBase and continues to be the output from a compilation step, and C.AssembledObjectFile is new and also derives from ObjectFileBase. Custom builder scripts, if previously casting to C.ObjectFile to get access to properties, may now have to cast to C.ObjectFileBase if assembly source files are included in the build.
