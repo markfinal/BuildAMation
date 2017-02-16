@@ -359,7 +359,7 @@ namespace Publisher
         }
 
         /// <summary>
-        /// Collate the main application file in the publishing root. Use the publishing type to determine 
+        /// Collate the main application file in the publishing root. Use the publishing type to determine
         /// what kind of application this will be.
         /// </summary>
         /// <param name="key">Key.</param>

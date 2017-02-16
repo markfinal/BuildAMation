@@ -141,7 +141,7 @@ namespace Bam.Core
         /// <summary>
         /// Initialize the module. The base implementation does nothing, but subsequent sub-classing
         /// adds more specific details. Always invoke the base.Init.
-        /// The parent module is present for any cases in which parentage is useful for the initialization of the child. 
+        /// The parent module is present for any cases in which parentage is useful for the initialization of the child.
         /// </summary>
         /// <param name="parent">Parent.</param>
         protected virtual void

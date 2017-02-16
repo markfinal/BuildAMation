@@ -528,7 +528,7 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Convert the internal list into a ReadOnlyCollection/> 
+        /// Convert the internal list into a ReadOnlyCollection/>
         /// </summary>
         /// <returns>A read-only version of the internal list.</returns>
         public System.Collections.ObjectModel.ReadOnlyCollection<T>
