@@ -162,9 +162,9 @@ namespace XcodeBuilder
 
                 if (null != target.FileReference)
                 {
-                    buildableRefEl.SetAttribute("BlueprintIdentifier", target.FileReference.GUID);
+                    buildableRefEl.SetAttribute("BlueprintIdentifier", target.GUID);
                     buildableRefEl.SetAttribute("BuildableName", target.FileReference.Name);
-                    buildableRefEl.SetAttribute("BlueprintName", target.FileReference.Name);
+                    buildableRefEl.SetAttribute("BlueprintName", target.Name);
                 }
 
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
@@ -223,7 +223,7 @@ namespace XcodeBuilder
             doc.XmlResolver = null;
 
             {
-                var type = doc.CreateDocumentType("plist", "-//Apple Computer//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd", null);
+                var type = doc.CreateDocumentType("plist", "-//Apple//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd", null);
                 doc.AppendChild(type);
             }
             var plistEl = doc.CreateElement("plist");

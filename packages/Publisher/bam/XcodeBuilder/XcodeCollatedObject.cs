@@ -79,7 +79,8 @@ namespace Publisher
             if (sender.SourceModule != null && sender.SourceModule.MetaData != null)
             {
                 if ((null != sender.Reference) &&
-                    (sender.SourceModule.PackageDefinition == sender.Reference.PackageDefinition) &&
+                    (null != sender.Reference.SourceModule) &&
+                    (sender.SourceModule.PackageDefinition == sender.Reference.SourceModule.PackageDefinition) &&
                     (null == sender.Reference.SubDirectory) &&
                     (sender.SubDirectory.Parse() == "."))
                 {

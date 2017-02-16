@@ -247,7 +247,7 @@ namespace C
                 var cloneSettingsMethod = attribute.GetMethod("Clone", new[] { i, i });
                 if (null == cloneSettingsMethod)
                 {
-                    throw new Bam.Core.Exception("Unable to find extension method {0}.SharedSettings(this {1}, {1}, {1}, {1})",
+                    throw new Bam.Core.Exception("Unable to find extension method {0}.Clone(this {1}, {1}, {1}, {1})",
                         attribute.ExtensionsClassName,
                         i.ToString());
                 }

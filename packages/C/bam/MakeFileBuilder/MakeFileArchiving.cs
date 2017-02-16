@@ -48,7 +48,7 @@ namespace C
             rule.AddTarget(libraryPath);
             foreach (var input in objectFiles)
             {
-                if (!(input as C.ObjectFile).PerformCompilation)
+                if (!(input as C.ObjectFileBase).PerformCompilation)
                 {
                     continue;
                 }

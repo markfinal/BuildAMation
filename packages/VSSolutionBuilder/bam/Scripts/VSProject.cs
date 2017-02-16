@@ -48,6 +48,7 @@ namespace VSSolutionBuilder
             this.Sources = new Bam.Core.Array<VSSettingsGroup>();
             this.Others = new Bam.Core.Array<VSSettingsGroup>();
             this.Resources = new Bam.Core.Array<VSSettingsGroup>();
+            this.AssemblyFiles = new Bam.Core.Array<VSSettingsGroup>();
             this.Filter = new VSProjectFilter(this);
             this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
@@ -186,6 +187,17 @@ namespace VSSolutionBuilder
         }
 
         public void
+        AddAssemblyFile(
+            VSSettingsGroup other)
+        {
+            lock (this)
+            {
+                this.AssemblyFiles.AddUnique(other);
+                this.Filter.AddFile(other);
+            }
+        }
+
+        public void
         AddOrderOnlyDependency(
             VSProject dependentProject)
         {
@@ -193,7 +205,8 @@ namespace VSSolutionBuilder
             {
                 if (this.LinkDependentProjects.Contains(dependentProject))
                 {
-                    throw new Bam.Core.Exception("Project already exists as a link dependency");
+                    Bam.Core.Log.DebugMessage("Project {0} already contains a link dependency on {1}. There is no need to add it as an order-only dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                    return;
                 }
                 this.OrderOnlyDependentProjects.AddUnique(dependentProject);
             }
@@ -207,7 +220,8 @@ namespace VSSolutionBuilder
             {
                 if (this.OrderOnlyDependentProjects.Contains(dependentProject))
                 {
-                    throw new Bam.Core.Exception("Project already exists as an order only dependency");
+                    Bam.Core.Log.DebugMessage("Project {0} already contains an order-only dependency on {1}. Removing the order-only dependency, and upgrading to a link dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                    this.OrderOnlyDependentProjects.Remove(dependentProject);
                 }
                 this.LinkDependentProjects.AddUnique(dependentProject);
             }
@@ -263,6 +277,12 @@ namespace VSSolutionBuilder
         }
 
         private Bam.Core.Array<VSSettingsGroup> Resources
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles
         {
             get;
             set;
@@ -444,6 +464,21 @@ namespace VSSolutionBuilder
                     foreach (var config in this.Configurations)
                     {
                         if (!config.Value.ContainsResourceFile(group))
+                        {
+                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                        }
+                    }
+                    group.Serialize(document, resourceGroup);
+                }
+            }
+            if (this.AssemblyFiles.Count > 0)
+            {
+                var resourceGroup = document.CreateVSItemGroup(parentEl: projectEl);
+                foreach (var group in this.AssemblyFiles)
+                {
+                    foreach (var config in this.Configurations)
+                    {
+                        if (!config.Value.ContainsAssemblyFile(group))
                         {
                             group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
                         }

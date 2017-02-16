@@ -76,6 +76,17 @@ namespace C
             }
         }
 
+        public AssembledObjectFileCollection
+        CreateAssemblerSourceContainer(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateContainer<AssembledObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
         public CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -224,13 +235,15 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var exists = System.IO.File.Exists(this.GeneratedPaths[Key].ToString());
+            var libraryPath = this.GeneratedPaths[Key].Parse();
+            var exists = System.IO.File.Exists(libraryPath);
             if (!exists)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
             var requiresDeferredEvaluation = false;
+            var libraryWriteTime = System.IO.File.GetLastWriteTime(libraryPath);
             foreach (var source in this.sourceModules)
             {
                 if (null != source.EvaluationTask)
@@ -249,6 +262,33 @@ namespace C
                         case Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation:
                             requiresDeferredEvaluation = true;
                             break;
+                    }
+                }
+                else
+                {
+                    // if an object file is built, but for some reason (e.g. previous build failure), not been archived
+                    if (source is Bam.Core.IModuleGroup)
+                    {
+                        foreach (var objectFile in source.Children)
+                        {
+                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.Key].Parse();
+                            var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
+                            if (objectFileWriteTime > libraryWriteTime)
+                            {
+                                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], objectFile.GeneratedPaths[ObjectFile.Key]);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var objectFilePath = source.GeneratedPaths[ObjectFile.Key].Parse();
+                        var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
+                        if (objectFileWriteTime > libraryWriteTime)
+                        {
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.GeneratedPaths[ObjectFile.Key]);
+                            return;
+                        }
                     }
                 }
             }

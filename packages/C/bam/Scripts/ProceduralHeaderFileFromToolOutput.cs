@@ -78,6 +78,12 @@ namespace C
                         compiler.IncludePaths.AddUnique(this.IncludeDirectory);
                     }
 
+                    var assembler = settings as C.ICommonAssemblerSettings;
+                    if (null != assembler)
+                    {
+                        assembler.IncludePaths.AddUnique(this.IncludeDirectory);
+                    }
+
                     var rcCompiler = settings as C.ICommonWinResourceCompilerSettings;
                     if (null != rcCompiler)
                     {

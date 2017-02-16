@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     public sealed class XcodeLibrarian :
@@ -67,7 +68,8 @@ namespace C
             }
 
             var excludedSource = new XcodeBuilder.MultiConfigurationValue();
-            if (objectFiles.Count > 1)
+            var realObjectFiles = objectFiles.Where(item => !(item is AssembledObjectFile)); // C,C++,ObjC,ObjC++
+            if (realObjectFiles.Any())
             {
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
                 {
@@ -76,17 +78,17 @@ namespace C
                 };
 
                 var sharedSettings = C.SettingsBase.SharedSettings(
-                    objectFiles,
+                    realObjectFiles,
                     typeof(ClangCommon.XcodeCompilerImplementation),
                     typeof(XcodeProjectProcessor.IConvertToProject),
                     xcodeConvertParameterTypes);
                 (sharedSettings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
 
-                foreach (var objFile in objectFiles)
+                foreach (var objFile in realObjectFiles)
                 {
-                    if (!(objFile as C.ObjectFile).PerformCompilation)
+                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFile).InputPath.Parse();
+                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }
@@ -112,15 +114,23 @@ namespace C
                     }
                     configuration.BuildFiles.Add(buildFile);
                 }
+
+                // now deal with other object file types
+                var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
+                foreach (var asmObj in assembledObjectFiles)
+                {
+                    var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
+                    configuration.BuildFiles.Add(buildFile);
+                }
             }
             else
             {
                 (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
                 foreach (var objFile in objectFiles)
                 {
-                    if (!(objFile as C.ObjectFile).PerformCompilation)
+                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFile).InputPath.Parse();
+                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }

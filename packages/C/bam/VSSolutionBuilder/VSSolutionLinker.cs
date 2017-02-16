@@ -86,8 +86,8 @@ namespace C
 
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
 
-            var realObjectFiles = objectFiles.Where(item => !(item is WinResource));
-            if (realObjectFiles.Count() > 1)
+            var realObjectFiles = objectFiles.Where(item => !((item is WinResource) || (item is AssembledObjectFile)));
+            if (realObjectFiles.Any())
             {
                 var vsConvertParameterTypes = new Bam.Core.TypeArray
                 {
@@ -108,22 +108,30 @@ namespace C
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
                 }
+
+                // now handle the other object file types
+
+                // TODO: if there were many resource files, this could also have a common settings group? Not sure if VS supports this
+                // and it's not as likely to have many resource files, as it would have many source files
+                var resourceObjectFiles = objectFiles.Where(item => item is WinResource);
+                foreach (var resObj in resourceObjectFiles)
+                {
+                    config.AddResourceFile(resObj as WinResource, resObj.Settings);
+                }
+
+                var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
+                foreach (var asmObj in assembledObjectFiles)
+                {
+                    config.AddAssemblyFile(asmObj as AssembledObjectFile);
+                }
             }
             else
             {
-                (realObjectFiles.First().Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
-                foreach (var objFile in realObjectFiles)
+                (objectFiles[0].Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
+                foreach (var objFile in objectFiles)
                 {
                     config.AddSourceFile(objFile, null);
                 }
-            }
-
-            // TODO: if there were many resource files, this could also have a common settings group? Not sure if VS supports this
-            // and it's not as likely to have many resource files, as it would have many source files
-            var resourceObjectFiles = objectFiles.Where(item => item is WinResource);
-            foreach (var resObj in resourceObjectFiles)
-            {
-                config.AddResourceFile(resObj as WinResource, resObj.Settings);
             }
 
             foreach (var input in libraries)

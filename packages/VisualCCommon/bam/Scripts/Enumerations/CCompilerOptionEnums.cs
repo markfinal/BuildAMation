@@ -38,6 +38,14 @@ namespace VisualCCommon
         Level4
     }
 
+    public enum EAssemblerWarningLevel
+    {
+        Level0 = 0,
+        Level1,
+        Level2,
+        Level3
+    }
+
     public enum EDebugType
     {
         Embedded = 1,

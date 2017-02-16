@@ -194,6 +194,7 @@ def xcode_post(package, options, flavour, output_messages, error_messages):
                 # capitalize the first letter of the configuration
                 config = config[0].upper() + config[1:]
                 arg_list.append(config)
+                print "Running '%s' in %s" % (" ".join(arg_list), build_root)
                 output_messages.write("Running '%s' in %s" % (" ".join(arg_list), build_root))
                 p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_root)
                 (output_stream, error_stream) = p.communicate()  # this should WAIT

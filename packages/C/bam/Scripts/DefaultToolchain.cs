@@ -40,6 +40,7 @@ namespace C
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveC_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveCxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> WinResourceCompilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Assemblers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static string UserToolchainOverride = null;
 
         private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
@@ -97,6 +98,7 @@ namespace C
             FindTools<RegisterObjectiveCCompilerAttribute, CompilerTool>(ObjectiveC_Compilers);
             FindTools<RegisterObjectiveCxxCompilerAttribute, CompilerTool>(ObjectiveCxx_Compilers);
             FindTools<RegisterWinResourceCompilerAttribute, WinResourceCompilerTool>(WinResourceCompilers);
+            FindTools<RegisterAssemblerAttribute, AssemblerTool>(Assemblers);
         }
 
         private static ToolType
@@ -210,6 +212,13 @@ namespace C
             EBit bitDepth)
         {
             return GetTool<WinResourceCompilerTool>(WinResourceCompilers, bitDepth, "Windows resource compiler");
+        }
+
+        public static AssemblerTool
+        Assembler(
+            EBit bitDepth)
+        {
+            return GetTool<AssemblerTool>(Assemblers, bitDepth, "Assembler");
         }
     }
 }

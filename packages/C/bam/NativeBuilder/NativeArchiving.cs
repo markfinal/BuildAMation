@@ -42,7 +42,7 @@ namespace C
             {
                 if ((input.ReasonToExecute != null) && (input.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation))
                 {
-                    var objectFileWriteTime = System.IO.File.GetLastWriteTime((input as C.ObjectFile).InputPath.Parse());
+                    var objectFileWriteTime = System.IO.File.GetLastWriteTime((input as C.ObjectFileBase).InputPath.Parse());
                     if (objectFileWriteTime > libWriteTime)
                     {
                         return true;
@@ -76,7 +76,7 @@ namespace C
 
             foreach (var input in objectFiles)
             {
-                if (!(input as C.ObjectFile).PerformCompilation)
+                if (!(input as C.ObjectFileBase).PerformCompilation)
                 {
                     continue;
                 }
