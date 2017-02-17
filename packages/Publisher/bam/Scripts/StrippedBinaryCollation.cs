@@ -315,5 +315,42 @@ namespace Publisher
                 }
             }
         }
+
+        /// <summary>
+        /// Allow additional files to be added to the stripped collation, e.g. documentation, which may have been
+        /// generated following the initial collation.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type containing the file to incorporate into the collation.</typeparam>
+        /// <param name="key">The PathKey of the above module, containing the path to the file.</param>
+        /// <param name="subDirectory">The subdirectory of the collation in which to write the file.</param>
+        /// <returns>A reference to the collated file.</returns>
+        public CollatedFile
+        Include<DependentModule>(
+            Bam.Core.PathKey key,
+            string subDirectory) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            this.Requires(dependent);
+            this.Requires(dependent.Tool);
+
+            var subDir = Bam.Core.TokenizedString.CreateVerbatim(subDirectory);
+            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+                {
+                    Bam.Core.TokenizedString referenceFilePath = null;
+                    this.RegisterGeneratedFile(Key, module.CreateTokenizedString("@dir($(0))", dependent.GeneratedPaths[key]));
+                    module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
+                        module,
+                        referenceFilePath,
+                        subDir,
+                        this.GeneratedPaths[Key]);
+                });
+            this.Requires(copyFileModule);
+
+            copyFileModule.SourceModule = dependent;
+            copyFileModule.SourcePath = dependent.GeneratedPaths[key];
+            copyFileModule.Reference = null;
+            copyFileModule.SubDirectory = subDir;
+            return copyFileModule;
+        }
     }
 }

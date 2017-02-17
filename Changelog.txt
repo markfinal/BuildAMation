@@ -1,3 +1,5 @@
+17-Feb-2017 Fixes #305. Added Publisher.StrippedBinaryCollation.Include<>(), to allow additionally built files, e.g. documentation, to be added to the final published collation before installers. This could happen, say, if the documentation generation depended on a runnable executable, made by the initial publishing step.
+
 16-Feb-2017 ======== Version 1.0.4 beta 3 Release ========
 
 16-Feb-2017 Fixes #302. The Xcode publishing logic was incorrect when the 'reference' (i.e. executable to publish) was not in the top level package, and other modules in the reference's package needed to be published beside it.
