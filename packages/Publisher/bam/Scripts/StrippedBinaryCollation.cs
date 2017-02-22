@@ -90,6 +90,12 @@ namespace Publisher
             set;
         }
 
+        private System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> RefMap
+        {
+            get;
+            set;
+        }
+
         private StripModule
         StripBinary(
             CollatedObject collatedFile,
@@ -314,6 +320,7 @@ namespace Publisher
                     throw new Bam.Core.Exception("Unhandled collation module: {0}", req.ToString());
                 }
             }
+            this.RefMap = referenceMap;
         }
 
         /// <summary>
@@ -323,20 +330,24 @@ namespace Publisher
         /// <typeparam name="DependentModule">Module type containing the file to incorporate into the collation.</typeparam>
         /// <param name="key">The PathKey of the above module, containing the path to the file.</param>
         /// <param name="subDirectory">The subdirectory of the collation in which to write the file.</param>
+        /// <param name="reference">The reference from the original Collation that the subdirectory specified is relative to. This references is translated into the stripped directory hierarchy before applying the subdirectory.</param>
         /// <returns>A reference to the collated file.</returns>
         public CollatedFile
         Include<DependentModule>(
             Bam.Core.PathKey key,
-            string subDirectory) where DependentModule : Bam.Core.Module, new()
+            string subDirectory,
+            CollatedObject reference) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             this.Requires(dependent);
             this.Requires(dependent.Tool);
 
+            var strippedInitialRef = this.RefMap[reference];
+
             var subDir = Bam.Core.TokenizedString.CreateVerbatim(subDirectory);
             var copyFileModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
                 {
-                    Bam.Core.TokenizedString referenceFilePath = null;
+                Bam.Core.TokenizedString referenceFilePath = strippedInitialRef.GeneratedPaths[this.ReferenceKey];
                     this.RegisterGeneratedFile(Key, module.CreateTokenizedString("@dir($(0))", dependent.GeneratedPaths[key]));
                     module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
                         module,
@@ -348,7 +359,7 @@ namespace Publisher
 
             copyFileModule.SourceModule = dependent;
             copyFileModule.SourcePath = dependent.GeneratedPaths[key];
-            copyFileModule.Reference = null;
+            copyFileModule.Reference = strippedInitialRef as CollatedFile;
             copyFileModule.SubDirectory = subDir;
             return copyFileModule;
         }
