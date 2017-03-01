@@ -1,3 +1,5 @@
+01-Mar-2017 ======== Version 1.0.4 Release ========
+
 17-Feb-2017 Fixes #305. Added Publisher.StrippedBinaryCollation.Include<>(), to allow additionally built files, e.g. documentation, to be added to the final published collation before installers. This could happen, say, if the documentation generation depended on a runnable executable, made by the initial publishing step.
 
 16-Feb-2017 ======== Version 1.0.4 beta 3 Release ========
