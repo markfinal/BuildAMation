@@ -1,3 +1,5 @@
+11-Mar-2017 Fixes #308. Version check for the BAM assembly required (as specified in package definition files) no longer gives 'major', 'minor', and 'patch' the same precedence, i.e. v1.0.2 was incorrectly considered more recent than v1.1.0, as the patch value was greater in the former.
+
 01-Mar-2017 ======== Version 1.0.4 Release ========
 
 17-Feb-2017 Fixes #305. Added Publisher.StrippedBinaryCollation.Include<>(), to allow additionally built files, e.g. documentation, to be added to the final published collation before installers. This could happen, say, if the documentation generation depended on a runnable executable, made by the initial publishing step.
