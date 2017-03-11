@@ -1297,17 +1297,24 @@ namespace Bam.Core
                 if (asm.Name == "Bam.Core")
                 {
                     var bamVersion = Graph.Instance.ProcessState.Version;
-                    if (asm.MajorVersion > bamVersion.Major ||
-                        asm.MinorVersion > bamVersion.Minor ||
-                        asm.PatchVersion > bamVersion.Build)
+                    if (asm.MajorVersion <= bamVersion.Major)
                     {
-                        throw new Exception("This version of BuildAMation, v{0}, does not satisfy minimum requirements v{1}.{2}.{3}, from package {4}",
-                            Graph.Instance.ProcessState.VersionString,
-                            asm.MajorVersion,
-                            asm.MinorVersion,
-                            asm.PatchVersion,
-                            this.Name);
+                        return;
                     }
+                    if (asm.MinorVersion <= bamVersion.Minor)
+                    {
+                        return;
+                    }
+                    if (asm.PatchVersion <= bamVersion.Build)
+                    {
+                        return;
+                    }
+                    throw new Exception("This version of BuildAMation, v{0}, does not satisfy minimum requirements v{1}.{2}.{3}, from package {4}",
+                        Graph.Instance.ProcessState.VersionString,
+                        asm.MajorVersion,
+                        asm.MinorVersion,
+                        asm.PatchVersion,
+                        this.Name);
                 }
                 else
                 {
