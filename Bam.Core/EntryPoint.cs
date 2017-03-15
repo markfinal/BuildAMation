@@ -195,6 +195,19 @@ namespace Bam.Core
                 }
             }
 
+            // look for module configuration override
+            {
+                var overrides = graph.ScriptAssembly.GetTypes().Where(t => typeof(IOverrideModuleConfiguration).IsAssignableFrom(t));
+                if (overrides.Count() > 0)
+                {
+                    if (overrides.Count() > 1)
+                    {
+                        throw new Exception("Too many implementations of {0}", typeof(IOverrideModuleConfiguration).ToString());
+                    }
+                    graph.OverrideModuleConfiguration = System.Activator.CreateInstance(overrides.First()) as IOverrideModuleConfiguration;
+                }
+            }
+
             packageMetaDataProfile.StopProfile();
 
             var topLevelNamespace = graph.MasterPackage.Name;

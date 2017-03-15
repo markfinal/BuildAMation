@@ -223,6 +223,7 @@ namespace Bam.Core
                 {
                     preInitCallback(module);
                 }
+                module.InitializeModuleConfiguration(); // required to run after the preInitCallback for referenced modules
                 module.Init(parent);
                 if (postInitCallback != null)
                 {
@@ -1045,6 +1046,58 @@ namespace Bam.Core
             Module module)
         {
             return AllModules.Contains(module);
+        }
+
+        private void
+        InitializeModuleConfiguration()
+        {
+            this.Configuration = null;
+            if (!Graph.Instance.IsReferencedModule(this))
+            {
+                return;
+            }
+            var accessConfig = this as IHasModuleConfiguration;
+            if (null == accessConfig)
+            {
+                return;
+            }
+            var writeType = accessConfig.WriteableClassType;
+            if (!writeType.IsClass)
+            {
+                throw new Exception("Module configuration writeable type {0} must be a class", writeType.ToString());
+            }
+            if (writeType.IsAbstract)
+            {
+                throw new Exception("Module configuration writeable type {0} must not be abstract", writeType.ToString());
+            }
+            if (!typeof(IModuleConfiguration).IsAssignableFrom(writeType))
+            {
+                throw new Exception("Module configuration writeable type {0} must implement {1}", writeType.ToString(), typeof(IModuleConfiguration).ToString());
+            }
+            if (null == writeType.GetConstructor(new[] { typeof(Environment) }))
+            {
+                throw new Exception("Module configuration writeable type {0} must define a public constructor accepting a {1}", writeType.ToString(), typeof(Environment).ToString());
+            }
+            var readType = accessConfig.ReadOnlyInterfaceType;
+            if (!readType.IsAssignableFrom(writeType))
+            {
+                throw new Exception("Module configuration writeable type {0} does not implement the readable type {1}", writeType.ToString(), readType.ToString());
+            }
+            this.Configuration = System.Activator.CreateInstance(writeType, new[] { this.BuildEnvironment }) as IModuleConfiguration;
+            if (Graph.Instance.OverrideModuleConfiguration != null)
+            {
+                Graph.Instance.OverrideModuleConfiguration.execute(this.Configuration);
+            }
+        }
+
+        /// <summary>
+        /// If a Module's configuration can be overridden by the user, the instance of the class for the Module allowing
+        /// that configuration to be updated.
+        /// </summary>
+        public IModuleConfiguration Configuration
+        {
+            get;
+            private set;
         }
     }
 }

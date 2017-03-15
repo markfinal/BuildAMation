@@ -637,6 +637,7 @@ namespace Bam.Core
             // add/remove other definitions
             definitions.Add(VersionDefineForCompiler);
             definitions.Add(HostPlatformDefineForCompiler);
+            definitions.AddRange(Features.PreprocessorDefines);
             definitions.Sort();
 
             gatherSourceProfile.StopProfile();

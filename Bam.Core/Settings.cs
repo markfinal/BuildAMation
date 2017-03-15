@@ -161,7 +161,7 @@ namespace Bam.Core
         public Module Module
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>

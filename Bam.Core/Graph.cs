@@ -921,5 +921,14 @@ namespace Bam.Core
             get;
             set;
         }
+
+        /// <summary>
+        /// Obtain the IOverrideModuleConfiguration instance (if it exists) from the package assembly.
+        /// </summary>
+        public IOverrideModuleConfiguration OverrideModuleConfiguration
+        {
+            get;
+            set;
+        }
     }
 }

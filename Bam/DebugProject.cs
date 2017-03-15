@@ -182,6 +182,7 @@ namespace Bam
             allDefines.Add("TRACE");
             allDefines.Add(Core.PackageUtilities.VersionDefineForCompiler);
             allDefines.Add(Core.PackageUtilities.HostPlatformDefineForCompiler);
+            allDefines.AddRange(Core.Features.PreprocessorDefines);
             // custom definitions from all the packages in the compilation
             foreach (var package in Core.Graph.Instance.Packages)
             {

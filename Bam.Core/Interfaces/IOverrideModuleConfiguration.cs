@@ -27,34 +27,23 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright 2010-2017")]
-[assembly: AssemblyProduct("BuildAMation")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-// This sets the default COM visibility of types in the assembly to invisible.
-// If you need to expose a type to COM, use [ComVisible(true)] on that type.
-[assembly: ComVisible(false)]
-
-// The assembly version has following format :
-//
-// Major.Minor.Build.Revision
-//
-// The AssemblyVersion does not iterate with builds, as this is used to identify references during builds.
-// AssemblyInformationalVersion is modified by the release procedure for any alpha/beta qualifications, and is used
-// in the 'product version' detail when inspecting an assembly, and also by "bam --version".
-// Semantic versioning (http://semver.org/) is used.
-[assembly: AssemblyVersion("1.1.0")]
-[assembly: AssemblyInformationalVersion("1.1.0")]
-
-// Because it exposes externally visible types.
-[assembly: CLSCompliant(true)]
+namespace Bam.Core
+{
+    /// <summary>
+    /// Users wishing to override any module's configuration must implement a non-abstract class that implements
+    /// this interface.
+    /// Each module with a configuration interface is passed to the interface function.
+    /// The user is expected to cast the interface to a particular module's writeable configuration class in order
+    /// to modify the properties.
+    /// </summary>
+    public interface IOverrideModuleConfiguration
+    {
+        /// <summary>
+        /// Allow modification of a module's configuration
+        /// </summary>
+        /// <param name="config">A module's configuration interface - cast to the writeable class exposed by the Module to use</param>
+        void
+        execute(
+            IModuleConfiguration config);
+    }
+}

@@ -27,34 +27,30 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
+namespace Bam.Core
+{
+    /// <summary>
+    /// Module classes must implement this interface to indicate to the core
+    /// that configuration settings are available to the user.
+    /// </summary>
+    public interface IHasModuleConfiguration
+    {
+        /// <summary>
+        /// Specify the interface type that defines the read-only properties for the module's configuration
+        /// </summary>
+        System.Type ReadOnlyInterfaceType
+        {
+            get;
+        }
 
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright 2010-2017")]
-[assembly: AssemblyProduct("BuildAMation")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-// This sets the default COM visibility of types in the assembly to invisible.
-// If you need to expose a type to COM, use [ComVisible(true)] on that type.
-[assembly: ComVisible(false)]
-
-// The assembly version has following format :
-//
-// Major.Minor.Build.Revision
-//
-// The AssemblyVersion does not iterate with builds, as this is used to identify references during builds.
-// AssemblyInformationalVersion is modified by the release procedure for any alpha/beta qualifications, and is used
-// in the 'product version' detail when inspecting an assembly, and also by "bam --version".
-// Semantic versioning (http://semver.org/) is used.
-[assembly: AssemblyVersion("1.1.0")]
-[assembly: AssemblyInformationalVersion("1.1.0")]
-
-// Because it exposes externally visible types.
-[assembly: CLSCompliant(true)]
+        /// <summary>
+        /// Specify the class type that defines the writeable properties (and defaults) for the module's configuration.
+        /// The class must have a non-default public constructor accepting a single Bam.Core.Environment argument, and
+        /// must implement the read-only configuration interface.
+        /// </summary>
+        System.Type WriteableClassType
+        {
+            get;
+        }
+    }
+}
