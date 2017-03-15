@@ -58,6 +58,11 @@ namespace ConfigurationTest1
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/testapp.c");
             this.CompileAndLinkAgainst<ConfigurableLibrary>(source);
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
         }
     }
 }
