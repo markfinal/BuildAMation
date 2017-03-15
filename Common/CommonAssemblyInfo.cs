@@ -53,8 +53,8 @@ using System.Runtime.InteropServices;
 // AssemblyInformationalVersion is modified by the release procedure for any alpha/beta qualifications, and is used
 // in the 'product version' detail when inspecting an assembly, and also by "bam --version".
 // Semantic versioning (http://semver.org/) is used.
-[assembly: AssemblyVersion("1.0.4")]
-[assembly: AssemblyInformationalVersion("1.0.4")]
+[assembly: AssemblyVersion("1.0.5")]
+[assembly: AssemblyInformationalVersion("1.0.5")]
 
 // Because it exposes externally visible types.
 [assembly: CLSCompliant(true)]
