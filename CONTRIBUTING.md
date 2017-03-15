@@ -2,7 +2,7 @@
 
 Contributions are welcomed into the BuildAMation source tree. Please check the existing Issues before starting on a new piece of work.
 
-The BuildAMation github project contains the core (agnostic dependency generator and utilities) and basic set of packages that all users should need. If you find your usage is outside of this definition, and you want to extend BuildAMation into new areas, then most likely you will need to create a new package repository. Many of these exist already, e.g. bam-boost, bam-graphicssdks, bam-python, and contributions are welcomed to those.
+The BuildAMation github project contains the core (agnostic dependency generator and utilities) and basic set of packages that all users should find useful. If you find your intended usage is outside of this definition, and you want to extend BuildAMation into new areas, then most likely you will need to create a new package repository. Many of these exist already, e.g. bam-boost, bam-graphicssdks, bam-python, and contributions are welcomed to those as well.
 
 BuildAMation currently has two branches on github:
 * **master** - bleeding edge, which will target the next major.minor version.
@@ -10,7 +10,7 @@ BuildAMation currently has two branches on github:
 
 A large new feature should be targetted into the master branch.
 
-Any bug fixes should be into maintenance branches initially. These will be merged into master at a later date.
+Any bug fixes should be into maintenance branches initially. These will be merged into master at a future time.
 
 Feel free to fork BuildAMation to make changes, and submit pull requests.
 
