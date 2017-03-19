@@ -139,7 +139,7 @@ class Mingw32(ConfigOptions):
 class GccCommon(ConfigOptions):
     def __init__(self, arch):
         super(GccCommon, self).__init__("Gcc", arch)
-        ConfigOptions.register_option("Linux", ("GCC.version", "Set the GCC version"))
+        ConfigOptions.register_option("Linux", ("Gcc.version", "Set the Gcc version"))
 
 
 class Gcc64(GccCommon):
