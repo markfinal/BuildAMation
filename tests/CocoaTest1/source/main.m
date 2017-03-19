@@ -49,10 +49,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         id quitTitle = [@"Quit " stringByAppendingString:appName];
         id quitMenuItem = [[[NSMenuItem alloc] initWithTitle:quitTitle action:@selector(terminate:) keyEquivalent:@"q"] autorelease];
 
+#ifdef __MAC_OS_X_VERSION_MAX_ALLOWED
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 101202
+        window  = [[[NSWindow alloc] initWithContentRect:frame
+                                     styleMask:(NSWindowStyleMaskTitled|NSWindowStyleMaskClosable|NSWindowStyleMaskMiniaturizable|NSWindowStyleMaskResizable)
+                                     backing:NSBackingStoreBuffered /* supports GPU acceleration */
+                                     defer:NO] autorelease];
+#else
         window  = [[[NSWindow alloc] initWithContentRect:frame
                                      styleMask:(NSTitledWindowMask|NSClosableWindowMask|NSMiniaturizableWindowMask|NSResizableWindowMask)
                                      backing:NSBackingStoreBuffered /* supports GPU acceleration */
                                      defer:NO] autorelease];
+#endif
+#else
+#error "macOS only"
+#endif
         [window setBackgroundColor:[NSColor blueColor]];
         [window setTitle:[NSString stringWithUTF8String:getWindowTitle()]];
         [window center];
