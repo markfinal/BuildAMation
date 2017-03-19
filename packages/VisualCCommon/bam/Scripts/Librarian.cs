@@ -29,16 +29,13 @@
 #endregion // License
 namespace VisualCCommon
 {
-    [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class Librarian :
+    public abstract class LibrarianBase :
         C.LibrarianTool
     {
-        public Librarian()
+        protected LibrarianBase()
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin\lib.exe"));
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");
 
@@ -70,6 +67,28 @@ namespace VisualCCommon
             {
                 return "@";
             }
+        }
+    }
+
+    [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    public sealed class Librarian32 :
+        LibrarianBase
+    {
+        public Librarian32()
+        {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(0)\lib.exe", null, new Bam.Core.TokenizedStringArray(meta.Bin32Dir)));
+        }
+    }
+
+    [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
+    public sealed class Librarian64 :
+        LibrarianBase
+    {
+        public Librarian64()
+        {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(0)\lib.exe", null, new Bam.Core.TokenizedStringArray(meta.Bin64Dir)));
         }
     }
 }

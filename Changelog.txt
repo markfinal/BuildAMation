@@ -1,3 +1,5 @@
+19-Mar-2017 Fixes #310. Added VisualC 2017 support. Test built in Windows 8.1.
+
 19-Mar-2017 Fixes #309. Added Clang Xcode8 support. Test built in 10.11.6 (but not run as requires 10.12).
 
 19-Mar-2017 Fixes #172. Added Gcc 5.4 support. Tested in Ubuntu 16.04.2 LTS. Fixed the Python command line option in the test scripts to select the version of Gcc.

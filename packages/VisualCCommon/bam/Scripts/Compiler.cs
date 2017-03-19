@@ -41,7 +41,6 @@ namespace VisualCCommon
 
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
             this.Macros.AddVerbatim("objext", ".obj");
 
             if (null != meta.RequiredExecutablePaths)
@@ -49,18 +48,28 @@ namespace VisualCCommon
                 this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
             }
 
+            // mspdbxxx.dll needed for the host architecture
+            if (this.EnvironmentVariables.ContainsKey("PATH"))
+            {
+                this.EnvironmentVariables["PATH"].Add(meta.MSPDBDir);
+            }
+            else
+            {
+                this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(meta.MSPDBDir));
+            }
+
             this.PublicPatch((settings, appliedTo) =>
                 {
                     var compilation = settings as C.ICommonCompilerSettings;
                     if (null != compilation)
                     {
-                        compilation.SystemIncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
+                        compilation.SystemIncludePaths.AddUnique(meta.IncludeDir);
                     }
 
                     var rcCompilation = settings as C.ICommonWinResourceCompilerSettings;
                     if (null != rcCompilation)
                     {
-                        rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)\VC\include"));
+                        rcCompilation.IncludePaths.AddUnique(meta.IncludeDir);
                     }
                 });
 
@@ -120,6 +129,8 @@ namespace VisualCCommon
     {
         public Compiler32()
         {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("BinPath", meta.Bin32Dir);
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\cl.exe"));
         }
 
@@ -158,16 +169,9 @@ namespace VisualCCommon
         public Compiler64()
             : base()
         {
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\x86_amd64\cl.exe"));
-            // some DLLs exist only in the 32-bit bin folder
-            if (this.EnvironmentVariables.ContainsKey("PATH"))
-            {
-                this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
-            }
-            else
-            {
-                this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
-            }
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("BinPath", meta.Bin64Dir);
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\cl.exe"));
         }
 
         protected override void

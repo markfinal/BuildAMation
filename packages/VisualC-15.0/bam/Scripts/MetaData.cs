@@ -43,33 +43,32 @@ namespace VisualC
             }
 
             // TODO: get this from the registry
-            this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 10.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
+            this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio/2017/Community", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
             if (!System.IO.Directory.Exists(this.InstallDir.Parse()))
             {
-                throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2010 installed?", this.InstallDir.Parse());
+                throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2017 installed?", this.InstallDir.Parse());
             }
-
             if (Bam.Core.OSUtilities.Is64BitHosting)
             {
-                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin/x86_amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/Common7", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/bin/HostX64/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/bin/HostX64/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/bin/HostX64/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
             }
             else
             {
-                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin/x86_amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/Common7", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/bin/HostX86/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/bin/HostX86/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/bin/HostX86/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
             }
-            this.IncludeDir = Bam.Core.TokenizedString.Create("$(0)/VC/include", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-            this.Lib32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/lib", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-            this.Lib64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/lib/amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            this.IncludeDir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/include", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            this.Lib32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/lib/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            this.Lib64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/14.10.25017/lib/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
 
-            this.SolutionFormatVersion = "11.00";
-            this.PlatformToolset = "v100";
-            this.VCXProjToolsVersion = "4.0";
-            this.VCXProjFiltersToolsVersion = "4.0";
-            this.UseWindowsSDKPublicPatches = false;
+            this.SolutionFormatVersion = "12.00"; // same as VS2015
+            this.PlatformToolset = "v141";
+            this.VCXProjToolsVersion = "15.0";
+            this.VCXProjFiltersToolsVersion = "4.0"; // same as VS2015
+            this.UseWindowsSDKPublicPatches = true; // headers like stdio.h are in WindowsSDK 10
             this.RequiredExecutablePaths = new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create("$(0)/Common7/IDE", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
         }
 
@@ -274,15 +273,27 @@ namespace VisualC
         VisualCCommon.IRuntimeLibraryPathMeta.CRuntimePaths(
             C.EBit depth)
         {
+            // only redist the VisualC specific version runtime, and the universal CRT
+            // don't redist the api-ms-win-crt-*-l1-1-0.dll files from the WindowsSDK, as I can find no reference
+            // to needing to do so
+
+            var windowsSDKMeta = Bam.Core.Graph.Instance.PackageMetaData<WindowsSDK.MetaData>("WindowsSDK");
+
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC100.CRT/msvcr100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    {
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC150.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                    }
                     break;
 
                 case C.EBit.SixtyFour:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC100.CRT/msvcr100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    {
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC150.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                    }
                     break;
 
                 default:
@@ -299,11 +310,11 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC100.CRT/msvcp100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC150.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
                     break;
 
                 case C.EBit.SixtyFour:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC100.CRT/msvcp100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC150.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
                     break;
 
                 default:

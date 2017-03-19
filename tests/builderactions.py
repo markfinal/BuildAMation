@@ -22,7 +22,8 @@ msBuildVersionToNetMapping = {
     "10.0": "v4.0.30319",
     "11.0": "v4.0.30319",
     "12.0": "v4.0.30319",
-    "14.0": "14.0"
+    "14.0": "14.0",
+    "15.0": "15.0"
 }
 
 
@@ -56,8 +57,13 @@ def vssolution_post(package, options, flavour, output_messages, error_messages):
             visualc_version = defaultVCVersion
             visualc_version_split = visualc_version.split('.')
         visualc_major_version = int(visualc_version_split[0])
-        # location of MSBuild changed in VS2013
-        if visualc_major_version >= 12:
+        # location of MSBuild changed in VS2013, and VS2017
+        if visualc_major_version >= 15:
+            if os.environ.has_key("ProgramFiles(x86)"):
+                ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\MSBuild.exe" % visualc_version
+            else:
+                ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\amd64\MSBuild.exe" % visualc_version
+        elif visualc_major_version >= 12:
             # VS2013 onwards path for MSBuild
             if os.environ.has_key("ProgramFiles(x86)"):
                 ms_build_path = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe" % visualc_version

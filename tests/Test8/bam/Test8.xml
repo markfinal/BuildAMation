@@ -8,6 +8,7 @@
     <Package name="Clang" version="Xcode6" default="true" />
     <Package name="Clang" version="Xcode7" />
     <Package name="Clang" version="Xcode8" />
+    <Package name="Gcc" version="4.8" default="true" />
     <Package name="Mingw" version="4.8.1" />
     <Package name="Publisher" />
     <Package name="Test7" />
@@ -15,6 +16,7 @@
     <Package name="VisualC" version="11.0" />
     <Package name="VisualC" version="12.0" default="true" />
     <Package name="VisualC" version="14.0" />
+    <Package name="VisualC" version="15.0" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="0" />

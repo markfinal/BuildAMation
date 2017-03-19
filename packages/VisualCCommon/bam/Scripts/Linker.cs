@@ -33,14 +33,14 @@ namespace VisualCCommon
         C.LinkerTool
     {
         protected LinkerBase(
-            string toolPath,
+            string toolPath, // TODO: unused
             string libPath)
         {
             // TODO: positional tokens?
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
-            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(InstallPath)" + toolPath));
+            this.Macros.Add("LinkerPath", this.CreateTokenizedString("$(BinPath)/link.exe"));
+
             this.Macros.AddVerbatim("exeext", ".exe");
             this.Macros.AddVerbatim("dynamicprefix", string.Empty);
             this.Macros.AddVerbatim("dynamicext", ".dll");
@@ -57,15 +57,6 @@ namespace VisualCCommon
             {
                 this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
             }
-
-            this.PublicPatch((settings, appliedTo) =>
-            {
-                var linking = settings as C.ICommonLinkerSettings;
-                if (null != linking)
-                {
-                    linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(InstallPath)" + libPath));
-                }
-            });
         }
 
         public override Bam.Core.Settings
@@ -138,7 +129,19 @@ namespace VisualCCommon
     {
         public Linker32() :
             base(@"\VC\bin\link.exe", @"\VC\lib")
-        {}
+        {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("BinPath", meta.Bin32Dir);
+
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var linking = settings as C.ICommonLinkerSettings;
+                    if (null != linking)
+                    {
+                        linking.LibraryPaths.AddUnique(meta.Lib32Dir);
+                    }
+                });
+        }
     }
 
     [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
@@ -149,6 +152,18 @@ namespace VisualCCommon
         public Linker64() :
             base(@"\VC\bin\x86_amd64\link.exe", @"\VC\lib\amd64")
         {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("BinPath", meta.Bin64Dir);
+
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var linking = settings as C.ICommonLinkerSettings;
+                    if (null != linking)
+                    {
+                        linking.LibraryPaths.AddUnique(meta.Lib64Dir);
+                    }
+                });
+
             // some DLLs exist only in the 32-bit bin folder
             if (this.EnvironmentVariables.ContainsKey("PATH"))
             {

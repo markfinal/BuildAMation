@@ -48,12 +48,31 @@ namespace VisualC
             {
                 throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2012 installed?", this.InstallDir.Parse());
             }
+
+            if (Bam.Core.OSUtilities.Is64BitHosting)
+            {
+                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin/x86_amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/Common7", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            }
+            else
+            {
+                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin/x86_amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/Common7", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            }
+            this.IncludeDir = Bam.Core.TokenizedString.Create("$(0)/VC/include", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            this.Lib32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/lib", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            this.Lib64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/lib/amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+
             this.SolutionFormatVersion = "12.00";
             this.PlatformToolset = "v110";
             this.VCXProjToolsVersion = "4.0";
             this.VCXProjFiltersToolsVersion = "4.0";
             this.UseWindowsSDKPublicPatches = false;
-            this.RequiredExecutablePaths = new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create("$(0)/Common7/IDE", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+            this.RequiredExecutablePaths = new Bam.Core.TokenizedStringArray(
+                Bam.Core.TokenizedString.Create("$(0)/Common7/IDE", null, new Bam.Core.TokenizedStringArray(this.InstallDir)),
+                Bam.Core.TokenizedString.Create("$(0)/VC/bin", null, new Bam.Core.TokenizedStringArray(this.InstallDir))); // cvtres.exe
         }
 
         public override object this[string index]
@@ -82,6 +101,90 @@ namespace VisualC
             private set
             {
                 this.Meta["InstallDir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString
+        Bin32Dir
+        {
+            get
+            {
+                return this.Meta["Bin32Dir"] as Bam.Core.TokenizedString;
+            }
+
+            private set
+            {
+                this.Meta["Bin32Dir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString
+        Bin64Dir
+        {
+            get
+            {
+                return this.Meta["Bin64Dir"] as Bam.Core.TokenizedString;
+            }
+
+            private set
+            {
+                this.Meta["Bin64Dir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString
+        IncludeDir
+        {
+            get
+            {
+                return this.Meta["IncludeDir"] as Bam.Core.TokenizedString;
+            }
+
+            private set
+            {
+                this.Meta["IncludeDir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString
+        Lib32Dir
+        {
+            get
+            {
+                return this.Meta["Lib32Dir"] as Bam.Core.TokenizedString;
+            }
+
+            private set
+            {
+                this.Meta["Lib32Dir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString
+        Lib64Dir
+        {
+            get
+            {
+                return this.Meta["Lib64Dir"] as Bam.Core.TokenizedString;
+            }
+
+            private set
+            {
+                this.Meta["Lib64Dir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString
+        MSPDBDir
+        {
+            get
+            {
+                return this.Meta["MSPDBDIR"] as Bam.Core.TokenizedString;
+            }
+
+            private set
+            {
+                this.Meta["MSPDBDIR"] = value;
             }
         }
 
