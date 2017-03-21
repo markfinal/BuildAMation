@@ -33,7 +33,7 @@ namespace GccCommon
     {
         public static void
         Convert(
-            this IArchiverSettings settings,
+            this ICommonArchiverSettings settings,
             Bam.Core.StringArray commandLine)
         {
             if (settings.Ranlib)

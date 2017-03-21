@@ -34,7 +34,7 @@ namespace Gcc
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonArchiverSettings,
         C.IAdditionalSettings,
-        GccCommon.IArchiverSettings
+        GccCommon.ICommonArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)
@@ -55,13 +55,13 @@ namespace Gcc
             set;
         }
 
-        bool GccCommon.IArchiverSettings.Ranlib
+        bool GccCommon.ICommonArchiverSettings.Ranlib
         {
             get;
             set;
         }
 
-        bool GccCommon.IArchiverSettings.DoNotWarnIfLibraryCreated
+        bool GccCommon.ICommonArchiverSettings.DoNotWarnIfLibraryCreated
         {
             get;
             set;
@@ -73,7 +73,7 @@ namespace Gcc
             set;
         }
 
-        GccCommon.EArchiverCommand GccCommon.IArchiverSettings.Command
+        GccCommon.EArchiverCommand GccCommon.ICommonArchiverSettings.Command
         {
             get;
             set;

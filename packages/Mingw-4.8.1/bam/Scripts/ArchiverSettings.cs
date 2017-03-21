@@ -34,7 +34,7 @@ namespace Mingw
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonArchiverSettings,
         C.IAdditionalSettings,
-        MingwCommon.IArchiverSettings
+        MingwCommon.ICommonArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)
@@ -55,13 +55,13 @@ namespace Mingw
             set;
         }
 
-        bool MingwCommon.IArchiverSettings.Ranlib
+        bool MingwCommon.ICommonArchiverSettings.Ranlib
         {
             get;
             set;
         }
 
-        bool MingwCommon.IArchiverSettings.DoNotWarnIfLibraryCreated
+        bool MingwCommon.ICommonArchiverSettings.DoNotWarnIfLibraryCreated
         {
             get;
             set;
@@ -73,7 +73,7 @@ namespace Mingw
             set;
         }
 
-        MingwCommon.EArchiverCommand MingwCommon.IArchiverSettings.Command
+        MingwCommon.EArchiverCommand MingwCommon.ICommonArchiverSettings.Command
         {
             get;
             set;

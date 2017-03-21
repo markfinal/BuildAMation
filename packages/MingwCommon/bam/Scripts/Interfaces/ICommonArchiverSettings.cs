@@ -27,18 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace MingwCommon.DefaultSettings
+namespace MingwCommon
 {
-    public static partial class DefaultSettingsExtensions
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonArchiverSettings :
+        Bam.Core.ISettingsBase
     {
-        public static void
-        Defaults(
-            this IArchiverSettings settings,
-            Bam.Core.Module module)
+        bool Ranlib
         {
-            settings.Ranlib = true;
-            settings.DoNotWarnIfLibraryCreated = true;
-            settings.Command = MingwCommon.EArchiverCommand.Replace;
+            get;
+            set;
+        }
+
+        bool DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        MingwCommon.EArchiverCommand Command
+        {
+            get;
+            set;
         }
     }
 }

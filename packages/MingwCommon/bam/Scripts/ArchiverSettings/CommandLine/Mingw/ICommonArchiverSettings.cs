@@ -27,28 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace MingwCommon
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IArchiverSettings :
-        Bam.Core.ISettingsBase
+    public static partial class CommandLineImplementation
     {
-        bool Ranlib
+        public static void
+        Convert(
+            this ICommonArchiverSettings settings,
+            Bam.Core.StringArray commandLine)
         {
-            get;
-            set;
-        }
+            if (settings.Ranlib)
+            {
+                commandLine.Add("-s");
+            }
+            if (settings.DoNotWarnIfLibraryCreated)
+            {
+                commandLine.Add("-c");
+            }
+            switch (settings.Command)
+            {
+                case MingwCommon.EArchiverCommand.Replace:
+                    commandLine.Add("-r");
+                    break;
 
-        bool DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        GccCommon.EArchiverCommand Command
-        {
-            get;
-            set;
+                default:
+                    throw new Bam.Core.Exception("No such archiver command");
+            }
         }
     }
 }
