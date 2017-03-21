@@ -2,7 +2,7 @@
 
 19-Mar-2017 ======== Version 1.1.0 beta 2 Release ========
 
-19-Mar-2017 Fixes #310. Added VisualC 2017 support. Test built in Windows 8.1.
+19-Mar-2017 Fixes #310. Added VisualC 2017 support. Test built in Windows 8.1. Note that VisualCCommon.Librarian has been split into VisualCCommon.LibrarianBase, Librarian32 and Librarian64.
 
 19-Mar-2017 Fixes #309. Added Clang Xcode8 support. Test built in 10.11.6 (but not run as requires 10.12).
 
