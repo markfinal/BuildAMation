@@ -61,5 +61,13 @@ namespace C
             this.DependsOn(child);
             return child;
         }
+
+        public CompilerTool Compiler
+        {
+            get
+            {
+                return this.Tool as CompilerTool;
+            }
+        }
     }
 }
