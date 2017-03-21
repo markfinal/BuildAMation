@@ -43,6 +43,18 @@ namespace Test8
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             this.RequiredToExist<Test7.ExplicitDynamicLibrary>(source);
 
+            // warning suppression only required for VS2015 and above
+            if (source.Compiler is VisualCCommon.CompilerBase &&
+                (source.Compiler as Bam.Core.ISemanticVersion).IsAtLeast(19))
+            {
+                source["main.c"].ForEach(item =>
+                    item.PrivatePatch(settings =>
+                        {
+                            var compiler = settings as C.ICommonCompilerSettings;
+                            compiler.DisableWarnings.AddUnique("4091"); // C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(1544): warning C4091: 'typedef ': ignored on left of '' when no variable is declared
+                        }));
+            }
+
             if (this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);

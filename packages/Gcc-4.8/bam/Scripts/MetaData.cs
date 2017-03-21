@@ -179,5 +179,23 @@ namespace Gcc
                 return this.Meta["LdPath"] as string;
             }
         }
+
+        public int
+        CompilerMajorVersion
+        {
+            get
+            {
+                return 4;
+            }
+        }
+
+        public int
+        CompilerMinorVersion
+        {
+            get
+            {
+                return 8;
+            }
+        }
     }
 }

@@ -35,6 +35,8 @@ namespace GccCommon
         protected CompilerBase()
         {
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+            this.MajorVersion = this.GccMetaData.CompilerMajorVersion;
+            this.MinorVersion = this.GccMetaData.CompilerMinorVersion;
             this.Macros.AddVerbatim("objext", ".o");
         }
 

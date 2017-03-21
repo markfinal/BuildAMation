@@ -269,6 +269,24 @@ namespace VisualC
             }
         }
 
+        public int
+        CompilerMajorVersion
+        {
+            get
+            {
+                return 19;
+            }
+        }
+
+        public int
+        CompilerMinorVersion
+        {
+            get
+            {
+                return 10;
+            }
+        }
+
         Bam.Core.TokenizedStringArray
         VisualCCommon.IRuntimeLibraryPathMeta.CRuntimePaths(
             C.EBit depth)

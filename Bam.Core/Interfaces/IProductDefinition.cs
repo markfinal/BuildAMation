@@ -32,36 +32,13 @@ namespace Bam.Core
     /// <summary>
     /// Interface to allow users to define a 'product' in their package builds.
     /// </summary>
-    public interface IProductDefinition
+    public interface IProductDefinition :
+        ISemanticVersion
     {
         /// <summary>
         /// Name of the software product.
         /// </summary>
         string Name
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Major version number of the software product, assuming semantic versioning.
-        /// </summary>
-        int? MajorVersion
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Minor version number of the software product, assuming semantic versioning.
-        /// </summary>
-        int? MinorVersion
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Patch version number of the software product, assuming semantic versioning.
-        /// </summary>
-        int? PatchVersion
         {
             get;
         }

@@ -27,67 +27,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace Bam.Core
 {
-    public class MetaData :
-        Bam.Core.PackageMetaData
+    /// <summary>
+    /// Associate semantic versioning with an object. This is usually most useful for a tool.
+    /// </summary>
+    public interface ISemanticVersion
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public MetaData()
+        /// <summary>
+        /// Major version number of the software product, assuming semantic versioning.
+        /// </summary>
+        int? MajorVersion
         {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-
-            // TODO: can this come from the registry?
-            this.Meta.Add("InstallDir", Bam.Core.TokenizedString.CreateVerbatim(@"C:\MinGW"));
-
-            // TODO: some installations may not have a suffix - need to confirm
-            this.Meta.Add("ToolSuffix", "-4.8.1");
+            get;
         }
 
-        public override object this[string index]
+        /// <summary>
+        /// Minor version number of the software product, assuming semantic versioning.
+        /// </summary>
+        int? MinorVersion
         {
-            get
-            {
-                return this.Meta[index];
-            }
+            get;
         }
 
-        public override bool
-        Contains(
-            string index)
+        /// <summary>
+        /// Patch version number of the software product, assuming semantic versioning.
+        /// </summary>
+        int? PatchVersion
         {
-            return this.Meta.ContainsKey(index);
-        }
-
-        public string
-        ToolSuffix
-        {
-            get
-            {
-                return this.Meta["ToolSuffix"] as string;
-            }
-        }
-
-        public int
-        CompilerMajorVersion
-        {
-            get
-            {
-                return 4;
-            }
-        }
-
-        public int
-        CompilerMinorVersion
-        {
-            get
-            {
-                return 8;
-            }
+            get;
         }
     }
 }

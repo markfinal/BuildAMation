@@ -30,12 +30,31 @@
 namespace C
 {
     public abstract class CompilerTool :
-        Bam.Core.PreBuiltTool
+        Bam.Core.PreBuiltTool,
+        Bam.Core.ISemanticVersion
     {
         // TODO: is this needed?
         public virtual void
         CompileAsShared(
             Bam.Core.Settings settings)
         {}
+
+        public int? MajorVersion
+        {
+            get;
+            protected set;
+        }
+
+        public int? MinorVersion
+        {
+            get;
+            protected set;
+        }
+
+        public int? PatchVersion
+        {
+            get;
+            protected set;
+        }
     }
 }

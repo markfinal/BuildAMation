@@ -114,5 +114,14 @@ namespace Clang
                 this.Meta["SDKPath"] = value;
             }
         }
+
+        // this is the clang version
+        public int CompilerMajorVersion
+        {
+            get
+            {
+                return 425;
+            }
+        }
     }
 }

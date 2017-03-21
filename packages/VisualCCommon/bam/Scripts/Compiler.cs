@@ -40,6 +40,9 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TMP");
 
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.MajorVersion = meta.CompilerMajorVersion;
+            this.MinorVersion = meta.CompilerMinorVersion;
+
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.Macros.AddVerbatim("objext", ".obj");
 
