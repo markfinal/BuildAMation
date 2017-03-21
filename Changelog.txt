@@ -1,3 +1,5 @@
+21-Mar-2017 Fixes #307. C source container indexing can now accept a path, using forward slashes to separate directories, to pattern match files in the container. Previously, this did not work on Windows, due to the comparison of forward slashes with back slashes. Using forward slashes is the BAM cross-platform convention.
+
 21-Mar-2017 Fixes #226. Added Bam.Core.ISemanticVersion, and extension methods to compare an ISemanticVersion against a specified version (see ISemanticVersion.IsAtLeast). Changed Bam.Core.IProductDefinition to inherit ISemanticVersion since they shared properties - this may require package scripts to be fixed, if IProductDefinition was explicitly implemented. C.CompilerTool now implements ISemanticVersion, and Clang, Gcc, Mingw and VisualC compilers have been updated with major and minor versions. Changed Test8 which was causing a compiler warning starting with VisualC 2015.
 
 21-Mar-2017 Fixes #311. Added read-only property, C.CCompilableModuleContainer.Compiler, so that source containers can query the compiler in use, rather than needing to drill down to individual object files.

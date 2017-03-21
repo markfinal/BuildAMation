@@ -220,7 +220,8 @@ namespace C
         {
             get
             {
-                var validSources = this.children.Where(child => child.InputPath.Parse().Contains(filename));
+                var truePath = System.IO.Path.GetFullPath(filename); // converts any directory separators to native format
+                var validSources = this.children.Where(child => child.InputPath.Parse().Contains(truePath));
                 if (!validSources.Any())
                 {
                     throw new Bam.Core.Exception("No source files found matching '{0}' in module {1}", filename, Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString());

@@ -56,6 +56,12 @@ namespace Test6
                     compiler.PreprocessorDefines.Add("MAIN_C");
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/platform"));
                 });
+            source["source/main.c"].ForEach(item =>
+                item.PrivatePatch(settings =>
+                    {
+                        var compiler = settings as C.ICommonCompilerSettings;
+                        compiler.PreprocessorDefines.Add("MAIN_C_EX");
+                    }));
 
             var platformPath = (this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ?
                 "$(packagedir)/source/debug/debug.c" :

@@ -31,6 +31,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #error MAIN_C has not been defined
 #endif
 
+#ifndef MAIN_C_EX
+#error MAIN_C_EX has not been defined
+#endif
+
 #include "header.h"
 #include "platform.h"
 
