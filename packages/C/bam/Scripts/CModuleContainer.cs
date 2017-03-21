@@ -220,10 +220,14 @@ namespace C
         {
             get
             {
-                var truePath = System.IO.Path.GetFullPath(filename); // converts any directory separators to native format
+                var truePath = filename.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
                 var validSources = this.children.Where(child => child.InputPath.Parse().Contains(truePath));
                 if (!validSources.Any())
                 {
+                    if (!filename.Equals(truePath))
+                    {
+                        throw new Bam.Core.Exception("No source files found matching '{0}' (actually checking '{1}' after directory slash replacement) in module {2}", filename, truePath, Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString());
+                    }
                     throw new Bam.Core.Exception("No source files found matching '{0}' in module {1}", filename, Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString());
                 }
                 return validSources.ToList();
