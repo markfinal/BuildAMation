@@ -8,6 +8,9 @@ exec $curPath/bam.exe $@
 
 else
 
+# check that Mono is installed
+which mono >> /dev/null || { echo "Mono not installed"; exit 1; }
+
 # save the original (quoted) args
 args=$@
 
@@ -40,7 +43,6 @@ then
     fi
 fi
 
-#echo mono $monoargs $curPath/bam.exe $args
 exec mono $monoargs $curPath/bam.exe $args
 
 fi

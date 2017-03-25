@@ -1,3 +1,5 @@
+25-Mar-2016 Fixes #281. Improve the error message when mono is not detected.
+
 21-Mar-2017 Fixes #304. MingwCommon.IArchiverSettings and GccCommon.IArchiverSettings have been renamed, for consistency, to MingwCommon.ICommonArchiverSettings and GccCommon.ICommonArchiverSettings. IMPORTANT: If user packages are referencing those old interface names, this is a breaking change, and requires script updates.
 
 21-Mar-2017 Fixes #307. C source container indexing can now accept a path, using forward slashes to separate directories, to pattern match files in the container. Previously, this did not work on Windows, due to the comparison of forward slashes with back slashes. Using forward slashes is the BAM cross-platform convention.
