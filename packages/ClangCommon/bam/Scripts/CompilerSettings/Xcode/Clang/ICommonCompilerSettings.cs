@@ -39,21 +39,29 @@ namespace ClangCommon
         {
             if (settings.AllWarnings.HasValue)
             {
+                var warnings = new XcodeBuilder.MultiConfigurationValue();
                 if (settings.AllWarnings.Value)
                 {
-                    var warnings = new XcodeBuilder.MultiConfigurationValue();
                     warnings.Add("-Wall");
-                    configuration["WARNING_CFLAGS"] = warnings;
                 }
+                else
+                {
+                    warnings.Add("-Wno-all");
+                }
+                configuration["WARNING_CFLAGS"] = warnings;
             }
             if (settings.ExtraWarnings.HasValue)
             {
+                var warnings = new XcodeBuilder.MultiConfigurationValue();
                 if (settings.ExtraWarnings.Value)
                 {
-                    var warnings = new XcodeBuilder.MultiConfigurationValue();
                     warnings.Add("-Wextra");
-                    configuration["WARNING_CFLAGS"] = warnings;
                 }
+                else
+                {
+                    warnings.Add("-Wno-extra");
+                }
+                configuration["WARNING_CFLAGS"] = warnings;
             }
             if (settings.Pedantic.HasValue)
             {

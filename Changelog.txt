@@ -1,3 +1,5 @@
+30-Mar-2016 Fixes #312. Generated Xcode projects now honour 'false' values for ClangCommon.ICommonCompilerSettings.AllWarnings and ExtraWarnings.
+
 25-Mar-2017 ======== Version 1.1.0 beta 3 Release ========
 
 25-Mar-2016 Fixes #281. Improve the error message when mono is not detected.
