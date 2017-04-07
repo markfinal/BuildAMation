@@ -1,8 +1,8 @@
-30-Mar-2016 Fixes #312. Generated Xcode projects now honour 'false' values for ClangCommon.ICommonCompilerSettings.AllWarnings and ExtraWarnings.
+30-Mar-2017 Fixes #312. Generated Xcode projects now honour 'false' values for ClangCommon.ICommonCompilerSettings.AllWarnings and ExtraWarnings.
 
 25-Mar-2017 ======== Version 1.1.0 beta 3 Release ========
 
-25-Mar-2016 Fixes #281. Improve the error message when mono is not detected.
+25-Mar-2017 Fixes #281. Improve the error message when mono is not detected.
 
 21-Mar-2017 Fixes #304. MingwCommon.IArchiverSettings and GccCommon.IArchiverSettings have been renamed, for consistency, to MingwCommon.ICommonArchiverSettings and GccCommon.ICommonArchiverSettings. IMPORTANT: If user packages are referencing those old interface names, this is a breaking change, and requires script updates.
 
