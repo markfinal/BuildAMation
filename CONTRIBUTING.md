@@ -6,6 +6,7 @@ The BuildAMation github project contains the core (agnostic dependency generator
 
 BuildAMation currently has two branches on github:
 * **master** - bleeding edge, which will target the next major.minor version.
+* **v1.1** - for bug fix contributions to the family of maintenance patch releases of v1.1.
 * **v1.0** - for bug fix contributions to the family of maintenance patch releases of v1.0.
 
 A large new feature should be targetted into the master branch.
