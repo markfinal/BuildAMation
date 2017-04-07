@@ -1,3 +1,5 @@
+07-Apr-2017 Fixes #315. Switch tests on macOS to use Clang-Xcode8 by default.
+
 30-Mar-2017 Fixes #312. Generated Xcode projects now honour 'false' values for ClangCommon.ICommonCompilerSettings.AllWarnings and ExtraWarnings.
 
 25-Mar-2017 ======== Version 1.1.0 beta 3 Release ========
