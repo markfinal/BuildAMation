@@ -60,6 +60,7 @@
 
 
 
+07-Apr-2017 ======== Version 1.0.5 Release ========
 
 15-Mar-2017 ======== Version 1.0.5 beta 1 Release ========
 
