@@ -77,10 +77,34 @@ namespace C.Cxx
         GnuCxx98,
 
         /// <summary>
+        /// Compile against the C++ 03 amendments.
+        /// </summary>
+        Cxx03,
+
+        /// <summary>
+        /// Compile against the GNU C++ 03 amendments.
+        /// </summary>
+        GnuCxx03,
+
+        /// <summary>
         /// Compile against the C++11 standard.
         /// </summary>
         Cxx11,
-        // TODO: GnuCxx11
+
+        /// <summary>
+        /// Compile against the GNU C++ 11 standard.
+        /// </summary>
+        GnuCxx11,
+
+        /// <summary>
+        /// Compile against the C++ 14 standard.
+        /// </summary>
+        Cxx14,
+
+        /// <summary>
+        /// Compile against the GNU C++ 14 standard.
+        /// </summary>
+        GnuCxx14,
     }
 
     /// <summary>

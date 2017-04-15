@@ -1,3 +1,5 @@
+15-Apr-2017 Fixes #317. Added all missing current C++ standards to C.Cxx.ELanguageStandards enumeration. Added are Cxx03, GnuCxx03, GnuCxx11, Cxx14, GnuCxx14.
+
 07-Apr-2017 ======== Version 1.1.0 ========
 
 07-Apr-2017 Fixes #315. Switch tests on macOS to use Clang-Xcode8 by default.
