@@ -53,6 +53,18 @@ namespace Cxx11Test1
         }
     }
 
+    public sealed class ConfigureOSX :
+        Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>
+    {
+        void
+        Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>.Configure(
+            Clang.MetaData instance)
+        {
+            // using libc++ requires 10.7 minimum deployment
+            instance.MinimumVersionSupported = "macosx10.7";
+        }
+    }
+
     public sealed class TestProg :
         C.Cxx.ConsoleApplication
     {

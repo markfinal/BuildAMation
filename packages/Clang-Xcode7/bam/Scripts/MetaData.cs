@@ -47,7 +47,7 @@ namespace Clang
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
             if (!this.Contains("MinVersion"))
             {
-                this.MinimumVersionSupported = this.SDK;
+                this.MinimumVersionSupported = "macosx10.6";
             }
 
             this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
