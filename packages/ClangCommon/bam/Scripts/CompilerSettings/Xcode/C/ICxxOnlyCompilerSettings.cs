@@ -76,8 +76,7 @@ namespace ClangCommon
                         break;
 
                     case C.Cxx.ELanguageStandard.GnuCxx03:
-                        standard = new XcodeBuilder.UniqueConfigurationValue("gnu++03");
-                        break;
+                        throw new Bam.Core.Exception("Clang does not support the language standard gnu++03");
 
                     case C.Cxx.ELanguageStandard.Cxx11:
                         standard = new XcodeBuilder.UniqueConfigurationValue("c++11");

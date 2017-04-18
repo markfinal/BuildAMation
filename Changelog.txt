@@ -2,7 +2,7 @@
 
 17-Apr-2017 Fixes #318. Default macOS deployment version is now 10.6 (was the current SDK). Setting this as old as possible for maximum backward compatibility. The default can be overridden by implementing the interface Bam.Core.IPackageMetaDataConfigure<Clang.MetaData>. See the Cxx11Test1 example.
 
-15-Apr-2017 Fixes #317. Added all missing current C++ standards to C.Cxx.ELanguageStandards enumeration. Added are Cxx03, GnuCxx03, GnuCxx11, Cxx14, GnuCxx14.
+15-Apr-2017 Fixes #317. Added all missing current C++ standards to C.Cxx.ELanguageStandards enumeration. Added are Cxx03, GnuCxx03 (not supported by Clang), GnuCxx11, Cxx14, GnuCxx14.
 
 07-Apr-2017 ======== Version 1.1.0 ========
 
