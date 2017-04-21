@@ -76,8 +76,28 @@ namespace GccCommon
                         commandLine.Add("-std=gnu++98");
                         break;
 
+                    case C.Cxx.ELanguageStandard.Cxx03:
+                        commandLine.Add("-std=c++03");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx03:
+                        commandLine.Add("-std=gnu++03");
+                        break;
+
                     case C.Cxx.ELanguageStandard.Cxx11:
                         commandLine.Add("-std=c++11");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx11:
+                        commandLine.Add("-std=gnu++11");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.Cxx14:
+                        commandLine.Add("-std=c++14");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx14:
+                        commandLine.Add("-std=gnu++14");
                         break;
 
                     default:

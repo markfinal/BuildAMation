@@ -60,23 +60,44 @@ namespace ClangCommon
             }
             if (settings.LanguageStandard.HasValue)
             {
+                XcodeBuilder.UniqueConfigurationValue standard = null;
                 switch (settings.LanguageStandard.Value)
                 {
                     case C.Cxx.ELanguageStandard.Cxx98:
-                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("c++98");
+                        standard = new XcodeBuilder.UniqueConfigurationValue("c++98");
                         break;
 
                     case C.Cxx.ELanguageStandard.GnuCxx98:
-                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("gnu++98");
+                        standard = new XcodeBuilder.UniqueConfigurationValue("gnu++98");
                         break;
 
+                    case C.Cxx.ELanguageStandard.Cxx03:
+                        standard = new XcodeBuilder.UniqueConfigurationValue("c++03");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx03:
+                        throw new Bam.Core.Exception("Clang does not support the language standard gnu++03");
+
                     case C.Cxx.ELanguageStandard.Cxx11:
-                        configuration["CLANG_CXX_LANGUAGE_STANDARD"] = new XcodeBuilder.UniqueConfigurationValue("c++11");
+                        standard = new XcodeBuilder.UniqueConfigurationValue("c++11");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx11:
+                        standard = new XcodeBuilder.UniqueConfigurationValue("gnu++11");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.Cxx14:
+                        standard = new XcodeBuilder.UniqueConfigurationValue("c++14");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx14:
+                        standard = new XcodeBuilder.UniqueConfigurationValue("gnu++14");
                         break;
 
                     default:
                         throw new Bam.Core.Exception("Invalid C++ language standard, {0}", settings.LanguageStandard.Value.ToString());
                 }
+                configuration["CLANG_CXX_LANGUAGE_STANDARD"] = standard;
             }
             if (settings.StandardLibrary.HasValue)
             {

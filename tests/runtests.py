@@ -132,8 +132,14 @@ def _post_execute(builder, options, flavour, package, output_messages, error_mes
         return exit_code
     return 0
 
+class Stats(object):
+    def __init__(self):
+        self._total = 0
+        self._success = 0
+        self._fail = 0
+        self._ignore = 0
 
-def execute_tests(package, configuration, options, output_buffer):
+def execute_tests(package, configuration, options, output_buffer, stats):
     print_message("Package           : %s" % package.get_id())
     if options.verbose:
         print_message("Description          : %s" % package.get_description())
@@ -142,12 +148,16 @@ def execute_tests(package, configuration, options, output_buffer):
         output_buffer.write("IGNORED: Package '%s' does not support build mode '%s' in the test configuration\n" %
                             (package.get_description(), options.buildmode))
         print_message("\tIgnored")
+        stats._total += 1
+        stats._ignore += 1
         return 0
     variation_args = configuration.get_variations(options.buildmode, options.excludedVariations, options.bitDepth)
     if len(variation_args) == 0:
         output_buffer.write("IGNORED: Package '%s' has no configuration with the current options\n" %
                             package.get_description())
         print_message("\tIgnored")
+        stats._total += 1
+        stats._ignore += 1
         return 0
     if options.verbose:
         print_message("Test configurations: %s" % variation_args)
@@ -157,6 +167,7 @@ def execute_tests(package, configuration, options, output_buffer):
     the_builder = get_builder_details(options.buildmode)
     exit_code = 0
     for variation in variation_args:
+        stats._total += 1
         iterations = 1
 
         for it in range(0, iterations):
@@ -181,6 +192,7 @@ def execute_tests(package, configuration, options, output_buffer):
                     message += " with extra arguments '%s'" % " ".join(extra_args)
                 try:
                     if returncode == 0:
+                        stats._success += 1
                         output_buffer.write("SUCCESS: %s\n" % message)
                         if options.verbose:
                             if len(output_messages.getvalue()) > 0:
@@ -190,6 +202,7 @@ def execute_tests(package, configuration, options, output_buffer):
                                 output_buffer.write("Errors:\n")
                                 output_buffer.write(error_messages.getvalue())
                     else:
+                        stats._fail += 1
                         output_buffer.write("* FAILURE *: %s\n" % message)
                         output_buffer.write("Command was: %s\n" % " ".join(arg_list))
                         output_buffer.write("Executed in: %s\n" % package.get_path())
@@ -296,6 +309,7 @@ if __name__ == "__main__":
                     raise RuntimeError("Unrecognized package '%s'" % test)
             tests = filteredTests
 
+        stats = Stats()
         output_buffer = StringIO.StringIO()
         for package in tests:
             try:
@@ -304,7 +318,7 @@ if __name__ == "__main__":
                 if options.verbose:
                     print_message("No configuration for package: '%s'" % str(e))
                 continue
-            exit_code += execute_tests(package, config, options, output_buffer)
+            exit_code += execute_tests(package, config, options, output_buffer, stats)
 
         if not options.keepFiles:
             # TODO: consider keeping track of all directories created instead
@@ -314,6 +328,9 @@ if __name__ == "__main__":
         print_message("| Results summary  |")
         print_message("--------------------")
         print_message(output_buffer.getvalue())
+        print_message("Success %s/%s" % (stats._success, stats._total))
+        print_message("Failure %s/%s" % (stats._fail, stats._total))
+        print_message("Ignored %s/%s" % (stats._ignore, stats._total))
 
         logsDir = os.path.join(repoTestDir, "Logs")
         if not os.path.isdir(logsDir):

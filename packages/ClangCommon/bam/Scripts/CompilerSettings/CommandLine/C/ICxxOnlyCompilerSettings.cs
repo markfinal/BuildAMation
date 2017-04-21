@@ -76,9 +76,29 @@ namespace ClangCommon
                         commandLine.Add("-std=gnu++98");
                         break;
 
+                    case C.Cxx.ELanguageStandard.Cxx03:
+                        commandLine.Add("-std=c++03");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx03:
+                        throw new Bam.Core.Exception("Clang does not support the language standard gnu++03");
+
                     case C.Cxx.ELanguageStandard.Cxx11:
                         commandLine.Add("-std=c++11");
                         break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx11:
+                        commandLine.Add("-std=gnu++11");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.Cxx14:
+                        commandLine.Add("-std=c++14");
+                        break;
+
+                    case C.Cxx.ELanguageStandard.GnuCxx14:
+                        commandLine.Add("-std=gnu++14");
+                        break;
+
                     default:
                         throw new Bam.Core.Exception("Invalid C++ language standard, {0}", settings.LanguageStandard.Value.ToString());
                 }
