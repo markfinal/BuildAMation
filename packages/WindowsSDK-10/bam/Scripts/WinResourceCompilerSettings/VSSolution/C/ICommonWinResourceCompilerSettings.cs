@@ -48,6 +48,11 @@ namespace WindowsSDK
                 vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true, arePaths: true);
             }
 
+            if (settings.PreprocessorDefines.Count > 0)
+            {
+                vsSettingsGroup.AddSetting("PreprocessorDefinitions", settings.PreprocessorDefines, condition, inheritExisting: true);
+            }
+
             vsSettingsGroup.AddSetting("ResourceOutputFileName", module.GeneratedPaths[C.ObjectFile.Key], condition, isPath: true);
         }
     }

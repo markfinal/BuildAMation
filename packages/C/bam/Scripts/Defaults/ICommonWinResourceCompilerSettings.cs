@@ -38,6 +38,7 @@ namespace C.DefaultSettings
         {
             settings.Verbose = false;
             settings.IncludePaths = new Bam.Core.TokenizedStringArray();
+            settings.PreprocessorDefines = new PreprocessorDefinitions();
         }
     }
 }

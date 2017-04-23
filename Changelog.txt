@@ -1,3 +1,5 @@
+23-Apr-2017 Fixes #323. C.ICommonWinResourceCompilerSettings now has a property, PreprocessorDefines, to pass definitions to the resource compiler. With Mingw and WindowsSDK implementations for Native and VSSolution build modes.
+
 21-Apr-2017 ======== Version 1.1.1 beta 1 Release ========
 
 17-Apr-2017 Fixes #319. Test harness now includes an executive summary of counts of succeeded, failed and ignored tests.

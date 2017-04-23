@@ -73,6 +73,23 @@ namespace MingwCommon
                 }
             }
 
+            foreach (var define in settings.PreprocessorDefines)
+            {
+                if (System.String.IsNullOrEmpty(define.Value))
+                {
+                    commandLine.Add(System.String.Format("-D{0}", define.Key));
+                }
+                else
+                {
+                    var value = define.Value;
+                    if (value.Contains("\""))
+                    {
+                        value = value.Replace("\"", "\\\"");
+                    }
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
+                }
+            }
+
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
             commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
             commandLine.Add(System.String.Format("-o {0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
