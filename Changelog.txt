@@ -1,3 +1,5 @@
+03-May-2017 Fixes #324. Path for the assembler tool (ml) in VisualC now fixed for VisualStudio 2017. Added new test, AssemblerTest1, to exercise the fix.
+
 01-May-2017 Fixes #326. Xcode projects would not be buildable in the situation with source files with a mixed setting of ClangCommon.ICommonCompilerSettings.Pedantic and a compiler warning suppression, such as -Wno-long-long, that is included in the pedantic warnings. This was due per-file settings being used for pedantic, and this was appearing after the warning suppressions, hence re-enabling them. In these circumstances, projects are now generated with -Wpedantic in the build settings, and per-file -Wno-pedantic where necessary. Added a new test, DeltaSettingsTest2 to exercise this fix.
 
 23-Apr-2017 Fixes #323. C.ICommonWinResourceCompilerSettings now has a property, PreprocessorDefines, to pass definitions to the resource compiler. With Mingw and WindowsSDK implementations for Native and VSSolution build modes.
