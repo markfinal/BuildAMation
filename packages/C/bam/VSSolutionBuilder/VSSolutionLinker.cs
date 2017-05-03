@@ -127,7 +127,8 @@ namespace C
             }
             else
             {
-                (objectFiles[0].Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
+                var firstNonResourceObjectFile = objectFiles.Where(item => !(item is WinResource)).First();
+                (firstNonResourceObjectFile.Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
                 foreach (var objFile in objectFiles)
                 {
                     config.AddSourceFile(objFile, null);

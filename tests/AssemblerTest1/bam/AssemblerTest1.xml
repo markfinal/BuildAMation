@@ -9,6 +9,7 @@
     <Package name="VisualC" version="12.0" default="true" />
     <Package name="VisualC" version="14.0" />
     <Package name="VisualC" version="15.0" />
+    <Package name="VSSolutionBuilder" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="1" patch="1" />
