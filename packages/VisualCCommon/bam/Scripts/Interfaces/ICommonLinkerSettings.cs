@@ -43,5 +43,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        bool SafeExceptionHandlers
+        {
+            get;
+            set;
+        }
     }
 }

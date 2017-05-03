@@ -119,5 +119,11 @@ namespace VisualC
             get;
             set;
         }
+
+        bool VisualCCommon.ICommonLinkerSettings.SafeExceptionHandlers
+        {
+            get;
+            set;
+        }
     }
 }

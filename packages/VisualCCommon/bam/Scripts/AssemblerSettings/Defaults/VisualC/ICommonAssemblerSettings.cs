@@ -39,6 +39,7 @@ namespace VisualCCommon.DefaultSettings
         {
             settings.NoLogo = true;
             settings.WarningLevel = EAssemblerWarningLevel.Level3;
+            settings.SafeExceptionHandlers = true;
         }
     }
 }

@@ -106,5 +106,11 @@ namespace VisualC
             get;
             set;
         }
+
+        bool VisualCCommon.ICommonAssemblerSettings.SafeExceptionHandlers
+        {
+            get;
+            set;
+        }
     }
 }

@@ -41,6 +41,15 @@ namespace VisualCCommon
                 commandLine.Add("-nologo");
             }
             commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.ToString("D")));
+
+            // safe exception handlers only required in 32-bit mode
+            if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
+            {
+                if (settings.SafeExceptionHandlers)
+                {
+                    commandLine.Add("-safeseh");
+                }
+            }
         }
     }
 }
