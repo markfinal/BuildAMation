@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
     public static partial class VSSolutionImplementation
@@ -38,6 +39,26 @@ namespace VisualCCommon
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
+            vsSettingsGroup.AddSetting("GenerateDebugInformation", settings.DebugSymbols, condition);
+            switch (settings.OutputType)
+            {
+                case C.ECompilerOutput.CompileOnly:
+                    vsSettingsGroup.AddSetting("GeneratePreprocessedSourceListing", false, condition);
+                    break;
+
+                case C.ECompilerOutput.Preprocess:
+                    vsSettingsGroup.AddSetting("GeneratePreprocessedSourceListing", true, condition);
+                    break;
+            }
+            vsSettingsGroup.AddSetting("TreatWarningsAsErrors", settings.WarningsAsErrors, condition);
+            if (settings.IncludePaths.Any())
+            {
+                vsSettingsGroup.AddSetting("IncludePaths", settings.IncludePaths, condition, inheritExisting: true, arePaths: true);
+            }
+            if (settings.PreprocessorDefines.Any())
+            {
+                vsSettingsGroup.AddSetting("PreprocessorDefinitions", settings.PreprocessorDefines, condition, inheritExisting: true);
+            }
         }
     }
 }

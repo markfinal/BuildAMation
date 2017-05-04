@@ -38,6 +38,13 @@ namespace VisualCCommon
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition)
         {
+            vsSettingsGroup.AddSetting("NoLogo", settings.NoLogo, condition);
+            vsSettingsGroup.AddSetting("WarningLevel", settings.WarningLevel.ToString("D"), condition);
+            // safe exception handlers only required in 32-bit mode
+            if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
+            {
+                vsSettingsGroup.AddSetting("UseSafeExceptionHandlers", settings.SafeExceptionHandlers, condition);
+            }
         }
     }
 }

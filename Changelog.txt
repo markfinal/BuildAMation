@@ -1,3 +1,5 @@
+04-May-2017 Fixes #325. Assembler source file support in VisualStudio projects now uses MASM configurations, rather than custom build rules.
+
 03-May-2017 Fixes #327. VisualCCommon.ICommonAssemblerSettings and ICommonLinkerSettings now have a SafeExceptionHandlers boolean option (defaults to true for both). This is only required in 32-bit builds, mostly with assembler code. See MSDN for details.
 
 03-May-2017 Fixes #324. Path for the assembler tool (ml) in VisualC now fixed for VisualStudio 2017. Added new test, AssemblerTest1, to exercise the fix.

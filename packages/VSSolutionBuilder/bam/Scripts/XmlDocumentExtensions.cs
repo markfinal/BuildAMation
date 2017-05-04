@@ -105,5 +105,16 @@ namespace VSSolutionBuilder
             import.SetAttribute("Project", importPath);
             return import;
         }
+
+        public static System.Xml.XmlElement
+        CreateVSImportGroup(
+            this System.Xml.XmlDocument document,
+            string label,
+            System.Xml.XmlElement parentEl = null)
+        {
+            var import = document.CreateVSElement("ImportGroup", parentEl: parentEl);
+            import.SetAttribute("Label", label);
+            return import;
+        }
     }
 }

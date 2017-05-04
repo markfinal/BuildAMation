@@ -404,6 +404,11 @@ namespace VSSolutionBuilder
             }
 
             document.CreateVSImport(@"$(VCTargetsPath)\Microsoft.Cpp.props", parentEl: projectEl);
+            if (this.AssemblyFiles.Any())
+            {
+                var extensionSettings = document.CreateVSImportGroup("ExtensionSettings", parentEl: projectEl);
+                document.CreateVSImport(@"$(VCTargetsPath)\BuildCustomizations\masm.props", parentEl: extensionSettings);
+            }
 
             // configuration paths
             foreach (var config in this.Configurations)
@@ -473,7 +478,7 @@ namespace VSSolutionBuilder
             }
             if (this.AssemblyFiles.Count > 0)
             {
-                var resourceGroup = document.CreateVSItemGroup(parentEl: projectEl);
+                var assemblerGroup = document.CreateVSItemGroup(parentEl: projectEl);
                 foreach (var group in this.AssemblyFiles)
                 {
                     foreach (var config in this.Configurations)
@@ -483,7 +488,7 @@ namespace VSSolutionBuilder
                             group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
                         }
                     }
-                    group.Serialize(document, resourceGroup);
+                    group.Serialize(document, assemblerGroup);
                 }
             }
 
@@ -491,6 +496,11 @@ namespace VSSolutionBuilder
             this.SerializeDependentProjects(document, projectEl);
 
             document.CreateVSImport(@"$(VCTargetsPath)\Microsoft.Cpp.targets", parentEl: projectEl);
+            if (this.AssemblyFiles.Any())
+            {
+                var extensionTargets = document.CreateVSImportGroup("ExtensionTargets", parentEl: projectEl);
+                document.CreateVSImport(@"$(VCTargetsPath)\BuildCustomizations\masm.targets", parentEl: extensionTargets);
+            }
 
             return document;
         }
