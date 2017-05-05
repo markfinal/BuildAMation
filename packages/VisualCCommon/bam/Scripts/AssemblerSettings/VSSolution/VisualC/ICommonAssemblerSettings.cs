@@ -29,26 +29,21 @@
 #endregion // License
 namespace VisualCCommon
 {
-    public static partial class CommandLineImplementation
+    public static partial class VSSolutionImplementation
     {
         public static void
         Convert(
             this VisualCCommon.ICommonAssemblerSettings settings,
-            Bam.Core.StringArray commandLine)
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
         {
-            if (settings.NoLogo)
-            {
-                commandLine.Add("-nologo");
-            }
-            commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.ToString("D")));
-
+            vsSettingsGroup.AddSetting("NoLogo", settings.NoLogo, condition);
+            vsSettingsGroup.AddSetting("WarningLevel", settings.WarningLevel.ToString("D"), condition);
             // safe exception handlers only required in 32-bit mode
             if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
             {
-                if (settings.SafeExceptionHandlers)
-                {
-                    commandLine.Add("-safeseh");
-                }
+                vsSettingsGroup.AddSetting("UseSafeExceptionHandlers", settings.SafeExceptionHandlers, condition);
             }
         }
     }

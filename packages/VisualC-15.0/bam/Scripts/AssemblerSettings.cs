@@ -32,6 +32,7 @@ namespace VisualC
     public class AssemblerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         VisualCCommon.ICommonAssemblerSettings
@@ -47,6 +48,15 @@ namespace VisualC
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
+        }
+
+        void
+        VisualStudioProcessor.IConvertToProject.Convert(
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 
         bool C.ICommonAssemblerSettings.DebugSymbols
@@ -92,6 +102,12 @@ namespace VisualC
         }
 
         VisualCCommon.EAssemblerWarningLevel VisualCCommon.ICommonAssemblerSettings.WarningLevel
+        {
+            get;
+            set;
+        }
+
+        bool VisualCCommon.ICommonAssemblerSettings.SafeExceptionHandlers
         {
             get;
             set;

@@ -46,6 +46,23 @@ namespace WindowsSDK
                 commandLine.Add(System.String.Format("-i{0}", path.ParseAndQuoteIfNecessary()));
             }
 
+            foreach (var define in settings.PreprocessorDefines)
+            {
+                if (System.String.IsNullOrEmpty(define.Value))
+                {
+                    commandLine.Add(System.String.Format("-D{0}", define.Key));
+                }
+                else
+                {
+                    var value = define.Value;
+                    if (value.Contains("\""))
+                    {
+                        value = value.Replace("\"", "\\\"");
+                    }
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
+                }
+            }
+
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
             commandLine.Add(System.String.Format("-Fo{0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
         }

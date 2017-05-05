@@ -71,6 +71,12 @@ namespace WindowsSDK
             set;
         }
 
+        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
+        {
+            get;
+            set;
+        }
+
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;

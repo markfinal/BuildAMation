@@ -27,28 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+using System.Linq;
+namespace C
 {
-    public static partial class CommandLineImplementation
+    public static class XcodeSharedSettings
     {
         public static void
-        Convert(
-            this VisualCCommon.ICommonAssemblerSettings settings,
-            Bam.Core.StringArray commandLine)
+        Tweak(
+            Bam.Core.Settings settings)
         {
-            if (settings.NoLogo)
+            // if Pedantic is variable among sources, and there are warning suppressions,
+            // take the default of Pedantic as true
+            // this is because the Xcode build setting for Pedantic appears BEFORE warning
+            // suppressions, and if -Wpedantic appears in per-file overrides, this appears
+            // AFTER warning suppressions, effectively undoing any that come under the
+            // Pedantic umbrella
+            if (null == (settings as ClangCommon.ICommonCompilerSettings).Pedantic &&
+                (settings as ICommonCompilerSettings).DisableWarnings.Any())
             {
-                commandLine.Add("-nologo");
-            }
-            commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.ToString("D")));
-
-            // safe exception handlers only required in 32-bit mode
-            if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
-            {
-                if (settings.SafeExceptionHandlers)
-                {
-                    commandLine.Add("-safeseh");
-                }
+                (settings as ClangCommon.ICommonCompilerSettings).Pedantic = true;
             }
         }
     }

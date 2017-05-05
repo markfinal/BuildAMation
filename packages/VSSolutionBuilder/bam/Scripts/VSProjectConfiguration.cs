@@ -399,9 +399,15 @@ namespace VSSolutionBuilder
 
         public void
         AddAssemblyFile(
-            C.AssembledObjectFile module)
+            C.AssembledObjectFile assembler,
+            Bam.Core.Settings patchSettings)
         {
-            var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, module.InputPath);
+            var settings = assembler.MetaData as VSSettingsGroup;
+            if (null != patchSettings)
+            {
+                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(assembler, settings, condition: this.ConditionText);
+            }
+            var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, assembler.InputPath);
             this.AssemblyFiles.AddUnique(assemblyGroup);
             this.Project.AddAssemblyFile(assemblyGroup);
         }

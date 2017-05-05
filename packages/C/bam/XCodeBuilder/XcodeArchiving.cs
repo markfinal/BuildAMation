@@ -82,6 +82,7 @@ namespace C
                     typeof(ClangCommon.XcodeCompilerImplementation),
                     typeof(XcodeProjectProcessor.IConvertToProject),
                     xcodeConvertParameterTypes);
+                XcodeSharedSettings.Tweak(sharedSettings);
                 (sharedSettings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
 
                 foreach (var objFile in realObjectFiles)

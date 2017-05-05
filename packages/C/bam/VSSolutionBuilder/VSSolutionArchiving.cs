@@ -83,30 +83,22 @@ namespace C
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     config.AddSourceFile(objFile, deltaSettings);
                 }
-
-                // now handle the other object file types
-
-                // TODO: if there were many resource files, this could also have a common settings group? Not sure if VS supports this
-                // and it's not as likely to have many resource files, as it would have many source files
-                var resourceObjectFiles = objectFiles.Where(item => item is WinResource);
-                foreach (var resObj in resourceObjectFiles)
-                {
-                    config.AddResourceFile(resObj as WinResource, resObj.Settings);
-                }
-
-                var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
-                foreach (var asmObj in assembledObjectFiles)
-                {
-                    config.AddAssemblyFile(asmObj as AssembledObjectFile);
-                }
             }
-            else
+
+            // now handle the other object file types
+
+            // TODO: if there were many resource files, this could also have a common settings group? Not sure if VS supports this
+            // and it's not as likely to have many resource files, as it would have many source files
+            var resourceObjectFiles = objectFiles.Where(item => item is WinResource);
+            foreach (var resObj in resourceObjectFiles)
             {
-                (objectFiles[0].Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
-                foreach (var objFile in objectFiles)
-                {
-                    config.AddSourceFile(objFile, null);
-                }
+                config.AddResourceFile(resObj as WinResource, resObj.Settings);
+            }
+
+            var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
+            foreach (var asmObj in assembledObjectFiles)
+            {
+                config.AddAssemblyFile(asmObj as AssembledObjectFile, asmObj.Settings);
             }
 
             var vsSettingsGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian);

@@ -44,6 +44,12 @@ namespace VisualCCommon
             var project = solution.EnsureProjectExists(module);
             var config = project.GetConfiguration(module);
             config.EnableManifest = settings.GenerateManifest;
+
+            // safe exception handlers only required in 32-bit mode
+            if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
+            {
+                vsSettingsGroup.AddSetting("ImageHasSafeExceptionHandlers", settings.SafeExceptionHandlers, condition);
+            }
         }
     }
 }

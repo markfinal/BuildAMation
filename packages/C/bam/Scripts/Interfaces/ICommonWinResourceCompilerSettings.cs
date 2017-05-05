@@ -55,5 +55,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// List of preprocessor defines, of the form key or key=value.
+        /// </summary>
+        /// <value>The preprocessor defines.</value>
+        C.PreprocessorDefinitions PreprocessorDefines
+        {
+            get;
+            set;
+        }
     }
 }

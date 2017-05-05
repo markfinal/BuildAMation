@@ -27,28 +27,37 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
-    public static partial class CommandLineImplementation
+    public static partial class VSSolutionImplementation
     {
         public static void
         Convert(
-            this VisualCCommon.ICommonAssemblerSettings settings,
-            Bam.Core.StringArray commandLine)
+            this C.ICommonAssemblerSettings settings,
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
         {
-            if (settings.NoLogo)
+            vsSettingsGroup.AddSetting("GenerateDebugInformation", settings.DebugSymbols, condition);
+            switch (settings.OutputType)
             {
-                commandLine.Add("-nologo");
-            }
-            commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.ToString("D")));
+                case C.ECompilerOutput.CompileOnly:
+                    vsSettingsGroup.AddSetting("GeneratePreprocessedSourceListing", false, condition);
+                    break;
 
-            // safe exception handlers only required in 32-bit mode
-            if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
+                case C.ECompilerOutput.Preprocess:
+                    vsSettingsGroup.AddSetting("GeneratePreprocessedSourceListing", true, condition);
+                    break;
+            }
+            vsSettingsGroup.AddSetting("TreatWarningsAsErrors", settings.WarningsAsErrors, condition);
+            if (settings.IncludePaths.Any())
             {
-                if (settings.SafeExceptionHandlers)
-                {
-                    commandLine.Add("-safeseh");
-                }
+                vsSettingsGroup.AddSetting("IncludePaths", settings.IncludePaths, condition, inheritExisting: true, arePaths: true);
+            }
+            if (settings.PreprocessorDefines.Any())
+            {
+                vsSettingsGroup.AddSetting("PreprocessorDefinitions", settings.PreprocessorDefines, condition, inheritExisting: true);
             }
         }
     }

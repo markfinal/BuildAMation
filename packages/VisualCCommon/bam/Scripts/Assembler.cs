@@ -36,7 +36,6 @@ namespace VisualCCommon
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(InstallPath)\VC\bin"));
             this.Macros.AddVerbatim("objext", ".obj");
 
             if (null != meta.RequiredExecutablePaths)
@@ -93,6 +92,8 @@ namespace VisualCCommon
     {
         public Assembler32()
         {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("BinPath", meta.Bin32Dir);
             this.Macros.Add("AssemblerPath", this.CreateTokenizedString(@"$(BinPath)\ml.exe"));
         }
 
@@ -110,16 +111,9 @@ namespace VisualCCommon
         public Assembler64()
             : base()
         {
-            this.Macros.Add("AssemblerPath", this.CreateTokenizedString(@"$(BinPath)\x86_amd64\ml64.exe"));
-            // some DLLs exist only in the 32-bit bin folder
-            if (this.EnvironmentVariables.ContainsKey("PATH"))
-            {
-                this.EnvironmentVariables["PATH"].Add(this.Macros["BinPath"]);
-            }
-            else
-            {
-                this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
-            }
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.Macros.Add("BinPath", meta.Bin64Dir);
+            this.Macros.Add("AssemblerPath", this.CreateTokenizedString(@"$(BinPath)\ml64.exe"));
         }
 
         protected override void

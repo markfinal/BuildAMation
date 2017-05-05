@@ -48,6 +48,18 @@ namespace VisualCCommon
             {
                 commandLine.Add("-MANIFEST:NO");
             }
+            // safe exception handlers only required in 32-bit mode
+            if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
+            {
+                if (settings.SafeExceptionHandlers)
+                {
+                    commandLine.Add("-SAFESEH");
+                }
+                else
+                {
+                    commandLine.Add("-SAFESEH:NO");
+                }
+            }
         }
     }
 }

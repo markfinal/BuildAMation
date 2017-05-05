@@ -38,6 +38,7 @@ namespace VisualCCommon.DefaultSettings
         {
             settings.NoLogo = true;
             settings.GenerateManifest = true;
+            settings.SafeExceptionHandlers = false;
         }
     }
 }

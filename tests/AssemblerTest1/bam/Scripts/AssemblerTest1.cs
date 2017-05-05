@@ -27,28 +27,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon
+using Bam.Core;
+namespace AssemblerTest1
 {
-    public static partial class CommandLineImplementation
+    public sealed class TestProg :
+        C.Cxx.ConsoleApplication
     {
-        public static void
-        Convert(
-            this VisualCCommon.ICommonAssemblerSettings settings,
-            Bam.Core.StringArray commandLine)
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            if (settings.NoLogo)
-            {
-                commandLine.Add("-nologo");
-            }
-            commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.ToString("D")));
+            base.Init(parent);
 
-            // safe exception handlers only required in 32-bit mode
-            if (((settings as Bam.Core.Settings).Module as C.CModule).BitDepth == C.EBit.ThirtyTwo)
+            var source = this.CreateAssemblerSourceContainer();
+            if (this.BitDepth == C.EBit.ThirtyTwo)
             {
-                if (settings.SafeExceptionHandlers)
-                {
-                    commandLine.Add("-safeseh");
-                }
+                source.AddFiles("$(packagedir)/source/*32.asm");
+            }
+            else
+            {
+                source.AddFiles("$(packagedir)/source/*64.asm");
+            }
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+                this.PrivatePatch(settings =>
+                    {
+                        var linker = settings as C.ICommonLinkerSettings;
+                        linker.Libraries.AddUnique("kernel32.lib");
+
+                        var additional = settings as C.IAdditionalSettings;
+                        additional.AdditionalSettings.AddUnique("-entry:main");
+                    });
             }
         }
     }
