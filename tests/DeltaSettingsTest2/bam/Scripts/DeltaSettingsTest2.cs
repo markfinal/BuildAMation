@@ -84,6 +84,11 @@ namespace DeltaSettingsTest2
                             clangCompiler.Pedantic = false; // DeltaSettingsTest2/source/literal.c:35:9: error: string literal of length 510 exceeds maximum length 509 that C90 compilers are required to support [-Werror,-Woverlength-strings]
                         }
                     }));
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
         }
     }
 }
