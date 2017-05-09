@@ -1,3 +1,5 @@
+09-May-2017 Fixes #328. Modules without Settings will now throw an exception if they only have private patches. Those with public patches are allowed, since these affect other modules that depend on them.
+
 04-May-2017 Fixes #325. Assembler source file support in VisualStudio projects now uses MASM configurations, rather than custom build rules.
 
 03-May-2017 Fixes #327. VisualCCommon.ICommonAssemblerSettings and ICommonLinkerSettings now have a SafeExceptionHandlers boolean option (defaults to true for both). This is only required in 32-bit builds, mostly with assembler code. See MSDN for details.
