@@ -51,7 +51,7 @@ namespace AssemblerTest1
                     source.AddFiles("$(packagedir)/source/*64.asm");
                 }
             }
-            else
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
@@ -60,6 +60,17 @@ namespace AssemblerTest1
                 else
                 {
                     source.AddFiles("$(packagedir)/source/clang/*64.s");
+                }
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                if (this.BitDepth == C.EBit.ThirtyTwo)
+                {
+                    source.AddFiles("$(packagedir)/source/gcc/*32.S");
+                }
+                else
+                {
+                    source.AddFiles("$(packagedir)/source/gcc/*64.S");
                 }
             }
 
