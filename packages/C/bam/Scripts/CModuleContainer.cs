@@ -118,6 +118,11 @@ namespace C
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
+            if (System.String.IsNullOrEmpty(path))
+            {
+                throw new Bam.Core.Exception("Cannot add files from an empty path");
+            }
+
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
             var wildcardPath = macroModule.CreateTokenizedString(path).Parse();
 
