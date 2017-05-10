@@ -37,6 +37,25 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
+            switch (settings.Bits.Value)
+            {
+            case C.EBit.ThirtyTwo:
+                {
+                    configuration["VALID_ARCHS"] = new XcodeBuilder.UniqueConfigurationValue("i386");
+                    configuration["ARCHS"] = new XcodeBuilder.UniqueConfigurationValue("$(ARCHS_STANDARD_32_BIT)");
+                }
+                break;
+
+            case C.EBit.SixtyFour:
+                {
+                    configuration["VALID_ARCHS"] = new XcodeBuilder.UniqueConfigurationValue("x86_64");
+                    configuration["ARCHS"] = new XcodeBuilder.UniqueConfigurationValue("$(ARCHS_STANDARD_64_BIT)");
+                }
+                break;
+
+            default:
+                throw new Bam.Core.Exception("Unknown bit depth, {0}", settings.Bits.Value);
+            }
             configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue(settings.DebugSymbols ? "YES" : "NO");
             if (settings.IncludePaths.Count > 0)
             {

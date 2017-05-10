@@ -37,6 +37,19 @@ namespace ClangCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
+            switch (settings.Bits.Value)
+            {
+            case C.EBit.SixtyFour:
+                commandLine.Add("-arch x86_64");
+                break;
+
+            case C.EBit.ThirtyTwo:
+                commandLine.Add("-arch i386");
+                break;
+
+            default:
+                throw new Bam.Core.Exception("Unknown bit depth, {0}", settings.Bits.Value);
+            }
             if (settings.DebugSymbols)
             {
                 commandLine.Add("-g");

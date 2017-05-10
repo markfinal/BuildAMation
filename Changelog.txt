@@ -1,3 +1,5 @@
+10-May-2017 Fixes #329. Assembler settings interfaces now includes the Bits (C.EBit type) to distinguish between 32-bit and 64-bit builds.
+
 09-May-2017 Fixes #328. Modules without Settings will now throw an exception if they only have private patches. Those with public patches are allowed, since these affect other modules that depend on them.
 
 04-May-2017 Fixes #325. Assembler source file support in VisualStudio projects now uses MASM configurations, rather than custom build rules.

@@ -59,6 +59,12 @@ namespace VisualC
             VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 
+        C.EBit? C.ICommonAssemblerSettings.Bits
+        {
+            get;
+            set;
+        }
+
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
             get;
