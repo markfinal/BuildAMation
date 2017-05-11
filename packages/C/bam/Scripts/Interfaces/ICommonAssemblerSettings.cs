@@ -37,6 +37,17 @@ namespace C
         Bam.Core.ISettingsBase
     {
         /// <summary>
+        /// The number of bits in the architecture to assemble for.
+        /// This value is generally automatically set by the module.
+        /// </summary>
+        /// <value>The bits.</value>
+        EBit? Bits
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Assemble with debug symbols.
         /// </summary>
         /// <value>The debug symbols.</value>

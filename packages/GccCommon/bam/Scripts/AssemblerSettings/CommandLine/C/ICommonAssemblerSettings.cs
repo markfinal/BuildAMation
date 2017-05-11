@@ -37,6 +37,19 @@ namespace GccCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
+            switch (settings.Bits.Value)
+            {
+                case C.EBit.SixtyFour:
+                    commandLine.Add("-m64");
+                    break;
+
+                case C.EBit.ThirtyTwo:
+                    commandLine.Add("-m32");
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unknown machine bit size, {0}", settings.Bits.Value.ToString());
+            }
             if (settings.DebugSymbols)
             {
                 commandLine.Add("-g");

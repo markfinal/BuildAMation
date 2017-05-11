@@ -40,13 +40,38 @@ namespace AssemblerTest1
             base.Init(parent);
 
             var source = this.CreateAssemblerSourceContainer();
-            if (this.BitDepth == C.EBit.ThirtyTwo)
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                source.AddFiles("$(packagedir)/source/*32.asm");
+                if (this.BitDepth == C.EBit.ThirtyTwo)
+                {
+                    source.AddFiles("$(packagedir)/source/*32.asm");
+                }
+                else
+                {
+                    source.AddFiles("$(packagedir)/source/*64.asm");
+                }
             }
-            else
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                source.AddFiles("$(packagedir)/source/*64.asm");
+                if (this.BitDepth == C.EBit.ThirtyTwo)
+                {
+                    source.AddFiles("$(packagedir)/source/clang/*32.s");
+                }
+                else
+                {
+                    source.AddFiles("$(packagedir)/source/clang/*64.s");
+                }
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                if (this.BitDepth == C.EBit.ThirtyTwo)
+                {
+                    source.AddFiles("$(packagedir)/source/gcc/*32.S");
+                }
+                else
+                {
+                    source.AddFiles("$(packagedir)/source/gcc/*64.S");
+                }
             }
 
             if (this.Linker is VisualCCommon.LinkerBase)

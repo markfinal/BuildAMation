@@ -37,6 +37,7 @@ namespace C.DefaultSettings
             this C.ICommonAssemblerSettings settings,
             Bam.Core.Module module)
         {
+            settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
             settings.OutputType = ECompilerOutput.CompileOnly;
             settings.WarningsAsErrors = true;

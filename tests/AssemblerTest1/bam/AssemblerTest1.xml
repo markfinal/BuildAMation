@@ -3,6 +3,14 @@
   <Description>Exercising using the Assembler tool</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode4" />
+    <Package name="Clang" version="Xcode5" />
+    <Package name="Clang" version="Xcode6" />
+    <Package name="Clang" version="Xcode7" />
+    <Package name="Clang" version="Xcode8" default="true" />
+    <Package name="Gcc" version="4.8" default="true" />
+    <Package name="Gcc" version="5.4" />
+    <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="10.0" />
     <Package name="VisualC" version="11.0" />
@@ -10,6 +18,7 @@
     <Package name="VisualC" version="14.0" />
     <Package name="VisualC" version="15.0" />
     <Package name="VSSolutionBuilder" />
+    <Package name="XcodeBuilder" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="1" minor="1" patch="1" />

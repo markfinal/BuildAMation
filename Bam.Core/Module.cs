@@ -720,6 +720,9 @@ namespace Bam.Core
 
         /// <summary>
         /// Apply any patches set on the module with the settings for its tool.
+        /// If a module has no Settings instance, then no patches are executed. This is so that modules can have
+        /// public patches to affect those that depend on them. However, if only private patches exist, but there is no
+        /// Settings instance, an exception is thrown.
         /// Order of evaluation is:
         /// 1. If this is a child module, and honourParents is true, apply private patches from the parent.
         /// 2. Apply private patches of this.
@@ -744,6 +747,10 @@ namespace Bam.Core
         {
             if (null == settings)
             {
+                if (!this.PublicPatches.Any() && this.PrivatePatches.Any())
+                {
+                    throw new Exception("Module {0} only has private patches, but has no settings on the module to apply them to", this.ToString());
+                }
                 return;
             }
             // Note: first private patches, followed by public patches

@@ -58,6 +58,12 @@ namespace Clang
             XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeAssemblerImplementation), this, module, configuration);
         }
 
+        C.EBit? C.ICommonAssemblerSettings.Bits
+        {
+            get;
+            set;
+        }
+
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
             get;

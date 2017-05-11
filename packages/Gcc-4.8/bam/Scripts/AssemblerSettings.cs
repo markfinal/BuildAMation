@@ -49,6 +49,12 @@ namespace Gcc
             CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineAssemblerImplementation), this, commandLine);
         }
 
+        C.EBit? C.ICommonAssemblerSettings.Bits
+        {
+            get;
+            set;
+        }
+
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
             get;
