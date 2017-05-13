@@ -57,6 +57,9 @@ namespace DeltaSettingsTest2
                     gccCompiler.AllWarnings = true;
                     gccCompiler.ExtraWarnings = true;
                     gccCompiler.Pedantic = true;
+
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.DisableWarnings.AddUnique("long-long"); // DeltaSettingsTest2/source/main.c:37:10: error: ISO C90 does not support ‘long long’ [-Werror=long-long]
                 }
 
                 var clangCompiler = settings as ClangCommon.ICommonCompilerSettings;
@@ -66,7 +69,7 @@ namespace DeltaSettingsTest2
                     clangCompiler.ExtraWarnings = true;
                     clangCompiler.Pedantic = true;
 
-                    // this is intentionally common, as it's part of pedantic, which is disabled
+                    // this is intentionally common to all source, as it's part of pedantic, which is disabled
                     // for a specific file
                     // the issue arises for the other file and the order of this warning suppression
                     // and enabling 'pedantic' on the Xcode generated command line
@@ -82,6 +85,11 @@ namespace DeltaSettingsTest2
                         if (null != clangCompiler)
                         {
                             clangCompiler.Pedantic = false; // DeltaSettingsTest2/source/literal.c:35:9: error: string literal of length 510 exceeds maximum length 509 that C90 compilers are required to support [-Werror,-Woverlength-strings]
+                        }
+                        var gccCompiler = settings as GccCommon.ICommonCompilerSettings;
+                        if (null != gccCompiler)
+                        {
+                            gccCompiler.Pedantic = false; // DeltaSettingsTest2/source/literal.c:35:9: error: string length ‘510’ is greater than the length ‘509’ ISO C90 compilers are required to support [-Werror=overlength-strings]
                         }
                     }));
 
