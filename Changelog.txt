@@ -1,3 +1,9 @@
+13-May-2017 ======== Version 1.1.1 beta 3 Release ========
+
+13-May-2017 Fixes #333. Fix DeltaSettingsTest2 example on Linux.
+
+13-May-2017 Fixes #332. Mingw assembler support now working. AssemblerTest1 example also now builds with Mingw.
+
 11-May-2017 ======== Version 1.1.1 beta 2 Release ========
 
 10-May-2017 Fixes #330. Adding an empty string to a C Container AddFiles() function resulted in a general exception.

@@ -12,3 +12,9 @@ then
 gcc -O2 -m32 -S -o source/gcc/helloworld32.S -DBUILD32 reference/helloworld.c
 gcc -O2 -m64 -S -o source/gcc/helloworld64.S reference/helloworld.c
 fi
+
+if [[ $sysinfo == 'MINGW32_NT-6.2' ]]
+then
+# requires Mingw to be pathed in
+gcc -O2 -m32 -S -o source/mingw/helloworld32.S -DBUILD32 reference/helloworld.c
+fi

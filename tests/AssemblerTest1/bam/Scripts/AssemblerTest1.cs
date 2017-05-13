@@ -44,7 +44,14 @@ namespace AssemblerTest1
             {
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    source.AddFiles("$(packagedir)/source/*32.asm");
+                    if (this.Linker is VisualCCommon.LinkerBase)
+                    {
+                        source.AddFiles("$(packagedir)/source/*32.asm");
+                    }
+                    else
+                    {
+                        source.AddFiles("$(packagedir)/source/mingw/*32.S");
+                    }
                 }
                 else
                 {

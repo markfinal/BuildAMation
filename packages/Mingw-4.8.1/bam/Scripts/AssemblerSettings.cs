@@ -49,6 +49,12 @@ namespace Mingw
             CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
         }
 
+        C.EBit? C.ICommonAssemblerSettings.Bits
+        {
+            get;
+            set;
+        }
+
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
             get;
