@@ -31,9 +31,9 @@ namespace MingwCommon
 {
     [C.RegisterAssembler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Assembler32 :
-        C.CompilerTool
+        C.AssemblerTool
     {
-        protected Assembler32()
+        public Assembler32()
         {
             this.InheritedEnvironmentVariables.Add("TEMP");
 

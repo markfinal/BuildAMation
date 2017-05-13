@@ -11,6 +11,7 @@
     <Package name="Gcc" version="4.8" default="true" />
     <Package name="Gcc" version="5.4" />
     <Package name="MakeFileBuilder" />
+    <Package name="Mingw" version="4.8.1" />
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="10.0" />
     <Package name="VisualC" version="11.0" />
