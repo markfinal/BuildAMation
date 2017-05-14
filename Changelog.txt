@@ -1,3 +1,5 @@
+14-May-2017 Fixes #322. Command line argument values that should be treated as integers now throw a more useful exception if the value does not parse.
+
 13-May-2017 ======== Version 1.1.1 beta 3 Release ========
 
 13-May-2017 Fixes #333. Fix DeltaSettingsTest2 example on Linux.
