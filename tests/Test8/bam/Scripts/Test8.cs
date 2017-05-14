@@ -34,6 +34,26 @@ namespace Test8
     sealed class ApplicationTest :
         C.ConsoleApplication
     {
+        private static void
+        SuppressC4091(
+            Bam.Core.Settings settings)
+        {
+            // warning suppression only required for VS2015 and above
+            // this is a less common example of a static private patch, so it has no access
+            // to the variables generally available to patches inlined in Init()
+            // so settings.Module is just a Bam.Core.Module, so utility functions from the C package
+            // are provided to get access to properties on the compilable module
+            if (settings is VisualCCommon.ICommonCompilerSettings)
+            {
+                var compilerUsed = C.PatchUtilities.GetCompiler<C.ObjectFile>(settings.Module);
+                if (compilerUsed.IsAtLeast(19))
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.DisableWarnings.AddUnique("4091"); // C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(1544): warning C4091: 'typedef ': ignored on left of '' when no variable is declared
+                }
+            }
+        }
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -43,17 +63,7 @@ namespace Test8
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             this.RequiredToExist<Test7.ExplicitDynamicLibrary>(source);
 
-            // warning suppression only required for VS2015 and above
-            if (source.Compiler is VisualCCommon.CompilerBase &&
-                (source.Compiler as Bam.Core.ISemanticVersion).IsAtLeast(19))
-            {
-                source["main.c"].ForEach(item =>
-                    item.PrivatePatch(settings =>
-                        {
-                            var compiler = settings as C.ICommonCompilerSettings;
-                            compiler.DisableWarnings.AddUnique("4091"); // C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(1544): warning C4091: 'typedef ': ignored on left of '' when no variable is declared
-                        }));
-            }
+            source["main.c"].ForEach(item => item.PrivatePatch(SuppressC4091));
 
             if (this.Linker is VisualCCommon.LinkerBase)
             {
