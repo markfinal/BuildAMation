@@ -51,7 +51,7 @@ namespace Publisher
             }
             else
             {
-                meta.CommonMetaData.Directories.AddUnique(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
+                meta.CommonMetaData.AddDirectory(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
 
                 var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
                 rule.AddTarget(copiedPath, variableName: "objcopy_" + sourceFilename);

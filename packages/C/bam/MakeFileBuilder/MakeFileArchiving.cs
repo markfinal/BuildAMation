@@ -64,7 +64,7 @@ namespace C
             rule.AddShellCommand(command.ToString());
 
             var libraryFileDir = System.IO.Path.GetDirectoryName(libraryPath.ToString());
-            meta.CommonMetaData.Directories.AddUnique(libraryFileDir);
+            meta.CommonMetaData.AddDirectory(libraryFileDir);
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }

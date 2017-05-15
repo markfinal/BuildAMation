@@ -57,7 +57,7 @@ namespace C
             args.Add("$<");
             rule.AddShellCommand(args.ToString(' '));
 
-            meta.CommonMetaData.Directories.AddUnique(System.IO.Path.GetDirectoryName(outputPath));
+            meta.CommonMetaData.AddDirectory(System.IO.Path.GetDirectoryName(outputPath));
         }
     }
 }

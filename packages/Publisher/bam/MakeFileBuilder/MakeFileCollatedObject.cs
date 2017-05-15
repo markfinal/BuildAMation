@@ -76,7 +76,7 @@ namespace Publisher
                 }
             }
 
-            meta.CommonMetaData.Directories.AddUnique(sender.Macros["CopyDir"].Parse());
+            meta.CommonMetaData.AddDirectory(sender.Macros["CopyDir"].Parse());
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);

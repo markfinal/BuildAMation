@@ -61,7 +61,7 @@ namespace C
             rule.AddShellCommand(command.ToString());
 
             var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            meta.CommonMetaData.Directories.AddUnique(objectFileDir);
+            meta.CommonMetaData.AddDirectory(objectFileDir);
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
 
             // add dependencies, such as procedurally generated headers

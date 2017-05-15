@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace MakeFileBuilder
 {
     // Notes:
@@ -47,18 +48,25 @@ namespace MakeFileBuilder
             }
         }
 
-        public Bam.Core.StringArray Directories
+        private Bam.Core.StringArray Directories
         {
             get;
-            private set;
+            set;
         }
 
-        public System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> Environment
+        private System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> Environment
         {
             get;
-            private set;
+            set;
         }
 
+        /// <summary>
+        /// Add key-value pairs (using strings and TokenizedStringArrays) which represent
+        /// an environment variable name, and its value (usually multiple paths), to be used
+        /// when the MakeFile is executed.
+        /// Duplicates values are not added.
+        /// </summary>
+        /// <param name="import">The dictionary of key-value pairs to add.</param>
         public void
         ExtendEnvironmentVariables(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> import)
@@ -77,6 +85,56 @@ namespace MakeFileBuilder
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Add a directory to those to be created when running the MakeFile.
+        /// Duplicates are not added.
+        /// </summary>
+        /// <param name="path">Path to the directory to be added.</param>
+        public void
+        AddDirectory(
+            string path)
+        {
+            lock (this)
+            {
+                this.Directories.AddUnique(path);
+            }
+        }
+
+        /// <summary>
+        /// Write the environment variables to be exported to the MakeFile.
+        /// </summary>
+        /// <param name="output">Where to write the environment variables to.</param>
+        public void
+        ExportEnvironment(
+            System.Text.StringBuilder output)
+        {
+            foreach (var env in this.Environment)
+            {
+                output.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                output.AppendLine();
+            }
+        }
+
+        /// <summary>
+        /// Write the directories to be created when running the MakeFile.
+        /// </summary>
+        /// <param name="output">Where to write the directories to.</param>
+        public void
+        ExportDirectories(
+            System.Text.StringBuilder output)
+        {
+            if (!this.Directories.Any())
+            {
+                return;
+            }
+            output.Append("DIRS:=");
+            foreach (var dir in this.Directories)
+            {
+                output.AppendFormat("{0} ", dir);
+            }
+            output.AppendLine();
         }
     }
 }
