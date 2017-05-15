@@ -44,7 +44,7 @@ namespace Publisher
 
             var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
 
-            meta.CommonMetaData.Directories.AddUnique(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
+            meta.CommonMetaData.AddDirectory(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
             rule.AddTarget(copiedPath, variableName: "dSYM" + sourceFilename, isPhony: true);
 
             var commandLine = new Bam.Core.StringArray();

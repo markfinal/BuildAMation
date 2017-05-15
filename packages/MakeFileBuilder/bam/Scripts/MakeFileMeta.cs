@@ -88,21 +88,9 @@ namespace MakeFileBuilder
 
             // delete suffix rules
             makeEnvironment.AppendLine(".SUFFIXES:");
-            foreach (var env in commonMeta.Environment)
-            {
-                makeEnvironment.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
-                makeEnvironment.AppendLine();
-            }
 
-            if (commonMeta.Directories.Count > 0)
-            {
-                makeVariables.Append("DIRS:=");
-                foreach (var dir in commonMeta.Directories)
-                {
-                    makeVariables.AppendFormat("{0} ", dir);
-                }
-                makeVariables.AppendLine();
-            }
+            commonMeta.ExportEnvironment(makeEnvironment);
+            commonMeta.ExportDirectories(makeVariables);
 
             // all rule
             makeRules.Append("all:");

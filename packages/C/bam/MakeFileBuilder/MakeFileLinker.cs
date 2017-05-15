@@ -120,7 +120,7 @@ namespace C
             rule.AddShellCommand(commands.ToString());
 
             var executableDir = System.IO.Path.GetDirectoryName(executablePath.ToString());
-            meta.CommonMetaData.Directories.AddUnique(executableDir);
+            meta.CommonMetaData.AddDirectory(executableDir);
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }

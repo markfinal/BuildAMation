@@ -106,7 +106,7 @@ namespace Bam.Core
         /// Evaluate an option instance implementing the IIntegerCommandLineArgument interface.
         /// </summary>
         /// <param name="realArg">Instance of the option class.</param>
-        /// <returns>The integer value from the option.</returns>
+        /// <returns>The integer value from the option. An exception is thrown if the option value does not parse as an integer.</returns>
         public static int
         Evaluate(
             IIntegerCommandLineArgument realArg)
@@ -121,7 +121,14 @@ namespace Bam.Core
 
                 if (UsesName(realArg, splitArg))
                 {
-                    return System.Convert.ToInt32(splitArg[1]);
+                    try
+                    {
+                        return System.Convert.ToInt32(splitArg[1]);
+                    }
+                    catch (System.FormatException exception)
+                    {
+                        throw new Exception(exception, "Unable to parse value, '{0}', as an integer", splitArg[1]);
+                    }
                 }
             }
             return realArg.Default;
