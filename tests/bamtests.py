@@ -90,7 +90,7 @@ def configure_repository():
                                            osx={"Native": [clang64, clang32]})
     configs["ProceduralHeaderTest1"] = TestSetup(win={"Native": [visualc64, visualc32, mingw32], "VSSolution": [visualc64, visualc32]},
                                                  linux={"Native": [gcc64, gcc32], "MakeFile": [gcc64, gcc32]},
-                                                 osx={"Native": [clang64, clang32], "MakeFile": [clang64, clang32})
+                                                 osx={"Native": [clang64, clang32], "MakeFile": [clang64, clang32]})
     configs["EmbedStaticIntoDynamicLibrary"] = TestSetup(win={"Native": [visualc64, visualc32, mingw32], "VSSolution": [visualc64, visualc32]},
                                                          linux={"Native": [gcc64, gcc32]},
                                                          osx={"Native": [clang64, clang32]})
