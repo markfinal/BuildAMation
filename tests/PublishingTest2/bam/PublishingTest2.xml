@@ -3,6 +3,7 @@
   <Description>Publishing test, collating files that are prebuilt</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />
     <Package name="Publisher" />
   </Dependents>
