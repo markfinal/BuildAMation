@@ -37,6 +37,8 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettingsOSX settings,
             Bam.Core.Module module)
         {
+            // N.B. this default is set in the specific Clang version
+            // as it's set on both compiler and linker
         }
 
         public static void

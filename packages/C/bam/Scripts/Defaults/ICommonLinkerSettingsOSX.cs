@@ -38,6 +38,8 @@ namespace C.DefaultSettings
         {
             settings.Frameworks = new Bam.Core.TokenizedStringArray();
             settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
+            // N.B. this default is set in the specific Clang version
+            // as it's set on both compiler and linker
         }
     }
 }
