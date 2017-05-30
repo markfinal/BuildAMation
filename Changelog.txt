@@ -1,3 +1,5 @@
+30-May-2017 Fixes #336. The VisualStudio 2017 redist paths changed sometime between RTM and the 15.2 update. This broke local application deployment. Now using the C runtime version 14.10.25008 for x86 and x64.
+
 16-May-2017 ======== Version 1.1.1 beta 4 Release ========
 
 16-May-2017 Fixes #334. Following tests are now tested in Linux with additional build modes: ObjectiveCTest1 (Native,MakeFile); ProceduralHeaderTest1 (MakeFile); DeltaSettingsTest1 (MakeFile); EmbedStaticIntoDynamicLibrary (MakeFile); PublishingTest1 (MakeFile) and PublishingTest2 (MakeFile). In OSX, these tests are now tested in Xcode build mode: EmbedStaticIntoDynamicLibrary, ProceduralHeaderTest1, ProxyTest.
