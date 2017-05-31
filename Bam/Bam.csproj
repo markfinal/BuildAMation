@@ -71,7 +71,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>docbuild\Release\bam.XML</DocumentationFile>
   </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
