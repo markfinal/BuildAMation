@@ -323,7 +323,7 @@ namespace Bam
             var resources = CreateItemGroup(parent: project);
             CreateEmbeddedResourceFile(resourceFilePathName, resources);
 
-            CreateImport(@"$(MSBuildBinPath)\Microsoft.CSharp.Targets", false, project);
+            CreateImport(@"$(MSBuildBinPath)\Microsoft.CSharp.targets", false, project);
 
             var xmlWriterSettings = new System.Xml.XmlWriterSettings();
             xmlWriterSettings.Indent = true;

@@ -1,3 +1,5 @@
+31-May-2017 Fixes #346. BAM .csproj files and generated package debug projects could not be built in MonoDevelop 7 due to MSBuild's Microsoft.CSharp.Targets not being found. This is a case error, the file should be Microsoft.CSharp.targets.
+
 30-May-2017 Fixes #336. The VisualStudio 2017 redist paths changed sometime between RTM and the 15.2 update. This broke local application deployment. Now using the C runtime version 14.10.25008 for x86 and x64.
 
 16-May-2017 ======== Version 1.1.1 beta 4 Release ========
