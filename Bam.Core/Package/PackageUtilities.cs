@@ -697,14 +697,14 @@ namespace Bam.Core
 
             // use the compiler in the current runtime version to build the assembly of packages
             var clrVersion = System.Environment.Version;
-            var compilerVersion = System.String.Format("v{0}.{1}", clrVersion.Major, clrVersion.Minor);
 
-            Log.Detail("Compiling package assembly (C# compiler {0}{1}), because {2}.",
-                compilerVersion,
+            Log.Detail("Compiling package assembly, CLR {0}{1}, because {2}.",
+                clrVersion.ToString(),
                 Graph.Instance.ProcessState.TargetFrameworkVersion != null ? (", targetting " + Graph.Instance.ProcessState.TargetFrameworkVersion) : string.Empty,
                 compileReason);
 
             var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
+            var compilerVersion = System.String.Format("v{0}.{1}", clrVersion.Major, clrVersion.Minor);
             providerOptions.Add("CompilerVersion", compilerVersion);
 
             if (Graph.Instance.ProcessState.RunningMono)

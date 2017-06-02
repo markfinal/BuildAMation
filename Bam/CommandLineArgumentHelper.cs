@@ -110,17 +110,18 @@ namespace Bam
         }
 
         /// <summary>
-        /// Display the version information, C# compiler version, and location of Bam assemblies
+        /// Display the version information, CLR version, and location of Bam assemblies
         /// </summary>
         public static void
         PrintVersion()
         {
             Core.EntryPoint.PrintVersion(Core.EVerboseLevel.Info);
             var clrVersion = System.Environment.Version;
+            var targetFrameworkVersion = Core.Graph.Instance.ProcessState.TargetFrameworkVersion;
             Core.Log.Message(Core.EVerboseLevel.Info,
-                "Using C# compiler v{0}.{1} with assemblies in {2}",
-                clrVersion.Major,
-                clrVersion.Minor,
+                "Using CLR v{0} ({1}) with assemblies in {2}",
+                clrVersion.ToString(),
+                targetFrameworkVersion,
                 Core.Graph.Instance.ProcessState.ExecutableDirectory);
         }
     }
