@@ -1,3 +1,25 @@
+======== End of v1.1 releases ========
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 02-June-2017 ======== Version 1.1.1 Release ========
 
 31-May-2017 Fixes #346. BAM .csproj files and generated package debug projects could not be built in MonoDevelop 7 due to MSBuild's Microsoft.CSharp.Targets not being found. This is a case error, the file should be Microsoft.CSharp.targets.
