@@ -296,6 +296,13 @@ namespace Bam.Core
             {
                 foreach (var p in packageDefinitions)
                 {
+                    if (!p.Parents.Any())
+                    {
+                        // immediately ignore any packages that have no parents
+                        // as these are scheduled to be deleted
+                        // avoids a possible infinite recursion into PackagesToRemove
+                        continue;
+                    }
                     if (p.Parents.Contains(r))
                     {
                         p.Parents.Remove(r);
