@@ -323,25 +323,11 @@ namespace Bam.Core
                 {
                     return;
                 }
-                // visited parent already? ignore
-                if (Graph.Instance.PackageRepositories.Any(item => repoPath.StartsWith(item)))
-                {
-                    return;
-                }
             }
             // already planned to visit? ignore
             if (reposToVisit.Any(item => item.Item1 == repoPath))
             {
                 return;
-            }
-            // new path is a parent path of a repo waiting to be viewed? replace all children with the parent (as it's a recursive search)
-            if (reposToVisit.Any(item => item.Item1.StartsWith(repoPath)))
-            {
-                foreach (var repo in reposToVisit.Where(item => item.Item1.StartsWith(repoPath)).ToList())
-                {
-                    reposToVisit.Remove(repo);
-                    --reposAdded;
-                }
             }
             reposToVisit.AddLast(System.Tuple.Create<string, PackageDefinition>(repoPath, sourcePackageDefinition));
             ++reposAdded;
@@ -391,13 +377,24 @@ namespace Bam.Core
                     message.AppendLine();
                     throw new Exception(message.ToString());
                 }
-                var candidatePackageDirs = System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
+
+                // faster than System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
+                // when there are deep directories
+                StringArray candidatePackageDirs = new StringArray();
+                var possiblePackages = System.IO.Directory.GetDirectories(repo, "*", System.IO.SearchOption.TopDirectoryOnly);
+                foreach (var packageDir in possiblePackages)
+                {
+                    var possibleBamFolder = System.IO.Path.Combine(packageDir, BamSubFolder);
+                    if (System.IO.Directory.Exists(possibleBamFolder))
+                    {
+                        candidatePackageDirs.Add(packageDir);
+                    }
+                }
 
                 Graph.Instance.PackageRepositories.Add(repo);
 
-                foreach (var bamDir in candidatePackageDirs)
+                foreach (var packageDir in candidatePackageDirs)
                 {
-                    var packageDir = System.IO.Path.GetDirectoryName(bamDir);
                     var packageDefinitionPath = GetPackageDefinitionPathname(packageDir);
 
                     // ignore any duplicates (can be found due to nested repositories)
