@@ -311,6 +311,7 @@ namespace Bam.Core
         private static void
         EnqueuePackageRepositoryToVisit(
             System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>> reposToVisit,
+            ref int reposAdded,
             string repoPath,
             PackageDefinition sourcePackageDefinition)
         {
@@ -339,9 +340,11 @@ namespace Bam.Core
                 foreach (var repo in reposToVisit.Where(item => item.Item1.StartsWith(repoPath)).ToList())
                 {
                     reposToVisit.Remove(repo);
+                    --reposAdded;
                 }
             }
             reposToVisit.AddLast(System.Tuple.Create<string, PackageDefinition>(repoPath, sourcePackageDefinition));
+            ++reposAdded;
         }
 
         /// <summary>
@@ -357,20 +360,23 @@ namespace Bam.Core
             bool enforceBamAssemblyVersions = true)
         {
             var packageRepos = new System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>>();
+            int reposHWM = 0;
             foreach (var repo in Graph.Instance.PackageRepositories)
             {
-                EnqueuePackageRepositoryToVisit(packageRepos, repo, null);
+                EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, repo, null);
             }
 
             var masterDefinitionFile = GetMasterPackage();
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
-                EnqueuePackageRepositoryToVisit(packageRepos, repo, masterDefinitionFile);
+                EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, repo, masterDefinitionFile);
             }
 
             // read the definition files of any package found in the package roots
             var candidatePackageDefinitions = new Array<PackageDefinition>();
             candidatePackageDefinitions.Add(masterDefinitionFile);
+            var packageReposVisited = 0;
+            Log.Detail("Querying package repositories");
             while (packageRepos.Count > 0)
             {
                 var repoTuple = packageRepos.First();
@@ -406,10 +412,19 @@ namespace Bam.Core
 
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
-                        EnqueuePackageRepositoryToVisit(packageRepos, newRepo, definitionFile);
+                        EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, newRepo, definitionFile);
                     }
                 }
+
+                ++packageReposVisited;
+                Log.DetailProgress("{0,3}%", (int)(100 * ((float)packageReposVisited / reposHWM)));
             }
+#if DEBUG
+            if (packageReposVisited != reposHWM)
+            {
+                throw new Exception("Inconsistent package repository count: {0} added, {1} visited", reposHWM, packageReposVisited);
+            }
+#endif
 
             // defaults come from
             // - the master definition file
