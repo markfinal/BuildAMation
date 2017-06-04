@@ -376,7 +376,7 @@ namespace Bam.Core
             var candidatePackageDefinitions = new Array<PackageDefinition>();
             candidatePackageDefinitions.Add(masterDefinitionFile);
             var packageReposVisited = 0;
-            Log.Detail("Querying package repositories");
+            Log.Detail("Querying package repositories...");
             while (packageRepos.Count > 0)
             {
                 var repoTuple = packageRepos.First();

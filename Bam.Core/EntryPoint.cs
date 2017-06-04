@@ -216,7 +216,7 @@ namespace Bam.Core
             findBuildableModulesProfile.StartProfile();
 
             // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
-            Log.Detail("Creating modules");
+            Log.Detail("Creating modules...");
             foreach (var env in environments)
             {
                 graph.CreateTopLevelModules(graph.ScriptAssembly, env, topLevelNamespace);

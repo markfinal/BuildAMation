@@ -1,3 +1,5 @@
+04-June-2017 Fixes #349. Added an ellipsis to all output message that will have some progress following it, to clarify to expect to see something on the console log.
+
 04-June-2017 Fixes #345. Added progress report to package repository exploration, which will appear both on builds as well as debug project creation.
 
 02-June-2017 Fixes #347. BAM used to report the C# compiler on it's output. Although correct at the time, this was in fact the Common Language Runtime (CLR) major.minor version. This has been corrected, and the targeted .NET framework is also displayed.

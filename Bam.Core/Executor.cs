@@ -174,7 +174,7 @@ namespace Bam.Core
         public void
         Run()
         {
-            Log.Detail("Running build");
+            Log.Detail("Running build...");
 
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
 

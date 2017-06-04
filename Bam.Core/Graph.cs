@@ -285,7 +285,7 @@ namespace Bam.Core
         public void
         ApplySettingsPatches()
         {
-            Log.Detail("Apply settings to modules");
+            Log.Detail("Apply settings to modules...");
             var scale = 100.0f / Module.Count;
             var count = 0;
             foreach (var rank in this.DependencyGraph.Reverse())
@@ -544,7 +544,7 @@ namespace Bam.Core
         public void
         SortDependencies()
         {
-            Log.Detail("Analysing module dependencies");
+            Log.Detail("Analysing module dependencies...");
             var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
             var modulesToProcess = new System.Collections.Generic.Queue<Module>();
             var scale = 100.0f / (3 * Module.Count);
