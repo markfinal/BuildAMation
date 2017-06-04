@@ -228,6 +228,12 @@ namespace Bam.Core
 
             var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir));
             masterDefinitionFile.Read();
+
+            // in case the master package is not in a formal package repository structure, add it's parent directory
+            // as a repository, so that sibling packages can be found
+            var parentDir = System.IO.Path.GetDirectoryName(workingDir);
+            masterDefinitionFile.PackageRepositories.AddUnique(parentDir);
+
             return masterDefinitionFile;
         }
 

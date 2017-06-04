@@ -1,3 +1,5 @@
+04-June-2017 Fixes #173. The master package now has it's parent directory added as a repository. This is to cover the case of the master package not residing in a formal repository (with packages and tests directories), in order to locate sibling packages.
+
 04-June-2017 Fixes #348. Discovery of package repositories can be slow, due to a full recursive search through candidate directories. This was particularly slow for very deep directory hierarchies, and did not stop when a candidate package was found through such hierarchies. As such, the definition of a package repository has now changed to accomodate a faster search algorithm: A package repository is now a single directory containing packages; any non-package folders will no longer be considered as a nested package repository. IMPORTANT: This can be a breaking change for existing packages, depending on how their definition files were configured for previous versions of BAM.
 
 04-June-2017 Fixes #349. Added an ellipsis to all output message that will have some progress following it, to clarify to expect to see something on the console log.
