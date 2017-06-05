@@ -1,3 +1,5 @@
+05-Jun-2017 Fixes #341. Can now use 'python codingtools/build_bam.py' to build a local copy of BAM. Assumes Python is invoked from the directory containing the BuildAMation.sln.
+
 05-Jun-2017 Fixes #352. The xbuild utility is now redundant in Mono; msbuild is the successor.
 
 04-June-2017 Fixes #351. Avoid a possible stack overflow through infinite recursion while resolving duplicate packages by either defaults or command line specifications.
