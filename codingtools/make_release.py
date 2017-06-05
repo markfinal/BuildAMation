@@ -112,7 +112,8 @@ def build_software(options):
             raise RuntimeError("Unable to locate msbuild at '%s'" % buildtool)
         build_args.append(buildtool)
     elif platform.system() == "Darwin" or platform.system() == "Linux":
-        build_args.append("xbuild")
+        # xbuild is now redundant
+        build_args.append("msbuild")
     else:
         raise RuntimeError("Unrecognized platform, %s" % platform.system())
     build_args.extend(["/property:Configuration=Release", "/nologo", "BuildAMation.sln"])

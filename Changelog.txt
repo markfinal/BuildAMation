@@ -1,3 +1,5 @@
+05-Jun-2017 Fixes #352. The xbuild utility is now redundant in Mono; msbuild is the successor.
+
 04-June-2017 Fixes #351. Avoid a possible stack overflow through infinite recursion while resolving duplicate packages by either defaults or command line specifications.
 
 04-June-2017 Fixes #173. The master package now has it's parent directory added as a repository. This is to cover the case of the master package not residing in a formal repository (with packages and tests directories), in order to locate sibling packages.
