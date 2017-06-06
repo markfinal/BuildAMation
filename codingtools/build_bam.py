@@ -49,3 +49,5 @@ if __name__ == "__main__":
     except Exception, e:
         print >>sys.stdout, "*** Build failure reason: %s" % str(e)
         sys.stdout.flush()
+    print >>sys.stdout, "Done"
+    sys.stdout.flush()

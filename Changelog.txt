@@ -1,3 +1,5 @@
+06-Jun-2017 Fixes #342. Can now use 'python codingtools/generate_docs.py' to build local documentation for BAM. Assumes Python is invoked from the directory containing BuildAMation.sln, and that the path to the doxygen executable is passed.
+
 05-Jun-2017 Fixes #341. Can now use 'python codingtools/build_bam.py' to build a local copy of BAM. Assumes Python is invoked from the directory containing the BuildAMation.sln.
 
 05-Jun-2017 Fixes #352. The xbuild utility is now redundant in Mono; msbuild is the successor.

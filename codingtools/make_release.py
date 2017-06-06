@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from build_bam import build_bam
+from generate_docs import build_documentation
 import fileinput
 from optparse import OptionParser
 import os
@@ -92,14 +93,6 @@ def update_version_numbers_in_files(options):
                 print line,
     finally:
         fileinput.close()
-
-
-def build_documentation(options):
-    if not options.doxygenpath:
-        return
-    args = [options.doxygenpath, "docsrc/BuildAMationDoxy"]
-    print "Running: %s" % ' '.join(args)
-    subprocess.check_call(args)
 
 
 def make_coverity_distribution(options):
@@ -232,7 +225,7 @@ def main(options):
         update_version_numbers_in_files(options)
     try:
         build_bam(cwd, options.coveritypath)
-        build_documentation(options)
+        build_documentation(cwd, options.doxygenpath)
         make_coverity_distribution(options)
         make_tar_distribution(options)
         make_zip_distribution(options)
