@@ -4,17 +4,17 @@
 
 05-Jun-2017 Fixes #352. The xbuild utility is now redundant in Mono; msbuild is the successor.
 
-04-June-2017 Fixes #351. Avoid a possible stack overflow through infinite recursion while resolving duplicate packages by either defaults or command line specifications.
+04-Jun-2017 Fixes #351. Avoid a possible stack overflow through infinite recursion while resolving duplicate packages by either defaults or command line specifications.
 
-04-June-2017 Fixes #173. The master package now has it's parent directory added as a repository. This is to cover the case of the master package not residing in a formal repository (with packages and tests directories), in order to locate sibling packages.
+04-Jun-2017 Fixes #173. The master package now has it's parent directory added as a repository. This is to cover the case of the master package not residing in a formal repository (with packages and tests directories), in order to locate sibling packages.
 
-04-June-2017 Fixes #348. Discovery of package repositories can be slow, due to a full recursive search through candidate directories. This was particularly slow for very deep directory hierarchies, and did not stop when a candidate package was found through such hierarchies. As such, the definition of a package repository has now changed to accomodate a faster search algorithm: A package repository is now a single directory containing packages; any non-package folders will no longer be considered as a nested package repository. IMPORTANT: This can be a breaking change for existing packages, depending on how their definition files were configured for previous versions of BAM.
+04-Jun-2017 Fixes #348. Discovery of package repositories can be slow, due to a full recursive search through candidate directories. This was particularly slow for very deep directory hierarchies, and did not stop when a candidate package was found through such hierarchies. As such, the definition of a package repository has now changed to accomodate a faster search algorithm: A package repository is now a single directory containing packages; any non-package folders will no longer be considered as a nested package repository. IMPORTANT: This can be a breaking change for existing packages, depending on how their definition files were configured for previous versions of BAM.
 
-04-June-2017 Fixes #349. Added an ellipsis to all output message that will have some progress following it, to clarify to expect to see something on the console log.
+04-Jun-2017 Fixes #349. Added an ellipsis to all output message that will have some progress following it, to clarify to expect to see something on the console log.
 
-04-June-2017 Fixes #345. Added progress report to package repository exploration, which will appear both on builds as well as debug project creation.
+04-Jun-2017 Fixes #345. Added progress report to package repository exploration, which will appear both on builds as well as debug project creation.
 
-02-June-2017 Fixes #347. BAM used to report the C# compiler on it's output. Although correct at the time, this was in fact the Common Language Runtime (CLR) major.minor version. This has been corrected, and the targeted .NET framework is also displayed.
+02-Jun-2017 Fixes #347. BAM used to report the C# compiler on it's output. Although correct at the time, this was in fact the Common Language Runtime (CLR) major.minor version. This has been corrected, and the targeted .NET framework is also displayed.
 
 ======== End of v1.1 releases ========
 
@@ -38,7 +38,7 @@
 
 
 
-02-June-2017 ======== Version 1.1.1 Release ========
+02-Jun-2017 ======== Version 1.1.1 Release ========
 
 31-May-2017 Fixes #346. BAM .csproj files and generated package debug projects could not be built in MonoDevelop 7 due to MSBuild's Microsoft.CSharp.Targets not being found. This is a case error, the file should be Microsoft.CSharp.targets.
 
