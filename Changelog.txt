@@ -1,3 +1,5 @@
+19-Aug-2017 Fixes #357. VisualC-15.0 now tracks published versions in VisualStudio 2017 15.3.1. The VC Tools version has changed to 14.11.25503. The C runtime version has changed to 14.11.25325. A mistake from earlier VS2017 releases corrects the redist version from Microsoft.VC150.CRT to Microsoft.VC141.CRT. This change is not backward compatible with earlier releases of VisualStudio 2017.
+
 19-Aug-2017 Fixes #358. Prebuilt tool executables that do not exist at their specified paths on disk now result in an exception being thrown.
 
 02-Jun-2017 ======== Version 1.1.1 Release ========

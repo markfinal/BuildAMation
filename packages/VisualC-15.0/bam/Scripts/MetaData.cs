@@ -49,8 +49,8 @@ namespace VisualC
                 throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2017 installed?", this.InstallDir.Parse());
             }
 
-            this.VCToolsVersion = Bam.Core.TokenizedString.CreateVerbatim("14.10.25017");
-            this.CRuntimeVersion = Bam.Core.TokenizedString.CreateVerbatim("14.10.25008");
+            this.VCToolsVersion = Bam.Core.TokenizedString.CreateVerbatim("14.11.25503");
+            this.CRuntimeVersion = Bam.Core.TokenizedString.CreateVerbatim("14.11.25325");
 
             if (Bam.Core.OSUtilities.Is64BitHosting)
             {
@@ -334,14 +334,14 @@ namespace VisualC
             {
                 case C.EBit.ThirtyTwo:
                     {
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x86/Microsoft.VC150.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x86/Microsoft.VC141.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
                         dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
                     }
                     break;
 
                 case C.EBit.SixtyFour:
                     {
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x64/Microsoft.VC150.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x64/Microsoft.VC141.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
                         dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
                     }
                     break;
@@ -360,11 +360,11 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x86/Microsoft.VC150.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x86/Microsoft.VC141.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
                     break;
 
                 case C.EBit.SixtyFour:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x64/Microsoft.VC150.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
+                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x64/Microsoft.VC141.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
                     break;
 
                 default:
