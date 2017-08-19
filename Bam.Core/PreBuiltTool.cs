@@ -155,6 +155,7 @@ namespace Bam.Core
 
         /// <summary>
         /// Confirm that the prebuilt executable exists.
+        /// If it does not, an exception is thrown.
         /// </summary>
         public override void
         Evaluate()
@@ -163,7 +164,7 @@ namespace Bam.Core
             var exists = System.IO.File.Exists(this.Executable.Parse());
             if (!exists)
             {
-                this.ReasonToExecute = ExecuteReasoning.FileDoesNotExist(this.Executable);
+                throw new Exception("Prebuilt tool executable '{0}' does not exist", this.Executable.Parse());
             }
         }
     }

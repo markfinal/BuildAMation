@@ -1,4 +1,6 @@
-02-June-2017 ======== Version 1.1.1 Release ========
+19-Aug-2017 Fixes #358. Prebuilt tool executables that do not exist at their specified paths on disk now result in an exception being thrown.
+
+02-Jun-2017 ======== Version 1.1.1 Release ========
 
 31-May-2017 Fixes #346. BAM .csproj files and generated package debug projects could not be built in MonoDevelop 7 due to MSBuild's Microsoft.CSharp.Targets not being found. This is a case error, the file should be Microsoft.CSharp.targets.
 
