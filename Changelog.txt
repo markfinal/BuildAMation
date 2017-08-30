@@ -1,3 +1,5 @@
+30-Aug-2017 Fixes #359. Regression was introduced in the fix for #358 in v1.1.2, stopping commands from xcrun, hdiutil and tar from executing on macOS and Linux. The fix introduces Bam.Core.OSUtilities.RunExecutable and Bam.Core.OSUtilities.GetInstallLocation functions. GetInstallLocation uses 'which' on *nix platforms and 'where' on Windows, both making use of the RunExecutable. These are used to find the paths for xcrun, hdiutil and tar, and have been reused in other packages too.
+
 19-Aug-2017 ======== Version 1.1.2 Release ========
 
 19-Aug-2017 Fixes #357. VisualC-15.0 now tracks published versions in VisualStudio 2017 15.3.1. The VC Tools version has changed to 14.11.25503. The C runtime version has changed to 14.11.25325. A mistake from earlier VS2017 releases corrects the redist version from Microsoft.VC150.CRT to Microsoft.VC141.CRT. This change is not backward compatible with earlier releases of VisualStudio 2017.

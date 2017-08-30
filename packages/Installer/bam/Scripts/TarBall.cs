@@ -138,7 +138,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("tar");
+                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("tar"));
             }
         }
     }

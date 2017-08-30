@@ -345,5 +345,57 @@ namespace Bam.Core
                 return TokenizedString.CreateVerbatim(envVar);
             }
         }
+
+        /// <summary>
+        /// Runs an executable, and returns a string containing the standard output
+        /// from that run.
+        /// </summary>
+        /// <returns>Standard output from executable, or null in the case of failure.</returns>
+        /// <param name="executable">Absolute path to executable to run.</param>
+        /// <param name="arguments">All arguments to be passed to the executable.</param>
+        public static string
+        RunExecutable(
+            string executable,
+            string arguments)
+        {
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            processStartInfo.FileName = executable;
+            processStartInfo.Arguments = arguments;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.UseShellExecute = false;
+            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                return null;
+            }
+            return process.StandardOutput.ReadToEnd().TrimEnd(new[] { System.Environment.NewLine[0] });
+        }
+
+        /// <summary>
+        /// Gets the install location of an executable.
+        /// An exception is thrown if it cannot be located in the system.
+        /// </summary>
+        /// <returns>The installed location of the executable.</returns>
+        /// <param name="executable">Filename of the executable to locate.</param>
+        public static string
+        GetInstallLocation(
+            string executable)
+        {
+            string location;
+            if (OSUtilities.IsWindowsHosting)
+            {
+                location = RunExecutable("where", executable);
+            }
+            else
+            {
+                location = RunExecutable("which", executable);
+            }
+            if (null == location)
+            {
+                throw new Exception("Unable to locate '{0}' in the system.", executable);
+            }
+            return location;
+        }
     }
 }
