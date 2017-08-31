@@ -31,6 +31,18 @@ namespace ClangCommon
 {
     public static class ConfigureUtilities
     {
+        static ConfigureUtilities()
+        {
+            xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("xcrun");
+        }
+
+        public static string
+        xcrunPath
+        {
+            get;
+            private set;
+        }
+
         public static string
         SetSDK(
             Bam.Core.StringArray expectedSDKs,
@@ -59,26 +71,7 @@ namespace ClangCommon
         GetSDKPath(
             string sdkVersion)
         {
-            return RunExecutable("xcrun", System.String.Format("--sdk {0} -show-sdk-path", sdkVersion));
-        }
-
-        private static string
-        RunExecutable(
-            string executable,
-            string arguments)
-        {
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = executable;
-            processStartInfo.Arguments = arguments;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.UseShellExecute = false;
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                return null;
-            }
-            return process.StandardOutput.ReadToEnd().TrimEnd(new [] { System.Environment.NewLine[0] });
+            return Bam.Core.OSUtilities.RunExecutable(xcrunPath, System.String.Format("--sdk {0} -show-sdk-path", sdkVersion));
         }
 
         private static bool
@@ -93,7 +86,7 @@ namespace ClangCommon
         GetValidSDKs(
             Bam.Core.StringArray expectedSDKs)
         {
-            var installedSDKOutput = RunExecutable("xcodebuild", "-showsdks");
+            var installedSDKOutput = Bam.Core.OSUtilities.RunExecutable("xcodebuild", "-showsdks");
             if (null == installedSDKOutput)
             {
                 throw new Bam.Core.Exception("Unable to locate developer SDKs. Is Xcode installed?");
@@ -125,7 +118,7 @@ namespace ClangCommon
         GetDefaultSDK(
             string sdkType)
         {
-            var defaultSDK = RunExecutable("xcrun", System.String.Format("--sdk {0} --show-sdk-version", sdkType));
+            var defaultSDK = Bam.Core.OSUtilities.RunExecutable(xcrunPath, System.String.Format("--sdk {0} --show-sdk-version", sdkType));
             return System.String.Format("{0}{1}", sdkType, defaultSDK);
         }
 

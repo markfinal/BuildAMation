@@ -43,7 +43,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("hdiutil");
+                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("hdiutil"));
             }
         }
     }

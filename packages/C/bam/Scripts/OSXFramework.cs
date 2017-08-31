@@ -68,20 +68,11 @@ namespace C
         {
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Clang");
 
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = "xcrun";
-            processStartInfo.Arguments = System.String.Format("--sdk {0} otool -DX {1}",
+            var idName = Bam.Core.OSUtilities.RunExecutable(
+                Bam.Core.OSUtilities.GetInstallLocation("xcrun"),
+                System.String.Format("--sdk {0} otool -DX {1}",
                 clangMeta["SDK"], // should use clangMeta.SDK, but this avoids a compile time dependency
-                this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse());
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.UseShellExecute = false;
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                throw new Bam.Core.Exception("Unable to get id name of '{0}'", this.Macros["FrameworkLibraryPath"].Parse());
-            }
-            var idName = process.StandardOutput.ReadToEnd().TrimEnd (new [] { System.Environment.NewLine[0] });
+                this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath).Parse()));
             this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
         }
 

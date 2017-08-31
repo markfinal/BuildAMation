@@ -52,7 +52,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("xcrun");
+                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcrun"));
             }
         }
 

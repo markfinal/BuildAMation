@@ -32,38 +32,21 @@ namespace GccCommon
 {
     public static class ConfigureUtilities
     {
+        [System.Obsolete("Please use Bam.Core.OSUtilities.RunExecutable instead")]
         public static string
         RunExecutable(
             string executable,
             string arguments)
         {
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = executable;
-            processStartInfo.Arguments = arguments;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.UseShellExecute = false;
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode == 0)
-            {
-                return process.StandardOutput.ReadToEnd ().TrimEnd (new [] { System.Environment.NewLine [0] });
-            }
-            else
-            {
-                return null;
-            }
+            return Bam.Core.OSUtilities.RunExecutable(executable, arguments);
         }
 
+        [System.Obsolete("Please use Bam.Core.OSUtilities.GetInstallLocation instead")]
         public static string
         GetInstallLocation(
             string executable)
         {
-            var location = RunExecutable("which", executable);
-            if (null == location)
-            {
-                return null;
-            }
-            return location;
+            return Bam.Core.OSUtilities.GetInstallLocation(executable);
         }
     }
 }
