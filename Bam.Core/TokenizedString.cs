@@ -91,8 +91,8 @@ namespace Bam.Core
         // note: this is using balancing groups in order to handle nested function calls, or any other instances of parentheses in paths (e.g. Windows 'Program Files (x86)')
         private static readonly string PostFunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^\(\)]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))";
 
-        private static System.Collections.Generic.List<TokenizedString> VerbatimCache = new System.Collections.Generic.List<TokenizedString>();
-        private static System.Collections.Generic.List<TokenizedString> NoModuleCache = new System.Collections.Generic.List<TokenizedString>();
+        private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> VerbatimCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
+        private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> NoModuleCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
         private static System.Collections.Generic.List<TokenizedString> AllStrings = new System.Collections.Generic.List<TokenizedString>();
 
         private static System.TimeSpan RegExTimeout = System.TimeSpan.FromSeconds(5);
@@ -202,30 +202,31 @@ namespace Bam.Core
                 return null;
             }
 
+            // https://cs.stackexchange.com/questions/45287/why-does-this-particular-hashcode-function-help-decrease-collisions
+            System.Int64 hash = 17;
+            hash = hash * 31 + tokenizedString.GetHashCode();
+
             // strings can be created during the multithreaded phase, so synchronize on the cache used
             if (verbatim)
             {
                 // covers all verbatim strings
-                lock (VerbatimCache)
+                lock (VerbatimCacheMap)
                 {
-                    if (0 == (flags & EFlags.NoCache))
+                    var useCache = (0 == (flags & EFlags.NoCache));
+                    if (useCache)
                     {
-                        var foundTS = VerbatimCache.FirstOrDefault((ts) =>
-                        {
-                            if (ts.OriginalString == tokenizedString)
-                            {
-                                return true;
-                            }
-                            return false;
-                        });
-                        if (null != foundTS)
+                        TokenizedString foundTS;
+                        if (VerbatimCacheMap.TryGetValue(hash, out foundTS))
                         {
                             ++foundTS.RefCount;
                             return foundTS;
                         }
                     }
                     var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
-                    VerbatimCache.Add(newTS);
+                    if (useCache)
+                    {
+                        VerbatimCacheMap.Add(hash, newTS);
+                    }
                     AllStrings.Add(newTS);
                     return newTS;
                 }
@@ -233,45 +234,35 @@ namespace Bam.Core
             else
             {
                 // covers all strings associated with a module (for macros), or no module but with positional arguments
-                var stringCache = (null != macroSource) ? macroSource.TokenizedStringCache : NoModuleCache;
+                var stringCache = (null != macroSource) ? macroSource.TokenizedStringCacheMap : NoModuleCacheMap;
                 lock (stringCache)
                 {
-                    if (0 == (flags & EFlags.NoCache))
+                    if (null != macroSource)
                     {
-                        var foundTS = stringCache.FirstOrDefault((ts) =>
+                        hash = hash * 31 + macroSource.GetHashCode();
+                    }
+                    if (null != positionalTokens)
+                    {
+                        foreach (var posToken in positionalTokens)
                         {
-                            if (ts.OriginalString == tokenizedString)
-                            {
-                                // and then check the positional tokens, if they exist
-                                var samePosTokenCount = ((null != positionalTokens) && (positionalTokens.Count() == ts.PositionalTokens.Count())) ||
-                                                        ((null == positionalTokens) && (0 == ts.PositionalTokens.Count()));
-                                if (!samePosTokenCount)
-                                {
-                                    return false;
-                                }
-                                for (int i = 0; i < ts.PositionalTokens.Count(); ++i)
-                                {
-                                    // because positional tokens are TokenizedStrings, they will refer to the same object
-                                    if (ts.PositionalTokens[i] != positionalTokens[i])
-                                    {
-                                        return false;
-                                    }
-                                }
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        });
-                        if (null != foundTS)
+                            hash = hash * 31 + posToken.GetHashCode();
+                        }
+                    }
+                    var useCache = (0 == (flags & EFlags.NoCache));
+                    if (useCache)
+                    {
+                        TokenizedString foundTS;
+                        if (stringCache.TryGetValue(hash, out foundTS))
                         {
                             ++foundTS.RefCount;
                             return foundTS;
                         }
                     }
                     var newTS = new TokenizedString(tokenizedString, macroSource, verbatim, positionalTokens, flags);
-                    stringCache.Add(newTS);
+                    if (useCache)
+                    {
+                        stringCache.Add(hash, newTS);
+                    }
                     AllStrings.Add(newTS);
                     return newTS;
                 }

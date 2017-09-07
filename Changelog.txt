@@ -1,3 +1,5 @@
+07-Sep-2017 Fixes #355. TokenizedString now uses a hash internally, as opposed to string compares, to look for invariant strings.
+
 06-Jun-2017 Fixes #342. Can now use 'python codingtools/generate_docs.py' to build local documentation for BAM. Assumes Python is invoked from the directory containing BuildAMation.sln, and that the path to the doxygen executable is passed.
 
 05-Jun-2017 Fixes #341. Can now use 'python codingtools/build_bam.py' to build a local copy of BAM. Assumes Python is invoked from the directory containing the BuildAMation.sln.
