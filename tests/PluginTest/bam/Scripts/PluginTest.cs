@@ -55,10 +55,10 @@ namespace PluginTest
             else if (this.Linker is GccCommon.LinkerBase)
             {
                 this.PrivatePatch(settings =>
-	                {
-	                    var linker = settings as C.ICommonLinkerSettings;
-	                    linker.Libraries.Add("-ldl");
-	                });
+                    {
+                        var linker = settings as C.ICommonLinkerSettings;
+                        linker.Libraries.Add("-ldl");
+                    });
             }
         }
     }
