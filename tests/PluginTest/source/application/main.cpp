@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <string>
-#include <exception>
+#include <stdexcept>
 #include <iostream>
 
 #ifdef D_BAM_PLATFORM_WINDOWS
@@ -49,7 +49,7 @@ public:
 #ifdef D_BAM_PLATFORM_WINDOWS
         this->_module = ::LoadLibrary(inPath.c_str());
 #else
-        auto module = ::dlopen(inPath.c_str(), RTLD_LAZY);
+        this->_module = ::dlopen(inPath.c_str(), RTLD_LAZY);
 #endif
         if (0 == this->_module)
         {
