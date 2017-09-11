@@ -31,11 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
 
 #ifdef D_BAM_PLATFORM_WINDOWS
 #include <Windows.h>
 #else
 #include <dlfcn.h>
+#include <libgen.h> // for dirname
 #endif
 
 typedef void(*PluginFunc)();
@@ -44,17 +46,26 @@ class Plugin
 {
 public:
     Plugin(
-        const std::string inPath)
+        const std::string &inExecutablePath,
+        const std::string &inPath)
     {
 #ifdef D_BAM_PLATFORM_WINDOWS
         this->_module = ::LoadLibrary(inPath.c_str());
-#else
-        this->_module = ::dlopen(inPath.c_str(), RTLD_LAZY);
-#endif
         if (0 == this->_module)
         {
             throw std::runtime_error("Failed to load plugin");
         }
+#else
+        std::stringstream path;
+        path << dirname(const_cast<char*>(inExecutablePath.c_str())) << "/" << inPath;
+        this->_module = ::dlopen(path.str().c_str(), RTLD_LAZY);
+        if (0 == this->_module)
+        {
+            std::stringstream stream;
+            stream << "Failed to load plugin, because " << dlerror();
+            throw std::runtime_error(stream.str());
+        }
+#endif
     }
 
     ~Plugin()
@@ -90,11 +101,14 @@ private:
 #endif
 };
 
-int main()
+int main(
+    int argc,
+    char **argv)
 {
+    (void)argc;
     try
     {
-        Plugin plugin("testPlugin.plugin");
+        Plugin plugin(argv[0], "testPlugin.plugin");
         PluginFunc func = plugin.getFunc();
         func();
         return 0;

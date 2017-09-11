@@ -48,10 +48,17 @@ namespace PluginTest
 
             this.RequiredToExist<Plugin>();
 
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
+            if (this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+            }
+            else if (this.Linker is GccCommon.LinkerBase)
+            {
+                this.PrivatePatch(settings =>
+	                {
+	                    var linker = settings as C.ICommonLinkerSettings;
+	                    linker.Libraries.Add("-ldl");
+	                });
             }
         }
     }
