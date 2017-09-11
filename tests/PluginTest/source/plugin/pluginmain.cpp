@@ -27,9 +27,36 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-extern "C" void PluginMain();
+
+#include <cstdio>
+
+/* specific platform settings */
+#if defined(_WIN32)
+#define PLUGIN_API_EXPORT __declspec(dllexport)
+#define PLUGIN_API_IMPORT __declspec(dllimport)
+#elif __GNUC__ >= 4
+#define PLUGIN_API_EXPORT __attribute__ ((visibility("default")))
+#endif
+
+/* defaults */
+#ifndef PLUGIN_API_EXPORT
+#define PLUGIN_API_EXPORT /* empty */
+#endif
+#ifndef PLUGIN_API_IMPORT
+#define PLUGIN_API_IMPORT /* empty */
+#endif
+
+/* Note: could have used D_BAM_DYNAMICLIBRARY_BUILD, but this demonstrates things better */
+#if defined(DYNAMICLIB_SOURCE)
+#define DYNAMICLIB_API PLUGIN_API_EXPORT
+#else
+#define DYNAMICLIB_API PLUGIN_API_IMPORT
+#endif
+
+extern "C" DYNAMICLIB_API void PluginMain();
 
 void PluginMain()
 {
+    printf("Hello World from a Plugin\n");
 }
 

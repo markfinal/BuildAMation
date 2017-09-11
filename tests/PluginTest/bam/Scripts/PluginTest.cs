@@ -39,14 +39,19 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            this.CreateCxxSourceContainer("$(packagedir)/source/application/main.cpp");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/application/main.cpp");
+            source.PrivatePatch(settings =>
+                {
+                    var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
+                    cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous;
+                });
 
             this.RequiredToExist<Plugin>();
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)
             {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
         }
     }
@@ -63,7 +68,12 @@ namespace PluginTest
             this.Macros["pluginprefix"] = Bam.Core.TokenizedString.CreateVerbatim("test");
             this.Macros["pluginext"] = Bam.Core.TokenizedString.CreateVerbatim(".plugin");
 
-            this.CreateCxxSourceContainer("$(packagedir)/source/plugin/pluginmain.cpp");
+            var source = this.CreateCxxSourceContainer("$(packagedir)/source/plugin/pluginmain.cpp");
+            source.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
+                });
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 this.Linker is VisualCCommon.LinkerBase)

@@ -27,7 +27,81 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
+#include <string>
+#include <exception>
+#include <iostream>
+
+#ifdef D_BAM_PLATFORM_WINDOWS
+#include <Windows.h>
+#else
+#include <dlfcn.h>
+#endif
+
+typedef void(*PluginFunc)();
+
+class Plugin
+{
+public:
+    Plugin(
+        const std::string inPath)
+    {
+#ifdef D_BAM_PLATFORM_WINDOWS
+        this->_module = ::LoadLibrary(inPath.c_str());
+#else
+        auto module = ::dlopen(inPath.c_str(), RTLD_LAZY);
+#endif
+        if (0 == this->_module)
+        {
+            throw std::runtime_error("Failed to load plugin");
+        }
+    }
+
+    ~Plugin()
+    {
+#ifdef D_BAM_PLATFORM_WINDOWS
+        ::FreeLibrary(this->_module);
+#else
+        ::dlclose(this->_module);
+#endif
+        this->_module = 0;
+    }
+
+    PluginFunc
+    getFunc()
+    {
+#ifdef D_BAM_PLATFORM_WINDOWS
+        PluginFunc func = reinterpret_cast<PluginFunc>(::GetProcAddress(this->_module, "PluginMain"));
+#else
+        PluginFunc func = reinterpret_cast<PluginFunc>(::dlsym(this->_module, "PluginMain"));
+#endif
+        if (0 == func)
+        {
+            throw std::runtime_error("Unable to locate exported function from plugin");
+        }
+        return func;
+    }
+
+private:
+#ifdef D_BAM_PLATFORM_WINDOWS
+    ::HMODULE _module;
+#else
+    void *_module;
+#endif
+};
+
 int main()
 {
-    return 0;
+    try
+    {
+        Plugin plugin("testPlugin.plugin");
+        PluginFunc func = plugin.getFunc();
+        func();
+        return 0;
+    }
+    catch (const std::runtime_error &ex)
+    {
+        std::cerr << "Failed: '" << ex.what() << "'" << std::endl;
+        return -1;
+    }
 }
