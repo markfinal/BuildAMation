@@ -49,14 +49,17 @@ public:
         const std::string &inExecutablePath,
         const std::string &inPath)
     {
+        std::stringstream path;
 #ifdef D_BAM_PLATFORM_WINDOWS
-        this->_module = ::LoadLibrary(inPath.c_str());
+        char dir[MAX_PATH];
+        _splitpath(inExecutablePath.c_str(), 0, dir, 0, 0);
+        path << dir << inPath;
+        this->_module = ::LoadLibrary(path.str().c_str());
         if (0 == this->_module)
         {
             throw std::runtime_error("Failed to load plugin");
         }
 #else
-        std::stringstream path;
         path << dirname(const_cast<char*>(inExecutablePath.c_str())) << "/" << inPath;
         this->_module = ::dlopen(path.str().c_str(), RTLD_LAZY);
         if (0 == this->_module)
