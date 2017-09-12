@@ -358,6 +358,81 @@ namespace Publisher
             private set;
         }
 
+        private void
+        gatherAllDependencies(
+            Bam.Core.Module initialModule,
+            Bam.Core.PathKey key,
+            CollatedFile reference)
+        {
+            var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+            var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>>();
+            toDealWith.Enqueue(System.Tuple.Create(initialModule, key));
+            System.Func<Bam.Core.Module, bool> findPublishableDependents;
+            findPublishableDependents = module =>
+                {
+                    var any = false;
+                    // now look at all the dependencies and accumulate a list of child dependencies
+                    // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
+                    foreach (var dep in module.Dependents)
+                    {
+                        if (dep is C.DynamicLibrary)
+                        {
+                            if (!allDependents.ContainsKey(dep))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(dep, C.DynamicLibrary.Key));
+                                any = true;
+                            }
+                        }
+                        if (dep is C.Cxx.DynamicLibrary)
+                        {
+                            if (!allDependents.ContainsKey(dep))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.DynamicLibrary.Key));
+                                any = true;
+                            }
+                        }
+                    }
+                    foreach (var req in module.Requirements)
+                    {
+                        if (req is C.DynamicLibrary)
+                        {
+                            if (!allDependents.ContainsKey(req))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(req, C.DynamicLibrary.Key));
+                                any = true;
+                            }
+                        }
+                        if (req is C.Cxx.DynamicLibrary)
+                        {
+                            if (!allDependents.ContainsKey(req))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.DynamicLibrary.Key));
+                                any = true;
+                            }
+                        }
+                    }
+                    return any;
+                };
+            // iterate over each dependent, stepping into each of their dependencies
+            while (toDealWith.Count > 0)
+            {
+                var next = toDealWith.Dequeue();
+                findPublishableDependents(next.Item1);
+                if (next.Item1 != initialModule)
+                {
+                    if (!allDependents.ContainsKey(next.Item1))
+                    {
+                        allDependents.Add(next.Item1, next.Item2);
+                    }
+                }
+            }
+            // now add each as a publishable dependent
+            foreach (var dep in allDependents)
+            {
+                this.Include(dep.Key, dep.Value, ".", reference);
+            }
+        }
+
         /// <summary>
         /// Collate the main application file in the publishing root. Use the publishing type to determine
         /// what kind of application this will be.
@@ -412,30 +487,20 @@ namespace Publisher
 
             this.InitialReference = copyFileModule;
 
+            this.gatherAllDependencies(dependent, key, copyFileModule);
+
             return copyFileModule;
         }
 
-        /// <summary>
-        /// Include a file built by Bam in a location relative to the reference file.
-        /// </summary>
-        /// <param name="key">Key.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public CollatedFile
-        Include<DependentModule>(
+        private CollatedFile
+        Include(
+            Bam.Core.Module dependent,
             Bam.Core.PathKey key,
             string subdir,
-            CollatedFile reference) where DependentModule : Bam.Core.Module, new()
+            CollatedFile reference)
         {
             try
             {
-                var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-                if (null == dependent)
-                {
-                    return null;
-                }
-
                 var copyFileModule = this.CreateCollatedFile(
                     dependent,
                     dependent.GeneratedPaths[key],
@@ -462,11 +527,33 @@ namespace Publisher
             catch (Bam.Core.UnableToBuildModuleException exception)
             {
                 Bam.Core.Log.Info("Not publishing {0} requested by {1} because {2}, but publishing will continue",
-                    typeof(DependentModule).ToString(),
+                    dependent.GetType().ToString(),
                     this.GetType().ToString(),
                     exception.Message);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Include a file built by Bam in a location relative to the reference file.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public CollatedFile
+        Include<DependentModule>(
+            Bam.Core.PathKey key,
+            string subdir,
+            CollatedFile reference) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
+
+            return this.Include(dependent, key, subdir, reference);
         }
 
         /// <summary>
