@@ -42,6 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef void(*PluginFunc)();
 
+#define PLUGIN_SUBDIR "subdir"
+
 class Plugin
 {
 public:
@@ -53,14 +55,14 @@ public:
 #ifdef D_BAM_PLATFORM_WINDOWS
         char dir[MAX_PATH];
         _splitpath(inExecutablePath.c_str(), 0, dir, 0, 0);
-        path << dir << inPath;
+        path << dir << PLUGIN_SUBDIR << "\\" << inPath;
         this->_module = ::LoadLibrary(path.str().c_str());
         if (0 == this->_module)
         {
             throw std::runtime_error("Failed to load plugin");
         }
 #else
-        path << dirname(const_cast<char*>(inExecutablePath.c_str())) << "/" << inPath;
+        path << dirname(const_cast<char*>(inExecutablePath.c_str())) << "/" << PLUGIN_SUBDIR "/" << inPath;
         this->_module = ::dlopen(path.str().c_str(), RTLD_LAZY);
         if (0 == this->_module)
         {
