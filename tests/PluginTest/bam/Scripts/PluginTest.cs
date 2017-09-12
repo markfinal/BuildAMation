@@ -99,7 +99,7 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Find<Plugin>().SubDirectory = Bam.Core.TokenizedString.CreateVerbatim("subdir");
         }
     }
