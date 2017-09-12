@@ -835,5 +835,25 @@ namespace Publisher
                     break;
             }
         }
+
+        public ICollatedObject
+        Find<DependentModule>() where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
+
+            foreach (var dep in this.Requirements)
+            {
+                var obj = dep as CollatedObject;
+                if (obj.SourceModule == dependent)
+                {
+                    return obj;
+                }
+            }
+            return null;
+        }
     }
 }
