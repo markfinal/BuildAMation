@@ -44,6 +44,25 @@ namespace Publisher
             set;
         }
 
+        public override Bam.Core.TokenizedString SubDirectory
+        {
+            set
+            {
+                base.SubDirectory = value;
+
+                Bam.Core.TokenizedString referenceFilePath = null;
+                if (null != this.Reference)
+                {
+                    referenceFilePath = this.Reference.GeneratedPaths[CollatedObject.Key];
+                }
+                this.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
+                    this,
+                    referenceFilePath,
+                    value,
+                    this.Collator.GeneratedPaths[Collation.Key]);
+            }
+        }
+
         public override void
         Evaluate()
         {

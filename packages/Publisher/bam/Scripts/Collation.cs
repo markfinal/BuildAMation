@@ -224,6 +224,7 @@ namespace Publisher
                 reference.SourceModule.Requires(sourceModule);
             }
 
+            copyFileModule.Collator = this;
             copyFileModule.SourceModule = sourceModule;
             copyFileModule.SourcePath = sourcePath;
             copyFileModule.Reference = reference;

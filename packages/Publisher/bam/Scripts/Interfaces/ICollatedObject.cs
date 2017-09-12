@@ -32,6 +32,11 @@ namespace Publisher
 {
     public interface ICollatedObject
     {
+        Collation Collator
+        {
+            get;
+        }
+
         Bam.Core.Module SourceModule
         {
             get;
@@ -40,6 +45,7 @@ namespace Publisher
         Bam.Core.TokenizedString SubDirectory
         {
             get;
+            set;
         }
 
         CollatedFile Reference

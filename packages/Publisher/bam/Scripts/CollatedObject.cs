@@ -38,6 +38,7 @@ namespace Publisher
 
         private ICollatedObjectPolicy Policy = null;
 
+        protected Collation TheCollator = null;
         private Bam.Core.Module RealSourceModule = null;
         private Bam.Core.TokenizedString SubDirectoryPath = null;
         private CollatedFile ReferenceFile = null;
@@ -79,6 +80,19 @@ namespace Publisher
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
         }
 
+        public Collation Collator
+        {
+            get
+            {
+                return this.TheCollator;
+            }
+
+            set
+            {
+                this.TheCollator = value;
+            }
+        }
+
         public Bam.Core.Module SourceModule
         {
             get
@@ -101,7 +115,7 @@ namespace Publisher
             }
         }
 
-        public Bam.Core.TokenizedString SubDirectory
+        public virtual Bam.Core.TokenizedString SubDirectory
         {
             get
             {
