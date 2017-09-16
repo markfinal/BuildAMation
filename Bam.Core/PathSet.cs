@@ -39,15 +39,13 @@ namespace Bam.Core
         private TokenizedStringArray paths = new TokenizedStringArray();
 
         /// <summary>
-        /// Create a PathSet with a single path on a single module.
+        /// Create a PathSet with a single path.
         /// </summary>
-        /// <param name="owningModule"></param>
         /// <param name="singlePath"></param>
         public PathSet(
-            Bam.Core.Module owningModule,
-            string singlePath)
+            Bam.Core.TokenizedString singlePath)
         {
-            this.paths.Add(owningModule.CreateTokenizedString(singlePath));
+            this.paths.Add(singlePath);
         }
 
         System.Collections.Generic.IEnumerator<TokenizedString> System.Collections.Generic.IEnumerable<TokenizedString>.GetEnumerator()

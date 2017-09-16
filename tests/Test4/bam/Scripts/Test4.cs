@@ -48,9 +48,9 @@ namespace Test4
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test4: Example dynamic library");
 
 #if true
-            var headerPathSet = new Bam.Core.PathSet(this, "$(packagedir)/include/dynamiclibrary.h");
+            var headerPathSet = new Bam.Core.PathSet(this.CreateTokenizedString("$(packagedir)/include/dynamiclibrary.h"));
             this.CreateHeaderContainer(headerPathSet);
-            var sourcePathSet = new Bam.Core.PathSet(this, "$(packagedir)/source/dynamiclibrary.c");
+            var sourcePathSet = new Bam.Core.PathSet(this.CreateTokenizedString("$(packagedir)/source/dynamiclibrary.c"));
             this.CreateCSourceContainer(sourcePathSet);
 #else
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary.h");
@@ -82,9 +82,9 @@ namespace Test4
             base.Init(parent);
 
 #if true
-            var headerPathSet = new Bam.Core.PathSet(this, "$(packagedir)/include/staticlibrary.h");
+            var headerPathSet = new Bam.Core.PathSet(this.CreateTokenizedString("$(packagedir)/include/staticlibrary.h"));
             this.CreateHeaderContainer(headerPathSet);
-            var sourcePathSet = new Bam.Core.PathSet(this, "$(packagedir)/source/staticlibrary.c");
+            var sourcePathSet = new Bam.Core.PathSet(this.CreateTokenizedString("$(packagedir)/source/staticlibrary.c"));
             var source = this.CreateCSourceContainer(sourcePathSet);
 #else
             this.CreateHeaderContainer("$(packagedir)/include/staticlibrary.h");

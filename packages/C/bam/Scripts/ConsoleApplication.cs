@@ -65,7 +65,7 @@ namespace C
                     if (this.ThirdpartyWindowsVersionResourcePath != null)
                     {
 #if true
-                        var versionRCPathSet = new Bam.Core.PathSet(this, this.ThirdpartyWindowsVersionResourcePath);
+                        var versionRCPathSet = new Bam.Core.PathSet(this.CreateTokenizedString(this.ThirdpartyWindowsVersionResourcePath));
                         var versionRC = this.CreateWinResourceContainer(versionRCPathSet);
 #else
                         var versionRC = rcContainer.AddFiles(this.ThirdpartyWindowsVersionResourcePath);

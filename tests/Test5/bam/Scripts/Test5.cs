@@ -50,7 +50,7 @@ namespace Test5
                 });
 
 #if true
-            var sourcePathSet = new Bam.Core.PathSet(this, "$(packagedir)/source/dynamicmain.c");
+            var sourcePathSet = new Bam.Core.PathSet(this.CreateTokenizedString("$(packagedir)/source/dynamicmain.c"));
             var source = this.CreateCSourceContainer(sourcePathSet);
 #else
             var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicmain.c");
