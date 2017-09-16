@@ -42,6 +42,18 @@ namespace C
     {
         protected System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
 
+#if true
+        private SourceFileType
+        CreateSourceFile<SourceFileType>(
+            Bam.Core.TokenizedString path)
+            where SourceFileType : Bam.Core.Module, Bam.Core.IInputPath, new()
+        {
+            // explicitly make a source file
+            var sourceFile = Bam.Core.Module.Create<SourceFileType>();
+            sourceFile.InputPath = path;
+            return sourceFile;
+        }
+#else
         private SourceFileType
         CreateSourceFile<SourceFileType>(
             string path,
@@ -62,7 +74,33 @@ namespace C
             }
             return sourceFile;
         }
+#endif
 
+#if true
+        public ChildModuleType
+        AddFile(
+            Bam.Core.TokenizedString path)
+        {
+            // TODO: how can I distinguish between creating a child module that inherits it's parents settings
+            // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
+            var child = Bam.Core.Module.Create<ChildModuleType>(this);
+
+            if (child is IRequiresSourceModule)
+            {
+                var source = this.CreateSourceFile<SourceFile>(path);
+                (child as IRequiresSourceModule).Source = source;
+            }
+            else
+            {
+                child.InputPath = path;
+            }
+
+            (child as Bam.Core.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            return child;
+        }
+#else
         /// <summary>
         /// Add a single object file, given the source path, to the container. Path must resolve to a single file.
         /// </summary>
@@ -103,7 +141,21 @@ namespace C
             this.DependsOn(child);
             return child;
         }
+#endif
 
+#if true
+        public Bam.Core.Array<Bam.Core.Module>
+        AddFiles(
+            Bam.Core.PathSet pathSet)
+        {
+            var modulesCreated = new Bam.Core.Array<Bam.Core.Module>();
+            foreach (var filepath in pathSet)
+            {
+                modulesCreated.Add(this.AddFile(filepath));
+            }
+            return modulesCreated;
+        }
+#else
         /// <summary>
         /// Add multiple object files, given a wildcarded source path.
         /// Allow filtering on the expanded paths, so that only matching paths are included.
@@ -154,6 +206,7 @@ namespace C
             }
             return modulesCreated;
         }
+#endif
 
         /// <summary>
         /// Take a container of source, and clone each of its children and embed them into a container of the same type.

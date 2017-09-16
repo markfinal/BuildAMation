@@ -89,6 +89,21 @@ namespace C
             }
         }
 
+#if true
+        public sealed override CObjectFileCollection
+        CreateCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var collection = base.CreateCSourceContainer(pathSet);
+            collection.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                    (collection.Tool as C.CompilerTool).CompileAsShared(settings);
+                });
+            return collection;
+        }
+#else
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -104,7 +119,17 @@ namespace C
             });
             return collection;
         }
+#endif
 
+#if true
+        public sealed override AssembledObjectFileCollection
+        CreateAssemblerSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var collection = base.CreateAssemblerSourceContainer(pathSet);
+            return collection;
+        }
+#else
         public sealed override AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
@@ -114,6 +139,7 @@ namespace C
             var collection = base.CreateAssemblerSourceContainer(wildcardPath, macroModuleOverride, filter);
             return collection;
         }
+#endif
 
         /// <summary>
         /// Specified sources compile against DependentModule, and re-exports the public patches

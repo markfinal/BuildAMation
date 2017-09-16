@@ -43,6 +43,16 @@ namespace C.Cxx
             this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
         }
 
+#if true
+        public virtual Cxx.ObjectFileCollection
+        CreateCxxSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(pathSet, false, this.ConsolePreprocessor);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         /// <summary>
         /// Create a container whose matching sources compile against C++.
         /// </summary>
@@ -60,7 +70,18 @@ namespace C.Cxx
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public C.ObjCxx.ObjectFileCollection
+        CreateObjectiveCxxSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(pathSet, false, this.ConsolePreprocessor);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         /// <summary>
         /// Create a container whose matching sources compile against Objective C++.
         /// </summary>
@@ -78,6 +99,7 @@ namespace C.Cxx
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
         /// <summary>
         /// Extend a container of C++ object files with another, potentially from another module. Note that module types must match.

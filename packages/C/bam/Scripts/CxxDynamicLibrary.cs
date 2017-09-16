@@ -82,6 +82,21 @@ namespace C.Cxx
             });
         }
 
+#if true
+        public sealed override CObjectFileCollection
+        CreateCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var collection = base.CreateCSourceContainer(pathSet);
+            collection.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                    (collection.Tool as C.CompilerTool).CompileAsShared(settings);
+                });
+            return collection;
+        }
+#else
         /// <summary>
         /// Create a container whose matching source compiles against C.
         /// </summary>
@@ -104,7 +119,23 @@ namespace C.Cxx
             });
             return collection;
         }
+#endif
 
+#if true
+        public sealed override Cxx.ObjectFileCollection
+        CreateCxxSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var collection = base.CreateCxxSourceContainer(pathSet);
+            collection.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                    (collection.Tool as C.CompilerTool).CompileAsShared(settings);
+                });
+            return collection;
+        }
+#else
         /// <summary>
         /// Create a container whose matching source compiles against C++.
         /// </summary>
@@ -127,6 +158,7 @@ namespace C.Cxx
             });
             return collection;
         }
+#endif
 
         /// <summary>
         /// Specified sources compile against DependentModule, and re-exports the public patches

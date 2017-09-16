@@ -155,6 +155,34 @@ namespace C
             return flatLibs.ToReadOnlyCollection();
         }
 
+#if true
+        protected T
+        InternalCreateContainer<T>(
+            Bam.Core.PathSet pathSet,
+            bool requiresNotDepends,
+            Bam.Core.Module.PrivatePatchDelegate privatePatch = null)
+            where T : CModule, IAddFiles, new()
+        {
+            var source = Bam.Core.Module.Create<T>(this);
+            if (null != privatePatch)
+            {
+                source.PrivatePatch(privatePatch);
+            }
+
+            if (requiresNotDepends)
+            {
+                this.Requires(source);
+            }
+            else
+            {
+                this.DependsOn(source);
+            }
+
+            (source as IAddFiles).AddFiles(pathSet);
+
+            return source;
+        }
+#else
         protected T
         InternalCreateContainer<T>(
             bool requires,
@@ -186,7 +214,18 @@ namespace C
 
             return source;
         }
+#endif
 
+#if true
+        public HeaderFileCollection
+        CreateHeaderContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var headers = this.InternalCreateContainer<HeaderFileCollection>(pathSet, true);
+            this.headerModules.Add(headers);
+            return headers;
+        }
+#else
         public HeaderFileCollection
         CreateHeaderContainer(
             string wildcardPath = null,
@@ -197,5 +236,6 @@ namespace C
             this.headerModules.Add(headers);
             return headers;
         }
+#endif
     }
 }

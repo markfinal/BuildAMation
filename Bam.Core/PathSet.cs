@@ -27,20 +27,37 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+using System.Linq;
+namespace Bam.Core
 {
-    public interface IAddFiles
+    /// <summary>
+    /// Construction and manipulation of one or more TokenizedString paths.
+    /// </summary>
+    public sealed class PathSet :
+        System.Collections.Generic.IEnumerable<TokenizedString>
     {
-#if true
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            Bam.Core.PathSet pathSet);
-#else
-        Bam.Core.Array<Bam.Core.Module>
-        AddFiles(
-            string path,
-            Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null);
-#endif
+        private TokenizedStringArray paths = new TokenizedStringArray();
+
+        /// <summary>
+        /// Create a PathSet with a single path on a single module.
+        /// </summary>
+        /// <param name="owningModule"></param>
+        /// <param name="singlePath"></param>
+        public PathSet(
+            Bam.Core.Module owningModule,
+            string singlePath)
+        {
+            this.paths.Add(owningModule.CreateTokenizedString(singlePath));
+        }
+
+        System.Collections.Generic.IEnumerator<TokenizedString> System.Collections.Generic.IEnumerable<TokenizedString>.GetEnumerator()
+        {
+            return paths.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return paths.GetEnumerator();
+        }
     }
 }

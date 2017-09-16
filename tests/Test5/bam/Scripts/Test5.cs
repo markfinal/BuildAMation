@@ -49,7 +49,12 @@ namespace Test5
                     }
                 });
 
+#if true
+            var sourcePathSet = new Bam.Core.PathSet(this, "$(packagedir)/source/dynamicmain.c");
+            var source = this.CreateCSourceContainer(sourcePathSet);
+#else
             var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicmain.c");
+#endif
 
             this.LinkAgainst<Test4.MyStaticLib>();
             this.CompileAndLinkAgainst<Test4.MyDynamicLib>(source);

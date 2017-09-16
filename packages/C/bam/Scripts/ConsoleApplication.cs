@@ -62,21 +62,25 @@ namespace C
 
                 if (!this.IsPrebuilt)
                 {
-                    var rcContainer = this.CreateWinResourceContainer();
                     if (this.ThirdpartyWindowsVersionResourcePath != null)
                     {
+#if true
+                        var versionRCPathSet = new Bam.Core.PathSet(this, this.ThirdpartyWindowsVersionResourcePath);
+                        var versionRC = this.CreateWinResourceContainer(versionRCPathSet);
+#else
                         var versionRC = rcContainer.AddFiles(this.ThirdpartyWindowsVersionResourcePath);
-                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC[0] as WinResource);
-                        this.WindowsVersionResource = versionRC[0] as WinResource;
+#endif
+                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC.Children[0] as WinResource);
+                        this.WindowsVersionResource = versionRC.Children[0] as WinResource;
                     }
                     else
                     {
                         var versionSource = Bam.Core.Module.Create<WinVersionResource>();
                         versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(config)/$(OutputName)_version.rc");
                         versionSource.BinaryModule = this;
-                        var versionRC = rcContainer.AddFile(versionSource);
-                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
-                        this.WindowsVersionResource = versionRC;
+                        var rcContainer = this.CreateWinResourceContainer(versionSource);
+                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(rcContainer.Children[0]);
+                        this.WindowsVersionResource = rcContainer.Children[0];
                     }
                 }
             }
@@ -101,6 +105,16 @@ namespace C
                 compiler.PreprocessorDefines.Add("_CONSOLE");
             };
 
+#if true
+        public virtual AssembledObjectFileCollection
+        CreateAssemblerSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<AssembledObjectFileCollection>(pathSet, false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         /// <summary>
         /// Create a container for matching source files, for preprocessed assembly.
         /// </summary>
@@ -118,7 +132,19 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public virtual CObjectFileCollection
+        CreateCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
+            var source = this.InternalCreateContainer<CObjectFileCollection>(pathSet, false, applicationPreprocessor);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         /// <summary>
         /// Create a container for matching source files, to compile as C.
         /// </summary>
@@ -137,7 +163,19 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public C.ObjC.ObjectFileCollection
+        CreateObjectiveCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
+            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(pathSet, false, applicationPreprocessor);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         /// <summary>
         /// Create a container for matching source files, to compile as ObjectiveC.
         /// </summary>
@@ -156,7 +194,29 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public virtual WinResourceCollection
+        CreateWinResourceContainer(
+            WinVersionResource module)
+        {
+            var source = Bam.Core.Module.Create<WinResourceCollection>(this);
+            source.AddFile(module);
+            this.DependsOn(source);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        public virtual WinResourceCollection
+        CreateWinResourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<WinResourceCollection>(pathSet, false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         /// <summary>
         /// Create a container for matching Windows resource files.
         /// </summary>
@@ -174,6 +234,7 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
         /// <summary>
         /// Specified source modules are compiled against the DependentModule type, with any public patches

@@ -60,6 +60,19 @@ namespace C.Cxx
             compiler.PreprocessorDefines.Add("_WINDOWS");
         };
 
+#if true
+        public sealed override C.CObjectFileCollection
+        CreateCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var container = base.CreateCSourceContainer(pathSet);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                container.PrivatePatch(this.WindowsPreprocessor);
+            }
+            return container;
+        }
+#else
         /// <summary>
         /// Create a container whose matching source files compile against C.
         /// </summary>
@@ -80,7 +93,21 @@ namespace C.Cxx
             }
             return container;
         }
+#endif
 
+#if true
+        public sealed override Cxx.ObjectFileCollection
+        CreateCxxSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var container = base.CreateCxxSourceContainer(pathSet);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                container.PrivatePatch(this.WindowsPreprocessor);
+            }
+            return container;
+        }
+#else
         /// <summary>
         /// Create a container whose matching source files compile against C++>
         /// </summary>
@@ -101,5 +128,6 @@ namespace C.Cxx
             }
             return container;
         }
+#endif
     }
 }

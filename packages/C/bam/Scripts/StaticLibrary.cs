@@ -76,6 +76,16 @@ namespace C
             }
         }
 
+#if true
+        public AssembledObjectFileCollection
+        CreateAssemblerSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<AssembledObjectFileCollection>(pathSet, false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         public AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
@@ -86,7 +96,18 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public CObjectFileCollection
+        CreateCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<CObjectFileCollection>(pathSet, false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         public CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -97,7 +118,18 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public Cxx.ObjectFileCollection
+        CreateCxxSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(pathSet, false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         public Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
@@ -108,7 +140,18 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public C.ObjC.ObjectFileCollection
+        CreateObjectiveCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(pathSet, false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
@@ -119,7 +162,18 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
+#if true
+        public C.ObjCxx.ObjectFileCollection
+        CreateObjectiveCxxSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(pathSet, false);
+            this.sourceModules.Add(source);
+            return source;
+        }
+#else
         public C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
@@ -130,6 +184,7 @@ namespace C
             this.sourceModules.Add(source);
             return source;
         }
+#endif
 
         /// <summary>
         /// Specified source modules are compiled against the DependentModule type, with any public patches

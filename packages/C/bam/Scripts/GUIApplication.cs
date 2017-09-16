@@ -59,6 +59,19 @@ namespace C
                 compiler.PreprocessorDefines.Add("_WINDOWS");
             };
 
+#if true
+        public sealed override CObjectFileCollection
+        CreateCSourceContainer(
+            Bam.Core.PathSet pathSet)
+        {
+            var container = base.CreateCSourceContainer(pathSet);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                container.PrivatePatch(this.WindowsPreprocessor);
+            }
+            return container;
+        }
+#else
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -72,5 +85,6 @@ namespace C
             }
             return container;
         }
+#endif
     }
 }
