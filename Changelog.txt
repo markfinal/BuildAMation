@@ -1,4 +1,4 @@
-23-Sep-2017 Fixes #366. Added Clang-Xcode9 package for Xcode9 support.
+23-Sep-2017 Fixes #366. Added Clang-Xcode9 package for Xcode9 support. Test packages updated to support Xcode9, but Xcode8 remains as the default, so use ./runtests.py --Clang.version=Xcode9 in order to exercise.
 
 31-Aug-2017 ======== Version 1.1.3 Release ========
 
