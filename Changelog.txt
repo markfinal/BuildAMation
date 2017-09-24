@@ -1,3 +1,5 @@
+24-Sep-2017 Fixes #369. Added C.ICommonCompilerSettings.NamedHeaders, that is a list of headers to process as if appearing as the first line of each affected source file. Supported on VisualC, Mingw, Gcc and Clang (macOS). Added test case, ProcessNamedHeaderTest, that attempts to include iso646.h (http://www.cplusplus.com/reference/ciso646/).
+
 24-Sep-2017 Fixes #367. Fixed stack overflow while analysing package dependencies.
 
 24-Sep-2017 Fixes #368. Xcode projects were ill-formed if C.IAdditionalSettings were added containing a space, e.g. '-include limits'.

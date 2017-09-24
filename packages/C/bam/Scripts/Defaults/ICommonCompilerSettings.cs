@@ -88,6 +88,7 @@ namespace C.DefaultSettings
             settings.PreprocessorDefines = new PreprocessorDefinitions();
             settings.PreprocessorUndefines = new Bam.Core.StringArray();
             settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
+            settings.NamedHeaders = new Bam.Core.StringArray();
         }
 
         public static void
@@ -107,6 +108,7 @@ namespace C.DefaultSettings
             shared.OmitFramePointer = shared.OmitFramePointer.Intersect(other.OmitFramePointer);
             shared.DisableWarnings = shared.DisableWarnings.Intersect(other.DisableWarnings);
             shared.PreprocessorUndefines = shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines);
+            shared.NamedHeaders = shared.NamedHeaders.Intersect(other.NamedHeaders);
         }
 
         public static void
@@ -127,6 +129,7 @@ namespace C.DefaultSettings
             delta.OmitFramePointer = lhs.OmitFramePointer.Complement(rhs.OmitFramePointer);
             delta.DisableWarnings = lhs.DisableWarnings.Complement(rhs.DisableWarnings);
             delta.PreprocessorUndefines = lhs.PreprocessorUndefines.Complement(rhs.PreprocessorUndefines);
+            delta.NamedHeaders = lhs.NamedHeaders.Complement(rhs.NamedHeaders);
         }
 
         public static void
@@ -160,6 +163,10 @@ namespace C.DefaultSettings
             foreach (var path in other.PreprocessorUndefines)
             {
                 settings.PreprocessorUndefines.AddUnique(path);
+            }
+            foreach (var header in other.NamedHeaders)
+            {
+                settings.NamedHeaders.AddUnique(header);
             }
         }
     }
