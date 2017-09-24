@@ -253,6 +253,7 @@ namespace Bam.Core
                     if (specifier[1] == dupPackage.Version)
                     {
                         toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item != dupPackage)));
+                        Log.DebugMessage("Duplicate of {0} resolved to {1} by command line", dupName, dupPackage.ToString());
                         return dupPackage;
                     }
                 }
@@ -273,39 +274,45 @@ namespace Bam.Core
             if (null != masterDependency)
             {
                 toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item.Version != masterDependency.Item2)));
-                return packageDefinitions.First(item => (item.Name == dupName) && (item.Version == masterDependency.Item2));
+                var found = packageDefinitions.First(item => (item.Name == dupName) && (item.Version == masterDependency.Item2));
+                Log.DebugMessage("Duplicate of {0} resolved to {1} by master definition file", dupName, found.ToString());
+                return found;
             }
 
+            Log.DebugMessage("Duplicate of {0} unresolved", dupName);
             return null;
         }
 
         private static Array<PackageDefinition>
-        PackagesToRemove(
-            Array<PackageDefinition> toRemove,
+        FindPackagesToRemove(
+            Array<PackageDefinition> initialToRemove,
             Array<PackageDefinition> packageDefinitions,
             PackageDefinition masterDefinitionFile)
         {
-            var additionalToRemove = new Array<PackageDefinition>();
-            foreach (var r in toRemove)
+            var totalToRemove = new Array<PackageDefinition>(initialToRemove);
+            var queuedForRemoval = new System.Collections.Generic.Queue<PackageDefinition>(initialToRemove);
+            while (queuedForRemoval.Count > 0)
             {
-                foreach (var p in packageDefinitions)
+                var current = queuedForRemoval.Dequeue();
+                totalToRemove.AddUnique(current);
+                Log.DebugMessage("Examining: {0}", current.ToString());
+
+                foreach (var package in packageDefinitions)
                 {
-                    if (p.Parents.Contains(r))
+                    if (package.Parents.Contains(current))
                     {
-                        p.Parents.Remove(r);
+                        Log.DebugMessage("Package {0} parents include {1}, so removing reference", package.ToString(), current.ToString());
+                        package.Parents.Remove(current);
                     }
-                    if (0 == p.Parents.Count() && p != masterDefinitionFile && !toRemove.Contains(p))
+
+                    if (!package.Parents.Any() && package != masterDefinitionFile && !totalToRemove.Contains(package) && !queuedForRemoval.Contains(package))
                     {
-                        additionalToRemove.AddUnique(p);
+                        Log.DebugMessage("*** Package {0} enqueued for removal since no-one refers to it", package.ToString());
+                        queuedForRemoval.Enqueue(package);
                     }
                 }
             }
-            if (additionalToRemove.Count() > 0)
-            {
-                // recurse
-                additionalToRemove.AddRangeUnique(PackagesToRemove(additionalToRemove, packageDefinitions, masterDefinitionFile));
-            }
-            return additionalToRemove;
+            return totalToRemove;
         }
 
         private static void
@@ -426,27 +433,27 @@ namespace Bam.Core
             var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
             if ((duplicatePackageNames.Count() > 0) && !allowDuplicates)
             {
-                var toRemove = new Array<PackageDefinition>();
-
                 foreach (var dupName in duplicatePackageNames)
                 {
+                    Log.DebugMessage("Duplicate '{0}'; total packages {1}", dupName, packageDefinitions.Count);
                     var duplicates = packageDefinitions.Where(item => item.Name == dupName);
+                    var toRemove = new Array<PackageDefinition>();
                     var resolvedDuplicate = TryToResolveDuplicate(masterDefinitionFile, dupName, duplicates, packageDefinitions, packageVersionSpecifiers, toRemove);
+
+                    Log.DebugMessage("Attempting to remove:\n\t{0}", toRemove.ToString("\n\t"));
+                    // try removing any packages that have already been resolved
+                    // which, in turn, can remove additional packages that have become orphaned by other removals
+                    packageDefinitions.RemoveAll(FindPackagesToRemove(toRemove, packageDefinitions, masterDefinitionFile));
+
                     if (null != resolvedDuplicate)
                     {
                         continue;
                     }
 
-                    // try removing any packages that have already been resolved
-                    // which can remove additional packages (recursive check) because they had been added solely by those we are just about to remove
-                    packageDefinitions.RemoveAll(PackagesToRemove(toRemove, packageDefinitions, masterDefinitionFile));
-                    packageDefinitions.RemoveAll(toRemove);
-
                     // and if that has reduced the duplicates for this package down to a single version, we're good to carry on
-                    var numDuplicates = duplicates.Count();
+                    var numDuplicates = duplicates.Count(); // this is LINQ, so it's 'live'
                     if (1 == numDuplicates)
                     {
-                        toRemove.Clear();
                         continue;
                     }
 
@@ -482,9 +489,6 @@ namespace Bam.Core
                     }
                     throw new Exception(resolveErrorMessage.ToString());
                 }
-
-                // finally, clean up the package definition list to use, with all those that need to be deleted
-                packageDefinitions.RemoveAll(toRemove);
             }
 
             // ensure that all packages with a single version in the definition files, does not have a command line override
