@@ -40,7 +40,12 @@ namespace ClangCommon
             var extraSettings = new XcodeBuilder.MultiConfigurationValue();
             foreach (var extra in settings.AdditionalSettings)
             {
-                extraSettings.Add(extra);
+                // any extra arguments separated by spaces splits them onto separate lines in the project file
+                var split = extra.Split(' ');
+                foreach (var s in split)
+                {
+                    extraSettings.Add(s);
+                }
             }
             configuration["OTHER_CFLAGS"] = extraSettings;
         }
