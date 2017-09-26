@@ -146,6 +146,12 @@ namespace VisualC
             set;
         }
 
+        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
+        {
+            get;
+            set;
+        }
+
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
             get;
