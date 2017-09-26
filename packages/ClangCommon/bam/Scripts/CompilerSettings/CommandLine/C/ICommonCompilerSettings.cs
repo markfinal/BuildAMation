@@ -161,6 +161,10 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported output type, {0}", settings.OutputType.Value);
                 }
             }
+            foreach (var header in settings.NamedHeaders)
+            {
+                commandLine.Add(System.String.Format("-include {0}", header));
+            }
         }
     }
 }

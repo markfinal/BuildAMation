@@ -159,6 +159,10 @@ namespace GccCommon
                         break;
                 }
             }
+            foreach (var header in settings.NamedHeaders)
+            {
+                commandLine.Add(System.String.Format("-include {0}", header));
+            }
         }
     }
 }

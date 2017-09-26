@@ -156,5 +156,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// List of headers to inject first into the compilation step.
+        /// </summary>
+        /// <value>Header filenames to process.</value>
+        Bam.Core.StringArray NamedHeaders
+        {
+            get;
+            set;
+        }
     }
 }

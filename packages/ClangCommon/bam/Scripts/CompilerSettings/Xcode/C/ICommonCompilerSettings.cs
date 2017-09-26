@@ -187,6 +187,17 @@ namespace ClangCommon
             {
                 // TODO: anything?
             }
+            if (settings.NamedHeaders.Count > 0)
+            {
+                var namedHeaders = new XcodeBuilder.MultiConfigurationValue();
+                foreach (var header in settings.NamedHeaders)
+                {
+                    // have to split this into two, or Xcode does not recognise it
+                    namedHeaders.Add("-include");
+                    namedHeaders.Add(header);
+                }
+                configuration["OTHER_CFLAGS"] = namedHeaders;
+            }
         }
     }
 }

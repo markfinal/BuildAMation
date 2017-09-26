@@ -136,6 +136,11 @@ namespace VisualCCommon
                     vsSettingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);
                 }
             }
+
+            if (settings.NamedHeaders.Count > 0)
+            {
+                vsSettingsGroup.AddSetting("ForcedIncludeFiles", settings.NamedHeaders, condition, inheritExisting: true);
+            }
         }
     }
 }
