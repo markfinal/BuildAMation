@@ -71,6 +71,14 @@ namespace Test5
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            // TODO: set publishing type
+            // consoleapplication
+            // windowedapplication
+            // library
+            //this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, "$(publishdir)");
+            this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+#else
             var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);
 
@@ -85,6 +93,7 @@ namespace Test5
                     this.IncludeFile(libPath, ".", app);
                 }
             }
+#endif
         }
     }
 

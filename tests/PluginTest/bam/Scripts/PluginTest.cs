@@ -99,8 +99,13 @@ namespace PluginTest
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
             this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Find<Plugin>().SubDirectory = Bam.Core.TokenizedString.CreateVerbatim("subdir");
+#else
+            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<Plugin>(C.Plugin.Key, ".", app);
+#endif
         }
     }
 }
