@@ -72,10 +72,6 @@ namespace Test5
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            // TODO: set publishing type to configure output macros
-            // consoleapplication
-            // windowedapplication
-            // library
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
 
             this.Include2<MyDynamicLibTestApp>(C.ConsoleApplication.Key, this.BinDir);
@@ -107,6 +103,17 @@ namespace Test5
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            this.SetDefaultMacros(EPublishingType.Library);
+
+            this.Include2<Test4.MyDynamicLib>(C.DynamicLibrary.Key, this.BinDir);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.Include2<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey, this.LibDir);
+            }
+            // TODO: this needs to be fixed
+            //this.IncludeFile2<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir);
+#else
             var dll = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
@@ -114,6 +121,7 @@ namespace Test5
             }
 
             this.IncludeFiles<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", "../include", dll);
+#endif
         }
     }
 

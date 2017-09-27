@@ -63,7 +63,12 @@ namespace Publisher
             /// On OSX, this is an application bundle, and will automatically appear in a <name>.app/Contents/MacOS folder
             /// under the publishing root.
             /// </summary>
-            WindowedApplication
+            WindowedApplication,
+
+            /// <summary>
+            /// Distributing a library, with headers, import/static/dynamic libraries, and potentially tools or tests.
+            /// </summary>
+            Library
         }
 
 #if D_NEW_PUBLISHING
@@ -91,6 +96,57 @@ namespace Publisher
             }
         }
 
+        public Bam.Core.TokenizedString HeaderDir
+        {
+            get
+            {
+                return this.Macros["HeaderDir"];
+            }
+        }
+
+        private void
+        SetConsoleApplicationDefaultMacros()
+        {
+            this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
+            this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
+            this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+        }
+
+        private void
+        setWindowedApplicationDefaultMacros()
+        {
+            switch (Bam.Core.OSUtilities.CurrentOS)
+            {
+                case Bam.Core.EPlatform.Windows:
+                case Bam.Core.EPlatform.Linux:
+                    {
+                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
+                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+                    }
+                    break;
+
+                case Bam.Core.EPlatform.OSX:
+                    {
+                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/MacOS"));
+                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Frameworks"));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Plugins"));
+                    }
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
+            }
+        }
+
+        private void
+        setLibraryDefaultMacros()
+        {
+            this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)/bin"));
+            this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)/lib"));
+            this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(publishdir)/include"));
+        }
+
         public void
         SetDefaultMacros(
             EPublishingType type)
@@ -100,71 +156,15 @@ namespace Publisher
             switch (type)
             {
                 case EPublishingType.ConsoleApplication:
-                    {
-                        switch (Bam.Core.OSUtilities.CurrentOS)
-                        {
-                            case Bam.Core.EPlatform.Windows:
-                                {
-                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
-                                }
-                                break;
-
-                            case Bam.Core.EPlatform.Linux:
-                                {
-                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
-                                }
-                                break;
-
-                            case Bam.Core.EPlatform.OSX:
-                                {
-                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
-                                }
-                                break;
-
-                            default:
-                                throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
-                        }
-                    }
+                    this.SetConsoleApplicationDefaultMacros();
                     break;
 
                 case EPublishingType.WindowedApplication:
-                    {
-                        switch (Bam.Core.OSUtilities.CurrentOS)
-                        {
-                            case Bam.Core.EPlatform.Windows:
-                                {
-                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
-                                }
-                                break;
+                    this.setWindowedApplicationDefaultMacros();
+                    break;
 
-                            case Bam.Core.EPlatform.Linux:
-                                {
-                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
-                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
-                                }
-                                break;
-
-                            case Bam.Core.EPlatform.OSX:
-                                {
-                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/MacOS"));
-                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Frameworks"));
-                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Plugins"));
-                                }
-                                break;
-
-                            default:
-                                throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
-                        }
-                    }
+                case EPublishingType.Library:
+                    this.setLibraryDefaultMacros();
                     break;
             }
         }
