@@ -72,12 +72,13 @@ namespace Test5
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            // TODO: set publishing type
+            // TODO: set publishing type to configure output macros
             // consoleapplication
             // windowedapplication
             // library
-            //this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, "$(publishdir)");
-            this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+
+            this.Include2<MyDynamicLibTestApp>(C.ConsoleApplication.Key, this.BinDir);
 #else
             var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);

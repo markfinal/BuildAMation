@@ -66,11 +66,119 @@ namespace Publisher
             WindowedApplication
         }
 
+#if D_NEW_PUBLISHING
+        public Bam.Core.TokenizedString BinDir
+        {
+            get
+            {
+                return this.Macros["BinDir"];
+            }
+        }
+
+        public Bam.Core.TokenizedString LibDir
+        {
+            get
+            {
+                return this.Macros["LibDir"];
+            }
+        }
+
+        public Bam.Core.TokenizedString PluginDir
+        {
+            get
+            {
+                return this.Macros["PluginDir"];
+            }
+        }
+
+        public void
+        SetDefaultMacros(
+            EPublishingType type)
+        {
+            // TODO: can any of these paths be determined from the C package for RPATHs etc?
+            // i.e. whatever layout the user wants, is honoured here as a default
+            switch (type)
+            {
+                case EPublishingType.ConsoleApplication:
+                    {
+                        switch (Bam.Core.OSUtilities.CurrentOS)
+                        {
+                            case Bam.Core.EPlatform.Windows:
+                                {
+                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+                                }
+                                break;
+
+                            case Bam.Core.EPlatform.Linux:
+                                {
+                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+                                }
+                                break;
+
+                            case Bam.Core.EPlatform.OSX:
+                                {
+                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+                                }
+                                break;
+
+                            default:
+                                throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
+                        }
+                    }
+                    break;
+
+                case EPublishingType.WindowedApplication:
+                    {
+                        switch (Bam.Core.OSUtilities.CurrentOS)
+                        {
+                            case Bam.Core.EPlatform.Windows:
+                                {
+                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+                                }
+                                break;
+
+                            case Bam.Core.EPlatform.Linux:
+                                {
+                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
+                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+                                }
+                                break;
+
+                            case Bam.Core.EPlatform.OSX:
+                                {
+                                    this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/MacOS"));
+                                    this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Frameworks"));
+                                    this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Plugins"));
+                                }
+                                break;
+
+                            default:
+                                throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
+                        }
+                    }
+                    break;
+            }
+        }
+#endif
+
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+#if D_NEW_PUBLISHING
+            this.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+#endif
 
             if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
@@ -359,6 +467,7 @@ namespace Publisher
             private set;
         }
 
+#if D_NEW_PUBLISHING
         private void
         gatherAllDependencies(
             Bam.Core.Module initialModule,
@@ -376,6 +485,22 @@ namespace Publisher
                     // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
                     foreach (var dep in module.Dependents)
                     {
+                        if (dep is C.Plugin)
+                        {
+                            if (!allDependents.ContainsKey(dep))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(dep, C.Plugin.Key));
+                                any = true;
+                            }
+                        }
+                        if (dep is C.Cxx.Plugin)
+                        {
+                            if (!allDependents.ContainsKey(dep))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.Plugin.Key));
+                                any = true;
+                            }
+                        }
                         if (dep is C.DynamicLibrary)
                         {
                             if (!allDependents.ContainsKey(dep))
@@ -395,6 +520,22 @@ namespace Publisher
                     }
                     foreach (var req in module.Requirements)
                     {
+                        if (req is C.Plugin)
+                        {
+                            if (!allDependents.ContainsKey(req))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(req, C.Plugin.Key));
+                                any = true;
+                            }
+                        }
+                        if (req is C.Cxx.Plugin)
+                        {
+                            if (!allDependents.ContainsKey(req))
+                            {
+                                toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.Plugin.Key));
+                                any = true;
+                            }
+                        }
                         if (req is C.DynamicLibrary)
                         {
                             if (!allDependents.ContainsKey(req))
@@ -430,9 +571,54 @@ namespace Publisher
             // now add each as a publishable dependent
             foreach (var dep in allDependents)
             {
-                this.Include(dep.Key, dep.Value, ".", reference);
+                if (dep.Key is C.Cxx.Plugin || dep.Key is C.Plugin)
+                {
+                    this.Include2(dep.Key, dep.Value, this.PluginDir);
+                }
+                else if (dep.Key is C.DynamicLibrary || dep.Key is C.Cxx.DynamicLibrary)
+                {
+                    this.Include2(dep.Key, dep.Value, this.LibDir);
+                }
+                else
+                {
+                    throw new System.NotSupportedException(System.String.Format("Module of type {0}", dep.Key.GetType().ToString()));
+                }
             }
         }
+#endif
+
+#if D_NEW_PUBLISHING
+        public void
+        Include2(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir)
+        {
+            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2}", dependent.ToString(), key.ToString(), publishDir.Parse());
+            this.gatherAllDependencies(dependent, key, null);
+        }
+
+        public void
+        Include2<DependentModule>(
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+            this.Include2(dependent, key, publishDir);
+        }
+
+        public void
+        Include2<DependentModule>(
+            Bam.Core.PathKey key,
+            string publishDir) where DependentModule : Bam.Core.Module, new()
+        {
+            this.Include2<DependentModule>(key, this.CreateTokenizedString(publishDir));
+        }
+#endif
 
         /// <summary>
         /// Collate the main application file in the publishing root. Use the publishing type to determine
@@ -487,8 +673,6 @@ namespace Publisher
             }
 
             this.InitialReference = copyFileModule;
-
-            this.gatherAllDependencies(dependent, key, copyFileModule);
 
             return copyFileModule;
         }
