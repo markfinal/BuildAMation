@@ -27,6 +27,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#include "dynamiclib.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -255,6 +257,8 @@ main(
     char *exeDir = getParentDirectory(exePath);
     int exitStatus = 0;
     char *libDir = 0;
+
+    fprintf(stdout, TestFunction());
 
     /* check if single data file exists next to executable */
     exitStatus += validateTestFile1(exeDir);

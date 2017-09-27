@@ -30,6 +30,25 @@
 using Bam.Core;
 namespace PublishingTest1
 {
+    class SimpleDynamicLib :
+        C.DynamicLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/source/dynamiclib.h");
+            this.CreateCSourceContainer("$(packagedir)/source/dynamiclib.c");
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+        }
+    }
+
     sealed class SimpleExe :
         C.ConsoleApplication
     {
@@ -40,6 +59,7 @@ namespace PublishingTest1
             base.Init(parent);
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
 
             if (this.Linker is VisualCCommon.LinkerBase)
             {
@@ -58,6 +78,7 @@ namespace PublishingTest1
             base.Init(parent);
 
             var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);
 
             // copy a single data file, next to the executable
             this.IncludeFile("$(packagedir)/data/testfile1.txt", ".", app);
