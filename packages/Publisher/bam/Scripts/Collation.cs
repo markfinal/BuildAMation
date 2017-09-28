@@ -69,6 +69,8 @@ namespace Publisher
             /// Distributing a library, with headers, import/static/dynamic libraries, and potentially tools or tests.
             /// </summary>
             Library
+
+            // TODO: macosFramework
         }
 
 #if D_NEW_PUBLISHING
@@ -128,9 +130,15 @@ namespace Publisher
 
                 case Bam.Core.EPlatform.OSX:
                     {
-                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/MacOS"));
-                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Frameworks"));
-                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents/Plugins"));
+                        this.Macros.Add("macOSAppBundleContentsDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents"));
+                        this.Macros.Add("macOSAppBundleMacOSDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/MacOS"));
+                        this.Macros.Add("macOSAppBundleFrameworksDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Frameworks"));
+                        this.Macros.Add("macOSAppBundlePluginsDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Plugins"));
+                        this.Macros.Add("macOSAppBundleResourcesDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Resources"));
+                        this.Macros.Add("macOSAppBundleSharedSupportDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/SharedSupport"));
+                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(macOSAppBundleMacOSDir)"));
+                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(macOSAppBundlePluginsDir)"));
                     }
                     break;
 
