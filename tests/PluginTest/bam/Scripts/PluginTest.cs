@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace PluginTest
 {
-    public sealed class Application :
+    public class Application :
         C.Cxx.ConsoleApplication
     {
         protected override void
@@ -63,7 +63,7 @@ namespace PluginTest
         }
     }
 
-    public sealed class Plugin :
+    public class Plugin :
         C.Cxx.Plugin
     {
         protected override void

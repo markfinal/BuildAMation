@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test5
 {
-    sealed class MyDynamicLibTestApp :
+    class MyDynamicLibTestApp :
         C.ConsoleApplication
     {
         protected override void
