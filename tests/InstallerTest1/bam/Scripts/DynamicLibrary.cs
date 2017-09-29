@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace InstallerTest1
 {
-    public sealed class CDynamicLibrary :
+    public class CDynamicLibrary :
         C.DynamicLibrary
     {
         protected override void
@@ -65,7 +65,7 @@ namespace InstallerTest1
         }
     }
 
-    public sealed class CxxDynamicLibrary :
+    public class CxxDynamicLibrary :
         C.Cxx.DynamicLibrary
     {
         protected override void

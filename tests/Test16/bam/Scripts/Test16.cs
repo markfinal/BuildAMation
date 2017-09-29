@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test16
 {
-    public sealed class StaticApplication :
+    class StaticApplication :
         C.ConsoleApplication
     {
         protected override void
@@ -50,7 +50,7 @@ namespace Test16
         }
     }
 
-    sealed class DynamicApplication :
+    class DynamicApplication :
         C.ConsoleApplication
     {
         protected override void
@@ -88,9 +88,14 @@ namespace Test16
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.Include2<DynamicApplication>(C.ConsoleApplication.Key, this.BinDir);
+#else
             var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test14.DynamicLibrary1>(C.DynamicLibrary.Key, ".", app);
             this.Include<Test15.DynamicLibrary2>(C.DynamicLibrary.Key, ".", app);
+#endif
         }
     }
 }

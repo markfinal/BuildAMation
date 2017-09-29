@@ -39,6 +39,10 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            this.SetDefaultMacros(EPublishingType.WindowedApplication);
+            this.Include2<CExecutable>(C.GUIApplication.Key, this.BinDir);
+#else
             var app = this.Include<CExecutable>(C.GUIApplication.Key, EPublishingType.WindowedApplication);
             this.Include<CDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
 
@@ -54,6 +58,7 @@ namespace InstallerTest1
                     this.IncludeFile(runtimelib, ".", app);
                 }
             }
+#endif
         }
     }
 
@@ -66,6 +71,10 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            this.SetDefaultMacros(EPublishingType.WindowedApplication);
+            this.Include2<CxxExecutable>(C.Cxx.GUIApplication.Key, this.BinDir);
+#else
             var app = this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key, EPublishingType.WindowedApplication);
             this.Include<CxxDynamicLibrary>(C.Cxx.DynamicLibrary.Key, ".", app);
 
@@ -85,6 +94,7 @@ namespace InstallerTest1
                     this.IncludeFile(runtimelib, ".", app);
                 }
             }
+#endif
         }
     }
 }

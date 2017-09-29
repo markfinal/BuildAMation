@@ -30,7 +30,7 @@
 namespace CocoaTest1
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
-    sealed class CLibrary :
+    class CLibrary :
         C.StaticLibrary
     {
         protected override void
@@ -44,7 +44,7 @@ namespace CocoaTest1
     }
 
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
-    sealed class CocoaTest :
+    class CocoaTest :
         C.GUIApplication
     {
         protected override void
@@ -77,7 +77,12 @@ namespace CocoaTest1
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            this.SetDefaultMacros(EPublishingType.WindowedApplication);
+            this.Include2<CocoaTest>(C.ConsoleApplication.Key, this.BinDir);
+#else
             this.Include<CocoaTest>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
+#endif
         }
     }
 }

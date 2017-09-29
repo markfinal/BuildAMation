@@ -39,6 +39,9 @@ namespace PublishingTest2
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            // TODO
+#else
             // copy a single data file as the root of all other copies
             var root = this.IncludeFile(this.CreateTokenizedString("$(packagedir)/data/testfile1.txt"), "api_include");
 
@@ -48,6 +51,7 @@ namespace PublishingTest2
             // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the root data file
             var renamedDir = this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), "lib", root);
             renamedDir.CopiedFilename = "testdir1_renamed";
+#endif
         }
     }
 }

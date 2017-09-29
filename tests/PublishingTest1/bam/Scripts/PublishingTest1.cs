@@ -49,7 +49,7 @@ namespace PublishingTest1
         }
     }
 
-    sealed class SimpleExe :
+    class SimpleExe :
         C.ConsoleApplication
     {
         protected override void
@@ -77,6 +77,10 @@ namespace PublishingTest1
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.Include2<SimpleExe>(C.ConsoleApplication.Key, this.BinDir);
+#else
             var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);
 
@@ -89,6 +93,7 @@ namespace PublishingTest1
             // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the executable
             var renamedDir = this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), "lib", app);
             renamedDir.CopiedFilename = "testdir1_renamed";
+#endif
         }
     }
 
