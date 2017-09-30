@@ -30,6 +30,83 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+    public abstract class CollatedObject2 :
+        Bam.Core.Module,
+        ICollatedObject2
+    {
+        private ICollatedObjectPolicy2 policy = null;
+        private Bam.Core.Module sourceModule;
+        private Bam.Core.PathKey sourcePathKey;
+        private Bam.Core.TokenizedString publishingDirectory;
+
+        Bam.Core.Module ICollatedObject2.SourceModule
+        {
+            get
+            {
+                return this.sourceModule;
+            }
+        }
+        public Bam.Core.Module SourceModule
+        {
+            set
+            {
+                this.sourceModule = value;
+            }
+        }
+
+        Bam.Core.PathKey ICollatedObject2.SourcePathKey
+        {
+            get
+            {
+                return this.sourcePathKey;
+            }
+        }
+        public Bam.Core.PathKey SourcePathKey
+        {
+            set
+            {
+                this.sourcePathKey = value;
+            }
+        }
+
+        Bam.Core.TokenizedString ICollatedObject2.PublishingDirectory
+        {
+            get
+            {
+                return this.publishingDirectory;
+            }
+        }
+        public Bam.Core.TokenizedString PublishingDirectory
+        {
+            set
+            {
+                this.publishingDirectory = value;
+            }
+        }
+
+        public override void
+        Evaluate()
+        {
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+            this.policy.Collate(this, context);
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            var className = "Publisher." + mode + "CollatedObject2";
+            this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy2>.Create(className);
+        }
+    }
+#endif
+
     public abstract class CollatedObject :
         Bam.Core.Module,
         ICollatedObject

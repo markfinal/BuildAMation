@@ -29,6 +29,24 @@
 #endregion // License
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+    public sealed class NativeCollatedObject2 :
+        ICollatedObjectPolicy2
+    {
+        void
+        ICollatedObjectPolicy2.Collate(
+            ICollatedObject2 sender,
+            Bam.Core.ExecutionContext context)
+        {
+            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2} [{3}]",
+                sender.SourceModule.ToString(),
+                sender.SourcePathKey.ToString(),
+                sender.PublishingDirectory.Parse(),
+                sender);
+        }
+    }
+#endif
+
     public sealed class NativeCollatedObject :
         ICollatedObjectPolicy
     {

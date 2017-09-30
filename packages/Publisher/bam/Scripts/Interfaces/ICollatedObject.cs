@@ -30,6 +30,26 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+    public interface ICollatedObject2
+    {
+        Bam.Core.Module SourceModule
+        {
+            get;
+        }
+
+        Bam.Core.PathKey SourcePathKey
+        {
+            get;
+        }
+
+        Bam.Core.TokenizedString PublishingDirectory
+        {
+            get;
+        }
+    }
+#endif
+
     public interface ICollatedObject
     {
         Collation Collator

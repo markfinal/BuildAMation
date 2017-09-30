@@ -303,6 +303,24 @@ namespace Publisher
             }
         }
 
+#if D_NEW_PUBLISHING
+        private CollatedFile2
+        CreateCollatedFile2(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir)
+        {
+            var module = Bam.Core.Module.Create<CollatedFile2>() as CollatedFile2;
+            module.SourceModule = dependent;
+            module.SourcePathKey = key;
+            module.PublishingDirectory = publishDir;
+
+            this.Requires(module);
+            module.Requires(dependent);
+            return module;
+        }
+#endif
+
         private CollatedFile
         CreateCollatedFile(
             Bam.Core.Module sourceModule,
@@ -593,16 +611,14 @@ namespace Publisher
                 }
             }
         }
-#endif
 
-#if D_NEW_PUBLISHING
         public void
         Include2(
             Bam.Core.Module dependent,
             Bam.Core.PathKey key,
             Bam.Core.TokenizedString publishDir)
         {
-            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2}", dependent.ToString(), key.ToString(), publishDir.Parse());
+            var collatedFile = this.CreateCollatedFile2(dependent, key, publishDir);
             this.gatherAllDependencies(dependent, key, null);
         }
 
