@@ -74,6 +74,10 @@ namespace Publisher
         }
 
 #if D_NEW_PUBLISHING
+        // this is doubling up the cost of the this.Requires list, but at less runtime cost
+        // for expanding each CollatedObject2 to peek as it's properties
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject2>();
+
         public Bam.Core.TokenizedString BinDir
         {
             get
@@ -588,7 +592,8 @@ namespace Publisher
                 findPublishableDependents(next.Item1);
                 if (next.Item1 != initialModule)
                 {
-                    if (!allDependents.ContainsKey(next.Item1))
+                    if (!allDependents.ContainsKey(next.Item1) &&
+                        !this.collatedObjects.ContainsKey(next))
                     {
                         allDependents.Add(next.Item1, next.Item2);
                     }
@@ -619,6 +624,7 @@ namespace Publisher
             Bam.Core.TokenizedString publishDir)
         {
             var collatedFile = this.CreateCollatedFile2(dependent, key, publishDir);
+            this.collatedObjects.Add(System.Tuple.Create(dependent, key), collatedFile);
             this.gatherAllDependencies(dependent, key, null);
         }
 
