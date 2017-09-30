@@ -85,6 +85,21 @@ namespace Publisher
             }
         }
 
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFileWin>();
+            }
+            else
+            {
+                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFilePosix>();
+            }
+        }
+
         public override void
         Evaluate()
         {

@@ -34,7 +34,7 @@ namespace Publisher
     {
         void
         Collate(
-            ICollatedObject2 sender,
+            CollatedObject2 sender,
             Bam.Core.ExecutionContext context);
     }
 #endif

@@ -35,14 +35,29 @@ namespace Publisher
     {
         void
         ICollatedObjectPolicy2.Collate(
-            ICollatedObject2 sender,
+            CollatedObject2 sender,
             Bam.Core.ExecutionContext context)
         {
+            var collatedInterface = sender as ICollatedObject2;
             Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2} [{3}]",
-                sender.SourceModule.ToString(),
-                sender.SourcePathKey.ToString(),
-                sender.PublishingDirectory.Parse(),
+                collatedInterface.SourceModule.ToString(),
+                collatedInterface.SourcePathKey.ToString(),
+                collatedInterface.PublishingDirectory.Parse(),
                 sender);
+
+            var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
+
+            // post-fix with a directory separator to enforce that this is a directory destination
+            var destinationDir = System.String.Format("{0}{1}",
+                collatedInterface.PublishingDirectory.Parse(),
+                System.IO.Path.DirectorySeparatorChar);
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+
+            commandLine.Add(copySourcePath.Parse());
+            commandLine.Add(destinationDir);
+            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
 #endif
