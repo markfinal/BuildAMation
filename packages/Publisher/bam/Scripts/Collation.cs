@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace Publisher
 {
     /// <summary>
@@ -178,6 +179,22 @@ namespace Publisher
                 case EPublishingType.Library:
                     this.setLibraryDefaultMacros();
                     break;
+            }
+        }
+
+        public void
+        IncludeAllModulesInNamespace(
+            string nameSpace,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir)
+        {
+            var gen = this.GetType().GetMethod("Include2", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
+            var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(item =>
+                item.Namespace == nameSpace && item.IsSubclassOf(typeof(Bam.Core.Module)) && item != this.GetType());
+            foreach (var type in moduleTypes)
+            {
+                var meth = gen.MakeGenericMethod(new[] { type });
+                meth.Invoke(this, new object[] { key, publishDir });
             }
         }
 #endif
@@ -604,11 +621,11 @@ namespace Publisher
             {
                 if (dep.Key is C.Cxx.Plugin || dep.Key is C.Plugin)
                 {
-                    this.Include2(dep.Key, dep.Value, this.PluginDir);
+                    this.Include2NoGather(dep.Key, dep.Value, this.PluginDir);
                 }
                 else if (dep.Key is C.DynamicLibrary || dep.Key is C.Cxx.DynamicLibrary)
                 {
-                    this.Include2(dep.Key, dep.Value, this.LibDir);
+                    this.Include2NoGather(dep.Key, dep.Value, this.LibDir);
                 }
                 else
                 {
@@ -618,13 +635,22 @@ namespace Publisher
         }
 
         public void
-        Include2(
+        Include2NoGather(
             Bam.Core.Module dependent,
             Bam.Core.PathKey key,
             Bam.Core.TokenizedString publishDir)
         {
             var collatedFile = this.CreateCollatedFile2(dependent, key, publishDir);
             this.collatedObjects.Add(System.Tuple.Create(dependent, key), collatedFile);
+        }
+
+        public void
+        Include2(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir)
+        {
+            this.Include2NoGather(dependent, key, publishDir);
             this.gatherAllDependencies(dependent, key, null);
         }
 
