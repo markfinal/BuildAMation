@@ -39,18 +39,18 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
             var collatedInterface = sender as ICollatedObject2;
-            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2} [{3}]",
-                collatedInterface.SourceModule.ToString(),
-                collatedInterface.SourcePathKey.ToString(),
-                collatedInterface.PublishingDirectory.Parse(),
-                sender);
-
             var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
 
             // post-fix with a directory separator to enforce that this is a directory destination
             var destinationDir = System.String.Format("{0}{1}",
                 collatedInterface.PublishingDirectory.Parse(),
                 System.IO.Path.DirectorySeparatorChar);
+
+            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2} [{3}]",
+                collatedInterface.SourceModule.ToString(),
+                collatedInterface.SourcePathKey.ToString(),
+                collatedInterface.PublishingDirectory.Parse(),
+                sender);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
