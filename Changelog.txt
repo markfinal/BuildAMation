@@ -36,6 +36,7 @@
 
 
 
+04-Oct-2017 ======== Version 1.1.4 Release ========
 
 25-Sep-2017 ======== Version 1.1.4 beta 1 Release ========
 
