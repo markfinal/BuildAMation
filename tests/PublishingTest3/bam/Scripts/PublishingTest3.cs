@@ -98,6 +98,8 @@ namespace PublishingTest3
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            // TODO: this will probably fail in VSSolution mode if not using an inline tokenizedstring
+            // or not using ConsoleApplication mode
             this.Include2<SimpleExe1>(C.ConsoleApplication.Key, this.BinDir);
             this.Include2<SimpleExe2>(C.ConsoleApplication.Key, this.BinDir);
 #else

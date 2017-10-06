@@ -114,9 +114,11 @@ namespace Publisher
         private void
         SetConsoleApplicationDefaultMacros()
         {
-            this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
-            this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
-            this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+            // TODO: these are inline in order to isolate publishdir's macro into a future Module
+            // but is very brittle
+            this.Macros.Add("BinDir", Bam.Core.TokenizedString.CreateInline("$(publishdir)"));
+            this.Macros.Add("LibDir", Bam.Core.TokenizedString.CreateInline("$(publishdir)"));
+            this.Macros.Add("PluginDir", Bam.Core.TokenizedString.CreateInline("$(publishdir)"));
         }
 
         private void
@@ -206,13 +208,12 @@ namespace Publisher
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-#endif
-
+#else
             if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
             }
+#endif
         }
 
         private string
@@ -329,12 +330,32 @@ namespace Publisher
         CreateCollatedFile2(
             Bam.Core.Module dependent,
             Bam.Core.PathKey key,
-            Bam.Core.TokenizedString publishDir)
+            Bam.Core.TokenizedString publishDir,
+            ICollatedObject2 anchor)
         {
             var module = Bam.Core.Module.Create<CollatedFile2>() as CollatedFile2;
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                // the publishdir is different for each anchor, so dependents may be duplicated
+                // if referenced by a different anchor
+                if (null != anchor)
+                {
+                    module.Macros.Add("publishdir", dependent.CreateTokenizedString("@dir($(0))", new[] { anchor.SourceModule.GeneratedPaths[anchor.SourcePathKey] }));
+                }
+                else
+                {
+                    module.Macros.Add("publishdir", dependent.CreateTokenizedString("@dir($(0))", new[] { dependent.GeneratedPaths[key] }));
+                }
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                module.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
+            var dir = module.CreateTokenizedString("$(0)", new[] { publishDir });
             module.SourceModule = dependent;
             module.SourcePathKey = key;
-            module.PublishingDirectory = publishDir;
+            module.PublishingDirectory = dir;
 
             this.Requires(module);
             module.Requires(dependent);
@@ -519,7 +540,7 @@ namespace Publisher
         gatherAllDependencies(
             Bam.Core.Module initialModule,
             Bam.Core.PathKey key,
-            CollatedFile reference)
+            ICollatedObject2 anchor)
         {
             var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
             var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>>();
@@ -609,8 +630,15 @@ namespace Publisher
                 findPublishableDependents(next.Item1);
                 if (next.Item1 != initialModule)
                 {
-                    if (!allDependents.ContainsKey(next.Item1) &&
-                        !this.collatedObjects.ContainsKey(next))
+                    var notPresent = true;
+                    notPresent &= !allDependents.ContainsKey(next.Item1);
+                    notPresent &= !this.collatedObjects.ContainsKey(next);
+                    if (anchor != null)
+                    {
+                        var anchorAsCollatedObject = anchor as CollatedObject2;
+                        notPresent &= !anchorAsCollatedObject.DependentCollations.ContainsKey(next);
+                    }
+                    if (notPresent)
                     {
                         allDependents.Add(next.Item1, next.Item2);
                     }
@@ -621,11 +649,11 @@ namespace Publisher
             {
                 if (dep.Key is C.Cxx.Plugin || dep.Key is C.Plugin)
                 {
-                    this.Include2NoGather(dep.Key, dep.Value, this.PluginDir);
+                    this.Include2NoGather(dep.Key, dep.Value, this.PluginDir, anchor);
                 }
                 else if (dep.Key is C.DynamicLibrary || dep.Key is C.Cxx.DynamicLibrary)
                 {
-                    this.Include2NoGather(dep.Key, dep.Value, this.LibDir);
+                    this.Include2NoGather(dep.Key, dep.Value, this.LibDir, anchor);
                 }
                 else
                 {
@@ -634,24 +662,45 @@ namespace Publisher
             }
         }
 
-        public void
+        private ICollatedObject2
         Include2NoGather(
             Bam.Core.Module dependent,
             Bam.Core.PathKey key,
-            Bam.Core.TokenizedString publishDir)
+            Bam.Core.TokenizedString publishDir,
+            ICollatedObject2 anchor)
         {
-            var collatedFile = this.CreateCollatedFile2(dependent, key, publishDir);
-            this.collatedObjects.Add(System.Tuple.Create(dependent, key), collatedFile);
+            var collatedFile = this.CreateCollatedFile2(dependent, key, publishDir, anchor);
+            var tuple = System.Tuple.Create(dependent, key);
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                // a dependency may be copied for each anchor that references it in order
+                // to make that anchor fully resolved and debuggable
+                if (null != anchor)
+                {
+                    var anchorAsCollatedObject = anchor as CollatedObject2;
+                    anchorAsCollatedObject.DependentCollations.Add(tuple, collatedFile);
+                }
+                else
+                {
+                    this.collatedObjects.Add(tuple, collatedFile);
+                }
+            }
+            else
+            {
+                // as everything goes to a single publishdir, remember each instance of a module
+                this.collatedObjects.Add(tuple, collatedFile);
+            }
+            return collatedFile;
         }
 
-        public void
+        private void
         Include2(
             Bam.Core.Module dependent,
             Bam.Core.PathKey key,
             Bam.Core.TokenizedString publishDir)
         {
-            this.Include2NoGather(dependent, key, publishDir);
-            this.gatherAllDependencies(dependent, key, null);
+            var collatedFile = this.Include2NoGather(dependent, key, publishDir, null);
+            this.gatherAllDependencies(dependent, key, collatedFile);
         }
 
         public void

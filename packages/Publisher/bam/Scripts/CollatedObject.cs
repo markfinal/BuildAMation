@@ -39,6 +39,7 @@ namespace Publisher
         private Bam.Core.Module sourceModule;
         private Bam.Core.PathKey sourcePathKey;
         private Bam.Core.TokenizedString publishingDirectory;
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject2>();
 
         Bam.Core.Module ICollatedObject2.SourceModule
         {
@@ -82,6 +83,14 @@ namespace Publisher
             set
             {
                 this.publishingDirectory = value;
+            }
+        }
+
+        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> DependentCollations
+        {
+            get
+            {
+                return this.dependents;
             }
         }
 
