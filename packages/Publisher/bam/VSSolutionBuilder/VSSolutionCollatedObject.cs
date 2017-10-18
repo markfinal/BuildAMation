@@ -77,7 +77,7 @@ namespace Publisher
                 commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationPath));
                 if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility)
                 {
-                    commands.Add(System.String.Format(@"{0} {1} $(OutputPath)$(TargetFileName) {2} {3}",
+                    commands.Add(System.String.Format(@"{0} {1} $(OutDir)$(TargetFileName) {2} {3}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
                         destinationPath,

@@ -1,3 +1,5 @@
+18-Oct-2017 Fixes #376. VisualStudio 2010 incorrect published files to $(OutputPath) in VSSolution build mode, which on that version of VS, is different (and incorrect) for the intended usage, and should be $(OutDir).
+
 11-Sep-2017 Issue #360. PluginTest example now exports a symbol from a plugin, attempts to load it, and use the symbol.
 
 07-Sep-2017 Fixes #355. TokenizedString now uses a hash internally, as opposed to string compares, to look for invariant strings.
