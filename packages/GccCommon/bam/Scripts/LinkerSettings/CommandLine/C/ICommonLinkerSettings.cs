@@ -53,17 +53,19 @@ namespace GccCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].Parse()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
                     break;
+
 
                 case C.ELinkerOutput.DynamicLibrary:
                     {
                         commandLine.Add("-shared");
-                        var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
+                        module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
+                        var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
                         commandLine.Add(System.String.Format("-o {0}", outputName));
                         if (module.Macros.Contains("SOName"))
                         {
-                            var soName = module.Macros["SOName"].Parse();
+                            var soName = module.Macros["SOName"].ToString();
                             commandLine.Add(System.String.Format("-Wl,-soname,{0}", soName));
                         }
                     }
@@ -71,7 +73,7 @@ namespace GccCommon
             }
             foreach (var path in settings.LibraryPaths)
             {
-                commandLine.Add(System.String.Format("-L{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-L{0}", path.ToStringQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {

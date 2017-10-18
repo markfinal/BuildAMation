@@ -62,7 +62,8 @@ namespace ClangCommon
                 var paths = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.IncludePaths)
                 {
-                    var fullPath = path.Parse();
+                    path.Parse();
+                    var fullPath = path.ToString();
                     var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
                     if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
                     {
@@ -80,20 +81,20 @@ namespace ClangCommon
                 var defines = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var define in settings.PreprocessorDefines)
                 {
-                    if (System.String.IsNullOrEmpty(define.Value))
+                    if (null == define.Value)
                     {
                         defines.Add(define.Key);
                     }
                     else
                     {
-                        var value = define.Value;
-                        if (value.Contains("\""))
+                        var defineValue = define.Value.ToString();
+                        if (defineValue.Contains("\""))
                         {
                             // note the number of back slashes here
                             // required to get \\\" for each " in the original value
-                            value = value.Replace("\"", "\\\\\\\"");
+                            defineValue = defineValue.Replace("\"", "\\\\\\\"");
                         }
-                        defines.Add(System.String.Format("{0}={1}", define.Key, value));
+                        defines.Add(System.String.Format("{0}={1}", define.Key, defineValue));
                     }
                 }
                 configuration["GCC_PREPROCESSOR_DEFINITIONS"] = defines;

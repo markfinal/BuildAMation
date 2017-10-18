@@ -45,7 +45,14 @@ namespace C
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            var assemblerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Assembler, include: sender.InputPath, uniqueToProject: true);
+            var assemblerGroup = config.GetSettingsGroup(
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Assembler,
+                include: sender.InputPath,
+                uniqueToProject: true);
+            if (!sender.PerformCompilation)
+            {
+                assemblerGroup.AddSetting("ExcludedFromBuild", true);
+            }
             sender.MetaData = assemblerGroup;
         }
     }

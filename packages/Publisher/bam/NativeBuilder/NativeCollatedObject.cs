@@ -41,7 +41,7 @@ namespace Publisher
             {
                 if (!(sender as CollatedFile).FailWhenSourceDoesNotExist)
                 {
-                    var source = sender.SourcePath.Parse();
+                    var source = sender.SourcePath.ToString();
                     if (!System.IO.File.Exists(source))
                     {
                         Bam.Core.Log.Detail("File {0} cannot be copied as it does not exist. Ignoring.", source);
@@ -53,7 +53,7 @@ namespace Publisher
             var isSymLink = (sender is CollatedSymbolicLink);
             var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
 
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.Key].Parse() : sender.Macros["CopyDir"].Parse();
+            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.Key].ToString() : sender.Macros["CopyDir"].ToString();
 
             if (!isSymLink)
             {
@@ -64,7 +64,7 @@ namespace Publisher
                 }
             }
 
-            var copySource = sourcePath.ParseAndQuoteIfNecessary();
+            var copySource = sourcePath.ToStringQuoteIfNecessary();
             if (sender is CollatedDirectory && sender.Tool is CopyFilePosix && sender.Macros["CopiedFilename"].IsAliased)
             {
                 // TODO: document this

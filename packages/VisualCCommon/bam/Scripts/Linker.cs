@@ -114,11 +114,19 @@ namespace VisualCCommon
             {
                 return;
             }
-            var dir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
-            var libFilename = library.CreateTokenizedString("@filename($(0))", fullLibraryPath);
             var linker = executable.Settings as C.ICommonLinkerSettings;
-            linker.Libraries.AddUnique(libFilename.Parse());
-            linker.LibraryPaths.AddUnique(dir);
+            var libFilename = library.CreateTokenizedString("@filename($(0))", fullLibraryPath);
+            if (!libFilename.IsParsed)
+            {
+                libFilename.Parse();
+            }
+            linker.Libraries.AddUnique(libFilename.ToString());
+            var libDir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
+            if (!libDir.IsParsed)
+            {
+                libDir.Parse();
+            }
+            linker.LibraryPaths.AddUnique(libDir);
         }
     }
 

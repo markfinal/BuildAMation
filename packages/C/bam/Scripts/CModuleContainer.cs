@@ -124,7 +124,9 @@ namespace C
             }
 
             var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-            var wildcardPath = macroModule.CreateTokenizedString(path).Parse();
+            var tokenizedPath = macroModule.CreateTokenizedString(path);
+            tokenizedPath.Parse();
+            var wildcardPath = tokenizedPath.ToString();
 
             var dir = System.IO.Path.GetDirectoryName(wildcardPath);
             if (!System.IO.Directory.Exists(dir))
@@ -226,7 +228,14 @@ namespace C
             get
             {
                 var truePath = filename.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
-                var validSources = this.children.Where(child => child.InputPath.Parse().Contains(truePath));
+                var validSources = this.children.Where(child =>
+                    {
+                        if (!child.InputPath.IsParsed)
+                        {
+                            child.InputPath.Parse();
+                        }
+                        return child.InputPath.ToString().Contains(truePath);
+                    });
                 if (!validSources.Any())
                 {
                     if (!filename.Equals(truePath))

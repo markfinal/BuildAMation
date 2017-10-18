@@ -43,7 +43,7 @@ namespace C
             var toolProject = (tool as Bam.Core.Module).MetaData as VSSolutionBuilder.VSProject;
             var toolConfig = toolProject.GetConfiguration(tool as Bam.Core.Module);
 
-            var output = outputPath.Parse();
+            var output = outputPath.ToString();
 
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", System.IO.Path.GetDirectoryName(output)));

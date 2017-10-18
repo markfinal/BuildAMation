@@ -32,7 +32,7 @@ namespace Bam.Core
 {
     /// <summary>
     /// Strings are tokenized by macros and functions. Macros are themselves TokenizedStrings
-    /// and so there is a recursive expansion to evaluate the resulting string.
+    /// and so there is a recursive expansion to evaluate the resulting string (referred to as parsing).
     /// </summary>
     /// <remarks>
     /// Tokens are identified by $( and ).
@@ -58,6 +58,7 @@ namespace Bam.Core
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
     /// <item><description><code>@ifnotempty(path,whennotempty,whenempty)</code></description> If path is not empty, replace the expression with that in whennotempty, otherwise use whenempty.</item>
     /// </list>
+    /// Custom unary post-functions can be registered using <code>registerPostUnaryFunction</code>.
     /// </remarks>
     public sealed class TokenizedString
     {
@@ -94,8 +95,25 @@ namespace Bam.Core
         private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> VerbatimCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
         private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> NoModuleCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
         private static System.Collections.Generic.List<TokenizedString> AllStrings = new System.Collections.Generic.List<TokenizedString>();
+        private static System.Collections.Generic.List<TokenizedString> StringsForParsing = new System.Collections.Generic.List<TokenizedString>();
+        private static bool AllStringsParsed = false;
+        private static System.Collections.Generic.Dictionary<string, System.Func<string, string>> CustomPostUnaryFunctions = new System.Collections.Generic.Dictionary<string, System.Func<string, string>>();
+        private static readonly string[] BuiltInPostFunctionNames =
+        {
+            "basename",
+            "filename",
+            "dir",
+            "normalize",
+            "changeextension",
+            "removetrailingseparator",
+            "relativeto",
+            "trimstart",
+            "escapedquotes",
+            "ifnotempty"
+        };
 
         private static System.TimeSpan RegExTimeout = System.TimeSpan.FromSeconds(5);
+        private static bool RecordStackTraces = false;
 
         private System.Collections.Generic.List<string> Tokens = null;
         private Module ModuleWithMacros = null;
@@ -107,6 +125,31 @@ namespace Bam.Core
         private int RefCount = 1;
         private EFlags Flags = EFlags.None;
         private TokenizedString Alias = null;
+        private string parsingErrorMessage = null;
+        private long hash = 0;
+        private string parsedStackTrace = null;
+
+        /// <summary>
+        /// Register a custom unary post function to use in TokenizedString parsing.
+        /// The name must not collide with any built-in functions, or any existing custom unary post functions.
+        /// </summary>
+        /// <param name="name">Name of the function that must be unique.</param>
+        /// <param name="function">Function to apply to any usage of @name in TokenizedStrings.</param>
+        public static void
+        registerPostUnaryFunction(
+            string name,
+            System.Func<string, string> function)
+        {
+            if (BuiltInPostFunctionNames.Contains(name))
+            {
+                throw new Exception("Unable to register post unary function due to name collision with builtin functions, '{0}'", name);
+            }
+            if (CustomPostUnaryFunctions.ContainsKey(name))
+            {
+                throw new Exception("Unable to register post unary function because post function '{0}' already exists.", name);
+            }
+            CustomPostUnaryFunctions.Add(name, function);
+        }
 
         /// <summary>
         /// Query if the TokenizedString has been aliased to another.
@@ -166,6 +209,25 @@ namespace Bam.Core
             }
         }
 
+        private static string
+        getStacktrace()
+        {
+            if (RecordStackTraces)
+            {
+                return System.Environment.StackTrace;
+            }
+            return string.Empty;
+        }
+
+        static TokenizedString()
+        {
+            RecordStackTraces = CommandLineProcessor.Evaluate(new Options.RecordStackTrace());
+            if (RecordStackTraces)
+            {
+                Log.Info("WARNING: TokenizedString stack trace recording enabled. This will slow down your build.");
+            }
+        }
+
         private TokenizedString(
             string original,
             Module moduleWithMacros,
@@ -173,7 +235,7 @@ namespace Bam.Core
             TokenizedStringArray positionalTokens,
             EFlags flags)
         {
-            this.CreationStackTrace = System.Environment.StackTrace;
+            this.CreationStackTrace = getStacktrace();
             this.ModuleWithMacros = moduleWithMacros;
             if (null != positionalTokens)
             {
@@ -185,7 +247,19 @@ namespace Bam.Core
             if (verbatim)
             {
                 this.ParsedString = NormalizeDirectorySeparators(original);
-                return;
+                this.parsingErrorMessage = null; // as verbatim strings are already parsed
+                this.parsedStackTrace = getStacktrace();
+            }
+            else
+            {
+                if (this.IsInline)
+                {
+                    this.parsingErrorMessage = null; // as inline strings do not get parsed
+                }
+                else
+                {
+                    this.parsingErrorMessage = "not been parsed";
+                }
             }
         }
 
@@ -227,7 +301,11 @@ namespace Bam.Core
                     {
                         VerbatimCacheMap.Add(hash, newTS);
                     }
-                    AllStrings.Add(newTS);
+                    newTS.hash = hash;
+                    lock (AllStrings)
+                    {
+                        AllStrings.Add(newTS);
+                    }
                     return newTS;
                 }
             }
@@ -263,7 +341,15 @@ namespace Bam.Core
                     {
                         stringCache.Add(hash, newTS);
                     }
-                    AllStrings.Add(newTS);
+                    newTS.hash = hash;
+                    lock (AllStrings)
+                    {
+                        AllStrings.Add(newTS);
+                    }
+                    lock (StringsForParsing)
+                    {
+                        StringsForParsing.Add(newTS);
+                    }
                     return newTS;
                 }
             }
@@ -325,13 +411,18 @@ namespace Bam.Core
             return CreateInternal(uncachedString, macroSource, false, null, EFlags.NoCache);
         }
 
-        private bool IsExpanded
+        /// <summary>
+        /// Determine if the TokenizedString has been parsed already.
+        /// Sometimes useful if a TokenizedString is created after the ParseAll step, but is repeated
+        /// as a dependency.
+        /// </summary>
+        public bool IsParsed
         {
             get
             {
                 if (this.IsAliased)
                 {
-                    return this.Alias.IsExpanded;
+                    return this.Alias.IsParsed;
                 }
                 if (this.Verbatim)
                 {
@@ -343,7 +434,7 @@ namespace Bam.Core
                 }
                 foreach (var positionalToken in this.PositionalTokens)
                 {
-                    if (!positionalToken.IsExpanded)
+                    if (!positionalToken.IsParsed)
                     {
                         return false;
                     }
@@ -361,7 +452,8 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Display the parsed string, assuming it has been parsed.
+        /// Return the parsed string.
+        /// If the string has not been parsed, or unsuccessfully parsed, an exception is thrown.
         /// </summary>
         /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.TokenizedString"/>.</returns>
         public override string
@@ -371,9 +463,14 @@ namespace Bam.Core
             {
                 return this.Alias.ToString();
             }
-            if (!this.Verbatim && !this.IsExpanded)
+            if (null != this.parsingErrorMessage)
             {
-                throw new Exception("TokenizedString {0} has not been parsed and expanded", this.OriginalString);
+                throw new Exception("TokenizedString '{0}' has {4}{3}.{1}{1}Created at:{1}{2}{1}{1}",
+                    this.OriginalString,
+                    System.Environment.NewLine,
+                    this.CreationStackTrace,
+                    AllStringsParsed ? " after the string parsing phase" : string.Empty,
+                    this.parsingErrorMessage);
             }
             return this.ParsedString;
         }
@@ -409,9 +506,9 @@ namespace Bam.Core
         ParseAll()
         {
             Log.Detail("Parsing strings...");
-            var scale = 100.0f / AllStrings.Count;
+            var scale = 100.0f / StringsForParsing.Count;
             var count = 0;
-            foreach (var t in AllStrings)
+            foreach (var t in StringsForParsing)
             {
                 if (t.IsInline)
                 {
@@ -419,33 +516,22 @@ namespace Bam.Core
                     continue;
                 }
 
-                try
-                {
-                    t.Parse();
-                }
-                catch (Exception)
-                {
-                    if (t.ModuleWithMacros == null || Module.IsValid(t.ModuleWithMacros))
-                    {
-                        throw;
-                    }
-                    // if execution gets here, then the module with macros was invalid (deleted earlier probably)
-                    // so silently ignore this string
-
-                    // TODO: it would be better to delete strings added from deleted modules earlier, see
-                    // RemoveEncapsulatedStrings, but there is a problem with Parse() being invoked and missing macros
-                }
+                t.ParseInternal(null);
                 Log.DetailProgress("{0,3}%", (int)(++count * scale));
             }
+            AllStringsParsed = true;
         }
 
         /// <summary>
         /// Parse a TokenizedString with no macro overrides.
+        /// No string is returned, use ToString().
+        /// Failure to parse are stored in the TokenizedString and will be displayed as an exception
+        /// message when used.
         /// </summary>
-        public string
+        public void
         Parse()
         {
-            return this.Parse(null);
+            this.Parse(null);
         }
 
         /// <summary>
@@ -459,30 +545,53 @@ namespace Bam.Core
         /// - Macros in the Tool associated with the Module
         /// - Environment variables
         /// After token expansion, post-functions are then evaluated.
+        /// No string is returned, use ToString().
+        /// Failure to parse are stored in the TokenizedString and will be displayed as an exception
+        /// message when used.
         /// </summary>
         /// <param name="customMacros">Custom macros.</param>
-        public string
+        public void
         Parse(
             MacroList customMacros)
         {
+            if (this.ParsedString != null)
+            {
+                throw new Exception("TokenizedString '{0}' is already parsed{4}.{1}{1}Created at:{1}{2}{1}{1}Parsed at:{1}{3}",
+                    this.OriginalString,
+                    System.Environment.NewLine,
+                    this.CreationStackTrace,
+                    this.parsedStackTrace,
+                    AllStringsParsed ? " after the string parsing phase" : string.Empty);
+            }
+            this.ParseInternal(customMacros);
+            lock (StringsForParsing)
+            {
+                StringsForParsing.Remove(this);
+            }
+        }
+
+        private void
+        ParseInternal(
+            MacroList customMacros)
+        {
+            if (this.ParsedString != null)
+            {
+                return;
+            }
             if (this.IsInline)
             {
                 throw new Exception("Inline TokenizedString cannot be parsed, {0}", this.OriginalString);
             }
             if (this.IsAliased)
             {
-                return this.Alias.Parse(customMacros);
-            }
-            if (this.IsExpanded && (null == customMacros))
-            {
-                return this.ParsedString;
+                this.Alias.ParseInternal(customMacros);
             }
 
             this.Tokens = SplitIntoTokens(this.EvaluatePreFunctions(this.OriginalString, customMacros), TokenRegExPattern).ToList<string>();
 
             System.Func<TokenizedString, TokenizedString, int, string> expandTokenizedString = (source, tokenString, currentIndex) =>
                 {
-                    if (!tokenString.IsExpanded)
+                    if (!tokenString.IsParsed)
                     {
                         if (source == tokenString)
                         {
@@ -497,7 +606,7 @@ namespace Bam.Core
                         }
 
                         // recursive
-                        tokenString.Parse(null);
+                        tokenString.ParseInternal(null);
                     }
                     return tokenString.ToString();
                 };
@@ -569,7 +678,7 @@ namespace Bam.Core
                     // is there a better error message that could be returned, other than this in those
                     // circumstances?
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat("Unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
+                    message.AppendFormat("unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
                     message.AppendLine();
                     if (null != customMacros)
                     {
@@ -588,16 +697,18 @@ namespace Bam.Core
                     }
                     message.AppendLine("TokenizedString created with this stack trace:");
                     message.AppendLine(this.CreationStackTrace);
-                    throw new Exception(message.ToString());
+                    this.parsingErrorMessage = message.ToString();
+                    return;
                 }
             }
             var functionEvaluated = this.EvaluatePostFunctions(NormalizeDirectorySeparators(parsedString.ToString()));
             if (null == customMacros)
             {
                 this.ParsedString = functionEvaluated;
+                this.parsingErrorMessage = null;
+                this.parsedStackTrace = getStacktrace();
                 Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
             }
-            return functionEvaluated;
         }
 
         private string
@@ -760,7 +871,14 @@ namespace Bam.Core
                     }
 
                 default:
-                    throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
+                    {
+                        // search through custom functions
+                        if (CustomPostUnaryFunctions.ContainsKey(functionName))
+                        {
+                            return CustomPostUnaryFunctions[functionName](argument);
+                        }
+                        throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
+                    }
             }
         }
 
@@ -772,7 +890,7 @@ namespace Bam.Core
         {
             get
             {
-                if (!this.IsExpanded)
+                if (!this.IsParsed)
                 {
                     throw new Exception("TokenizedString, '{0}', is not yet expanded", this.OriginalString);
                 }
@@ -792,7 +910,8 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Are two strings equivalent?
+        /// Are two strings identical? This includes comparing how the string was constructed.
+        /// It does not necessarily mean that the parsed strings are identical. Use ToString().Equals() to achieve that test.
         /// </summary>
         /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="Bam.Core.TokenizedString"/>.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
@@ -802,8 +921,8 @@ namespace Bam.Core
             object obj)
         {
             var other = obj as TokenizedString;
-            var equal = (this.Parse() == other.Parse());
-            return equal;
+            var equals = this.hash == other.hash;
+            return equals;
         }
 
         /// <summary>
@@ -818,23 +937,21 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Parse, and if the parsed string contains a space, surround with quotes.
+        /// Quote the string if it contains a space
         /// </summary>
-        /// <returns>The and quote if necessary.</returns>
-        /// <param name="customMacros">Custom macros.</param>
-        public string ParseAndQuoteIfNecessary(
-            MacroList customMacros = null)
+        /// <returns>The string and quote if necessary.</returns>
+        public string ToStringQuoteIfNecessary()
         {
             if (this.IsAliased)
             {
-                return this.Alias.ParseAndQuoteIfNecessary(customMacros);
+                return this.Alias.ToStringQuoteIfNecessary();
             }
-            var parsed = this.Parse(customMacros);
+            var contents = this.ToString();
             if (!this.ContainsSpace)
             {
-                return parsed;
+                return contents;
             }
-            return System.String.Format("\"{0}\"", parsed);
+            return System.String.Format("\"{0}\"", contents);
         }
 
         /// <summary>
@@ -1020,24 +1137,34 @@ namespace Bam.Core
             return modifiedString;
         }
 
-#if false
         /// <summary>
-        ///
+        /// Remove all strings referencing a module type, including those that are not yet parsed.
         /// </summary>
-        /// <param name="encapsulatingType"></param>
+        /// <param name="moduleType"></param>
         static public void
         RemoveEncapsulatedStrings(
-            System.Type encapsulatingType)
+            System.Type moduleType)
         {
-            var toRemove = AllStrings.Where(item => item.ModuleWithMacros != null && item.ModuleWithMacros.GetType() == encapsulatingType);
-            foreach (var i in toRemove.ToList())
+            lock (AllStrings)
             {
-                Log.DebugMessage("Removing string {0} from {1}", i.OriginalString, encapsulatingType.ToString());
-                // TODO: Remove invokes equivalence, which invokes Parse(), which fails because of missing macros
-                // in the incomplete Module
-                AllStrings.Remove(i);
+                var toRemove = AllStrings.Where(
+                    item => item.ModuleWithMacros != null && item.ModuleWithMacros.GetType() == moduleType);
+                foreach (var i in toRemove.ToList())
+                {
+                    i.RefCount--;
+
+                    if (0 == i.RefCount)
+                    {
+                        Log.DebugMessage("Removing string {0} from {1}", i.OriginalString, moduleType.ToString());
+                        AllStrings.Remove(i);
+                        // Don't believe a separate lock is needed for StringsForParsing
+                        if (StringsForParsing.Contains(i))
+                        {
+                            StringsForParsing.Remove(i);
+                        }
+                    }
+                }
             }
         }
-#endif
     }
 }

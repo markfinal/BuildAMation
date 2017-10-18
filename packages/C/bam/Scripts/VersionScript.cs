@@ -73,7 +73,7 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var outputPath = this.GeneratedPaths[Key].Parse();
+            var outputPath = this.GeneratedPaths[Key].ToString();
             if (!System.IO.File.Exists(outputPath))
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
@@ -81,7 +81,7 @@ namespace C
             // have the contents changed since last time?
             var writeHashFile = true;
             var currentContentsHash = this.Contents.GetHashCode();
-            var hashFilePath = this.GeneratedPaths[HashFileKey].Parse();
+            var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
             if (System.IO.File.Exists(hashFilePath))
             {
                 GetHashFn getHash = inPath =>
@@ -120,7 +120,7 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var destPath = this.GeneratedPaths[Key].Parse();
+            var destPath = this.GeneratedPaths[Key].ToString();
             var destDir = System.IO.Path.GetDirectoryName(destPath);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
             using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(destPath))

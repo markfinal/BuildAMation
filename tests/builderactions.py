@@ -8,10 +8,11 @@ import traceback
 
 class Builder(object):
     """Class that represents the actions for a builder"""
-    def __init__(self, name, pre_action, post_action):
+    def __init__(self, name, pre_action, post_action, repeat_no_clean):
         self.name = name
         self.pre_action = pre_action
         self.post_action = post_action
+        self.repeat_no_clean = repeat_no_clean
 
 # the version of MSBuild.exe to use, depends on which version of VisualStudio
 # was used to build the solution and projects
@@ -216,11 +217,11 @@ def xcode_post(package, options, flavour, output_messages, error_messages):
     return exit_code
 
 builder = {
-    "Native": Builder("Native", None, None),
-    "VSSolution": Builder("VSSolution", None, vssolution_post),
-    "MakeFile": Builder("MakeFile", None, makefile_post),
-    "QMake": Builder("QMake", None, None),
-    "Xcode": Builder("Xcode", None, xcode_post)
+    "Native": Builder("Native", None, None, True),
+    "VSSolution": Builder("VSSolution", None, vssolution_post, False),
+    "MakeFile": Builder("MakeFile", None, makefile_post, False),
+    "QMake": Builder("QMake", None, None, False),
+    "Xcode": Builder("Xcode", None, xcode_post, False)
 }
 
 

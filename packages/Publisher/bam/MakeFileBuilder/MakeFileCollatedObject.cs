@@ -41,7 +41,7 @@ namespace Publisher
             var rule = meta.AddRule();
 
             var sourcePath = sender.SourcePath;
-            var sourceFilename = System.IO.Path.GetFileName(sourcePath.Parse());
+            var sourceFilename = System.IO.Path.GetFileName(sourcePath.ToString());
 
             var topLevel = sender.GetEncapsulatingReferencedModule().GetType().Name;
             var senderType = sender.GetType().Name;
@@ -61,7 +61,7 @@ namespace Publisher
                 {
                     if (isRenamedDir)
                     {
-                        var rename = sender.Macros["CopiedFilename"].Parse();
+                        var rename = sender.Macros["CopiedFilename"].ToString();
                         rule.AddTarget(Bam.Core.TokenizedString.CreateVerbatim(basename + rename), isPhony: true);
                     }
                     else
@@ -76,7 +76,7 @@ namespace Publisher
                 }
             }
 
-            meta.CommonMetaData.AddDirectory(sender.Macros["CopyDir"].Parse());
+            meta.CommonMetaData.AddDirectory(sender.Macros["CopyDir"].ToString());
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
@@ -86,7 +86,7 @@ namespace Publisher
                 rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@ {3}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
-                    sender.Macros["LinkTarget"].Parse(),
+                    sender.Macros["LinkTarget"].ToString(),
                     CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             }
             else
@@ -98,7 +98,7 @@ namespace Publisher
                         rule.AddShellCommand(System.String.Format(@"{0} {1} $</* {2} {3}",
                             CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                             commandLine.ToString(' '),
-                            sender.Macros["CopyDir"].Parse(),
+                            sender.Macros["CopyDir"].ToString(),
                             CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     }
                     else

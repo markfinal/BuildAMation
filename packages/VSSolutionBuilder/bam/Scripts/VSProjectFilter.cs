@@ -68,9 +68,17 @@ namespace VSSolutionBuilder
         AddFile(
             VSSettingsGroup sourceGroup)
         {
-            this.AddFilters(sourceGroup.Module, sourceGroup.RelativeDirectory.Parse());
-            var filter = this.Filters[sourceGroup.RelativeDirectory.Parse()];
-            if (filter.Any(item => item.Include.Parse() == sourceGroup.Include.Parse()))
+            var path = sourceGroup.RelativeDirectory.ToString();
+            this.AddFilters(sourceGroup.Module, path);
+            var filter = this.Filters[path];
+            if (filter.Any(item =>
+                {
+                    if (!item.Include.IsParsed)
+                    {
+                        item.Include.Parse();
+                    }
+                    return item.Include.ToString() == sourceGroup.Include.ToString();
+                }))
             {
                 return;
             }
@@ -101,7 +109,7 @@ namespace VSSolutionBuilder
                 foreach (var setting in filter.Value)
                 {
                     var path = setting.Include;
-                    var extension = System.IO.Path.GetExtension(path.Parse()).TrimStart(new[] { '.' });
+                    var extension = System.IO.Path.GetExtension(path.ToString()).TrimStart(new[] { '.' });
                     extensions.AddUnique(extension);
                     setting.Serialize(document, filesEl);
                 }

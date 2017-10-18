@@ -37,6 +37,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #error Unsupported platform
 #endif
 
+extern void common();
+
 int
 main()
 {
@@ -52,6 +54,8 @@ main()
 #else
 #error Unsupported platform
 #endif
+
+    common();
 
     return 0;
 }

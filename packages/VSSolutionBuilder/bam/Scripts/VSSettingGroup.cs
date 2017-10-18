@@ -58,6 +58,11 @@ namespace VSSolutionBuilder
             if (null != include)
             {
                 this.RelativeDirectory = module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", include);
+                if (!this.RelativeDirectory.IsParsed)
+                {
+                    // may have been parsed already, e.g. a common header
+                    this.RelativeDirectory.Parse();
+                }
             }
             this.Settings = new Bam.Core.Array<VSSetting>();
         }
@@ -140,7 +145,7 @@ namespace VSSolutionBuilder
             var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
             var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
 
-            var pathString = path.Parse();
+            var pathString = path.ToString();
             if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
             {
                 return pathString;
@@ -166,10 +171,10 @@ namespace VSSolutionBuilder
         {
             lock (this.Settings)
             {
-                var stringValue = isPath ? toRelativePath(path) : path.Parse();
+                var stringValue = isPath ? toRelativePath(path) : path.ToString();
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
                 {
-                    throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.Parse());
+                    throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
                 }
 
                 this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
@@ -186,7 +191,7 @@ namespace VSSolutionBuilder
             var contatenated = new System.Text.StringBuilder();
             foreach (var path in paths)
             {
-                var pathString = path.Parse();
+                var pathString = path.ToString();
                 if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
                 {
                     contatenated.AppendFormat("{0};", pathString);
@@ -335,7 +340,7 @@ namespace VSSolutionBuilder
             var group = document.CreateVSElement(this.GetGroupName(), parentEl: parentEl);
             if (null != this.Include)
             {
-                var path = this.Include.Parse();
+                var path = this.Include.ToString();
                 var relPath = Bam.Core.RelativePathUtilities.GetPath(path, this.Project.ProjectPath);
                 if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
                 {

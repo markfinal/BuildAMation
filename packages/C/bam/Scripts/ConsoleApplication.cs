@@ -390,7 +390,7 @@ namespace C
             {
                 return;
             }
-            var binaryPath = this.GeneratedPaths[Key].Parse();
+            var binaryPath = this.GeneratedPaths[Key].ToString();
             var exists = System.IO.File.Exists(binaryPath);
             if (!exists)
             {
@@ -451,7 +451,7 @@ namespace C
                     {
                         foreach (var objectFile in source.Children)
                         {
-                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.Key].Parse();
+                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.Key].ToString();
                             var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                             if (objectFileWriteTime > binaryWriteTime)
                             {
@@ -462,7 +462,8 @@ namespace C
                     }
                     else
                     {
-                        var objectFilePath = source.GeneratedPaths[ObjectFile.Key].Parse();
+                        source.GeneratedPaths[ObjectFile.Key].Parse();
+                        var objectFilePath = source.GeneratedPaths[ObjectFile.Key].ToString();
                         var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                         if (objectFileWriteTime > binaryWriteTime)
                         {

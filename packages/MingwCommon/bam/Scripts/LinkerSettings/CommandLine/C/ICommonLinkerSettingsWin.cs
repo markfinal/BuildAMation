@@ -52,7 +52,7 @@ namespace MingwCommon
             if (null != settings.ExportDefinitionFile)
             {
                 // just add it into the command line
-                commandLine.Add(settings.ExportDefinitionFile.ParseAndQuoteIfNecessary());
+                commandLine.Add(settings.ExportDefinitionFile.ToStringQuoteIfNecessary());
             }
         }
     }

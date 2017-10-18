@@ -96,7 +96,7 @@ namespace XcodeBuilder
         SetProductName(
             Bam.Core.TokenizedString productName)
         {
-            this["PRODUCT_NAME"] = new UniqueConfigurationValue(productName.Parse());
+            this["PRODUCT_NAME"] = new UniqueConfigurationValue(productName.ToString());
         }
 
         public override void

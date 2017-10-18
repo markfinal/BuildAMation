@@ -86,18 +86,30 @@ namespace ClangCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
+                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
+                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
+                if (!libDir.IsParsed)
+                {
+                    libDir.Parse();
+                }
+
+                linker.LibraryPaths.AddUnique(libDir);
             }
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
+                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
+                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
+                if (!libDir.IsParsed)
+                {
+                    libDir.Parse();
+                }
+
+                linker.LibraryPaths.AddUnique(libDir);
             }
         }
 

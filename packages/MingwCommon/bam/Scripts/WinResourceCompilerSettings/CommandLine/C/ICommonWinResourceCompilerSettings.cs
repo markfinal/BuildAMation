@@ -59,7 +59,8 @@ namespace MingwCommon
             }
             foreach (var path in settings.IncludePaths)
             {
-                var realpath = path.Parse();
+                path.Parse();
+                var realpath = path.ToString();
                 if (path.ContainsSpace)
                 {
                     // windres cannot cope with paths with spaces, even when quoted
@@ -75,24 +76,24 @@ namespace MingwCommon
 
             foreach (var define in settings.PreprocessorDefines)
             {
-                if (System.String.IsNullOrEmpty(define.Value))
+                if (null == define.Value)
                 {
                     commandLine.Add(System.String.Format("-D{0}", define.Key));
                 }
                 else
                 {
-                    var value = define.Value;
-                    if (value.Contains("\""))
+                    var defineValue = define.Value.ToString();
+                    if (defineValue.Contains("\""))
                     {
-                        value = value.Replace("\"", "\\\"");
+                        defineValue = defineValue.Replace("\"", "\\\"");
                     }
-                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
 
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
             commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
-            commandLine.Add(System.String.Format("-o {0}", resource.GeneratedPaths[C.ObjectFile.Key].ParseAndQuoteIfNecessary()));
+            commandLine.Add(System.String.Format("-o {0}", resource.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
         }
     }
 }

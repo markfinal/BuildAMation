@@ -48,11 +48,11 @@ namespace CodeGenTest
 
             var commandLineArgs = new Bam.Core.StringArray();
             // TODO: change this to a configuration directory really
-            commandLineArgs.Add(Bam.Core.TokenizedString.Create("$(buildroot)", null).Parse());
+            commandLineArgs.Add(Bam.Core.Graph.Instance.BuildRoot);
             commandLineArgs.Add("Generated");
 
             var command = new System.Text.StringBuilder();
-            command.AppendFormat("{0} {1} $^", compiler.Executable.ParseAndQuoteIfNecessary(), commandLineArgs.ToString(' '));
+            command.AppendFormat("{0} {1} $^", compiler.Executable.ToStringQuoteIfNecessary(), commandLineArgs.ToString(' '));
             rule.AddShellCommand(command.ToString());
         }
     }
