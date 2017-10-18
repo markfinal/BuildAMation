@@ -77,15 +77,17 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var path = this.ScriptPath.Parse();
+            var path = this.ScriptPath.ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
             var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
-                scriptWriter.WriteLine("Name \"{0}\"", outputName.Parse());
-                scriptWriter.WriteLine("OutFile \"{0}\"", this.CreateTokenizedString("$(buildroot)/$(config)/$(0).exe", outputName).ParseAndQuoteIfNecessary());
-                scriptWriter.WriteLine("InstallDir $APPDATA\\{0}", outputName.Parse());
+                scriptWriter.WriteLine("Name \"{0}\"", outputName.ToString());
+                var installedExePath = this.CreateTokenizedString("$(buildroot)/$(config)/$(0).exe", outputName);
+                installedExePath.Parse();
+                scriptWriter.WriteLine("OutFile \"{0}\"", installedExePath.ToStringQuoteIfNecessary());
+                scriptWriter.WriteLine("InstallDir $APPDATA\\{0}", outputName.ToString());
                 scriptWriter.WriteLine("Page directory");
                 scriptWriter.WriteLine("Page instfiles");
                 scriptWriter.WriteLine("Section \"\"");
@@ -119,6 +121,14 @@ namespace Installer
     public sealed class NSISCompiler :
         Bam.Core.PreBuiltTool
     {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.Macros.Add("toolPath", Bam.Core.TokenizedString.Create("$(0)/NSIS/makensis.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)));
+        }
+
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
@@ -130,7 +140,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("$(0)/NSIS/makensis.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
+                return this.Macros["toolPath"];
             }
         }
     }

@@ -61,7 +61,9 @@ namespace ClangCommon
                     commandLine.Add("-dynamiclib");
                     commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
 
-                    var versionString = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse();
+                    var fullVersionNumber = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))");
+                    fullVersionNumber.Parse();
+                    var versionString = fullVersionNumber.ToString();
                     commandLine.Add(System.String.Format("-current_version {0}", versionString));
                     // TODO: offer an option of setting the compatibility version differently
                     commandLine.Add(System.String.Format("-compatibility_version {0}", versionString));
@@ -70,7 +72,7 @@ namespace ClangCommon
             }
             foreach (var path in settings.LibraryPaths)
             {
-                commandLine.Add(System.String.Format("-L{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-L{0}", path.ToStringQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {

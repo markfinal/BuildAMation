@@ -30,6 +30,19 @@
 using Bam.Core;
 namespace LinkPrebuiltLibrary
 {
+    class TestLib :
+        C.StaticLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateCSourceContainer("$(packagedir)/source/library/*.c");
+        }
+    }
+
     sealed class TestApp :
         C.ConsoleApplication
     {
@@ -40,6 +53,7 @@ namespace LinkPrebuiltLibrary
             base.Init(parent);
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            this.CompileAndLinkAgainst<TestLib>(source);
 
             this.PrivatePatch(settings =>
                 {

@@ -48,7 +48,7 @@ namespace Publisher
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var copiedPath = this.GeneratedPaths[Key].Parse();
+            var copiedPath = this.GeneratedPaths[Key].ToString();
             var exists = System.IO.File.Exists(copiedPath);
             if (!exists)
             {
@@ -64,7 +64,7 @@ namespace Publisher
                 }
                 if (null != source.ReasonToExecute && null != source.ReasonToExecute.OutputFilePath)
                 {
-                    if (source.ReasonToExecute.OutputFilePath.Equals(this.SourcePath))
+                    if (source.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString()))
                     {
                         this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
                         return;
@@ -73,7 +73,7 @@ namespace Publisher
                     {
                         // there may be multiple files used as a source of a copy - not just that file which was the primary build output
                         var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
-                        var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
+                        var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.ToString());
                         if (sourceLastWriteTime > destinationLastWriteTime)
                         {
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
@@ -84,7 +84,7 @@ namespace Publisher
             }
 
             var destLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
-            var srcLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.Parse());
+            var srcLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.ToString());
             if (srcLastWriteTime > destLastWriteTime)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);

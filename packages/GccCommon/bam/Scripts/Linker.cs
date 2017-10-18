@@ -119,7 +119,7 @@ namespace GccCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].Parse();
+                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 var libraryName = GetLPrefixLibraryName(libraryPath);
                 if (linker.Libraries.Contains(libraryName))
@@ -128,14 +128,19 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
+                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
+                if (!libDir.IsParsed)
+                {
+                    libDir.Parse();
+                }
+                linker.LibraryPaths.AddUnique(libDir);
             }
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].Parse();
+                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
                 var libraryName = library.Macros.Contains("LinkerName") ?
-                    GetLPrefixLibraryName(library.Macros["LinkerName"].Parse()) :
+                    GetLPrefixLibraryName(library.Macros["LinkerName"].ToString()) :
                     GetLPrefixLibraryName(libraryPath);
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 if (linker.Libraries.Contains(libraryName))
@@ -144,13 +149,23 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                linker.LibraryPaths.AddUnique(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
+                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
+                if (!libDir.IsParsed)
+                {
+                    libDir.Parse();
+                }
+                linker.LibraryPaths.AddUnique(libDir);
 
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
-                    gccLinker.RPathLink.AddUnique(dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]));
+                    var rpathLinkDir = dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]);
+                    if (!rpathLinkDir.IsParsed)
+                    {
+                        rpathLinkDir.Parse();
+                    }
+                    gccLinker.RPathLink.AddUnique(rpathLinkDir);
                 }
             }
         }

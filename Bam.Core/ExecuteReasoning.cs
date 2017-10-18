@@ -132,7 +132,7 @@ namespace Bam.Core
                     return "of undefined reasons - therefore executing the module to err on the side of caution";
 
                 case EReason.FileDoesNotExist:
-                    return System.String.Format("{0} does not exist", this.OutputFilePath.Parse());
+                    return System.String.Format("{0} does not exist", this.OutputFilePath.ToString());
 
                 case EReason.InputFileIsNewer:
                     {
@@ -140,13 +140,13 @@ namespace Bam.Core
                         {
                             return "member(s) of the module collection were updated";
                         }
-                        return System.String.Format("{0} is newer than {1}", this.InputFilePath.Parse(), this.OutputFilePath.Parse());
+                        return System.String.Format("{0} is newer than {1}", this.InputFilePath.ToString(), this.OutputFilePath.ToString());
                     }
 
                 case EReason.DeferredEvaluation:
                     {
                         return System.String.Format("there is insufficient information during evaluation to determine the state of {0}",
-                            this.OutputFilePath.Parse());
+                            this.OutputFilePath.ToString());
                     }
 
                 default:

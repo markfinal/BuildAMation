@@ -83,7 +83,7 @@ namespace C
                 return;
             }
             // does the object file exist?
-            var objectFilePath = this.GeneratedPaths[Key].Parse();
+            var objectFilePath = this.GeneratedPaths[Key].ToString();
             if (!System.IO.File.Exists(objectFilePath))
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
@@ -99,7 +99,7 @@ namespace C
             }
 
             // is the source file newer than the object file?
-            var sourcePath = this.InputPath.Parse();
+            var sourcePath = this.InputPath.ToString();
             var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
             if (sourceWriteTime > objectFileWriteTime)
             {

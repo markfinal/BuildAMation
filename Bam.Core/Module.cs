@@ -1035,10 +1035,10 @@ namespace Bam.Core
         RemoveEncapsulatedModules(
             System.Type encapsulatingType)
         {
-            var toRemove = AllModules.Where(item => item.EncapsulatingType == encapsulatingType);
-            foreach (var i in toRemove.ToList())
+            var modulesToRemove = AllModules.Where(item => item.EncapsulatingType == encapsulatingType);
+            foreach (var i in modulesToRemove.ToList())
             {
-                Log.DebugMessage("Removing {0} from {1}", i.ToString(), encapsulatingType.ToString());
+                Log.DebugMessage("Removing module {0} from {1}", i.ToString(), encapsulatingType.ToString());
                 AllModules.Remove(i);
             }
         }

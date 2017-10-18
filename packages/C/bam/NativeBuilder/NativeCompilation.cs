@@ -36,12 +36,15 @@ namespace C
         DeferredEvaluationRequiresBuild(
             ObjectFile sender)
         {
-            var objectFileWriteTime = System.IO.File.GetLastWriteTime(sender.GeneratedPaths[C.ObjectFile.Key].Parse());
+            var objectFilePath = sender.GeneratedPaths[C.ObjectFile.Key].ToString();
+            var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
             foreach (var dep in sender.Dependents)
             {
-                if (dep is C.HeaderFile)
+                var asHeader = dep as C.HeaderFile;
+                if (null != asHeader)
                 {
-                    var dependencyWriteTime = System.IO.File.GetLastWriteTime((dep as C.HeaderFile).InputPath.Parse());
+                    var dependencyPath = asHeader.InputPath.ToString();
+                    var dependencyWriteTime = System.IO.File.GetLastWriteTime(dependencyPath);
                     if (dependencyWriteTime > objectFileWriteTime)
                     {
                         return true;
@@ -75,7 +78,7 @@ namespace C
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-            commandLine.Add(source.GeneratedPaths[SourceFile.Key].ParseAndQuoteIfNecessary());
+            commandLine.Add(source.GeneratedPaths[SourceFile.Key].ToStringQuoteIfNecessary());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

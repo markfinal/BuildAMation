@@ -64,7 +64,7 @@ namespace PreprocessorStringTest1
                     }
                 });
 
-            source.Children.Where(item => item.InputPath.Parse().Contains("string.c")).ToList().ForEach(item =>
+            source["string.c"].ForEach(item =>
                 {
                     item.PrivatePatch(settings =>
                         {

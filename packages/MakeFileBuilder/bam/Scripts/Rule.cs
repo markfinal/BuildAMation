@@ -119,7 +119,7 @@ namespace MakeFileBuilder
                 }
                 else
                 {
-                    variableNames.AddUnique(target.Path.Parse());
+                    variableNames.AddUnique(target.Path.ToString());
                 }
             }
         }
@@ -150,7 +150,12 @@ namespace MakeFileBuilder
                 }
 
                 // simply expanded variable
-                variables.AppendFormat("{0}:={1}", name, target.Path.Parse());
+                if (!target.Path.IsParsed)
+                {
+                    // some sources may be generated after the string parsing phase
+                    target.Path.Parse();
+                }
+                variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
                 variables.AppendLine();
             }
         }
@@ -205,14 +210,14 @@ namespace MakeFileBuilder
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
-                    rules.AppendFormat("{0} ", pre.ParseAndQuoteIfNecessary());
+                    rules.AppendFormat("{0} ", pre.ToStringQuoteIfNecessary());
                 }
                 foreach (var pre in this.PrerequisiteTargets)
                 {
                     var preName = pre.VariableName;
                     if (null == preName)
                     {
-                        rules.AppendFormat("{0} ", pre.Path.Parse());
+                        rules.AppendFormat("{0} ", pre.Path.ToString());
                     }
                     else
                     {

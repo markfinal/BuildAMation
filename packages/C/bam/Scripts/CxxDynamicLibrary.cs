@@ -63,6 +63,8 @@ namespace C.Cxx
                 {
                     this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
                     this.Macros.Add("LinkerName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
+                    this.Macros.Add("fullSONamePath", this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["SOName"]));
+                    this.Macros.Add("fullLinkerNamePath", this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["LinkerName"]));
                 }
             }
 
@@ -298,15 +300,15 @@ namespace C.Cxx
                 // plugins don't have symlinks
                 return;
             }
-            var fullSONamePath = this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["SOName"]);
-            var soName = new Mono.Unix.UnixSymbolicLinkInfo(fullSONamePath.Parse());
+            var fullSONamePath = this.Macros["fullSONamePath"];
+            var soName = new Mono.Unix.UnixSymbolicLinkInfo(fullSONamePath.ToString());
             if (!soName.Exists)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(fullSONamePath);
                 return;
             }
-            var fullLinkerNamePath = this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["LinkerName"]);
-            var linkerName = new Mono.Unix.UnixSymbolicLinkInfo(fullLinkerNamePath.Parse());
+            var fullLinkerNamePath = this.Macros["fullLinkerNamePath"];
+            var linkerName = new Mono.Unix.UnixSymbolicLinkInfo(fullLinkerNamePath.ToString());
             if (!linkerName.Exists)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(fullLinkerNamePath);

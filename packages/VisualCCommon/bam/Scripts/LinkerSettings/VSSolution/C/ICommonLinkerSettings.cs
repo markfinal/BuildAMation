@@ -55,14 +55,14 @@ namespace VisualCCommon
             {
                 case C.ELinkerOutput.Executable:
                     {
-                        var outPath = module.GeneratedPaths[C.ConsoleApplication.Key].Parse();
+                        var outPath = module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
                         vsSettingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
                     }
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     {
-                        var outPath = module.GeneratedPaths[C.DynamicLibrary.Key].Parse();
+                        var outPath = module.GeneratedPaths[C.DynamicLibrary.Key].ToString();
                         vsSettingsGroup.AddSetting("OutputFile", System.String.Format("$(OutDir)\\{0}", System.IO.Path.GetFileName(outPath)), condition);
 
                         var importPath = module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString();

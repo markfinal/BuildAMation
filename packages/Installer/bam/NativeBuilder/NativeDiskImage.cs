@@ -40,7 +40,12 @@ namespace Installer
             Bam.Core.TokenizedString sourceFolderPath,
             Bam.Core.TokenizedString outputPath)
         {
-            var volumeName = sender.CreateTokenizedString("$(OutputName)").Parse();
+            var volumeNameTS = sender.CreateTokenizedString("$(OutputName)");
+            if (!volumeNameTS.IsParsed)
+            {
+                volumeNameTS.Parse();
+            }
+            var volumeName = volumeNameTS.ToString();
             var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
             var diskImagePathName = outputPath.ToString();
 
@@ -91,6 +96,9 @@ namespace Installer
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dmgDir);
 
             // hdiutil convert myimg.dmg -format UDZO -o myoutputimg.dmg
+            // this will fail if the output DMG exists, so always write to a temporary
+            // file and then move into place
+            var tempDMGPath = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg";
             {
                 var args = new Bam.Core.StringArray();
                 args.Add("convert");
@@ -99,8 +107,18 @@ namespace Installer
                 args.Add("-format");
                 args.Add("UDZO");
                 args.Add("-o");
-                args.Add(diskImagePathName);
+                args.Add(tempDMGPath);
                 CommandLineProcessor.Processor.Execute(context, compiler, args);
+            }
+
+            // move the temporary DMG to the expected location
+            {
+                var args = new Bam.Core.StringArray();
+                args.Add("-f");
+                args.Add("-v");
+                args.Add(tempDMGPath);
+                args.Add(diskImagePathName);
+                CommandLineProcessor.Processor.Execute(context, Bam.Core.OSUtilities.GetInstallLocation("mv"), args);
             }
         }
     }

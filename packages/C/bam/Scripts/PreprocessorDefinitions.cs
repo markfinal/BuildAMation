@@ -35,15 +35,15 @@ namespace C
     /// is optional.
     /// </summary>
     public sealed class PreprocessorDefinitions :
-        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedString>>
     {
-        private System.Collections.Generic.Dictionary<string, string> Defines = new System.Collections.Generic.Dictionary<string, string>();
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> Defines = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
 
         public PreprocessorDefinitions()
         {}
 
         public PreprocessorDefinitions(
-            System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>> items)
+            System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedString>> items)
         {
             foreach (var item in items)
             {
@@ -56,11 +56,30 @@ namespace C
             string name,
             string value)
         {
+            var valueTS = Bam.Core.TokenizedString.CreateVerbatim(value);
             if (this.Defines.ContainsKey(name))
             {
+                // compares hashes
+                if (this.Defines[name] != valueTS)
+                {
+                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with a different value to {1}", name, valueTS.ToString());
+                }
+                return;
+            }
+            this.Defines.Add(name, valueTS);
+        }
+
+        public void
+        Add(
+            string name,
+            Bam.Core.TokenizedString value)
+        {
+            if (this.Defines.ContainsKey(name))
+            {
+                // compares hashes
                 if (this.Defines[name] != value)
                 {
-                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with value {1}. Cannot change it to {2}", name, this.Defines[name], value);
+                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with a different value", name);
                 }
                 return;
             }
@@ -69,26 +88,9 @@ namespace C
 
         public void
         Add(
-            string name,
-            Bam.Core.TokenizedString value)
-        {
-            var parsedValue = value.Parse();
-            if (this.Defines.ContainsKey(name))
-            {
-                if (this.Defines[name] != parsedValue)
-                {
-                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with value {1}. Cannot change it to {2}", name, this.Defines[name], parsedValue);
-                }
-                return;
-            }
-            this.Defines.Add(name, parsedValue);
-        }
-
-        public void
-        Add(
             string name)
         {
-            this.Add(name, string.Empty);
+            this.Add(name, null as Bam.Core.TokenizedString);
         }
 
         public void
@@ -116,7 +118,7 @@ namespace C
             return this.Defines.ContainsKey(key);
         }
 
-        public string
+        public Bam.Core.TokenizedString
         this[string key]
         {
             get
@@ -125,7 +127,7 @@ namespace C
             }
         }
 
-        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, string>>
+        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedString>>
         GetEnumerator()
         {
             foreach (var item in this.Defines)
@@ -140,19 +142,25 @@ namespace C
             return this.GetEnumerator();
         }
 
+        /// <summary>
+        /// Convert the preprocessor define (and optional value) into a string.
+        /// Note that for defines with a value, the value is assumed to be Parsed() already, or
+        /// an error will occur.
+        /// </summary>
+        /// <returns>Strings of the form 'key' or 'key=value'.</returns>
         public override string
         ToString()
         {
             var content = new System.Text.StringBuilder();
             foreach (var item in this.Defines)
             {
-                if (System.String.IsNullOrEmpty(item.Value))
+                if (null == item.Value)
                 {
                     content.AppendFormat("{0};", item.Key);
                 }
                 else
                 {
-                    content.AppendFormat("{0}={1};", item.Key, item.Value);
+                    content.AppendFormat("{0}={1};", item.Key, item.Value.ToString());
                 }
             }
             return content.ToString();

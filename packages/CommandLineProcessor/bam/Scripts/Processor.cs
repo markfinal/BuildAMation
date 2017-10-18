@@ -37,12 +37,12 @@ namespace CommandLineProcessor
             Bam.Core.ICommandLineTool tool)
         {
             var linearized = new System.Text.StringBuilder();
-            linearized.AppendFormat("{0}", tool.Executable.ParseAndQuoteIfNecessary());
+            linearized.AppendFormat("{0}", tool.Executable.ToStringQuoteIfNecessary());
             if (tool.InitialArguments != null)
             {
                 foreach (var arg in tool.InitialArguments)
                 {
-                    linearized.AppendFormat(" {0}", arg.Parse());
+                    linearized.AppendFormat(" {0}", arg.ToString());
                 }
             }
             return linearized.ToString();
@@ -57,7 +57,7 @@ namespace CommandLineProcessor
             {
                 foreach (var arg in tool.TerminatingArguments)
                 {
-                    linearized.AppendFormat(" {0}", arg.Parse());
+                    linearized.AppendFormat(" {0}", arg.ToString());
                 }
             }
             return linearized.ToString();
@@ -237,7 +237,7 @@ namespace CommandLineProcessor
             {
                 foreach (var arg in tool.InitialArguments)
                 {
-                    commandLineArgs.Add(arg.Parse());
+                    commandLineArgs.Add(arg.ToString());
                 }
             }
             commandLineArgs.AddRange(commandLine);
@@ -245,13 +245,13 @@ namespace CommandLineProcessor
             {
                 foreach (var arg in tool.TerminatingArguments)
                 {
-                    commandLineArgs.Add(arg.Parse());
+                    commandLineArgs.Add(arg.ToString());
                 }
             }
 
             Execute(
                 context,
-                tool.Executable.Parse(),
+                tool.Executable.ToString(),
                 commandLineArgs,
                 workingDirectory: workingDirectory,
                 inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,

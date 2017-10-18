@@ -39,7 +39,7 @@ namespace Publisher
             Bam.Core.TokenizedString originalPath,
             Bam.Core.TokenizedString copiedPath)
         {
-            var copiedDir = System.IO.Path.GetDirectoryName(copiedPath.Parse());
+            var copiedDir = System.IO.Path.GetDirectoryName(copiedPath.ToString());
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(copiedDir);
 
             var commandLine = new Bam.Core.StringArray();

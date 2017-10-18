@@ -42,9 +42,9 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            commandLine.Add(oldName.Parse());
-            commandLine.Add(newName.Parse());
-            commandLine.Add(sender.Source.GeneratedPaths[CollatedObject.Key].Parse());
+            commandLine.Add(oldName.ToString());
+            commandLine.Add(newName.ToString());
+            commandLine.Add(sender.Source.GeneratedPaths[CollatedObject.Key].ToString());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

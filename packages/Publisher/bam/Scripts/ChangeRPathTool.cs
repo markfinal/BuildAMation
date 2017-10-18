@@ -32,6 +32,14 @@ namespace Publisher
     public sealed class ChangeRPathTool :
         Bam.Core.PreBuiltTool
     {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.Macros.Add("toolPath", Bam.Core.TokenizedString.CreateVerbatim("chrpath"));
+        }
+
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
@@ -43,7 +51,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("chrpath");
+                return this.Macros["toolPath"];
             }
         }
 

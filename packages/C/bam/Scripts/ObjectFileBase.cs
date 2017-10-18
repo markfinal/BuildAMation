@@ -70,7 +70,8 @@ namespace C
             {
                 if (null != this.SourceModule)
                 {
-                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.Parse());
+                    this.SourceModule.InputPath.Parse();
+                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.ToString());
                 }
                 this.SourceModule = value;
                 this.DependsOn(value);
@@ -94,7 +95,8 @@ namespace C
             {
                 if (null != this.SourceModule)
                 {
-                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.Parse());
+                    this.SourceModule.InputPath.Parse();
+                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.ToString());
                 }
 
                 // this cannot be a referenced module, since there will be more than one object

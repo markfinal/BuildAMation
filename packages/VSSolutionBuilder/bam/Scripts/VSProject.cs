@@ -35,13 +35,14 @@ namespace VSSolutionBuilder
     {
         public VSProject(
             VSSolution solution,
-            Bam.Core.Module module)
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString projectPath)
             :
-            base(module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse())
+            base(projectPath.ToString())
         {
             this.Solution = solution;
             this.Module = module;
-            this.ProjectPath = module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj").Parse();
+            this.ProjectPath = projectPath.ToString();
             this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
             this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
             this.Headers = new Bam.Core.Array<VSSettingsGroup>();
@@ -129,7 +130,8 @@ namespace VSSolutionBuilder
                     else
                     {
                         // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
-                        if (settings.Include.Parse() == include.Parse())
+                        // TODO: can this be a TokenizedString hash compare?
+                        if (settings.Include.ToString() == include.ToString())
                         {
                             return settings;
                         }
@@ -363,7 +365,8 @@ namespace VSSolutionBuilder
             var debuggerFlavour = document.CreateVSElement("DebuggerFlavor");
             debuggerFlavour.InnerText = "WindowsLocalDebugger";
             var workingDir = document.CreateVSElement("LocalDebuggerWorkingDirectory");
-            workingDir.InnerText = (this.Module as C.ConsoleApplication).WorkingDirectory.Parse();
+            (this.Module as C.ConsoleApplication).WorkingDirectory.Parse();
+            workingDir.InnerText = (this.Module as C.ConsoleApplication).WorkingDirectory.ToString();
             el.AppendChild(debuggerFlavour);
             el.AppendChild(workingDir);
 

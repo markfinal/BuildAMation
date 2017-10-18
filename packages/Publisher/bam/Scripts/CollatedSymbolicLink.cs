@@ -52,26 +52,21 @@ namespace Publisher
         AssignLinkTarget(
             TokenizedString path = null)
         {
-#if __MonoCS__
             if (path == null)
             {
-                var symlink = new Mono.Unix.UnixSymbolicLinkInfo(this.SourcePath.Parse());
-                this.Macros["LinkTarget"] = Bam.Core.TokenizedString.CreateVerbatim(symlink.ContentsPath);
+                this.Macros["LinkTarget"] = this.CreateTokenizedString("@readlink($(0))", new TokenizedString[] { this.SourcePath });
             }
             else
             {
                 this.Macros["LinkTarget"] = path;
             }
-#else
-            throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
-#endif
         }
 
         public override void
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var copiedPath = this.GeneratedPaths[Key].Parse();
+            var copiedPath = this.GeneratedPaths[Key].ToString();
             var exists = System.IO.File.Exists(copiedPath);
             if (!exists)
             {

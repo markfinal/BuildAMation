@@ -35,6 +35,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef D_BAM_PLATFORM_WINDOWS
 #include <Windows.h>
+#ifndef _MSC_VER
+#include <libgen.h> // for dirname
+#endif
 #else
 #include <dlfcn.h>
 #include <libgen.h> // for dirname
@@ -52,8 +55,12 @@ public:
         std::stringstream path;
 #ifdef D_BAM_PLATFORM_WINDOWS
         char dir[MAX_PATH];
+#ifdef _MSC_VER
         _splitpath(inExecutablePath.c_str(), 0, dir, 0, 0);
         path << dir << inPath;
+#else
+        path << dirname(const_cast<char*>(inExecutablePath.c_str())) << "/" << inPath;
+#endif
         this->_module = ::LoadLibrary(path.str().c_str());
         if (0 == this->_module)
         {

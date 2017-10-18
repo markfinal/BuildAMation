@@ -38,14 +38,18 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries)
         {
-            var exeWriteTime = System.IO.File.GetLastWriteTime(sender.GeneratedPaths[C.ConsoleApplication.Key].Parse());
+            var exePath = sender.GeneratedPaths[C.ConsoleApplication.Key].ToString();
+            var exeWriteTime = System.IO.File.GetLastWriteTime(exePath);
             foreach (var library in libraries)
             {
                 if ((library.ReasonToExecute != null) && (library.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation))
                 {
                     // Note: on Windows, this is checking the IMPORT library path, so if the API of the library has not changed
                     // then it's likely this library is older than the DLL, thus not re-linking this binary, which is the correc thing to do
-                    var libraryFileWriteTime = System.IO.File.GetLastWriteTime((sender.Tool as C.LinkerTool).GetLibraryPath(library as CModule).Parse());
+                    var linker = (sender.Tool as C.LinkerTool);
+                    var libraryFile = library as CModule;
+                    var libraryFilePath = linker.GetLibraryPath(libraryFile).ToString();
+                    var libraryFileWriteTime = System.IO.File.GetLastWriteTime(libraryFilePath);
                     if (libraryFileWriteTime > exeWriteTime)
                     {
                         return true;
@@ -56,7 +60,8 @@ namespace C
             {
                 if ((input.ReasonToExecute != null) && (input.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation))
                 {
-                    var objectFileWriteTime = System.IO.File.GetLastWriteTime(input.GeneratedPaths[C.ObjectFile.Key].Parse());
+                    var objectFilePath = input.GeneratedPaths[C.ObjectFile.Key].ToString();
+                    var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                     if (objectFileWriteTime > exeWriteTime)
                     {
                         return true;

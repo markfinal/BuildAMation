@@ -75,22 +75,22 @@ namespace ClangCommon
             }
             foreach (var path in settings.IncludePaths)
             {
-                commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
             foreach (var define in settings.PreprocessorDefines)
             {
-                if (System.String.IsNullOrEmpty(define.Value))
+                if (null == define.Value)
                 {
                     commandLine.Add(System.String.Format("-D{0}", define.Key));
                 }
                 else
                 {
-                    var value = define.Value;
-                    if (value.Contains("\""))
+                    var defineValue = define.Value.ToString();
+                    if (defineValue.Contains("\""))
                     {
-                        value = value.Replace("\"", "\\\"");
+                        defineValue = defineValue.Replace("\"", "\\\"");
                     }
-                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
         }
