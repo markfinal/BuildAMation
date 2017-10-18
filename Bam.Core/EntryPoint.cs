@@ -107,12 +107,13 @@ namespace Bam.Core
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();
 
+            var testModeEnabled = CommandLineProcessor.Evaluate(new Options.UseTests());
+
             // validate that there is at most one local policy
             // if test mode is enabled, then the '.tests' sub-namespaces are also checked
             {
                 var localPolicies = graph.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
-                var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
-                if (!includeTests)
+                if (!testModeEnabled)
                 {
                     localPolicies = localPolicies.Where(item => !item.Namespace.EndsWith(".tests"));
                 }
@@ -198,13 +199,58 @@ namespace Bam.Core
             // look for module configuration override
             {
                 var overrides = graph.ScriptAssembly.GetTypes().Where(t => typeof(IOverrideModuleConfiguration).IsAssignableFrom(t));
-                if (overrides.Count() > 0)
+                var numOverrides = overrides.Count();
+                if (numOverrides > 0)
                 {
-                    if (overrides.Count() > 1)
+                    if (numOverrides > 1)
                     {
-                        throw new Exception("Too many implementations of {0}", typeof(IOverrideModuleConfiguration).ToString());
+                        var nonTestNamespaces = overrides.Where(item => !item.Namespace.Contains(".tests"));
+                        var testNamespaces = overrides.Where(item => item.Namespace.Contains(".tests"));
+
+                        if (nonTestNamespaces.Count() > 1 || testNamespaces.Count() > 1)
+                        {
+                            var message = new System.Text.StringBuilder();
+                            message.AppendFormat("Too many implementations of {0}", typeof(IOverrideModuleConfiguration).ToString());
+                            message.AppendLine();
+                            foreach (var oride in overrides)
+                            {
+                                message.AppendFormat("\t{0}", oride.ToString());
+                                message.AppendLine();
+                            }
+                            throw new Exception(message.ToString());
+                        }
+                        else
+                        {
+                            if (testModeEnabled)
+                            {
+                                // prefer test namespace overrides
+                                if (1 == testNamespaces.Count())
+                                {
+                                    graph.OverrideModuleConfiguration = System.Activator.CreateInstance(testNamespaces.First()) as IOverrideModuleConfiguration;
+                                }
+                                else if (1 == nonTestNamespaces.Count())
+                                {
+                                    graph.OverrideModuleConfiguration = System.Activator.CreateInstance(nonTestNamespaces.First()) as IOverrideModuleConfiguration;
+                                }
+                            }
+                            else
+                            {
+                                // prefer non-test namespace overrides
+                                if (1 == nonTestNamespaces.Count())
+                                {
+                                    graph.OverrideModuleConfiguration = System.Activator.CreateInstance(nonTestNamespaces.First()) as IOverrideModuleConfiguration;
+                                }
+                                else if (1 == testNamespaces.Count())
+                                {
+                                    graph.OverrideModuleConfiguration = System.Activator.CreateInstance(testNamespaces.First()) as IOverrideModuleConfiguration;
+                                }
+                            }
+                        }
                     }
-                    graph.OverrideModuleConfiguration = System.Activator.CreateInstance(overrides.First()) as IOverrideModuleConfiguration;
+                    else
+                    {
+                        graph.OverrideModuleConfiguration = System.Activator.CreateInstance(overrides.First()) as IOverrideModuleConfiguration;
+                    }
                 }
             }
 

@@ -1,3 +1,5 @@
+18-Oct-2017 Fixes #377. Previously, only one Bam.Core.IOverrideModuleConfiguration implementation could be present anywhere in the compiled packaged assembly. However, one could be in a tests namespace, and thus not affect a normal package build. The logic of finding the right override class has been adjusted.
+
 18-Oct-2017 Fixes #376. VisualStudio 2010 incorrect published files to $(OutputPath) in VSSolution build mode, which on that version of VS, is different (and incorrect) for the intended usage, and should be $(OutDir).
 
 11-Sep-2017 Issue #360. PluginTest example now exports a symbol from a plugin, attempts to load it, and use the symbol.
