@@ -1,3 +1,5 @@
+19-Oct-2017 Fixes #379. Debug projects, generated with bam -p, now include the preprocessor define, __MonoCS__, to match what the compiler sets for dynamically compiled package assemblies in a build step.
+
 18-Oct-2017 Fixes #377. Previously, only one Bam.Core.IOverrideModuleConfiguration implementation could be present anywhere in the compiled packaged assembly. However, one could be in a tests namespace, and thus not affect a normal package build. The logic of finding the right override class has been adjusted.
 
 18-Oct-2017 Fixes #376. VisualStudio 2010 incorrect published files to $(OutputPath) in VSSolution build mode, which on that version of VS, is different (and incorrect) for the intended usage, and should be $(OutDir).
