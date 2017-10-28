@@ -511,6 +511,7 @@ namespace XcodeBuilder
         {
             lock (this)
             {
+                // TODO: candidate for System.Lazy
                 if (null == this.PreBuildBuildPhase)
                 {
                     var preBuildBuildPhase = new ShellScriptBuildPhase(this, "Pre Build", (target) =>
@@ -527,7 +528,7 @@ namespace XcodeBuilder
                         }
                         return content.ToString();
                     });
-                    this.Project.ShellScriptsBuildPhases.Add(preBuildBuildPhase);
+                    this.Project.appendShellScriptsBuildPhase(preBuildBuildPhase);
                     this.PreBuildBuildPhase = preBuildBuildPhase;
                     // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
                 }
@@ -543,6 +544,7 @@ namespace XcodeBuilder
         {
             lock (this)
             {
+                // TODO: candidate for System.Lazy
                 if (null == this.PostBuildBuildPhase)
                 {
                     var postBuildBuildPhase = new ShellScriptBuildPhase(this, "Post Build", (target) =>
@@ -559,7 +561,7 @@ namespace XcodeBuilder
                         }
                         return content.ToString();
                     });
-                    this.Project.ShellScriptsBuildPhases.Add(postBuildBuildPhase);
+                    this.Project.appendShellScriptsBuildPhase(postBuildBuildPhase);
                     this.PostBuildBuildPhase = postBuildBuildPhase;
                     // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
                 }

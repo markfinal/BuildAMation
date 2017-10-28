@@ -221,10 +221,20 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
+        private Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendShellScriptsBuildPhase(
+            ShellScriptBuildPhase phase)
+        {
+            lock (this.ShellScriptsBuildPhases)
+            {
+                this.ShellScriptsBuildPhases.Add(phase);
+            }
         }
 
         public Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases
@@ -583,7 +593,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXReferenceProxy section */");
                 text.AppendLine();
             }
-            if (this.ShellScriptsBuildPhases.Count > 0)
+            if (this.ShellScriptsBuildPhases.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXShellScriptBuildPhase section */");
