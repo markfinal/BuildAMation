@@ -344,10 +344,34 @@ namespace XcodeBuilder
             return this.ReferenceProxies.FirstOrDefault(item => item.RemoteRef == remoteRef);
         }
 
-        public Bam.Core.Array<TargetDependency> TargetDependencies
+        private Bam.Core.Array<TargetDependency> TargetDependencies
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendTargetDependency(
+            TargetDependency dep)
+        {
+            // no lock required, as this is added in serial code
+            this.TargetDependencies.Add(dep);
+        }
+
+        public TargetDependency
+        getTargetDependency(
+            Target target,
+            ContainerItemProxy proxy)
+        {
+            return this.TargetDependencies.FirstOrDefault(item => item.Dependency == target && item.Proxy == proxy);
+        }
+
+        public TargetDependency
+        getTargetDependency(
+            string name,
+            ContainerItemProxy proxy)
+        {
+            return this.TargetDependencies.FirstOrDefault(item => item.Dependency == null && item.Name == name && item.Proxy == proxy);
         }
 
         public System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences
@@ -698,7 +722,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXSourcesBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.TargetDependencies.Count > 0)
+            if (this.TargetDependencies.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXTargetDependency section */");

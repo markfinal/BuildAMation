@@ -408,8 +408,7 @@ namespace XcodeBuilder
 
                     // note that target dependencies can be shared in a project by many Targets
                     // but each Target needs a reference to it
-                    var dependency = this.Project.TargetDependencies.FirstOrDefault(
-                        item => (item.Dependency == depTarget) && (item.Proxy == nativeTargetItemProxy));
+                    var dependency = this.Project.getTargetDependency(depTarget, nativeTargetItemProxy);
                     if (null == dependency)
                     {
                         dependency = new TargetDependency(this.Project, depTarget, nativeTargetItemProxy);
@@ -453,8 +452,7 @@ namespace XcodeBuilder
 
                     // note that target dependencies can be shared in a project by many Targets
                     // but each Target needs a reference to it
-                    var targetDependency = this.Project.TargetDependencies.FirstOrDefault(
-                        item => (item.Dependency == null) && (item.Name == depTarget.Name) && (item.Proxy == nativeTargetItemProxy));
+                    var targetDependency = this.Project.getTargetDependency(depTarget.Name, nativeTargetItemProxy);
                     if (null == targetDependency)
                     {
                         // no 'target', but does have the name of the dependent
