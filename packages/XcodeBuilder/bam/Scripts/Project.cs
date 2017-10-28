@@ -323,10 +323,25 @@ namespace XcodeBuilder
                 (item.ContainerPortal == containerPortal) && (item.Remote == remote));
         }
 
-        public Bam.Core.Array<ReferenceProxy> ReferenceProxies
+        private Bam.Core.Array<ReferenceProxy> ReferenceProxies
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendReferenceProxy(
+            ReferenceProxy proxy)
+        {
+            // no lock required, added in serial code
+            this.ReferenceProxies.Add(proxy);
+        }
+
+        public ReferenceProxy
+        getReferenceProxyForRemoteRef(
+            ContainerItemProxy remoteRef)
+        {
+            return this.ReferenceProxies.FirstOrDefault(item => item.RemoteRef == remoteRef);
         }
 
         public Bam.Core.Array<TargetDependency> TargetDependencies
@@ -647,7 +662,7 @@ namespace XcodeBuilder
                 text.AppendLine();
             }
             this.InternalSerialize(text, indentLevel); //this is the PBXProject :)
-            if (this.ReferenceProxies.Count > 0)
+            if (this.ReferenceProxies.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXReferenceProxy section */");

@@ -471,8 +471,7 @@ namespace XcodeBuilder
                         dependentFileRefItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget.FileReference, depTarget.Name);
                     }
 
-                    var refProxy = this.Project.ReferenceProxies.FirstOrDefault(
-                        item => item.RemoteRef == dependentFileRefItemProxy);
+                    var refProxy = this.Project.getReferenceProxyForRemoteRef(dependentFileRefItemProxy);
                     if (null == refProxy)
                     {
                         refProxy = new ReferenceProxy(
