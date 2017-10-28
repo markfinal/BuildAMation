@@ -86,31 +86,34 @@ namespace XcodeBuilder
             string guid,
             Object objectForGuid)
         {
-            if (this.ExistingGUIDs.ContainsKey(guid))
+            lock (this.ExistingGUIDs)
             {
-                // enable the log code path to view all clashes, rather than aborting on the first
+                if (this.ExistingGUIDs.ContainsKey(guid))
+                {
+                    // enable the log code path to view all clashes, rather than aborting on the first
 #if true
-                throw new Bam.Core.Exception("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
-                                             objectForGuid.Name,
-                                             objectForGuid.IsA,
-                                             objectForGuid.Project.Name,
-                                             this.ExistingGUIDs[guid].Name,
-                                             this.ExistingGUIDs[guid].IsA,
-                                             this.ExistingGUIDs[guid].Project.Name,
-                                             guid);
+                    throw new Bam.Core.Exception("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
+                                                 objectForGuid.Name,
+                                                 objectForGuid.IsA,
+                                                 objectForGuid.Project.Name,
+                                                 this.ExistingGUIDs[guid].Name,
+                                                 this.ExistingGUIDs[guid].IsA,
+                                                 this.ExistingGUIDs[guid].Project.Name,
+                                                 guid);
 #else
-                Bam.Core.Log.MessageAll("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
-                                             objectForGuid.Name,
-                                             objectForGuid.IsA,
-                                             objectForGuid.Project.Name,
-                                             this.ExistingGUIDs[guid].Name,
-                                             this.ExistingGUIDs[guid].IsA,
-                                             this.ExistingGUIDs[guid].Project.Name,
-                                             guid);
-                return;
-                #endif
+                    Bam.Core.Log.MessageAll("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
+                                                 objectForGuid.Name,
+                                                 objectForGuid.IsA,
+                                                 objectForGuid.Project.Name,
+                                                 this.ExistingGUIDs[guid].Name,
+                                                 this.ExistingGUIDs[guid].IsA,
+                                                 this.ExistingGUIDs[guid].Project.Name,
+                                                 guid);
+                    return;
+#endif
+                }
+                this.ExistingGUIDs.Add(guid, objectForGuid);
             }
-            this.ExistingGUIDs.Add(guid, objectForGuid);
         }
 
         public string SourceRoot
