@@ -53,7 +53,7 @@ namespace C
             // this is for stand-alone object files
             if (encapsulating == sender || encapsulating == (sender as Bam.Core.IChildModule).Parent)
             {
-                target.Type = XcodeBuilder.Target.EProductType.ObjFile;
+                target.SetType(XcodeBuilder.Target.EProductType.ObjFile);
                 var configuration = target.GetConfiguration(sender);
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
                 (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);

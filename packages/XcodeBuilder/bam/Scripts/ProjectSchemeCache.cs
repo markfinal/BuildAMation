@@ -82,9 +82,9 @@ namespace XcodeBuilder
             {
                 buildableReference.SetAttribute("BuildableIdentifier", "primary");
                 buildableReference.SetAttribute("BlueprintIdentifier", target.GUID);
-                if (null != target.FileReference)
+                if (null != target.getFileReference())
                 {
-                    buildableReference.SetAttribute("BuildableName", target.FileReference.Name);
+                    buildableReference.SetAttribute("BuildableName", target.getFileReference().Name);
                 }
                 buildableReference.SetAttribute("BlueprintName", target.Name);
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
@@ -160,10 +160,10 @@ namespace XcodeBuilder
 
                 buildableRefEl.SetAttribute("BuildableIdentifier", "primary");
 
-                if (null != target.FileReference)
+                if (null != target.getFileReference())
                 {
                     buildableRefEl.SetAttribute("BlueprintIdentifier", target.GUID);
-                    buildableRefEl.SetAttribute("BuildableName", target.FileReference.Name);
+                    buildableRefEl.SetAttribute("BuildableName", target.getFileReference().Name);
                     buildableRefEl.SetAttribute("BlueprintName", target.Name);
                 }
 

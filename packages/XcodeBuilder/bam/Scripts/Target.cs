@@ -83,7 +83,9 @@ namespace XcodeBuilder
             private set;
         }
 
-        public EProductType Type
+        // as value types cannot be used in lock statements, have a separate lock guard
+        private static readonly object TypeGuard = new object();
+        private EProductType Type
         {
             get;
             set;
@@ -95,10 +97,12 @@ namespace XcodeBuilder
             private set;
         }
 
-        public FileReference FileReference
+        private FileReference FileReference = null;
+
+        public FileReference
+        getFileReference()
         {
-            get;
-            private set;
+            return this.FileReference;
         }
 
         public Bam.Core.Array<TargetDependency> TargetDependencies
@@ -153,30 +157,42 @@ namespace XcodeBuilder
             private set;
         }
 
-        private void
-        SetProductType(
+        public void
+        SetType(
             EProductType type)
         {
-            if (this.Type == type)
+            lock (TypeGuard)
             {
-                return;
-            }
-
-            if (this.Type != EProductType.NA)
-            {
-                // exception: if there is a multi-config build, and collation modules have been executed on one configuration
-                // prior to linking on another
-                if (EProductType.Executable == type && this.Type == EProductType.ApplicationBundle)
+                if (this.Type == type)
                 {
                     return;
                 }
 
-                throw new Bam.Core.Exception("Product type has already been set to {0}. Cannot change it to {1}",
-                    this.Type.ToString(),
-                    type.ToString());
-            }
+                if (this.Type != EProductType.NA)
+                {
+                    // exception: if there is a multi-config build, and collation modules have been executed on one configuration
+                    // prior to linking on another
+                    if (EProductType.Executable == type && this.Type == EProductType.ApplicationBundle)
+                    {
+                        return;
+                    }
 
-            this.Type = type;
+                    throw new Bam.Core.Exception("Product type has already been set to {0}. Cannot change it to {1}",
+                        this.Type.ToString(),
+                        type.ToString());
+                }
+
+                this.Type = type;
+            }
+        }
+
+        public bool
+        isUtilityType
+        {
+            get
+            {
+                return this.Type == EProductType.Utility;
+            }
         }
 
         public Configuration
@@ -202,17 +218,13 @@ namespace XcodeBuilder
             FileReference.EFileType type,
             Target.EProductType productType)
         {
-            lock (this)
-            {
-                this.SetProductType(productType);
-
-                var fileRef = this.Project.EnsureFileReferenceExists(path, type, sourceTree: FileReference.ESourceTree.BuiltProductsDir);
-                if (null == this.FileReference)
+            this.SetType(productType);
+            System.Threading.LazyInitializer.EnsureInitialized(ref this.FileReference, () =>
                 {
-                    this.FileReference = fileRef;
+                    var fileRef = this.Project.EnsureFileReferenceExists(path, type, sourceTree: FileReference.ESourceTree.BuiltProductsDir);
                     this.Project.ProductRefGroup.AddChild(fileRef);
-                }
-            }
+                    return fileRef;
+                });
         }
 
         private BuildFile

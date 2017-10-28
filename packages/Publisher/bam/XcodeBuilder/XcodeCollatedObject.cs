@@ -63,7 +63,7 @@ namespace Publisher
                     var target = workspace.EnsureTargetExists(sender.SourceModule);
                     var configuration = target.GetConfiguration(sender.SourceModule);
 
-                    target.Type = XcodeBuilder.Target.EProductType.Utility;
+                    target.SetType(XcodeBuilder.Target.EProductType.Utility);
                     configuration.SetProductName(sender.SourceModule.Macros["modulename"]);
                     //Bam.Core.Log.MessageAll("Configuration {0} for {1}", configuration.Name, sender.SourceModule.ToString());
                 }
@@ -89,7 +89,7 @@ namespace Publisher
                 }
 
                 var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
-                if (target.Type != XcodeBuilder.Target.EProductType.Utility)
+                if (!target.isUtilityType)
                 {
                     commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2} {3}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
@@ -108,7 +108,7 @@ namespace Publisher
                 }
 
                 var configuration = target.GetConfiguration(sender.SourceModule);
-                if (target.Type != XcodeBuilder.Target.EProductType.Utility)
+                if (!target.isUtilityType)
                 {
                     target.AddPostBuildCommands(commands, configuration);
                 }
@@ -128,7 +128,7 @@ namespace Publisher
                 {
                     destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
                 }
-                if (target.Type == XcodeBuilder.Target.EProductType.Utility)
+                if (target.isUtilityType)
                 {
                     destinationFolder = destinationPath;
                 }
@@ -178,7 +178,7 @@ namespace Publisher
                 }
 
                 var configuration = target.GetConfiguration(sender.Reference.SourceModule);
-                if (target.Type != XcodeBuilder.Target.EProductType.Utility)
+                if (!target.isUtilityType)
                 {
                     target.AddPostBuildCommands(commands, configuration);
                 }
