@@ -218,10 +218,20 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Bam.Core.Array<FrameworksBuildPhase> FrameworksBuildPhases
+        private Bam.Core.Array<FrameworksBuildPhase> FrameworksBuildPhases
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendFrameworksBuildPhase(
+            FrameworksBuildPhase phase)
+        {
+            lock (this.FrameworksBuildPhases)
+            {
+                this.FrameworksBuildPhases.Add(phase);
+            }
         }
 
         private Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
@@ -547,7 +557,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXFileReference section */");
                 text.AppendLine();
             }
-            if (this.FrameworksBuildPhases.Count > 0)
+            if (this.FrameworksBuildPhases.Any()
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXFrameworksBuildPhase section */");

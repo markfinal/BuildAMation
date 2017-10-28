@@ -303,12 +303,13 @@ namespace XcodeBuilder
         {
             lock (this)
             {
+                // TODO: can this be synchronized better?
                 if (null != this.FrameworksBuildPhase)
                 {
                     return;
                 }
                 var frameworks = new FrameworksBuildPhase(this);
-                this.Project.FrameworksBuildPhases.Add(frameworks);
+                this.Project.appendFrameworksBuildPhase(frameworks);
                 this.BuildPhases.Add(frameworks);
                 this.FrameworksBuildPhase = frameworks;
             }
