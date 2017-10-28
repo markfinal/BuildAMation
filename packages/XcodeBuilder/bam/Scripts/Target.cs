@@ -75,6 +75,34 @@ namespace XcodeBuilder
                     this.appendBuildPhase(phase);
                     return phase;
                 });
+            this.PreBuildBuildPhase = new System.Lazy<ShellScriptBuildPhase>(() =>
+                {
+                    return new ShellScriptBuildPhase(this, "Pre Build", (target) =>
+                        {
+                            var content = new System.Text.StringBuilder();
+                            foreach (var config in target.ConfigurationList)
+                            {
+                                content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                                config.SerializePreBuildCommands(content, 1);
+                                content.AppendFormat("fi\\n\\n");
+                            }
+                            return content.ToString();
+                        });
+                });
+            this.PostBuildBuildPhase = new System.Lazy<ShellScriptBuildPhase>(() =>
+                {
+                    return new ShellScriptBuildPhase(this, "Post Build", (target) =>
+                        {
+                            var content = new System.Text.StringBuilder();
+                            foreach (var config in target.ConfigurationList)
+                            {
+                                content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
+                                config.SerializePostBuildCommands(content, 1);
+                                content.AppendFormat("fi\\n\\n");
+                            }
+                            return content.ToString();
+                        });
+                });
         }
 
         public Bam.Core.Module Module
@@ -145,16 +173,16 @@ namespace XcodeBuilder
             set;
         }
 
-        public ShellScriptBuildPhase PreBuildBuildPhase
+        private System.Lazy<ShellScriptBuildPhase> PreBuildBuildPhase
         {
             get;
-            private set;
+            set;
         }
 
-        public ShellScriptBuildPhase PostBuildBuildPhase
+        public System.Lazy<ShellScriptBuildPhase> PostBuildBuildPhase
         {
             get;
-            private set;
+            set;
         }
 
         public void
@@ -504,32 +532,13 @@ namespace XcodeBuilder
             Bam.Core.StringArray commands,
             Configuration configuration)
         {
-            lock (this)
+            if (!this.PreBuildBuildPhase.IsValueCreated)
             {
-                // TODO: candidate for System.Lazy
-                if (null == this.PreBuildBuildPhase)
-                {
-                    var preBuildBuildPhase = new ShellScriptBuildPhase(this, "Pre Build", (target) =>
-                    {
-                        var content = new System.Text.StringBuilder();
-                        foreach (var config in target.ConfigurationList)
-                        {
-                            content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
-                            foreach (var line in config.PreBuildCommands)
-                            {
-                                content.AppendFormat("  {0}\\n", line.Replace("\"", "\\\""));
-                            }
-                            content.AppendFormat("fi\\n\\n");
-                        }
-                        return content.ToString();
-                    });
-                    this.Project.appendShellScriptsBuildPhase(preBuildBuildPhase);
-                    this.PreBuildBuildPhase = preBuildBuildPhase;
-                    // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
-                }
-
-                configuration.PreBuildCommands.AddRange(commands);
+                this.Project.appendShellScriptsBuildPhase(this.PreBuildBuildPhase.Value);
+                // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
             }
+
+            configuration.appendPreBuildCommands(commands);
         }
 
         public void
@@ -537,32 +546,13 @@ namespace XcodeBuilder
             Bam.Core.StringArray commands,
             Configuration configuration)
         {
-            lock (this)
+            if (!this.PostBuildBuildPhase.IsValueCreated)
             {
-                // TODO: candidate for System.Lazy
-                if (null == this.PostBuildBuildPhase)
-                {
-                    var postBuildBuildPhase = new ShellScriptBuildPhase(this, "Post Build", (target) =>
-                    {
-                        var content = new System.Text.StringBuilder();
-                        foreach (var config in target.ConfigurationList)
-                        {
-                            content.AppendFormat("if [ \\\"$CONFIGURATION\\\" = \\\"{0}\\\" ]; then\\n\\n", config.Name);
-                            foreach (var line in config.PostBuildCommands)
-                            {
-                                content.AppendFormat("  {0}\\n", line.Replace("\"", "\\\""));
-                            }
-                            content.AppendFormat("fi\\n\\n");
-                        }
-                        return content.ToString();
-                    });
-                    this.Project.appendShellScriptsBuildPhase(postBuildBuildPhase);
-                    this.PostBuildBuildPhase = postBuildBuildPhase;
-                    // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
-                }
-
-                configuration.PostBuildCommands.AddRange(commands);
+                this.Project.appendShellScriptsBuildPhase(this.PostBuildBuildPhase.Value);
+                // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
             }
+
+            configuration.appendPostBuildCommands(commands);
         }
 
         public void
@@ -624,7 +614,7 @@ namespace XcodeBuilder
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, this.ConfigurationList.GUID, this.ConfigurationList.Parent.IsA, this.ConfigurationList.Parent.Name);
             text.AppendLine();
             if (this.BuildPhases.IsValueCreated ||
-                (null != this.PreBuildBuildPhase) ||
+                this.PreBuildBuildPhase.IsValueCreated ||
                 (null != this.PostBuildBuildPhase))
             {
                 // make sure that pre-build phases appear first
@@ -639,9 +629,9 @@ namespace XcodeBuilder
                     text.AppendFormat("{0}{1} /* {2} */,", indent3, phase.GUID, phase.Name);
                     text.AppendLine();
                 };
-                if (null != this.PreBuildBuildPhase)
+                if (this.PreBuildBuildPhase.IsValueCreated)
                 {
-                    dumpPhase(this.PreBuildBuildPhase);
+                    dumpPhase(this.PreBuildBuildPhase.Value);
                 }
                 if (this.BuildPhases.IsValueCreated)
                 {
@@ -650,9 +640,9 @@ namespace XcodeBuilder
                         dumpPhase(phase);
                     }
                 }
-                if (null != this.PostBuildBuildPhase)
+                if (this.PostBuildBuildPhase.IsValueCreated)
                 {
-                    dumpPhase(this.PostBuildBuildPhase);
+                    dumpPhase(this.PostBuildBuildPhase.Value);
                 }
                 text.AppendFormat("{0});", indent2);
                 text.AppendLine();
