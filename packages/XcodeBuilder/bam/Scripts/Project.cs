@@ -266,10 +266,27 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Bam.Core.Array<ContainerItemProxy> ContainerItemProxies
+        private Bam.Core.Array<ContainerItemProxy> ContainerItemProxies
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendContainerItemProxy(
+            ContainerItemProxy proxy)
+        {
+            // these are only added in a single thread
+            this.ContainerItemProxies.AddUnique(proxy);
+        }
+
+        public ContainerItemProxy
+        getContainerItemProxy(
+            Object remote,
+            Object containerPortal)
+        {
+            return this.ContainerItemProxies.FirstOrDefault(item =>
+                (item.ContainerPortal == containerPortal) && (item.Remote == remote));
         }
 
         public Bam.Core.Array<ReferenceProxy> ReferenceProxies
@@ -519,7 +536,7 @@ namespace XcodeBuilder
             System.Text.StringBuilder text,
             int indentLevel)
         {
-            if (this.BuildFiles.Count > 0)
+            if (this.BuildFiles.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXBuildFile section */");
@@ -531,7 +548,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXBuildFile section */");
                 text.AppendLine();
             }
-            if (this.ContainerItemProxies.Count > 0)
+            if (this.ContainerItemProxies.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXContainerItemProxy section */");

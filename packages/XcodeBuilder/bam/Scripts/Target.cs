@@ -400,8 +400,7 @@ namespace XcodeBuilder
             {
                 if (this.Project == depTarget.Project)
                 {
-                    var nativeTargetItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
-                        item => (item.ContainerPortal == this.Project) && (item.Remote == depTarget));
+                    var nativeTargetItemProxy = this.Project.getContainerItemProxy(depTarget, depTarget.Project);
                     if (null == nativeTargetItemProxy)
                     {
                         nativeTargetItemProxy = new ContainerItemProxy(this.Project, depTarget);
@@ -446,8 +445,7 @@ namespace XcodeBuilder
 
                     // need a ContainerItemProxy for the dependent NativeTarget
                     // which is associated with a local PBXTargetDependency
-                    var nativeTargetItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
-                        item => (item.ContainerPortal == dependentProjectFileRef) && (item.Remote == depTarget));
+                    var nativeTargetItemProxy = this.Project.getContainerItemProxy(depTarget, dependentProjectFileRef);
                     if (null == nativeTargetItemProxy)
                     {
                         nativeTargetItemProxy = new ContainerItemProxy(this.Project, dependentProjectFileRef, depTarget);
@@ -466,8 +464,7 @@ namespace XcodeBuilder
 
                     // need a ContainerItemProxy for the filereference of the dependent NativeTarget
                     // which is associated with a local PBXReferenceProxy
-                    var dependentFileRefItemProxy = this.Project.ContainerItemProxies.FirstOrDefault(
-                        item => (item.ContainerPortal == dependentProjectFileRef) && (item.Remote == depTarget.FileReference));
+                    var dependentFileRefItemProxy = this.Project.getContainerItemProxy(depTarget.FileReference, dependentProjectFileRef);
                     if (null == dependentFileRefItemProxy)
                     {
                         // note, uses the name of the Target, not the FileReference

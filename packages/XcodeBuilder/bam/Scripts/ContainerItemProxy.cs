@@ -41,7 +41,7 @@ namespace XcodeBuilder
         {
             this.ContainerPortal = portal;
             this.RemoteName = null;
-            project.ContainerItemProxies.AddUnique(this);
+            project.appendContainerItemProxy(this);
         }
 
         // for NativeTargets in a different Project
