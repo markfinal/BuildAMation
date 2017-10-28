@@ -335,11 +335,8 @@ namespace XcodeBuilder
         EnsureHeaderFileExists(
             Bam.Core.TokenizedString path)
         {
-            lock (this)
-            {
-                var relativePath = this.Project.GetRelativePathToProject(path);
-                this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile, relativePath: relativePath);
-            }
+            var relativePath = this.Project.GetRelativePathToProject(path);
+            this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile, relativePath: relativePath);
         }
 
         public void
@@ -387,7 +384,7 @@ namespace XcodeBuilder
         Requires(
             Target other)
         {
-            lock (this)
+            lock (this.ProposedTargetDependencies)
             {
                 this.ProposedTargetDependencies.AddUnique(other);
             }
