@@ -280,6 +280,7 @@ namespace XcodeBuilder
         {
             lock (this)
             {
+                // TODO: candidate for System.Lazy
                 if (null == this.SourcesBuildPhase)
                 {
                     this.SourcesBuildPhase = new SourcesBuildPhase(this);
@@ -288,7 +289,7 @@ namespace XcodeBuilder
                         this.BuildPhases = new Bam.Core.Array<BuildPhase>();
                     }
                     this.BuildPhases.Add(this.SourcesBuildPhase);
-                    this.Project.SourcesBuildPhases.Add(this.SourcesBuildPhase);
+                    this.Project.appendSourcesBuildPhase(this.SourcesBuildPhase);
                 }
 
                 var buildFile = this.EnsureBuildFileExists(path, type);
