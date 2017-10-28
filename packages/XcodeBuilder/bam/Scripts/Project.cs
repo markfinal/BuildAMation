@@ -260,10 +260,10 @@ namespace XcodeBuilder
             }
         }
 
-        public Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases
+        private Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases
         {
             get;
-            private set;
+            set;
         }
 
         private Bam.Core.Array<ContainerItemProxy> ContainerItemProxies
@@ -560,7 +560,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXContainerItemProxy section */");
                 text.AppendLine();
             }
-            if (this.CopyFilesBuildPhases.Count > 0)
+            if (this.CopyFilesBuildPhases.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXCopyFilesBuildPhase section */");
