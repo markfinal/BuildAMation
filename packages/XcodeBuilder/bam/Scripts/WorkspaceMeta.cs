@@ -76,7 +76,7 @@ namespace XcodeBuilder
                     var target = new Target(module, project);
                     this.TargetMap.Add(moduleType, target);
 
-                    project.Targets.Add(moduleType, target);
+                    project.appendTarget(target);
                 }
             }
             if (null == module.MetaData)

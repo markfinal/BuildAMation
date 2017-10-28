@@ -154,10 +154,27 @@ namespace XcodeBuilder
             private set;
         }
 
-        public System.Collections.Generic.Dictionary<System.Type, Target> Targets
+        private System.Collections.Generic.Dictionary<System.Type, Target> Targets
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendTarget(
+            Target target)
+        {
+            // Note: this lock probably not required, as it's only invoked from within another lock
+            lock (this.Targets)
+            {
+                this.Targets.Add(target.Module.GetType(), target);
+            }
+        }
+
+        public System.Collections.Generic.IReadOnlyList<Target>
+        getTargetList()
+        {
+            return this.Targets.Values.ToList();
         }
 
         private Bam.Core.Array<FileReference> FileReferences
@@ -617,7 +634,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXGroup section */");
                 text.AppendLine();
             }
-            if (this.Targets.Count > 0) // NativeTargets
+            if (this.Targets.Any()) // NativeTargets
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXNativeTarget section */");
