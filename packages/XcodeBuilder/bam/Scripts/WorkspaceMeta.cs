@@ -158,7 +158,8 @@ namespace XcodeBuilder
         {
             var workspacePath = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).xcworkspace/contents.xcworkspacedata", null);
             var workspaceDir = Bam.Core.TokenizedString.Create("@dir($(0))", null, positionalTokens: new Bam.Core.TokenizedStringArray(workspacePath));
-            var workspaceDirectory = workspaceDir.Parse();
+            workspaceDir.Parse();
+            var workspaceDirectory = workspaceDir.ToString();
 
             var workspaceDoc = new System.Xml.XmlDocument();
             var workspaceEl = workspaceDoc.CreateElement("Workspace");
@@ -193,7 +194,7 @@ namespace XcodeBuilder
                 text.AppendLine("}");
 
                 var projectDir = project.ProjectDir;
-                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(projectDir.Parse());
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(projectDir.ToString());
 
                 WriteProjectFileIfDifferent(project.ProjectPath, text);
 
@@ -203,7 +204,7 @@ namespace XcodeBuilder
                     projectSchemeCache.Serialize();
                 }
 
-                var relativeProjectDir = Bam.Core.RelativePathUtilities.GetPath(projectDir.Parse(), workspaceDirectory);
+                var relativeProjectDir = Bam.Core.RelativePathUtilities.GetPath(projectDir.ToString(), workspaceDirectory);
                 var workspaceFileRef = workspaceDoc.CreateElement("FileRef");
                 workspaceFileRef.SetAttribute("location", System.String.Format("group:{0}", relativeProjectDir));
                 workspaceEl.AppendChild(workspaceFileRef);
@@ -217,7 +218,7 @@ namespace XcodeBuilder
             settings.NewLineChars = System.Environment.NewLine;
             settings.Indent = true;
             settings.ConformanceLevel = System.Xml.ConformanceLevel.Document;
-            WriteXMLIfDifferent(workspacePath.Parse(), settings, workspaceDoc);
+            WriteXMLIfDifferent(workspacePath.ToString(), settings, workspaceDoc);
 
             return workspaceDirectory;
         }

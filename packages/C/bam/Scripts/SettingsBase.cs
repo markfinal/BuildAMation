@@ -99,7 +99,7 @@ namespace C
             System.Collections.Generic.IEnumerable<System.Type> sharedInterfaces = null;
             foreach (var input in objectFiles)
             {
-                var interfaces = input.Settings.GetType().GetInterfaces().Where(item => (item != typeof(Bam.Core.ISettingsBase)) && typeof(Bam.Core.ISettingsBase).IsAssignableFrom(item)); ;
+                var interfaces = input.Settings.GetType().GetInterfaces().Where(item => (item != typeof(Bam.Core.ISettingsBase)) && typeof(Bam.Core.ISettingsBase).IsAssignableFrom(item));
                 if (null == sharedInterfaces)
                 {
                     sharedInterfaces = interfaces;
@@ -207,7 +207,7 @@ namespace C
                 var methInfo = convertExtensionClassType.GetMethod("Convert", extConvertParameterTypes.ToArray());
                 if (null == methInfo)
                 {
-                        throw new Bam.Core.Exception("Unable to locate the function {0}.{1}(this {2})", convertExtensionClassType.FullName, "Convert", i.Name);
+                    throw new Bam.Core.Exception("Unable to locate the function {0}.{1}(this {2})", convertExtensionClassType.FullName, "Convert", i.Name);
                 }
                 // TODO: can this be simplified, using the ldarg opcode? a simple loop would suffice
                 convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_0);

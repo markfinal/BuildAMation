@@ -108,7 +108,7 @@ namespace ClangCommon
         {
             foreach (var searchPath in settings.LibraryPaths)
             {
-                var realSearchpath = searchPath.Parse();
+                var realSearchpath = searchPath.ToString();
                 // some lib paths might not exist yet
                 if (!System.IO.Directory.Exists(realSearchpath))
                 {
@@ -178,7 +178,12 @@ namespace ClangCommon
             case C.ELinkerOutput.Executable:
                 {
                     configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(string.Empty);
-                    var ext = module.CreateTokenizedString("$(exeext)").Parse().TrimStart(new [] {'.'});
+                    var exeExt = module.CreateTokenizedString("$(exeext)");
+                    if (!exeExt.IsParsed)
+                    {
+                        exeExt.Parse();
+                    }
+                    var ext = exeExt.ToString().TrimStart(new[] { '.' });
                     configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(ext);
                 }
                 break;
@@ -187,21 +192,47 @@ namespace ClangCommon
                 {
                     if ((module is C.Plugin) || (module is C.Cxx.Plugin))
                     {
-                        var prefix = module.CreateTokenizedString("$(pluginprefix)").Parse();
+                        var pluginPrefix = module.CreateTokenizedString("$(pluginprefix)");
+                        if (!pluginPrefix.IsParsed)
+                        {
+                            pluginPrefix.Parse();
+
+                        }
+                        var prefix = pluginPrefix.ToString();
                         configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(prefix);
-                        var ext = module.CreateTokenizedString("$(pluginext)").Parse().TrimStart(new [] {'.'});
+                        var pluginExt = module.CreateTokenizedString("$(pluginext)");
+                        if (!pluginExt.IsParsed)
+                        {
+                            pluginExt.Parse();
+                        }
+                        var ext = pluginExt.ToString().TrimStart(new[] { '.' });
                         configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(ext);
                     }
                     else
                     {
-                        var prefix = module.CreateTokenizedString("$(dynamicprefix)").Parse();
+                        var dynamicPrefix = module.CreateTokenizedString("$(dynamicprefix)");
+                        if (!dynamicPrefix.IsParsed)
+                        {
+                            dynamicPrefix.Parse();
+                        }
+                        var prefix = dynamicPrefix.ToString();
                         configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(prefix);
-                        var ext = module.CreateTokenizedString("$(dynamicextonly)").Parse().TrimStart(new [] {'.'});
+                        var dynamicExt = module.CreateTokenizedString("$(dynamicextonly)");
+                        if (!dynamicExt.IsParsed)
+                        {
+                            dynamicExt.Parse();
+                        }
+                        var ext = dynamicExt.ToString().TrimStart(new[] { '.' });
                         configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(ext);
                     }
                     configuration["MACH_O_TYPE"] = new XcodeBuilder.UniqueConfigurationValue("mh_dylib");
 
-                    var versionString = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse();
+                    var versionStringTS = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))");
+                    if (!versionStringTS.IsParsed)
+                    {
+                        versionStringTS.Parse();
+                    }
+                    var versionString = versionStringTS.ToString();
                     configuration["DYLIB_CURRENT_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(versionString);
                     configuration["DYLIB_COMPATIBILITY_VERSION"] = new XcodeBuilder.UniqueConfigurationValue(versionString);
                 }
@@ -212,7 +243,7 @@ namespace ClangCommon
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.LibraryPaths)
                 {
-                    var fullPath = path.Parse();
+                    var fullPath = path.ToString();
                     var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
                     if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
                     {

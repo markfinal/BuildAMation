@@ -43,10 +43,15 @@ namespace XcodeBuilder
             module.Macros.Add("xcodeprojectdir", this.ProjectDir);
 
             var projectPath = module.CreateTokenizedString("$(xcodeprojectdir)/project.pbxproj");
-            this.ProjectPath = projectPath.Parse();
+            projectPath.Parse();
+            this.ProjectPath = projectPath.ToString();
 
-            this.SourceRoot = module.CreateTokenizedString("$(packagedir)/").Parse();
-            this.BuildRoot = module.CreateTokenizedString("$(buildroot)").Parse();
+            var sourceRoot = module.CreateTokenizedString("$(packagedir)/");
+            sourceRoot.Parse();
+            this.SourceRoot = sourceRoot.ToString();
+            var buildRoot = module.CreateTokenizedString("$(buildroot)");
+            buildRoot.Parse();
+            this.BuildRoot = buildRoot.ToString();
 
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
@@ -84,8 +89,8 @@ namespace XcodeBuilder
             if (this.ExistingGUIDs.ContainsKey(guid))
             {
                 // enable the log code path to view all clashes, rather than aborting on the first
-                #if true
-                throw new Bam.Core.Exception("GUID clash between {0}({1})[in {2}] and {3}({4})[in {5}]: {6}",
+#if true
+                throw new Bam.Core.Exception("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
                                              objectForGuid.Name,
                                              objectForGuid.IsA,
                                              objectForGuid.Project.Name,
@@ -93,8 +98,8 @@ namespace XcodeBuilder
                                              this.ExistingGUIDs[guid].IsA,
                                              this.ExistingGUIDs[guid].Project.Name,
                                              guid);
-                #else
-                Bam.Core.Log.MessageAll("GUID clash between {0}({1})[in {2}] and {3}({4})[in {5}]: {6}",
+#else
+                Bam.Core.Log.MessageAll("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
                                              objectForGuid.Name,
                                              objectForGuid.IsA,
                                              objectForGuid.Project.Name,
@@ -267,7 +272,7 @@ namespace XcodeBuilder
         {
             lock (this.FileReferences)
             {
-                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.Equals(path));
+                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.ToString().Equals(path.ToString()));
                 if (null != existingFileRef)
                 {
                     return existingFileRef;
@@ -288,7 +293,7 @@ namespace XcodeBuilder
         {
             lock (this.FileReferences)
             {
-                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.Equals(path));
+                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.ToString().Equals(path.ToString()));
                 if (null != existingFileRef)
                 {
                     return existingFileRef;
@@ -335,8 +340,8 @@ namespace XcodeBuilder
                 projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
                 // reset SRCROOT, or it is taken to be where the workspace is
-                var pkgdir = this.Module.Macros["packagedir"].Parse() + "/";
-                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetPath(pkgdir, this.ProjectDir.Parse());
+                var pkgdir = this.Module.Macros["packagedir"].ToString() + "/";
+                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetPath(pkgdir, this.ProjectDir.ToString());
                 projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
                 // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
@@ -425,7 +430,7 @@ namespace XcodeBuilder
                         var excluded = new MultiConfigurationValue();
                         foreach (var file in diff)
                         {
-                            var fullPath = file.FileRef.Path.Parse();
+                            var fullPath = file.FileRef.Path.ToString();
                             var filename = System.IO.Path.GetFileName(fullPath);
                             excluded.Add(filename);
                         }
@@ -680,7 +685,7 @@ namespace XcodeBuilder
         GetRelativePathToProject(
             Bam.Core.TokenizedString inputPath)
         {
-            var relPath = Bam.Core.RelativePathUtilities.GetPath(inputPath.Parse(), this.ProjectDir.Parse());
+            var relPath = Bam.Core.RelativePathUtilities.GetPath(inputPath.ToString(), this.ProjectDir.ToString());
             if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
             {
                 return null;

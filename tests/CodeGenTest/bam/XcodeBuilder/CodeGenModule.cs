@@ -47,11 +47,16 @@ namespace CodeGenTest
 
             var command = new System.Text.StringBuilder();
             // recode the executable path for Xcode
-            var xcodePath = encapsulating.CreateTokenizedString("$(packagebuilddir)/$(config)").Parse();
-            xcodePath += "/" + System.IO.Path.GetFileName(compiler.Executable.Parse());
+            var xcodePathTS = encapsulating.CreateTokenizedString("$(packagebuilddir)/$(config)");
+            if (!xcodePathTS.IsParsed)
+            {
+                xcodePathTS.Parse();
+            }
+            var xcodePath = xcodePathTS.ToString();
+            xcodePath += "/" + System.IO.Path.GetFileName(compiler.Executable.ToString());
             command.AppendFormat(xcodePath);
             // TODO: change this to a configuration directory really
-            command.AppendFormat(" {0}", Bam.Core.TokenizedString.Create("$(buildroot)", null).Parse());
+            command.AppendFormat(" {0}", Bam.Core.Graph.Instance.BuildRoot);
             command.AppendFormat(" {0}", "Generated");
 
             var commands = new Bam.Core.StringArray();

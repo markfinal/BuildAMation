@@ -188,6 +188,11 @@ namespace Bam
             {
                 allDefines.AddRange(package.Definitions);
             }
+            // so that debug projects compile the same code as dynamically compiled package assemblies
+            if (Core.Graph.Instance.ProcessState.RunningMono)
+            {
+                allDefines.Add("__MonoCS__");
+            }
             allDefines.Sort();
 
             return allDefines.ToString(';');

@@ -38,7 +38,7 @@ namespace ClangCommon
         {
             foreach (var path in settings.FrameworkSearchPaths)
             {
-                commandLine.Add(System.String.Format("-F{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-F{0}", path.ToStringQuoteIfNecessary()));
             }
             if (!System.String.IsNullOrEmpty(settings.MinimumVersionSupported))
             {

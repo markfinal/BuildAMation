@@ -87,7 +87,7 @@ namespace C
             this.EvaluationTask = factory.StartNew(() =>
             {
                 // does the object file exist?
-                var objectFilePath = this.GeneratedPaths[Key].Parse();
+                var objectFilePath = this.GeneratedPaths[Key].ToString();
                 if (!System.IO.File.Exists(objectFilePath))
                 {
                     this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
@@ -103,7 +103,7 @@ namespace C
                 }
 
                 // is the source file newer than the object file?
-                var sourcePath = this.InputPath.Parse();
+                var sourcePath = this.InputPath.ToString();
                 var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
                 if (sourceWriteTime > objectFileWriteTime)
                 {
@@ -129,19 +129,22 @@ namespace C
                     {
                         continue;
                     }
+                    var headerDep = dep as HeaderFile;
                     if (dep.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer)
                     {
-                        explicitHeadersUpdated.AddUnique((dep as HeaderFile).InputPath.Parse());
+                        explicitHeadersUpdated.AddUnique(headerDep.InputPath.ToString());
                     }
                     else if (dep.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation)
                     {
-                        explicitHeadersDeferred.AddUnique((dep as HeaderFile).InputPath.Parse());
+                        explicitHeadersDeferred.AddUnique(headerDep.InputPath.ToString());
                     }
                 }
 
                 var includeSearchPaths = (this.Settings as C.ICommonCompilerSettings).IncludePaths;
                 // implicitly search the same directory as the source path, as this is not needed to be explicitly on the include path list
-                includeSearchPaths.AddUnique(this.CreateTokenizedString("@dir($(0))", this.InputPath));
+                var currentDir = this.CreateTokenizedString("@dir($(0))", this.InputPath);
+                currentDir.Parse();
+                includeSearchPaths.AddUnique(currentDir);
 
                 var filesToSearch = new System.Collections.Generic.Queue<string>();
                 filesToSearch.Enqueue(sourcePath);
@@ -178,7 +181,7 @@ namespace C
                         {
                             try
                             {
-                                var potentialPath = System.IO.Path.Combine(includePath.Parse(), headerFile);
+                                var potentialPath = System.IO.Path.Combine(includePath.ToString(), headerFile);
                                 if (!System.IO.File.Exists(potentialPath))
                                 {
                                     continue;

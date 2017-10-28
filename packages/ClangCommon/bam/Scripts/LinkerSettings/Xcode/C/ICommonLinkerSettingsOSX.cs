@@ -44,13 +44,17 @@ namespace ClangCommon
                 foreach (var framework in settings.Frameworks)
                 {
                     var frameworkFileRefPath = framework;
-                    var isAbsolute = System.IO.Path.IsPathRooted(frameworkFileRefPath.Parse());
+                    var isAbsolute = System.IO.Path.IsPathRooted(frameworkFileRefPath.ToString());
 
                     if (!isAbsolute)
                     {
                         // TODO: change to a positional token
                         // assume it's a system framework
                         frameworkFileRefPath = Bam.Core.TokenizedString.Create("/System/Library/Frameworks/$(0).framework", null, new Bam.Core.TokenizedStringArray(framework));
+                        if (!frameworkFileRefPath.IsParsed)
+                        {
+                            frameworkFileRefPath.Parse();
+                        }
                     }
 
                     var buildFile = target.EnsureFrameworksBuildFileExists(
@@ -64,7 +68,7 @@ namespace ClangCommon
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.FrameworkSearchPaths)
                 {
-                    option.Add(path.Parse());
+                    option.Add(path.ToString());
                 }
                 configuration["FRAMEWORK_SEARCH_PATHS"] = option;
             }
@@ -72,7 +76,7 @@ namespace ClangCommon
             {
                 if (module is C.IDynamicLibrary)
                 {
-                    configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(settings.InstallName.Parse());
+                    configuration["LD_DYLIB_INSTALL_NAME"] = new XcodeBuilder.UniqueConfigurationValue(settings.InstallName.ToString());
                 }
             }
             // settings.MinimumVersionSupported is dealt with in XcodeBuilder as there is not a difference

@@ -289,15 +289,19 @@ namespace VSSolutionBuilder
             // but it does not seem to be a show stopper if it doesn't
             macros.Add("packagebuilddir", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectDir)"));
             macros.Add("modulename", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectName)"));
-            var outDir = path.Parse(macros);
+            var outDir = path.ToString();
             outDir = System.IO.Path.GetDirectoryName(outDir);
             outDir += "\\";
             this.OutputDirectory = outDir;
 
-            var targetName = this.Module.CreateTokenizedString("@basename($(0))", path).Parse();
+            var targetNameTS = this.Module.CreateTokenizedString("@basename($(0))", path);
+            targetNameTS.Parse();
+            var targetName = targetNameTS.ToString();
             if (!string.IsNullOrEmpty(targetName))
             {
-                var filename = this.Module.CreateTokenizedString("@filename($(0))", path).Parse();
+                var filenameTS = this.Module.CreateTokenizedString("@filename($(0))", path);
+                filenameTS.Parse();
+                var filename = filenameTS.ToString();
                 var ext = filename.Replace(targetName, string.Empty);
                 this.TargetName = targetName;
                 this.TargetExt = ext;
@@ -336,7 +340,8 @@ namespace VSSolutionBuilder
                     else
                     {
                         // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
-                        if ((null != include) && (settings.Include.Parse() == include.Parse()))
+                        // TODO: can this be a TokenizedString hash compare?
+                        if ((null != include) && (settings.Include.ToString() == include.ToString()))
                         {
                             return settings;
                         }

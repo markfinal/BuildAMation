@@ -47,13 +47,15 @@ namespace Publisher
 
             if (EObjCopyToolMode.AddGNUDebugLink == mode)
             {
-                rule.AddOrderOnlyDependency(copiedPath.Parse());
+                rule.AddOrderOnlyDependency(copiedPath.ToString());
             }
             else
             {
-                meta.CommonMetaData.AddDirectory(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
+                var dir = sender.CreateTokenizedString("@dir($(0))", copiedPath);
+                dir.Parse();
+                meta.CommonMetaData.AddDirectory(dir.ToString());
 
-                var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
+                var sourceFilename = System.IO.Path.GetFileName(originalPath.ToString());
                 rule.AddTarget(copiedPath, variableName: "objcopy_" + sourceFilename);
                 rule.AddPrerequisite(originalPath);
             }

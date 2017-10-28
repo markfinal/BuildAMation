@@ -36,7 +36,7 @@ namespace XcodeBuilder
             FileReference fileRef,
             Target target)
             :
-            base(target.Project, System.IO.Path.GetFileName(fileRef.Path.Parse()), "PBXBuildFile", fileRef.GUID, target.GUID)
+            base(target.Project, System.IO.Path.GetFileName(fileRef.Path.ToString()), "PBXBuildFile", fileRef.GUID, target.GUID)
         {
             this.FileRef = fileRef;
             this.OwningTarget = target;

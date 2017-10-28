@@ -78,7 +78,7 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var path = this.ScriptPath.Parse();
+            var path = this.ScriptPath.ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
             using (var scriptWriter = new System.IO.StreamWriter(path))

@@ -42,7 +42,7 @@ namespace ClangCommon
                 var option = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.RPath)
                 {
-                    option.Add(path.Parse());
+                    option.Add(path.ToString());
                 }
                 configuration["LD_RUNPATH_SEARCH_PATHS"] = option;
             }

@@ -68,7 +68,7 @@ namespace Publisher
 
             if (sender.SourceModule != null && sender.SourceModule.MetaData != null && VSSolutionBuilder.VSProject.IsBuildable(sender.SourceModule))
             {
-                var destinationPath = sender.Macros["CopyDir"].Parse();
+                var destinationPath = sender.Macros["CopyDir"].ToString();
 
                 var project = sender.SourceModule.MetaData as VSSolutionBuilder.VSProject;
                 var config = project.GetConfiguration(sender.SourceModule);
@@ -77,7 +77,7 @@ namespace Publisher
                 commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationPath));
                 if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility)
                 {
-                    commands.Add(System.String.Format(@"{0} {1} $(OutputPath)$(TargetFileName) {2} {3}",
+                    commands.Add(System.String.Format(@"{0} {1} $(OutDir)$(TargetFileName) {2} {3}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
                         destinationPath,
@@ -89,7 +89,7 @@ namespace Publisher
                     commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir).\ {3}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
-                        sourcePath.ParseAndQuoteIfNecessary(),
+                        sourcePath.ToStringQuoteIfNecessary(),
                         CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     config.AddPreBuildCommands(commands);
                 }
@@ -100,11 +100,13 @@ namespace Publisher
                 if (sender is CollatedDirectory)
                 {
                     // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+                    var destination = sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath);
+                    destination.Parse();
                     commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\ {4}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
-                        sourcePath.ParseAndQuoteIfNecessary(),
-                        sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),@filename($(1)))", sender.SubDirectory, sourcePath).Parse(),
+                        sourcePath.ToStringQuoteIfNecessary(),
+                        destination.ToString(),
                         CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }
                 else
@@ -112,7 +114,7 @@ namespace Publisher
                     commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir){3}\ {4}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
-                        sourcePath.ParseAndQuoteIfNecessary(),
+                        sourcePath.ToStringQuoteIfNecessary(),
                         sender.SubDirectory,
                         CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }

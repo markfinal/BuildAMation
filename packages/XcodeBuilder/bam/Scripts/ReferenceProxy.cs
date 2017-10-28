@@ -39,7 +39,7 @@ namespace XcodeBuilder
             Object remoteRef,
             FileReference.ESourceTree sourceTree)
             :
-            base(project, null, "PBXReferenceProxy", project.GUID, fileType.ToString(), path.Parse(), remoteRef.GUID, sourceTree.ToString())
+            base(project, null, "PBXReferenceProxy", project.GUID, fileType.ToString(), path.ToString(), remoteRef.GUID, sourceTree.ToString())
         {
             this.FileType = fileType;
             this.Path = path;

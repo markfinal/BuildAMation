@@ -90,7 +90,7 @@ namespace XcodeBuilder
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
                 {
                     buildableReference.SetAttribute("ReferencedContainer",
-                        "container:" + System.IO.Path.GetFileName(this.Project.ProjectDir.Parse()));
+                        "container:" + System.IO.Path.GetFileName(this.Project.ProjectDir.ToString()));
                 }
                 else
                 {
@@ -170,7 +170,7 @@ namespace XcodeBuilder
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
                 {
                     buildableRefEl.SetAttribute("ReferencedContainer",
-                        "container:" + System.IO.Path.GetFileName(target.Project.ProjectDir.Parse()));
+                        "container:" + System.IO.Path.GetFileName(target.Project.ProjectDir.ToString()));
                 }
                 else
                 {
@@ -179,10 +179,12 @@ namespace XcodeBuilder
                         "container:" + relative);
                 }
 
-                if ((target.Module is C.ConsoleApplication) && (target.Module as C.ConsoleApplication).WorkingDirectory != null)
+                var targetAsExe = target.Module as C.ConsoleApplication;
+                if (targetAsExe != null && targetAsExe.WorkingDirectory != null)
                 {
                     launchActionEl.SetAttribute("useCustomWorkingDirectory", "YES");
-                    launchActionEl.SetAttribute("customWorkingDirectory", (target.Module as C.ConsoleApplication).WorkingDirectory.Parse());
+                    targetAsExe.WorkingDirectory.Parse();
+                    launchActionEl.SetAttribute("customWorkingDirectory", targetAsExe.WorkingDirectory.ToString());
                 }
             }
         }

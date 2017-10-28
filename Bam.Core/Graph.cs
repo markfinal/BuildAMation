@@ -143,9 +143,11 @@ namespace Bam.Core
             catch (UnableToBuildModuleException)
             {
                 // remove the failed to create module from the referenced list
-                // and also any modules created in its Init function
-                //TokenizedString.RemoveEncapsulatedStrings(this.CommonModuleType.Peek());
-                Module.RemoveEncapsulatedModules(this.CommonModuleType.Peek());
+                // and also any modules and strings created in its Init function, potentially
+                // of child module types
+                var moduleTypeToRemove = this.CommonModuleType.Peek();
+                TokenizedString.RemoveEncapsulatedStrings(moduleTypeToRemove);
+                Module.RemoveEncapsulatedModules(moduleTypeToRemove);
                 referencedModules.Remove(referencedModules.First(item => item.GetType() == typeof(T)));
                 throw;
             }

@@ -50,7 +50,7 @@ namespace C
             args.Add("$< > $@");
             rule.AddShellCommand(args.ToString(' '));
 
-            var outputDir = System.IO.Path.GetDirectoryName(outputPath.Parse());
+            var outputDir = System.IO.Path.GetDirectoryName(outputPath.ToString());
             meta.CommonMetaData.AddDirectory(outputDir);
         }
     }

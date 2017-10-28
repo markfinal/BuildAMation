@@ -67,10 +67,11 @@ namespace C
         {
             get
             {
-                var guard = this.CreateTokenizedString("@basename($(0))", this.OutputPath).Parse();
-                guard = guard.Replace('-', '_'); // replace any characters not suitable for a preprocessor definition with underscores
-                guard = guard.ToUpper() + "_H";
-                return guard;
+                var guard = this.CreateTokenizedString("@basename($(0))", this.OutputPath);
+                guard.Parse();
+                var guardString = guard.ToString().Replace('-', '_'); // replace any characters not suitable for a preprocessor definition with underscores
+                guardString = guardString.ToUpper() + "_H";
+                return guardString;
             }
         }
 
@@ -119,7 +120,7 @@ namespace C
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var outputPath = this.GeneratedPaths[Key].Parse();
+            var outputPath = this.GeneratedPaths[Key].ToString();
             if (!System.IO.File.Exists(outputPath))
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
@@ -127,7 +128,8 @@ namespace C
             // have the contents changed since last time?
             var writeHashFile = true;
             var currentContentsHash = this.Contents.GetHashCode();
-            var hashFilePath = this.GeneratedPaths[HashFileKey].Parse();
+            this.GeneratedPaths[HashFileKey].ToString();
+            var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
             if (System.IO.File.Exists(hashFilePath))
             {
                 GetHashFn getHash = inPath =>
@@ -166,7 +168,7 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var destPath = this.GeneratedPaths[Key].Parse();
+            var destPath = this.GeneratedPaths[Key].ToString();
             var destDir = System.IO.Path.GetDirectoryName(destPath);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
             using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(destPath))

@@ -39,13 +39,13 @@ namespace Publisher
             Bam.Core.TokenizedString originalPath,
             Bam.Core.TokenizedString strippedPath)
         {
-            var strippedDir = System.IO.Path.GetDirectoryName(strippedPath.Parse());
+            var strippedDir = System.IO.Path.GetDirectoryName(strippedPath.ToString());
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(strippedDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-            commandLine.Add(originalPath.Parse());
-            commandLine.Add(System.String.Format("-o {0}", strippedPath.Parse()));
+            commandLine.Add(originalPath.ToString());
+            commandLine.Add(System.String.Format("-o {0}", strippedPath.ToString()));
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

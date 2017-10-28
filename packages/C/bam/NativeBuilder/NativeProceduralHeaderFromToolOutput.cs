@@ -40,10 +40,10 @@ namespace C
             TokenizedString outputPath,
             ICommandLineTool tool)
         {
-            var toolPath = tool.Executable.Parse();
+            var toolPath = tool.Executable.ToString();
             CommandLineProcessor.Processor.Execute(context, toolPath);
 
-            var destPath = outputPath.Parse();
+            var destPath = outputPath.ToString();
             var destDir = System.IO.Path.GetDirectoryName(destPath);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
 

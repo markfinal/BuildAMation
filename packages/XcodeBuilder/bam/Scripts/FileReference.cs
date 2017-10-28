@@ -165,7 +165,7 @@ namespace XcodeBuilder
             ESourceTree sourceTree = ESourceTree.NA,
             string relativePath = null)
             :
-            base(project, path.Parse(), "PBXFileReference", type.ToString(), project.GUID, explicitType.ToString(), sourceTree.ToString(), relativePath)
+            base(project, path.ToString(), "PBXFileReference", type.ToString(), project.GUID, explicitType.ToString(), sourceTree.ToString(), relativePath)
         {
             this.Path = path;
             this.Type = type;
@@ -179,8 +179,13 @@ namespace XcodeBuilder
             Bam.Core.Module module,
             Project project)
         {
+            var alias = module.CreateTokenizedString("$(packagename)/$CONFIGURATION/@filename($(0))", this.Path);
+            if (!alias.IsParsed)
+            {
+                alias.Parse();
+            }
             return project.EnsureFileReferenceExists(
-                module.CreateTokenizedString("$(packagename)/$CONFIGURATION/@filename($(0))", this.Path),
+                alias,
                 this.Type,
                 explicitType: false,
                 sourceTree: ESourceTree.Group);
@@ -256,16 +261,16 @@ namespace XcodeBuilder
                 case ESourceTree.NA:
                 case ESourceTree.Absolute:
                 case ESourceTree.SDKRoot:
-                    path = this.Path.Parse();
+                    path = this.Path.ToString();
                     break;
 
                 case ESourceTree.BuiltProductsDir:
-                    path = System.IO.Path.GetFileName(this.Path.Parse());
+                    path = System.IO.Path.GetFileName(this.Path.ToString());
                     break;
 
                 case ESourceTree.Group:
                 case ESourceTree.SourceRoot:
-                    path = (null != this.RelativePath) ? this.RelativePath : this.Path.Parse();
+                    path = (null != this.RelativePath) ? this.RelativePath : this.Path.ToString();
                     break;
 
                 default:

@@ -48,12 +48,14 @@ namespace C
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
             var target = workspace.EnsureTargetExists(sender);
+            var libraryFilename = sender.CreateTokenizedString("@filename($(0))", libraryPath);
+            libraryFilename.Parse();
             target.EnsureOutputFileReferenceExists(
-                sender.CreateTokenizedString("@filename($(0))", libraryPath),
+                libraryFilename,
                 XcodeBuilder.FileReference.EFileType.Archive,
                 XcodeBuilder.Target.EProductType.StaticLibrary);
             var configuration = target.GetConfiguration(sender);
-            if (sender.Macros["OutputName"].Equals(sender.Macros["modulename"]))
+            if (sender.Macros["OutputName"].ToString().Equals(sender.Macros["modulename"].ToString()))
             {
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
             }
@@ -87,9 +89,10 @@ namespace C
 
                 foreach (var objFile in realObjectFiles)
                 {
-                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
+                    var asObjFileBase = objFile as C.ObjectFileBase;
+                    if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
+                        var fullPath = asObjFileBase.InputPath.ToString();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }
@@ -129,9 +132,10 @@ namespace C
                 (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
                 foreach (var objFile in objectFiles)
                 {
-                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
+                    var asObjFileBase = objFile as C.ObjectFileBase;
+                    if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
+                        var fullPath = asObjFileBase.InputPath.ToString();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }

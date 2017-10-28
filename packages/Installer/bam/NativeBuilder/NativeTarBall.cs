@@ -50,7 +50,7 @@ namespace Installer
             commandLine.Add("-c");
             commandLine.Add("-v");
             commandLine.Add("-T");
-            commandLine.Add(scriptPath.Parse());
+            commandLine.Add(scriptPath.ToString());
             commandLine.Add("-f");
             commandLine.Add(tarPath);
             CommandLineProcessor.Processor.Execute(context, compiler, commandLine);

@@ -44,9 +44,10 @@ namespace VisualC
 
             // TODO: get this from the registry
             this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio/2017/Community", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
-            if (!System.IO.Directory.Exists(this.InstallDir.Parse()))
+            this.InstallDir.Parse();
+            if (!System.IO.Directory.Exists(this.InstallDir.ToString()))
             {
-                throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2017 installed?", this.InstallDir.Parse());
+                throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2017 installed?", this.InstallDir.ToString());
             }
 
             this.VCToolsVersion = Bam.Core.TokenizedString.CreateVerbatim("14.11.25503");

@@ -49,25 +49,27 @@ namespace C
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
             var target = workspace.EnsureTargetExists(sender);
+            var exeFilename = sender.CreateTokenizedString("@filename($(0))", executablePath);
+            exeFilename.Parse();
             target.EnsureOutputFileReferenceExists(
-                sender.CreateTokenizedString("@filename($(0))", executablePath),
+                exeFilename,
                 (sender is IDynamicLibrary) ? XcodeBuilder.FileReference.EFileType.DynamicLibrary : XcodeBuilder.FileReference.EFileType.Executable,
                 (sender is IDynamicLibrary) ? XcodeBuilder.Target.EProductType.DynamicLibrary : XcodeBuilder.Target.EProductType.Executable);
             var configuration = target.GetConfiguration(sender);
             if (sender is IDynamicLibrary && !((sender is Plugin) || (sender is C.Cxx.Plugin)))
             {
-                if (sender.Macros["OutputName"].Equals(sender.Macros["modulename"]))
+                var productName = sender.Macros["OutputName"].ToString().Equals(sender.Macros["modulename"].ToString()) ?
+                                        sender.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)") :
+                                        sender.CreateTokenizedString("$(OutputName).$(MajorVersion)");
+                if (!productName.IsParsed)
                 {
-                    configuration.SetProductName(sender.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)"));
+                    productName.Parse();
                 }
-                else
-                {
-                    configuration.SetProductName(sender.CreateTokenizedString("$(OutputName).$(MajorVersion)"));
-                }
+                configuration.SetProductName(productName);
             }
             else
             {
-                if (sender.Macros["OutputName"].Equals(sender.Macros["modulename"]))
+                if (sender.Macros["OutputName"].ToString().Equals(sender.Macros["modulename"].ToString()))
                 {
                     configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
                 }
@@ -83,7 +85,7 @@ namespace C
             }
 
             var excludedSource = new XcodeBuilder.MultiConfigurationValue();
-            var realObjectFiles = objectFiles.Where(item => !(item is AssembledObjectFile));
+            var realObjectFiles = objectFiles.Where(item => !((item is WinResource) || (item is AssembledObjectFile)));
             if (realObjectFiles.Any())
             {
                 var xcodeConvertParameterTypes = new Bam.Core.TypeArray
@@ -102,9 +104,10 @@ namespace C
 
                 foreach (var objFile in realObjectFiles)
                 {
-                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
+                    var asObjFileBase = objFile as C.ObjectFileBase;
+                    if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
+                        var fullPath = asObjFileBase.InputPath.ToString();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }
@@ -144,9 +147,10 @@ namespace C
                 (objectFiles[0].Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
                 foreach (var objFile in objectFiles)
                 {
-                    if (!(objFile as C.ObjectFileBase).PerformCompilation)
+                    var asObjFileBase = objFile as C.ObjectFileBase;
+                    if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = (objFile as C.ObjectFileBase).InputPath.Parse();
+                        var fullPath = asObjFileBase.InputPath.ToString();
                         var filename = System.IO.Path.GetFileName(fullPath);
                         excludedSource.Add(filename);
                     }
@@ -164,11 +168,21 @@ namespace C
             {
                 if (library is C.StaticLibrary)
                 {
-                    linker.LibraryPaths.Add(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]));
+                    var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
+                    linker.LibraryPaths.Add(libDir);
                 }
                 else if (library is C.IDynamicLibrary)
                 {
-                    linker.LibraryPaths.Add(library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]));
+                    var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
+                    linker.LibraryPaths.Add(libDir);
                 }
                 else if (library is C.CSDKModule)
                 {

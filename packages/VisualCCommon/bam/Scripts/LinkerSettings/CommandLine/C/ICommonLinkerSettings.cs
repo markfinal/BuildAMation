@@ -53,18 +53,18 @@ namespace VisualCCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].Parse()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     commandLine.Add("-DLL");
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.DynamicLibrary.Key].Parse()));
-                    commandLine.Add(System.String.Format("-IMPLIB:{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].Parse()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.DynamicLibrary.Key].ToString()));
+                    commandLine.Add(System.String.Format("-IMPLIB:{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString()));
                     break;
             }
             foreach (var path in settings.LibraryPaths)
             {
-                commandLine.Add(System.String.Format("-LIBPATH:{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-LIBPATH:{0}", path.ToStringQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {
@@ -75,7 +75,7 @@ namespace VisualCCommon
                 commandLine.Add("-DEBUG");
                 if (null != module.GeneratedPaths[C.ConsoleApplication.PDBKey])
                 {
-                    commandLine.Add(System.String.Format("-PDB:{0}", module.GeneratedPaths[C.ConsoleApplication.PDBKey].Parse()));
+                    commandLine.Add(System.String.Format("-PDB:{0}", module.GeneratedPaths[C.ConsoleApplication.PDBKey].ToString()));
                 }
             }
         }
