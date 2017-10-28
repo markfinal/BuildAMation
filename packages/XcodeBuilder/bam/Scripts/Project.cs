@@ -366,52 +366,6 @@ namespace XcodeBuilder
             }
         }
 
-        public Configuration
-        EnsureTargetConfigurationExists(
-            Bam.Core.Module module,
-            Target target)
-        {
-            var configList = target.ConfigurationList;
-            lock (configList)
-            {
-                var config = module.BuildEnvironment.Configuration;
-                var existingConfig = configList.FirstOrDefault(item => item.Config == config);
-                if (null != existingConfig)
-                {
-                    return existingConfig;
-                }
-
-                // if a new target config is needed, then a new project config is needed too
-                this.EnsureProjectConfigurationExists(module);
-
-                var newConfig = new Configuration(module.BuildEnvironment.Configuration, this, target);
-                this.AllConfigurations.Add(newConfig);
-                configList.AddConfiguration(newConfig);
-
-                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-
-                // set which SDK to build against
-                newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
-
-                // set the minimum version of OSX/iPhone to run against
-                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match(clangMeta.MinimumVersionSupported);
-                if (!match.Groups["Type"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
-                if (!match.Groups["Version"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
-
-                var optionName = System.String.Format("{0}_DEPLOYMENT_TARGET", match.Groups["Type"].Value.ToUpper());
-                newConfig[optionName] = new UniqueConfigurationValue(match.Groups["Version"].Value);
-
-                return newConfig;
-            }
-        }
-
         public void
         ResolveDeferredSetup()
         {
