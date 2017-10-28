@@ -75,8 +75,8 @@ namespace XcodeBuilder
             this.appendGroup(new Group(this, "Products")); // product ref group
             this.MainGroup.AddChild(this.ProductRefGroup);
 
-            var configList = new ConfigurationList(this);
-            this.ConfigurationLists.Add(configList);
+            // add the project's configuration list first
+            this.appendConfigurationList(new ConfigurationList(this));
         }
 
         private System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
@@ -240,10 +240,27 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Bam.Core.Array<ConfigurationList> ConfigurationLists
+        private Bam.Core.Array<ConfigurationList> ConfigurationLists
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendConfigurationList(
+            ConfigurationList configList)
+        {
+            lock (this.ConfigurationLists)
+            {
+                this.ConfigurationLists.Add(configList);
+            }
+        }
+
+        private ConfigurationList
+        getProjectConfiguratonList()
+        {
+            // order is implied - this is always first
+            return this.ConfigurationLists[0];
         }
 
         private Bam.Core.Array<SourcesBuildPhase> SourcesBuildPhases
@@ -485,7 +502,7 @@ namespace XcodeBuilder
                 // if these are inconsistent the IDE shows the product in red
                 projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
 
-                this.ConfigurationLists[0].AddConfiguration(projectConfig);
+                this.getProjectConfiguratonList().AddConfiguration(projectConfig);
                 this.appendAllConfigurations(projectConfig);
                 this.ProjectConfigurations.Add(config, projectConfig);
             }
@@ -551,7 +568,7 @@ namespace XcodeBuilder
             text.AppendFormat("{0}}};", indent2);
             text.AppendLine();
             // project configuration list is always the first
-            var projectConfigurationList = this.ConfigurationLists[0];
+            var projectConfigurationList = this.getProjectConfiguratonList();
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, projectConfigurationList.GUID, projectConfigurationList.Parent.IsA, projectConfigurationList.Parent.Name);
             text.AppendLine();
             text.AppendFormat("{0}compatibilityVersion = \"{1}\";", indent2, "Xcode 3.2"); // TODO
@@ -746,7 +763,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End XCBuildConfiguration section */");
                 text.AppendLine();
             }
-            if (this.ConfigurationLists.Count > 0)
+            if (this.ConfigurationLists.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin XCConfigurationList section */");

@@ -55,7 +55,7 @@ namespace XcodeBuilder
 
             var configList = new ConfigurationList(this);
             this.ConfigurationList = configList;
-            project.ConfigurationLists.Add(configList);
+            project.appendConfigurationList(configList);
 
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
             this.ProposedTargetDependencies = new Bam.Core.Array<Target>();
