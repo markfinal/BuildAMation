@@ -228,7 +228,10 @@ namespace XcodeBuilder
                     return found.Value;
                 }
                 var basenameTS = this.Module.CreateTokenizedString("@basename($(0))", path);
-                basenameTS.Parse();
+                if (!basenameTS.IsParsed)
+                {
+                    basenameTS.Parse();
+                }
                 var basename = basenameTS.ToString();
                 var group = new Group(this, basename, path);
                 this.Project.Groups.Add(group);
