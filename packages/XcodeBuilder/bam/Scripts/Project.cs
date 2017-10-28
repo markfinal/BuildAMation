@@ -520,8 +520,12 @@ namespace XcodeBuilder
                 }
                 foreach (var config in target.ConfigurationList)
                 {
-                    var diff = target.SourcesBuildPhase.BuildFiles.Complement(config.BuildFiles);
-                    if (diff.Count > 0)
+                    if (!target.SourcesBuildPhase.IsValueCreated)
+                    {
+                        continue;
+                    }
+                    var diff = target.SourcesBuildPhase.Value.BuildFiles.Complement(config.BuildFiles);
+                    if (diff.Any())
                     {
                         var excluded = new MultiConfigurationValue();
                         foreach (var file in diff)

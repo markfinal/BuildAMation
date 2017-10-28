@@ -59,6 +59,18 @@ namespace XcodeBuilder
 
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
             this.ProposedTargetDependencies = new Bam.Core.Array<Target>();
+
+            this.BuildPhases = new System.Lazy<Bam.Core.Array<BuildPhase>>(() => new Bam.Core.Array<BuildPhase>());
+            this.SourcesBuildPhase = new System.Lazy<SourcesBuildPhase>(() =>
+                {
+                    var phase = new SourcesBuildPhase(this);
+                    lock (this.BuildPhases.Value)
+                    {
+                        this.BuildPhases.Value.Add(phase);
+                    }
+                    this.Project.appendSourcesBuildPhase(phase);
+                    return phase;
+                });
         }
 
         public Bam.Core.Module Module
@@ -97,13 +109,13 @@ namespace XcodeBuilder
             set;
         }
 
-        public Bam.Core.Array<BuildPhase> BuildPhases
+        public System.Lazy<Bam.Core.Array<BuildPhase>> BuildPhases
         {
             get;
             private set;
         }
 
-        public SourcesBuildPhase SourcesBuildPhase
+        public System.Lazy<SourcesBuildPhase> SourcesBuildPhase
         {
             get;
             private set;
@@ -278,23 +290,11 @@ namespace XcodeBuilder
             Bam.Core.TokenizedString path,
             FileReference.EFileType type)
         {
-            lock (this)
+            lock (this.SourcesBuildPhase)
             {
-                // TODO: candidate for System.Lazy
-                if (null == this.SourcesBuildPhase)
-                {
-                    this.SourcesBuildPhase = new SourcesBuildPhase(this);
-                    if (null == this.BuildPhases)
-                    {
-                        this.BuildPhases = new Bam.Core.Array<BuildPhase>();
-                    }
-                    this.BuildPhases.Add(this.SourcesBuildPhase);
-                    this.Project.appendSourcesBuildPhase(this.SourcesBuildPhase);
-                }
-
                 var buildFile = this.EnsureBuildFileExists(path, type);
                 this.AddFileRefToGroup(buildFile.FileRef);
-                this.SourcesBuildPhase.AddBuildFile(buildFile);
+                this.SourcesBuildPhase.Value.AddBuildFile(buildFile);
                 return buildFile;
             }
         }
@@ -311,7 +311,7 @@ namespace XcodeBuilder
                 }
                 var frameworks = new FrameworksBuildPhase(this);
                 this.Project.appendFrameworksBuildPhase(frameworks);
-                this.BuildPhases.Add(frameworks);
+                this.BuildPhases.Value.Add(frameworks);
                 this.FrameworksBuildPhase = frameworks;
             }
         }
@@ -623,7 +623,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, this.ConfigurationList.GUID, this.ConfigurationList.Parent.IsA, this.ConfigurationList.Parent.Name);
             text.AppendLine();
-            if (((null != this.BuildPhases) && (this.BuildPhases.Count > 0)) ||
+            if (this.BuildPhases.IsValueCreated ||
                 (null != this.PreBuildBuildPhase) ||
                 (null != this.PostBuildBuildPhase))
             {
@@ -643,9 +643,9 @@ namespace XcodeBuilder
                 {
                     dumpPhase(this.PreBuildBuildPhase);
                 }
-                if (null != this.BuildPhases)
+                if (this.BuildPhases.IsValueCreated)
                 {
-                    foreach (var phase in this.BuildPhases)
+                    foreach (var phase in this.BuildPhases.Value)
                     {
                         dumpPhase(phase);
                     }
