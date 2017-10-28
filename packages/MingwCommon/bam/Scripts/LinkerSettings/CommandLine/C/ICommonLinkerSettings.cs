@@ -64,7 +64,7 @@ namespace MingwCommon
             }
             foreach (var path in settings.LibraryPaths)
             {
-                commandLine.Add(System.String.Format("-L{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-L{0}", path.ToStringQuoteIfNecessary()));
             }
             foreach (var path in settings.Libraries)
             {

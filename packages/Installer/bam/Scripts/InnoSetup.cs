@@ -77,18 +77,20 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var path = this.ScriptPath.Parse();
+            var path = this.ScriptPath.ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
             var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine("[Setup]");
-                scriptWriter.WriteLine("OutputBaseFilename={0}", outputName.ParseAndQuoteIfNecessary());
-                scriptWriter.WriteLine("OutputDir={0}", this.CreateTokenizedString("@dir($(buildroot)/$(config)/$(0).exe)", outputName).ParseAndQuoteIfNecessary());
-                scriptWriter.WriteLine("AppName={0}", outputName.Parse());
+                scriptWriter.WriteLine("OutputBaseFilename={0}", outputName.ToStringQuoteIfNecessary());
+                var installedExePath = this.CreateTokenizedString("@dir($(buildroot)/$(config)/$(0).exe)", outputName);
+                installedExePath.Parse();
+                scriptWriter.WriteLine("OutputDir={0}", installedExePath.ToStringQuoteIfNecessary());
+                scriptWriter.WriteLine("AppName={0}", outputName.ToString());
                 scriptWriter.WriteLine("AppVersion={0}", "1.0"); // TODO: get this from the main app: this.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse());
-                scriptWriter.WriteLine("DefaultDirName={{userappdata}}\\{0}", outputName.Parse());
+                scriptWriter.WriteLine("DefaultDirName={{userappdata}}\\{0}", outputName.ToString());
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");
                 scriptWriter.WriteLine("ArchitecturesInstallIn64BitMode=x64");
                 scriptWriter.WriteLine("Uninstallable=No");
@@ -124,6 +126,14 @@ namespace Installer
     public sealed class InnoSetupCompiler :
         Bam.Core.PreBuiltTool
     {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.Macros.Add("toolPath", Bam.Core.TokenizedString.Create("$(0)/Inno Setup 5/ISCC.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)));
+        }
+
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
@@ -135,7 +145,7 @@ namespace Installer
         {
             get
             {
-                return Bam.Core.TokenizedString.Create("$(0)/Inno Setup 5/ISCC.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
+                return this.Macros["toolPath"];
             }
         }
     }

@@ -47,7 +47,7 @@ namespace Publisher
                     // ignore any subdirectory on this module
 
                     // convert the executable into an app bundle, if EPublishingType.WindowedApplication has been used as the type
-                    if ((sender.SubDirectory != null) && sender.SubDirectory.Parse().Contains(".app/"))
+                    if ((sender.SubDirectory != null) && sender.SubDirectory.ToString().Contains(".app/"))
                     {
                         var target = sender.SourceModule.MetaData as XcodeBuilder.Target;
                         target.MakeApplicationBundle();
@@ -72,7 +72,7 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            var destinationPath = sender.Macros["CopyDir"].Parse();
+            var destinationPath = sender.Macros["CopyDir"].ToString();
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationPath));
 
@@ -82,7 +82,7 @@ namespace Publisher
                     (null != sender.Reference.SourceModule) &&
                     (sender.SourceModule.PackageDefinition == sender.Reference.SourceModule.PackageDefinition) &&
                     (null == sender.Reference.SubDirectory) &&
-                    (sender.SubDirectory.Parse() == "."))
+                    (sender.SubDirectory.ToString() == "."))
                 {
                     // special case that the module output is already in the right directory at build
                     return;
@@ -102,7 +102,7 @@ namespace Publisher
                     commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
-                        sourcePath.Parse(),
+                        sourcePath.ToString(),
                         destinationPath,
                         CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }
@@ -135,30 +135,34 @@ namespace Publisher
 
                 if (isSymlink)
                 {
+                    var filename = sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath);
+                    filename.Parse();
                     commands.Add(System.String.Format("{0} {1} {2} {3}/{4} {5}",
                         CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                         commandLine.ToString(' '),
-                        sender.Macros["LinkTarget"].Parse(),
+                        sender.Macros["LinkTarget"].ToString(),
                         destinationFolder,
-                        sender.CreateTokenizedString("$(0)/@filename($(1))", sender.SubDirectory, sender.SourcePath).Parse(),
+                        filename.ToString(),
                         CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 }
                 else
                 {
                     if (sender is CollatedDirectory)
                     {
-                        var copySource = sourcePath.Parse();
+                        var copySource = sourcePath.ToString();
                         if (sender.Macros["CopiedFilename"].IsAliased)
                         {
                             copySource = System.String.Format("{0}/*", copySource);
                         }
 
+                        var filename = sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),)", sender.SubDirectory);
+                        filename.Parse();
                         commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
                             CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                             commandLine.ToString(' '),
                             copySource,
                             destinationFolder,
-                            sender.CreateTokenizedString("$(0)/@ifnotempty($(CopiedFilename),$(CopiedFilename),)", sender.SubDirectory).Parse(),
+                            filename.ToString(),
                             CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     }
                     else
@@ -166,9 +170,9 @@ namespace Publisher
                         commands.Add(System.String.Format("{0} {1} {2} {3}/{4}/ {5}",
                             CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                             commandLine.ToString(' '),
-                            sourcePath.Parse(),
+                            sourcePath.ToString(),
                             destinationFolder,
-                            sender.SubDirectory.Parse(),
+                            sender.SubDirectory.ToString(),
                             CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                     }
                 }

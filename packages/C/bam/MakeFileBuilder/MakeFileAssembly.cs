@@ -49,7 +49,7 @@ namespace C
             rule.AddTarget(objectFilePath);
             rule.AddPrerequisite(source, C.SourceFile.Key);
 
-            var outputPath = objectFilePath.Parse();
+            var outputPath = objectFilePath.ToString();
 
             var args = new Bam.Core.StringArray();
             args.Add(CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool));

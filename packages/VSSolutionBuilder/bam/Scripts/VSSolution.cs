@@ -73,7 +73,9 @@ namespace VSSolutionBuilder
             {
                 if (!this.ProjectMap.ContainsKey(moduleType))
                 {
-                    var project = new VSProject(this, module);
+                    var projectPath = module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj");
+                    projectPath.Parse();
+                    var project = new VSProject(this, module, projectPath);
                     this.ProjectMap.Add(moduleType, project);
 
                     var groups = module.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from builderactions import get_builder_details
+import copy
 import glob
 import imp
 from optparse import OptionParser
@@ -182,7 +183,12 @@ def execute_tests(package, configuration, options, output_buffer, stats):
                 _pre_execute(the_builder)
                 returncode, arg_list = _run_buildamation(options, package, extra_args, output_messages, error_messages)
                 if returncode == 0:
-                    returncode = _post_execute(the_builder, options, variation, package, output_messages, error_messages)
+                    if the_builder.repeat_no_clean:
+                        no_clean_options = copy.deepcopy(options)
+                        no_clean_options.noInitialClean = True
+                        returncode, _ = _run_buildamation(no_clean_options, package, extra_args, output_messages, error_messages)
+                    if returncode == 0:
+                        returncode = _post_execute(the_builder, options, variation, package, output_messages, error_messages)
             except Exception, e:
                 print_message("Popen exception: '%s'" % str(e))
                 raise

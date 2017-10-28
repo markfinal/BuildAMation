@@ -43,7 +43,7 @@ namespace C
             var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
             var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
 
-            var output = outputPath.Parse();
+            var output = outputPath.ToString();
 
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));

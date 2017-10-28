@@ -42,9 +42,11 @@ namespace Publisher
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
 
-            var sourceFilename = System.IO.Path.GetFileName(originalPath.Parse());
+            var sourceFilename = System.IO.Path.GetFileName(originalPath.ToString());
 
-            meta.CommonMetaData.AddDirectory(sender.CreateTokenizedString("@dir($(0))", copiedPath).Parse());
+            var dir = sender.CreateTokenizedString("@dir($(0))", copiedPath);
+            dir.Parse();
+            meta.CommonMetaData.AddDirectory(dir.ToString());
             rule.AddTarget(copiedPath, variableName: "dSYM" + sourceFilename, isPhony: true);
 
             var commandLine = new Bam.Core.StringArray();
@@ -53,8 +55,8 @@ namespace Publisher
             rule.AddShellCommand(System.String.Format("{0} {1} -o {2} {3} {4}",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                 commandLine.ToString(' '),
-                copiedPath.Parse(),
-                originalPath.Parse(),
+                copiedPath.ToString(),
+                originalPath.ToString(),
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
     }

@@ -37,12 +37,15 @@ namespace C
             StaticLibrary sender,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles)
         {
-            var libWriteTime = System.IO.File.GetLastWriteTime(sender.GeneratedPaths[C.StaticLibrary.Key].Parse());
+            var libraryPath = sender.GeneratedPaths[C.StaticLibrary.Key].ToString();
+            var libWriteTime = System.IO.File.GetLastWriteTime(libraryPath);
             foreach (var input in objectFiles)
             {
                 if ((input.ReasonToExecute != null) && (input.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation))
                 {
-                    var objectFileWriteTime = System.IO.File.GetLastWriteTime((input as C.ObjectFileBase).InputPath.Parse());
+                    var objectFile = input as C.ObjectFileBase;
+                    var objectFilePath = objectFile.InputPath.ToString();
+                    var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                     if (objectFileWriteTime > libWriteTime)
                     {
                         return true;

@@ -48,7 +48,7 @@ namespace XcodeBuilder
             string name,
             Bam.Core.TokenizedString fullPath)
             :
-            base(target.Project, name, "PBXGroup", fullPath.Parse())
+            base(target.Project, name, "PBXGroup", fullPath.ToString())
         {
             this.SourceTree = "<group>";
             this.Children = new System.Collections.Generic.List<Object>();

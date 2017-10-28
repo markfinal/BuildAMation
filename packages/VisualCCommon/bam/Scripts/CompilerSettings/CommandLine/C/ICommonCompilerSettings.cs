@@ -50,7 +50,7 @@ namespace VisualCCommon
             }
             foreach (var path in settings.IncludePaths)
             {
-                commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
             if (settings.OmitFramePointer.HasValue)
             {
@@ -78,18 +78,18 @@ namespace VisualCCommon
             }
             foreach (var define in settings.PreprocessorDefines)
             {
-                if (System.String.IsNullOrEmpty(define.Value))
+                if (null == define.Value)
                 {
                     commandLine.Add(System.String.Format("-D{0}", define.Key));
                 }
                 else
                 {
-                    var value = define.Value;
-                    if (value.Contains("\""))
+                    var defineValue = define.Value.ToString();
+                    if (defineValue.Contains("\""))
                     {
-                        value = value.Replace("\"", "\\\"");
+                        defineValue = defineValue.Replace("\"", "\\\"");
                     }
-                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
             foreach (var undefine in settings.PreprocessorUndefines)
@@ -98,7 +98,7 @@ namespace VisualCCommon
             }
             foreach (var path in settings.SystemIncludePaths)
             {
-                commandLine.Add(System.String.Format("-I{0}", path.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
             if (settings.TargetLanguage.HasValue)
             {

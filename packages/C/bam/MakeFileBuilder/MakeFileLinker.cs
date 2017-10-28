@@ -65,7 +65,7 @@ namespace C
             {
                 if (null == objExt)
                 {
-                    objExt = module.Tool.Macros["objext"].Parse();
+                    objExt = module.Tool.Macros["objext"].ToString();
                 }
                 if (!(module as C.ObjectFileBase).PerformCompilation)
                 {

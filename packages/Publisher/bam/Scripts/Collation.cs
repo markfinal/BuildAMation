@@ -44,6 +44,19 @@ namespace Publisher
     public abstract class Collation :
         Bam.Core.Module
     {
+        static Collation()
+        {
+            Bam.Core.TokenizedString.registerPostUnaryFunction("readlink", argument =>
+                {
+#if __MonoCS__
+                    var symlink = new Mono.Unix.UnixSymbolicLinkInfo(argument);
+                    return symlink.ContentsPath;
+#else
+                    throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
+#endif
+                });
+        }
+
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Publishing Root");
         private Bam.Core.Array<CollatedFile> CopiedFrameworks = new Bam.Core.Array<CollatedFile>();
         private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
@@ -224,7 +237,9 @@ namespace Publisher
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX) &&
                 (EPublishingType.WindowedApplication == type))
             {
-                return module.CreateTokenizedString("$(OutputName).app/Contents/MacOS").Parse();
+                var bundlePath = module.CreateTokenizedString("$(OutputName).app/Contents/MacOS");
+                bundlePath.Parse();
+                return bundlePath.ToString();
             }
             return null;
         }
@@ -526,7 +541,7 @@ namespace Publisher
             {
                 return false;
             }
-            return reference.SubDirectory.Parse().Contains(".app");
+            return reference.SubDirectory.ToString().Contains(".app");
         }
 
         public CollatedObject InitialReference
@@ -964,6 +979,25 @@ namespace Publisher
             CollatedFile reference)
         {
             return this.CreateCollatedDirectory(null, parameterizedPath, reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
+        }
+
+        /// <summary>
+        /// Include a symlink relative to the reference file.
+        /// </summary>
+        /// <param name="parameterizedPath">Parameterized path.</param>
+        /// <param name="subdir">Subdir.</param>
+        /// <param name="reference">Reference.</param>
+        public CollatedSymbolicLink
+        IncludeSymlink(
+            Bam.Core.TokenizedString parameterizedPath,
+            string subdir,
+            CollatedFile reference)
+        {
+            return this.CreateCollatedSymbolicLink(
+                null,
+                parameterizedPath,
+                reference,
+                Bam.Core.TokenizedString.CreateVerbatim(subdir));
         }
 
         /// <summary>

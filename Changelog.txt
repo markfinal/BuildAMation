@@ -1,3 +1,44 @@
+27-Oct-2017 Fixes #373. Tightening up TokenizedString parsing APIs. THIS IS A BREAKING CHANGE.
+
+Parse() and ToString() used to do the same thing, but now they are different.
+
+Parse() no longer returns anything, and if any errors occur during parsing, an error message will be cached internally.
+
+ToString() will only display the parsed string, or throw an exception if it is not parsed, or includes the error message if it failed to parse.
+
+In short, TokenizedStrings only throw exceptions now when ToString() encounters an unparsed or failed to parse string, or when a second Parse() attempt is made.
+
+In addition to making functions have one purpose, this change also allows the possibility of TokenizedStrings to be unparsable (possibly for use as a template, if macros are defined elsewhere), but will only report the error if attempted to be explicitly used.
+
+TokenizedString comparisons now use the hash calculated at construction, so no parsing is required. WARNING: If previously user scripts did TokenizedString.Equals(TokenizedString), this was comparing parsed strings; this is likely to fail now. Change to TokenizedString.ToString().Equals(TokenizedString.ToString())
+
+Ideally, TokenizedStings should be created during Init() or patching stages. These will be automatically parsed in the parsing stage, and are then available for use in the build stage, with ToString(). Use of Parse() prior to the parsing stage should be frowned upon.
+
+TokenizedString.ParseAndQuoteIfNecessary() has been replaced with ToStringQuoteIfNecessary().
+
+Added TokenizedString.IsParsed property to help with strings created after the parsing stage.
+
+C.PreprocessorDefinitions now internally store TokenizedStrings, not strings, although the API is unchanged.
+
+Test harness has been changed so that Native build mode runs repeat their build command, but without a clean, as incremental builds run down different codepaths internally. This is to give wider test coverage.
+As a side-effect of this, macOS DMG installer generation now does the 'hdiutil convert' step to a temporary DMG and subsequently moves it, as it fails if the output DMG exists.
+
+Added ProceduralHeaderTest2, which exercises the C.ProceduralHeaderFileFromToolOutput module type, again increasing test coverage.
+Added PublishingSymlinkTest1, which exercises publishing a symlink, to increase test coverage. This is for Linux and macOS.
+Added DoNotCompileTest1, which exercises having source files referenced by modules which do not need to be explicit compiled (e.g. they are #included into other source).
+Added VersionScrippTest1, which exercises version scripts for exporting symbols from a shared object, increasing test coverage. This is for Linux.
+Extended AssemblerTest1, for improved test coverage.
+Extended LinkPrebuiltLibrary, for improved test coverage.
+All tests now require at least BAM v1.2.0.
+
+Added command line option, --withstacktrace. This signifies a change of behaviour from previous versions of BAM. This is because it was noticed during profiling that calls to System.Environment.StackTrace were significantly slowing down the build, particularly in Mono on macOS. Stack traces were captured at various points during TokenizedString creation and parsing to aid debugging in error messages. By default, stack traces are no longer captured. Please pass the --withstacktrace command line option to bam to re-enable them. A warning is displayed in suitable verbosity modes indicating that enabling those option will slow down your build.
+
+19-Oct-2017 Fixes #379. Debug projects, generated with bam -p, now include the preprocessor define, __MonoCS__, to match what the compiler sets for dynamically compiled package assemblies in a build step.
+
+18-Oct-2017 Fixes #377. Previously, only one Bam.Core.IOverrideModuleConfiguration implementation could be present anywhere in the compiled packaged assembly. However, one could be in a tests namespace, and thus not affect a normal package build. The logic of finding the right override class has been adjusted.
+
+18-Oct-2017 Fixes #376. VisualStudio 2010 incorrect published files to $(OutputPath) in VSSolution build mode, which on that version of VS, is different (and incorrect) for the intended usage, and should be $(OutDir).
+
 11-Sep-2017 Issue #360. PluginTest example now exports a symbol from a plugin, attempts to load it, and use the symbol.
 
 07-Sep-2017 Fixes #355. TokenizedString now uses a hash internally, as opposed to string compares, to look for invariant strings.

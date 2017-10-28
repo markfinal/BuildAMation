@@ -53,7 +53,9 @@ namespace C
                 group,
                 include: source.GeneratedPaths[C.SourceFile.Key],
                 uniqueToProject: true);
-            settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + sender.CreateTokenizedString("@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)", objectFilePath).Parse());
+            var intDir = sender.CreateTokenizedString("@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)", objectFilePath);
+            intDir.Parse();
+            settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
             if (!sender.PerformCompilation)
             {
                 settingsGroup.AddSetting("ExcludedFromBuild", true);

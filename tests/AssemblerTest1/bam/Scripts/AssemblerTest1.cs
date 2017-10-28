@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace AssemblerTest1
 {
-    public sealed class TestProg :
+    sealed class TestProg :
         C.Cxx.ConsoleApplication
     {
         protected override void
@@ -42,42 +42,45 @@ namespace AssemblerTest1
             var source = this.CreateAssemblerSourceContainer();
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                if (this.BitDepth == C.EBit.ThirtyTwo)
+                if (this.Linker is MingwCommon.LinkerBase)
                 {
-                    if (this.Linker is VisualCCommon.LinkerBase)
-                    {
-                        source.AddFiles("$(packagedir)/source/*32.asm");
-                    }
-                    else
-                    {
-                        source.AddFiles("$(packagedir)/source/mingw/*32.S");
-                    }
+                    source.AddFiles("$(packagedir)/source/mingw/*32.S");
                 }
                 else
                 {
-                    source.AddFiles("$(packagedir)/source/*64.asm");
+                    source.AddFiles("$(packagedir)/source/*.asm");
+                    if (this.BitDepth == C.EBit.ThirtyTwo)
+                    {
+                        source["helloworld64.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    }
+                    else
+                    {
+                        source["helloworld32.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    }
                 }
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
+                source.AddFiles("$(packagedir)/source/clang/*.s");
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    source.AddFiles("$(packagedir)/source/clang/*32.s");
+                    source["helloworld64.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
                 }
                 else
                 {
-                    source.AddFiles("$(packagedir)/source/clang/*64.s");
+                    source["helloworld32.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
                 }
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
+                source.AddFiles("$(packagedir)/source/gcc/*.S");
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    source.AddFiles("$(packagedir)/source/gcc/*32.S");
+                    source["helloworld64.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
                 }
                 else
                 {
-                    source.AddFiles("$(packagedir)/source/gcc/*64.S");
+                    source["helloworld32.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
                 }
             }
 
@@ -92,6 +95,62 @@ namespace AssemblerTest1
                         var additional = settings as C.IAdditionalSettings;
                         additional.AdditionalSettings.AddUnique("-entry:main");
                     });
+            }
+        }
+    }
+
+    sealed class TestLibrary :
+        C.StaticLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateAssemblerSourceContainer();
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                if (this.Librarian is MingwCommon.Librarian)
+                {
+                    source.AddFiles("$(packagedir)/source/mingw/*32.S");
+                }
+                else
+                {
+                    source.AddFiles("$(packagedir)/source/*.asm");
+                    if (this.BitDepth == C.EBit.ThirtyTwo)
+                    {
+                        source["helloworld64.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    }
+                    else
+                    {
+                        source["helloworld32.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    }
+                }
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                source.AddFiles("$(packagedir)/source/clang/*.s");
+                if (this.BitDepth == C.EBit.ThirtyTwo)
+                {
+                    source["helloworld64.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                }
+                else
+                {
+                    source["helloworld32.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                }
+            }
+            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                source.AddFiles("$(packagedir)/source/gcc/*.S");
+                if (this.BitDepth == C.EBit.ThirtyTwo)
+                {
+                    source["helloworld64.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                }
+                else
+                {
+                    source["helloworld32.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                }
             }
         }
     }

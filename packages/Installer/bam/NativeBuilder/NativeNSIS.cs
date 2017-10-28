@@ -40,7 +40,7 @@ namespace Installer
             Bam.Core.TokenizedString scriptPath)
         {
             var args = new Bam.Core.StringArray();
-            args.Add(scriptPath.Parse());
+            args.Add(scriptPath.ToString());
             CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }

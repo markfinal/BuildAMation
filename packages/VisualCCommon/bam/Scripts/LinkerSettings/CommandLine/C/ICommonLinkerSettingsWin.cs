@@ -51,7 +51,7 @@ namespace VisualCCommon
             }
             if (null != settings.ExportDefinitionFile)
             {
-                commandLine.Add(System.String.Format("-DEF:{0}", settings.ExportDefinitionFile.ParseAndQuoteIfNecessary()));
+                commandLine.Add(System.String.Format("-DEF:{0}", settings.ExportDefinitionFile.ToStringQuoteIfNecessary()));
             }
         }
     }

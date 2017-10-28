@@ -161,10 +161,11 @@ namespace Bam.Core
         Evaluate()
         {
             this.ReasonToExecute = null;
-            var exists = System.IO.File.Exists(this.Executable.Parse());
+            var exePath = this.Executable.ToString();
+            var exists = System.IO.File.Exists(exePath);
             if (!exists)
             {
-                throw new Exception("Prebuilt tool executable '{0}' does not exist", this.Executable.Parse());
+                throw new Exception("Prebuilt tool executable '{0}' does not exist", exePath);
             }
         }
     }

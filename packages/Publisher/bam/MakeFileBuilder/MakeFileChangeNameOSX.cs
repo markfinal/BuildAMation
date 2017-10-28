@@ -49,8 +49,8 @@ namespace Publisher
             rule.AddShellCommand(System.String.Format(@"{0} {1} {2} {3} $@ {4}",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                 commandLine.ToString(' '),
-                oldName.Parse(),
-                newName.Parse(),
+                oldName.ToString(),
+                newName.ToString(),
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
     }

@@ -39,18 +39,18 @@ namespace ClangCommon
             var module = (settings as Bam.Core.Settings).Module;
             foreach (var framework in settings.Frameworks)
             {
-                var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.Parse());
+                var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.ToString());
                 commandLine.Add(System.String.Format("-framework {0}", frameworkName));
             }
             foreach (var path in settings.FrameworkSearchPaths)
             {
-                commandLine.Add(System.String.Format("-F {0}", path.Parse()));
+                commandLine.Add(System.String.Format("-F {0}", path.ToString()));
             }
             if (null != settings.InstallName)
             {
                 if (module is C.IDynamicLibrary)
                 {
-                    commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", settings.InstallName.Parse()));
+                    commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", settings.InstallName.ToString()));
                 }
             }
             if (settings.MinimumVersionSupported != null)

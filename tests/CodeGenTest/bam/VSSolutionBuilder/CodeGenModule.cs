@@ -46,9 +46,9 @@ namespace CodeGenTest
             var config = project.GetConfiguration(encapsulating);
 
             var command = new System.Text.StringBuilder();
-            command.AppendFormat(compiler.Executable.Parse());
+            command.AppendFormat(compiler.Executable.ToString());
             // TODO: change this to a configuration directory really
-            command.AppendFormat(" {0}", Bam.Core.TokenizedString.Create("$(buildroot)", null).Parse());
+            command.AppendFormat(" {0}", Bam.Core.Graph.Instance.BuildRoot);
             command.AppendFormat(" {0}", "Generated");
             config.AddPreBuildCommand(command.ToString());
 
