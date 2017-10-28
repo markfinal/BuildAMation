@@ -330,17 +330,7 @@ namespace XcodeBuilder
             bool explicitType = true,
             FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
         {
-            lock (this.FileReferences)
-            {
-                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.ToString().Equals(path.ToString()));
-                if (null != existingFileRef)
-                {
-                    return existingFileRef;
-                }
-                var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
-                this.FileReferences.Add(newFileRef);
-                return newFileRef;
-            }
+            return this.EnsureFileReferenceExists(path, null, type, explicitType, sourceTree);
         }
 
         public FileReference
@@ -572,7 +562,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXCopyFilesBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.FileReferences.Count > 0)
+            if (this.FileReferences.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXFileReference section */");
