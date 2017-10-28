@@ -40,7 +40,7 @@ namespace XcodeBuilder
             base(parent.Project, null, "XCConfigurationList", parent.GUID)
         {
             this.Parent = parent;
-            this.Configurations = new System.Collections.Generic.List<Configuration>();
+            this.Configurations = new Bam.Core.Array<Configuration>();
         }
 
         public Configuration this[int index]
@@ -57,7 +57,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        private System.Collections.Generic.List<Configuration> Configurations
+        private Bam.Core.Array<Configuration> Configurations
         {
             get;
             set;

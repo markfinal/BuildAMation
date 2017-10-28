@@ -55,15 +55,15 @@ namespace XcodeBuilder
 
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
-            this.FileReferences = new System.Collections.Generic.List<FileReference>();
-            this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
-            this.Groups = new System.Collections.Generic.List<Group>();
+            this.FileReferences = new Bam.Core.Array<FileReference>();
+            this.BuildFiles = new Bam.Core.Array<BuildFile>();
+            this.Groups = new Bam.Core.Array<Group>();
             this.GroupMap = new System.Collections.Generic.Dictionary<string, Group>();
-            this.AllConfigurations = new System.Collections.Generic.List<Configuration>();
+            this.AllConfigurations = new Bam.Core.Array<Configuration>();
             this.ProjectConfigurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration>();
-            this.ConfigurationLists = new System.Collections.Generic.List<ConfigurationList>();
-            this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
-            this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
+            this.ConfigurationLists = new Bam.Core.Array<ConfigurationList>();
+            this.SourcesBuildPhases = new Bam.Core.Array<SourcesBuildPhase>();
+            this.FrameworksBuildPhases = new Bam.Core.Array<FrameworksBuildPhase>();
             this.ShellScriptsBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
             this.CopyFilesBuildPhases = new Bam.Core.Array<CopyFilesBuildPhase>();
             this.ContainerItemProxies = new Bam.Core.Array<ContainerItemProxy>();
@@ -157,19 +157,19 @@ namespace XcodeBuilder
             private set;
         }
 
-        private System.Collections.Generic.List<FileReference> FileReferences
+        private Bam.Core.Array<FileReference> FileReferences
         {
             get;
             set;
         }
 
-        private System.Collections.Generic.List<BuildFile> BuildFiles
+        private Bam.Core.Array<BuildFile> BuildFiles
         {
             get;
             set;
         }
 
-        public System.Collections.Generic.List<Group> Groups
+        public Bam.Core.Array<Group> Groups
         {
             get;
             private set;
@@ -181,7 +181,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public System.Collections.Generic.List<Configuration> AllConfigurations
+        public Bam.Core.Array<Configuration> AllConfigurations
         {
             get;
             private set;
@@ -193,19 +193,19 @@ namespace XcodeBuilder
             private set;
         }
 
-        public System.Collections.Generic.List<ConfigurationList> ConfigurationLists
+        public Bam.Core.Array<ConfigurationList> ConfigurationLists
         {
             get;
             private set;
         }
 
-        public System.Collections.Generic.List<SourcesBuildPhase> SourcesBuildPhases
+        public Bam.Core.Array<SourcesBuildPhase> SourcesBuildPhases
         {
             get;
             private set;
         }
 
-        public System.Collections.Generic.List<FrameworksBuildPhase> FrameworksBuildPhases
+        public Bam.Core.Array<FrameworksBuildPhase> FrameworksBuildPhases
         {
             get;
             private set;
