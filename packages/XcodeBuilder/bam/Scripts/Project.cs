@@ -71,8 +71,8 @@ namespace XcodeBuilder
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
             this.ProjectReferences = new System.Collections.Generic.Dictionary<Group, FileReference>();
 
-            this.Groups.Add(new Group(this, null)); // main group
-            this.Groups.Add(new Group(this, "Products")); // product ref group
+            this.appendGroup(new Group(this, null)); // main group
+            this.appendGroup(new Group(this, "Products")); // product ref group
             this.MainGroup.AddChild(this.ProductRefGroup);
 
             var configList = new ConfigurationList(this);
@@ -172,10 +172,27 @@ namespace XcodeBuilder
             set;
         }
 
-        public Bam.Core.Array<Group> Groups
+        private Bam.Core.Array<Group> Groups
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendGroup(
+            Group group)
+        {
+            lock (this.Groups)
+            {
+                this.Groups.Add(group);
+            }
+        }
+
+        public Group
+        groupWithChild(
+            ReferenceProxy proxy)
+        {
+            return this.Groups.FirstOrDefault(item => item.Children.Contains(proxy));
         }
 
         public System.Collections.Generic.Dictionary<string, Group> GroupMap
@@ -311,6 +328,7 @@ namespace XcodeBuilder
         {
             get
             {
+                // order is assumed - added in the constructor
                 return this.Groups[0];
             }
         }
@@ -319,6 +337,7 @@ namespace XcodeBuilder
         {
             get
             {
+                // order is assumed - added in the constructor
                 return this.Groups[1];
             }
         }
@@ -586,7 +605,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXFrameworksBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.Groups.Count > 0)
+            if (this.Groups.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXGroup section */");

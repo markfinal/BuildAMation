@@ -234,7 +234,7 @@ namespace XcodeBuilder
                 }
                 var basename = basenameTS.ToString();
                 var group = new Group(this, basename, path);
-                this.Project.Groups.Add(group);
+                this.Project.appendGroup(group);
                 this.Project.GroupMap.Add(path.ToString(), group);
                 if (path.ToString().Contains(System.IO.Path.DirectorySeparatorChar))
                 {
@@ -485,12 +485,11 @@ namespace XcodeBuilder
 
                     // TODO: all PBXReferenceProxies could go into the same group
                     // but at the moment, a group is made for each
-                    var productRefGroup = this.Project.Groups.FirstOrDefault(
-                        item => item.Children.Contains(refProxy));
+                    var productRefGroup = this.Project.groupWithChild(refProxy);
                     if (null == productRefGroup)
                     {
                         productRefGroup = new Group(this.Project, "Products", refProxy);
-                        this.Project.Groups.Add(productRefGroup);
+                        this.Project.appendGroup(productRefGroup);
                     }
 
                     var productRef = this.Project.ProjectReferences.FirstOrDefault(
