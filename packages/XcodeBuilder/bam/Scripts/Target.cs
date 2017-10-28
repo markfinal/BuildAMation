@@ -64,11 +64,15 @@ namespace XcodeBuilder
             this.SourcesBuildPhase = new System.Lazy<SourcesBuildPhase>(() =>
                 {
                     var phase = new SourcesBuildPhase(this);
-                    lock (this.BuildPhases.Value)
-                    {
-                        this.BuildPhases.Value.Add(phase);
-                    }
+                    this.appendBuildPhase(phase);
                     this.Project.appendSourcesBuildPhase(phase);
+                    return phase;
+                });
+            this.FrameworksBuildPhase = new System.Lazy<XcodeBuilder.FrameworksBuildPhase>(() =>
+                {
+                    var phase = new FrameworksBuildPhase(this);
+                    this.Project.appendFrameworksBuildPhase(phase);
+                    this.appendBuildPhase(phase);
                     return phase;
                 });
         }
@@ -109,10 +113,20 @@ namespace XcodeBuilder
             set;
         }
 
-        public System.Lazy<Bam.Core.Array<BuildPhase>> BuildPhases
+        private System.Lazy<Bam.Core.Array<BuildPhase>> BuildPhases
         {
             get;
-            private set;
+            set;
+        }
+
+        private void
+        appendBuildPhase(
+            BuildPhase phase)
+        {
+            lock (this.BuildPhases)
+            {
+                this.BuildPhases.Value.Add(phase);
+            }
         }
 
         public System.Lazy<SourcesBuildPhase> SourcesBuildPhase
@@ -121,7 +135,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public FrameworksBuildPhase FrameworksBuildPhase
+        private System.Lazy<FrameworksBuildPhase> FrameworksBuildPhase
         {
             get;
             set;
@@ -299,34 +313,15 @@ namespace XcodeBuilder
             }
         }
 
-        private void
-        EnsureFrameworksBuildPhaseExists()
-        {
-            lock (this)
-            {
-                // TODO: can this be synchronized better?
-                if (null != this.FrameworksBuildPhase)
-                {
-                    return;
-                }
-                var frameworks = new FrameworksBuildPhase(this);
-                this.Project.appendFrameworksBuildPhase(frameworks);
-                this.BuildPhases.Value.Add(frameworks);
-                this.FrameworksBuildPhase = frameworks;
-            }
-        }
-
         public BuildFile
         EnsureFrameworksBuildFileExists(
             Bam.Core.TokenizedString path,
             FileReference.EFileType type)
         {
-            lock (this)
+            lock (this.FrameworksBuildPhase)
             {
-                this.EnsureFrameworksBuildPhaseExists();
-
                 var buildFile = this.EnsureBuildFileExists(path, type);
-                this.FrameworksBuildPhase.AddBuildFile(buildFile);
+                this.FrameworksBuildPhase.Value.AddBuildFile(buildFile);
                 return buildFile;
             }
         }
@@ -363,20 +358,16 @@ namespace XcodeBuilder
         DependsOn(
             Target other)
         {
-            lock (this)
+            if (this.Project == other.Project)
             {
-                this.EnsureFrameworksBuildPhaseExists();
-                if (this.Project == other.Project)
-                {
-                    var linkedBuildFile = this.Project.EnsureBuildFileExists(other.FileReference, this);
-                    this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
-                }
-                else
-                {
-                    var fileRefAlias = other.FileReference.MakeLinkableAlias(this.Module, this.Project);
-                    var linkedBuildFile = this.Project.EnsureBuildFileExists(fileRefAlias, this);
-                    this.FrameworksBuildPhase.AddBuildFile(linkedBuildFile);
-                }
+                var linkedBuildFile = this.Project.EnsureBuildFileExists(other.FileReference, this);
+                this.FrameworksBuildPhase.Value.AddBuildFile(linkedBuildFile);
+            }
+            else
+            {
+                var fileRefAlias = other.FileReference.MakeLinkableAlias(this.Module, this.Project);
+                var linkedBuildFile = this.Project.EnsureBuildFileExists(fileRefAlias, this);
+                this.FrameworksBuildPhase.Value.AddBuildFile(linkedBuildFile);
             }
         }
 
