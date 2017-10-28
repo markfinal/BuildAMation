@@ -181,10 +181,20 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Bam.Core.Array<Configuration> AllConfigurations
+        private Bam.Core.Array<Configuration> AllConfigurations
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendAllConfigurations(
+            Configuration config)
+        {
+            lock (this.AllConfigurations)
+            {
+                this.AllConfigurations.Add(config);
+            }
         }
 
         public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations
@@ -361,7 +371,7 @@ namespace XcodeBuilder
                 projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
 
                 this.ConfigurationLists[0].AddConfiguration(projectConfig);
-                this.AllConfigurations.Add(projectConfig);
+                this.appendAllConfigurations(projectConfig);
                 this.ProjectConfigurations.Add(config, projectConfig);
             }
         }
@@ -609,7 +619,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXTargetDependency section */");
                 text.AppendLine();
             }
-            if (this.AllConfigurations.Count > 0)
+            if (this.AllConfigurations.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin XCBuildConfiguration section */");

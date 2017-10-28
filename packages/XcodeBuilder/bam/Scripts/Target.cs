@@ -707,7 +707,7 @@ namespace XcodeBuilder
                 project.EnsureProjectConfigurationExists(module);
 
                 var newConfig = new Configuration(module.BuildEnvironment.Configuration, project, this);
-                project.AllConfigurations.Add(newConfig);
+                project.appendAllConfigurations(newConfig);
                 configList.AddConfiguration(newConfig);
 
                 var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
