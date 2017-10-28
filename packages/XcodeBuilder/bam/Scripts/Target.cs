@@ -381,17 +381,14 @@ namespace XcodeBuilder
             string relativePath = null,
             bool explicitType = true)
         {
-            lock (this)
-            {
-                var sourceTree = (relativePath != null) ? FileReference.ESourceTree.SourceRoot : FileReference.ESourceTree.Absolute;
-                var fileRef = this.Project.EnsureFileReferenceExists(
-                    path,
-                    relativePath,
-                    type,
-                    explicitType: explicitType,
-                    sourceTree: sourceTree);
-                this.AddFileRefToGroup(fileRef);
-            }
+            var sourceTree = (relativePath != null) ? FileReference.ESourceTree.SourceRoot : FileReference.ESourceTree.Absolute;
+            var fileRef = this.Project.EnsureFileReferenceExists(
+                path,
+                relativePath,
+                type,
+                explicitType: explicitType,
+                sourceTree: sourceTree);
+            this.AddFileRefToGroup(fileRef);
         }
 
         public void
