@@ -40,7 +40,7 @@ namespace XcodeBuilder
             base(project, name, "PBXGroup")
         {
             this.SourceTree = "<group>";
-            this.Children = new System.Collections.Generic.List<Object>();
+            this.Children = new Bam.Core.Array<Object>();
         }
 
         public Group(
@@ -51,7 +51,7 @@ namespace XcodeBuilder
             base(target.Project, name, "PBXGroup", fullPath.ToString())
         {
             this.SourceTree = "<group>";
-            this.Children = new System.Collections.Generic.List<Object>();
+            this.Children = new Bam.Core.Array<Object>();
         }
 
         public Group(
@@ -62,7 +62,7 @@ namespace XcodeBuilder
             base(project, name, "PBXGroup", children.ToList().ConvertAll(item => item.GUID).ToArray())
         {
             this.SourceTree = "<group>";
-            this.Children = new System.Collections.Generic.List<Object>();
+            this.Children = new Bam.Core.Array<Object>();
             foreach (var child in children)
             {
                 this.AddChild(child);
@@ -75,7 +75,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public System.Collections.Generic.List<Object> Children
+        public Bam.Core.Array<Object> Children
         {
             get;
             private set;

@@ -49,10 +49,34 @@ namespace VSSolutionBuilder
             private set;
         }
 
-        public Bam.Core.Array<HasGuid> NestedEntities
+        private Bam.Core.Array<HasGuid> NestedEntities
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendNestedEntity(
+            HasGuid entity)
+        {
+            lock (this.NestedEntities)
+            {
+                this.NestedEntities.AddUnique(entity);
+            }
+        }
+
+        public void
+        Serialize(
+            System.Text.StringBuilder content,
+            int indentLevel)
+        {
+            var indent = new string('\t', indentLevel);
+            foreach (var nested in this.NestedEntities)
+            {
+                content.AppendFormat("{0}{1} = {2}", indent, nested.GuidString, this.GuidString);
+                content.AppendLine();
+            }
+
         }
     }
 }

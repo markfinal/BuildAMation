@@ -54,16 +54,36 @@ namespace XcodeBuilder
             private set;
         }
 
-        public Bam.Core.StringArray PreBuildCommands
+        private Bam.Core.StringArray PreBuildCommands
         {
             get;
-            private set;
+            set;
         }
 
-        public Bam.Core.StringArray PostBuildCommands
+        public void
+        appendPreBuildCommands(
+            Bam.Core.StringArray commands)
+        {
+            lock (this.PreBuildCommands)
+            {
+                this.PreBuildCommands.AddRange(commands);
+            }
+        }
+
+        private Bam.Core.StringArray PostBuildCommands
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        appendPostBuildCommands(
+            Bam.Core.StringArray commands)
+        {
+            lock (this.PostBuildCommands)
+            {
+                this.PostBuildCommands.AddRange(commands);
+            }
         }
 
         public Bam.Core.Array<BuildFile> BuildFiles
@@ -129,6 +149,35 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}}};", indent);
             text.AppendLine();
+        }
+
+        private void
+        SerializeCommmandList(
+            System.Text.StringBuilder text,
+            int indentLevel,
+            Bam.Core.StringArray commandList)
+        {
+            var indent = new string(' ', 2 * indentLevel);
+            foreach (var line in commandList)
+            {
+                text.AppendFormat("{0}{1}\\n", indent, line.Replace("\"", "\\\""));
+            }
+        }
+
+        public void
+        SerializePreBuildCommands(
+            System.Text.StringBuilder text,
+            int indentLevel)
+        {
+            this.SerializeCommmandList(text, indentLevel, this.PreBuildCommands);
+        }
+
+        public void
+        SerializePostBuildCommands(
+            System.Text.StringBuilder text,
+            int indentLevel)
+        {
+            this.SerializeCommmandList(text, indentLevel, this.PostBuildCommands);
         }
     }
 }

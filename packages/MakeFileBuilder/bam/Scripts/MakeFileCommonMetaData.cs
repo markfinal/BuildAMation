@@ -71,7 +71,7 @@ namespace MakeFileBuilder
         ExtendEnvironmentVariables(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> import)
         {
-            lock (this)
+            lock (this.Environment)
             {
                 foreach (var env in import)
                 {
@@ -96,7 +96,7 @@ namespace MakeFileBuilder
         AddDirectory(
             string path)
         {
-            lock (this)
+            lock (this.Directories)
             {
                 this.Directories.AddUnique(path);
             }

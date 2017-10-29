@@ -42,7 +42,7 @@ namespace XcodeBuilder
             this.Dependency = dependency;
             this.Proxy = proxy;
 
-            project.TargetDependencies.AddUnique(this);
+            project.appendTargetDependency(this);
         }
 
         public TargetDependency(
@@ -55,7 +55,7 @@ namespace XcodeBuilder
             this.Dependency = null;
             this.Proxy = proxy;
 
-            project.TargetDependencies.AddUnique(this);
+            project.appendTargetDependency(this);
         }
 
         public Target Dependency

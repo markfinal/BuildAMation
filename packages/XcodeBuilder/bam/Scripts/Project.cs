@@ -55,15 +55,15 @@ namespace XcodeBuilder
 
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
-            this.FileReferences = new System.Collections.Generic.List<FileReference>();
-            this.BuildFiles = new System.Collections.Generic.List<BuildFile>();
-            this.Groups = new System.Collections.Generic.List<Group>();
+            this.FileReferences = new Bam.Core.Array<FileReference>();
+            this.BuildFiles = new Bam.Core.Array<BuildFile>();
+            this.Groups = new Bam.Core.Array<Group>();
             this.GroupMap = new System.Collections.Generic.Dictionary<string, Group>();
-            this.AllConfigurations = new System.Collections.Generic.List<Configuration>();
+            this.AllConfigurations = new Bam.Core.Array<Configuration>();
             this.ProjectConfigurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration>();
-            this.ConfigurationLists = new System.Collections.Generic.List<ConfigurationList>();
-            this.SourcesBuildPhases = new System.Collections.Generic.List<SourcesBuildPhase>();
-            this.FrameworksBuildPhases = new System.Collections.Generic.List<FrameworksBuildPhase>();
+            this.ConfigurationLists = new Bam.Core.Array<ConfigurationList>();
+            this.SourcesBuildPhases = new Bam.Core.Array<SourcesBuildPhase>();
+            this.FrameworksBuildPhases = new Bam.Core.Array<FrameworksBuildPhase>();
             this.ShellScriptsBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
             this.CopyFilesBuildPhases = new Bam.Core.Array<CopyFilesBuildPhase>();
             this.ContainerItemProxies = new Bam.Core.Array<ContainerItemProxy>();
@@ -71,12 +71,12 @@ namespace XcodeBuilder
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
             this.ProjectReferences = new System.Collections.Generic.Dictionary<Group, FileReference>();
 
-            this.Groups.Add(new Group(this, null)); // main group
-            this.Groups.Add(new Group(this, "Products")); // product ref group
+            this.appendGroup(new Group(this, null)); // main group
+            this.appendGroup(new Group(this, "Products")); // product ref group
             this.MainGroup.AddChild(this.ProductRefGroup);
 
-            var configList = new ConfigurationList(this);
-            this.ConfigurationLists.Add(configList);
+            // add the project's configuration list first
+            this.appendConfigurationList(new ConfigurationList(this));
         }
 
         private System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
@@ -86,31 +86,34 @@ namespace XcodeBuilder
             string guid,
             Object objectForGuid)
         {
-            if (this.ExistingGUIDs.ContainsKey(guid))
+            lock (this.ExistingGUIDs)
             {
-                // enable the log code path to view all clashes, rather than aborting on the first
+                if (this.ExistingGUIDs.ContainsKey(guid))
+                {
+                    // enable the log code path to view all clashes, rather than aborting on the first
 #if true
-                throw new Bam.Core.Exception("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
-                                             objectForGuid.Name,
-                                             objectForGuid.IsA,
-                                             objectForGuid.Project.Name,
-                                             this.ExistingGUIDs[guid].Name,
-                                             this.ExistingGUIDs[guid].IsA,
-                                             this.ExistingGUIDs[guid].Project.Name,
-                                             guid);
+                    throw new Bam.Core.Exception("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
+                                                 objectForGuid.Name,
+                                                 objectForGuid.IsA,
+                                                 objectForGuid.Project.Name,
+                                                 this.ExistingGUIDs[guid].Name,
+                                                 this.ExistingGUIDs[guid].IsA,
+                                                 this.ExistingGUIDs[guid].Project.Name,
+                                                 guid);
 #else
-                Bam.Core.Log.MessageAll("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
-                                             objectForGuid.Name,
-                                             objectForGuid.IsA,
-                                             objectForGuid.Project.Name,
-                                             this.ExistingGUIDs[guid].Name,
-                                             this.ExistingGUIDs[guid].IsA,
-                                             this.ExistingGUIDs[guid].Project.Name,
-                                             guid);
-                return;
-                #endif
+                    Bam.Core.Log.MessageAll("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
+                                                 objectForGuid.Name,
+                                                 objectForGuid.IsA,
+                                                 objectForGuid.Project.Name,
+                                                 this.ExistingGUIDs[guid].Name,
+                                                 this.ExistingGUIDs[guid].IsA,
+                                                 this.ExistingGUIDs[guid].Project.Name,
+                                                 guid);
+                    return;
+#endif
+                }
+                this.ExistingGUIDs.Add(guid, objectForGuid);
             }
-            this.ExistingGUIDs.Add(guid, objectForGuid);
         }
 
         public string SourceRoot
@@ -119,10 +122,10 @@ namespace XcodeBuilder
             private set;
         }
 
-        public string BuildRoot
+        private string BuildRoot
         {
             get;
-            private set;
+            set;
         }
 
         public Bam.Core.TokenizedString ProjectDir
@@ -137,7 +140,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public string BuiltProductsDir
+        private string BuiltProductsDir
         {
             get
             {
@@ -145,112 +148,296 @@ namespace XcodeBuilder
             }
         }
 
-        public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
-
-        public System.Collections.Generic.Dictionary<System.Type, Target> Targets
-        {
-            get;
-            private set;
-        }
-
-        private System.Collections.Generic.List<FileReference> FileReferences
+        private Bam.Core.Module Module
         {
             get;
             set;
         }
 
-        private System.Collections.Generic.List<BuildFile> BuildFiles
+        private System.Collections.Generic.Dictionary<System.Type, Target> Targets
         {
             get;
             set;
         }
 
-        public System.Collections.Generic.List<Group> Groups
+        public void
+        appendTarget(
+            Target target)
         {
-            get;
-            private set;
+            // Note: this lock probably not required, as it's only invoked from within another lock
+            lock (this.Targets)
+            {
+                this.Targets.Add(target.Module.GetType(), target);
+            }
         }
 
-        public System.Collections.Generic.Dictionary<string, Group> GroupMap
+        public System.Collections.Generic.IReadOnlyList<Target>
+        getTargetList()
         {
-            get;
-            private set;
+            return this.Targets.Values.ToList();
         }
 
-        public System.Collections.Generic.List<Configuration> AllConfigurations
+        private Bam.Core.Array<FileReference> FileReferences
         {
             get;
-            private set;
+            set;
         }
 
-        public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations
+        private Bam.Core.Array<BuildFile> BuildFiles
         {
             get;
-            private set;
+            set;
         }
 
-        public System.Collections.Generic.List<ConfigurationList> ConfigurationLists
+        private Bam.Core.Array<Group> Groups
         {
             get;
-            private set;
+            set;
         }
 
-        public System.Collections.Generic.List<SourcesBuildPhase> SourcesBuildPhases
+        public void
+        appendGroup(
+            Group group)
         {
-            get;
-            private set;
+            lock (this.Groups)
+            {
+                this.Groups.Add(group);
+            }
         }
 
-        public System.Collections.Generic.List<FrameworksBuildPhase> FrameworksBuildPhases
+        public Group
+        groupWithChild(
+            ReferenceProxy proxy)
         {
-            get;
-            private set;
+            return this.Groups.FirstOrDefault(item => item.Children.Contains(proxy));
         }
 
-        public Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
+        private System.Collections.Generic.Dictionary<string, Group> GroupMap
         {
             get;
-            private set;
+            set;
         }
 
-        public Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases
+        public void
+        assignGroupToPath(
+            Bam.Core.TokenizedString path,
+            Group group)
         {
-            get;
-            private set;
+            lock (this.GroupMap)
+            {
+                this.GroupMap.Add(path.ToString(), group);
+            }
         }
 
-        public Bam.Core.Array<ContainerItemProxy> ContainerItemProxies
+        public Group
+        getGroupForPath(
+            Bam.Core.TokenizedString path)
         {
-            get;
-            private set;
+            var match = this.GroupMap.FirstOrDefault(item => item.Key == path.ToString());
+            if (match.Equals(default(System.Collections.Generic.KeyValuePair<string, Group>)))
+            {
+                return null;
+            }
+            return match.Value;
         }
 
-        public Bam.Core.Array<ReferenceProxy> ReferenceProxies
+        private Bam.Core.Array<Configuration> AllConfigurations
         {
             get;
-            private set;
+            set;
         }
 
-        public Bam.Core.Array<TargetDependency> TargetDependencies
+        public void
+        appendAllConfigurations(
+            Configuration config)
         {
-            get;
-            private set;
+            lock (this.AllConfigurations)
+            {
+                this.AllConfigurations.Add(config);
+            }
         }
 
-        public System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences
+        private System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations
         {
             get;
-            private set;
+            set;
+        }
+
+        private Bam.Core.Array<ConfigurationList> ConfigurationLists
+        {
+            get;
+            set;
+        }
+
+        public void
+        appendConfigurationList(
+            ConfigurationList configList)
+        {
+            lock (this.ConfigurationLists)
+            {
+                this.ConfigurationLists.Add(configList);
+            }
+        }
+
+        private ConfigurationList
+        getProjectConfiguratonList()
+        {
+            // order is implied - this is always first
+            return this.ConfigurationLists[0];
+        }
+
+        private Bam.Core.Array<SourcesBuildPhase> SourcesBuildPhases
+        {
+            get;
+            set;
+        }
+
+        public void
+        appendSourcesBuildPhase(
+            SourcesBuildPhase phase)
+        {
+            lock (this.SourcesBuildPhases)
+            {
+                this.SourcesBuildPhases.Add(phase);
+            }
+        }
+
+        private Bam.Core.Array<FrameworksBuildPhase> FrameworksBuildPhases
+        {
+            get;
+            set;
+        }
+
+        public void
+        appendFrameworksBuildPhase(
+            FrameworksBuildPhase phase)
+        {
+            lock (this.FrameworksBuildPhases)
+            {
+                this.FrameworksBuildPhases.Add(phase);
+            }
+        }
+
+        private Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
+        {
+            get;
+            set;
+        }
+
+        public void
+        appendShellScriptsBuildPhase(
+            ShellScriptBuildPhase phase)
+        {
+            lock (this.ShellScriptsBuildPhases)
+            {
+                this.ShellScriptsBuildPhases.Add(phase);
+            }
+        }
+
+        private Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.Array<ContainerItemProxy> ContainerItemProxies
+        {
+            get;
+            set;
+        }
+
+        public void
+        appendContainerItemProxy(
+            ContainerItemProxy proxy)
+        {
+            // these are only added in a single thread
+            this.ContainerItemProxies.AddUnique(proxy);
+        }
+
+        public ContainerItemProxy
+        getContainerItemProxy(
+            Object remote,
+            Object containerPortal)
+        {
+            return this.ContainerItemProxies.FirstOrDefault(item =>
+                (item.ContainerPortal == containerPortal) && (item.Remote == remote));
+        }
+
+        private Bam.Core.Array<ReferenceProxy> ReferenceProxies
+        {
+            get;
+            set;
+        }
+
+        public void
+        appendReferenceProxy(
+            ReferenceProxy proxy)
+        {
+            // no lock required, added in serial code
+            this.ReferenceProxies.Add(proxy);
+        }
+
+        public ReferenceProxy
+        getReferenceProxyForRemoteRef(
+            ContainerItemProxy remoteRef)
+        {
+            return this.ReferenceProxies.FirstOrDefault(item => item.RemoteRef == remoteRef);
+        }
+
+        private Bam.Core.Array<TargetDependency> TargetDependencies
+        {
+            get;
+            set;
+        }
+
+        public void
+        appendTargetDependency(
+            TargetDependency dep)
+        {
+            // no lock required, as this is added in serial code
+            this.TargetDependencies.Add(dep);
+        }
+
+        public TargetDependency
+        getTargetDependency(
+            Target target,
+            ContainerItemProxy proxy)
+        {
+            return this.TargetDependencies.FirstOrDefault(item => item.Dependency == target && item.Proxy == proxy);
+        }
+
+        public TargetDependency
+        getTargetDependency(
+            string name,
+            ContainerItemProxy proxy)
+        {
+            return this.TargetDependencies.FirstOrDefault(item => item.Dependency == null && item.Name == name && item.Proxy == proxy);
+        }
+
+        private System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences
+        {
+            get;
+            set;
+        }
+
+        public void
+        EnsureProjectReferenceExists(
+            Group group,
+            FileReference fileRef)
+        {
+            var existing = this.ProjectReferences.FirstOrDefault(item => item.Key == group);
+            if (null == existing.Key)
+            {
+                // only ever executed serially, so no lock required
+                this.ProjectReferences.Add(group, fileRef);
+            }
         }
 
         public Group MainGroup
         {
             get
             {
+                // order is assumed - added in the constructor
                 return this.Groups[0];
             }
         }
@@ -259,6 +446,7 @@ namespace XcodeBuilder
         {
             get
             {
+                // order is assumed - added in the constructor
                 return this.Groups[1];
             }
         }
@@ -270,17 +458,7 @@ namespace XcodeBuilder
             bool explicitType = true,
             FileReference.ESourceTree sourceTree = FileReference.ESourceTree.NA)
         {
-            lock (this.FileReferences)
-            {
-                var existingFileRef = this.FileReferences.FirstOrDefault(item => item.Path.ToString().Equals(path.ToString()));
-                if (null != existingFileRef)
-                {
-                    return existingFileRef;
-                }
-                var newFileRef = new FileReference(path, type, this, explicitType, sourceTree);
-                this.FileReferences.Add(newFileRef);
-                return newFileRef;
-            }
+            return this.EnsureFileReferenceExists(path, null, type, explicitType, sourceTree);
         }
 
         public FileReference
@@ -360,55 +538,9 @@ namespace XcodeBuilder
                 // if these are inconsistent the IDE shows the product in red
                 projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
 
-                this.ConfigurationLists[0].AddConfiguration(projectConfig);
-                this.AllConfigurations.Add(projectConfig);
+                this.getProjectConfiguratonList().AddConfiguration(projectConfig);
+                this.appendAllConfigurations(projectConfig);
                 this.ProjectConfigurations.Add(config, projectConfig);
-            }
-        }
-
-        public Configuration
-        EnsureTargetConfigurationExists(
-            Bam.Core.Module module,
-            Target target)
-        {
-            var configList = target.ConfigurationList;
-            lock (configList)
-            {
-                var config = module.BuildEnvironment.Configuration;
-                var existingConfig = configList.FirstOrDefault(item => item.Config == config);
-                if (null != existingConfig)
-                {
-                    return existingConfig;
-                }
-
-                // if a new target config is needed, then a new project config is needed too
-                this.EnsureProjectConfigurationExists(module);
-
-                var newConfig = new Configuration(module.BuildEnvironment.Configuration, this, target);
-                this.AllConfigurations.Add(newConfig);
-                configList.AddConfiguration(newConfig);
-
-                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-
-                // set which SDK to build against
-                newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
-
-                // set the minimum version of OSX/iPhone to run against
-                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match(clangMeta.MinimumVersionSupported);
-                if (!match.Groups["Type"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
-                if (!match.Groups["Version"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
-
-                var optionName = System.String.Format("{0}_DEPLOYMENT_TARGET", match.Groups["Type"].Value.ToUpper());
-                newConfig[optionName] = new UniqueConfigurationValue(match.Groups["Version"].Value);
-
-                return newConfig;
             }
         }
 
@@ -424,8 +556,12 @@ namespace XcodeBuilder
                 }
                 foreach (var config in target.ConfigurationList)
                 {
-                    var diff = target.SourcesBuildPhase.BuildFiles.Complement(config.BuildFiles);
-                    if (diff.Count > 0)
+                    if (!target.SourcesBuildPhase.IsValueCreated)
+                    {
+                        continue;
+                    }
+                    var diff = target.SourcesBuildPhase.Value.BuildFiles.Complement(config.BuildFiles);
+                    if (diff.Any())
                     {
                         var excluded = new MultiConfigurationValue();
                         foreach (var file in diff)
@@ -472,7 +608,7 @@ namespace XcodeBuilder
             text.AppendFormat("{0}}};", indent2);
             text.AppendLine();
             // project configuration list is always the first
-            var projectConfigurationList = this.ConfigurationLists[0];
+            var projectConfigurationList = this.getProjectConfiguratonList();
             text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, projectConfigurationList.GUID, projectConfigurationList.Parent.IsA, projectConfigurationList.Parent.Name);
             text.AppendLine();
             text.AppendFormat("{0}compatibilityVersion = \"{1}\";", indent2, "Xcode 3.2"); // TODO
@@ -483,7 +619,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}projectDirPath = \"\";", indent2);
             text.AppendLine();
-            if (this.ProjectReferences.Count > 0)
+            if (this.ProjectReferences.Any())
             {
                 text.AppendFormat("{0}projectReferences = (", indent2);
                 text.AppendLine();
@@ -522,7 +658,7 @@ namespace XcodeBuilder
             System.Text.StringBuilder text,
             int indentLevel)
         {
-            if (this.BuildFiles.Count > 0)
+            if (this.BuildFiles.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXBuildFile section */");
@@ -534,7 +670,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXBuildFile section */");
                 text.AppendLine();
             }
-            if (this.ContainerItemProxies.Count > 0)
+            if (this.ContainerItemProxies.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXContainerItemProxy section */");
@@ -546,7 +682,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXContainerItemProxy section */");
                 text.AppendLine();
             }
-            if (this.CopyFilesBuildPhases.Count > 0)
+            if (this.CopyFilesBuildPhases.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXCopyFilesBuildPhase section */");
@@ -558,7 +694,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXCopyFilesBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.FileReferences.Count > 0)
+            if (this.FileReferences.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXFileReference section */");
@@ -570,7 +706,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXFileReference section */");
                 text.AppendLine();
             }
-            if (this.FrameworksBuildPhases.Count > 0)
+            if (this.FrameworksBuildPhases.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXFrameworksBuildPhase section */");
@@ -582,7 +718,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXFrameworksBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.Groups.Count > 0)
+            if (this.Groups.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXGroup section */");
@@ -594,7 +730,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXGroup section */");
                 text.AppendLine();
             }
-            if (this.Targets.Count > 0) // NativeTargets
+            if (this.Targets.Any()) // NativeTargets
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXNativeTarget section */");
@@ -607,7 +743,7 @@ namespace XcodeBuilder
                 text.AppendLine();
             }
             this.InternalSerialize(text, indentLevel); //this is the PBXProject :)
-            if (this.ReferenceProxies.Count > 0)
+            if (this.ReferenceProxies.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXReferenceProxy section */");
@@ -619,7 +755,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXReferenceProxy section */");
                 text.AppendLine();
             }
-            if (this.ShellScriptsBuildPhases.Count > 0)
+            if (this.ShellScriptsBuildPhases.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXShellScriptBuildPhase section */");
@@ -631,7 +767,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXShellScriptBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.SourcesBuildPhases.Count > 0)
+            if (this.SourcesBuildPhases.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXSourcesBuildPhase section */");
@@ -643,7 +779,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXSourcesBuildPhase section */");
                 text.AppendLine();
             }
-            if (this.TargetDependencies.Count > 0)
+            if (this.TargetDependencies.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin PBXTargetDependency section */");
@@ -655,7 +791,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End PBXTargetDependency section */");
                 text.AppendLine();
             }
-            if (this.AllConfigurations.Count > 0)
+            if (this.AllConfigurations.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin XCBuildConfiguration section */");
@@ -667,7 +803,7 @@ namespace XcodeBuilder
                 text.AppendFormat("/* End XCBuildConfiguration section */");
                 text.AppendLine();
             }
-            if (this.ConfigurationLists.Count > 0)
+            if (this.ConfigurationLists.Any())
             {
                 text.AppendLine();
                 text.AppendFormat("/* Begin XCConfigurationList section */");

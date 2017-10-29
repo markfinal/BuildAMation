@@ -46,7 +46,7 @@ namespace XcodeBuilder
             this.RemoteRef = remoteRef;
             this.SourceTree = sourceTree;
 
-            project.ReferenceProxies.AddUnique(this);
+            project.appendReferenceProxy(this);
         }
 
         public FileReference.EFileType FileType
