@@ -39,14 +39,14 @@ namespace XcodeBuilder
             this.Project = project;
             this.SchemeDocuments = new System.Collections.Generic.Dictionary<string, System.Xml.XmlDocument>();
 
-            foreach (var target in project.Targets)
+            foreach (var target in project.getTargetList())
             {
-                var schemeFilename = System.String.Format("{0}.xcscheme", target.Value.Name);
+                var schemeFilename = System.String.Format("{0}.xcscheme", target.Name);
                 var schemePathname = System.String.Format("{0}/xcuserdata/{1}.xcuserdatad/xcschemes/{2}",
                         project.ProjectDir,
                         System.Environment.GetEnvironmentVariable("USER"),
                         schemeFilename);
-                var doc = this.CreateSchemePlist(target.Value);
+                var doc = this.CreateSchemePlist(target);
                 this.SchemeDocuments.Add(schemePathname, doc);
             }
             this.CreateManagementPlist();
@@ -82,9 +82,9 @@ namespace XcodeBuilder
             {
                 buildableReference.SetAttribute("BuildableIdentifier", "primary");
                 buildableReference.SetAttribute("BlueprintIdentifier", target.GUID);
-                if (null != target.FileReference)
+                if (null != target.getFileReference())
                 {
-                    buildableReference.SetAttribute("BuildableName", target.FileReference.Name);
+                    buildableReference.SetAttribute("BuildableName", target.getFileReference().Name);
                 }
                 buildableReference.SetAttribute("BlueprintName", target.Name);
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
@@ -160,10 +160,10 @@ namespace XcodeBuilder
 
                 buildableRefEl.SetAttribute("BuildableIdentifier", "primary");
 
-                if (null != target.FileReference)
+                if (null != target.getFileReference())
                 {
                     buildableRefEl.SetAttribute("BlueprintIdentifier", target.GUID);
-                    buildableRefEl.SetAttribute("BuildableName", target.FileReference.Name);
+                    buildableRefEl.SetAttribute("BuildableName", target.getFileReference().Name);
                     buildableRefEl.SetAttribute("BlueprintName", target.Name);
                 }
 

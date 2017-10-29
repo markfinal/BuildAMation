@@ -45,18 +45,21 @@ namespace VSSolutionBuilder
             var split = currentpath.Split('/');
             var path = split[0];
             var keyPath = string.Join("/", parentpath, path);
-            if (!this.SolutionFolders.ContainsKey(keyPath))
+            lock (this.SolutionFolders)
             {
-                this.SolutionFolders.Add(keyPath, new VSSolutionFolder(keyPath, path));
+                if (!this.SolutionFolders.ContainsKey(keyPath))
+                {
+                    this.SolutionFolders.Add(keyPath, new VSSolutionFolder(keyPath, path));
+                }
             }
             var folder = this.SolutionFolders[keyPath];
             if (null != parent)
             {
-                parent.NestedEntities.AddUnique(folder);
+                parent.appendNestedEntity(folder);
             }
             if (1 == split.Length)
             {
-                folder.NestedEntities.AddUnique(project);
+                folder.appendNestedEntity(project);
             }
             else
             {
@@ -82,10 +85,7 @@ namespace VSSolutionBuilder
                     if (groups.Length > 0)
                     {
                         var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
-                        lock (this)
-                        {
-                            this.AddNestedEntity(".", solutionFolderName, project);
-                        }
+                        this.AddNestedEntity(".", solutionFolderName, project);
                     }
                 }
                 if (null == module.MetaData)
@@ -195,11 +195,7 @@ namespace VSSolutionBuilder
                 content.AppendLine("\tGlobalSection(NestedProjects) = preSolution");
                 foreach (var folder in this.SolutionFolders)
                 {
-                    foreach (var nested in folder.Value.NestedEntities)
-                    {
-                        content.AppendFormat("\t\t{0} = {1}", nested.GuidString, folder.Value.GuidString);
-                        content.AppendLine();
-                    }
+                    folder.Value.Serialize(content, 2);
                 }
                 content.AppendLine("\tEndGlobalSection");
             }

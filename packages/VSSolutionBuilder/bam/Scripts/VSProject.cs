@@ -144,72 +144,82 @@ namespace VSSolutionBuilder
             }
         }
 
+        private void
+        AddToFilter(
+            VSSettingsGroup group)
+        {
+            lock (this.Filter)
+            {
+                this.Filter.AddFile(group);
+            }
+        }
+
         public void
         AddHeader(
             VSSettingsGroup header)
         {
-            lock (this)
+            lock (this.Headers)
             {
                 this.Headers.AddUnique(header);
-                this.Filter.AddFile(header);
             }
+            AddToFilter(header);
         }
 
         public void
         AddSource(
             VSSettingsGroup source)
         {
-            lock (this)
+            lock (this.Sources)
             {
                 this.Sources.AddUnique(source);
-                this.Filter.AddFile(source);
             }
+            AddToFilter(source);
         }
 
         public void
         AddOtherFile(
             VSSettingsGroup other)
         {
-            lock (this)
+            lock (this.Others)
             {
                 this.Others.AddUnique(other);
-                this.Filter.AddFile(other);
             }
+            AddToFilter(other);
         }
 
         public void
         AddResourceFile(
             VSSettingsGroup other)
         {
-            lock (this)
+            lock (this.Resources)
             {
                 this.Resources.AddUnique(other);
-                this.Filter.AddFile(other);
             }
+            AddToFilter(other);
         }
 
         public void
         AddAssemblyFile(
             VSSettingsGroup other)
         {
-            lock (this)
+            lock (this.AssemblyFiles)
             {
                 this.AssemblyFiles.AddUnique(other);
-                this.Filter.AddFile(other);
             }
+            AddToFilter(other);
         }
 
         public void
         AddOrderOnlyDependency(
             VSProject dependentProject)
         {
-            lock (this)
+            if (this.LinkDependentProjects.Contains(dependentProject))
             {
-                if (this.LinkDependentProjects.Contains(dependentProject))
-                {
-                    Bam.Core.Log.DebugMessage("Project {0} already contains a link dependency on {1}. There is no need to add it as an order-only dependency.", this.ProjectPath, dependentProject.ProjectPath);
-                    return;
-                }
+                Bam.Core.Log.DebugMessage("Project {0} already contains a link dependency on {1}. There is no need to add it as an order-only dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                return;
+            }
+            lock (this.OrderOnlyDependentProjects)
+            {
                 this.OrderOnlyDependentProjects.AddUnique(dependentProject);
             }
         }
@@ -218,13 +228,13 @@ namespace VSSolutionBuilder
         AddLinkDependency(
             VSProject dependentProject)
         {
-            lock (this)
+            if (this.OrderOnlyDependentProjects.Contains(dependentProject))
             {
-                if (this.OrderOnlyDependentProjects.Contains(dependentProject))
-                {
-                    Bam.Core.Log.DebugMessage("Project {0} already contains an order-only dependency on {1}. Removing the order-only dependency, and upgrading to a link dependency.", this.ProjectPath, dependentProject.ProjectPath);
-                    this.OrderOnlyDependentProjects.Remove(dependentProject);
-                }
+                Bam.Core.Log.DebugMessage("Project {0} already contains an order-only dependency on {1}. Removing the order-only dependency, and upgrading to a link dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                this.OrderOnlyDependentProjects.Remove(dependentProject);
+            }
+            lock (this.LinkDependentProjects)
+            {
                 this.LinkDependentProjects.AddUnique(dependentProject);
             }
         }

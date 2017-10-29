@@ -1,3 +1,11 @@
+29-Oct-2017 Fixes #380. Eliminating 'lock (this)' expressions and hardening Xcode generation thread safety. THIS IS A BREAKING CHANGE.
+
+'lock (this)' is considered bad for synchronisation, as the caller may also lock the object. Instances of these have been eliminated, either by replacing with a reduced scope lock on private only objects, or using System.Lazy<T> or System.Threading.LazyInitializer for thread-safe object initialization.
+
+Many properties of XcodeBuilder.Project that were public are now private, but with new public accessors containing appropriate synchronisation.
+
+XcodeBuilder.Target.Type is no longer public. The setter for this may have been used by external code, so this may cause compiler errors. There is now a public accessor, XcodeBuilder.Target.SetType() to use instead.
+
 27-Oct-2017 Fixes #373. Tightening up TokenizedString parsing APIs. THIS IS A BREAKING CHANGE.
 
 Parse() and ToString() used to do the same thing, but now they are different.
