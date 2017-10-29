@@ -122,10 +122,10 @@ namespace XcodeBuilder
             private set;
         }
 
-        public string BuildRoot
+        private string BuildRoot
         {
             get;
-            private set;
+            set;
         }
 
         public Bam.Core.TokenizedString ProjectDir
@@ -140,7 +140,7 @@ namespace XcodeBuilder
             private set;
         }
 
-        public string BuiltProductsDir
+        private string BuiltProductsDir
         {
             get
             {
@@ -148,10 +148,10 @@ namespace XcodeBuilder
             }
         }
 
-        public Bam.Core.Module Module
+        private Bam.Core.Module Module
         {
             get;
-            private set;
+            set;
         }
 
         private System.Collections.Generic.Dictionary<System.Type, Target> Targets
@@ -212,10 +212,33 @@ namespace XcodeBuilder
             return this.Groups.FirstOrDefault(item => item.Children.Contains(proxy));
         }
 
-        public System.Collections.Generic.Dictionary<string, Group> GroupMap
+        private System.Collections.Generic.Dictionary<string, Group> GroupMap
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        assignGroupToPath(
+            Bam.Core.TokenizedString path,
+            Group group)
+        {
+            lock (this.GroupMap)
+            {
+                this.GroupMap.Add(path.ToString(), group);
+            }
+        }
+
+        public Group
+        getGroupForPath(
+            Bam.Core.TokenizedString path)
+        {
+            var match = this.GroupMap.FirstOrDefault(item => item.Key == path.ToString());
+            if (match.Equals(default(System.Collections.Generic.KeyValuePair<string, Group>)))
+            {
+                return null;
+            }
+            return match.Value;
         }
 
         private Bam.Core.Array<Configuration> AllConfigurations
@@ -234,10 +257,10 @@ namespace XcodeBuilder
             }
         }
 
-        public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations
+        private System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations
         {
             get;
-            private set;
+            set;
         }
 
         private Bam.Core.Array<ConfigurationList> ConfigurationLists
@@ -391,10 +414,23 @@ namespace XcodeBuilder
             return this.TargetDependencies.FirstOrDefault(item => item.Dependency == null && item.Name == name && item.Proxy == proxy);
         }
 
-        public System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences
+        private System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences
         {
             get;
-            private set;
+            set;
+        }
+
+        public void
+        EnsureProjectReferenceExists(
+            Group group,
+            FileReference fileRef)
+        {
+            var existing = this.ProjectReferences.FirstOrDefault(item => item.Key == group);
+            if (null == existing.Key)
+            {
+                // only ever executed serially, so no lock required
+                this.ProjectReferences.Add(group, fileRef);
+            }
         }
 
         public Group MainGroup
@@ -583,7 +619,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}projectDirPath = \"\";", indent2);
             text.AppendLine();
-            if (this.ProjectReferences.Count > 0)
+            if (this.ProjectReferences.Any())
             {
                 text.AppendFormat("{0}projectReferences = (", indent2);
                 text.AppendLine();

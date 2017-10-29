@@ -288,10 +288,10 @@ namespace XcodeBuilder
         {
             lock (this.Project)
             {
-                var found = this.Project.GroupMap.FirstOrDefault(item => item.Key == path.ToString());
-                if (!found.Equals(default(System.Collections.Generic.KeyValuePair<string, Group>)))
+                var existingGroup = this.Project.getGroupForPath(path);
+                if (null != existingGroup)
                 {
-                    return found.Value;
+                    return existingGroup;
                 }
                 var basenameTS = this.Module.CreateTokenizedString("@basename($(0))", path);
                 if (!basenameTS.IsParsed)
@@ -301,7 +301,7 @@ namespace XcodeBuilder
                 var basename = basenameTS.ToString();
                 var group = new Group(this, basename, path);
                 this.Project.appendGroup(group);
-                this.Project.GroupMap.Add(path.ToString(), group);
+                this.Project.assignGroupToPath(path, group);
                 if (path.ToString().Contains(System.IO.Path.DirectorySeparatorChar))
                 {
                     var parent = this.Module.CreateTokenizedString("@dir($(0))", path);
@@ -514,12 +514,7 @@ namespace XcodeBuilder
                         this.Project.appendGroup(productRefGroup);
                     }
 
-                    var productRef = this.Project.ProjectReferences.FirstOrDefault(
-                        item => item.Key == productRefGroup);
-                    if (null == productRef.Key)
-                    {
-                        this.Project.ProjectReferences.Add(productRefGroup, dependentProjectFileRef);
-                    }
+                    this.Project.EnsureProjectReferenceExists(productRefGroup, dependentProjectFileRef);
                 }
             }
         }
