@@ -43,19 +43,19 @@ namespace Publisher
 
             // post-fix with a directory separator to enforce that this is a directory destination
             var destinationDir = System.String.Format("{0}{1}",
-                collatedInterface.PublishingDirectory.Parse(),
+                collatedInterface.PublishingDirectory.ToString(),
                 System.IO.Path.DirectorySeparatorChar);
 
             Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2} [{3}]",
                 collatedInterface.SourceModule.ToString(),
                 collatedInterface.SourcePathKey.ToString(),
-                collatedInterface.PublishingDirectory.Parse(),
+                collatedInterface.PublishingDirectory.ToString(),
                 sender);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            commandLine.Add(copySourcePath.Parse());
+            commandLine.Add(copySourcePath.ToString());
             commandLine.Add(destinationDir);
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
