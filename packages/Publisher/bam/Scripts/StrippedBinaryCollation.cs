@@ -31,6 +31,8 @@ using Bam.Core;
 using System.Linq;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     /// <summary>
     /// Derive from this module to generate a standalone directory of stripped binaries and other
     /// collated files that mirrors a collated publishing root. This is identical to that publishing
@@ -364,4 +366,5 @@ namespace Publisher
             return copyFileModule;
         }
     }
+#endif
 }

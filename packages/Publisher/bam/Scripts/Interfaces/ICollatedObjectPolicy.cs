@@ -37,8 +37,7 @@ namespace Publisher
             CollatedObject2 sender,
             Bam.Core.ExecutionContext context);
     }
-#endif
-
+#else
     public interface ICollatedObjectPolicy
     {
         void
@@ -46,4 +45,5 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context);
     }
+#endif
 }

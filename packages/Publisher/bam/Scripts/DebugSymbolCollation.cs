@@ -31,6 +31,8 @@ using Bam.Core;
 using System.Linq;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     /// <summary>
     /// Derive from this module to generate a standalone directory of extracted debug symbol files
     /// that mirrors a collated publishing root. This mirror folder can be hived off and stored by
@@ -234,4 +236,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

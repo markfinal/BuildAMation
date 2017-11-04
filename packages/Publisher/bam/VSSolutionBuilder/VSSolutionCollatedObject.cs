@@ -53,8 +53,7 @@ namespace Publisher
                 sender);
         }
     }
-#endif
-
+#else
     public sealed class VSSolutionCollatedObject :
         ICollatedObjectPolicy
     {
@@ -158,4 +157,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

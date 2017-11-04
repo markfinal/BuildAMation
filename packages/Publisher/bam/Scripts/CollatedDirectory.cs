@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public sealed class CollatedDirectory :
         CollatedObject
     {
@@ -71,4 +73,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

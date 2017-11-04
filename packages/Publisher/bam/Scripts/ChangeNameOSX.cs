@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public sealed class ChangeNameOSX :
         InstallNameModule
     {
@@ -53,4 +55,5 @@ namespace Publisher
             set;
         }
     }
+#endif
 }

@@ -31,9 +31,12 @@ namespace Publisher
 {
     public interface IStrippedBinaryCollationPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         CollateStrippedBinaries(
             StrippedBinaryCollation sender,
             Bam.Core.ExecutionContext context);
+#endif
     }
 }

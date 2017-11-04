@@ -31,11 +31,14 @@ namespace Publisher
 {
     public interface IStripToolPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         Strip(
             StripModule sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString originalPath,
             Bam.Core.TokenizedString strippedPath);
+#endif
     }
 }

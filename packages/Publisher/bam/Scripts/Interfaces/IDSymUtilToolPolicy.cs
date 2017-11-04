@@ -31,11 +31,14 @@ namespace Publisher
 {
     public interface IDSymUtilToolPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         CreateBundle(
             DSymUtilModule sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString originalPath,
             Bam.Core.TokenizedString copiedPath);
+#endif
     }
 }

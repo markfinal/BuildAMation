@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public class ChangeRPathModule :
         Bam.Core.Module
     {
@@ -85,4 +87,5 @@ namespace Publisher
             set;
         }
     }
+#endif
 }

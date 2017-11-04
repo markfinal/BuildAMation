@@ -32,6 +32,8 @@ namespace Publisher
     public sealed class MakeFileStrip :
         IStripToolPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         IStripToolPolicy.Strip(
             StripModule sender,
@@ -59,5 +61,6 @@ namespace Publisher
                 copiedPath.ToString(),
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
+#endif
     }
 }

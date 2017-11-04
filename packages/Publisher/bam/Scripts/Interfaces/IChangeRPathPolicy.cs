@@ -31,11 +31,14 @@ namespace Publisher
 {
     public interface IChangeRPathPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         Change(
             ChangeRPathModule sender,
             Bam.Core.ExecutionContext context,
             CollatedFile source,
             string newRPath);
+#endif
     }
 }

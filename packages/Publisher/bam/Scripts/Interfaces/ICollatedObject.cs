@@ -68,10 +68,13 @@ namespace Publisher
             set;
         }
 
+#if D_NEW_PUBLISHING
+#else
         CollatedFile Reference
         {
             get;
         }
+#endif
 
         Bam.Core.TokenizedString SourcePath
         {

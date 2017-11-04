@@ -32,6 +32,8 @@ namespace Publisher
     public sealed class MakeFileObjCopy :
         IObjCopyToolPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         IObjCopyToolPolicy.ObjCopy(
             ObjCopyModule sender,
@@ -68,5 +70,6 @@ namespace Publisher
                 commandLine.ToString(' '),
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
+#endif
     }
 }

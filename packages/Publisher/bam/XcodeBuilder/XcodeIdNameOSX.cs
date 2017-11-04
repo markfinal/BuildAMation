@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public sealed class XcodeIdNameOSX :
         IInstallNameToolPolicy
     {
@@ -88,4 +90,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

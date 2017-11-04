@@ -31,9 +31,12 @@ namespace Publisher
 {
     public interface IDebugSymbolCollationPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         CollateDebugSymbols(
             DebugSymbolCollation sender,
             Bam.Core.ExecutionContext context);
+#endif
     }
 }

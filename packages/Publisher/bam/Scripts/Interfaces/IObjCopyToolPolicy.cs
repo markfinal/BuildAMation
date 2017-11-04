@@ -31,11 +31,14 @@ namespace Publisher
 {
     public interface IObjCopyToolPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         ObjCopy(
             ObjCopyModule sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString originalPath,
             Bam.Core.TokenizedString copiedPath);
+#endif
     }
 }

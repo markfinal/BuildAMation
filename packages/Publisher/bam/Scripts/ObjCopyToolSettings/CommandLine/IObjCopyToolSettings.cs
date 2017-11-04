@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public static partial class CommandLineImplementation
     {
         public static void
@@ -61,4 +63,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

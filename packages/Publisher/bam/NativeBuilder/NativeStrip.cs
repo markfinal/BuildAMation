@@ -32,6 +32,8 @@ namespace Publisher
     public sealed class NativeStrip :
         IStripToolPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         IStripToolPolicy.Strip(
             StripModule sender,
@@ -48,5 +50,6 @@ namespace Publisher
             commandLine.Add(System.String.Format("-o {0}", strippedPath.ToString()));
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
+#endif
     }
 }

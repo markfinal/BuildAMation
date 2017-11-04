@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public sealed class MakeFileDebugSymbolCollation :
         IDebugSymbolCollationPolicy
     {
@@ -56,4 +58,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public sealed class NativeIdNameOSX :
         IInstallNameToolPolicy
     {
@@ -47,4 +49,5 @@ namespace Publisher
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
+#endif
 }

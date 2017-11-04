@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public class StripModule :
         Bam.Core.Module
     {
@@ -130,4 +132,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

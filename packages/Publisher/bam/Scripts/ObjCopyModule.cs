@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public class ObjCopyModule :
         Bam.Core.Module
     {
@@ -145,4 +147,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

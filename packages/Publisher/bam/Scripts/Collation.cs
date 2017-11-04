@@ -41,6 +41,488 @@ namespace Publisher
     /// 'plugins'. To place a framework in the Contents/Frameworks sub-folder of an application bundle, specify
     /// a subdirectory of '../Frameworks', as the executable is in Contents/MacOS.
     /// </summary>
+#if D_NEW_PUBLISHING
+    public abstract class Collation :
+        Bam.Core.Module
+    {
+        static Collation()
+        {
+            Bam.Core.TokenizedString.registerPostUnaryFunction("readlink", argument =>
+                {
+#if __MonoCS__
+                    var symlink = new Mono.Unix.UnixSymbolicLinkInfo(argument);
+                    return symlink.ContentsPath;
+#else
+                    throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
+#endif
+                });
+        }
+
+        private ICollationPolicy Policy = null;
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.publishDir = Bam.Core.TokenizedString.CreateInline("$(publishdir)");
+        }
+
+        public sealed override void
+        Evaluate()
+        {
+            // TODO
+        }
+
+        protected sealed override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.Collate(this, context);
+        }
+
+        protected sealed override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            switch (mode)
+            {
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "Collation";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollationPolicy>.Create(className);
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// The type of application being published.
+        /// </summary>
+        public enum EPublishingType
+        {
+            /// <summary>
+            /// Application in a console application.
+            /// </summary>
+            ConsoleApplication,
+
+            /// <summary>
+            /// Application is a GUI application.
+            /// On OSX, this is an application bundle, and will automatically appear in a <name>.app/Contents/MacOS folder
+            /// under the publishing root.
+            /// </summary>
+            WindowedApplication,
+
+            /// <summary>
+            /// Distributing a library, with headers, import/static/dynamic libraries, and potentially tools or tests.
+            /// </summary>
+            Library
+
+            // TODO: macosFramework
+        }
+
+        // this is doubling up the cost of the this.Requires list, but at less runtime cost
+        // for expanding each CollatedObject2 to peek as it's properties
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject2>();
+
+        private Bam.Core.TokenizedString publishDir;
+        public Bam.Core.TokenizedString PublishDir
+        {
+            get
+            {
+                return this.publishDir;
+            }
+        }
+
+        public Bam.Core.TokenizedString BinDir
+        {
+            get
+            {
+                return this.Macros["BinDir"];
+            }
+
+            set
+            {
+                this.Macros["BinDir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString LibDir
+        {
+            get
+            {
+                return this.Macros["LibDir"];
+            }
+
+            set
+            {
+                this.Macros["LibDir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString PluginDir
+        {
+            get
+            {
+                return this.Macros["PluginDir"];
+            }
+
+            set
+            {
+                this.Macros["PluginDir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString HeaderDir
+        {
+            get
+            {
+                return this.Macros["HeaderDir"];
+            }
+
+            set
+            {
+                this.Macros["HeaderDir"] = value;
+            }
+        }
+
+        private void
+        SetConsoleApplicationDefaultMacros()
+        {
+            this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+        }
+
+        private void
+        setWindowedApplicationDefaultMacros()
+        {
+            switch (Bam.Core.OSUtilities.CurrentOS)
+            {
+                case Bam.Core.EPlatform.Windows:
+                case Bam.Core.EPlatform.Linux:
+                    {
+                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishDir }));
+                    }
+                    break;
+
+                case Bam.Core.EPlatform.OSX:
+                    {
+                        this.Macros.Add("macOSAppBundleContentsDir", this.CreateTokenizedString("$(0)/$(OutputName).app/Contents", new[] { this.PublishDir }));
+                        this.Macros.Add("macOSAppBundleMacOSDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/MacOS"));
+                        this.Macros.Add("macOSAppBundleFrameworksDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Frameworks"));
+                        this.Macros.Add("macOSAppBundlePluginsDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Plugins"));
+                        this.Macros.Add("macOSAppBundleResourcesDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Resources"));
+                        this.Macros.Add("macOSAppBundleSharedSupportDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/SharedSupport"));
+                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(macOSAppBundleMacOSDir)"));
+                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(macOSAppBundlePluginsDir)"));
+                    }
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
+            }
+        }
+
+        private void
+        setLibraryDefaultMacros()
+        {
+            this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishDir }));
+            this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishDir }));
+            this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishDir }));
+        }
+
+        public void
+        SetDefaultMacros(
+            EPublishingType type)
+        {
+            // TODO: can any of these paths be determined from the C package for RPATHs etc?
+            // i.e. whatever layout the user wants, is honoured here as a default
+            switch (type)
+            {
+                case EPublishingType.ConsoleApplication:
+                    this.SetConsoleApplicationDefaultMacros();
+                    break;
+
+                case EPublishingType.WindowedApplication:
+                    this.setWindowedApplicationDefaultMacros();
+                    break;
+
+                case EPublishingType.Library:
+                    this.setLibraryDefaultMacros();
+                    break;
+            }
+        }
+
+        public void
+        IncludeAllModulesInNamespace(
+            string nameSpace,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir)
+        {
+            var gen = this.GetType().GetMethod("Include2", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
+            var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(item =>
+                item.Namespace == nameSpace && item.IsSubclassOf(typeof(Bam.Core.Module)) && item != this.GetType());
+            foreach (var type in moduleTypes)
+            {
+                var meth = gen.MakeGenericMethod(new[] { type });
+                meth.Invoke(this, new object[] { key, publishDir });
+            }
+        }
+
+        public ICollatedObject2
+        Find<DependentModule>() where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
+
+            foreach (var dep in this.Requirements)
+            {
+                var obj = dep as ICollatedObject2;
+                if (obj.SourceModule == dependent)
+                {
+                    return obj;
+                }
+            }
+            return null;
+        }
+
+        private void
+        gatherAllDependencies(
+            Bam.Core.Module initialModule,
+            Bam.Core.PathKey key,
+            ICollatedObject2 anchor)
+        {
+            var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+            var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>>();
+            toDealWith.Enqueue(System.Tuple.Create(initialModule, key));
+            System.Func<Bam.Core.Module, bool> findPublishableDependents;
+            findPublishableDependents = module =>
+            {
+                var any = false;
+                // now look at all the dependencies and accumulate a list of child dependencies
+                // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
+                foreach (var dep in module.Dependents)
+                {
+                    if (dep is C.Plugin)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Plugin.Key));
+                            any = true;
+                        }
+                    }
+                    if (dep is C.Cxx.Plugin)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.Plugin.Key));
+                            any = true;
+                        }
+                    }
+                    if (dep is C.DynamicLibrary)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.DynamicLibrary.Key));
+                            any = true;
+                        }
+                    }
+                    if (dep is C.Cxx.DynamicLibrary)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.DynamicLibrary.Key));
+                            any = true;
+                        }
+                    }
+                }
+                foreach (var req in module.Requirements)
+                {
+                    if (req is C.Plugin)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.Plugin.Key));
+                            any = true;
+                        }
+                    }
+                    if (req is C.Cxx.Plugin)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.Plugin.Key));
+                            any = true;
+                        }
+                    }
+                    if (req is C.DynamicLibrary)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.DynamicLibrary.Key));
+                            any = true;
+                        }
+                    }
+                    if (req is C.Cxx.DynamicLibrary)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.DynamicLibrary.Key));
+                            any = true;
+                        }
+                    }
+                }
+                return any;
+            };
+            // iterate over each dependent, stepping into each of their dependencies
+            while (toDealWith.Count > 0)
+            {
+                var next = toDealWith.Dequeue();
+                findPublishableDependents(next.Item1);
+                if (next.Item1 != initialModule)
+                {
+                    var notPresent = true;
+                    notPresent &= !allDependents.ContainsKey(next.Item1);
+                    notPresent &= !this.collatedObjects.ContainsKey(next);
+                    if (anchor != null)
+                    {
+                        var anchorAsCollatedObject = anchor as CollatedObject2;
+                        notPresent &= !anchorAsCollatedObject.DependentCollations.ContainsKey(next);
+                    }
+                    if (notPresent)
+                    {
+                        allDependents.Add(next.Item1, next.Item2);
+                    }
+                }
+            }
+            // now add each as a publishable dependent
+            foreach (var dep in allDependents)
+            {
+                if (dep.Key is C.Cxx.Plugin || dep.Key is C.Plugin)
+                {
+                    this.Include2NoGather(dep.Key, dep.Value, this.PluginDir, anchor);
+                }
+                else if (dep.Key is C.DynamicLibrary || dep.Key is C.Cxx.DynamicLibrary)
+                {
+                    this.Include2NoGather(dep.Key, dep.Value, this.LibDir, anchor);
+                }
+                else
+                {
+                    throw new System.NotSupportedException(System.String.Format("Module of type {0}", dep.Key.GetType().ToString()));
+                }
+            }
+        }
+
+        private ICollatedObject2
+        Include2NoGather(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir,
+            ICollatedObject2 anchor)
+        {
+            var collatedFile = this.CreateCollatedFile2(dependent, key, publishDir, anchor);
+            var tuple = System.Tuple.Create(dependent, key);
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                // a dependency may be copied for each anchor that references it in order
+                // to make that anchor fully resolved and debuggable
+                if (null != anchor)
+                {
+                    var anchorAsCollatedObject = anchor as CollatedObject2;
+                    anchorAsCollatedObject.DependentCollations.Add(tuple, collatedFile);
+                }
+                else
+                {
+                    this.collatedObjects.Add(tuple, collatedFile);
+                }
+            }
+            else
+            {
+                // as everything goes to a single publishdir, remember each instance of a module
+                this.collatedObjects.Add(tuple, collatedFile);
+            }
+            return collatedFile;
+        }
+
+        private void
+        Include2(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir)
+        {
+            var collatedFile = this.Include2NoGather(dependent, key, publishDir, null);
+            this.gatherAllDependencies(dependent, key, collatedFile);
+        }
+
+        public void
+        Include2<DependentModule>(
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+            this.Include2(dependent, key, publishDir);
+        }
+
+        public void
+        Include2<DependentModule>(
+            Bam.Core.PathKey key,
+            string publishDir) where DependentModule : Bam.Core.Module, new()
+        {
+            this.Include2<DependentModule>(key, this.CreateTokenizedString(publishDir));
+        }
+
+        private CollatedFile2
+        CreateCollatedFile2(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString publishDir,
+            ICollatedObject2 anchor)
+        {
+            var module = Bam.Core.Module.Create<CollatedFile2>() as CollatedFile2;
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                // the publishdir is different for each anchor, so dependents may be duplicated
+                // if referenced by a different anchor
+                if (null != anchor)
+                {
+                    module.Macros.Add("publishdir", dependent.CreateTokenizedString("@dir($(0))", new[] { anchor.SourceModule.GeneratedPaths[anchor.SourcePathKey] }));
+                }
+                else
+                {
+                    module.Macros.Add("publishdir", dependent.CreateTokenizedString("@dir($(0))", new[] { dependent.GeneratedPaths[key] }));
+                }
+                module.SetPublishingDirectory("#inline(0)", new[] { publishDir });
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                module.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                module.SetPublishingDirectory("$(0)", new[] { publishDir });
+            }
+            module.SourceModule = dependent;
+            module.SourcePathKey = key;
+
+            this.Requires(module);
+            module.Requires(dependent);
+            return module;
+        }
+    }
+#else
     public abstract class Collation :
         Bam.Core.Module
     {
@@ -1210,4 +1692,5 @@ namespace Publisher
         }
 #endif
     }
+#endif // D_NEW_PUBLISHING
 }

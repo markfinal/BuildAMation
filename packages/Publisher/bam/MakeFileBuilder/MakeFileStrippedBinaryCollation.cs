@@ -32,6 +32,8 @@ namespace Publisher
     public sealed class MakeFileStrippedBinaryCollation :
         IStrippedBinaryCollationPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         IStrippedBinaryCollationPolicy.CollateStrippedBinaries(
             StrippedBinaryCollation sender,
@@ -55,5 +57,6 @@ namespace Publisher
                 }
             }
         }
+#endif
     }
 }

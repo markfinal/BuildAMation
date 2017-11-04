@@ -62,8 +62,7 @@ namespace Publisher
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
-#endif
-
+#else
     public sealed class NativeCollatedObject :
         ICollatedObjectPolicy
     {
@@ -115,4 +114,5 @@ namespace Publisher
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
+#endif
 }

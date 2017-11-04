@@ -35,8 +35,7 @@ namespace Publisher
         CollatedObject2
     {
     }
-#endif
-
+#else
     public sealed class CollatedFile :
         CollatedObject
     {
@@ -118,4 +117,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

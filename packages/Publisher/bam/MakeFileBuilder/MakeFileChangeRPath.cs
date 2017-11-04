@@ -32,6 +32,8 @@ namespace Publisher
     public sealed class MakeFileChangeRPath :
         IChangeRPathPolicy
     {
+#if D_NEW_PUBLISHING
+#else
         void
         IChangeRPathPolicy.Change(
             ChangeRPathModule sender,
@@ -52,5 +54,6 @@ namespace Publisher
                 newRPath,
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
+#endif
     }
 }

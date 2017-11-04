@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public sealed class MakeFileCollatedObject :
         ICollatedObjectPolicy
     {
@@ -121,4 +123,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

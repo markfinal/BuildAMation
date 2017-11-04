@@ -53,8 +53,7 @@ namespace Publisher
                 sender);
         }
     }
-#endif
-
+#else
     public sealed class XcodeCollatedObject :
         ICollatedObjectPolicy
     {
@@ -215,4 +214,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

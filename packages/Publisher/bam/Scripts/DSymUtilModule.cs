@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace Publisher
 {
+#if D_NEW_PUBLISHING
+#else
     public class DSymUtilModule :
         Bam.Core.Module
     {
@@ -124,4 +126,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }
