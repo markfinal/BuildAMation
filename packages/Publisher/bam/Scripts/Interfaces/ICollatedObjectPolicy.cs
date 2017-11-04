@@ -30,11 +30,11 @@
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
-    public interface ICollatedObjectPolicy2
+    public interface ICollatedObjectPolicy
     {
         void
         Collate(
-            CollatedObject2 sender,
+            CollatedObject sender,
             Bam.Core.ExecutionContext context);
     }
 #else

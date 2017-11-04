@@ -31,8 +31,8 @@ using Bam.Core;
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
-    public sealed class CollatedFile2 :
-        CollatedObject2
+    public sealed class CollatedFile :
+        CollatedObject
     {
     }
 #else

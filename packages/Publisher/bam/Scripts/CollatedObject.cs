@@ -31,17 +31,17 @@ using Bam.Core;
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
-    public abstract class CollatedObject2 :
+    public abstract class CollatedObject :
         Bam.Core.Module,
-        ICollatedObject2
+        ICollatedObject
     {
-        private ICollatedObjectPolicy2 policy = null;
+        private ICollatedObjectPolicy policy = null;
         private Bam.Core.Module sourceModule;
         private Bam.Core.PathKey sourcePathKey;
         private Bam.Core.TokenizedString publishingDirectory;
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject2>();
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
 
-        Bam.Core.Module ICollatedObject2.SourceModule
+        Bam.Core.Module ICollatedObject.SourceModule
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Publisher
             }
         }
 
-        Bam.Core.PathKey ICollatedObject2.SourcePathKey
+        Bam.Core.PathKey ICollatedObject.SourcePathKey
         {
             get
             {
@@ -71,7 +71,7 @@ namespace Publisher
             }
         }
 
-        Bam.Core.TokenizedString ICollatedObject2.PublishingDirectory
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
         {
             get
             {
@@ -87,7 +87,7 @@ namespace Publisher
             this.publishingDirectory = this.CreateTokenizedString(original, positional);
         }
 
-        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> DependentCollations
+        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> DependentCollations
         {
             get
             {
@@ -126,8 +126,8 @@ namespace Publisher
         GetExecutionPolicy(
             string mode)
         {
-            var className = "Publisher." + mode + "CollatedObject2";
-            this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy2>.Create(className);
+            var className = "Publisher." + mode + "CollatedObject";
+            this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
         }
     }
 #else

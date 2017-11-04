@@ -30,15 +30,15 @@
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
-    public sealed class XcodeCollatedObject2 :
-        ICollatedObjectPolicy2
+    public sealed class XcodeCollatedObject :
+        ICollatedObjectPolicy
     {
         void
-        ICollatedObjectPolicy2.Collate(
-            CollatedObject2 sender,
+        ICollatedObjectPolicy.Collate(
+            CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
-            var collatedInterface = sender as ICollatedObject2;
+            var collatedInterface = sender as ICollatedObject;
             var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
 
             // post-fix with a directory separator to enforce that this is a directory destination
