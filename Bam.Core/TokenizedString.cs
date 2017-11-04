@@ -198,12 +198,14 @@ namespace Bam.Core
             var matches = System.Text.RegularExpressions.Regex.Matches(original, regExPattern);
             foreach (System.Text.RegularExpressions.Match match in matches)
             {
-                foreach (System.Text.RegularExpressions.Group group in match.Groups)
+                // was at least one substring captured by the regex?
+                if (!match.Success)
                 {
-                    if (group.Value == original)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
+                // there is >1 groups, as the first is the original expression, so skip it
+                foreach (var group in match.Groups.Cast<System.Text.RegularExpressions.Group>().Skip(1))
+                {
                     yield return group.Value;
                 }
             }
