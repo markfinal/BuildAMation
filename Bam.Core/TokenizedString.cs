@@ -407,13 +407,15 @@ namespace Bam.Core
         /// </summary>
         /// <param name="uncachedString">The string that will be uncached.</param>
         /// <param name="macroSource">The Module containing macros that will be eventually referenced.</param>
+        /// <param name="positionalTokens">Positional tokens.</param>
         /// <returns>A unique TokenizedString.</returns>
         public static TokenizedString
         CreateUncached(
             string uncachedString,
-            Module macroSource)
+            Module macroSource,
+            TokenizedStringArray positionalTokens = null)
         {
-            return CreateInternal(uncachedString, macroSource, false, null, EFlags.NoCache);
+            return CreateInternal(uncachedString, macroSource, false, positionalTokens, EFlags.NoCache);
         }
 
         /// <summary>
