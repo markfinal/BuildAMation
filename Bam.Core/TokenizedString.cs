@@ -469,7 +469,7 @@ namespace Bam.Core
             }
             if (null != this.parsingErrorMessage)
             {
-                throw new Exception("TokenizedString '{0}' has {4}{3}.{1}{1}Created at:{1}{2}{1}{1}",
+                throw new Exception("TokenizedString '{0}' has {4}{3}{1}{1}Created at:{1}{2}{1}{1}",
                     this.OriginalString,
                     System.Environment.NewLine,
                     this.CreationStackTrace,
@@ -682,7 +682,7 @@ namespace Bam.Core
                     // is there a better error message that could be returned, other than this in those
                     // circumstances?
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat("unrecognized token '{0}' from original string '{1}'", token, this.OriginalString);
+                    message.AppendFormat("unrecognized token '{0}'", token);
                     message.AppendLine();
                     if (null != customMacros)
                     {
