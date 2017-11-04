@@ -49,8 +49,10 @@ namespace Publisher
             Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2} [{3}]",
                 collatedInterface.SourceModule.ToString(),
                 collatedInterface.SourcePathKey.ToString(),
-                collatedInterface.PublishingDirectory.ToString(),
+                destinationDir,
                 sender);
+
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destinationDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
