@@ -289,7 +289,8 @@ namespace VSSolutionBuilder
             // but it does not seem to be a show stopper if it doesn't
             macros.Add("packagebuilddir", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectDir)"));
             macros.Add("modulename", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectName)"));
-            var outDir = path.ToString();
+
+            var outDir = path.UncachedParse(new Bam.Core.Array<Bam.Core.MacroList>(macros));
             outDir = System.IO.Path.GetDirectoryName(outDir);
             outDir += "\\";
             this.OutputDirectory = outDir;
