@@ -44,6 +44,7 @@ namespace Bam.Core
     /// <item><description><code>#valid(expr[,default])</code></description> If the expression is a valid
     /// TokenizedString, expand it and use it, otherwise the entire function call is replaced with the 'default' expression, unless
     /// this is omitted, and an empty string is used.</item>
+    /// <item><description><code>#inline(index)</code></description> Inline the original string.</item>
     /// </list>
     /// Post-functions are run after token expansion, and are identified by @(...):
     /// <list type="bullet">
@@ -83,6 +84,7 @@ namespace Bam.Core
         private static readonly string TokenRegExPattern = @"(\$\([^)]+\))";
         private static readonly string ExtractTokenRegExPattern = @"\$\(([^)]+)\)";
         private static readonly string PositionalTokenRegExPattern = @"\$\(([0-9]+)\)";
+        private static readonly string NumericTokenRegExPattern = @"([0-9]+)";
 
         // pre-functions look like: #functionname(expression)
         // note: this is using balancing groups in order to handle nested function calls, or any other instances of parentheses in paths (e.g. Windows 'Program Files (x86)')
@@ -1128,6 +1130,26 @@ namespace Bam.Core
                             else
                             {
                                 modifiedString = modifiedString.Replace(match.Value, replacement);
+                            }
+                        }
+                        break;
+
+                    case "inline":
+                        {
+                            var positional = GetMatches(expression, NumericTokenRegExPattern).FirstOrDefault();
+                            if (!System.String.IsNullOrEmpty(positional))
+                            {
+                                var positionalIndex = System.Convert.ToInt32(positional);
+                                if (positionalIndex > this.PositionalTokens.Count)
+                                {
+                                    throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given. Created at {2}.", positionalIndex, this.PositionalTokens.Count, this.CreationStackTrace);
+                                }
+                                modifiedString = modifiedString.Replace(match.Value, this.PositionalTokens[positionalIndex].OriginalString);
+                            }
+                            else
+                            {
+                                throw new Exception("Unrecognized positional token '{0}' in pre-function '{1}' in TokenizedString '{2}'",
+                                    expression, functionName, this.OriginalString);
                             }
                         }
                         break;
