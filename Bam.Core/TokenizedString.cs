@@ -36,10 +36,11 @@ namespace Bam.Core
     /// </summary>
     /// <remarks>
     /// Tokens are identified by $( and ).
+    /// A numeric index within a token, e.g. $(0), represents the index into the list of macros passed into the TokenizedString creation function. Parsing is performed recursively, although macros are not shared between repeated parsing calls.
     /// <para />
     /// Functions can run before or after token expansion.
     /// <para />
-    /// Pre-functions are run before, and are identified by #name(...):
+    /// Pre-functions are run before token expansion, and are identified by #name(...):
     /// <list type="bullet">
     /// <item><description><code>#valid(expr[,default])</code></description> If the expression is a valid
     /// TokenizedString, expand it and use it, otherwise the entire function call is replaced with the 'default' expression, unless
