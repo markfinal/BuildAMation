@@ -92,11 +92,25 @@ namespace Publisher
         // for expanding each CollatedObject2 to peek as it's properties
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject2>();
 
+        private Bam.Core.TokenizedString publishDir;
+        public Bam.Core.TokenizedString PublishDir
+        {
+            get
+            {
+                return this.publishDir;
+            }
+        }
+
         public Bam.Core.TokenizedString BinDir
         {
             get
             {
                 return this.Macros["BinDir"];
+            }
+
+            set
+            {
+                this.Macros["BinDir"] = value;
             }
         }
 
@@ -106,6 +120,11 @@ namespace Publisher
             {
                 return this.Macros["LibDir"];
             }
+
+            set
+            {
+                this.Macros["LibDir"] = value;
+            }
         }
 
         public Bam.Core.TokenizedString PluginDir
@@ -113,6 +132,11 @@ namespace Publisher
             get
             {
                 return this.Macros["PluginDir"];
+            }
+
+            set
+            {
+                this.Macros["PluginDir"] = value;
             }
         }
 
@@ -122,16 +146,19 @@ namespace Publisher
             {
                 return this.Macros["HeaderDir"];
             }
+
+            set
+            {
+                this.Macros["HeaderDir"] = value;
+            }
         }
 
         private void
         SetConsoleApplicationDefaultMacros()
         {
-            // TODO: these are inline in order to isolate publishdir's macro into a future Module
-            // but is very brittle
-            this.Macros.Add("BinDir", Bam.Core.TokenizedString.CreateInline("$(publishdir)"));
-            this.Macros.Add("LibDir", Bam.Core.TokenizedString.CreateInline("$(publishdir)"));
-            this.Macros.Add("PluginDir", Bam.Core.TokenizedString.CreateInline("$(publishdir)"));
+            this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)", new [] {this.PublishDir}));
+            this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
         }
 
         private void
@@ -142,15 +169,15 @@ namespace Publisher
                 case Bam.Core.EPlatform.Windows:
                 case Bam.Core.EPlatform.Linux:
                     {
-                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)"));
-                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)"));
-                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(publishdir)/plugins"));
+                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishDir }));
                     }
                     break;
 
                 case Bam.Core.EPlatform.OSX:
                     {
-                        this.Macros.Add("macOSAppBundleContentsDir", this.CreateTokenizedString("$(publishdir)/$(OutputName).app/Contents"));
+                        this.Macros.Add("macOSAppBundleContentsDir", this.CreateTokenizedString("$(0)/$(OutputName).app/Contents", new[] { this.PublishDir }));
                         this.Macros.Add("macOSAppBundleMacOSDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/MacOS"));
                         this.Macros.Add("macOSAppBundleFrameworksDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Frameworks"));
                         this.Macros.Add("macOSAppBundlePluginsDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Plugins"));
@@ -170,9 +197,9 @@ namespace Publisher
         private void
         setLibraryDefaultMacros()
         {
-            this.Macros.Add("BinDir", this.CreateTokenizedString("$(publishdir)/bin"));
-            this.Macros.Add("LibDir", this.CreateTokenizedString("$(publishdir)/lib"));
-            this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(publishdir)/include"));
+            this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishDir }));
+            this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishDir }));
+            this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishDir }));
         }
 
         public void
@@ -221,6 +248,7 @@ namespace Publisher
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
+            this.publishDir = Bam.Core.TokenizedString.CreateInline("$(publishdir)");
 #else
             if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
@@ -361,16 +389,16 @@ namespace Publisher
                 {
                     module.Macros.Add("publishdir", dependent.CreateTokenizedString("@dir($(0))", new[] { dependent.GeneratedPaths[key] }));
                 }
+                module.SetPublishingDirectory("#inline(0)", new[] { publishDir });
             }
             else
             {
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
                 module.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                module.SetPublishingDirectory("$(0)", new[] { publishDir });
             }
-            var dir = module.CreateTokenizedString("$(0)", new[] { publishDir });
             module.SourceModule = dependent;
             module.SourcePathKey = key;
-            module.PublishingDirectory = dir;
 
             this.Requires(module);
             module.Requires(dependent);
@@ -1160,7 +1188,8 @@ namespace Publisher
             }
         }
 
-        public ICollatedObject
+#if D_NEW_PUBLISHING
+        public ICollatedObject2
         Find<DependentModule>() where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
@@ -1171,7 +1200,7 @@ namespace Publisher
 
             foreach (var dep in this.Requirements)
             {
-                var obj = dep as CollatedObject;
+                var obj = dep as ICollatedObject2;
                 if (obj.SourceModule == dependent)
                 {
                     return obj;
@@ -1179,5 +1208,6 @@ namespace Publisher
             }
             return null;
         }
+#endif
     }
 }

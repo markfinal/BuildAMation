@@ -100,9 +100,14 @@ namespace PluginTest
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
+#if true
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+#else
+            this.BinDir = this.CreateTokenizedString("$(0)/custom", new [] { this.PublishDir });
+            this.PluginDir = this.BinDir;
+#endif
             this.Include2<Application>(C.ConsoleApplication.Key, this.BinDir);
-            //this.Find<Plugin>().SubDirectory = Bam.Core.TokenizedString.CreateVerbatim("subdir");
+            (this.Find<Plugin>() as Publisher.CollatedObject2).SetPublishingDirectory("$(0)/subdir", new[] { this.BinDir });
 #else
             var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Plugin>(C.Plugin.Key, ".", app);

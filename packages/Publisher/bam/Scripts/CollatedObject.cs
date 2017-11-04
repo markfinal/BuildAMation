@@ -78,6 +78,15 @@ namespace Publisher
                 return this.publishingDirectory;
             }
         }
+#if true
+        public void
+        SetPublishingDirectory(
+            string original,
+            params Bam.Core.TokenizedString[] positional)
+        {
+            this.publishingDirectory = this.CreateTokenizedString(original, positional);
+        }
+#else
         public Bam.Core.TokenizedString PublishingDirectory
         {
             set
@@ -85,6 +94,7 @@ namespace Publisher
                 this.publishingDirectory = value;
             }
         }
+#endif
 
         public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject2> DependentCollations
         {
