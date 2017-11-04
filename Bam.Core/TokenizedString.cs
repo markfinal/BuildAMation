@@ -523,30 +523,18 @@ namespace Bam.Core
                     continue;
                 }
 
-                t.ParseInternal(null);
+                t.ParseInternalWithAlreadyParsedCheck(null);
                 Log.DetailProgress("{0,3}%", (int)(++count * scale));
             }
             AllStringsParsed = true;
         }
 
         /// <summary>
-        /// Parse a TokenizedString with no macro overrides.
-        /// No string is returned, use ToString().
-        /// Failure to parse are stored in the TokenizedString and will be displayed as an exception
-        /// message when used.
-        /// </summary>
-        public void
-        Parse()
-        {
-            this.Parse(null);
-        }
-
-        /// <summary>
-        /// Parsed a TokenizedString with another source of macro overrides.
+        /// Parsed a TokenizedString.
         /// Pre-functions are evaluated first.
         /// The order of source of tokens are checked in the follow order:
         /// - Positional tokens.
-        /// - Any custom macros
+        /// - Any custom macros (will be none in this context)
         /// - Global macros (from the Graph)
         /// - Macros in the associated Module
         /// - Macros in the Tool associated with the Module
@@ -556,10 +544,8 @@ namespace Bam.Core
         /// Failure to parse are stored in the TokenizedString and will be displayed as an exception
         /// message when used.
         /// </summary>
-        /// <param name="customMacros">Custom macros.</param>
         public void
-        Parse(
-            MacroList customMacros)
+        Parse()
         {
             if (this.ParsedString != null)
             {
@@ -570,31 +556,56 @@ namespace Bam.Core
                     this.parsedStackTrace,
                     AllStringsParsed ? " after the string parsing phase" : string.Empty);
             }
-            this.ParseInternal(customMacros);
+            this.ParseInternalWithAlreadyParsedCheck(null);
             lock (StringsForParsing)
             {
                 StringsForParsing.Remove(this);
             }
         }
 
-        private void
-        ParseInternal(
-            MacroList customMacros)
+        /// <summary>
+        /// Parsed a TokenizedString with a custom source of macro overrides.
+        /// This performs a similar operation to Parse(), except that the parsed string is not saved, but is returned
+        /// from the function.
+        /// This allows TokenizedStrings to be re-parsed with different semantics to their tokens, but will not affect
+        /// the existing parse result.
+        /// The array of MacroLists is evaluated from front to back, so if there are duplicate macros in several MacroLists
+        /// the first encountered will be the chosen value.
+        /// No errors or exceptions are reported or saved from using this function, so use it sparingly and with care.
+        /// </summary>
+        /// <param name="customMacroArray">Array of custom macros.</param>
+        public string
+        UncachedParse(
+            Array<MacroList> customMacroArray)
+        {
+            return this.ParseInternal(customMacroArray);
+        }
+
+        private string
+        ParseInternalWithAlreadyParsedCheck(
+            Array<MacroList> customMacroArray)
         {
             if (this.ParsedString != null)
             {
-                return;
+                return this.ParsedString;
             }
+            return this.ParseInternal(customMacroArray);
+        }
+
+        private string
+        ParseInternal(
+            Array<MacroList> customMacroArray)
+        {
             if (this.IsInline)
             {
                 throw new Exception("Inline TokenizedString cannot be parsed, {0}", this.OriginalString);
             }
             if (this.IsAliased)
             {
-                this.Alias.ParseInternal(customMacros);
+                this.Alias.ParseInternalWithAlreadyParsedCheck(customMacroArray);
             }
 
-            this.Tokens = SplitIntoTokens(this.EvaluatePreFunctions(this.OriginalString, customMacros), TokenRegExPattern).ToList<string>();
+            this.Tokens = SplitIntoTokens(this.EvaluatePreFunctions(this.OriginalString, customMacroArray), TokenRegExPattern).ToList<string>();
 
             System.Func<TokenizedString, TokenizedString, int, string> expandTokenizedString = (source, tokenString, currentIndex) =>
                 {
@@ -608,12 +619,31 @@ namespace Bam.Core
                         if (tokenString.IsInline)
                         {
                             // current token expands to nothing, and the inline string's tokens are processed next
-                            source.Tokens.InsertRange(currentIndex + 1, SplitIntoTokens(tokenString.EvaluatePreFunctions(tokenString.OriginalString, source.ModuleWithMacros.Macros), TokenRegExPattern).ToList<string>());
+                            source.Tokens.InsertRange(currentIndex + 1, SplitIntoTokens(tokenString.EvaluatePreFunctions(tokenString.OriginalString, new Array<MacroList>{ source.ModuleWithMacros.Macros }), TokenRegExPattern).ToList<string>());
                             return string.Empty;
                         }
 
                         // recursive
-                        tokenString.ParseInternal(null);
+                        tokenString.ParseInternalWithAlreadyParsedCheck(null);
+                        if (!tokenString.IsParsed)
+                        {
+                            // create a list of MacroLists, starting with the original Module's macro
+                            // and then appending the Module in the parent TokenizedString
+                            // it's a single level addition
+                            // priority is thus taken for original macros, but any missing macros
+                            // from that first macrolist can now be looked for in the second
+                            var macroList = new Array<MacroList>();
+                            if (null != tokenString.ModuleWithMacros)
+                            {
+                                macroList.Add(tokenString.ModuleWithMacros.Macros);
+                            }
+                            macroList.Add(source.ModuleWithMacros.Macros);
+                            var customResult = tokenString.ParseInternalWithAlreadyParsedCheck(macroList);
+                            if (null != customResult)
+                            {
+                                return customResult;
+                            }
+                        }
                     }
                     return tokenString.ToString();
                 };
@@ -642,9 +672,10 @@ namespace Bam.Core
                     continue;
                 }
                 // step 2 : try to resolve with custom macros passed to the Parse function
-                else if (null != customMacros && customMacros.Dict.ContainsKey(token))
+                else if (null != customMacroArray && (null != customMacroArray.FirstOrDefault(item => item.Dict.ContainsKey(token))))
                 {
-                    parsedString.Append(expandTokenizedString(this, customMacros.Dict[token], index));
+                    var containingMacroList = customMacroArray.First(item => item.Dict.ContainsKey(token));
+                    parsedString.Append(expandTokenizedString(this, containingMacroList.Dict[token], index));
                     continue;
                 }
                 // step 3 : try macros in the global Graph, common to all modules
@@ -687,9 +718,10 @@ namespace Bam.Core
                     var message = new System.Text.StringBuilder();
                     message.AppendFormat("unrecognized token '{0}'", token);
                     message.AppendLine();
-                    if (null != customMacros)
+                    if (null != customMacroArray)
                     {
-                        message.AppendLine("Searched in custom macros");
+                        message.AppendFormat("Searched in {0} custom macro lists", customMacroArray.Count);
+                        message.AppendLine();
                     }
                     message.AppendLine("Searched in global macros");
                     if (null != this.ModuleWithMacros)
@@ -702,20 +734,27 @@ namespace Bam.Core
                             message.AppendLine();
                         }
                     }
-                    message.AppendLine("TokenizedString created with this stack trace:");
-                    message.AppendLine(this.CreationStackTrace);
                     this.parsingErrorMessage = message.ToString();
-                    return;
+                    return string.Empty;
                 }
             }
             var functionEvaluated = this.EvaluatePostFunctions(NormalizeDirectorySeparators(parsedString.ToString()));
-            if (null == customMacros)
+            // when using a custom array of MacroLists, do not store the parsed string
+            // instead just return it
+            // this allows a TokenizedString to be re-parsed with different semantics, but does not
+            // permanently change it
+            if (null == customMacroArray)
             {
                 this.ParsedString = functionEvaluated;
                 this.parsingErrorMessage = null;
                 this.parsedStackTrace = getStacktrace();
                 Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
             }
+            else
+            {
+                Log.DebugMessage("Converted (with custom macros) '{0}' to '{1}'", this.OriginalString, functionEvaluated);
+            }
+            return functionEvaluated;
         }
 
         private string
@@ -1010,7 +1049,7 @@ namespace Bam.Core
         private bool
         IsTokenValid(
             string token,
-            MacroList customMacros)
+            Array<MacroList> customMacroArray)
         {
             // step 1 : is the token positional, i.e. was set up at creation time
             var positional = GetMatches(token, PositionalTokenRegExPattern).FirstOrDefault();
@@ -1020,7 +1059,7 @@ namespace Bam.Core
                 return (positionalIndex <= this.PositionalTokens.Count);
             }
             // step 2 : try to resolve with custom macros passed to the Parse function
-            else if (null != customMacros && customMacros.Dict.ContainsKey(token))
+            else if (null != customMacroArray && (null != customMacroArray.FirstOrDefault(item => item.Dict.ContainsKey(token))))
             {
                 return true;
             }
@@ -1061,7 +1100,7 @@ namespace Bam.Core
         private string
         EvaluatePreFunctions(
             string originalExpression,
-            MacroList customMacros)
+            Array<MacroList> customMacroArray)
         {
             System.Text.RegularExpressions.MatchCollection matches = null;
             try
@@ -1100,7 +1139,7 @@ namespace Bam.Core
                 {
                     expressionText.Append(capture.Value);
                 }
-                var expression = this.EvaluatePreFunctions(expressionText.ToString(), customMacros);
+                var expression = this.EvaluatePreFunctions(expressionText.ToString(), customMacroArray);
                 switch (functionName)
                 {
                     case "valid":
@@ -1117,7 +1156,7 @@ namespace Bam.Core
                                 }
 
                                 // Note: with nested valid pre-functions, macros can be validated as many times as they are nested
-                                if (this.IsTokenValid(token, customMacros))
+                                if (this.IsTokenValid(token, customMacroArray))
                                 {
                                     continue;
                                 }
