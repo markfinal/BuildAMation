@@ -497,7 +497,7 @@ namespace Publisher
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 // the publishdir is different for each anchor, so dependents may be duplicated
-                // if referenced by a different anchor
+                // if referenced by multiple anchors
                 if (null != anchor)
                 {
                     module.Macros.Add("publishdir", dependent.CreateTokenizedString("@dir($(0))", new[] { anchor.SourceModule.GeneratedPaths[anchor.SourcePathKey] }));
@@ -506,14 +506,13 @@ namespace Publisher
                 {
                     module.Macros.Add("publishdir", dependent.CreateTokenizedString("@dir($(0))", new[] { dependent.GeneratedPaths[key] }));
                 }
-                module.SetPublishingDirectory("#inline(0)", new[] { publishDir });
             }
             else
             {
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
                 module.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-                module.SetPublishingDirectory("$(0)", new[] { publishDir });
             }
+            module.SetPublishingDirectory("$(0)", new[] { publishDir });
             module.SourceModule = dependent;
             module.SourcePathKey = key;
 
