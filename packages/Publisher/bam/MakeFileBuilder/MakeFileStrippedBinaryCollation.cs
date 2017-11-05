@@ -32,13 +32,13 @@ namespace Publisher
     public sealed class MakeFileStrippedBinaryCollation :
         IStrippedBinaryCollationPolicy
     {
-#if D_NEW_PUBLISHING
-#else
         void
         IStrippedBinaryCollationPolicy.CollateStrippedBinaries(
             StrippedBinaryCollation sender,
             Bam.Core.ExecutionContext context)
         {
+#if D_NEW_PUBLISHING
+#else
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(Bam.Core.TokenizedString.CreateVerbatim("publish_stripped_binaries"), isPhony: true);
@@ -56,7 +56,7 @@ namespace Publisher
                     rule.AddPrerequisite(rules.Targets[0]);
                 }
             }
-        }
 #endif
+        }
     }
 }

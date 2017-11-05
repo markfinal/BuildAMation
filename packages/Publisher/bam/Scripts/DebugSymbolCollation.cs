@@ -32,6 +32,43 @@ using System.Linq;
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
+    public abstract class DebugSymbolCollation :
+        Bam.Core.Module
+    {
+        private IDebugSymbolCollationPolicy Policy = null;
+
+        public sealed override void
+        Evaluate()
+        {
+            // TODO
+        }
+
+        protected sealed override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.CollateDebugSymbols(this, context);
+        }
+
+        protected sealed override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            switch (mode)
+            {
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "DebugSymbolCollation";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IDebugSymbolCollationPolicy>.Create(className);
+                    }
+                    break;
+            }
+        }
+    }
 #else
     /// <summary>
     /// Derive from this module to generate a standalone directory of extracted debug symbol files

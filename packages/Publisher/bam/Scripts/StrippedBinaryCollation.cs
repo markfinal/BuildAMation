@@ -32,6 +32,43 @@ using System.Linq;
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
+    public abstract class StrippedBinaryCollation :
+        Bam.Core.Module
+    {
+        private IStrippedBinaryCollationPolicy Policy = null;
+
+        public sealed override void
+        Evaluate()
+        {
+            // TODO
+        }
+
+        protected sealed override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.CollateStrippedBinaries(this, context);
+        }
+
+        protected sealed override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            switch (mode)
+            {
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "StrippedBinaryCollation";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IStrippedBinaryCollationPolicy>.Create(className);
+                    }
+                    break;
+            }
+        }
+    }
 #else
     /// <summary>
     /// Derive from this module to generate a standalone directory of stripped binaries and other

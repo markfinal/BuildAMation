@@ -74,7 +74,7 @@ namespace Test5
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
 
-            this.Include2<MyDynamicLibTestApp>(C.ConsoleApplication.Key, this.BinDir);
+            this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, this.BinDir);
 #else
             var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);
@@ -106,13 +106,14 @@ namespace Test5
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.Library);
 
-            this.Include2<Test4.MyDynamicLib>(C.DynamicLibrary.Key, this.BinDir);
+            this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, this.BinDir);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Include2<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey, this.LibDir);
+                // TODO: when in library mode, can this be done automatically?
+                this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey, this.LibDir);
             }
             // TODO: this needs to be fixed
-            //this.IncludeFile2<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir);
+            //this.IncludeFile<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir);
 #else
             var dll = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -135,7 +136,10 @@ namespace Test5
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+#else
             this.CreateSymbolsFrom<RuntimePackage>();
+#endif
         }
     }
 
@@ -149,7 +153,10 @@ namespace Test5
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+#else
             this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
+#endif
         }
     }
 }
