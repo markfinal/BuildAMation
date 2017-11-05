@@ -139,29 +139,55 @@ namespace Publisher
             }
         }
 
-        public Bam.Core.TokenizedString BinDir
+        public Bam.Core.TokenizedString ExecutableDir
         {
             get
             {
-                return this.Macros["BinDir"];
+                return this.Macros["ExecutableDir"];
             }
 
             set
             {
-                this.Macros["BinDir"] = value;
+                this.Macros["ExecutableDir"] = value;
             }
         }
 
-        public Bam.Core.TokenizedString LibDir
+        public Bam.Core.TokenizedString DynamicLibraryDir
         {
             get
             {
-                return this.Macros["LibDir"];
+                return this.Macros["DynamicLibraryDir"];
             }
 
             set
             {
-                this.Macros["LibDir"] = value;
+                this.Macros["DynamicLibraryDir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString StaticLibraryDir
+        {
+            get
+            {
+                return this.Macros["StaticLibraryDir"];
+            }
+
+            set
+            {
+                this.Macros["StaticLibraryDir"] = value;
+            }
+        }
+
+        public Bam.Core.TokenizedString ImportLibraryDir
+        {
+            get
+            {
+                return this.Macros["ImportLibraryDir"];
+            }
+
+            set
+            {
+                this.Macros["ImportLibraryDir"] = value;
             }
         }
 
@@ -194,8 +220,13 @@ namespace Publisher
         private void
         SetConsoleApplicationDefaultMacros()
         {
-            this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
-            this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            if (Bam.Core.OSUtilities.CurrentOS == Bam.Core.EPlatform.Windows)
+            {
+                this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+            }
             this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
         }
 
@@ -205,10 +236,21 @@ namespace Publisher
             switch (Bam.Core.OSUtilities.CurrentOS)
             {
                 case Bam.Core.EPlatform.Windows:
+                    {
+                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishDir }));
+                    }
+                    break;
+
                 case Bam.Core.EPlatform.Linux:
                     {
-                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
-                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
+                        //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishDir }));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishDir }));
                     }
                     break;
@@ -221,8 +263,10 @@ namespace Publisher
                         this.Macros.Add("macOSAppBundlePluginsDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Plugins"));
                         this.Macros.Add("macOSAppBundleResourcesDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Resources"));
                         this.Macros.Add("macOSAppBundleSharedSupportDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/SharedSupport"));
-                        this.Macros.Add("BinDir", this.CreateTokenizedString("$(macOSAppBundleMacOSDir)"));
-                        this.Macros.Add("LibDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(macOSAppBundleMacOSDir)"));
+                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(macOSAppBundlePluginsDir)"));
                     }
                     break;
@@ -235,9 +279,15 @@ namespace Publisher
         private void
         setLibraryDefaultMacros()
         {
-            this.Macros.Add("BinDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishDir }));
-            this.Macros.Add("LibDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishDir }));
+            this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishDir }));
+            this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishDir }));
+            this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishDir }));
+            if (Bam.Core.OSUtilities.CurrentOS == Bam.Core.EPlatform.Windows)
+            {
+                this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishDir }));
+            }
             this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishDir }));
+            this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishDir }));
         }
 
         public void
@@ -268,7 +318,7 @@ namespace Publisher
             Bam.Core.PathKey key,
             Bam.Core.TokenizedString publishDir)
         {
-            var gen = this.GetType().GetMethod("Include2", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
+            var gen = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
             var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(item =>
                 item.Namespace == nameSpace && item.IsSubclassOf(typeof(Bam.Core.Module)) && item != this.GetType());
             foreach (var type in moduleTypes)
@@ -415,7 +465,12 @@ namespace Publisher
                 }
                 else if (dep.Key is C.DynamicLibrary || dep.Key is C.Cxx.DynamicLibrary)
                 {
-                    this.IncludeNoGather(dep.Key, dep.Value, this.LibDir, anchor);
+                    this.IncludeNoGather(dep.Key, dep.Value, this.DynamicLibraryDir, anchor);
+                    // TODO: import directory?
+                }
+                else if (dep.Key is C.StaticLibrary)
+                {
+                    this.IncludeNoGather(dep.Key, dep.Value, this.StaticLibraryDir, anchor);
                 }
                 else
                 {
