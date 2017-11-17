@@ -79,7 +79,7 @@ namespace CocoaTest1
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.WindowedApplication);
-            this.Include2<CocoaTest>(C.ConsoleApplication.Key, this.BinDir);
+            this.Include<CocoaTest>(C.ConsoleApplication.Key);
 #else
             this.Include<CocoaTest>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);
 #endif

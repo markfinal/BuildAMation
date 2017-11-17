@@ -243,7 +243,7 @@ namespace EmbedStaticIntoDynamicLibrary
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
-            this.Include2<CApp>(C.ConsoleApplication.Key, this.BinDir);
+            this.Include<CApp>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<CApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<CDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
@@ -262,7 +262,7 @@ namespace EmbedStaticIntoDynamicLibrary
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
-            this.Include2<CxxApp>(C.Cxx.ConsoleApplication.Key, this.BinDir);
+            this.Include<CxxApp>(C.Cxx.ConsoleApplication.Key);
 #else
             var app = this.Include<CxxApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<CxxDynamicLibrary>(C.DynamicLibrary.Key, ".", app);

@@ -90,7 +90,7 @@ namespace Test16
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
-            this.Include2<DynamicApplication>(C.ConsoleApplication.Key, this.BinDir);
+            this.Include<DynamicApplication>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test14.DynamicLibrary1>(C.DynamicLibrary.Key, ".", app);

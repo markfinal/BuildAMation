@@ -131,7 +131,11 @@ namespace Test10
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
-            this.Include2<MyStandaloneApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(BinDir)/Standalone"));
+
+            // two separate anchors
+            this.Include<MyStandaloneApp>(C.ConsoleApplication.Key/*, this.CreateTokenizedString("$(publishdir)/Standalone")*/);
+
+            this.Include<DllDependentApp>(C.ConsoleApplication.Key/*, this.CreateTokenizedString("$(publishdir)/Dynamic")*/);
 #else
             this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Standalone");
             var app = this.Include<DllDependentApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Dynamic");

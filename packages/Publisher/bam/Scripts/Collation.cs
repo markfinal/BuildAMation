@@ -66,6 +66,7 @@ namespace Publisher
         {
             base.Init(parent);
 
+            this.ModuleTypePublishDirectory = this.DefaultModuleTypePublishDirectory;
             this.publishDir = Bam.Core.TokenizedString.CreateInline("$(publishdir)");
         }
 
@@ -397,6 +398,23 @@ namespace Publisher
                             any = true;
                         }
                     }
+                    // TODO: distinguish between GUIApplication and ConsoleApplication?
+                    if (dep is C.ConsoleApplication)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.ConsoleApplication.Key));
+                            any = true;
+                        }
+                    }
+                    if (dep is C.Cxx.ConsoleApplication)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.ConsoleApplication.Key));
+                            any = true;
+                        }
+                    }
                 }
                 foreach (var req in module.Requirements)
                 {
@@ -432,6 +450,22 @@ namespace Publisher
                             any = true;
                         }
                     }
+                    if (req is C.ConsoleApplication)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.ConsoleApplication.Key));
+                            any = true;
+                        }
+                    }
+                    if (req is C.Cxx.ConsoleApplication)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.ConsoleApplication.Key));
+                            any = true;
+                        }
+                    }
                 }
                 return any;
             };
@@ -459,23 +493,55 @@ namespace Publisher
             // now add each as a publishable dependent
             foreach (var dep in allDependents)
             {
-                if (dep.Key is C.Cxx.Plugin || dep.Key is C.Plugin)
+                var modulePublishingDir = this.ModuleTypePublishDirectory(dep.Key, dep.Value);
+                this.IncludeNoGather(dep.Key, dep.Value, modulePublishingDir, anchor);
+            }
+        }
+
+        public delegate Bam.Core.TokenizedString ModuleTypePublishDirectoryDelegate(Bam.Core.Module module, Bam.Core.PathKey key);
+
+        public ModuleTypePublishDirectoryDelegate ModuleTypePublishDirectory
+        {
+            get;
+            set;
+        }
+
+        private Bam.Core.TokenizedString
+        DefaultModuleTypePublishDirectory(
+            Bam.Core.Module module,
+            Bam.Core.PathKey key)
+        {
+            if (module is C.Cxx.Plugin || module is C.Plugin)
+            {
+                return this.PluginDir;
+            }
+            else if (module is C.DynamicLibrary || module is C.Cxx.DynamicLibrary)
+            {
+                if (C.DynamicLibrary.Key == key)
                 {
-                    this.IncludeNoGather(dep.Key, dep.Value, this.PluginDir, anchor);
+                    return this.DynamicLibraryDir;
                 }
-                else if (dep.Key is C.DynamicLibrary || dep.Key is C.Cxx.DynamicLibrary)
+                else if (C.DynamicLibrary.ImportLibraryKey == key)
                 {
-                    this.IncludeNoGather(dep.Key, dep.Value, this.DynamicLibraryDir, anchor);
-                    // TODO: import directory?
-                }
-                else if (dep.Key is C.StaticLibrary)
-                {
-                    this.IncludeNoGather(dep.Key, dep.Value, this.StaticLibraryDir, anchor);
+                    return this.ImportLibraryDir;
                 }
                 else
                 {
-                    throw new System.NotSupportedException(System.String.Format("Module of type {0}", dep.Key.GetType().ToString()));
+                    throw new System.NotSupportedException(System.String.Format("Dynamic library key {0}", key.ToString()));
                 }
+            }
+            else if (module is C.ConsoleApplication || module is C.Cxx.ConsoleApplication)
+            {
+                // TODO: different to GUIApplication?
+                return this.ExecutableDir;
+            }
+            else if (module is C.StaticLibrary)
+            {
+                return this.StaticLibraryDir;
+            }
+            else
+            {
+                throw new System.NotSupportedException(System.String.Format("Module of type {0}", module.GetType().ToString()));
             }
         }
 
@@ -513,32 +579,23 @@ namespace Publisher
         private void
         Include(
             Bam.Core.Module dependent,
-            Bam.Core.PathKey key,
-            Bam.Core.TokenizedString publishDir)
+            Bam.Core.PathKey key)
         {
-            var collatedFile = this.IncludeNoGather(dependent, key, publishDir, null);
+            var modulePublishingDir = this.ModuleTypePublishDirectory(dependent, key);
+            var collatedFile = this.IncludeNoGather(dependent, key, modulePublishingDir, null);
             this.gatherAllDependencies(dependent, key, collatedFile);
         }
 
         public void
         Include<DependentModule>(
-            Bam.Core.PathKey key,
-            Bam.Core.TokenizedString publishDir) where DependentModule : Bam.Core.Module, new()
+            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
             }
-            this.Include(dependent, key, publishDir);
-        }
-
-        public void
-        Include<DependentModule>(
-            Bam.Core.PathKey key,
-            string publishDir) where DependentModule : Bam.Core.Module, new()
-        {
-            this.Include<DependentModule>(key, this.CreateTokenizedString(publishDir));
+            this.Include(dependent, key);
         }
 
         private CollatedFile

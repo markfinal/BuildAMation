@@ -79,7 +79,7 @@ namespace PublishingTest1
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
-            this.Include2<SimpleExe>(C.ConsoleApplication.Key, this.BinDir);
+            this.Include<SimpleExe>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);
@@ -107,7 +107,11 @@ namespace PublishingTest1
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            throw new System.NotImplementedException("TODO");
+#else
             this.CreateSymbolsFrom<Runtime>();
+#endif
         }
     }
 
@@ -121,7 +125,11 @@ namespace PublishingTest1
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            throw new System.NotImplementedException("TODO");
+#else
             this.StripBinariesFrom<Runtime, DebugSymbols>();
+#endif
         }
     }
 }

@@ -40,11 +40,15 @@ namespace PublishingSymlinkTest1
         {
             base.Init(parent);
 
+#if D_NEW_PUBLISHING
+            throw new System.NotImplementedException("TODO");
+#else
             // copy a single data file as the root of all other copies
             var root = this.IncludeFile(this.CreateTokenizedString("$(packagedir)/data/testfile1.txt"), ".");
 
             var symlink = this.IncludeSymlink(this.CreateTokenizedString("$(packagedir)/data/testfile1_link.txt"), ".", root);
             symlink.AssignLinkTarget(null);
+#endif
         }
     }
 }

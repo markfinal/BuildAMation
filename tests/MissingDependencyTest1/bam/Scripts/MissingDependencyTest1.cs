@@ -131,7 +131,7 @@ namespace MissingDependencyTest1
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
-            this.Include2<PluginTest>(C.ConsoleApplication.Key, this.BinDir);
+            this.Include<PluginTest>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<PluginTest>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Plugin>(C.Plugin.Key, ".", app);

@@ -90,7 +90,7 @@ namespace Test8
 
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
-            this.Include2<ApplicationTest>(C.ConsoleApplication.Key, this.BinDir);
+            this.Include<ApplicationTest>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<ApplicationTest>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test7.ExplicitDynamicLibrary>(C.DynamicLibrary.Key, ".", app);

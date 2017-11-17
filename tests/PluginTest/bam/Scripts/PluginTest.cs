@@ -106,7 +106,7 @@ namespace PluginTest
             this.BinDir = this.CreateTokenizedString("$(0)/custom", new [] { this.PublishDir });
             this.PluginDir = this.BinDir;
 #endif
-            this.Include<Application>(C.ConsoleApplication.Key, this.ExecutableDir);
+            this.Include<Application>(C.ConsoleApplication.Key);
             (this.Find<Plugin>() as Publisher.CollatedObject).SetPublishingDirectory("$(0)/subdir", new[] { this.ExecutableDir });
 #else
             var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);

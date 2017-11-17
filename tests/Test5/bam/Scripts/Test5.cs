@@ -74,7 +74,7 @@ namespace Test5
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
 
-            this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, this.ExecutableDir);
+            this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);
@@ -106,11 +106,10 @@ namespace Test5
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.Library);
 
-            this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, this.ExecutableDir);
+            this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                // TODO: when in library mode, can this be done automatically?
-                this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir);
+                this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey);
             }
             // TODO: this needs to be fixed
             //this.IncludeFile<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir);
