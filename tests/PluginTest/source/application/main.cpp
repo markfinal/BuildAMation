@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 typedef void(*PluginFunc)();
 
-#define PLUGIN_SUBDIR "plugins"
+#define PLUGIN_SUBDIR "subdir"
 
 class Plugin
 {
