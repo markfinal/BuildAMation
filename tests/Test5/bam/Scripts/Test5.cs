@@ -75,6 +75,7 @@ namespace Test5
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
 
             this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
+            // TODO: CRT on Windows
 #else
             var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);
