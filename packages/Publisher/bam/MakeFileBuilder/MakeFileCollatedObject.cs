@@ -51,6 +51,26 @@ namespace Publisher
                 collatedInterface.SourcePathKey.ToString(),
                 destinationDir,
                 sender);
+
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
+            meta.CommonMetaData.AddDirectory(destinationDir);
+            var rule = meta.AddRule();
+
+            var topLevel = sender.GetEncapsulatingReferencedModule().GetType().Name;
+            var senderType = sender.GetType().Name;
+            var sourceType = (null != collatedInterface.SourceModule) ? collatedInterface.SourceModule.GetType().FullName : "publishroot";
+            var basename = sourceType + "_" + topLevel + "_" + senderType + "_" + sender.BuildEnvironment.Configuration.ToString() + "_";
+            var sourceFilename = System.IO.Path.GetFileName(copySourcePath.ToString());
+
+            rule.AddTarget(copySourcePath, variableName: basename + sourceFilename);
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+
+            rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
+                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                commandLine.ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
     }
 #else
