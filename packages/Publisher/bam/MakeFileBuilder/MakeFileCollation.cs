@@ -29,32 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
-    public sealed class MakeFileCollatedObject :
-        ICollatedObjectPolicy
-    {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
-        {
-            var collatedInterface = sender as ICollatedObject;
-            var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
-
-            // post-fix with a directory separator to enforce that this is a directory destination
-            var destinationDir = System.String.Format("{0}{1}",
-                collatedInterface.PublishingDirectory.ToString(),
-                System.IO.Path.DirectorySeparatorChar);
-
-            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to '{2}' [{3}]",
-                collatedInterface.SourceModule.ToString(),
-                collatedInterface.SourcePathKey.ToString(),
-                destinationDir,
-                sender);
-        }
-    }
-#endif
-
     public sealed class MakeFileCollation :
         ICollationPolicy
     {
