@@ -5,7 +5,7 @@ import platform
 import subprocess
 import sys
 
-def test_bam(build_dir):
+def test_bam(build_dir, configuration='Release'):
     current_dir = os.getcwd()
     try:
         os.chdir(build_dir)
@@ -15,7 +15,7 @@ def test_bam(build_dir):
         test_args.append('./NuGetPackages/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe')
         test_args.append('--stoponerror')
         test_args.append('--noresult')
-        test_args.append('Bam.Core.Test/bin/Debug/Bam.Core.Test.dll')
+        test_args.append('Bam.Core.Test/bin/%s/Bam.Core.Test.dll' % configuration)
         if platform.system() != "Windows":
             test_args.insert(0, 'mono')
         print >>sys.stdout, "Running command: %s" % ' '.join(test_args)
