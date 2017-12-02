@@ -42,9 +42,6 @@
     <Compile Include="ArrayTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\.nuget\packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Bam.Core\Bam.Core.csproj">
       <Project>{273159d1-e0f0-48e5-8b45-b8bc6b5617f0}</Project>
       <Name>Bam.Core</Name>
