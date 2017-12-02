@@ -19,3 +19,4 @@ PackageDebug
 /docs
 .idea/
 NuGetPackages/
+.nuget/
