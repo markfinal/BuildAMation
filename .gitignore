@@ -14,5 +14,9 @@ PackageDebug
 /Bam/docbuild
 /Bam.Core/obj
 /Bam.Core/docbuild
+/Bam.Core.Test/bin
+/Bam.Core.Test/obj
 /docs
 .idea/
+NuGetPackages/
+.nuget/

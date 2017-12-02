@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from build_bam import build_bam
+from test_bam import test_bam
 from generate_docs import build_documentation
 import fileinput
 from optparse import OptionParser
@@ -224,7 +225,8 @@ def main(options):
         remove_unnecessary_files_from_clone()
         update_version_numbers_in_files(options)
     try:
-        build_bam(cwd, options.coveritypath)
+        build_bam(cwd, coveritypath=options.coveritypath)
+        test_bam(cwd)
         build_documentation(cwd, options.doxygenpath)
         make_coverity_distribution(options)
         make_tar_distribution(options)

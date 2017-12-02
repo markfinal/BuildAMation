@@ -5,7 +5,7 @@ import platform
 import subprocess
 import sys
 
-def build_bam(build_dir, coveritypath=None, rebuild=False):
+def build_bam(build_dir, configuration='Release', coveritypath=None, rebuild=False):
     current_dir = os.getcwd()
     try:
         os.chdir(build_dir)
@@ -31,7 +31,7 @@ def build_bam(build_dir, coveritypath=None, rebuild=False):
             build_args.append("msbuild")
         else:
             raise RuntimeError("Unrecognized platform, %s" % platform.system())
-        build_args.extend(["/property:Configuration=Release", "/nologo", "BuildAMation.sln"])
+        build_args.extend(["/property:Configuration=%s" % configuration, "/nologo", "BuildAMation.sln"])
         if rebuild or coveritypath:
             build_args.append("/t:Rebuild")
         print >>sys.stdout, "Running command: %s" % ' '.join(build_args)
