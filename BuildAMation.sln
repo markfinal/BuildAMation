@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2DA800
 		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bam.Core.Test", "Bam.Core.Test\Bam.Core.Test.csproj", "{691B4CC1-2BAD-403F-BEC0-CFC835018783}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{691B4CC1-2BAD-403F-BEC0-CFC835018783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{691B4CC1-2BAD-403F-BEC0-CFC835018783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{691B4CC1-2BAD-403F-BEC0-CFC835018783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{691B4CC1-2BAD-403F-BEC0-CFC835018783}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
