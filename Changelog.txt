@@ -1,3 +1,9 @@
+02-Dec-2017 Fixes #389. NUnit is added via NuGet packages. This is supported on VisualStudio, VisualStudio for Mac and MonoDevelop.
+Note that VS 2013 is a little backward (tries to modify the .sln), and VS for Mac at least seems to follow the VS 2017 support for NuGet.
+Added a Bam.Core.Test assembly, which uses NUnit markup.
+NuGet packages added for VS to explore and run NUnit tests.
+Also, used NuGet packages in order to run tests from the command line, which are integrated into the release process.
+
 29-Oct-2017 Fixes #380. Eliminating 'lock (this)' expressions and hardening Xcode generation thread safety. THIS IS A BREAKING CHANGE.
 
 'lock (this)' is considered bad for synchronisation, as the caller may also lock the object. Instances of these have been eliminated, either by replacing with a reduced scope lock on private only objects, or using System.Lazy<T> or System.Threading.LazyInitializer for thread-safe object initialization.
