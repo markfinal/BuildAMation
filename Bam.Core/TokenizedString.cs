@@ -95,12 +95,6 @@ namespace Bam.Core
         // note: this is using balancing groups in order to handle nested function calls, or any other instances of parentheses in paths (e.g. Windows 'Program Files (x86)')
         private static readonly string PostFunctionRegExPattern = @"(@(?<func>[a-z]+)\((?<expression>[^\(\)]+|\((?<Depth>)|\)(?<-Depth>))*(?(Depth)(?!))\))";
 
-        private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> VerbatimCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
-        private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> NoModuleCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
-        private static System.Collections.Generic.List<TokenizedString> AllStrings = new System.Collections.Generic.List<TokenizedString>();
-        private static System.Collections.Generic.List<TokenizedString> StringsForParsing = new System.Collections.Generic.List<TokenizedString>();
-        private static bool AllStringsParsed = false;
-        private static System.Collections.Generic.Dictionary<string, System.Func<string, string>> CustomPostUnaryFunctions = new System.Collections.Generic.Dictionary<string, System.Func<string, string>>();
         private static readonly string[] BuiltInPostFunctionNames =
         {
             "basename",
@@ -115,9 +109,17 @@ namespace Bam.Core
             "ifnotempty"
         };
 
-        private static System.TimeSpan RegExTimeout = System.TimeSpan.FromSeconds(5);
-        private static bool RecordStackTraces = false;
+        // static fields, initialised in reset()
+        private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> VerbatimCacheMap;
+        private static System.Collections.Generic.Dictionary<System.Int64, TokenizedString> NoModuleCacheMap;
+        private static System.Collections.Generic.List<TokenizedString> AllStrings;
+        private static System.Collections.Generic.List<TokenizedString> StringsForParsing = new System.Collections.Generic.List<TokenizedString>();
+        private static bool AllStringsParsed;
+        private static System.Collections.Generic.Dictionary<string, System.Func<string, string>> CustomPostUnaryFunctions;
+        private static System.TimeSpan RegExTimeout;
+        private static bool RecordStackTraces;
 
+        // instance fields
         private System.Collections.Generic.List<string> Tokens = null;
         private Module ModuleWithMacros = null;
         private string OriginalString = null;
@@ -224,8 +226,26 @@ namespace Bam.Core
             return string.Empty;
         }
 
+        /// <summary>
+        /// Reset all static state of the TokenizedString class.
+        /// This function is only really useful in unit tests.
+        /// </summary>
+        public static void
+        reset()
+        {
+            VerbatimCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
+            NoModuleCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
+            AllStrings = new System.Collections.Generic.List<TokenizedString>();
+            StringsForParsing = new System.Collections.Generic.List<TokenizedString>();
+            AllStringsParsed = false;
+            CustomPostUnaryFunctions = new System.Collections.Generic.Dictionary<string, System.Func<string, string>>();
+            RecordStackTraces = false;
+            RegExTimeout = System.TimeSpan.FromSeconds(5);
+        }
+
         static TokenizedString()
         {
+            reset();
             RecordStackTraces = CommandLineProcessor.Evaluate(new Options.RecordStackTrace());
             if (RecordStackTraces)
             {

@@ -15,7 +15,8 @@ namespace Bam.Core.Test
             // - BamState.ExecutableDirectory (will be null)
             // - BamState.WorkingDirectory (will be null)
             // - Graph.PackageRepositories (will be empty)
-            this.graph = Graph.Instance;
+            this.graph = Bam.Core.Graph.Instance;
+            Bam.Core.TokenizedString.reset();
         }
 
         [NUnit.Framework.TearDown]
