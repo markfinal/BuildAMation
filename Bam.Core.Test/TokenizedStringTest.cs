@@ -83,5 +83,15 @@ namespace Bam.Core.Test
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("Unknown post-function 'failunittest'"));
         }
+
+        [NUnit.Framework.Test]
+        public void
+        UnknownPreFunction()
+        {
+            var str = Bam.Core.TokenizedString.Create("#failunittest()", null, null);
+            NUnit.Framework.Assert.That(() => str.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
+                Message.Contains("Unknown pre-function 'failunittest'"));
+        }
     }
 }
