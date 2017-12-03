@@ -1,6 +1,7 @@
 namespace Bam.Core.Test
 {
-    [NUnit.Framework.TestFixture]
+    [NUnit.Framework.TestFixture(Author = "Mark Final")]
+    [NUnit.Framework.TestOf(typeof(Bam.Core.Array<>))]
     public class ArrayTest
     {
         Bam.Core.Array<int> intArray;
