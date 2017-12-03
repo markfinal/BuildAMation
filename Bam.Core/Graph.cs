@@ -72,10 +72,17 @@ namespace Bam.Core
             this.MetaData = null;
 
             this.PackageRepositories = new StringArray();
-            var primaryPackageRepo = System.IO.Path.Combine(
-                System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
-                "packages");
-            this.PackageRepositories.AddUnique(primaryPackageRepo);
+            try
+            {
+                var primaryPackageRepo = System.IO.Path.Combine(
+                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
+                    "packages");
+                this.PackageRepositories.AddUnique(primaryPackageRepo);
+            }
+            catch (System.ArgumentNullException)
+            {
+                // this can happen during unit testing
+            }
 
             this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new Options.ForceDefinitionFileUpdate());
             this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new Options.UseDebugSymbols());

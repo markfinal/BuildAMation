@@ -70,16 +70,21 @@ namespace Bam.Core
         GetBamDirectory()
         {
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
-            var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
-            // TODO: would be nice to check in advance if any exist
             try
             {
+                var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
                 return rm.GetString("BamInstallDir");
             }
             catch (System.Resources.MissingManifestResourceException)
             {
+                // TODO: would be nice to check in advance if any exist
                 // this assumes running an executable from the BAM! installation folder
                 return System.IO.Path.GetDirectoryName(bamAssembly.Location);
+            }
+            catch (System.NullReferenceException)
+            {
+                // may occur during unittesting
+                return null;
             }
         }
 
@@ -87,15 +92,20 @@ namespace Bam.Core
         GetWorkingDirectory()
         {
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
-            var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
-            // TODO: would be nice to check in advance if any exist
             try
             {
+                var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
                 return rm.GetString("WorkingDir");
             }
             catch (System.Resources.MissingManifestResourceException)
             {
+                // TODO: would be nice to check in advance if any exist
                 return System.IO.Directory.GetCurrentDirectory();
+            }
+            catch (System.NullReferenceException)
+            {
+                // may occur during unittesting
+                return null;
             }
         }
 

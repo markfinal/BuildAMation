@@ -668,7 +668,15 @@ namespace Bam.Core
                     {
                         throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given. Created at {2}.", positionalIndex, this.PositionalTokens.Count, this.CreationStackTrace);
                     }
-                    parsedString.Append(expandTokenizedString(this, this.PositionalTokens[positionalIndex], index));
+                    try
+                    {
+                        var posTokenStr = this.PositionalTokens[positionalIndex];
+                        parsedString.Append(expandTokenizedString(this, posTokenStr, index));
+                    }
+                    catch (System.ArgumentOutOfRangeException ex)
+                    {
+                        throw new Exception(ex, "Positional token index {0} exceeded number of tokens available", positionalIndex, this.PositionalTokens.Count);
+                    }
                     continue;
                 }
                 // step 2 : try to resolve with custom macros passed to the Parse function

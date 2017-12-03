@@ -4,6 +4,27 @@ namespace Bam.Core.Test
     [NUnit.Framework.TestOf(typeof(Bam.Core.TokenizedString))]
     public class TokenizedStringTest
     {
+        private Bam.Core.Graph graph;
+
+        [NUnit.Framework.SetUp]
+        public void
+        Setup()
+        {
+            // because there is no BAM package, this can be set up incorrectly
+            // see
+            // - BamState.ExecutableDirectory (will be null)
+            // - BamState.WorkingDirectory (will be null)
+            // - Graph.PackageRepositories (will be empty)
+            this.graph = Graph.Instance;
+        }
+
+        [NUnit.Framework.TearDown]
+        public void
+        Teardown()
+        {
+            this.graph = null;
+        }
+
         [NUnit.Framework.Test]
         public void
         InlineStringThrowsIfParsed()
@@ -28,6 +49,16 @@ namespace Bam.Core.Test
             var verbatim = Bam.Core.TokenizedString.CreateVerbatim("Hello World");
             NUnit.Framework.Assert.That(() => verbatim.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>());
+        }
+
+        [NUnit.Framework.Test]
+        public void
+        ReferencedButNullPositionalArgumentList()
+        {
+            var str = Bam.Core.TokenizedString.Create("$(0)", null, null);
+            NUnit.Framework.Assert.That(() => str.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
+                InnerException.TypeOf<System.ArgumentOutOfRangeException>());
         }
     }
 }
