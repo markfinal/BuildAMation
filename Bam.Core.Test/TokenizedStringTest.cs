@@ -31,7 +31,8 @@ namespace Bam.Core.Test
         {
             var inline = Bam.Core.TokenizedString.CreateInline("Hello World");
             NUnit.Framework.Assert.That(() => inline.Parse(),
-                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>());
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
+                Message.Contains("Inline TokenizedString cannot be parsed"));
         }
 
         [NUnit.Framework.Test]
@@ -48,7 +49,8 @@ namespace Bam.Core.Test
         {
             var verbatim = Bam.Core.TokenizedString.CreateVerbatim("Hello World");
             NUnit.Framework.Assert.That(() => verbatim.Parse(),
-                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>());
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
+                Message.Contains("is already parsed"));
         }
 
         [NUnit.Framework.Test]
