@@ -34,6 +34,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => inline.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("Inline TokenizedString cannot be parsed"));
+            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
         }
 
         [NUnit.Framework.Test]
@@ -42,6 +43,7 @@ namespace Bam.Core.Test
         {
             var verbatim = Bam.Core.TokenizedString.CreateVerbatim("Hello World");
             NUnit.Framework.Assert.IsTrue(verbatim.IsParsed);
+            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
         }
 
         [NUnit.Framework.Test]
@@ -62,6 +64,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("is already parsed"));
+            NUnit.Framework.Assert.That(2 == Bam.Core.TokenizedString.Count);
         }
 
         [NUnit.Framework.Test]
@@ -72,6 +75,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 InnerException.TypeOf<System.ArgumentOutOfRangeException>());
+            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
         }
 
         [NUnit.Framework.Test]
@@ -83,6 +87,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 InnerException.TypeOf<System.ArgumentOutOfRangeException>());
+            NUnit.Framework.Assert.That(2 == Bam.Core.TokenizedString.Count);
         }
 
         [NUnit.Framework.Test]
@@ -93,6 +98,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("Unknown post-function 'failunittest'"));
+            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
         }
 
         [NUnit.Framework.Test]
@@ -103,6 +109,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("Unknown pre-function 'failunittest'"));
+            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
         }
     }
 }
