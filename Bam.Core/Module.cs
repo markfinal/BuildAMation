@@ -73,27 +73,34 @@ namespace Bam.Core
             this.EncapsulatingType = graph.CommonModuleType.Peek();
 
             // add the package root
-            var packageNameSpace = this.EncapsulatingType.Namespace;
-            var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
-            if (null == packageDefinition)
+            try
             {
-                var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
-                if (includeTests && packageNameSpace.EndsWith(".tests"))
-                {
-                    packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
-                    packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
-                }
-
+                var packageNameSpace = this.EncapsulatingType.Namespace;
+                var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
                 if (null == packageDefinition)
                 {
-                    throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
+                    var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
+                    if (includeTests && packageNameSpace.EndsWith(".tests"))
+                    {
+                        packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
+                        packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
+                    }
+
+                    if (null == packageDefinition)
+                    {
+                        throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
+                    }
                 }
+                this.PackageDefinition = packageDefinition;
+                this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
+                this.AddRedirectedPackageDirectory();
+                this.Macros.AddVerbatim("packagename", packageDefinition.Name);
+                this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
             }
-            this.PackageDefinition = packageDefinition;
-            this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
-            this.AddRedirectedPackageDirectory();
-            this.Macros.AddVerbatim("packagename", packageDefinition.Name);
-            this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
+            catch (System.NullReferenceException)
+            {
+                // graph.Packages can be null during unittests
+            }
             this.Macros.AddVerbatim("modulename", this.GetType().Name);
             this.Macros.Add("OutputName", this.Macros["modulename"]);
 

@@ -256,8 +256,28 @@ namespace Bam.Core
                 }
                 throw new Exception(message.ToString());
             }
+            try
+            {
+                this.CreateTopLevelModuleFromTypes(allTopLevelModuleTypesInPackage, env);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex, "An error occurred creating top-level modules in namespace '{0}':", ns);
+            }
+        }
+
+        /// <summary>
+        /// Create top-level modules from a list of types.
+        /// </summary>
+        /// <param name="moduleTypes">List of module types to create.</param>
+        /// <param name="env">Build environment to create modules for.</param>
+        public void
+        CreateTopLevelModuleFromTypes(
+            System.Collections.Generic.IEnumerable<System.Type> moduleTypes,
+            Environment env)
+        {
             this.BuildEnvironment = env;
-            foreach (var moduleType in allTopLevelModuleTypesInPackage)
+            foreach (var moduleType in moduleTypes)
             {
                 var newModule = MakeModuleOfType(moduleType);
                 if (newModule != null)
@@ -269,9 +289,9 @@ namespace Bam.Core
             if (0 == this.TopLevelModules.Count)
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Namespace '{0}' contains top-level modules, but none could be instantiated", ns);
+                message.AppendFormat("Top-level modules found, but none could be instantiated:");
                 message.AppendLine();
-                foreach (var moduleType in allModuleTypesInPackage)
+                foreach (var moduleType in moduleTypes)
                 {
                     message.AppendFormat("\t{0}", moduleType.ToString());
                     message.AppendLine();
