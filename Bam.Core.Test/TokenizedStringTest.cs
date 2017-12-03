@@ -71,5 +71,15 @@ namespace Bam.Core.Test
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 InnerException.TypeOf<System.ArgumentOutOfRangeException>());
         }
+
+        [NUnit.Framework.Test]
+        public void
+        UnknownPostFunction()
+        {
+            var str = Bam.Core.TokenizedString.Create("@failunittest()", null, null);
+            NUnit.Framework.Assert.That(() => str.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
+                Message.Contains("Unknown post-function 'failunittest'"));
+        }
     }
 }
