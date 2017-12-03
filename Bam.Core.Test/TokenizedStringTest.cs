@@ -48,7 +48,17 @@ namespace Bam.Core.Test
         ParsingAParsedStringThrows()
         {
             var verbatim = Bam.Core.TokenizedString.CreateVerbatim("Hello World");
+            // verbatim strings do not require parsing
             NUnit.Framework.Assert.That(() => verbatim.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
+                Message.Contains("is already parsed"));
+
+            var str = Bam.Core.TokenizedString.Create("Hello World", null, null);
+            NUnit.Framework.Assert.IsFalse(object.ReferenceEquals(verbatim, str));
+            // first parse
+            str.Parse();
+            // second parse
+            NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("is already parsed"));
         }
