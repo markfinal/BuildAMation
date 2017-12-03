@@ -60,5 +60,16 @@ namespace Bam.Core.Test
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 InnerException.TypeOf<System.ArgumentOutOfRangeException>());
         }
+
+        [NUnit.Framework.Test]
+        public void
+        ReferencedButMissingPositionalArgumentList()
+        {
+            var one = Bam.Core.TokenizedString.CreateVerbatim("Hello");
+            var str = Bam.Core.TokenizedString.Create("$(0) $(1)", null, new TokenizedStringArray{one});
+            NUnit.Framework.Assert.That(() => str.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
+                InnerException.TypeOf<System.ArgumentOutOfRangeException>());
+        }
     }
 }
