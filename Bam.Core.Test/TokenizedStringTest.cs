@@ -146,6 +146,30 @@ namespace Bam.Core.Test
 
         [NUnit.Framework.Test]
         public void
+        UseBuiltInModuleMacros()
+        {
+            var env = new Bam.Core.Environment();
+            env.Configuration = Bam.Core.EConfiguration.Debug;
+            this.graph.CreateTopLevelModuleFromTypes(new[] { typeof(TokenizedStringTestModule) }, env);
+            NUnit.Framework.Assert.That(1 == Bam.Core.Module.Count);
+
+            // macros created by a new Module (in unittest mode anyway)
+            // modulename
+            // OutputName (same object as modulename)
+            // config
+            NUnit.Framework.Assert.That(2 == Bam.Core.TokenizedString.Count);
+
+            var module = TokenizedStringTest.testModule;
+            var str = module.CreateTokenizedString("'$(modulename)' in '$(config)'");
+            str.Parse();
+            NUnit.Framework.Assert.That(str.ToString(),
+                NUnit.Framework.Is.EqualTo("'TokenizedStringTestModule' in 'Debug'"));
+
+            TokenizedStringTest.testModule = null;
+        }
+
+        [NUnit.Framework.Test]
+        public void
         CanAddVerbatimMacro()
         {
             var env = new Bam.Core.Environment();
