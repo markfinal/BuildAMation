@@ -67,7 +67,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => inline.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("Inline TokenizedString cannot be parsed"));
-            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(1));
         }
 
         [NUnit.Framework.Test]
@@ -76,7 +76,7 @@ namespace Bam.Core.Test
         {
             var verbatim = Bam.Core.TokenizedString.CreateVerbatim("Hello World");
             NUnit.Framework.Assert.IsTrue(verbatim.IsParsed);
-            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(1));
         }
 
         [NUnit.Framework.Test]
@@ -90,14 +90,14 @@ namespace Bam.Core.Test
                 Message.Contains("is already parsed"));
 
             var str = Bam.Core.TokenizedString.Create("Hello World", null, null);
-            NUnit.Framework.Assert.IsFalse(object.ReferenceEquals(verbatim, str));
+            NUnit.Framework.Assert.That(str, NUnit.Framework.Is.Not.SameAs(verbatim));
             // first parse
             str.Parse();
             // second parse
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("is already parsed"));
-            NUnit.Framework.Assert.That(2 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(2));
         }
 
         [NUnit.Framework.Test]
@@ -108,19 +108,19 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 InnerException.TypeOf<System.ArgumentOutOfRangeException>());
-            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(1));
         }
 
         [NUnit.Framework.Test]
         public void
         ReferencedButMissingPositionalArgumentList()
         {
-            var one = Bam.Core.TokenizedString.CreateVerbatim("Hello");
-            var str = Bam.Core.TokenizedString.Create("$(0) $(1)", null, new TokenizedStringArray{one});
+            var hello = Bam.Core.TokenizedString.CreateVerbatim("Hello");
+            var str = Bam.Core.TokenizedString.Create("$(0) $(1)", null, new TokenizedStringArray{hello});
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 InnerException.TypeOf<System.ArgumentOutOfRangeException>());
-            NUnit.Framework.Assert.That(2 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(2));
         }
 
         [NUnit.Framework.Test]
@@ -131,7 +131,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("Unknown post-function 'failunittest'"));
-            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(1));
         }
 
         [NUnit.Framework.Test]
@@ -142,7 +142,7 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(() => str.Parse(),
                 NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
                 Message.Contains("Unknown pre-function 'failunittest'"));
-            NUnit.Framework.Assert.That(1 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(1));
         }
 
         [NUnit.Framework.Test]
@@ -174,14 +174,14 @@ namespace Bam.Core.Test
             var env = new Bam.Core.Environment();
             env.Configuration = Bam.Core.EConfiguration.Debug;
             this.graph.CreateTopLevelModuleFromTypes(new [] {typeof(TokenizedStringTestModule)}, env);
-            NUnit.Framework.Assert.That(1 == Bam.Core.Module.Count);
+            NUnit.Framework.Assert.That(Bam.Core.Module.Count, NUnit.Framework.Is.EqualTo(1));
 
             var module = TokenizedStringTest.testModule;
             module.Macros.AddVerbatim("Macro1", "Hello World");
 
             var str = module.CreateTokenizedString("$(Macro1)");
             str.Parse();
-            NUnit.Framework.Assert.That("Hello World" == str.ToString());
+            NUnit.Framework.Assert.That(str.ToString(), NUnit.Framework.Is.EqualTo("Hello World"));
         }
     }
 }
