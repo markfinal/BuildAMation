@@ -56,6 +56,7 @@ namespace Bam.Core.Test
         Teardown()
         {
             this.graph = null;
+            TokenizedStringTest.testModule = null;
         }
 
         [NUnit.Framework.Test]
@@ -151,21 +152,19 @@ namespace Bam.Core.Test
             var env = new Bam.Core.Environment();
             env.Configuration = Bam.Core.EConfiguration.Debug;
             this.graph.CreateTopLevelModuleFromTypes(new[] { typeof(TokenizedStringTestModule) }, env);
-            NUnit.Framework.Assert.That(1 == Bam.Core.Module.Count);
+            NUnit.Framework.Assert.That(Bam.Core.Module.Count, NUnit.Framework.Is.EqualTo(1));
 
             // macros created by a new Module (in unittest mode anyway)
             // modulename
             // OutputName (same object as modulename)
             // config
-            NUnit.Framework.Assert.That(2 == Bam.Core.TokenizedString.Count);
+            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(2));
 
             var module = TokenizedStringTest.testModule;
             var str = module.CreateTokenizedString("'$(modulename)' in '$(config)'");
             str.Parse();
             NUnit.Framework.Assert.That(str.ToString(),
                 NUnit.Framework.Is.EqualTo("'TokenizedStringTestModule' in 'Debug'"));
-
-            TokenizedStringTest.testModule = null;
         }
 
         [NUnit.Framework.Test]
@@ -183,8 +182,6 @@ namespace Bam.Core.Test
             var str = module.CreateTokenizedString("$(Macro1)");
             str.Parse();
             NUnit.Framework.Assert.That("Hello World" == str.ToString());
-
-            TokenizedStringTest.testModule = null;
         }
     }
 }
