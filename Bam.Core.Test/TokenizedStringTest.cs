@@ -49,6 +49,7 @@ namespace Bam.Core.Test
             // - Graph.PackageRepositories (will be empty)
             this.graph = Bam.Core.Graph.Instance;
             Bam.Core.TokenizedString.reset();
+            Bam.Core.Module.reset();
         }
 
         [NUnit.Framework.TearDown]

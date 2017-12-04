@@ -40,7 +40,22 @@ namespace Bam.Core
         /// <summary>
         /// Static cache of all modules created.
         /// </summary>
-        static protected System.Collections.Generic.List<Module> AllModules = new System.Collections.Generic.List<Module>();
+        static protected System.Collections.Generic.List<Module> AllModules;
+
+        /// <summary>
+        /// Reset all static state of the Module class.
+        /// This function is only really useful in unit tests.
+        /// </summary>
+        public static void
+        reset()
+        {
+            AllModules = new System.Collections.Generic.List<Module>();
+        }
+
+        static Module()
+        {
+            reset();
+        }
 
         /// <summary>
         /// Protected constructor (use Init function in general use to configure a module) for a new module. Use Module.Create
