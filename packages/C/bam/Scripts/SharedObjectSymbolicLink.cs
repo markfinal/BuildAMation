@@ -83,9 +83,8 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
-            var target = symlinkInfo.GetContents();
-            if ((null == target) ||
-                target.Name != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.Key].ToString()))
+            var targetPath = symlinkInfo.ContentsPath;
+            if (targetPath != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.Key].ToString()))
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]);
                 return;
