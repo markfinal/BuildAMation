@@ -62,17 +62,6 @@ namespace Bam.Core.Test
 
         [NUnit.Framework.Test]
         public void
-        InlineStringThrowsIfParsed()
-        {
-            var inline = Bam.Core.TokenizedString.CreateInline("Hello World");
-            NUnit.Framework.Assert.That(() => inline.Parse(),
-                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.Exception>().And.
-                Message.Contains("Inline TokenizedString cannot be parsed"));
-            NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(1));
-        }
-
-        [NUnit.Framework.Test]
-        public void
         VerbatimStringIsAlreadyParsed()
         {
             var verbatim = Bam.Core.TokenizedString.CreateVerbatim("Hello World");

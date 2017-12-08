@@ -973,6 +973,7 @@ namespace Bam.Core
             }
         }
 
+#if false
         /// <summary>
         /// Make a path which is a placeholder, and will eventually be aliased.
         /// </summary>
@@ -982,6 +983,7 @@ namespace Bam.Core
         {
             return TokenizedString.CreateUncached(string.Empty, this);
         }
+#endif
 
         /// <summary>
         /// Create a TokenizedString associated with this module, using the MacroList in the module.

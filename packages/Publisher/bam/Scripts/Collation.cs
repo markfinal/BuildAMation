@@ -69,7 +69,7 @@ namespace Publisher
             this.ModuleTypePublishDirectory = this.DefaultModuleTypePublishDirectory;
 
             // TODO: if this is used as a position argument, it might end up in an infinite recursion during string parsing
-            this.PublishRoot = Bam.Core.TokenizedString.CreateInline("$(publishdir)");
+            this.PublishRoot = Bam.Core.TokenizedString.Create("$(publishdir)", null);
         }
 
         public sealed override void

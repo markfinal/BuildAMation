@@ -200,7 +200,9 @@ namespace C
                 }
                 else
                 {
-                    clonedChild.InputPath.Aliased(child.InputPath);
+                    throw new Bam.Core.Exception(
+                        new System.NotImplementedException(),
+                        "Container does not include objects implementing the interface '{0}'", typeof(IRequiresSourceModule).ToString());
                 }
             }
         }
