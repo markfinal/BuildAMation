@@ -34,10 +34,9 @@ namespace C
     {
         void
         Symlink(
-            ConsoleApplication sender,
+            SharedObjectSymbolicLink sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.PreBuiltTool tool,
-            Bam.Core.TokenizedString linkname,
-            Bam.Core.TokenizedString target);
+            ConsoleApplication target);
     }
 }

@@ -35,22 +35,21 @@ namespace C
     {
         void
         ISharedObjectSymbolicLinkPolicy.Symlink(
-            ConsoleApplication sender,
+            SharedObjectSymbolicLink sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.PreBuiltTool tool,
-            Bam.Core.TokenizedString linkname,
-            Bam.Core.TokenizedString target)
+            ConsoleApplication target)
         {
             var commandLine = new Bam.Core.StringArray();
             commandLine.Add("-s");
             commandLine.Add("-f");
-            var sourceFile = sender.CreateTokenizedString("@filename($(0))", target);
+            var sourceFile = sender.CreateTokenizedString("@filename($(0))", target.GeneratedPaths[ConsoleApplication.Key]);
             if (!sourceFile.IsParsed)
             {
                 sourceFile.Parse();
             }
             commandLine.Add(sourceFile.ToString());
-            var destination = sender.CreateTokenizedString("@dir($(0))/$(1)", target, linkname);
+            var destination = sender.CreateTokenizedString("@dir($(0))/$(1)", target.GeneratedPaths[ConsoleApplication.Key], target.Macros[sender.Macros["SymlinkUsage"].ToString()]);
             if (!destination.IsParsed)
             {
                 destination.Parse();

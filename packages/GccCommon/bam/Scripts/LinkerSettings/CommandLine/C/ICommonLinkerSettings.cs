@@ -63,6 +63,7 @@ namespace GccCommon
                         module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
                         var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
                         commandLine.Add(System.String.Format("-o {0}", outputName));
+                        // ensure that the NEEDED flag is set to the expected symlink for the shared object
                         if (module.Macros.Contains("SOName"))
                         {
                             var soName = module.Macros["SOName"].ToString();

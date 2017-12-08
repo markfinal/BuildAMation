@@ -38,8 +38,6 @@ namespace C
         IDynamicLibrary,
         IForwardedLibraries
     {
-        private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
-        private SharedObjectSymbolicLinkTool SymlinkTool;
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
 
         protected override void
@@ -59,10 +57,23 @@ namespace C
             {
                 if (!(this is Plugin))
                 {
+                    // TODO: I wonder if these macros can be removed? (requires a change to GccCommon.ICommonLinkerSettings)
                     this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
                     this.Macros.Add("LinkerName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
-                    this.Macros.Add("fullSONamePath", this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["SOName"]));
-                    this.Macros.Add("fullLinkerNamePath", this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["LinkerName"]));
+
+                    var linkerName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
+                        {
+                            module.Macros.AddVerbatim("SymlinkUsage", "LinkerName");
+                            module.SharedObject = this;
+                        });
+                    this.LinkerNameSymbolicLink = linkerName;
+
+                    var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
+                        {
+                            module.Macros.AddVerbatim("SymlinkUsage", "SOName");
+                            module.SharedObject = this;
+                        });
+                    this.SONameSymbolicLink = SOName;
                 }
             }
 
@@ -158,7 +169,7 @@ namespace C
         /// application uses patches from the dependent.
         /// </summary>
         /// <param name="affectedSource">Required source module.</param>
-        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompilePubliclyAndLinkAgainst<DependentModule>(
@@ -192,7 +203,7 @@ namespace C
             {
                 return;
             }
-            this.DependsOn(dependent);
+            this.addLinkDependency(dependent);
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
                 this.forwardedDeps.AddUnique(dependent);
@@ -231,18 +242,6 @@ namespace C
                 return;
             }
             base.ExecuteInternal(context);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                var executable = this.GeneratedPaths[Key];
-                if (this.Macros.Contains("SOName"))
-                {
-                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["SOName"], executable);
-                }
-                if (this.Macros.Contains("LinkerName"))
-                {
-                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["LinkerName"], executable);
-                }
-            }
         }
 
         protected sealed override void
@@ -255,14 +254,9 @@ namespace C
                 return;
             }
             base.GetExecutionPolicy(mode);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                var className = "C." + mode + "SharedObjectSymbolicLink";
-                this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
-                this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
-            }
         }
 
+#if false
 #if __MonoCS__
         public sealed override void
         Evaluate()
@@ -303,6 +297,7 @@ namespace C
             }
         }
 #endif
+#endif
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {
@@ -318,6 +313,20 @@ namespace C
             {
                 throw new System.NotSupportedException("Cannot set a working directory on a DLL");
             }
+        }
+
+        public SharedObjectSymbolicLink
+        LinkerNameSymbolicLink
+        {
+            get;
+            private set;
+        }
+
+        public SharedObjectSymbolicLink
+        SONameSymbolicLink
+        {
+            get;
+            private set;
         }
     }
 }

@@ -366,6 +366,14 @@ namespace Publisher
                 // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
                 foreach (var dep in module.Dependents)
                 {
+                    if (dep is C.SharedObjectSymbolicLink)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.SharedObjectSymbolicLink.Key));
+                            any = true;
+                        }
+                    }
                     if (dep is C.Plugin)
                     {
                         if (!allDependents.ContainsKey(dep))
@@ -418,6 +426,14 @@ namespace Publisher
                 }
                 foreach (var req in module.Requirements)
                 {
+                    if (req is C.SharedObjectSymbolicLink)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.SharedObjectSymbolicLink.Key));
+                            any = true;
+                        }
+                    }
                     if (req is C.Plugin)
                     {
                         if (!allDependents.ContainsKey(req))
@@ -515,9 +531,9 @@ namespace Publisher
             {
                 return this.PluginDir;
             }
-            else if (module is C.DynamicLibrary || module is C.Cxx.DynamicLibrary)
+            else if (module is C.DynamicLibrary || module is C.Cxx.DynamicLibrary || module is C.SharedObjectSymbolicLink)
             {
-                if (C.DynamicLibrary.Key == key)
+                if (C.DynamicLibrary.Key == key || C.SharedObjectSymbolicLink.Key == key)
                 {
                     return this.DynamicLibraryDir;
                 }

@@ -139,8 +139,10 @@ namespace GccCommon
             {
                 // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
-                var libraryName = library.Macros.Contains("LinkerName") ?
-                    GetLPrefixLibraryName(library.Macros["LinkerName"].ToString()) :
+                var linkerNameSymLink = (library as C.IDynamicLibrary).LinkerNameSymbolicLink;
+                // TODO: I think there's a problem when there's no linkerName symlink - i.e. taking the full shared object path
+                var libraryName = (linkerNameSymLink != null) ?
+                    GetLPrefixLibraryName(linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.Key].ToString()) :
                     GetLPrefixLibraryName(libraryPath);
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 if (linker.Libraries.Contains(libraryName))

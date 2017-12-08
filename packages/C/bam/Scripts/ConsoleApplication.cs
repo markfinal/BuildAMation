@@ -209,6 +209,21 @@ namespace C
             }
         }
 
+        protected void
+        addLinkDependency(
+            Bam.Core.Module dependent)
+        {
+            if (dependent is IDynamicLibrary && (dependent as IDynamicLibrary).LinkerNameSymbolicLink != null)
+            {
+                this.DependsOn((dependent as IDynamicLibrary).LinkerNameSymbolicLink);
+                this.Requires((dependent as IDynamicLibrary).SONameSymbolicLink);
+            }
+            else
+            {
+                this.DependsOn(dependent);
+            }
+        }
+
         /// <summary>
         /// Application is linked against the DependentModule type.
         /// Any public patches of DependentModule are applied privately to the Application.
@@ -222,7 +237,7 @@ namespace C
             {
                 return;
             }
-            this.DependsOn(dependent);
+            this.addLinkDependency(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
         }
@@ -267,7 +282,7 @@ namespace C
         /// Specified sources and the application compiles and links against the DependentModule.
         /// </summary>
         /// <param name="affectedSource">Required source module.</param>
-        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAndLinkAgainst<DependentModule>(
@@ -279,7 +294,7 @@ namespace C
             {
                 return;
             }
-            this.DependsOn(dependent);
+            this.addLinkDependency(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
             if (additionalSources.Length > 0)
@@ -312,7 +327,7 @@ namespace C
             // recursive
             foreach (var forwarded in withForwarded.ForwardedLibraries)
             {
-                this.DependsOn(forwarded);
+                this.addLinkDependency(forwarded);
                 this.linkedModules.AddUnique(forwarded);
                 this.LinkAllForwardedDependenciesFromLibraries(forwarded);
             }

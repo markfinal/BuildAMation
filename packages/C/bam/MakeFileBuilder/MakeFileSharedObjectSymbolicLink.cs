@@ -35,11 +35,10 @@ namespace C
     {
         void
         ISharedObjectSymbolicLinkPolicy.Symlink(
-            ConsoleApplication sender,
+            SharedObjectSymbolicLink sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.PreBuiltTool tool,
-            Bam.Core.TokenizedString linkname,
-            Bam.Core.TokenizedString target)
+            ConsoleApplication target)
         {
             var makeMeta = sender.MetaData as MakeFileBuilder.MakeFileMeta;
             var rule = makeMeta.Rules[0];
@@ -51,7 +50,7 @@ namespace C
             rule.AddShellCommand(System.String.Format(@"{0} {1} $(notdir $@) $(dir $@)/{2} {3}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
                 commandLineArgs.ToString(' '),
-                linkname.ToString(),
+                target.Macros[sender.Macros["SymlinkUsage"].ToString()].ToString(),
                 CommandLineProcessor.Processor.TerminatingArgs(tool)));
         }
     }
