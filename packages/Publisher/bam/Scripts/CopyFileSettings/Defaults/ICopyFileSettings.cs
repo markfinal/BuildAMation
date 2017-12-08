@@ -29,8 +29,6 @@
 #endregion // License
 namespace Publisher.DefaultSettings
 {
-#if D_NEW_PUBLISHING
-#else
     public static partial class DefaultSettingsExtensions
     {
         public static void
@@ -40,9 +38,9 @@ namespace Publisher.DefaultSettings
         {
             settings.Force = true;
             settings.Verbose = true;
-            settings.Recursive = (module is CollatedDirectory);
+            // TODO: fix me
+            settings.Recursive = false; //(module is CollatedDirectory);
             settings.PreserveAllAttributes = true;
         }
     }
-#endif
 }
