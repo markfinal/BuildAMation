@@ -809,8 +809,11 @@ namespace Bam.Core
                 {
                     throw new Exception("String cannot be fully parsed with the custom macros provided");
                 }
-                this.Tokens = tokens;
+                // need to split into tokens again
+                // so that both unresolved tokens and literal text can be inserted into future strings
+                this.Tokens = SplitIntoTokens(parsedString.ToString(), TokenRegExPattern).ToList<string>();;
                 this.ParsedString = parsedString.ToString();
+                Log.DebugMessage("\t'{0}' --> '{1}'", this.OriginalString, this.ParsedString);
                 return this.ParsedString;
             }
             else
