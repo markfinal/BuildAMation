@@ -257,7 +257,7 @@ namespace Publisher
 
                 case Bam.Core.EPlatform.OSX:
                     {
-                        this.Macros.Add("macOSAppBundleContentsDir", this.CreateTokenizedString("$(0)/$(OutputName).app/Contents", new[] { this.PublishRoot }));
+                        this.Macros.Add("macOSAppBundleContentsDir", this.CreateTokenizedString("$(0)/$(AnchorOutputName).app/Contents", new[] { this.PublishRoot }));
                         this.Macros.Add("macOSAppBundleMacOSDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/MacOS"));
                         this.Macros.Add("macOSAppBundleFrameworksDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Frameworks"));
                         this.Macros.Add("macOSAppBundlePluginsDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Plugins"));
@@ -585,6 +585,7 @@ namespace Publisher
         {
             var modulePublishDir = this.ModuleTypePublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
+            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros["OutputName"]);
             this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
         }
 
