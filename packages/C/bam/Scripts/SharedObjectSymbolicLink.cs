@@ -71,10 +71,10 @@ namespace C
             this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
         }
 
-#if __MonoCS__
         public override void
         Evaluate()
         {
+#if __MonoCS__
             this.ReasonToExecute = null;
             var symlinkPath = this.GeneratedPaths[Key].ToString();
             var symlinkInfo = new Mono.Unix.UnixSymbolicLinkInfo(symlinkPath);
@@ -90,8 +90,10 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]);
                 return;
             }
-        }
+#else
+            throw new System.NotSupportedException("Symbolic links not supported for shared objects on this platform");
 #endif
+        }
 
         protected override void
         GetExecutionPolicy(
