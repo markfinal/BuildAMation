@@ -65,6 +65,15 @@ namespace PublishingTest1
             {
                 this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
             }
+            else if (this.Linker is GccCommon.LinkerBase)
+            {
+                this.PrivatePatch(settings =>
+                    {
+	                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+	                    gccLinker.CanUseOrigin = true;
+	                    gccLinker.RPath.AddUnique("$ORIGIN");
+                    });
+            }
         }
     }
 

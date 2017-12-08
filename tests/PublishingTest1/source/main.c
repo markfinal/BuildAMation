@@ -258,7 +258,7 @@ main(
     int exitStatus = 0;
     char *libDir = 0;
 
-    fprintf(stdout, TestFunction());
+    fprintf(stdout, "%s\n", TestFunction());
 
     /* check if single data file exists next to executable */
     exitStatus += validateTestFile1(exeDir);
