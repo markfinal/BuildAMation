@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test4
 {
-    class MyDynamicLib :
+    sealed class MyDynamicLib :
         C.DynamicLibrary
     {
         protected override void
@@ -65,7 +65,7 @@ namespace Test4
         }
     }
 
-    class MyStaticLib :
+    sealed class MyStaticLib :
         C.StaticLibrary
     {
         protected override void

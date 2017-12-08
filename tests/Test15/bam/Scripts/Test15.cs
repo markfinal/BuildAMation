@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test15
 {
-    class StaticLibrary2 :
+    sealed class StaticLibrary2 :
         C.StaticLibrary
     {
         protected override void
@@ -53,7 +53,7 @@ namespace Test15
         }
     }
 
-    class DynamicLibrary2 :
+    sealed class DynamicLibrary2 :
         C.DynamicLibrary
     {
         protected override void
