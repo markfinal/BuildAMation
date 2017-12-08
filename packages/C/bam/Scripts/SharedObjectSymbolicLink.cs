@@ -71,12 +71,27 @@ namespace C
             this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
         }
 
+#if __MonoCS__
         public override void
         Evaluate()
         {
-            // TODO: fix me
-            this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+            this.ReasonToExecute = null;
+            var symlinkPath = this.GeneratedPaths[Key].ToString();
+            var symlinkInfo = new Mono.Unix.UnixSymbolicLinkInfo(symlinkPath);
+            if (!symlinkInfo.Exists)
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                return;
+            }
+            var target = symlinkInfo.GetContents();
+            if ((null == target) ||
+                target.Name != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.Key].ToString()))
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]);
+                return;
+            }
         }
+#endif
 
         protected override void
         GetExecutionPolicy(
