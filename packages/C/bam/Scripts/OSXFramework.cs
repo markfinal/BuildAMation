@@ -58,9 +58,10 @@ namespace C
             }
         }
 
-        protected OSXFramework()
+        protected abstract Bam.Core.TokenizedString
+        FrameworkLibraryPath
         {
-            this.Macros["FrameworkLibraryPath"] = this.MakePlaceholderPath();
+            get;
         }
 
         private void
@@ -84,6 +85,7 @@ namespace C
         {
             base.Init(parent);
             this.GetIDName();
+            this.Macros["FrameworkLibraryPath"] = this.FrameworkLibraryPath;
         }
 
         /// <summary>
