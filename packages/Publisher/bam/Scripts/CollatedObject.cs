@@ -40,6 +40,7 @@ namespace Publisher
         private Bam.Core.PathKey sourcePathKey;
         private Bam.Core.TokenizedString publishingDirectory;
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
+        private bool isAnchor = false;
 
         Bam.Core.Module ICollatedObject.SourceModule
         {
@@ -76,6 +77,21 @@ namespace Publisher
             get
             {
                 return this.publishingDirectory;
+            }
+        }
+
+        bool ICollatedObject.IsAnchor
+        {
+            get
+            {
+                return this.isAnchor;
+            }
+        }
+        public bool IsAnchor
+        {
+            set
+            {
+                this.isAnchor = value;
             }
         }
 
