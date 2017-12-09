@@ -523,7 +523,7 @@ namespace Bam.Core
 #endif
             if (null == this.ParsedString)
             {
-                throw new Exception("TokenizedString '{0}' has not been parsed{3]{1}{1}Created at:{1}{2}{1}",
+                throw new Exception("TokenizedString '{0}' has not been parsed{3}{1}{1}Created at:{1}{2}{1}",
                     this.OriginalString,
                     System.Environment.NewLine,
                     this.CreationStackTrace,
