@@ -518,7 +518,7 @@ namespace Bam.Core
                 return this.Alias.ToString();
             }
 #endif
-            if (null != this.parsingErrorMessage || null == this.ParsedString)
+            if (null != this.parsingErrorMessage || null == this.ParsedString || null != this.Tokens)
             {
                 throw new Exception("TokenizedString '{0}' has {4}{3}{1}{1}Created at:{1}{2}{1}{1}",
                     this.OriginalString,
