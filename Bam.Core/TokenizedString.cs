@@ -674,6 +674,24 @@ namespace Bam.Core
         }
 #endif
 
+        private void
+        ExtendParsedString(
+            System.Text.StringBuilder parsedString,
+            Array<MacroList> customMacroArray,
+            System.Collections.Generic.List<string> tokens,
+            int index)
+        {
+            var parsedResult = this.GetParsedString(customMacroArray);
+            if (null != this.Tokens)
+            {
+                tokens.InsertRange(index, this.Tokens);
+            }
+            else
+            {
+                parsedString.Append(parsedResult);
+            }
+        }
+
         private string
         ParseInternal(
             Array<MacroList> customMacroArray)
@@ -714,14 +732,7 @@ namespace Bam.Core
                     {
                         var posTokenStr = this.PositionalTokens[positionalIndex];
                         tokens.Remove(token);
-                        if (null == posTokenStr.Tokens)
-                        {
-                            parsedString.Append(posTokenStr.GetParsedString(customMacroArray));
-                        }
-                        else
-                        {
-                            tokens.InsertRange(index, posTokenStr.Tokens);
-                        }
+                        posTokenStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
                     }
                     catch (System.ArgumentOutOfRangeException ex)
                     {
@@ -737,14 +748,7 @@ namespace Bam.Core
                     var containingMacroList = customMacroArray.First(item => item.Dict.ContainsKey(token));
                     var customTokenStr = containingMacroList.Dict[token];
                     tokens.Remove(token);
-                    if (null == customTokenStr.Tokens)
-                    {
-                        parsedString.Append(customTokenStr.GetParsedString(customMacroArray));
-                    }
-                    else
-                    {
-                        tokens.InsertRange(index, customTokenStr.Tokens);
-                    }
+                    customTokenStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
                     continue;
                 }
 
@@ -753,14 +757,7 @@ namespace Bam.Core
                 {
                     var graphTokenStr = graph.Macros.Dict[token];
                     tokens.Remove(token);
-                    if (null == graphTokenStr.Tokens)
-                    {
-                        parsedString.Append(graphTokenStr.GetParsedString(customMacroArray));
-                    }
-                    else
-                    {
-                        tokens.InsertRange(index, graphTokenStr.Tokens);
-                    }
+                    graphTokenStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
                     continue;
                 }
 
@@ -772,14 +769,7 @@ namespace Bam.Core
                     {
                         var moduleMacroStr = this.ModuleWithMacros.Macros.Dict[token];
                         tokens.Remove(token);
-                        if (null == moduleMacroStr.Tokens)
-                        {
-                            parsedString.Append(moduleMacroStr.GetParsedString(customMacroArray));
-                        }
-                        else
-                        {
-                            tokens.InsertRange(index, moduleMacroStr.Tokens);
-                        }
+                        moduleMacroStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
                         continue;
                     }
                     // step 5 : try macros in the Tool attached to the specific module
@@ -787,14 +777,7 @@ namespace Bam.Core
                     {
                         var moduleToolMacroStr = tool.Macros.Dict[token];
                         tokens.Remove(token);
-                        if (null == moduleToolMacroStr.Tokens)
-                        {
-                            parsedString.Append(moduleToolMacroStr.GetParsedString(customMacroArray));
-                        }
-                        else
-                        {
-                            tokens.InsertRange(index, moduleToolMacroStr.Tokens);
-                        }
+                        moduleToolMacroStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
                         continue;
                     }
                 }
@@ -804,8 +787,8 @@ namespace Bam.Core
                 var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
                 if (null != envVar)
                 {
-                    parsedString.Append(envVar);
                     tokens.Remove(token);
+                    parsedString.Append(envVar);
                     continue;
                 }
 
@@ -822,7 +805,7 @@ namespace Bam.Core
                 }
                 // need to split into tokens again
                 // so that both unresolved tokens and literal text can be inserted into future strings
-                this.Tokens = SplitIntoTokens(parsedString.ToString(), TokenRegExPattern).ToList<string>();;
+                this.Tokens = SplitIntoTokens(parsedString.ToString(), TokenRegExPattern).ToList<string>();
                 this.ParsedString = parsedString.ToString();
                 Log.DebugMessage("\t'{0}' --> '{1}'", this.OriginalString, this.ParsedString);
                 return this.ParsedString;
