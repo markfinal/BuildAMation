@@ -110,7 +110,7 @@ namespace Publisher
             get
             {
                 return (null == this.anchor) ||
-                       (this.PackageDefinition == (this.anchor as Bam.Core.Module).PackageDefinition);
+                       ((this as ICollatedObject).SourceModule.PackageDefinition == (this.anchor as ICollatedObject).SourceModule.PackageDefinition);
             }
         }
 
