@@ -38,12 +38,12 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
-            var collatedInterface = sender as ICollatedObject;
-            if (collatedInterface.IsAnchor)
+            if (sender.IsAnchor)
             {
                 // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
                 return;
             }
+            var collatedInterface = sender as ICollatedObject;
 
             var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
 

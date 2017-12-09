@@ -602,7 +602,6 @@ namespace Publisher
             var modulePublishDir = this.ModuleTypePublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
             (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros["OutputName"]);
-            (collatedFile as CollatedObject).IsAnchor = true;
             this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
         }
 
@@ -661,6 +660,7 @@ namespace Publisher
             module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
             module.SourceModule = dependent;
             module.SourcePathKey = key;
+            module.Anchor = anchor;
 
             this.Requires(module);
             module.Requires(dependent);

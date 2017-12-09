@@ -48,7 +48,7 @@ namespace Publisher
             get;
         }
 
-        bool IsAnchor
+        ICollatedObject Anchor
         {
             get;
         }

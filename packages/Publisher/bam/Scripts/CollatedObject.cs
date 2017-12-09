@@ -40,7 +40,7 @@ namespace Publisher
         private Bam.Core.PathKey sourcePathKey;
         private Bam.Core.TokenizedString publishingDirectory;
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
-        private bool isAnchor = false;
+        private ICollatedObject anchor = null;
 
         Bam.Core.Module ICollatedObject.SourceModule
         {
@@ -80,18 +80,37 @@ namespace Publisher
             }
         }
 
-        bool ICollatedObject.IsAnchor
+        ICollatedObject ICollatedObject.Anchor
         {
             get
             {
-                return this.isAnchor;
+                return this.anchor;
             }
         }
-        public bool IsAnchor
+        public ICollatedObject Anchor
         {
             set
             {
-                this.isAnchor = value;
+                this.anchor = value;
+            }
+        }
+
+        // helper function
+        public bool IsAnchor
+        {
+            get
+            {
+                return null == this.anchor;
+            }
+        }
+
+        // helper function (XcodeBuilder)
+        public bool IsInAnchorPackage
+        {
+            get
+            {
+                return (null == this.anchor) ||
+                       (this.PackageDefinition == (this.anchor as Bam.Core.Module).PackageDefinition);
             }
         }
 
