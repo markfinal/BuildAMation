@@ -38,7 +38,21 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
+            if (sender.IsAnchor)
+            {
+                // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
+                return;
+            }
+
+            if (sender.IsInAnchorPackage)
+            {
+                // additionally, any dependents in the same package as the anchor do not need copying as they
+                // are built into the right directory (since Xcode module build dirs do not include the module name)
+                return;
+            }
+
             var collatedInterface = sender as ICollatedObject;
+
             var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
 
             // post-fix with a directory separator to enforce that this is a directory destination
@@ -51,6 +65,34 @@ namespace Publisher
                 collatedInterface.SourcePathKey.ToString(),
                 destinationDir,
                 sender);
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+
+            var commands = new Bam.Core.StringArray();
+            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
+
+            var target = collatedInterface.SourceModule.MetaData as XcodeBuilder.Target;
+            var configuration = target.GetConfiguration(collatedInterface.SourceModule);
+            if (!target.isUtilityType)
+            {
+                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2} {3}",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    destinationDir,
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                target.AddPostBuildCommands(commands, configuration);
+            }
+            else
+            {
+                commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    copySourcePath.ToString(),
+                    destinationDir,
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                target.AddPreBuildCommands(commands, configuration);
+            }
         }
     }
 #else
