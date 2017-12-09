@@ -39,6 +39,8 @@ namespace C.Cxx
         IForwardedLibraries
     {
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+        private SharedObjectSymbolicLink linkerNameSymLink = null;
+        private SharedObjectSymbolicLink soNameSymLink = null;
 
         protected override void
         Init(
@@ -328,18 +330,34 @@ namespace C.Cxx
             }
         }
 
-        public SharedObjectSymbolicLink
-        LinkerNameSymbolicLink
+        SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink
         {
-            get;
-            private set;
+            get
+            {
+                return this.linkerNameSymLink;
+            }
+        }
+        private SharedObjectSymbolicLink LinkerNameSymbolicLink
+        {
+            set
+            {
+                this.linkerNameSymLink = value;
+            }
         }
 
-        public SharedObjectSymbolicLink
-        SONameSymbolicLink
+        SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink
         {
-            get;
-            private set;
+            get
+            {
+                return this.soNameSymLink;
+            }
+        }
+        private SharedObjectSymbolicLink SONameSymbolicLink
+        {
+            set
+            {
+                this.soNameSymLink = value;
+            }
         }
     }
 }
