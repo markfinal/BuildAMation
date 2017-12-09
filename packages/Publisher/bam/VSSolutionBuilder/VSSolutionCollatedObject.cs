@@ -39,6 +39,12 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
             var collatedInterface = sender as ICollatedObject;
+            if (collatedInterface.IsAnchor)
+            {
+                // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
+                return;
+            }
+
             var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
 
             // post-fix with a directory separator to enforce that this is a directory destination
@@ -51,6 +57,34 @@ namespace Publisher
                 collatedInterface.SourcePathKey.ToString(),
                 destinationDir,
                 sender);
+
+            var commandLine = new Bam.Core.StringArray();
+            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+
+            var commands = new Bam.Core.StringArray();
+            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
+
+            var project = collatedInterface.SourceModule.MetaData as VSSolutionBuilder.VSProject;
+            var config = project.GetConfiguration(collatedInterface.SourceModule);
+
+            if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility)
+            {
+                commands.Add(System.String.Format(@"{0} {1} $(OutDir)$(TargetFileName) {2} {3}",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    destinationDir,
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                config.AddPostBuildCommands(commands);
+            }
+            else
+            {
+                commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir).\ {3}",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    copySourcePath.ToStringQuoteIfNecessary(),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                config.AddPreBuildCommands(commands);
+            }
         }
     }
 #else

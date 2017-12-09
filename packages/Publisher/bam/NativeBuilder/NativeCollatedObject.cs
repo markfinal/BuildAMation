@@ -46,7 +46,7 @@ namespace Publisher
                 collatedInterface.PublishingDirectory.ToString(),
                 System.IO.Path.DirectorySeparatorChar);
 
-            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to {2} [{3}]",
+            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to '{2}' [{3}]",
                 collatedInterface.SourceModule.ToString(),
                 collatedInterface.SourcePathKey.ToString(),
                 destinationDir,
