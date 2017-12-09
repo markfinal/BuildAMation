@@ -40,7 +40,7 @@ namespace C
             Bam.Core.PreBuiltTool tool,
             ConsoleApplication target)
         {
-            var makeMeta = sender.MetaData as MakeFileBuilder.MakeFileMeta;
+            var makeMeta = target.MetaData as MakeFileBuilder.MakeFileMeta;
             var rule = makeMeta.Rules[0];
 
             var commandLineArgs = new Bam.Core.StringArray();
