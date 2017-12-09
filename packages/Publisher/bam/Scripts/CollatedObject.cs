@@ -114,6 +114,20 @@ namespace Publisher
             }
         }
 
+        public bool IsAnchorAndApplicationBundle
+        {
+            get
+            {
+                if (!this.IsAnchor)
+                {
+                    throw new Bam.Core.Exception("Only available on anchors");
+                }
+
+                var isAppBundle = this.publishingDirectory.ToString().Contains(".app");
+                return isAppBundle;
+            }
+        }
+
         public void
         SetPublishingDirectory(
             string original,

@@ -38,8 +38,18 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
+            var collatedInterface = sender as ICollatedObject;
+
+            var target = collatedInterface.SourceModule.MetaData as XcodeBuilder.Target;
+
             if (sender.IsAnchor)
             {
+                if (sender.IsAnchorAndApplicationBundle)
+                {
+                    // application bundles are a different output type in Xcode
+                    target.MakeApplicationBundle();
+                }
+
                 // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
                 return;
             }
@@ -50,8 +60,6 @@ namespace Publisher
                 // are built into the right directory (since Xcode module build dirs do not include the module name)
                 return;
             }
-
-            var collatedInterface = sender as ICollatedObject;
 
             var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
 
@@ -72,7 +80,6 @@ namespace Publisher
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
 
-            var target = collatedInterface.SourceModule.MetaData as XcodeBuilder.Target;
             var configuration = target.GetConfiguration(collatedInterface.SourceModule);
             if (!target.isUtilityType)
             {
