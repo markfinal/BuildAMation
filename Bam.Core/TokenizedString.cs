@@ -136,8 +136,8 @@ namespace Bam.Core
 #if NEW_PARSER
 #else
         private TokenizedString Alias = null;
-#endif
         private string parsingErrorMessage = null;
+#endif
         private long hash = 0;
         private string parsedStackTrace = null;
 
@@ -282,7 +282,10 @@ namespace Bam.Core
             if (verbatim)
             {
                 this.ParsedString = NormalizeDirectorySeparators(original);
+#if NEW_PARSER
+#else
                 this.parsingErrorMessage = null; // as verbatim strings are already parsed
+#endif
                 this.parsedStackTrace = getStacktrace();
             }
             else
@@ -294,10 +297,10 @@ namespace Bam.Core
                     this.parsingErrorMessage = null; // as inline strings do not get parsed
                 }
                 else
-#endif
                 {
                     this.parsingErrorMessage = "not been parsed";
                 }
+#endif
             }
         }
 
@@ -518,14 +521,22 @@ namespace Bam.Core
                 return this.Alias.ToString();
             }
 #endif
-            if (null != this.parsingErrorMessage || null == this.ParsedString || null != this.Tokens)
+            if (null == this.ParsedString)
             {
-                throw new Exception("TokenizedString '{0}' has {4}{3}{1}{1}Created at:{1}{2}{1}{1}",
+                throw new Exception("TokenizedString '{0}' has not been parsed{3]{1}{1}Created at:{1}{2}{1}",
+                    this.OriginalString,
+                    System.Environment.NewLine,
+                    this.CreationStackTrace,
+                    AllStringsParsed ? " after the string parsing phase" : string.Empty);
+            }
+            if (null != this.Tokens)
+            {
+                throw new Exception("TokenizedString '{0}' has been parsed to{1}'{4}'{1}but tokens remain unresolved{3}{1}{1}Created at:{1}{2}{1}",
                     this.OriginalString,
                     System.Environment.NewLine,
                     this.CreationStackTrace,
                     AllStringsParsed ? " after the string parsing phase" : string.Empty,
-                    this.parsingErrorMessage);
+                    this.ParsedString);
             }
             return this.ParsedString;
         }
@@ -827,7 +838,6 @@ namespace Bam.Core
                 if (null == customMacroArray)
                 {
                     this.ParsedString = functionEvaluated;
-                    this.parsingErrorMessage = null;
                     this.parsedStackTrace = getStacktrace();
                     Log.DebugMessage(" '{0}' --> '{1}'", this.OriginalString, this.ToString());
                 }
