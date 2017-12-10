@@ -79,6 +79,24 @@ namespace Publisher
             }
         }
 
+        private StripModule
+        StripBinary(
+            ICollatedObject collatedFile)
+        {
+            var stripBinary = Bam.Core.Module.Create<StripModule>(preInitCallback: module =>
+                {
+                    module.SourceModule = collatedFile.SourceModule;
+                    module.SourcePathKey = collatedFile.SourcePathKey;
+                    module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
+                });
+
+            this.DependsOn(stripBinary);
+
+            stripBinary.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            return stripBinary;
+        }
+
         private void
         CloneFile(
             ICollatedObject collatedFile)
@@ -121,16 +139,18 @@ namespace Publisher
                 }
                 else
                 {
-                    throw new System.NotImplementedException();
+                    this.StripBinary(collatedObj);
+                    // TODO: add linkback with debug symbols
                 }
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                throw new System.NotImplementedException();
+                this.StripBinary(collatedObj);
+                // TODO: add linkback with debug symbols
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                throw new System.NotImplementedException();
+                this.StripBinary(collatedObj);
             }
             else
             {

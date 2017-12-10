@@ -31,6 +31,116 @@ using Bam.Core;
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
+    public class StripModule :
+        Bam.Core.Module,
+        ICollatedObject
+    {
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Binary Destination");
+
+        private Bam.Core.Module sourceModule;
+        private Bam.Core.PathKey sourcePathKey;
+        private ICollatedObject anchor = null;
+
+        private IStripToolPolicy Policy;
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<StripTool>();
+            this.RegisterGeneratedFile(Key,
+                this.CreateTokenizedString("$(0)/@filename($(1))",
+                                           new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+        }
+
+        public override void
+        Evaluate()
+        {
+            // TODO
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+            if (null == this.Policy)
+            {
+                return;
+            }
+            this.Policy.Strip(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            switch (mode)
+            {
+                case "Native":
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "Strip";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IStripToolPolicy>.Create(className);
+                    }
+                    break;
+            }
+        }
+
+        Bam.Core.Module ICollatedObject.SourceModule
+        {
+            get
+            {
+                return this.sourceModule;
+            }
+        }
+        public Bam.Core.Module SourceModule
+        {
+            set
+            {
+                this.sourceModule = value;
+            }
+        }
+
+        Bam.Core.PathKey ICollatedObject.SourcePathKey
+        {
+            get
+            {
+                return this.sourcePathKey;
+            }
+        }
+        public Bam.Core.PathKey SourcePathKey
+        {
+            set
+            {
+                this.sourcePathKey = value;
+            }
+        }
+
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
+        {
+            get
+            {
+                return this.Macros["publishingdir"];
+            }
+        }
+
+        ICollatedObject ICollatedObject.Anchor
+        {
+            get
+            {
+                return this.anchor;
+            }
+        }
+        public ICollatedObject Anchor
+        {
+            set
+            {
+                this.anchor = value;
+            }
+        }
+    }
 #else
     public class StripModule :
         Bam.Core.Module
