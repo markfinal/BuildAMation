@@ -37,6 +37,10 @@ namespace Publisher
     {
         private IDebugSymbolCollationPolicy Policy = null;
 
+        // this is doubling up the cost of the this.Requires list, but at less runtime cost
+        // for expanding each CollatedObject to peek as it's properties
+        private System.Collections.Generic.List<ICollatedObject> collatedObjects = new System.Collections.Generic.List<ICollatedObject>();
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -92,6 +96,8 @@ namespace Publisher
             this.DependsOn(createDebugSymbols);
 
             createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            this.collatedObjects.Add(createDebugSymbols);
         }
 
         private void
@@ -113,6 +119,8 @@ namespace Publisher
                     var objCopySettings = settings as IObjCopyToolSettings;
                     objCopySettings.Mode = EObjCopyToolMode.OnlyKeepDebug;
                 });
+
+            this.collatedObjects.Add(createDebugSymbols);
         }
 
         private void
@@ -133,11 +141,13 @@ namespace Publisher
             // since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
             // TODO
             //copyPDBModule.FailWhenSourceDoesNotExist = false;
+            this.collatedObjects.Add(copyPDBModule);
         }
 
         private void
         eachAnchorDependent(
-            ICollatedObject collatedObj)
+            ICollatedObject collatedObj,
+            object customData)
         {
             var sourceModule = collatedObj.SourceModule;
             Bam.Core.Log.MessageAll("\t'{0}'", collatedObj.SourceModule.ToString());
@@ -182,10 +192,11 @@ namespace Publisher
         private void
         findDependentsofAnchor(
             Collation collation,
-            ICollatedObject anchor)
+            ICollatedObject anchor,
+            object customData)
         {
             Bam.Core.Log.MessageAll("Anchor '{0}'", anchor.SourceModule.ToString());
-            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent);
+            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }
 
         /// <summary>
@@ -204,7 +215,21 @@ namespace Publisher
             // debug symbols are made after the initial collation
             this.DependsOn(dependent);
 
-            (dependent as Collation).ForEachAnchor(findDependentsofAnchor);
+            (dependent as Collation).ForEachAnchor(findDependentsofAnchor, null);
+        }
+
+        public ICollatedObject
+        FindDebugSymbols(
+            Bam.Core.Module module)
+        {
+            foreach (var debugSymbols in this.collatedObjects)
+            {
+                if (debugSymbols.SourceModule == module)
+                {
+                    return debugSymbols;
+                }
+            }
+            return null;
         }
     }
 #else

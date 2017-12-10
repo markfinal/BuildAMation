@@ -114,7 +114,8 @@ namespace Publisher
 
         private void
         eachAnchorDependent(
-            ICollatedObject collatedObj)
+            ICollatedObject collatedObj,
+            object customData)
         {
             var sourceModule = collatedObj.SourceModule;
             Bam.Core.Log.MessageAll("\t'{0}'", collatedObj.SourceModule.ToString());
@@ -139,14 +140,26 @@ namespace Publisher
                 }
                 else
                 {
-                    this.StripBinary(collatedObj);
-                    // TODO: add linkback with debug symbols
+                    var stripped = this.StripBinary(collatedObj);
+                    var debugSymbolsCollation = customData as DebugSymbolCollation;
+                    var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
+                    if (null != debugSymbols)
+                    {
+                        var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
+                        this.DependsOn(linkBack);
+                    }
                 }
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                this.StripBinary(collatedObj);
-                // TODO: add linkback with debug symbols
+                var stripped = this.StripBinary(collatedObj);
+                var debugSymbolsCollation = customData as DebugSymbolCollation;
+                var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
+                if (null != debugSymbols)
+                {
+                    var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
+                    this.DependsOn(linkBack);
+                }
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
@@ -161,10 +174,11 @@ namespace Publisher
         private void
         findDependentsofAnchor(
             Collation collation,
-            ICollatedObject anchor)
+            ICollatedObject anchor,
+            object customData)
         {
             Bam.Core.Log.MessageAll("Anchor '{0}'", anchor.SourceModule.ToString());
-            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent);
+            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }
 
         /// <summary>
@@ -195,7 +209,7 @@ namespace Publisher
             this.DependsOn(runtimeDependent);
             this.DependsOn(debugSymbolDependent);
 
-            (runtimeDependent as Collation).ForEachAnchor(findDependentsofAnchor);
+            (runtimeDependent as Collation).ForEachAnchor(findDependentsofAnchor, debugSymbolDependent);
         }
     }
 #else

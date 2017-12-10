@@ -130,7 +130,7 @@ namespace Publisher
         }
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
-        // for expanding each CollatedObject2 to peek as it's properties
+        // for expanding each CollatedObject to peek as it's properties
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
 
         private Bam.Core.TokenizedString PublishRoot
@@ -669,36 +669,38 @@ namespace Publisher
             return collatedFile;
         }
 
-        public delegate void ForEachAnchorDelegate(Collation collation, ICollatedObject anchor);
+        public delegate void ForEachAnchorDelegate(Collation collation, ICollatedObject anchor, object customData);
 
         public void
         ForEachAnchor(
-            ForEachAnchorDelegate anchorDelegate)
+            ForEachAnchorDelegate anchorDelegate,
+            object customData)
         {
             foreach (var obj in this.collatedObjects)
             {
                 var collatedObjectInterface = obj.Value as ICollatedObject;
                 if (null == collatedObjectInterface.Anchor)
                 {
-                    anchorDelegate(this, collatedObjectInterface);
+                    anchorDelegate(this, collatedObjectInterface, customData);
                 }
             }
         }
 
-        public delegate void ForEachCollatedObjectDelegate(ICollatedObject collatedObj);
+        public delegate void ForEachCollatedObjectDelegate(ICollatedObject collatedObj, object customData);
 
         public void
         ForEachCollatedObjectFromAnchor(
             ICollatedObject anchor,
-            ForEachCollatedObjectDelegate collatedObjectDelegate)
+            ForEachCollatedObjectDelegate collatedObjectDelegate,
+            object customData)
         {
-            collatedObjectDelegate(anchor);
+            collatedObjectDelegate(anchor, customData);
             foreach (var obj in this.collatedObjects)
             {
                 var collatedObjectInterface = obj.Value as ICollatedObject;
                 if (anchor == collatedObjectInterface.Anchor)
                 {
-                    collatedObjectDelegate(collatedObjectInterface);
+                    collatedObjectDelegate(collatedObjectInterface, customData);
                 }
             }
         }

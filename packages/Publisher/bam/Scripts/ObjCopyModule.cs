@@ -150,6 +150,30 @@ namespace Publisher
                 this.anchor = value;
             }
         }
+
+        public ObjCopyModule
+        LinkBackToDebugSymbols(
+            StripModule strippedCollatedObject)
+        {
+            var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
+                {
+                    module.SourceModule = strippedCollatedObject;
+                    module.SourcePathKey = StripModule.Key;
+                    module.Macros.Add("publishingdir", strippedCollatedObject.Macros["publishingdir"].Clone(module));
+                });
+            linkDebugSymbols.DependsOn(strippedCollatedObject);
+
+            //linkDebugSymbols.Macros.Add("publishdir", strippedCollatedObject.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            linkDebugSymbols.Macros.Add("publishdir", this.Macros["publishdir"]);
+
+            linkDebugSymbols.PrivatePatch(settings =>
+                {
+                    var objCopySettings = settings as IObjCopyToolSettings;
+                    objCopySettings.Mode = EObjCopyToolMode.AddGNUDebugLink;
+                });
+
+            return linkDebugSymbols;
+        }
     }
 #else
     public class ObjCopyModule :
