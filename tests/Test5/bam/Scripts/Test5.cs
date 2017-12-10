@@ -136,10 +136,7 @@ namespace Test5
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-#else
             this.CreateSymbolsFrom<RuntimePackage>();
-#endif
         }
     }
 

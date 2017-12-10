@@ -37,6 +37,16 @@ namespace Publisher
     {
         private IDebugSymbolCollationPolicy Policy = null;
 
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            // one value, as debug symbols are not generated in IDE projects
+            this.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+        }
+
         public sealed override void
         Evaluate()
         {
@@ -67,6 +77,90 @@ namespace Publisher
                     }
                     break;
             }
+        }
+
+        private void
+        CopyPDB(
+            ICollatedObject collatedFile)
+        {
+            var copyPDBModule = Bam.Core.Module.Create<CollatedFile>();
+            this.DependsOn(copyPDBModule);
+
+            copyPDBModule.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            copyPDBModule.SourceModule = collatedFile.SourceModule;
+            // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
+            copyPDBModule.SourcePathKey = C.ConsoleApplication.PDBKey;
+            copyPDBModule.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(copyPDBModule));
+
+            // since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
+            // TODO
+            //copyPDBModule.FailWhenSourceDoesNotExist = false;
+        }
+
+        private void
+        eachAnchorDependent(
+            ICollatedObject collatedObj)
+        {
+            var sourceModule = collatedObj.SourceModule;
+            Bam.Core.Log.MessageAll("\t'{0}'", collatedObj.SourceModule.ToString());
+
+            if ((sourceModule as C.CModule).IsPrebuilt)
+            {
+                return;
+            }
+
+            if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                if (sourceModule.Tool.Macros.Contains("pdbext"))
+                {
+                    this.CopyPDB(collatedObj);
+                }
+                else
+                {
+                    throw new System.NotImplementedException();
+                }
+            }
+            else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                throw new System.NotImplementedException();
+            }
+            else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                throw new System.NotImplementedException();
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unsupported platform '{0}'", sourceModule.BuildEnvironment.Platform.ToString());
+            }
+        }
+
+        private void
+        findDependentsofAnchor(
+            Collation collation,
+            ICollatedObject anchor)
+        {
+            Bam.Core.Log.MessageAll("Anchor '{0}'", anchor.SourceModule.ToString());
+            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent);
+        }
+
+        /// <summary>
+        /// Create a symbol data mirror from the result of collation.
+        /// </summary>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public void
+        CreateSymbolsFrom<DependentModule>() where DependentModule : Collation, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+
+            // debug symbols are made after the initial collation
+            this.DependsOn(dependent);
+
+            (dependent as Collation).ForEachAnchor(findDependentsofAnchor);
         }
     }
 #else

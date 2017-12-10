@@ -1491,5 +1491,24 @@ namespace Bam.Core
                 }
             }
         }
+
+        /// <summary>
+        /// Clone a TokenizedString, but reassign the Module containing macros.
+        /// Verbatim strings are returned directly.
+        /// </summary>
+        /// <returns>Clone of the string, using the specified module as macro source. Or the verbatim string directly.</returns>
+        public TokenizedString
+        Clone(
+            Module moduleWithMacros)
+        {
+            if (this.Verbatim)
+            {
+                return this;
+            }
+            else
+            {
+                return Create(this.OriginalString, moduleWithMacros, this.PositionalTokens);
+            }
+        }
     }
 }

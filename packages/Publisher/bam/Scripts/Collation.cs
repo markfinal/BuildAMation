@@ -626,7 +626,7 @@ namespace Publisher
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-            var module = Bam.Core.Module.Create<CollatedFile>() as CollatedFile;
+            var module = Bam.Core.Module.Create<CollatedFile>();
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 // the publishdir is different for each anchor, so dependents may be duplicated
@@ -665,6 +665,40 @@ namespace Publisher
             this.Requires(module);
             module.Requires(dependent);
             return module;
+        }
+
+        public delegate void ForEachAnchorDelegate(Collation collation, ICollatedObject anchor);
+
+        public void
+        ForEachAnchor(
+            ForEachAnchorDelegate anchorDelegate)
+        {
+            foreach (var obj in this.collatedObjects)
+            {
+                var collatedObjectInterface = obj.Value as ICollatedObject;
+                if (null == collatedObjectInterface.Anchor)
+                {
+                    anchorDelegate(this, collatedObjectInterface);
+                }
+            }
+        }
+
+        public delegate void ForEachCollatedObjectDelegate(ICollatedObject collatedObj);
+
+        public void
+        ForEachCollatedObjectFromAnchor(
+            ICollatedObject anchor,
+            ForEachCollatedObjectDelegate collatedObjectDelegate)
+        {
+            collatedObjectDelegate(anchor);
+            foreach (var obj in this.collatedObjects)
+            {
+                var collatedObjectInterface = obj.Value as ICollatedObject;
+                if (anchor == collatedObjectInterface.Anchor)
+                {
+                    collatedObjectDelegate(collatedObjectInterface);
+                }
+            }
         }
     }
 #else
