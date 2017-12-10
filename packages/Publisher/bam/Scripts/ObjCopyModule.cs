@@ -50,8 +50,16 @@ namespace Publisher
             base.Init(parent);
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ObjCopyTool>();
+
+            var trueSourceModule = this.sourceModule;
+            if (trueSourceModule is StripModule)
+            {
+                // necessary on Linux, as the real source module needs checking against
+                // C.IDynamicLibrary to identify paths as lib<name>.so.X.Y
+                trueSourceModule = (trueSourceModule as ICollatedObject).SourceModule;
+            }
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) &&
-                this.sourceModule is C.IDynamicLibrary)
+                trueSourceModule is C.IDynamicLibrary)
             {
                 this.RegisterGeneratedFile(Key,
                     this.CreateTokenizedString("$(0)/@filename($(1)).debug",
@@ -163,7 +171,6 @@ namespace Publisher
                 });
             linkDebugSymbols.DependsOn(strippedCollatedObject);
 
-            //linkDebugSymbols.Macros.Add("publishdir", strippedCollatedObject.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
             linkDebugSymbols.Macros.Add("publishdir", this.Macros["publishdir"]);
 
             linkDebugSymbols.PrivatePatch(settings =>
