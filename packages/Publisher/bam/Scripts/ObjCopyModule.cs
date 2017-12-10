@@ -54,12 +54,14 @@ namespace Publisher
                 this.sourceModule is C.IDynamicLibrary)
             {
                 this.RegisterGeneratedFile(Key,
-                    this.CreateTokenizedString("$(0)/@filename($(1)).debug", new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+                    this.CreateTokenizedString("$(0)/@filename($(1)).debug",
+                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
             }
             else
             {
-	            this.RegisterGeneratedFile(Key,
-	                this.CreateTokenizedString("$(0)/@basename($(1)).debug", new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+                this.RegisterGeneratedFile(Key,
+                    this.CreateTokenizedString("$(0)/@basename($(1)).debug",
+                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
             }
         }
 
