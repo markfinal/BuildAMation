@@ -40,11 +40,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.CreateSymbolsFrom<CExecutableRuntime>();
-#endif
         }
     }
 
@@ -58,11 +54,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.CreateSymbolsFrom<CxxExecutableRuntime>();
-#endif
         }
     }
 }

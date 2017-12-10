@@ -139,10 +139,7 @@ namespace PluginTest
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-#else
             this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
-#endif
         }
     }
 }

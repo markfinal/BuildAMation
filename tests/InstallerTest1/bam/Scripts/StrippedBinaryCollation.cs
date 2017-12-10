@@ -40,11 +40,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.StripBinariesFrom<CExecutableRuntime, CExecutableDebugSymbols>();
-#endif
         }
     }
 
@@ -58,11 +54,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.StripBinariesFrom<CxxExecutableRuntime, CxxExecutableDebugSymbols>();
-#endif
         }
     }
 }

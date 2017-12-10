@@ -119,11 +119,7 @@ namespace PublishingTest3
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.CreateSymbolsFrom<Runtime>();
-#endif
         }
     }
 
@@ -137,11 +133,7 @@ namespace PublishingTest3
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.StripBinariesFrom<Runtime, DebugSymbols>();
-#endif
         }
     }
 }

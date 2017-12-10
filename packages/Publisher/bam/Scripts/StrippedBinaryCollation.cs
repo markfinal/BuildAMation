@@ -35,6 +35,8 @@ namespace Publisher
     public abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Collation Root");
+
         private IStrippedBinaryCollationPolicy Policy = null;
 
         protected override void
@@ -43,8 +45,10 @@ namespace Publisher
         {
             base.Init(parent);
 
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
             // one value, as debug symbols are not generated in IDE projects
-            this.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
         }
 
         public sealed override void

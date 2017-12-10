@@ -48,11 +48,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_DiskImageInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
         }
     }
 
@@ -74,11 +70,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
         }
     }
 }

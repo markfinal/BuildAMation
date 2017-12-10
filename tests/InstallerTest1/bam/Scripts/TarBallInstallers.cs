@@ -42,11 +42,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_TarBallInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
 
             this.PrivatePatch(settings =>
                 {
@@ -72,11 +68,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_TarBallInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
 
             this.PrivatePatch(settings =>
             {
@@ -100,11 +92,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_SymbolsTarBall");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CExecutableDebugSymbols>(Publisher.DebugSymbolCollation.Key);
-#endif
 
             this.PrivatePatch(settings =>
                 {
@@ -126,11 +114,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_SymbolsTarBall");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CxxExecutableDebugSymbols>(Publisher.DebugSymbolCollation.Key);
-#endif
 
             this.PrivatePatch(settings =>
             {

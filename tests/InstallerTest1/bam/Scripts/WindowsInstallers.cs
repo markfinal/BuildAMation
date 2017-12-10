@@ -42,11 +42,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_InnoSetupInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
         }
     }
 
@@ -62,11 +58,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_InnoSetupInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
         }
     }
 
@@ -82,11 +74,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_NSISInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
         }
     }
 
@@ -102,11 +90,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_NSISInstaller");
 
-#if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
-#else
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
-#endif
         }
     }
 }
