@@ -30,8 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
-#else
     public static partial class CommandLineImplementation
     {
         public static void
@@ -39,6 +37,27 @@ namespace Publisher
             this IObjCopyToolSettings settings,
             Bam.Core.StringArray commandLine)
         {
+#if D_NEW_PUBLISHING
+            var collatedObjectInterface = (settings as Bam.Core.Settings).Module as ICollatedObject;
+            var objCopy = collatedObjectInterface as ObjCopyModule;
+            switch (settings.Mode)
+            {
+            case EObjCopyToolMode.OnlyKeepDebug:
+                commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
+                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToString(),
+                    objCopy.GeneratedPaths[ObjCopyModule.Key].ToString()));
+                break;
+
+            case EObjCopyToolMode.AddGNUDebugLink:
+                commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
+                    objCopy.GeneratedPaths[ObjCopyModule.Key].ToString(),
+                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToString()));
+                break;
+
+            default:
+                throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
+            }
+#else
             var objCopy = (settings as Bam.Core.Settings).Module as ObjCopyModule;
             switch (settings.Mode)
             {
@@ -57,11 +76,11 @@ namespace Publisher
             default:
                 throw new Bam.Core.Exception("Unrecognized objcopy mode, {0}", settings.Mode.ToString());
             }
+#endif
             if (settings.Verbose)
             {
                 commandLine.Add("-v");
             }
         }
     }
-#endif
 }

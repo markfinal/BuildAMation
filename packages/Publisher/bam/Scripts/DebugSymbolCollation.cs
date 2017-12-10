@@ -80,6 +80,27 @@ namespace Publisher
         }
 
         private void
+        CopyDebugSymbols(
+            ICollatedObject collatedFile)
+        {
+            var createDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
+                {
+                    module.SourceModule = collatedFile.SourceModule;
+                    module.SourcePathKey = collatedFile.SourcePathKey;
+                    module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
+                });
+            this.DependsOn(createDebugSymbols);
+
+            createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            createDebugSymbols.PrivatePatch(settings =>
+                {
+                    var objCopySettings = settings as IObjCopyToolSettings;
+                    objCopySettings.Mode = EObjCopyToolMode.OnlyKeepDebug;
+                });
+        }
+
+        private void
         CopyPDB(
             ICollatedObject collatedFile)
         {
@@ -118,12 +139,12 @@ namespace Publisher
                 }
                 else
                 {
-                    throw new System.NotImplementedException();
+                    this.CopyDebugSymbols(collatedObj);
                 }
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                throw new System.NotImplementedException();
+                this.CopyDebugSymbols(collatedObj);
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {

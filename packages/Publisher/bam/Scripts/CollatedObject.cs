@@ -36,11 +36,13 @@ namespace Publisher
         ICollatedObject
     {
         private ICollatedObjectPolicy policy = null;
+
         private Bam.Core.Module sourceModule;
         private Bam.Core.PathKey sourcePathKey;
         private Bam.Core.TokenizedString publishingDirectory;
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
         private ICollatedObject anchor = null;
+
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
 
         Bam.Core.Module ICollatedObject.SourceModule
         {
@@ -136,6 +138,7 @@ namespace Publisher
             this.publishingDirectory = this.CreateTokenizedString(original, positional);
         }
 
+        // TODO: add accessors, rather than direct to the field
         public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> DependentCollations
         {
             get

@@ -32,8 +32,6 @@ namespace Publisher
     public sealed class NativeObjCopy :
         IObjCopyToolPolicy
     {
-#if D_NEW_PUBLISHING
-#else
         void
         IObjCopyToolPolicy.ObjCopy(
             ObjCopyModule sender,
@@ -48,6 +46,5 @@ namespace Publisher
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
-#endif
     }
 }
