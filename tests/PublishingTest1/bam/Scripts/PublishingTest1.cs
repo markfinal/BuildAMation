@@ -69,9 +69,9 @@ namespace PublishingTest1
             {
                 this.PrivatePatch(settings =>
                     {
-	                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-	                    gccLinker.CanUseOrigin = true;
-	                    gccLinker.RPath.AddUnique("$ORIGIN");
+                        var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN");
                     });
             }
         }
