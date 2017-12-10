@@ -50,8 +50,17 @@ namespace Publisher
             base.Init(parent);
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ObjCopyTool>();
-            this.RegisterGeneratedFile(Key,
-                this.CreateTokenizedString("$(0)/@basename($(1)).debug", new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) &&
+                this.sourceModule is C.IDynamicLibrary)
+            {
+                this.RegisterGeneratedFile(Key,
+                    this.CreateTokenizedString("$(0)/@filename($(1)).debug", new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+            }
+            else
+            {
+	            this.RegisterGeneratedFile(Key,
+	                this.CreateTokenizedString("$(0)/@basename($(1)).debug", new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+            }
         }
 
         public override void
