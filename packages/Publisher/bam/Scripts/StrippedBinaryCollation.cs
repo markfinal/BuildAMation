@@ -37,6 +37,16 @@ namespace Publisher
     {
         private IStrippedBinaryCollationPolicy Policy = null;
 
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            // one value, as debug symbols are not generated in IDE projects
+            this.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+        }
+
         public sealed override void
         Evaluate()
         {
@@ -67,6 +77,105 @@ namespace Publisher
                     }
                     break;
             }
+        }
+
+        private void
+        CloneFile(
+            ICollatedObject collatedFile)
+        {
+            var clonedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+                {
+                    module.SourceModule = collatedFile.SourceModule;
+                    module.SourcePathKey = collatedFile.SourcePathKey;
+                    module.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(module));
+                });
+            this.DependsOn(clonedFile);
+
+            clonedFile.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+        }
+
+        private void
+        eachAnchorDependent(
+            ICollatedObject collatedObj)
+        {
+            var sourceModule = collatedObj.SourceModule;
+            Bam.Core.Log.MessageAll("\t'{0}'", collatedObj.SourceModule.ToString());
+
+            var cModule = sourceModule as C.CModule;
+            if (null == cModule)
+            {
+                // e.g. a shared object symbolic link
+                return;
+            }
+
+            if (cModule.IsPrebuilt)
+            {
+                return;
+            }
+
+            if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                if (sourceModule.Tool.Macros.Contains("pdbext"))
+                {
+                    this.CloneFile(collatedObj);
+                }
+                else
+                {
+                    throw new System.NotImplementedException();
+                }
+            }
+            else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                throw new System.NotImplementedException();
+            }
+            else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                throw new System.NotImplementedException();
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unsupported platform '{0}'", sourceModule.BuildEnvironment.Platform.ToString());
+            }
+        }
+
+        private void
+        findDependentsofAnchor(
+            Collation collation,
+            ICollatedObject anchor)
+        {
+            Bam.Core.Log.MessageAll("Anchor '{0}'", anchor.SourceModule.ToString());
+            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent);
+        }
+
+        /// <summary>
+        /// Create a stripped file mirror from the result of collation and debug symbol creation.
+        /// Both previous steps are required in order to fulfil being able to provide an application
+        /// release to end-users without debug information, and yet the developer is still able to
+        /// debug issues by combining debug files with the stripped binaries.
+        /// </summary>
+        /// <typeparam name="RuntimeModule">The 1st type parameter.</typeparam>
+        /// <typeparam name="DebugSymbolModule">The 2nd type parameter.</typeparam>
+        public void
+        StripBinariesFrom<RuntimeModule, DebugSymbolModule>()
+            where RuntimeModule : Collation, new()
+            where DebugSymbolModule : DebugSymbolCollation, new()
+        {
+            var runtimeDependent = Bam.Core.Graph.Instance.FindReferencedModule<RuntimeModule>();
+            if (null == runtimeDependent)
+            {
+                return;
+            }
+            var debugSymbolDependent = Bam.Core.Graph.Instance.FindReferencedModule<DebugSymbolModule>();
+            if (null == debugSymbolDependent)
+            {
+                return;
+            }
+
+            // stripped binaries are made after the initial collation and debug symbol generation
+            this.DependsOn(runtimeDependent);
+            this.DependsOn(debugSymbolDependent);
+
+            (runtimeDependent as Collation).ForEachAnchor(findDependentsofAnchor);
         }
     }
 #else
