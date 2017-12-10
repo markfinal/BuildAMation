@@ -35,6 +35,8 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
+
         private ICollatedObjectPolicy policy = null;
 
         private Bam.Core.Module sourceModule;
@@ -160,6 +162,9 @@ namespace Publisher
             {
                 this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFilePosix>();
             }
+            this.RegisterGeneratedFile(Key,
+                                       this.CreateTokenizedString("$(0)/@filename($(1))",
+                                                                  new [] {this.publishingDirectory, this.sourceModule.GeneratedPaths[this.sourcePathKey]}));
         }
 
         public override void

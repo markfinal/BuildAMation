@@ -626,24 +626,30 @@ namespace Publisher
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-            var module = Bam.Core.Module.Create<CollatedFile>();
+            var collatedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+                {
+                    module.SourceModule = dependent;
+                    module.SourcePathKey = key;
+                    module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
+                    module.Anchor = anchor;
+                });
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 // the publishdir is different for each anchor, so dependents may be duplicated
                 // if referenced by multiple anchors
                 if (null != anchor)
                 {
-                    module.Macros.Add("publishroot", dependent.CreateTokenizedString("@dir($(0))", new[] { anchor.SourceModule.GeneratedPaths[anchor.SourcePathKey] }));
+                    collatedFile.Macros.Add("publishroot", dependent.CreateTokenizedString("@dir($(0))", new[] { anchor.SourceModule.GeneratedPaths[anchor.SourcePathKey] }));
                 }
                 else
                 {
-                    module.Macros.Add("publishroot", dependent.CreateTokenizedString("@dir($(0))", new[] { dependent.GeneratedPaths[key] }));
+                    collatedFile.Macros.Add("publishroot", dependent.CreateTokenizedString("@dir($(0))", new[] { dependent.GeneratedPaths[key] }));
                 }
             }
             else
             {
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
-                module.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
             }
 
             // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file
@@ -651,20 +657,16 @@ namespace Publisher
             // will it's dependencies, which won't be found by the debugged executable
             if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
-                module.Macros.Add("publishdir", module.CreateTokenizedString("$(0)", anchorPublishRoot));
+                collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(0)", anchorPublishRoot));
             }
             else
             {
-                module.Macros.Add("publishdir", module.CreateTokenizedString("$(publishroot)"));
+                collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(publishroot)"));
             }
-            module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
-            module.SourceModule = dependent;
-            module.SourcePathKey = key;
-            module.Anchor = anchor;
 
-            this.Requires(module);
-            module.Requires(dependent);
-            return module;
+            this.Requires(collatedFile);
+            collatedFile.Requires(dependent);
+            return collatedFile;
         }
 
         public delegate void ForEachAnchorDelegate(Collation collation, ICollatedObject anchor);
