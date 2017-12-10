@@ -126,7 +126,14 @@ namespace Publisher
             var sourceModule = collatedObj.SourceModule;
             Bam.Core.Log.MessageAll("\t'{0}'", collatedObj.SourceModule.ToString());
 
-            if ((sourceModule as C.CModule).IsPrebuilt)
+            var cModule = sourceModule as C.CModule;
+            if (null == cModule)
+            {
+                // e.g. a shared object symbolic link
+                return;
+            }
+
+            if (cModule.IsPrebuilt)
             {
                 return;
             }
