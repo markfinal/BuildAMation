@@ -32,8 +32,6 @@ namespace Publisher
     public sealed class MakeFileDSymUtil :
         IDSymUtilToolPolicy
     {
-#if D_NEW_PUBLISHING
-#else
         void
         IDSymUtilToolPolicy.CreateBundle(
             DSymUtilModule sender,
@@ -61,6 +59,5 @@ namespace Publisher
                 originalPath.ToString(),
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
-#endif
     }
 }

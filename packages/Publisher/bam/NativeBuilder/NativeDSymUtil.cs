@@ -32,8 +32,6 @@ namespace Publisher
     public sealed class NativeDSymUtil :
         IDSymUtilToolPolicy
     {
-#if D_NEW_PUBLISHING
-#else
         void
         IDSymUtilToolPolicy.CreateBundle(
             DSymUtilModule sender,
@@ -50,6 +48,5 @@ namespace Publisher
             commandLine.Add(originalPath.ToString());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
-#endif
     }
 }

@@ -80,6 +80,21 @@ namespace Publisher
         }
 
         private void
+        CreatedSYMBundle(
+            ICollatedObject collatedFile)
+        {
+            var createDebugSymbols = Bam.Core.Module.Create<DSymUtilModule>(preInitCallback: module =>
+                {
+                    module.SourceModule = collatedFile.SourceModule;
+                    module.SourcePathKey = collatedFile.SourcePathKey;
+                    module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
+                });
+            this.DependsOn(createDebugSymbols);
+
+            createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+        }
+
+        private void
         CopyDebugSymbols(
             ICollatedObject collatedFile)
         {
@@ -155,7 +170,7 @@ namespace Publisher
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
-                throw new System.NotImplementedException();
+                this.CreatedSYMBundle(collatedObj);
             }
             else
             {
