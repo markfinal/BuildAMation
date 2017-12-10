@@ -119,15 +119,16 @@ namespace Publisher
         CopyPDB(
             ICollatedObject collatedFile)
         {
-            var copyPDBModule = Bam.Core.Module.Create<CollatedFile>();
+            var copyPDBModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+                {
+                    module.SourceModule = collatedFile.SourceModule;
+                    // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
+                    module.SourcePathKey = C.ConsoleApplication.PDBKey;
+                    module.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(module));
+                });
             this.DependsOn(copyPDBModule);
 
             copyPDBModule.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-
-            copyPDBModule.SourceModule = collatedFile.SourceModule;
-            // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
-            copyPDBModule.SourcePathKey = C.ConsoleApplication.PDBKey;
-            copyPDBModule.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(copyPDBModule));
 
             // since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
             // TODO
