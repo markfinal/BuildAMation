@@ -41,7 +41,10 @@ namespace PublishingSymlinkTest1
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            throw new System.NotImplementedException("TODO");
+            // copy a single data file as the root of all other copies
+            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.CreateTokenizedString("$(publishroot)"));
+            // copy an existing symlink to that file
+            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1_link.txt", this.CreateTokenizedString("$(publishroot)"));
 #else
             // copy a single data file as the root of all other copies
             var root = this.IncludeFile(this.CreateTokenizedString("$(packagedir)/data/testfile1.txt"), ".");
