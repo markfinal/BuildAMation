@@ -40,7 +40,8 @@ namespace PublishingTest2
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            // TODO
+            // copy a single data file
+            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.CreateTokenizedString("$(publishroot)/api_include"));
 #else
             // copy a single data file as the root of all other copies
             var root = this.IncludeFile(this.CreateTokenizedString("$(packagedir)/data/testfile1.txt"), "api_include");
