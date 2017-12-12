@@ -618,14 +618,17 @@ namespace Publisher
             this.Include(dependent, key, anchorPublishRoot);
         }
 
-        private void
+        public void
         IncludeFiles(
             Bam.Core.TokenizedString wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
             System.Text.RegularExpressions.Regex filter = null)
         {
             // Note: very similar to that code in C.CModuleContainer.AddFiles
-            wildcardedSourcePath.Parse();
+            if (!wildcardedSourcePath.IsParsed)
+            {
+                wildcardedSourcePath.Parse();
+            }
             var wildcardPaths = wildcardedSourcePath.ToString();
             var dir = System.IO.Path.GetDirectoryName(wildcardPaths);
             if (!System.IO.Directory.Exists(dir))
@@ -651,6 +654,18 @@ namespace Publisher
             foreach (var filepath in files)
             {
                 this.CreateCollatedPreExistingFile(filepath, destinationDir);
+            }
+        }
+
+        public void
+        IncludeFiles(
+            Bam.Core.TokenizedStringArray wildcardedSourcePaths,
+            Bam.Core.TokenizedString destinationDir,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            foreach (var path in wildcardedSourcePaths)
+            {
+                this.IncludeFiles(path, destinationDir, filter);
             }
         }
 

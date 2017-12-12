@@ -62,7 +62,7 @@ namespace Publisher
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            commandLine.Add(copySourcePath.ToString());
+            commandLine.Add(copySourcePath.ToStringQuoteIfNecessary());
             commandLine.Add(destinationDir);
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }

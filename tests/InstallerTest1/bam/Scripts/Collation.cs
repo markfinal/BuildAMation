@@ -42,6 +42,17 @@ namespace InstallerTest1
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.WindowedApplication);
             this.Include<CExecutable>(C.GUIApplication.Key);
+
+            var app = this.Find<CExecutable>();
+
+            // copy the required runtime library next to the binary
+            if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
+                (app.SourceModule as CExecutable).Linker is VisualCCommon.LinkerBase)
+            {
+                // just C runtime here
+                var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
+                this.IncludeFiles(runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth), this.ExecutableDir);
+            }
 #else
             var app = this.Include<CExecutable>(C.GUIApplication.Key, EPublishingType.WindowedApplication);
             this.Include<CDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
@@ -74,6 +85,18 @@ namespace InstallerTest1
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.WindowedApplication);
             this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key);
+
+            var app = this.Find<CxxExecutable>();
+
+            // copy the required runtime library next to the binary
+            if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
+                (app.SourceModule as CxxExecutable).Linker is VisualCCommon.LinkerBase)
+            {
+                // both C and C++ runtimes here
+                var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
+                this.IncludeFiles(runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth), this.ExecutableDir);
+                this.IncludeFiles(runtimeLibrary.CxxRuntimePaths((app.SourceModule as C.CModule).BitDepth), this.ExecutableDir);
+            }
 #else
             var app = this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key, EPublishingType.WindowedApplication);
             this.Include<CxxDynamicLibrary>(C.Cxx.DynamicLibrary.Key, ".", app);
