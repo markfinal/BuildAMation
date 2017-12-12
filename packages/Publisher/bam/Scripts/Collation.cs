@@ -680,7 +680,7 @@ namespace Publisher
             {
                 return;
             }
-            this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir);
+            this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter);
         }
 
         public void
@@ -745,7 +745,7 @@ namespace Publisher
             {
                 return;
             }
-            this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir);
+            this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter);
         }
 
         private void
