@@ -798,7 +798,7 @@ namespace Publisher
                     else
                     {
                         // Posix cp only requires the destination to be added when there is a rename
-                        module.PreExistingSourcePath = System.String.Format("{0)/*", sourcePath);
+                        module.PreExistingSourcePath = System.String.Format("{0}/*", sourcePath);
                         module.SetPublishingDirectory("$(0)#valid(/$(RenameLeaf),)", new[] { destinationDir });
                     }
                 });
