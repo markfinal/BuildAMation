@@ -38,8 +38,7 @@ namespace Publisher.DefaultSettings
         {
             settings.Force = true;
             settings.Verbose = true;
-            // TODO: fix me
-            settings.Recursive = false; //(module is CollatedDirectory);
+            settings.Recursive = (module is CollatedDirectory);
             settings.PreserveAllAttributes = true;
         }
     }

@@ -40,8 +40,13 @@ namespace PublishingTest2
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
+            var headerDir = this.CreateTokenizedString("$(publishroot)/api_include");
+
             // copy a single data file
-            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.CreateTokenizedString("$(publishroot)/api_include"));
+            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", headerDir);
+
+            // copy a directory, with a number of files and a subdirectory
+            this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", headerDir);
 #else
             // copy a single data file as the root of all other copies
             var root = this.IncludeFile(this.CreateTokenizedString("$(packagedir)/data/testfile1.txt"), "api_include");

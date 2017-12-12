@@ -92,6 +92,9 @@ namespace PublishingTest1
 
             // copy a single data file, next to the executable
             this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.ExecutableDir);
+
+            // copy a directory, with a number of files and a subdirectory, next to the executable
+            this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", this.ExecutableDir);
 #else
             var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);

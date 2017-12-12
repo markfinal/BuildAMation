@@ -683,7 +683,72 @@ namespace Publisher
             this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir);
         }
 
-        private CollatedFile
+        public void
+        IncludeDirectories(
+            Bam.Core.TokenizedString wildcardedSourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            // Note: very similar to that code in C.CModuleContainer.AddFiles
+            if (!wildcardedSourcePath.IsParsed)
+            {
+                wildcardedSourcePath.Parse();
+            }
+            var wildcardPaths = wildcardedSourcePath.ToString();
+            var dir = System.IO.Path.GetDirectoryName(wildcardPaths);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                throw new Bam.Core.Exception("The directory {0} does not exist", dir);
+            }
+            var leafname = System.IO.Path.GetFileName(wildcardPaths);
+            var option = leafname.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+            var files = System.IO.Directory.GetDirectories(dir, leafname, option);
+            if (0 == files.Length)
+            {
+                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPaths);
+            }
+            if (filter != null)
+            {
+                var filteredFiles = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
+                if (0 == filteredFiles.Length)
+                {
+                    throw new Bam.Core.Exception("No files were found that matched the pattern '{0}', after applying the regex filter. {1} were found prior to applying the filter.", wildcardPaths, files.Count());
+                }
+                files = filteredFiles;
+            }
+            foreach (var filepath in files)
+            {
+                this.CreateCollatedPreExistingDirectory(filepath, destinationDir);
+            }
+        }
+
+        public void
+        IncludeDirectories(
+            Bam.Core.TokenizedStringArray wildcardedSourcePaths,
+            Bam.Core.TokenizedString destinationDir,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            foreach (var path in wildcardedSourcePaths)
+            {
+                this.IncludeDirectories(path, destinationDir, filter);
+            }
+        }
+
+        public void
+        IncludeDirectories<DependentModule>(
+            string wildcardedSourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            System.Text.RegularExpressions.Regex filter = null) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+            this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir);
+        }
+
+        private void
         CreateCollatedPreExistingFile(
             string sourcePath,
             Bam.Core.TokenizedString destinationDir)
@@ -707,7 +772,44 @@ namespace Publisher
             collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(publishroot)"));
 
             this.Requires(collatedFile);
-            return collatedFile;
+        }
+
+        private void
+        CreateCollatedPreExistingDirectory(
+            string sourcePath,
+            Bam.Core.TokenizedString destinationDir)
+        {
+            var collatedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
+                {
+                    if (this.Tool != null)
+                    {
+                        throw new System.NotFiniteNumberException();
+                    }
+                    module.PreExistingSourcePath = sourcePath;
+                    if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
+                        module.SetPublishingDirectory("$(0)/@filename($(1))", new[] { destinationDir, module.SourcePath });
+                    }
+                    else
+                    {
+                        module.SetPublishingDirectory("$(0)", new[] { destinationDir });
+                    }
+                });
+
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { collatedDir.SourcePath }));
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                collatedDir.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
+
+            collatedDir.Macros.Add("publishdir", collatedDir.CreateTokenizedString("$(publishroot)"));
+
+            this.Requires(collatedDir);
         }
 
         private CollatedFile
