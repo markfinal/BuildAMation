@@ -510,7 +510,10 @@ namespace Publisher
             foreach (var dep in allDependents)
             {
                 var modulePublishDir = this.ModuleTypePublishDirectory(dep.Key, dep.Value);
-                this.IncludeNoGather(dep.Key, dep.Value, modulePublishDir, anchor, anchorPublishRoot);
+                var dependentCollation = this.IncludeNoGather(dep.Key, dep.Value, modulePublishDir, anchor, anchorPublishRoot);
+
+                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+                (dependentCollation as CollatedObject).Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros["AnchorOutputName"]);
             }
         }
 
