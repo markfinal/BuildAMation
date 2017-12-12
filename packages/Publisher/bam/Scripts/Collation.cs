@@ -687,7 +687,8 @@ namespace Publisher
         IncludeDirectories(
             Bam.Core.TokenizedString wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
-            System.Text.RegularExpressions.Regex filter = null)
+            System.Text.RegularExpressions.Regex filter = null,
+            string renameLeaf = null)
         {
             // Note: very similar to that code in C.CModuleContainer.AddFiles
             if (!wildcardedSourcePath.IsParsed)
@@ -718,7 +719,7 @@ namespace Publisher
             }
             foreach (var filepath in files)
             {
-                this.CreateCollatedPreExistingDirectory(filepath, destinationDir);
+                this.CreateCollatedPreExistingDirectory(filepath, destinationDir, renameLeaf);
             }
         }
 
@@ -726,11 +727,12 @@ namespace Publisher
         IncludeDirectories(
             Bam.Core.TokenizedStringArray wildcardedSourcePaths,
             Bam.Core.TokenizedString destinationDir,
-            System.Text.RegularExpressions.Regex filter = null)
+            System.Text.RegularExpressions.Regex filter = null,
+            string renameLeaf = null)
         {
             foreach (var path in wildcardedSourcePaths)
             {
-                this.IncludeDirectories(path, destinationDir, filter);
+                this.IncludeDirectories(path, destinationDir, filter, renameLeaf);
             }
         }
 
@@ -738,14 +740,15 @@ namespace Publisher
         IncludeDirectories<DependentModule>(
             string wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
-            System.Text.RegularExpressions.Regex filter = null) where DependentModule : Bam.Core.Module, new()
+            System.Text.RegularExpressions.Regex filter = null,
+            string renameLeaf = null) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
             }
-            this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter);
+            this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter, renameLeaf);
         }
 
         private void
@@ -777,19 +780,26 @@ namespace Publisher
         private void
         CreateCollatedPreExistingDirectory(
             string sourcePath,
-            Bam.Core.TokenizedString destinationDir)
+            Bam.Core.TokenizedString destinationDir,
+            string renameLeaf)
         {
             var collatedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
                 {
-                    module.PreExistingSourcePath = sourcePath;
+                    if (null != renameLeaf)
+                    {
+                        module.Macros.AddVerbatim("RenameLeaf", renameLeaf);
+                    }
                     if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
-                        module.SetPublishingDirectory("$(0)/@filename($(1))", new[] { destinationDir, module.SourcePath });
+                        // Windows XCOPY requires the directory name to be added to the destination regardless
+                        module.PreExistingSourcePath = sourcePath;
+                        module.SetPublishingDirectory("$(0)/#valid($(RenameLeaf),@filename($(1)))", new[] { destinationDir, module.SourcePath });
                     }
                     else
                     {
-                        module.SetPublishingDirectory("$(0)", new[] { destinationDir });
+                        // Posix cp only requires the destination to be added when there is a rename
+                        module.PreExistingSourcePath = System.String.Format("{0)/*", sourcePath);
+                        module.SetPublishingDirectory("$(0)#valid(/$(RenameLeaf),)", new[] { destinationDir });
                     }
                 });
 

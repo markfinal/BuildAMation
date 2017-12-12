@@ -95,6 +95,9 @@ namespace PublishingTest1
 
             // copy a directory, with a number of files and a subdirectory, next to the executable
             this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", this.ExecutableDir);
+
+            // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the executable
+            this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", this.CreateTokenizedString("$(0)/lib", this.ExecutableDir), renameLeaf: "testdir1_renamed");
 #else
             var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);
