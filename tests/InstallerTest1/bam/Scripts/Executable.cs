@@ -50,14 +50,20 @@ namespace InstallerTest1
             }
 
             this.PrivatePatch(settings =>
-            {
-                var gccCommon = settings as GccCommon.ICommonLinkerSettings;
-                if (null != gccCommon)
                 {
-                    gccCommon.CanUseOrigin = true;
-                    gccCommon.RPath.AddUnique("$ORIGIN");
-                }
-            });
+                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                    if (null != gccLinker)
+                    {
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN");
+                    }
+
+                    var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
+                    if (null != clangLinker)
+                    {
+                        clangLinker.RPath.AddUnique("@executable_path/../Frameworks/");
+                    }
+                });
         }
     }
 
@@ -90,11 +96,17 @@ namespace InstallerTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var gccCommon = settings as GccCommon.ICommonLinkerSettings;
-                    if (null != gccCommon)
+                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                    if (null != gccLinker)
                     {
-                        gccCommon.CanUseOrigin = true;
-                        gccCommon.RPath.AddUnique("$ORIGIN");
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN");
+                    }
+
+                    var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
+                    if (null != clangLinker)
+                    {
+                        clangLinker.RPath.AddUnique("@executable_path/../Frameworks/");
                     }
                 });
         }
