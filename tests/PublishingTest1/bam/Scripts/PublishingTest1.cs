@@ -89,6 +89,9 @@ namespace PublishingTest1
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.ConsoleApplication);
             this.Include<SimpleExe>(C.ConsoleApplication.Key);
+
+            // copy a single data file, next to the executable
+            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.ExecutableDir);
 #else
             var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);
