@@ -781,10 +781,6 @@ namespace Publisher
         {
             var collatedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
                 {
-                    if (this.Tool != null)
-                    {
-                        throw new System.NotFiniteNumberException();
-                    }
                     module.PreExistingSourcePath = sourcePath;
                     if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
