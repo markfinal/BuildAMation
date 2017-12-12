@@ -53,6 +53,8 @@ namespace Publisher
             this.RegisterGeneratedFile(Key,
                 this.CreateTokenizedString("$(0)/@filename($(1))",
                                            new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+
+            this.Requires(this.sourceModule);
         }
 
         public override void

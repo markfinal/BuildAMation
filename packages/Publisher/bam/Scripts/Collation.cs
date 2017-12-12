@@ -757,7 +757,6 @@ namespace Publisher
             }
 
             this.Requires(collatedFile);
-            collatedFile.Requires(dependent);
             return collatedFile;
         }
 

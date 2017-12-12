@@ -187,6 +187,10 @@ namespace Publisher
             this.RegisterGeneratedFile(Key,
                                        this.CreateTokenizedString("$(0)/@filename($(1))",
                                                                   new[] { this.publishingDirectory, this.SourcePath }));
+            if (null != this.sourceModule)
+            {
+                this.Requires(this.sourceModule);
+            }
         }
 
         public override void

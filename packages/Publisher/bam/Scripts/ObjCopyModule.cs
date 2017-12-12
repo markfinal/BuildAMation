@@ -71,6 +71,8 @@ namespace Publisher
                     this.CreateTokenizedString("$(0)/@basename($(1)).debug",
                                                new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
             }
+
+            this.Requires(this.sourceModule);
         }
 
         public override void
