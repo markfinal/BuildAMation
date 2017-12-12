@@ -61,18 +61,23 @@ namespace Publisher
                 return;
             }
 
-            var copySourcePath = collatedInterface.SourceModule.GeneratedPaths[collatedInterface.SourcePathKey];
+            var copySourcePath = sender.SourcePath;
 
             // post-fix with a directory separator to enforce that this is a directory destination
             var destinationDir = System.String.Format("{0}{1}",
                 collatedInterface.PublishingDirectory.ToString(),
                 System.IO.Path.DirectorySeparatorChar);
 
-            Bam.Core.Log.MessageAll("** Module {0} with key {1} goes to '{2}' [{3}]",
-                collatedInterface.SourceModule.ToString(),
-                collatedInterface.SourcePathKey.ToString(),
-                destinationDir,
-                sender);
+            Bam.Core.Log.MessageAll("** {0}: '{1}' -> '{2}'",
+                sender,
+                copySourcePath.ToString(),
+                destinationDir);
+            if (null == sender.PreExistingSourcePath)
+            {
+                Bam.Core.Log.MessageAll("**\t{0}[{1}]",
+                    collatedInterface.SourceModule.ToString(),
+                    collatedInterface.SourcePathKey.ToString());
+            }
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);

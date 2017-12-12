@@ -149,6 +149,28 @@ namespace Publisher
             }
         }
 
+        public string PreExistingSourcePath
+        {
+            get;
+            set;
+        }
+
+        public Bam.Core.TokenizedString
+        SourcePath
+        {
+            get
+            {
+                if (null == this.PreExistingSourcePath)
+                {
+                    return this.sourceModule.GeneratedPaths[this.sourcePathKey];
+                }
+                else
+                {
+                    return Bam.Core.TokenizedString.CreateVerbatim(this.PreExistingSourcePath);
+                }
+            }
+        }
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -164,7 +186,7 @@ namespace Publisher
             }
             this.RegisterGeneratedFile(Key,
                                        this.CreateTokenizedString("$(0)/@filename($(1))",
-                                                                  new [] {this.publishingDirectory, this.sourceModule.GeneratedPaths[this.sourcePathKey]}));
+                                                                  new[] { this.publishingDirectory, this.SourcePath }));
         }
 
         public override void

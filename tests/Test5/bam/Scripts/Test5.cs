@@ -112,8 +112,7 @@ namespace Test5
             {
                 this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey);
             }
-            // TODO: this needs to be fixed
-            //this.IncludeFile<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir);
+            this.IncludeFiles<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir);
 #else
             var dll = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
