@@ -247,9 +247,9 @@ namespace Publisher
 
                 case Bam.Core.EPlatform.Linux:
                     {
-                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
-                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
-                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishRoot }));
+                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishRoot }));
+                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishRoot }));
                         //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
                     }

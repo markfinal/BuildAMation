@@ -55,7 +55,7 @@ namespace InstallerTest1
                     if (null != gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
-                        gccLinker.RPath.AddUnique("$ORIGIN");
+                        gccLinker.RPath.AddUnique("$ORIGIN/../lib");
                     }
 
                     var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
@@ -100,7 +100,7 @@ namespace InstallerTest1
                     if (null != gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
-                        gccLinker.RPath.AddUnique("$ORIGIN");
+                        gccLinker.RPath.AddUnique("$ORIGIN/../lib");
                     }
 
                     var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
