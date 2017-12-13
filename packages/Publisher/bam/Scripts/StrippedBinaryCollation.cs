@@ -128,6 +128,7 @@ namespace Publisher
             if (null == cModule)
             {
                 // e.g. a shared object symbolic link
+                this.CloneFile(collatedObj);
                 return;
             }
 
@@ -181,7 +182,7 @@ namespace Publisher
             ICollatedObject anchor,
             object customData)
         {
-            Bam.Core.Log.MessageAll("Anchor '{0}'", anchor.SourceModule.ToString());
+            Bam.Core.Log.MessageAll("Stripped Anchor '{0}'", anchor.SourceModule.ToString());
             collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }
 
