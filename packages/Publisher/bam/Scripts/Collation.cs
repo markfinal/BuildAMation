@@ -574,24 +574,35 @@ namespace Publisher
         {
             var collatedFile = this.CreateCollatedBuiltFile(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
             var tuple = System.Tuple.Create(dependent, key);
-            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            try
             {
-                // a dependency may be copied for each anchor that references it in order
-                // to make that anchor fully resolved and debuggable
-                if (null != anchor)
+                if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
                 {
-                    var anchorAsCollatedObject = anchor as CollatedObject;
-                    anchorAsCollatedObject.DependentCollations.Add(tuple, collatedFile);
+                    // a dependency may be copied for each anchor that references it in order
+                    // to make that anchor fully resolved and debuggable
+                    if (null != anchor)
+                    {
+                        var anchorAsCollatedObject = anchor as CollatedObject;
+                        anchorAsCollatedObject.DependentCollations.Add(tuple, collatedFile);
+                    }
+                    else
+                    {
+                        this.collatedObjects.Add(tuple, collatedFile);
+                    }
                 }
                 else
                 {
+                    // as everything goes to a single publishdir, remember each instance of a module
                     this.collatedObjects.Add(tuple, collatedFile);
                 }
             }
-            else
+            catch (System.ArgumentException)
             {
-                // as everything goes to a single publishdir, remember each instance of a module
-                this.collatedObjects.Add(tuple, collatedFile);
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Module {0} with path key {1} has already been added for collation", dependent.ToString(), key.ToString());
+                message.AppendLine();
+                message.AppendLine("Please use Collation.Find<ModuleType>() in order to modify any of it's traits.");
+                throw new Bam.Core.Exception(message.ToString());
             }
             return collatedFile;
         }
