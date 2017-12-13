@@ -132,6 +132,7 @@ namespace Publisher
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
+        private System.Collections.Generic.List<CollatedObject> preExistingCollatedObjects = new System.Collections.Generic.List<CollatedObject>();
 
         private Bam.Core.TokenizedString PublishRoot
         {
@@ -789,6 +790,12 @@ namespace Publisher
             collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(publishroot)"));
 
             this.Requires(collatedFile);
+
+            if (this.preExistingCollatedObjects.Any(item => item.SourcePath == collatedFile.SourcePath))
+            {
+                throw new Bam.Core.Exception("Pre-existing file already collated, with path '{0}'", sourcePath);
+            }
+            this.preExistingCollatedObjects.Add(collatedFile);
         }
 
         private void
@@ -837,6 +844,12 @@ namespace Publisher
             collatedDir.Macros.Add("publishdir", collatedDir.CreateTokenizedString("$(publishroot)"));
 
             this.Requires(collatedDir);
+
+            if (this.preExistingCollatedObjects.Any(item => item.SourcePath == collatedDir.SourcePath))
+            {
+                throw new Bam.Core.Exception("Pre-existing directory already collated, with path '{0}'", sourcePath);
+            }
+            this.preExistingCollatedObjects.Add(collatedDir);
         }
 
         private CollatedFile
@@ -903,6 +916,12 @@ namespace Publisher
                 {
                     anchorDelegate(this, collatedObjectInterface, customData);
                 }
+            }
+            foreach (var obj in this.preExistingCollatedObjects)
+            {
+                // TODO: this is slightly more expensive, as it may end up iterating over
+                // this.collatedObjects for the preexisting objects
+                anchorDelegate(this, obj, customData);
             }
         }
 

@@ -154,7 +154,14 @@ namespace Publisher
             object customData)
         {
             var sourceModule = collatedObj.SourceModule;
-            Bam.Core.Log.MessageAll("\t'{0}'", collatedObj.SourceModule.ToString());
+            if (sourceModule != null)
+            {
+                Bam.Core.Log.MessageAll("\t'{0}'", sourceModule.ToString());
+            }
+            else
+            {
+                Bam.Core.Log.MessageAll("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
+            }
 
             var cModule = sourceModule as C.CModule;
             if (null == cModule)
@@ -199,7 +206,14 @@ namespace Publisher
             ICollatedObject anchor,
             object customData)
         {
-            Bam.Core.Log.MessageAll("Anchor '{0}'", anchor.SourceModule.ToString());
+            if (null != anchor.SourceModule)
+            {
+                Bam.Core.Log.MessageAll("Debug Symbols Anchor '{0}'", anchor.SourceModule.ToString());
+            }
+            else
+            {
+                Bam.Core.Log.MessageAll("Pre existing Debug Symbols Anchor '{0}'", (anchor as CollatedObject).SourcePath.ToString());
+            }
             collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }
 

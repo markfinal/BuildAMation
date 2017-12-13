@@ -102,18 +102,43 @@ namespace Publisher
         }
 
         private void
-        CloneFile(
-            ICollatedObject collatedFile)
+        CloneObject<CollationType>(
+            ICollatedObject collatedObject) where CollationType: CollatedObject, new()
         {
-            var clonedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+            var clonedFile = Bam.Core.Module.Create<CollationType>(preInitCallback: module =>
                 {
-                    module.SourceModule = collatedFile.SourceModule;
-                    module.SourcePathKey = collatedFile.SourcePathKey;
-                    module.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(module));
+                    if ((collatedObject as CollatedObject).Macros.Contains("RenameLeaf"))
+                    {
+	                    module.Macros.Add("RenameLeaf", (collatedObject as CollatedObject).Macros["RenameLeaf"]);
+                    }
+                    if (null != collatedObject.SourceModule)
+                    {
+                        module.SourceModule = collatedObject.SourceModule;
+                        module.SourcePathKey = collatedObject.SourcePathKey;
+                    }
+                    else
+                    {
+                        module.PreExistingSourcePath = (collatedObject as CollatedObject).PreExistingSourcePath;
+                    }
+                    module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
                 });
             this.DependsOn(clonedFile);
 
             clonedFile.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+        }
+
+        private void
+        CloneFile(
+            ICollatedObject collatedObject)
+        {
+            CloneObject<CollatedFile>(collatedObject);
+        }
+
+        private void
+        CloneDirectory(
+            ICollatedObject collatedObject)
+        {
+            CloneObject<CollatedDirectory>(collatedObject);
         }
 
         private void
@@ -122,13 +147,27 @@ namespace Publisher
             object customData)
         {
             var sourceModule = collatedObj.SourceModule;
-            Bam.Core.Log.MessageAll("\t'{0}'", collatedObj.SourceModule.ToString());
+            if (sourceModule != null)
+            {
+                Bam.Core.Log.MessageAll("\t'{0}'", sourceModule.ToString());
+            }
+            else
+            {
+                Bam.Core.Log.MessageAll("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
+            }
 
             var cModule = sourceModule as C.CModule;
             if (null == cModule)
             {
                 // e.g. a shared object symbolic link
-                this.CloneFile(collatedObj);
+                if (collatedObj is CollatedFile)
+                {
+                    this.CloneFile(collatedObj);
+                }
+                else if (collatedObj is CollatedDirectory)
+                {
+                    this.CloneDirectory(collatedObj);
+                }
                 return;
             }
 
@@ -182,7 +221,14 @@ namespace Publisher
             ICollatedObject anchor,
             object customData)
         {
-            Bam.Core.Log.MessageAll("Stripped Anchor '{0}'", anchor.SourceModule.ToString());
+            if (null != anchor.SourceModule)
+            {
+                Bam.Core.Log.MessageAll("Stripped Anchor '{0}'", anchor.SourceModule.ToString());
+            }
+            else
+            {
+                Bam.Core.Log.MessageAll("Pre existing Stripped Anchor '{0}'", (anchor as CollatedObject).SourcePath.ToString());
+            }
             collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }
 
