@@ -132,7 +132,7 @@ namespace Publisher
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
-        private System.Collections.Generic.List<CollatedObject> preExistingCollatedObjects = new System.Collections.Generic.List<CollatedObject>();
+        private System.Collections.Generic.List<System.Tuple<CollatedObject,Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject,Bam.Core.TokenizedString>>();
 
         private Bam.Core.TokenizedString PublishRoot
         {
@@ -791,11 +791,11 @@ namespace Publisher
 
             this.Requires(collatedFile);
 
-            if (this.preExistingCollatedObjects.Any(item => item.SourcePath == collatedFile.SourcePath))
+            if (this.preExistingCollatedObjects.Any(item => item.Item1.SourcePath == collatedFile.SourcePath && item.Item2 == destinationDir))
             {
                 throw new Bam.Core.Exception("Pre-existing file already collated, with path '{0}'", sourcePath);
             }
-            this.preExistingCollatedObjects.Add(collatedFile);
+            this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedFile as CollatedObject, destinationDir));
         }
 
         private void
@@ -845,11 +845,11 @@ namespace Publisher
 
             this.Requires(collatedDir);
 
-            if (this.preExistingCollatedObjects.Any(item => item.SourcePath == collatedDir.SourcePath))
+            if (this.preExistingCollatedObjects.Any(item => item.Item1.SourcePath == collatedDir.SourcePath && item.Item2 == destinationDir))
             {
                 throw new Bam.Core.Exception("Pre-existing directory already collated, with path '{0}'", sourcePath);
             }
-            this.preExistingCollatedObjects.Add(collatedDir);
+            this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedDir as CollatedObject, destinationDir));
         }
 
         private CollatedFile
@@ -921,7 +921,7 @@ namespace Publisher
             {
                 // TODO: this is slightly more expensive, as it may end up iterating over
                 // this.collatedObjects for the preexisting objects
-                anchorDelegate(this, obj, customData);
+                anchorDelegate(this, obj.Item1, customData);
             }
         }
 
