@@ -572,7 +572,7 @@ namespace Publisher
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-            var collatedFile = this.CreateCollatedBuiltFile(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+            var collatedFile = this.CreateCollatedModuleGeneratedFile(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
             var tuple = System.Tuple.Create(dependent, key);
             try
             {
@@ -840,7 +840,7 @@ namespace Publisher
         }
 
         private CollatedFile
-        CreateCollatedBuiltFile(
+        CreateCollatedModuleGeneratedFile(
             Bam.Core.Module dependent,
             Bam.Core.PathKey key,
             Bam.Core.TokenizedString modulePublishDir,
