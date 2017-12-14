@@ -35,11 +35,13 @@ namespace C
     public abstract class OSXFramework :
         CModule
     {
+        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("macOS Framework");
+
         public class Path
         {
             public Path(
                 Bam.Core.TokenizedString source,
-                Bam.Core.TokenizedString destination =  null)
+                Bam.Core.TokenizedString destination = null)
             {
                 this.SourcePath = source;
                 this.DestinationPath = destination;
@@ -58,19 +60,20 @@ namespace C
             }
         }
 
-        protected abstract Bam.Core.TokenizedString
-        FrameworkLibraryPath
-        {
-            get;
-        }
-
         private void
         GetIDName()
         {
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Clang");
 
             var frameworkPath = this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath);
-            frameworkPath.Parse();
+
+            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/$(1)", new [] { this.FrameworkPath, this.FrameworkBundleName }));
+
+            if (!frameworkPath.IsParsed)
+            {
+                frameworkPath.Parse();
+                Bam.Core.Log.MessageAll("**Yo: '{0}'", frameworkPath.ToString());
+            }
             var idName = Bam.Core.OSUtilities.RunExecutable(
                 Bam.Core.OSUtilities.GetInstallLocation("xcrun"),
                 System.String.Format("--sdk {0} otool -DX {1}",
@@ -89,10 +92,29 @@ namespace C
         }
 
         /// <summary>
-        /// Path to where the framework is stored
+        /// Directory in which the framework is stored.
         /// </summary>
         /// <value>The framework path.</value>
         public abstract Bam.Core.TokenizedString FrameworkPath
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Name of the framework bundle itself, ending in .framework
+        /// </summary>
+        /// <value>The name of the framework bundle.</value>
+        protected abstract Bam.Core.TokenizedString FrameworkBundleName
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Relative path from the framework directory to the .dylib
+        /// </summary>
+        /// <value>The framework library path.</value>
+        protected abstract Bam.Core.TokenizedString
+        FrameworkLibraryPath
         {
             get;
         }
