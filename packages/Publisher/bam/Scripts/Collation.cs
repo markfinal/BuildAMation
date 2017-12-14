@@ -367,6 +367,14 @@ namespace Publisher
                 // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
                 foreach (var dep in module.Dependents)
                 {
+                    if (dep is C.OSXFramework)
+                    {
+                        if (!allDependents.ContainsKey(dep))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(dep, C.OSXFramework.Key));
+                            any = true;
+                        }
+                    }
                     if (dep is C.SharedObjectSymbolicLink)
                     {
                         if (!allDependents.ContainsKey(dep))
@@ -427,6 +435,14 @@ namespace Publisher
                 }
                 foreach (var req in module.Requirements)
                 {
+                    if (req is C.OSXFramework)
+                    {
+                        if (!allDependents.ContainsKey(req))
+                        {
+                            toDealWith.Enqueue(System.Tuple.Create(req, C.OSXFramework.Key));
+                            any = true;
+                        }
+                    }
                     if (req is C.SharedObjectSymbolicLink)
                     {
                         if (!allDependents.ContainsKey(req))
@@ -559,9 +575,13 @@ namespace Publisher
             {
                 return this.StaticLibraryDir;
             }
+            else if (module is C.OSXFramework)
+            {
+                return this.Macros["macOSAppBundleFrameworksDir"];
+            }
             else
             {
-                throw new System.NotSupportedException(System.String.Format("Module of type {0}", module.GetType().ToString()));
+                throw new System.NotSupportedException(System.String.Format("Don't know how to collate a module of type {0}", module.GetType().ToString()));
             }
         }
 
