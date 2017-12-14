@@ -34,6 +34,12 @@ namespace Publisher
     public sealed class CollatedDirectory :
         CollatedObject
     {
+        public override void
+        Evaluate()
+        {
+            // always copy currently
+            //this.ReasonToExecute = null;
+        }
     }
 #else
     public sealed class CollatedDirectory :

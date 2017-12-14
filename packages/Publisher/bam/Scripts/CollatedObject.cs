@@ -193,11 +193,6 @@ namespace Publisher
             }
         }
 
-        public override void
-        Evaluate()
-        {
-        }
-
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
