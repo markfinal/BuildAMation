@@ -72,7 +72,6 @@ namespace C
             if (!frameworkPath.IsParsed)
             {
                 frameworkPath.Parse();
-                Bam.Core.Log.MessageAll("**Yo: '{0}'", frameworkPath.ToString());
             }
             var idName = Bam.Core.OSUtilities.RunExecutable(
                 Bam.Core.OSUtilities.GetInstallLocation("xcrun"),
