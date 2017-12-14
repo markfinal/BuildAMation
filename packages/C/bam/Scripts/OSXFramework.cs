@@ -84,8 +84,8 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GetIDName();
             this.Macros["FrameworkLibraryPath"] = this.FrameworkLibraryPath;
+            this.GetIDName();
         }
 
         /// <summary>
