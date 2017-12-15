@@ -98,7 +98,8 @@ namespace MakeFileBuilder
         {
             lock (this.Directories)
             {
-                this.Directories.AddUnique(path);
+                // at least mingw32-make does not like trailing slashes
+                this.Directories.AddUnique(path.TrimEnd(System.IO.Path.DirectorySeparatorChar));
             }
         }
 
