@@ -69,14 +69,25 @@ namespace Publisher
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
 
-            var project = collatedInterface.SourceModule.MetaData as VSSolutionBuilder.VSProject;
-            var config = project.GetConfiguration(collatedInterface.SourceModule);
+            Bam.Core.Module sourceModule;
+            if (null != collatedInterface.SourceModule)
+            {
+                sourceModule = collatedInterface.SourceModule;
+            }
+            else
+            {
+                sourceModule = collatedInterface.Anchor.SourceModule;
+            }
+
+            var project = sourceModule.MetaData as VSSolutionBuilder.VSProject;
+            var config = project.GetConfiguration(sourceModule);
 
             if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility)
             {
-                commands.Add(System.String.Format(@"{0} {1} $(OutDir)$(TargetFileName) {2} {3}",
+                commands.Add(System.String.Format(@"{0} {1} {2} {3} {4}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
+                    copySourcePath,
                     destinationDir,
                     CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 config.AddPostBuildCommands(commands);

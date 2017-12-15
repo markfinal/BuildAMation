@@ -789,6 +789,24 @@ namespace Publisher
             this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter, renameLeaf);
         }
 
+        private Bam.Core.Array<ICollatedObject>
+        AllModuleBasedAnchors()
+        {
+            var moduleBasedAnchors = new Bam.Core.Array<ICollatedObject>();
+            this.ForEachAnchor((collationModule, anchor, customData) =>
+                {
+                    var anchorSource = anchor.SourceModule;
+                    if (null == anchorSource)
+                    {
+                        return;
+                    }
+                    var list = customData as Bam.Core.Array<ICollatedObject>;
+                    list.AddUnique(anchor);
+                },
+                moduleBasedAnchors);
+            return moduleBasedAnchors;
+        }
+
         private void
         CreateCollatedPreExistingFile(
             string sourcePath,
@@ -802,7 +820,19 @@ namespace Publisher
 
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
-                collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { collatedFile.SourcePath }));
+                var moduleBasedAnchors = this.AllModuleBasedAnchors();
+                if (!moduleBasedAnchors.Any())
+                {
+                    throw new Bam.Core.Exception("No anchors were found suitable to attaching an IDE project");
+                }
+                if (moduleBasedAnchors.Count > 1)
+                {
+                    throw new Bam.Core.Exception("Ambigious which anchor this file should attach to");
+                }
+                // this file is associated with just one module-based anchor, so publish next to it
+                var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
+                collatedFile.Anchor = projectAnchor;
+                collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { projectAnchor.SourcePath }));
             }
             else
             {
@@ -856,7 +886,19 @@ namespace Publisher
 
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
-                collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { collatedDir.SourcePath }));
+                var moduleBasedAnchors = this.AllModuleBasedAnchors();
+                if (!moduleBasedAnchors.Any())
+                {
+                    throw new Bam.Core.Exception("No anchors were found suitable to attaching an IDE project");
+                }
+                if (moduleBasedAnchors.Count > 1)
+                {
+                    throw new Bam.Core.Exception("Ambigious which anchor this directory should attach to");
+                }
+                // this directory is associated with just one module-based anchor, so publish next to it
+                var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
+                collatedDir.Anchor = projectAnchor;
+                collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { projectAnchor.SourcePath }));
             }
             else
             {
