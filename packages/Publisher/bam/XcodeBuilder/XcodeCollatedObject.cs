@@ -44,6 +44,11 @@ namespace Publisher
             if (null != collatedInterface.SourceModule)
             {
                 sourceModule = collatedInterface.SourceModule;
+                if (null == sourceModule.MetaData)
+                {
+                    // this can happen for prebuilt frameworks
+                    sourceModule = collatedInterface.Anchor.SourceModule;
+                }
             }
             else
             {
