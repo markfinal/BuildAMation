@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace InstallerTest1
 {
     public sealed class CExecutableRuntime :
@@ -43,7 +44,7 @@ namespace InstallerTest1
             this.SetDefaultMacros(EPublishingType.WindowedApplication);
             this.Include<CExecutable>(C.GUIApplication.Key);
 
-            var app = this.Find<CExecutable>();
+            var app = this.Find<CExecutable>().First();
 
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
@@ -86,7 +87,7 @@ namespace InstallerTest1
             this.SetDefaultMacros(EPublishingType.WindowedApplication);
             this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key);
 
-            var app = this.Find<CxxExecutable>();
+            var app = this.Find<CxxExecutable>().First();
 
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&

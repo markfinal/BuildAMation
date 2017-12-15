@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace PluginTest
 {
     public class Application :
@@ -107,7 +108,7 @@ namespace PluginTest
             this.PluginDir = this.BinDir;
 #endif
             this.Include<Application>(C.ConsoleApplication.Key);
-            (this.Find<Plugin>() as Publisher.CollatedObject).SetPublishingDirectory("$(0)/subdir", new[] { this.ExecutableDir });
+            (this.Find<Plugin>().First() as Publisher.CollatedObject).SetPublishingDirectory("$(0)/subdir", new[] { this.ExecutableDir });
 #else
             var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
             this.Include<Plugin>(C.Plugin.Key, ".", app);

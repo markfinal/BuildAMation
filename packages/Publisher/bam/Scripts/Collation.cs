@@ -329,24 +329,19 @@ namespace Publisher
             }
         }
 
-        public ICollatedObject
-        Find<DependentModule>() where DependentModule : Bam.Core.Module, new()
+        public Bam.Core.Array<ICollatedObject>
+        Find<DependentModule>() where DependentModule : Bam.Core.Module
         {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
-            {
-                return null;
-            }
-
+            var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var dep in this.Requirements)
             {
-                var obj = dep as ICollatedObject;
-                if (obj.SourceModule == dependent)
+                var collatedObj = dep as ICollatedObject;
+                if (collatedObj.SourceModule is DependentModule)
                 {
-                    return obj;
+                    results.AddUnique(collatedObj);
                 }
             }
-            return null;
+            return results;
         }
 
         private void
