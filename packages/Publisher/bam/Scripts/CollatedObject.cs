@@ -113,8 +113,16 @@ namespace Publisher
         {
             get
             {
-                return (null == this.anchor) ||
-                       ((this as ICollatedObject).SourceModule.PackageDefinition == (this.anchor as ICollatedObject).SourceModule.PackageDefinition);
+                if (null == this.anchor)
+                {
+                    return true;
+                }
+                var srcModule = (this as ICollatedObject).SourceModule;
+                if (null == srcModule)
+                {
+                    return false;
+                }
+                return (srcModule.PackageDefinition == (this.anchor as ICollatedObject).SourceModule.PackageDefinition);
             }
         }
 

@@ -40,7 +40,17 @@ namespace Publisher
         {
             var collatedInterface = sender as ICollatedObject;
 
-            var target = collatedInterface.SourceModule.MetaData as XcodeBuilder.Target;
+            Bam.Core.Module sourceModule;
+            if (null != collatedInterface.SourceModule)
+            {
+                sourceModule = collatedInterface.SourceModule;
+            }
+            else
+            {
+                sourceModule = collatedInterface.Anchor.SourceModule;
+            }
+
+            var target = sourceModule.MetaData as XcodeBuilder.Target;
 
             if (sender.IsAnchor)
             {
@@ -85,24 +95,19 @@ namespace Publisher
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", destinationDir));
 
-            var configuration = target.GetConfiguration(collatedInterface.SourceModule);
+            var configuration = target.GetConfiguration(sourceModule);
+            commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
+                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                commandLine.ToString(' '),
+                copySourcePath.ToString(),
+                destinationDir,
+                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             if (!target.isUtilityType)
             {
-                commands.Add(System.String.Format("{0} {1} $CONFIGURATION_BUILD_DIR/$EXECUTABLE_NAME {2} {3}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    destinationDir,
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 target.AddPostBuildCommands(commands, configuration);
             }
             else
             {
-                commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    copySourcePath.ToString(),
-                    destinationDir,
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 target.AddPreBuildCommands(commands, configuration);
             }
         }
