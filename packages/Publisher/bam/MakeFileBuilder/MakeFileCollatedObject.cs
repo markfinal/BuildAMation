@@ -66,18 +66,40 @@ namespace Publisher
             var sourceType = (null != collatedInterface.SourceModule) ? collatedInterface.SourceModule.GetType().FullName : "publishroot";
             var basename = sourceType + "_" + topLevel + "_" + senderType + "_" + sender.BuildEnvironment.Configuration.ToString() + "_";
             var sourceFilename = System.IO.Path.GetFileName(copySourcePath.ToString());
+            var isPosixLeafRename = (sourceFilename == "*");
 
+            Bam.Core.TokenizedString prerequisitePath;
             var destinationPath = sender.CreateTokenizedString("$(0)/$(1)", new Bam.Core.TokenizedString[] { collatedInterface.PublishingDirectory, Bam.Core.TokenizedString.CreateVerbatim(sourceFilename) });
+
+            if (isPosixLeafRename)
+            {
+                sourceFilename = "all_files";
+                prerequisitePath = sender.CreateTokenizedString("@dir($(0))", copySourcePath);
+            }
+            else
+            {
+                prerequisitePath = copySourcePath;
+            }
             rule.AddTarget(destinationPath, variableName: basename + sourceFilename);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
-                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                commandLine.ToString(' '),
-                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-            rule.AddPrerequisite(copySourcePath);
+            if (isPosixLeafRename)
+            {
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $</* $(dir $@) {2}",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+            }
+            else
+            {
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+            }
+            rule.AddPrerequisite(prerequisitePath);
         }
     }
 #else

@@ -210,6 +210,10 @@ namespace MakeFileBuilder
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
+                    if (!pre.IsParsed)
+                    {
+                        pre.Parse();
+                    }
                     rules.AppendFormat("{0} ", pre.ToStringQuoteIfNecessary());
                 }
                 foreach (var pre in this.PrerequisiteTargets)
