@@ -96,6 +96,9 @@ namespace Publisher
 
             this.DependsOn(stripBinary);
 
+            // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+            stripBinary.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros["AnchorOutputName"]);
+
             stripBinary.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
             return stripBinary;

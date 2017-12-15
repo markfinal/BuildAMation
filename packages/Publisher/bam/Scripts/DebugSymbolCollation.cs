@@ -101,6 +101,9 @@ namespace Publisher
 
             createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
+            // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+            createDebugSymbols.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros["AnchorOutputName"]);
+
             this.collatedObjects.Add(createDebugSymbols);
         }
 
