@@ -81,14 +81,7 @@ namespace C
                 }
                 else if (module is IDynamicLibrary)
                 {
-                    if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                    {
-                        rule.AddPrerequisite(module, C.DynamicLibrary.ImportLibraryKey);
-                    }
-                    else
-                    {
-                        rule.AddPrerequisite(module, C.DynamicLibrary.Key);
-                    }
+                    rule.AddPrerequisite(module, C.DynamicLibrary.Key);
                 }
                 else if (module is CSDKModule)
                 {
