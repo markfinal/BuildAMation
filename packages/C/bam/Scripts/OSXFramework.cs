@@ -37,29 +37,6 @@ namespace C
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("macOS Framework");
 
-        public class Path
-        {
-            public Path(
-                Bam.Core.TokenizedString source,
-                Bam.Core.TokenizedString destination = null)
-            {
-                this.SourcePath = source;
-                this.DestinationPath = destination;
-            }
-
-            public Bam.Core.TokenizedString SourcePath
-            {
-                get;
-                private set;
-            }
-
-            public Bam.Core.TokenizedString DestinationPath
-            {
-                get;
-                private set;
-            }
-        }
-
         private void
         GetIDName()
         {
@@ -114,33 +91,6 @@ namespace C
         /// <value>The framework library path.</value>
         protected abstract Bam.Core.TokenizedString
         FrameworkLibraryPath
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Directories of the framework to publish.
-        /// </summary>
-        /// <value>The directories to publish.</value>
-        public abstract Bam.Core.Array<Path> DirectoriesToPublish
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Files of the framework to publish.
-        /// </summary>
-        /// <value>The files to publish.</value>
-        public abstract Bam.Core.Array<Path> FilesToPublish
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Symbolic links of the framework to publish.
-        /// </summary>
-        /// <value>The symlinks to publish.</value>
-        public abstract Bam.Core.Array<Path> SymlinksToPublish
         {
             get;
         }

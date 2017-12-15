@@ -593,7 +593,15 @@ namespace Publisher
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-            var collatedFile = this.CreateCollatedModuleGeneratedFile(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+            CollatedObject collatedFile;
+            if (dependent is C.OSXFramework)
+            {
+                collatedFile = this.CreateCollatedModuleGeneratedOSXFramework(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+            }
+            else
+            {
+                collatedFile = this.CreateCollatedModuleGeneratedFile(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+            }
             var tuple = System.Tuple.Create(dependent, key);
             try
             {
@@ -920,6 +928,57 @@ namespace Publisher
 
             this.Requires(collatedFile);
             return collatedFile;
+        }
+
+        private CollatedOSXFramework
+        CreateCollatedModuleGeneratedOSXFramework(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString modulePublishDir,
+            ICollatedObject anchor,
+            Bam.Core.TokenizedString anchorPublishRoot)
+        {
+            var collatedFramework = Bam.Core.Module.Create<CollatedOSXFramework>(preInitCallback: module =>
+                {
+                    module.SourceModule = dependent;
+                    module.SourcePathKey = key;
+                    module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
+                    module.Anchor = anchor;
+                });
+
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                // the publishdir is different for each anchor, so dependents may be duplicated
+                // if referenced by multiple anchors
+                if (null != anchor)
+                {
+                    collatedFramework.Macros.Add("publishroot", collatedFramework.CreateTokenizedString("@dir($(0))", new[] { (anchor as CollatedObject).SourcePath }));
+                }
+                else
+                {
+                    collatedFramework.Macros.Add("publishroot", collatedFramework.CreateTokenizedString("@dir($(0))", new[] { collatedFramework.SourcePath }));
+                }
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
+
+            // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file
+            // other than that built, and if copied elsewhere (as would expect from a custom anchor publish root), so
+            // will it's dependencies, which won't be found by the debugged executable
+            if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                collatedFramework.Macros.Add("publishdir", collatedFramework.CreateTokenizedString("$(0)", anchorPublishRoot));
+            }
+            else
+            {
+                collatedFramework.Macros.Add("publishdir", collatedFramework.CreateTokenizedString("$(publishroot)"));
+            }
+
+            this.Requires(collatedFramework);
+            return collatedFramework;
         }
 
         public delegate void ForEachAnchorDelegate(Collation collation, ICollatedObject anchor, object customData);
