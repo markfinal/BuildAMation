@@ -57,7 +57,9 @@ namespace MakeFileBuilder
                 }
                 else
                 {
-                    this.VariableName = System.String.Format("{0}_{1}", variableName, module.BuildEnvironment.Configuration.ToString());
+                    variableName = System.String.Format("{0}_{1}", variableName, module.BuildEnvironment.Configuration.ToString());
+                    MakeFileMeta.MakeVariableNameUnique(ref variableName);
+                    this.VariableName = variableName;
                 }
             }
         }

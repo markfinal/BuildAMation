@@ -45,6 +45,43 @@ namespace MakeFileBuilder
             }
         }
 
+        public static void
+        MakeVariableNameUnique(
+            ref string variableName)
+        {
+            for (;;)
+            {
+                var uniqueName = true;
+                foreach (var meta in allMeta)
+                {
+                    foreach (var rule in meta.Rules)
+                    {
+                        foreach (var target in rule.Targets)
+                        {
+                            if (target.VariableName == variableName)
+                            {
+                                variableName += "_";
+                                uniqueName = false;
+                                break;
+                            }
+                        }
+                        if (!uniqueName)
+                        {
+                            break;
+                        }
+                    }
+                    if (!uniqueName)
+                    {
+                        break;
+                    }
+                }
+                if (uniqueName)
+                {
+                    break;
+                }
+            }
+        }
+
         // only for the BuildModeMetaData
         public MakeFileMeta()
         { }
