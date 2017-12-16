@@ -36,7 +36,7 @@ namespace MakeFileBuilder
             bool isPhony,
             string variableName,
             Bam.Core.Module module,
-            int count)
+            int ruleIndex)
         {
             this.Path = nameOrOutput;
             this.IsPhony = isPhony;
@@ -44,7 +44,7 @@ namespace MakeFileBuilder
             {
                 return;
             }
-            if (count > 0)
+            if (ruleIndex > 0)
             {
                 return;
             }

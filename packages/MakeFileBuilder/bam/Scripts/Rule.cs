@@ -35,7 +35,7 @@ namespace MakeFileBuilder
             Bam.Core.Module module,
             int count)
         {
-            this.RuleCount = count;
+            this.RuleIndex = count;
             this.Module = module;
             this.Targets = new Bam.Core.Array<Target>();
             this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
@@ -52,7 +52,7 @@ namespace MakeFileBuilder
             bool isPhony = false,
             string variableName = null)
         {
-            var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleCount);
+            var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleIndex);
             this.Targets.Add(target);
             return target;
         }
@@ -240,7 +240,7 @@ namespace MakeFileBuilder
             }
         }
 
-        private int RuleCount
+        private int RuleIndex
         {
             get;
             set;
