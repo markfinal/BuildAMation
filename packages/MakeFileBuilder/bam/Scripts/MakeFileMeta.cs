@@ -49,19 +49,26 @@ namespace MakeFileBuilder
         MakeVariableNameUnique(
             ref string variableName)
         {
-            for (;;)
+            lock (allMeta)
             {
-                var uniqueName = true;
-                foreach (var meta in allMeta)
+                for (;;)
                 {
-                    foreach (var rule in meta.Rules)
+                    var uniqueName = true;
+                    foreach (var meta in allMeta)
                     {
-                        foreach (var target in rule.Targets)
+                        foreach (var rule in meta.Rules)
                         {
-                            if (target.VariableName == variableName)
+                            foreach (var target in rule.Targets)
                             {
-                                variableName += "_";
-                                uniqueName = false;
+                                if (target.VariableName == variableName)
+                                {
+                                    variableName += "_";
+                                    uniqueName = false;
+                                    break;
+                                }
+                            }
+                            if (!uniqueName)
+                            {
                                 break;
                             }
                         }
@@ -70,14 +77,10 @@ namespace MakeFileBuilder
                             break;
                         }
                     }
-                    if (!uniqueName)
+                    if (uniqueName)
                     {
                         break;
                     }
-                }
-                if (uniqueName)
-                {
-                    break;
                 }
             }
         }
