@@ -97,15 +97,6 @@ namespace MakeFileBuilder
             }
         }
 
-        public bool
-        IsFirstRule
-        {
-            get
-            {
-                return (this.RuleCount == 0);
-            }
-        }
-
         public void
         AppendTargetNames(
             Bam.Core.StringArray variableNames)
