@@ -175,9 +175,16 @@ namespace MakeFileBuilder
             // clean rule
             makeRules.AppendLine(".PHONY: clean");
             makeRules.AppendLine("clean:");
-            makeRules.AppendLine("\t@rm -frv $(DIRS)");
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                makeRules.AppendLine("\t-cmd.exe /C RMDIR /S /Q $(DIRS)");
+            }
+            else
+            {
+                makeRules.AppendLine("\t@rm -frv $(DIRS)");
+            }
 
-            // TODO: reverse?
+            // write all variables and rules
             foreach (var metadata in allMeta)
             {
                 foreach (var rule in metadata.Rules)
