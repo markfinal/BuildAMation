@@ -126,7 +126,7 @@ namespace Publisher
             }
         }
 
-        public bool IsAnchorAndApplicationBundle
+        public bool IsAnchorAnApplicationBundle
         {
             get
             {

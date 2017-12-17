@@ -63,7 +63,7 @@ namespace Publisher
 
             if (sender.IsAnchor)
             {
-                if (sender.IsAnchorAndApplicationBundle)
+                if (sender.IsAnchorAnApplicationBundle)
                 {
                     // application bundles are a different output type in Xcode
                     target.MakeApplicationBundle();
