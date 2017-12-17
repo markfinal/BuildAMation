@@ -58,17 +58,10 @@ namespace MakeFileBuilder
                     {
                         foreach (var rule in meta.Rules)
                         {
-                            foreach (var target in rule.Targets)
+                            if (rule.AnyTargetUsesVariableName((variableName)))
                             {
-                                if (target.VariableName == variableName)
-                                {
-                                    variableName += "_";
-                                    uniqueName = false;
-                                    break;
-                                }
-                            }
-                            if (!uniqueName)
-                            {
+                                variableName += "_";
+                                uniqueName = false;
                                 break;
                             }
                         }

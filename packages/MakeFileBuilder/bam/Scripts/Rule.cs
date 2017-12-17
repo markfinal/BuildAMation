@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace MakeFileBuilder
 {
     public sealed class Rule
@@ -53,7 +54,10 @@ namespace MakeFileBuilder
             string variableName = null)
         {
             var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleIndex);
-            this.Targets.Add(target);
+            lock (this.Targets)
+            {
+                this.Targets.Add(target);
+            }
             return target;
         }
 
@@ -101,16 +105,19 @@ namespace MakeFileBuilder
         AppendTargetNames(
             Bam.Core.StringArray variableNames)
         {
-            foreach (var target in this.Targets)
+            lock (this.Targets)
             {
-                var name = target.VariableName;
-                if (null != name)
+                foreach (var target in this.Targets)
                 {
-                    variableNames.AddUnique("$(" + name + ")");
-                }
-                else
-                {
-                    variableNames.AddUnique(target.Path.ToString());
+                    var name = target.VariableName;
+                    if (null != name)
+                    {
+                        variableNames.AddUnique("$(" + name + ")");
+                    }
+                    else
+                    {
+                        variableNames.AddUnique(target.Path.ToString());
+                    }
                 }
             }
         }
@@ -240,6 +247,50 @@ namespace MakeFileBuilder
             }
         }
 
+        public Target
+        FirstTarget
+        {
+            get
+            {
+                lock (this.Targets)
+                {
+                    return this.Targets.FirstOrDefault();
+                }
+            }
+        }
+
+        public delegate void eachTargetDelegate(Target target);
+
+        public void
+        ForEachTarget(
+            eachTargetDelegate dlg)
+        {
+            lock (this.Targets)
+            {
+                foreach (var target in this.Targets)
+                {
+                    dlg(target);
+                }
+            }
+        }
+
+        public bool
+        AnyTargetUsesVariableName(
+            string variableName)
+        {
+            lock (this.Targets)
+            {
+                foreach (var target in this.Targets)
+                {
+                    if (target.VariableName == variableName)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         private int RuleIndex
         {
             get;
@@ -252,10 +303,10 @@ namespace MakeFileBuilder
             set;
         }
 
-        public Bam.Core.Array<Target> Targets
+        private Bam.Core.Array<Target> Targets
         {
             get;
-            private set;
+            set;
         }
 
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Prequisities
