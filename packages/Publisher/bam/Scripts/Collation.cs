@@ -798,9 +798,15 @@ namespace Publisher
                     var anchorSource = anchor.SourceModule;
                     if (null == anchorSource)
                     {
+                        // ignore pre-existing files
                         return;
                     }
                     var list = customData as Bam.Core.Array<ICollatedObject>;
+                    if (list.Any(item => item.SourceModule == anchor.SourceModule))
+                    {
+                        // ignore any from the same module as those already present, e.g. just differing by pathkey, e.g. Windows DLL and Import library
+                        return;
+                    }
                     list.AddUnique(anchor);
                 },
                 moduleBasedAnchors);
