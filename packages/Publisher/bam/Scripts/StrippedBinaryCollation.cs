@@ -101,6 +101,8 @@ namespace Publisher
 
             stripBinary.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
+            stripBinary.Anchor = collatedFile.Anchor;
+
             return stripBinary;
         }
 
@@ -126,6 +128,8 @@ namespace Publisher
                     module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
                 });
             this.DependsOn(clonedFile);
+
+            clonedFile.Anchor = collatedObject.Anchor;
 
             clonedFile.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
         }
