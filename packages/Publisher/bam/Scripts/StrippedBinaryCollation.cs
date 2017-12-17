@@ -106,13 +106,13 @@ namespace Publisher
 
         private void
         CloneObject<CollationType>(
-            ICollatedObject collatedObject) where CollationType: CollatedObject, new()
+            ICollatedObject collatedObject) where CollationType : CollatedObject, new()
         {
             var clonedFile = Bam.Core.Module.Create<CollationType>(preInitCallback: module =>
                 {
                     if ((collatedObject as CollatedObject).Macros.Contains("RenameLeaf"))
                     {
-	                    module.Macros.Add("RenameLeaf", (collatedObject as CollatedObject).Macros["RenameLeaf"]);
+                        module.Macros.Add("RenameLeaf", (collatedObject as CollatedObject).Macros["RenameLeaf"]);
                     }
                     if (null != collatedObject.SourceModule)
                     {
