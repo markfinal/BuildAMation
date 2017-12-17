@@ -47,7 +47,7 @@ namespace Publisher
 
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
-            // one value, as debug symbols are not generated in IDE projects
+            // one value, as stripped binaries are not generated in IDE projects
             this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
         }
 
