@@ -44,7 +44,7 @@ namespace CodeGenTest
             rule.AddTarget(generatedFilePath);
 
             var buildTool = (compiler as Bam.Core.Module).MetaData as MakeFileBuilder.MakeFileMeta;
-            rule.AddOrderOnlyDependency(System.String.Format("$({0})", buildTool.Rules[0].Targets[0].VariableName));
+            rule.AddOrderOnlyDependency(System.String.Format("$({0})", buildTool.Rules[0].FirstTarget.VariableName));
 
             var commandLineArgs = new Bam.Core.StringArray();
             // TODO: change this to a configuration directory really
