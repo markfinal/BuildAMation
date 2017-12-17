@@ -87,7 +87,7 @@ namespace Publisher
                 commands.Add(System.String.Format(@"{0} {1} {2} {3} {4}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
-                    copySourcePath,
+                    copySourcePath.ToStringQuoteIfNecessary(),
                     destinationDir,
                     CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 config.AddPostBuildCommands(commands);
