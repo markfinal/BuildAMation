@@ -52,6 +52,10 @@ namespace Publisher
             }
             else
             {
+                if (null == collatedInterface.Anchor)
+                {
+                    throw new Bam.Core.Exception("No anchor set on '{0}' with source path '{1}'", sender.GetType().ToString(), sender.SourcePath);
+                }
                 sourceModule = collatedInterface.Anchor.SourceModule;
             }
 
