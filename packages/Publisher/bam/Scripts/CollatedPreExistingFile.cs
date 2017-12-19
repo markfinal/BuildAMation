@@ -45,10 +45,14 @@ namespace Publisher
         {
             base.Init(parent);
 
+            var graph = Bam.Core.Graph.Instance;
+            var index = (graph.CommonModuleType.Count > 1) ? 1 : 0;
             // Peek(0) returns the Collation
-            // Peek(1) returns whatever asked for the Collation, which generally has a project
-            var anchorType = Bam.Core.Graph.Instance.CommonModuleType.Peek(1);
-            this.ParentOfCollationModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, anchorType);
+            // Peek(1) returns whatever asked for the Collation, either:
+            // - nothing, in which case the Collation was in the master package and is buildable
+            // - the module that asked for the Collation, generally used when library headers are published to a public include path
+            var anchorType = graph.CommonModuleType.Peek(index);
+            this.ParentOfCollationModule = graph.GetReferencedModule(this.BuildEnvironment, anchorType);
         }
     }
 #else

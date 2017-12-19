@@ -85,5 +85,17 @@ namespace Bam.Core
         {
             return this.list.ElementAt(this.list.Count - index - 1);
         }
+
+        /// <summary>
+        /// Returns the number of elements on the stack (read only).
+        /// </summary>
+        public int
+        Count
+        {
+            get
+            {
+                return this.list.Count;
+            }
+        }
     }
 }
