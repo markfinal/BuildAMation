@@ -67,7 +67,7 @@ namespace Bam.Core
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList(this.GetType().FullName);
             this.BuildEnvironmentInternal = null;
-            this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
+            this.CommonModuleType = new PeekableStack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
             this.MetaData = null;
 
@@ -104,7 +104,7 @@ namespace Bam.Core
         /// This is so that modules created as dependencies can inspect their module parental hierarchy at construction time.
         /// </summary>
         /// <value>The stack of module types</value>
-        public System.Collections.Generic.Stack<System.Type> CommonModuleType
+        public PeekableStack<System.Type> CommonModuleType
         {
             get;
             private set;

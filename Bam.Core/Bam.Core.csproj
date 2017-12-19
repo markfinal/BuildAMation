@@ -142,6 +142,7 @@
     <Compile Include="Package\PackageMetaData.cs" />
     <Compile Include="Package\PackageUtilities.cs" />
     <Compile Include="PathKey.cs" />
+    <Compile Include="PeekableStack.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="PreBuiltTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
