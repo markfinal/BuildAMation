@@ -818,7 +818,7 @@ namespace Publisher
             string sourcePath,
             Bam.Core.TokenizedString destinationDir)
         {
-            var collatedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+            var collatedFile = Bam.Core.Module.Create<CollatedPreExistingFile>(preInitCallback: module =>
                 {
                     module.PreExistingSourcePath = sourcePath;
                     module.SetPublishingDirectory("$(0)", new[] { destinationDir });
@@ -827,18 +827,24 @@ namespace Publisher
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 var moduleBasedAnchors = this.AllModuleBasedAnchors();
-                if (!moduleBasedAnchors.Any())
+                if (moduleBasedAnchors.Any())
                 {
-                    throw new Bam.Core.Exception("No anchors were found suitable to attaching an IDE project");
+                    if (moduleBasedAnchors.Count > 1)
+                    {
+                        throw new Bam.Core.Exception("Ambigious which anchor this file should attach to");
+                    }
+                    // this file is associated with just one module-based anchor, so publish next to it
+                    var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
+                    collatedFile.Anchor = projectAnchor;
+                    collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { ((collatedFile as ICollatedObject).Anchor as CollatedObject).SourcePath }));
                 }
-                if (moduleBasedAnchors.Count > 1)
+                else
                 {
-                    throw new Bam.Core.Exception("Ambigious which anchor this file should attach to");
+                    // if there are no module-based anchors, this is likely to be collating
+                    // public headers for a library
+                    // these do not need to go beside the executable
+                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
                 }
-                // this file is associated with just one module-based anchor, so publish next to it
-                var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
-                collatedFile.Anchor = projectAnchor;
-                collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { projectAnchor.SourcePath }));
             }
             else
             {
@@ -893,18 +899,24 @@ namespace Publisher
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
                 var moduleBasedAnchors = this.AllModuleBasedAnchors();
-                if (!moduleBasedAnchors.Any())
+                if (moduleBasedAnchors.Any())
                 {
-                    throw new Bam.Core.Exception("No anchors were found suitable to attaching an IDE project");
+                    if (moduleBasedAnchors.Count > 1)
+                    {
+                        throw new Bam.Core.Exception("Ambigious which anchor this directory should attach to");
+                    }
+                    // this directory is associated with just one module-based anchor, so publish next to it
+                    var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
+                    collatedDir.Anchor = projectAnchor;
+                    collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { projectAnchor.SourcePath }));
                 }
-                if (moduleBasedAnchors.Count > 1)
+                else
                 {
-                    throw new Bam.Core.Exception("Ambigious which anchor this directory should attach to");
+                    // if there are no module-based anchors, this is likely to be collating
+                    // standalone directories
+                    // these do not need to go beside the executable
+                    collatedDir.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
                 }
-                // this directory is associated with just one module-based anchor, so publish next to it
-                var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
-                collatedDir.Anchor = projectAnchor;
-                collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { projectAnchor.SourcePath }));
             }
             else
             {

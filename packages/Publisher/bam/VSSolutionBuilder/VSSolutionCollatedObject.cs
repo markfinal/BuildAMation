@@ -38,12 +38,12 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
-            if (sender.IsAnchor)
+            var collatedInterface = sender as ICollatedObject;
+            if (sender.IsAnchor && null != collatedInterface.SourceModule)
             {
                 // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
                 return;
             }
-            var collatedInterface = sender as ICollatedObject;
 
             var copySourcePath = sender.SourcePath;
 
@@ -69,6 +69,7 @@ namespace Publisher
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
 
+            var arePostBuildCommands = true;
             Bam.Core.Module sourceModule;
             if (null != collatedInterface.SourceModule)
             {
@@ -76,33 +77,47 @@ namespace Publisher
             }
             else
             {
-                if (null == collatedInterface.Anchor)
+                if (null != collatedInterface.Anchor)
                 {
-                    throw new Bam.Core.Exception("No anchor set on '{0}' with source path '{1}'", sender.GetType().ToString(), sender.SourcePath);
+                    // usually preexisting files that are published as part of an executable's distribution
+                    // in which case, their anchor is the executable (or a similar binary)
+                    sourceModule = collatedInterface.Anchor.SourceModule;
                 }
-                sourceModule = collatedInterface.Anchor.SourceModule;
+                else
+                {
+                    if (sender is CollatedPreExistingFile)
+                    {
+                        sourceModule = (sender as CollatedPreExistingFile).ParentOfCollationModule;
+
+                        // ensure a project exists, as this collation may be visited prior to
+                        // the source which invoked it
+                        var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                        solution.EnsureProjectExists(sourceModule);
+
+                        arePostBuildCommands = false;
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("No anchor set on '{0}' with source path '{1}'", sender.GetType().ToString(), sender.SourcePath);
+                    }
+                }
             }
 
             var project = sourceModule.MetaData as VSSolutionBuilder.VSProject;
             var config = project.GetConfiguration(sourceModule);
 
-            if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility)
+            commands.Add(System.String.Format(@"{0} {1} {2} {3} {4}",
+                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                commandLine.ToString(' '),
+                copySourcePath.ToStringQuoteIfNecessary(),
+                destinationDir,
+                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+            if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
             {
-                commands.Add(System.String.Format(@"{0} {1} {2} {3} {4}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    copySourcePath.ToStringQuoteIfNecessary(),
-                    destinationDir,
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 config.AddPostBuildCommands(commands);
             }
             else
             {
-                commands.Add(System.String.Format(@"{0} {1} {2} $(OutDir).\ {3}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    copySourcePath.ToStringQuoteIfNecessary(),
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
                 config.AddPreBuildCommands(commands);
             }
         }
