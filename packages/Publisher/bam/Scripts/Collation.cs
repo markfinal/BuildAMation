@@ -661,7 +661,7 @@ namespace Publisher
             this.Include(dependent, key, anchorPublishRoot);
         }
 
-        public void
+        public Bam.Core.Array<ICollatedObject>
         IncludeFiles(
             Bam.Core.TokenizedString wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
@@ -694,25 +694,29 @@ namespace Publisher
                 }
                 files = filteredFiles;
             }
+            var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var filepath in files)
             {
-                this.CreateCollatedPreExistingFile(filepath, destinationDir);
+                results.Add(this.CreateCollatedPreExistingFile(filepath, destinationDir));
             }
+            return results;
         }
 
-        public void
+        public Bam.Core.Array<ICollatedObject>
         IncludeFiles(
             Bam.Core.TokenizedStringArray wildcardedSourcePaths,
             Bam.Core.TokenizedString destinationDir,
             System.Text.RegularExpressions.Regex filter = null)
         {
+            var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var path in wildcardedSourcePaths)
             {
-                this.IncludeFiles(path, destinationDir, filter);
+                results.AddRange(this.IncludeFiles(path, destinationDir, filter));
             }
+            return results;
         }
 
-        public void
+        public Bam.Core.Array<ICollatedObject>
         IncludeFiles<DependentModule>(
             string wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
@@ -721,12 +725,12 @@ namespace Publisher
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
-                return;
+                return null;
             }
-            this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter);
+            return this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter);
         }
 
-        public void
+        public Bam.Core.Array<ICollatedObject>
         IncludeDirectories(
             Bam.Core.TokenizedString wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
@@ -760,26 +764,30 @@ namespace Publisher
                 }
                 files = filteredFiles;
             }
+            var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var filepath in files)
             {
-                this.CreateCollatedPreExistingDirectory(filepath, destinationDir, renameLeaf);
+                results.Add(this.CreateCollatedPreExistingDirectory(filepath, destinationDir, renameLeaf));
             }
+            return results;
         }
 
-        public void
+        public Bam.Core.Array<ICollatedObject>
         IncludeDirectories(
             Bam.Core.TokenizedStringArray wildcardedSourcePaths,
             Bam.Core.TokenizedString destinationDir,
             System.Text.RegularExpressions.Regex filter = null,
             string renameLeaf = null)
         {
+            var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var path in wildcardedSourcePaths)
             {
-                this.IncludeDirectories(path, destinationDir, filter, renameLeaf);
+                results.AddRange(this.IncludeDirectories(path, destinationDir, filter, renameLeaf));
             }
+            return results;
         }
 
-        public void
+        public Bam.Core.Array<ICollatedObject>
         IncludeDirectories<DependentModule>(
             string wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
@@ -789,9 +797,9 @@ namespace Publisher
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
-                return;
+                return null;
             }
-            this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter, renameLeaf);
+            return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter, renameLeaf);
         }
 
         private Bam.Core.Array<ICollatedObject>
@@ -818,7 +826,7 @@ namespace Publisher
             return moduleBasedAnchors;
         }
 
-        private void
+        private ICollatedObject
         CreateCollatedPreExistingFile(
             string sourcePath,
             Bam.Core.TokenizedString destinationDir)
@@ -866,9 +874,11 @@ namespace Publisher
                 throw new Bam.Core.Exception("Pre-existing file already collated, with path '{0}'", sourcePath);
             }
             this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedFile as CollatedObject, destinationDir));
+
+            return collatedFile;
         }
 
-        private void
+        private ICollatedObject
         CreateCollatedPreExistingDirectory(
             string sourcePath,
             Bam.Core.TokenizedString destinationDir,
@@ -938,6 +948,8 @@ namespace Publisher
                 throw new Bam.Core.Exception("Pre-existing directory already collated, with path '{0}'", sourcePath);
             }
             this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedDir as CollatedObject, destinationDir));
+
+            return collatedDir;
         }
 
         private CollatedFile
