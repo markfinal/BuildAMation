@@ -336,6 +336,11 @@ namespace Publisher
             foreach (var dep in this.Requirements)
             {
                 var collatedObj = dep as ICollatedObject;
+                if (null == collatedObj)
+                {
+                    // can happen if non-collated objects end up in the requirements, e.g. tools to generate output from collated objects
+                    continue;
+                }
                 if (collatedObj.SourceModule is DependentModule)
                 {
                     results.AddUnique(collatedObj);
