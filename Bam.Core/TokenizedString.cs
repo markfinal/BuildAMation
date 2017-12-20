@@ -1510,5 +1510,34 @@ namespace Bam.Core
                 return Create(this.OriginalString, moduleWithMacros, this.PositionalTokens);
             }
         }
+
+        /// <summary>
+        /// Determine if a macro is referred to in the string
+        /// or any of it's positional string arguments.
+        /// </summary>
+        /// <param name="macro">Macro name to look up, including $( and $) prefix and suffix</param>
+        /// <returns></returns>
+        public bool
+        RefersToMacro(
+            string macro)
+        {
+            if (!(macro.StartsWith(TokenizedString.TokenPrefix) && macro.EndsWith(TokenizedString.TokenSuffix)))
+            {
+                throw new Exception("Invalid macro key: {0}", macro);
+            }
+            var inString = this.OriginalString.Contains(macro);
+            if (inString)
+            {
+                return true;
+            }
+            foreach (var positional in this.PositionalTokens)
+            {
+                if (positional.RefersToMacro(macro))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
