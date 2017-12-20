@@ -337,6 +337,21 @@ namespace Bam.Core
         }
 
         private void
+        CheckForCircularDependencies(
+            Module module)
+        {
+            var graph = Bam.Core.Graph.Instance;
+            if (graph.CommonModuleType.Contains(module.GetType()))
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Circular dependency found while adding {0} as a dependency to {1}:", module.GetType().ToString(), this.GetType().ToString());
+                message.AppendLine();
+                message.AppendLine(graph.CommonModuleType.ToString(" -> "));
+                throw new Exception(message.ToString());
+            }
+        }
+
+        private void
         InternalDependsOn(
             Module module)
         {
@@ -352,6 +367,7 @@ namespace Bam.Core
             {
                 throw new Exception("Cyclic dependency found between {0} and {1}", this.ToString(), module.ToString());
             }
+            this.CheckForCircularDependencies(module);
             this.DependentsList.Add(module);
             module.DependeesList.Add(this);
         }
@@ -401,6 +417,7 @@ namespace Bam.Core
             {
                 return;
             }
+            this.CheckForCircularDependencies(module);
             this.RequiredDependentsList.Add(module);
             module.RequiredDependeesList.Add(this);
         }
