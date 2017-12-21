@@ -440,6 +440,7 @@ namespace Publisher
                             continue;
                         }
                     }
+                    toDealWith.Enqueue(System.Tuple.Create(dep, default(Bam.Core.PathKey)));
                 }
                 foreach (var req in module.Requirements)
                 {
@@ -515,6 +516,7 @@ namespace Publisher
                             continue;
                         }
                     }
+                    toDealWith.Enqueue(System.Tuple.Create(req, default(Bam.Core.PathKey)));
                 }
                 return any;
             };
@@ -523,20 +525,25 @@ namespace Publisher
             {
                 var next = toDealWith.Dequeue();
                 findPublishableDependents(next.Item1);
-                if (next.Item1 != initialModule)
+                if (next.Item1 == initialModule)
                 {
-                    var notPresent = true;
-                    notPresent &= !allDependents.ContainsKey(next.Item1);
-                    notPresent &= !this.collatedObjects.ContainsKey(next);
-                    if (anchor != null)
-                    {
-                        var anchorAsCollatedObject = anchor as CollatedObject;
-                        notPresent &= !anchorAsCollatedObject.DependentCollations.ContainsKey(next);
-                    }
-                    if (notPresent)
-                    {
-                        allDependents.Add(next.Item1, next.Item2);
-                    }
+                    continue;
+                }
+                if (next.Item2 == default(Bam.Core.PathKey))
+                {
+                    continue;
+                }
+                var moduleShouldBePublished = true;
+                moduleShouldBePublished &= !allDependents.ContainsKey(next.Item1);
+                moduleShouldBePublished &= !this.collatedObjects.ContainsKey(next);
+                if (anchor != null)
+                {
+                    var anchorAsCollatedObject = anchor as CollatedObject;
+                    moduleShouldBePublished &= !anchorAsCollatedObject.DependentCollations.ContainsKey(next);
+                }
+                if (moduleShouldBePublished)
+                {
+                    allDependents.Add(next.Item1, next.Item2);
                 }
             }
             // now add each as a publishable dependent
