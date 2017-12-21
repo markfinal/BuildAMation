@@ -349,6 +349,171 @@ namespace Publisher
             return results;
         }
 
+        private static bool
+        FindPublishableDependents(
+            Bam.Core.Module module,
+            System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> allDependents,
+            System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>> toDealWith)
+        {
+            var any = false;
+            // now look at all the dependencies and accumulate a list of child dependencies
+            // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
+            foreach (var dep in module.Dependents)
+            {
+                if (dep is C.OSXFramework)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.OSXFramework.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (dep is C.SharedObjectSymbolicLink)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.SharedObjectSymbolicLink.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (dep is C.Plugin)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.Plugin.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (dep is C.Cxx.Plugin)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.Plugin.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (dep is C.DynamicLibrary)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.DynamicLibrary.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (dep is C.Cxx.DynamicLibrary)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.DynamicLibrary.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                // TODO: distinguish between GUIApplication and ConsoleApplication?
+                if (dep is C.ConsoleApplication)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.ConsoleApplication.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (dep is C.Cxx.ConsoleApplication)
+                {
+                    if (!allDependents.ContainsKey(dep))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.ConsoleApplication.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                toDealWith.Enqueue(System.Tuple.Create(dep, default(Bam.Core.PathKey)));
+            }
+            foreach (var req in module.Requirements)
+            {
+                if (req is C.OSXFramework)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.OSXFramework.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (req is C.SharedObjectSymbolicLink)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.SharedObjectSymbolicLink.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (req is C.Plugin)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.Plugin.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (req is C.Cxx.Plugin)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.Plugin.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (req is C.DynamicLibrary)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.DynamicLibrary.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (req is C.Cxx.DynamicLibrary)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.DynamicLibrary.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (req is C.ConsoleApplication)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.ConsoleApplication.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                if (req is C.Cxx.ConsoleApplication)
+                {
+                    if (!allDependents.ContainsKey(req))
+                    {
+                        toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.ConsoleApplication.Key));
+                        any = true;
+                        continue;
+                    }
+                }
+                toDealWith.Enqueue(System.Tuple.Create(req, default(Bam.Core.PathKey)));
+            }
+            return any;
+        }
+
         private void
         gatherAllDependencies(
             Bam.Core.Module initialModule,
@@ -359,172 +524,11 @@ namespace Publisher
             var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
             var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>>();
             toDealWith.Enqueue(System.Tuple.Create(initialModule, key));
-            System.Func<Bam.Core.Module, bool> findPublishableDependents;
-            findPublishableDependents = module =>
-            {
-                var any = false;
-                // now look at all the dependencies and accumulate a list of child dependencies
-                // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
-                foreach (var dep in module.Dependents)
-                {
-                    if (dep is C.OSXFramework)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.OSXFramework.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (dep is C.SharedObjectSymbolicLink)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.SharedObjectSymbolicLink.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (dep is C.Plugin)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Plugin.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (dep is C.Cxx.Plugin)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.Plugin.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (dep is C.DynamicLibrary)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.DynamicLibrary.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (dep is C.Cxx.DynamicLibrary)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.DynamicLibrary.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    // TODO: distinguish between GUIApplication and ConsoleApplication?
-                    if (dep is C.ConsoleApplication)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.ConsoleApplication.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (dep is C.Cxx.ConsoleApplication)
-                    {
-                        if (!allDependents.ContainsKey(dep))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.ConsoleApplication.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    toDealWith.Enqueue(System.Tuple.Create(dep, default(Bam.Core.PathKey)));
-                }
-                foreach (var req in module.Requirements)
-                {
-                    if (req is C.OSXFramework)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.OSXFramework.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (req is C.SharedObjectSymbolicLink)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.SharedObjectSymbolicLink.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (req is C.Plugin)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.Plugin.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (req is C.Cxx.Plugin)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.Plugin.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (req is C.DynamicLibrary)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.DynamicLibrary.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (req is C.Cxx.DynamicLibrary)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.DynamicLibrary.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (req is C.ConsoleApplication)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.ConsoleApplication.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    if (req is C.Cxx.ConsoleApplication)
-                    {
-                        if (!allDependents.ContainsKey(req))
-                        {
-                            toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.ConsoleApplication.Key));
-                            any = true;
-                            continue;
-                        }
-                    }
-                    toDealWith.Enqueue(System.Tuple.Create(req, default(Bam.Core.PathKey)));
-                }
-                return any;
-            };
             // iterate over each dependent, stepping into each of their dependencies
             while (toDealWith.Count > 0)
             {
                 var next = toDealWith.Dequeue();
-                findPublishableDependents(next.Item1);
+                FindPublishableDependents(next.Item1, allDependents, toDealWith);
                 if (next.Item1 == initialModule)
                 {
                     continue;
