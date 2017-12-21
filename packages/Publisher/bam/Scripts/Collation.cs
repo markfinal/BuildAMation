@@ -373,6 +373,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.OSXFramework.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (dep is C.SharedObjectSymbolicLink)
@@ -381,6 +382,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.SharedObjectSymbolicLink.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (dep is C.Plugin)
@@ -389,6 +391,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.Plugin.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (dep is C.Cxx.Plugin)
@@ -397,6 +400,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.Plugin.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (dep is C.DynamicLibrary)
@@ -405,6 +409,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.DynamicLibrary.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (dep is C.Cxx.DynamicLibrary)
@@ -413,6 +418,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.DynamicLibrary.Key));
                             any = true;
+                            continue;
                         }
                     }
                     // TODO: distinguish between GUIApplication and ConsoleApplication?
@@ -422,6 +428,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.ConsoleApplication.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (dep is C.Cxx.ConsoleApplication)
@@ -430,6 +437,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(dep, C.Cxx.ConsoleApplication.Key));
                             any = true;
+                            continue;
                         }
                     }
                 }
@@ -441,6 +449,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.OSXFramework.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (req is C.SharedObjectSymbolicLink)
@@ -449,6 +458,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.SharedObjectSymbolicLink.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (req is C.Plugin)
@@ -457,6 +467,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.Plugin.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (req is C.Cxx.Plugin)
@@ -465,6 +476,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.Plugin.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (req is C.DynamicLibrary)
@@ -473,6 +485,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.DynamicLibrary.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (req is C.Cxx.DynamicLibrary)
@@ -481,6 +494,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.DynamicLibrary.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (req is C.ConsoleApplication)
@@ -489,6 +503,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.ConsoleApplication.Key));
                             any = true;
+                            continue;
                         }
                     }
                     if (req is C.Cxx.ConsoleApplication)
@@ -497,6 +512,7 @@ namespace Publisher
                         {
                             toDealWith.Enqueue(System.Tuple.Create(req, C.Cxx.ConsoleApplication.Key));
                             any = true;
+                            continue;
                         }
                     }
                 }
