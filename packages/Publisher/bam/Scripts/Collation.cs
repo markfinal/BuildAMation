@@ -66,7 +66,7 @@ namespace Publisher
         {
             base.Init(parent);
 
-            this.ModuleTypePublishDirectory = this.DefaultModuleTypePublishDirectory;
+            this.Mapping = new ModuleOutputDefaultPublishingPathMapping();
 
             // TODO: if this is used as a position argument, it might end up in an infinite recursion during string parsing
             this.PublishRoot = Bam.Core.TokenizedString.Create("$(publishdir)", null);
@@ -132,7 +132,7 @@ namespace Publisher
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
-        private System.Collections.Generic.List<System.Tuple<CollatedObject,Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject,Bam.Core.TokenizedString>>();
+        private System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>>();
 
         private Bam.Core.TokenizedString PublishRoot
         {
@@ -224,7 +224,7 @@ namespace Publisher
             this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
             this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
             this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
-            if (Bam.Core.OSUtilities.CurrentOS == Bam.Core.EPlatform.Windows)
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
             }
@@ -311,6 +311,28 @@ namespace Publisher
                     this.setLibraryDefaultMacros();
                     break;
             }
+
+            // order matters here, for any sub-classes of module types
+            this.Mapping.Register(typeof(C.Cxx.Plugin), C.Cxx.Plugin.Key, this.PluginDir, true);
+            this.Mapping.Register(typeof(C.Plugin), C.Plugin.Key, this.PluginDir, true);
+            this.Mapping.Register(typeof(C.Cxx.DynamicLibrary), C.Cxx.DynamicLibrary.Key, this.DynamicLibraryDir, true);
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                this.Mapping.Register(typeof(C.Cxx.DynamicLibrary), C.Cxx.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
+            }
+            this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.Key, this.DynamicLibraryDir, true);
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
+            }
+            this.Mapping.Register(typeof(C.SharedObjectSymbolicLink), C.SharedObjectSymbolicLink.Key, this.DynamicLibraryDir, true);
+            this.Mapping.Register(typeof(C.Cxx.ConsoleApplication), C.Cxx.ConsoleApplication.Key, this.ExecutableDir, true);
+            this.Mapping.Register(typeof(C.ConsoleApplication), C.ConsoleApplication.Key, this.ExecutableDir, true);
+            this.Mapping.Register(typeof(C.StaticLibrary), C.StaticLibrary.Key, this.StaticLibraryDir, false);
+            if (Bam.Core.OSUtilities.IsOSXHosting && EPublishingType.WindowedApplication == type)
+            {
+                this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.Key, this.Macros["macOSAppBundleFrameworksDir"], true);
+            }
         }
 
         public void
@@ -349,81 +371,27 @@ namespace Publisher
             return results;
         }
 
-        private static void
+        private void
         EncodeDependentModuleAndPathKey(
             Bam.Core.Module dependent,
             System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> allDependents,
             System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>> toDealWith)
         {
-            if (dependent is C.OSXFramework)
+            var runtimePathKey = this.Mapping.GetRuntimePathKey(dependent);
+            if (null == runtimePathKey)
             {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.OSXFramework.Key));
-                    return;
-                }
+                // no explicit mapping, but the dependency may contain more dependencies that are
+                toDealWith.Enqueue(System.Tuple.Create(dependent, runtimePathKey));
+                return;
             }
-            if (dependent is C.SharedObjectSymbolicLink)
+            if (allDependents.ContainsKey(dependent))
             {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.SharedObjectSymbolicLink.Key));
-                    return;
-                }
+                return;
             }
-            if (dependent is C.Plugin)
-            {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.Plugin.Key));
-                    return;
-                }
-            }
-            if (dependent is C.Cxx.Plugin)
-            {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.Cxx.Plugin.Key));
-                    return;
-                }
-            }
-            if (dependent is C.DynamicLibrary)
-            {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.DynamicLibrary.Key));
-                    return;
-                }
-            }
-            if (dependent is C.Cxx.DynamicLibrary)
-            {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.Cxx.DynamicLibrary.Key));
-                    return;
-                }
-            }
-            // TODO: distinguish between GUIApplication and ConsoleApplication?
-            if (dependent is C.ConsoleApplication)
-            {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.ConsoleApplication.Key));
-                    return;
-                }
-            }
-            if (dependent is C.Cxx.ConsoleApplication)
-            {
-                if (!allDependents.ContainsKey(dependent))
-                {
-                    toDealWith.Enqueue(System.Tuple.Create(dependent, C.Cxx.ConsoleApplication.Key));
-                    return;
-                }
-            }
-            toDealWith.Enqueue(System.Tuple.Create(dependent, default(Bam.Core.PathKey)));
+            toDealWith.Enqueue(System.Tuple.Create(dependent, runtimePathKey));
         }
 
-        private static void
+        private void
         FindPublishableDependents(
             Bam.Core.Module module,
             System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> allDependents,
@@ -433,11 +401,11 @@ namespace Publisher
             // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
             foreach (var dep in module.Dependents)
             {
-                EncodeDependentModuleAndPathKey(dep, allDependents, toDealWith);
+                this.EncodeDependentModuleAndPathKey(dep, allDependents, toDealWith);
             }
             foreach (var req in module.Requirements)
             {
-                EncodeDependentModuleAndPathKey(req, allDependents, toDealWith);
+                this.EncodeDependentModuleAndPathKey(req, allDependents, toDealWith);
             }
         }
 
@@ -455,13 +423,14 @@ namespace Publisher
             while (toDealWith.Count > 0)
             {
                 var next = toDealWith.Dequeue();
-                FindPublishableDependents(next.Item1, allDependents, toDealWith);
+                this.FindPublishableDependents(next.Item1, allDependents, toDealWith);
                 if (next.Item1 == initialModule)
                 {
                     continue;
                 }
                 if (next.Item2 == default(Bam.Core.PathKey))
                 {
+                    Bam.Core.Log.DebugMessage("Ignoring '{0}' for collation, with no path key", next.Item1.ToString());
                     continue;
                 }
                 var moduleShouldBePublished = true;
@@ -480,7 +449,7 @@ namespace Publisher
             // now add each as a publishable dependent
             foreach (var dep in allDependents)
             {
-                var modulePublishDir = this.ModuleTypePublishDirectory(dep.Key, dep.Value);
+                var modulePublishDir = this.Mapping.FindPublishDirectory(dep.Key, dep.Value);
                 var dependentCollation = this.IncludeNoGather(dep.Key, dep.Value, modulePublishDir, anchor, anchorPublishRoot);
 
                 // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
@@ -488,55 +457,87 @@ namespace Publisher
             }
         }
 
-        public delegate Bam.Core.TokenizedString ModuleTypePublishDirectoryDelegate(Bam.Core.Module module, Bam.Core.PathKey key);
-
-        public ModuleTypePublishDirectoryDelegate ModuleTypePublishDirectory
+        struct ModuleOutputDefaultPublishingPath
         {
-            get;
-            set;
+            public System.Type type;
+            public Bam.Core.PathKey pathKey;
+            public Bam.Core.TokenizedString defaultPublishPath;
+            public bool runtimeDependency;
+
+            public ModuleOutputDefaultPublishingPath(
+                System.Type moduleType,
+                Bam.Core.PathKey modulePathKey,
+                Bam.Core.TokenizedString defaultPublishPath,
+                bool isRuntimeDependency)
+            {
+                this.type = moduleType;
+                this.pathKey = modulePathKey;
+                this.defaultPublishPath = defaultPublishPath;
+                this.runtimeDependency = isRuntimeDependency;
+            }
         }
 
-        private Bam.Core.TokenizedString
-        DefaultModuleTypePublishDirectory(
-            Bam.Core.Module module,
-            Bam.Core.PathKey key)
+        public class ModuleOutputDefaultPublishingPathMapping
         {
-            if (module is C.Cxx.Plugin || module is C.Plugin)
+            private Bam.Core.Array<ModuleOutputDefaultPublishingPath> mapping = new Bam.Core.Array<ModuleOutputDefaultPublishingPath>();
+
+            public void
+            Register(
+                System.Type moduleType,
+                Bam.Core.PathKey modulePathKey,
+                Bam.Core.TokenizedString defaultPublishPath,
+                bool isRuntimeDependency)
             {
-                return this.PluginDir;
+                this.mapping.Add(new ModuleOutputDefaultPublishingPath(moduleType, modulePathKey, defaultPublishPath, isRuntimeDependency));
             }
-            else if (module is C.DynamicLibrary || module is C.Cxx.DynamicLibrary || module is C.SharedObjectSymbolicLink)
+
+            public Bam.Core.TokenizedString
+            FindPublishDirectory(
+                Bam.Core.Module module,
+                Bam.Core.PathKey modulePathKey)
             {
-                if (C.DynamicLibrary.Key == key || C.SharedObjectSymbolicLink.Key == key)
+                foreach (var mod in this.mapping)
                 {
-                    return this.DynamicLibraryDir;
+                    if (!mod.type.IsInstanceOfType(module))
+                    {
+                        continue;
+                    }
+                    if (null == mod.pathKey)
+                    {
+                        return mod.defaultPublishPath;
+                    }
+                    if (modulePathKey == mod.pathKey)
+                    {
+                        return mod.defaultPublishPath;
+                    }
                 }
-                else if (C.DynamicLibrary.ImportLibraryKey == key)
+                return null;
+            }
+
+            public Bam.Core.PathKey
+            GetRuntimePathKey(
+                Bam.Core.Module module)
+            {
+                foreach (var mod in this.mapping)
                 {
-                    return this.ImportLibraryDir;
+                    if (!mod.type.IsInstanceOfType(module))
+                    {
+                        continue;
+                    }
+                    if (!mod.runtimeDependency)
+                    {
+                        continue;
+                    }
+                    return mod.pathKey;
                 }
-                else
-                {
-                    throw new System.NotSupportedException(System.String.Format("Dynamic library key {0}", key.ToString()));
-                }
+                return null;
             }
-            else if (module is C.ConsoleApplication || module is C.Cxx.ConsoleApplication)
-            {
-                // TODO: different to GUIApplication?
-                return this.ExecutableDir;
-            }
-            else if (module is C.StaticLibrary)
-            {
-                return this.StaticLibraryDir;
-            }
-            else if (module is C.OSXFramework)
-            {
-                return this.Macros["macOSAppBundleFrameworksDir"];
-            }
-            else
-            {
-                throw new System.NotSupportedException(System.String.Format("Don't know how to collate a module of type {0}", module.GetType().ToString()));
-            }
+        }
+
+        public ModuleOutputDefaultPublishingPathMapping Mapping
+        {
+            get;
+            private set;
         }
 
         private ICollatedObject
@@ -596,7 +597,7 @@ namespace Publisher
             Bam.Core.PathKey key,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-            var modulePublishDir = this.ModuleTypePublishDirectory(dependent, key);
+            var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
             (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros["OutputName"]);
             this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
