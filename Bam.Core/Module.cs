@@ -670,14 +670,17 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Determine if the module is a top-level module, i.e. is from the package in which Bam was invoked.
+        /// Determine if the module is a top-level module, i.e. is from the package in which Bam was invoked,
+        /// and nothing depends on it.
         /// </summary>
         /// <value><c>true</c> if top level; otherwise, <c>false</c>.</value>
         public bool TopLevel
         {
             get
             {
-                var isTopLevel = (0 == this.DependeesList.Count) && (0 == this.RequiredDependeesList.Count);
+                var isTopLevel = (0 == this.DependeesList.Count) &&
+                    (0 == this.RequiredDependeesList.Count) &&
+                    (this.PackageDefinition == Graph.Instance.MasterPackage);
                 return isTopLevel;
             }
         }
