@@ -97,29 +97,5 @@ namespace Bam.Core
                 return this.list.Count;
             }
         }
-
-        /// <summary>
-        /// Query if the stack contains the specified object.
-        /// </summary>
-        /// <param name="obj">Object to look for</param>
-        /// <returns>true if the object is contained in the stack; false otherwise.</returns>
-        public bool
-        Contains(
-            T obj)
-        {
-            return this.list.Contains(obj);
-        }
-
-        /// <summary>
-        /// Convert the stack to a string, using the specified separator, from left (oldest) to right (newest).
-        /// </summary>
-        /// <param name="separator">Separator to use between elements.</param>
-        /// <returns>Stringified stack.</returns>
-        public string
-        ToString(
-            string separator)
-        {
-            return string.Join(separator, this.list);
-        }
     }
 }
