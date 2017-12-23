@@ -156,6 +156,8 @@ namespace Bam.Core
                 TokenizedString.RemoveEncapsulatedStrings(moduleTypeToRemove);
                 Module.RemoveEncapsulatedModules(moduleTypeToRemove);
                 referencedModules.Remove(referencedModules.First(item => item.GetType() == typeof(T)));
+                var moduleEnvList = this.Modules[this.BuildEnvironmentInternal];
+                moduleEnvList.Remove(moduleEnvList.First(item => item.GetType() == typeof(T)));
                 throw;
             }
             finally
