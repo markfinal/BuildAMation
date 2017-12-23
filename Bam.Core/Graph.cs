@@ -279,17 +279,23 @@ namespace Bam.Core
             this.BuildEnvironment = env;
             foreach (var moduleType in moduleTypes)
             {
-                var newModule = MakeModuleOfType(moduleType);
-                if (newModule != null)
-                {
-                    this.TopLevelModules.Add(newModule);
-                }
+                MakeModuleOfType(moduleType);
             }
             this.BuildEnvironment = null;
-            if (0 == this.TopLevelModules.Count)
+            // scan all modules in the build environment for "top-level" status
+            // as although they should just be from the list of incoming moduleTypes
+            // it's possible for new modules to be introduced that depend on them
+            foreach (var module in this.Modules[env])
+            {
+                if (module.TopLevel)
+                {
+                    this.TopLevelModules.Add(module);
+                }
+            }
+            if (!this.TopLevelModules.Any())
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Top-level modules found, but none could be instantiated:");
+                message.AppendFormat("Top-level module types detected, but none could be instantiated:");
                 message.AppendLine();
                 foreach (var moduleType in moduleTypes)
                 {
@@ -297,14 +303,6 @@ namespace Bam.Core
                     message.AppendLine();
                 }
                 throw new Exception(message.ToString());
-            }
-            // remove all top level modules that have a reference count > 1
-            foreach (var tlm in this.TopLevelModules.Reverse<Module>())
-            {
-                if (!tlm.TopLevel)
-                {
-                    this.TopLevelModules.Remove(tlm);
-                }
             }
         }
 
