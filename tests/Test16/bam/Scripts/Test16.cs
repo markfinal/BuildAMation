@@ -79,6 +79,24 @@ namespace Test16
         }
     }
 
+    sealed class StaticApplicationRuntime :
+        Publisher.Collation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+#if D_NEW_PUBLISHING
+            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.Include<StaticApplication>(C.ConsoleApplication.Key);
+#else
+            this.Include<StaticApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+#endif
+        }
+    }
+
     sealed class DynamicApplicationRuntime :
         Publisher.Collation
     {
