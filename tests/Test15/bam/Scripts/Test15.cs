@@ -76,12 +76,50 @@ namespace Test15
                 if (null != compiler)
                 {
                     compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                    compiler.PreprocessorDefines.Add("D_PUBLIC_FORWARDING");
                 }
             });
 
-            // because DynamicLibrary1 pokes out of the public API of DynamicLibrary2, the dependency has to be marked
-            // as 'public' so that forwarding occurs
+            // because DynamicLibrary1 pokes out of the public API of DynamicLibrary2 (see D_PUBLIC_FORWARDING),
+            // the dependency has to be marked as 'public' so that forwarding occurs
             this.CompilePubliclyAndLinkAgainst<Test14.DynamicLibrary1>(source);
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+        }
+    }
+
+    sealed class DynamicLibrary2NonPublicForwarder :
+        C.DynamicLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
+            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
+            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test15: Example dynamic library (non public forwarder)");
+
+            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary2.h");
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary2.c");
+            this.PublicPatch((settings, appliedTo) =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    if (null != compiler)
+                    {
+                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                    }
+                });
+
+            // DynamicLibrary1 DOES NOT poke out of the public API of DynamicLibrary2, hence no Public in the
+            // CompileAndLinkAgainst dependency below
+            this.CompileAndLinkAgainst<Test14.DynamicLibrary1>(source);
 
             if (this.Linker is VisualCCommon.LinkerBase)
             {
