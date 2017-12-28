@@ -40,18 +40,28 @@ namespace C
             Bam.Core.PreBuiltTool tool,
             ConsoleApplication target)
         {
-            var makeMeta = target.MetaData as MakeFileBuilder.MakeFileMeta;
-            var rule = makeMeta.Rules[0];
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
+            var rule = meta.AddRule();
+
+            // since this is not a referenced type, need to specify a variable name for the MakeFile
+            var variableName = new System.Text.StringBuilder();
+            variableName.Append(target.GetType().Name); // this is what it's building the symlink for
+            variableName.Append("_");
+            variableName.Append(sender.Macros["SymlinkUsage"].ToString()); // intended usage
+
+            rule.AddTarget(sender.GeneratedPaths[SharedObjectSymbolicLink.Key], variableName:variableName.ToString());
+            rule.AddPrerequisite(target, C.ConsoleApplication.Key);
 
             var commandLineArgs = new Bam.Core.StringArray();
             commandLineArgs.Add("-s");
             commandLineArgs.Add("-f");
 
-            rule.AddShellCommand(System.String.Format(@"{0} {1} $(notdir $@) $(dir $@)/{2} {3}",
-                CommandLineProcessor.Processor.StringifyTool(tool),
-                commandLineArgs.ToString(' '),
-                target.Macros[sender.Macros["SymlinkUsage"].ToString()].ToString(),
-                CommandLineProcessor.Processor.TerminatingArgs(tool)));
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat("{0} {1} $(notdir $<) $@ {2}",
+                                 CommandLineProcessor.Processor.StringifyTool(tool),
+                                 commandLineArgs.ToString(' '),
+                                 CommandLineProcessor.Processor.TerminatingArgs(tool));
+            rule.AddShellCommand(command.ToString());
         }
     }
 }

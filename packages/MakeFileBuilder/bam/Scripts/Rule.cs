@@ -102,13 +102,17 @@ namespace MakeFileBuilder
         }
 
         public void
-        AppendTargetNames(
+        AppendAllPrerequisiteTargetNames(
             Bam.Core.StringArray variableNames)
         {
             lock (this.Targets)
             {
                 foreach (var target in this.Targets)
                 {
+                    if (!target.IsPrerequisiteofAll)
+                    {
+                        continue;
+                    }
                     var name = target.VariableName;
                     if (null != name)
                     {

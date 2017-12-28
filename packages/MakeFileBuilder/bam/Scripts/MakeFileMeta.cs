@@ -145,13 +145,9 @@ namespace MakeFileBuilder
             // this allows skipping over any upper modules without Make policies
             foreach (var metadata in allMeta)
             {
-                if (!Bam.Core.Graph.Instance.IsReferencedModule(metadata.Module))
-                {
-                    continue;
-                }
                 foreach (var rule in metadata.Rules)
                 {
-                    rule.AppendTargetNames(prerequisitesOfTargetAll);
+                    rule.AppendAllPrerequisiteTargetNames(prerequisitesOfTargetAll);
                 }
             }
             makeRules.Append("all:");

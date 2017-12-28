@@ -40,6 +40,7 @@ namespace MakeFileBuilder
         {
             this.Path = nameOrOutput;
             this.IsPhony = isPhony;
+            this.IsPrerequisiteofAll = Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName);
             if (isPhony)
             {
                 return;
@@ -48,7 +49,7 @@ namespace MakeFileBuilder
             {
                 return;
             }
-            if (Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName))
+            if (this.IsPrerequisiteofAll)
             {
                 // make the target names unique across configurations
                 if (System.String.IsNullOrEmpty(variableName))
@@ -62,6 +63,13 @@ namespace MakeFileBuilder
                     this.VariableName = variableName;
                 }
             }
+        }
+
+        public bool
+        IsPrerequisiteofAll
+        {
+            get;
+            private set;
         }
 
         public Bam.Core.TokenizedString Path
