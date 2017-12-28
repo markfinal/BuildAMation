@@ -162,17 +162,28 @@ namespace GccCommon
                     libDir.Parse();
                 }
                 linker.LibraryPaths.AddUnique(libDir);
-
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
+
+                // if an explicit link occurs in this executable/shared object, the library path
+                // does not need to be on the rpath-link
+                if (gccLinker.RPathLink.Contains(libDir))
+                {
+                    gccLinker.RPathLink.Remove(libDir);
+                }
+
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
                     var rpathLinkDir = dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]);
-                    if (!rpathLinkDir.IsParsed)
+                    // only need to add to rpath-link, if there's been no explicit link to the library already
+                    if (!linker.LibraryPaths.Contains(rpathLinkDir))
                     {
-                        rpathLinkDir.Parse();
+	                    if (!rpathLinkDir.IsParsed)
+	                    {
+	                        rpathLinkDir.Parse();
+	                    }
+	                    gccLinker.RPathLink.AddUnique(rpathLinkDir);
                     }
-                    gccLinker.RPathLink.AddUnique(rpathLinkDir);
                 }
             }
         }
