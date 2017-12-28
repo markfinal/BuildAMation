@@ -117,5 +117,39 @@ namespace Bam.Core
         {
             return new TokenizedStringArray(base.Complement(other));
         }
+
+        /// <summary>
+        /// If strings are parsed, then compare parsed strings, otherwise fall back on the default TokenizedString comparison.
+        /// </summary>
+        /// <param name="item">TokenizedString to determine if it exists in the list.</param>
+        /// <returns>true if the string exists in the list; false otherwise.</returns>
+        public override bool
+        Contains(
+            TokenizedString item)
+        {
+            if (item.IsParsed)
+            {
+                var itemString = item.ToString();
+                foreach (var element in this.list)
+                {
+                    if (element.IsParsed)
+                    {
+                        if (itemString == element.ToString())
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (item.Equals(element))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            return base.Contains(item);
+        }
     }
 }

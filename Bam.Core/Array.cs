@@ -110,7 +110,7 @@ namespace Bam.Core
         AddUnique(
             T item)
         {
-            if (this.list.Contains(item))
+            if (this.Contains(item))
             {
                 return;
             }
@@ -173,7 +173,7 @@ namespace Bam.Core
 
             foreach (var item in array)
             {
-                if (this.list.Contains(item))
+                if (this.Contains(item))
                 {
                     continue;
                 }
