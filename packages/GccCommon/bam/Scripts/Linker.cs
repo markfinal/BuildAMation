@@ -78,11 +78,16 @@ namespace GccCommon
 
             foreach (var dep in (dynamicModule as C.CModule).Dependents)
             {
-                if (!(dep is C.IDynamicLibrary))
+                var dependent = dep;
+                if (dependent is C.SharedObjectSymbolicLink)
+                {
+                    dependent = (dependent as C.SharedObjectSymbolicLink).SharedObject;
+                }
+                if (!(dependent is C.IDynamicLibrary))
                 {
                     continue;
                 }
-                var dynDep = dep as C.CModule;
+                var dynDep = dependent as C.CModule;
                 dynamicDeps.AddUnique(dynDep);
                 dynamicDeps.AddRangeUnique(FindAllDynamicDependents(dynDep as C.IDynamicLibrary));
             }
