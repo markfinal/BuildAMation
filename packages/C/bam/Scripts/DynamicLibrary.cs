@@ -57,7 +57,7 @@ namespace C
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                if (!(this is Plugin))
+                if (!(this is Plugin) && !this.IsPrebuilt)
                 {
                     // TODO: I wonder if these macros can be removed? (requires a change to GccCommon.ICommonLinkerSettings)
                     this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
