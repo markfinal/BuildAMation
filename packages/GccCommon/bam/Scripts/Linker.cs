@@ -178,11 +178,11 @@ namespace GccCommon
                     // only need to add to rpath-link, if there's been no explicit link to the library already
                     if (!linker.LibraryPaths.Contains(rpathLinkDir))
                     {
-	                    if (!rpathLinkDir.IsParsed)
-	                    {
-	                        rpathLinkDir.Parse();
-	                    }
-	                    gccLinker.RPathLink.AddUnique(rpathLinkDir);
+                        if (!rpathLinkDir.IsParsed)
+                        {
+                            rpathLinkDir.Parse();
+                        }
+                        gccLinker.RPathLink.AddUnique(rpathLinkDir);
                     }
                 }
             }
