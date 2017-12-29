@@ -106,7 +106,7 @@ namespace Publisher
             return stripBinary;
         }
 
-        private void
+        private CollationType
         CloneObject<CollationType>(
             ICollatedObject collatedObject) where CollationType : CollatedObject, new()
         {
@@ -132,6 +132,11 @@ namespace Publisher
             clonedFile.Anchor = collatedObject.Anchor;
 
             clonedFile.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+            clonedFile.Macros.Add("AnchorOutputName", (collatedObject as CollatedObject).Macros["AnchorOutputName"]);
+
+            return clonedFile;
         }
 
         private void
