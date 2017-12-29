@@ -38,11 +38,23 @@ namespace C
         private SharedObjectSymbolicLinkTool SymlinkTool;
         private ConsoleApplication sharedObject;
 
+        /// <summary>
+        /// Query whether the module has the C.Prebuilt attribute assigned to it.
+        /// </summary>
+        public bool IsPrebuilt
+        {
+            get;
+            private set;
+        }
+
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
+
             this.RegisterGeneratedFile(Key,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
                                                                   this.SharedObject.GeneratedPaths[ConsoleApplication.Key],
@@ -68,6 +80,10 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
         }
 
@@ -75,6 +91,10 @@ namespace C
         Evaluate()
         {
 #if __MonoCS__
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             this.ReasonToExecute = null;
             var symlinkPath = this.GeneratedPaths[Key].ToString();
             var symlinkInfo = new Mono.Unix.UnixSymbolicLinkInfo(symlinkPath);
@@ -98,6 +118,10 @@ namespace C
         GetExecutionPolicy(
             string mode)
         {
+            if (this.IsPrebuilt)
+            {
+                return;
+            }
             var className = "C." + mode + "SharedObjectSymbolicLink";
             this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
             this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
