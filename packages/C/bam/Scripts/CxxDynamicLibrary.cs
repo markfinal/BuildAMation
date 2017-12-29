@@ -219,6 +219,7 @@ namespace C.Cxx
                 return;
             }
             this.addLinkDependency(dependent);
+            this.addRuntimeDependency(dependent);
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
                 this.forwardedDeps.AddUnique(dependent);

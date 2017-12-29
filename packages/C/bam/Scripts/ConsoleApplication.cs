@@ -213,15 +213,35 @@ namespace C
         addLinkDependency(
             Bam.Core.Module dependent)
         {
-            if (dependent is IDynamicLibrary && (dependent as IDynamicLibrary).LinkerNameSymbolicLink != null)
+            if (dependent is IDynamicLibrary)
             {
-                this.DependsOn((dependent as IDynamicLibrary).LinkerNameSymbolicLink);
-                this.Requires((dependent as IDynamicLibrary).SONameSymbolicLink);
+                var dynamicLib = dependent as IDynamicLibrary;
+                if (dynamicLib.LinkerNameSymbolicLink != null)
+                {
+                    this.DependsOn(dynamicLib.LinkerNameSymbolicLink);
+                }
+                // else is non-Linux platforms
             }
             else
             {
                 this.DependsOn(dependent);
             }
+        }
+
+        protected void
+        addRuntimeDependency(
+            Bam.Core.Module dependent)
+        {
+            if (dependent is IDynamicLibrary)
+            {
+                var dynamicLib = dependent as IDynamicLibrary;
+                if (dynamicLib.SONameSymbolicLink != null)
+                {
+                    this.Requires(dynamicLib.SONameSymbolicLink);
+                    return;
+                }
+            }
+            this.Requires(dependent);
         }
 
         /// <summary>
@@ -238,6 +258,7 @@ namespace C
                 return;
             }
             this.addLinkDependency(dependent);
+            this.addRuntimeDependency(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
         }
@@ -259,7 +280,7 @@ namespace C
                 {
                     return;
                 }
-                this.Requires(dependent);
+                this.addRuntimeDependency(dependent);
                 foreach (var source in affectedSources)
                 {
                     if (null == source)
@@ -295,6 +316,7 @@ namespace C
                 return;
             }
             this.addLinkDependency(dependent);
+            this.addRuntimeDependency(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
             if (additionalSources.Length > 0)
@@ -328,6 +350,7 @@ namespace C
             foreach (var forwarded in withForwarded.ForwardedLibraries)
             {
                 this.addLinkDependency(forwarded);
+                this.addRuntimeDependency(forwarded);
                 this.linkedModules.AddUnique(forwarded);
                 this.LinkAllForwardedDependenciesFromLibraries(forwarded);
             }
