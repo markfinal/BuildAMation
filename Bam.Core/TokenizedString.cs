@@ -69,10 +69,7 @@ namespace Bam.Core
         private enum EFlags
         {
             None = 0,
-#if NEW_PARSER
-#else
-            Inline = 0x1,
-#endif
+            ForcedInline = 0x1,
             NoCache = 0x2
         }
 
@@ -387,9 +384,12 @@ namespace Bam.Core
                     {
                         AllStrings.Add(newTS);
                     }
-                    lock (StringsForParsing)
+                    if (!newTS.IsForcedInline)
                     {
-                        StringsForParsing.Add(newTS);
+                        lock (StringsForParsing)
+                        {
+                            StringsForParsing.Add(newTS);
+                        }
                     }
                     return newTS;
                 }
@@ -423,8 +423,6 @@ namespace Bam.Core
             return CreateInternal(verboseString, null, true, null, EFlags.None);
         }
 
-#if NEW_PARSER
-#else
         /// <summary>
         /// Utility method to create a TokenizedString that can be inlined into other TokenizedStrings
         /// , or return a cached version.
@@ -432,12 +430,11 @@ namespace Bam.Core
         /// <returns>The inline.</returns>
         /// <param name="inlineString">Inline string.</param>
         public static TokenizedString
-        CreateInline(
+        CreateForcedInline(
             string inlineString)
         {
-            return CreateInternal(inlineString, null, false, null, EFlags.Inline);
+            return CreateInternal(inlineString, null, false, null, EFlags.ForcedInline);
         }
-#endif
 
         /// <summary>
         /// Utility method to create a TokenizedString which will not be cached with any other existing
@@ -478,6 +475,10 @@ namespace Bam.Core
                     return true;
                 }
 #if NEW_PARSER
+                if (this.IsForcedInline)
+                {
+                    return false;
+                }
                 var hasTokens = (null != this.Tokens);
                 var hasParsedString = (null != this.ParsedString);
                 return !hasTokens && hasParsedString;
@@ -560,16 +561,13 @@ namespace Bam.Core
             }
         }
 
-#if NEW_PARSER
-#else
-        private bool IsInline
+        private bool IsForcedInline
         {
             get
             {
-                return (EFlags.Inline == (this.Flags & EFlags.Inline));
+                return (EFlags.ForcedInline == (this.Flags & EFlags.ForcedInline));
             }
         }
-#endif
 
         /// <summary>
         /// Parse every TokenizedString.
@@ -675,6 +673,32 @@ namespace Bam.Core
 #endif
 
         private void
+        ExtendParsedStringWrapper(
+            TokenizedString stringToExtendWith,
+            System.Text.StringBuilder parsedString,
+            Array<MacroList> customMacroArray,
+            System.Collections.Generic.List<string> tokens,
+            int index)
+        {
+            if (stringToExtendWith.IsForcedInline)
+            {
+                var extTokens = SplitIntoTokens(this.EvaluatePreFunctions(stringToExtendWith.OriginalString, customMacroArray), TokenRegExPattern).ToList<string>();
+                if (null != extTokens)
+                {
+                    tokens.InsertRange(index, extTokens);
+                }
+                else
+                {
+                    parsedString.Append(stringToExtendWith.OriginalString);
+                }
+            }
+            else
+            {
+                stringToExtendWith.ExtendParsedString(parsedString, customMacroArray, tokens, index);
+            }
+        }
+
+        private void
         ExtendParsedString(
             System.Text.StringBuilder parsedString,
             Array<MacroList> customMacroArray,
@@ -697,6 +721,10 @@ namespace Bam.Core
             Array<MacroList> customMacroArray)
         {
 #if NEW_PARSER
+            if (this.IsForcedInline)
+            {
+                throw new Exception("Forced inline TokenizedString cannot be parsed, {0}", this.OriginalString);
+            }
 #if false
             if (this.IsAliased)
             {
@@ -719,7 +747,7 @@ namespace Bam.Core
                     continue;
                 }
 
-                // step 1: if the token is a positional token, inline, and add outstanding tokens
+                // step 1: if the token is a positional token, inline it, and add outstanding tokens
                 var positional = GetMatches(token, PositionalTokenRegExPattern).FirstOrDefault();
                 if (!System.String.IsNullOrEmpty(positional))
                 {
@@ -732,7 +760,7 @@ namespace Bam.Core
                     {
                         var posTokenStr = this.PositionalTokens[positionalIndex];
                         tokens.Remove(token);
-                        posTokenStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
+                        this.ExtendParsedStringWrapper(posTokenStr, parsedString, customMacroArray, tokens, index);
                     }
                     catch (System.ArgumentOutOfRangeException ex)
                     {
@@ -748,7 +776,7 @@ namespace Bam.Core
                     var containingMacroList = customMacroArray.First(item => item.Dict.ContainsKey(token));
                     var customTokenStr = containingMacroList.Dict[token];
                     tokens.Remove(token);
-                    customTokenStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
+                    this.ExtendParsedStringWrapper(customTokenStr, parsedString, customMacroArray, tokens, index);
                     continue;
                 }
 
@@ -757,7 +785,7 @@ namespace Bam.Core
                 {
                     var graphTokenStr = graph.Macros.Dict[token];
                     tokens.Remove(token);
-                    graphTokenStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
+                    this.ExtendParsedStringWrapper(graphTokenStr, parsedString, customMacroArray, tokens, index);
                     continue;
                 }
 
@@ -769,7 +797,7 @@ namespace Bam.Core
                     {
                         var moduleMacroStr = this.ModuleWithMacros.Macros.Dict[token];
                         tokens.Remove(token);
-                        moduleMacroStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
+                        this.ExtendParsedStringWrapper(moduleMacroStr, parsedString, customMacroArray, tokens, index);
                         continue;
                     }
                     // step 5 : try macros in the Tool attached to the specific module
@@ -777,7 +805,7 @@ namespace Bam.Core
                     {
                         var moduleToolMacroStr = tool.Macros.Dict[token];
                         tokens.Remove(token);
-                        moduleToolMacroStr.ExtendParsedString(parsedString, customMacroArray, tokens, index);
+                        this.ExtendParsedStringWrapper(moduleToolMacroStr, parsedString, customMacroArray, tokens, index);
                         continue;
                     }
                 }
