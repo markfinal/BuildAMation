@@ -154,6 +154,14 @@ namespace Publisher
         }
 
         private void
+        CloneOSXFramework(
+            ICollatedObject collatedObject)
+        {
+            var clonedFramework = CloneObject<CollatedOSXFramework>(collatedObject);
+            clonedFramework.UsePublicPatches(collatedObject as CollatedOSXFramework);
+        }
+
+        private void
         eachAnchorDependent(
             ICollatedObject collatedObj,
             object customData)
@@ -185,7 +193,14 @@ namespace Publisher
 
             if (cModule.IsPrebuilt)
             {
-                this.CloneFile(collatedObj);
+                if (collatedObj is CollatedOSXFramework)
+                {
+                    this.CloneOSXFramework(collatedObj);
+                }
+                else
+                {
+                    this.CloneFile(collatedObj);
+                }
                 return;
             }
 
