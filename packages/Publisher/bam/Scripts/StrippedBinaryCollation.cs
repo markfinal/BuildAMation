@@ -180,6 +180,7 @@ namespace Publisher
 
             if (cModule.IsPrebuilt)
             {
+                this.CloneFile(collatedObj);
                 return;
             }
 
