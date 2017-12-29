@@ -337,7 +337,7 @@ namespace C.Cxx
                 return this.linkerNameSymLink;
             }
         }
-        private SharedObjectSymbolicLink LinkerNameSymbolicLink
+        protected SharedObjectSymbolicLink LinkerNameSymbolicLink
         {
             set
             {
@@ -352,7 +352,7 @@ namespace C.Cxx
                 return this.soNameSymLink;
             }
         }
-        private SharedObjectSymbolicLink SONameSymbolicLink
+        protected SharedObjectSymbolicLink SONameSymbolicLink
         {
             set
             {
