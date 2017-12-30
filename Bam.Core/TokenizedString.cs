@@ -126,7 +126,7 @@ namespace Bam.Core
         private string OriginalString = null;
         private string ParsedString = null;
         private bool Verbatim;
-        private TokenizedStringArray PositionalTokens = new TokenizedStringArray();
+        private TokenizedStringArray PositionalTokens = null;
         private string CreationStackTrace = null;
         private int RefCount = 1;
         private EFlags Flags = EFlags.None;
@@ -267,15 +267,11 @@ namespace Bam.Core
             TokenizedStringArray positionalTokens,
             EFlags flags)
         {
-            this.CreationStackTrace = getStacktrace();
             this.ModuleWithMacros = moduleWithMacros;
-            if (null != positionalTokens)
-            {
-                this.PositionalTokens.AddRange(positionalTokens);
-            }
             this.Verbatim = verbatim;
             this.Flags |= flags;
-            this.OriginalString = original;
+            this.SetInternal(original, (null != positionalTokens) ? positionalTokens.ToArray() : null);
+
             if (verbatim)
             {
                 this.ParsedString = NormalizeDirectorySeparators(original);
@@ -301,6 +297,35 @@ namespace Bam.Core
             }
         }
 
+        private static System.Int64
+        CalculateHash(
+            string tokenizedString,
+            Module macroSource,
+            bool verbatim,
+            TokenizedStringArray positionalTokens)
+        {
+            // https://cs.stackexchange.com/questions/45287/why-does-this-particular-hashcode-function-help-decrease-collisions
+            System.Int64 hash = 17;
+            hash = hash * 31 + tokenizedString.GetHashCode();
+
+            if (!verbatim)
+            {
+                if (null != macroSource)
+                {
+                    hash = hash * 31 + macroSource.GetHashCode();
+                }
+                if (null != positionalTokens)
+                {
+                    foreach (var posToken in positionalTokens)
+                    {
+                        hash = hash * 31 + posToken.GetHashCode();
+                    }
+                }
+            }
+
+            return hash;
+        }
+
         private static TokenizedString
         CreateInternal(
             string tokenizedString,
@@ -314,9 +339,7 @@ namespace Bam.Core
                 return null;
             }
 
-            // https://cs.stackexchange.com/questions/45287/why-does-this-particular-hashcode-function-help-decrease-collisions
-            System.Int64 hash = 17;
-            hash = hash * 31 + tokenizedString.GetHashCode();
+            var hash = CalculateHash(tokenizedString, macroSource, verbatim, positionalTokens);
 
             // strings can be created during the multithreaded phase, so synchronize on the cache used
             if (verbatim)
@@ -353,17 +376,6 @@ namespace Bam.Core
                 var stringCache = (null != macroSource) ? macroSource.TokenizedStringCacheMap : NoModuleCacheMap;
                 lock (stringCache)
                 {
-                    if (null != macroSource)
-                    {
-                        hash = hash * 31 + macroSource.GetHashCode();
-                    }
-                    if (null != positionalTokens)
-                    {
-                        foreach (var posToken in positionalTokens)
-                        {
-                            hash = hash * 31 + posToken.GetHashCode();
-                        }
-                    }
                     var useCache = (0 == (flags & EFlags.NoCache));
                     if (useCache)
                     {
@@ -1566,6 +1578,60 @@ namespace Bam.Core
                 }
             }
             return false;
+        }
+
+        private void
+        SetInternal(
+            string newString,
+            TokenizedString[] positionalTokens)
+        {
+            if (null != this.ParsedString)
+            {
+                throw new Exception("Cannot change the TokenizedString '{0}' to '{1}' as it has been parsed already", this.OriginalString, newString);
+            }
+            this.CreationStackTrace = getStacktrace();
+            this.PositionalTokens = new TokenizedStringArray();
+            if (null != positionalTokens)
+            {
+                this.PositionalTokens.AddRange(positionalTokens);
+            }
+            this.OriginalString = newString;
+        }
+
+        /// <summary>
+        /// Change an existing TokenizedString's definition. This is only possible when the string has yet to be parsed.
+        /// </summary>
+        /// <param name="newString">Unparsed token based string to use.</param>
+        /// <param name="positionalTokens">Any positional arguments referenced in the unparsed string.</param>
+        public void
+        Set(
+            string newString,
+            TokenizedString[] positionalTokens)
+        {
+            this.SetInternal(newString, positionalTokens);
+            var newHash = CalculateHash(this.OriginalString, this.ModuleWithMacros, this.Verbatim, this.PositionalTokens);
+            if (0 == (Flags & EFlags.NoCache))
+            {
+                // update previous caches
+                if (this.Verbatim)
+                {
+                    lock (VerbatimCacheMap)
+                    {
+                        VerbatimCacheMap.Remove(this.hash);
+                        VerbatimCacheMap.Add(newHash, this);
+                    }
+                }
+                else
+                {
+                    var cache = (this.ModuleWithMacros != null) ? this.ModuleWithMacros.TokenizedStringCacheMap : NoModuleCacheMap;
+                    lock (cache)
+                    {
+                        cache.Remove(this.hash);
+                        cache.Add(newHash, this);
+                    }
+                }
+            }
+            this.hash = newHash;
         }
     }
 }
