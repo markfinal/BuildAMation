@@ -591,7 +591,7 @@ namespace Publisher
             return collatedFile;
         }
 
-        private void
+        private ICollatedObject
         Include(
             Bam.Core.Module dependent,
             Bam.Core.PathKey key,
@@ -601,9 +601,10 @@ namespace Publisher
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
             (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros["OutputName"]);
             this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
+            return collatedFile;
         }
 
-        public void
+        public ICollatedObject
         Include<DependentModule>(
             Bam.Core.PathKey key,
             Bam.Core.TokenizedString anchorPublishRoot = null) where DependentModule : Bam.Core.Module, new()
@@ -611,15 +612,16 @@ namespace Publisher
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
-                return;
+                return null;
             }
-            this.Include(dependent, key, anchorPublishRoot);
+            return this.Include(dependent, key, anchorPublishRoot);
         }
 
         public Bam.Core.Array<ICollatedObject>
         IncludeFiles(
             Bam.Core.TokenizedString wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
             System.Text.RegularExpressions.Regex filter = null)
         {
             // Note: very similar to that code in C.CModuleContainer.AddFiles
@@ -652,7 +654,7 @@ namespace Publisher
             var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var filepath in files)
             {
-                results.Add(this.CreateCollatedPreExistingFile(filepath, destinationDir));
+                results.Add(this.CreateCollatedPreExistingFile(filepath, destinationDir, anchor));
             }
             return results;
         }
@@ -661,12 +663,13 @@ namespace Publisher
         IncludeFiles(
             Bam.Core.TokenizedStringArray wildcardedSourcePaths,
             Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var path in wildcardedSourcePaths)
             {
-                results.AddRange(this.IncludeFiles(path, destinationDir, filter));
+                results.AddRange(this.IncludeFiles(path, destinationDir, anchor, filter));
             }
             return results;
         }
@@ -675,6 +678,7 @@ namespace Publisher
         IncludeFiles<DependentModule>(
             string wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
             System.Text.RegularExpressions.Regex filter = null) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
@@ -682,13 +686,14 @@ namespace Publisher
             {
                 return null;
             }
-            return this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter);
+            return this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter);
         }
 
         public Bam.Core.Array<ICollatedObject>
         IncludeDirectories(
             Bam.Core.TokenizedString wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
             System.Text.RegularExpressions.Regex filter = null,
             string renameLeaf = null)
         {
@@ -722,7 +727,7 @@ namespace Publisher
             var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var filepath in files)
             {
-                results.Add(this.CreateCollatedPreExistingDirectory(filepath, destinationDir, renameLeaf));
+                results.Add(this.CreateCollatedPreExistingDirectory(filepath, destinationDir, anchor, renameLeaf));
             }
             return results;
         }
@@ -731,13 +736,14 @@ namespace Publisher
         IncludeDirectories(
             Bam.Core.TokenizedStringArray wildcardedSourcePaths,
             Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
             System.Text.RegularExpressions.Regex filter = null,
             string renameLeaf = null)
         {
             var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var path in wildcardedSourcePaths)
             {
-                results.AddRange(this.IncludeDirectories(path, destinationDir, filter, renameLeaf));
+                results.AddRange(this.IncludeDirectories(path, destinationDir, anchor, filter, renameLeaf));
             }
             return results;
         }
@@ -746,6 +752,7 @@ namespace Publisher
         IncludeDirectories<DependentModule>(
             string wildcardedSourcePath,
             Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
             System.Text.RegularExpressions.Regex filter = null,
             string renameLeaf = null) where DependentModule : Bam.Core.Module, new()
         {
@@ -754,38 +761,23 @@ namespace Publisher
             {
                 return null;
             }
-            return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, filter, renameLeaf);
-        }
-
-        private Bam.Core.Array<ICollatedObject>
-        AllModuleBasedAnchors()
-        {
-            var moduleBasedAnchors = new Bam.Core.Array<ICollatedObject>();
-            this.ForEachAnchor((collationModule, anchor, customData) =>
-                {
-                    var anchorSource = anchor.SourceModule;
-                    if (null == anchorSource)
-                    {
-                        // ignore pre-existing files
-                        return;
-                    }
-                    var list = customData as Bam.Core.Array<ICollatedObject>;
-                    if (list.Any(item => item.SourceModule == anchor.SourceModule))
-                    {
-                        // ignore any from the same module as those already present, e.g. just differing by pathkey, e.g. Windows DLL and Import library
-                        return;
-                    }
-                    list.AddUnique(anchor);
-                },
-                moduleBasedAnchors);
-            return moduleBasedAnchors;
+            return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter, renameLeaf);
         }
 
         private ICollatedObject
         CreateCollatedPreExistingFile(
             string sourcePath,
-            Bam.Core.TokenizedString destinationDir)
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor)
         {
+            var anchorObj = anchor as CollatedObject;
+            if (null != anchor)
+            {
+                if (!anchorObj.IsAnchor)
+                {
+                    throw new Bam.Core.Exception("Collation object should be an anchor but isn't");
+                }
+            }
             var collatedFile = Bam.Core.Module.Create<CollatedPreExistingFile>(preInitCallback: module =>
                 {
                     module.PreExistingSourcePath = sourcePath;
@@ -794,21 +786,15 @@ namespace Publisher
 
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
-                var moduleBasedAnchors = this.AllModuleBasedAnchors();
-                if (moduleBasedAnchors.Any())
+                if (null != anchor)
                 {
-                    if (moduleBasedAnchors.Count > 1)
-                    {
-                        throw new Bam.Core.Exception("Ambigious which anchor this file should attach to");
-                    }
-                    // this file is associated with just one module-based anchor, so publish next to it
-                    var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
-                    collatedFile.Anchor = projectAnchor;
-                    collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { ((collatedFile as ICollatedObject).Anchor as CollatedObject).SourcePath }));
+                    // this file is associated with a module-based anchor, so publish next to it
+                    collatedFile.Anchor = anchor;
+                    collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { anchorObj.SourcePath }));
                 }
                 else
                 {
-                    // if there are no module-based anchors, this is likely to be collating
+                    // if is no module-based anchor, this is likely to be collating
                     // public headers for a library
                     // these do not need to go beside the executable
                     collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
@@ -830,6 +816,12 @@ namespace Publisher
             }
             this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedFile as CollatedObject, destinationDir));
 
+            if (null != anchor)
+            {
+                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+                (collatedFile as CollatedObject).Macros.Add("AnchorOutputName", anchorObj.Macros["AnchorOutputName"]);
+            }
+
             return collatedFile;
         }
 
@@ -837,8 +829,17 @@ namespace Publisher
         CreateCollatedPreExistingDirectory(
             string sourcePath,
             Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
             string renameLeaf)
         {
+            var anchorObj = anchor as CollatedObject;
+            if (null != anchor)
+            {
+                if (!anchorObj.IsAnchor)
+                {
+                    throw new Bam.Core.Exception("Collation object should be an anchor but isn't");
+                }
+            }
             var collatedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
                 {
                     if (null != renameLeaf)
@@ -868,23 +869,14 @@ namespace Publisher
 
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
-                var moduleBasedAnchors = this.AllModuleBasedAnchors();
-                if (moduleBasedAnchors.Any())
+                if (null != anchor)
                 {
-                    if (moduleBasedAnchors.Count > 1)
-                    {
-                        throw new Bam.Core.Exception("Ambigious which anchor this directory should attach to");
-                    }
-                    // this directory is associated with just one module-based anchor, so publish next to it
-                    var projectAnchor = moduleBasedAnchors.First() as CollatedObject;
-                    collatedDir.Anchor = projectAnchor;
-                    collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { projectAnchor.SourcePath }));
+                    // this directory is associated with a module-based anchor, so publish next to it
+                    collatedDir.Anchor = anchor;
+                    collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { anchorObj.SourcePath }));
                 }
                 else
                 {
-                    // if there are no module-based anchors, this is likely to be collating
-                    // standalone directories
-                    // these do not need to go beside the executable
                     collatedDir.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
                 }
             }
@@ -903,6 +895,12 @@ namespace Publisher
                 throw new Bam.Core.Exception("Pre-existing directory already collated, with path '{0}'", sourcePath);
             }
             this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedDir as CollatedObject, destinationDir));
+
+            if (null != anchor)
+            {
+                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+                (collatedDir as CollatedObject).Macros.Add("AnchorOutputName", anchorObj.Macros["AnchorOutputName"]);
+            }
 
             return collatedDir;
         }

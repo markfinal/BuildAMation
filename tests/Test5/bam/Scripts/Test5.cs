@@ -107,12 +107,12 @@ namespace Test5
 #if D_NEW_PUBLISHING
             this.SetDefaultMacros(EPublishingType.Library);
 
-            this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key);
+            var dynamicLibAnchor = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey);
             }
-            this.IncludeFiles<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir);
+            this.IncludeFiles<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir, dynamicLibAnchor);
 #else
             var dll = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
