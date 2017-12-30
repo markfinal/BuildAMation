@@ -145,7 +145,14 @@ namespace Publisher
             string original,
             params Bam.Core.TokenizedString[] positional)
         {
-            this.publishingDirectory = this.CreateTokenizedString(original, positional);
+            if (null == this.publishingDirectory)
+            {
+                this.publishingDirectory = this.CreateTokenizedString(original, positional);
+            }
+            else
+            {
+                this.publishingDirectory.Set(original, positional);
+            }
         }
 
         // TODO: add accessors, rather than direct to the field
