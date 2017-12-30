@@ -74,6 +74,12 @@ namespace Publisher
             if (null != collatedInterface.SourceModule)
             {
                 sourceModule = collatedInterface.SourceModule;
+
+                // check for runtime dependencies that won't have projects, use their anchor
+                if (null == sourceModule.MetaData)
+                {
+                    sourceModule = collatedInterface.Anchor.SourceModule;
+                }
             }
             else
             {
