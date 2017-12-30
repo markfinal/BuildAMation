@@ -764,6 +764,23 @@ namespace Publisher
             return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter, renameLeaf);
         }
 
+        /// <summary>
+        /// For a collated ELF file, update it's RPATH.
+        /// </summary>
+        /// <param name="source">Source.</param>
+        /// <param name="newRPath">New Rpath.</param>
+        public ChangeRPathModule
+        ChangeRPath(
+            ICollatedObject source,
+            string newRPath)
+        {
+            var change = Bam.Core.Module.Create<ChangeRPathModule>();
+            change.Source = source as CollatedFile;
+            change.NewRPath = newRPath;
+            this.Requires(change);
+            return change;
+        }
+
         private ICollatedObject
         CreateCollatedPreExistingFile(
             string sourcePath,

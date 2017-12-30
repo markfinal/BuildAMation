@@ -32,8 +32,6 @@ namespace Publisher
     public sealed class NativeChangeRPath :
         IChangeRPathPolicy
     {
-#if D_NEW_PUBLISHING
-#else
         void
         IChangeRPathPolicy.Change(
             ChangeRPathModule sender,
@@ -47,6 +45,5 @@ namespace Publisher
             commandLine.Add(source.GeneratedPaths[CollatedObject.Key].ToString());
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
-#endif
     }
 }
