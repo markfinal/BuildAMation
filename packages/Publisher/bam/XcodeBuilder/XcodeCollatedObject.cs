@@ -87,15 +87,20 @@ namespace Publisher
                 collatedInterface.PublishingDirectory.ToString(),
                 System.IO.Path.DirectorySeparatorChar);
 
-            Bam.Core.Log.MessageAll("** {0}: '{1}' -> '{2}'",
-                sender,
-                copySourcePath.ToString(),
-                destinationDir);
             if (null == sender.PreExistingSourcePath)
             {
-                Bam.Core.Log.MessageAll("**\t{0}[{1}]",
+                Bam.Core.Log.MessageAll("** {0}[{1}]:\t'{2}' -> '{3}'",
                     collatedInterface.SourceModule.ToString(),
-                    collatedInterface.SourcePathKey.ToString());
+                    collatedInterface.SourcePathKey.ToString(),
+                    copySourcePath.ToString(),
+                    destinationDir);
+            }
+            else
+            {
+                Bam.Core.Log.MessageAll("** {0}: '{1}' -> '{2}'",
+                    sender,
+                    copySourcePath.ToString(),
+                    destinationDir);
             }
 
             var commandLine = new Bam.Core.StringArray();
