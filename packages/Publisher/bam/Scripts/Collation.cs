@@ -205,6 +205,19 @@ namespace Publisher
             }
         }
 
+        public Bam.Core.TokenizedString ResourceDir
+        {
+            get
+            {
+                return this.Macros["ResourceDir"];
+            }
+
+            set
+            {
+                this.Macros["ResourceDir"] = value;
+            }
+        }
+
         public Bam.Core.TokenizedString HeaderDir
         {
             get
@@ -229,6 +242,7 @@ namespace Publisher
                 this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
             }
             this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+            this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
         }
 
         private void
@@ -243,6 +257,7 @@ namespace Publisher
                         this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
                         this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
+                        this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
                     }
                     break;
 
@@ -253,6 +268,7 @@ namespace Publisher
                         this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishRoot }));
                         //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
+                        this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
                     }
                     break;
 
@@ -269,6 +285,7 @@ namespace Publisher
                         this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
                         //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(macOSAppBundlePluginsDir)"));
+                        this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(macOSAppBundleResourcesDir)"));
                     }
                     break;
 
@@ -289,6 +306,7 @@ namespace Publisher
             }
             this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishRoot }));
             this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
+            this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
         }
 
         public void
