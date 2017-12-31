@@ -40,6 +40,7 @@ namespace Publisher
         {
             var collatedInterface = sender as ICollatedObject;
 
+            var arePostBuildCommands = true;
             Bam.Core.Module sourceModule;
             if (null != collatedInterface.SourceModule)
             {
@@ -52,16 +53,33 @@ namespace Publisher
             }
             else
             {
-                if (null == collatedInterface.Anchor)
+                if (null != collatedInterface.Anchor)
                 {
-                    throw new Bam.Core.Exception("No anchor set on '{0}' with source path '{1}'", sender.GetType().ToString(), sender.SourcePath);
+                    // usually preexisting files that are published as part of an executable's distribution
+                    // in which case, their anchor is the executable (or a similar binary)
+                    sourceModule = collatedInterface.Anchor.SourceModule;
                 }
-                sourceModule = collatedInterface.Anchor.SourceModule;
+                else
+                {
+                    if (sender is CollatedPreExistingFile)
+                    {
+                        sourceModule = (sender as CollatedPreExistingFile).ParentOfCollationModule;
+
+                        var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                        workspace.EnsureTargetExists(sourceModule);
+
+                        arePostBuildCommands = false;
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("No anchor set on '{0}' with source path '{1}'", sender.GetType().ToString(), sender.SourcePath);
+                    }
+                }
             }
 
             var target = sourceModule.MetaData as XcodeBuilder.Target;
 
-            if (sender.IsAnchor)
+            if (sender.IsAnchor && (null != collatedInterface.SourceModule))
             {
                 if (sender.IsAnchorAnApplicationBundle)
                 {
@@ -73,9 +91,9 @@ namespace Publisher
                 return;
             }
 
-            if (sender.IsInAnchorPackage)
+            if (sender.IsInAnchorPackage && (null != collatedInterface.SourceModule))
             {
-                // additionally, any dependents in the same package as the anchor do not need copying as they
+                // additionally, any module-based dependents in the same package as the anchor do not need copying as they
                 // are built into the right directory (since Xcode module build dirs do not include the module name)
                 return;
             }
@@ -116,7 +134,7 @@ namespace Publisher
                 copySourcePath.ToString(),
                 destinationDir,
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-            if (!target.isUtilityType)
+            if (!target.isUtilityType && arePostBuildCommands)
             {
                 target.AddPostBuildCommands(commands, configuration);
             }
