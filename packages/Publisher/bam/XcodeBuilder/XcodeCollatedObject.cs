@@ -91,7 +91,9 @@ namespace Publisher
                 return;
             }
 
-            if (sender.IsInAnchorPackage && (null != collatedInterface.SourceModule))
+            if (sender.IsInAnchorPackage &&
+                (null != collatedInterface.SourceModule) &&
+                !(collatedInterface.Anchor as CollatedObject).IsAnchorAnApplicationBundle)
             {
                 // additionally, any module-based dependents in the same package as the anchor do not need copying as they
                 // are built into the right directory (since Xcode module build dirs do not include the module name)
