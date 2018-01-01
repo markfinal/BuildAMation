@@ -529,7 +529,7 @@ namespace Publisher
                         return mod.defaultPublishPath;
                     }
                 }
-                return null;
+                throw new Bam.Core.Exception("Unable to locate publish directory for module {0} with path key {1}", module.ToString(), modulePathKey.ToString());
             }
 
             public Bam.Core.PathKey
