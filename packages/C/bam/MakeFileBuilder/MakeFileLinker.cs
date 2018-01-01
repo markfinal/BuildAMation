@@ -81,7 +81,16 @@ namespace C
                 }
                 else if (module is IDynamicLibrary)
                 {
-                    rule.AddPrerequisite(module, C.DynamicLibrary.Key);
+                    var dynLib = module as IDynamicLibrary;
+                    if (dynLib.LinkerNameSymbolicLink != null)
+                    {
+                        var linkerNameSymLink = dynLib.LinkerNameSymbolicLink;
+                        rule.AddPrerequisite(linkerNameSymLink, C.SharedObjectSymbolicLink.Key);
+                    }
+                    else
+                    {
+                        rule.AddPrerequisite(module, C.DynamicLibrary.Key);
+                    }
                 }
                 else if (module is CSDKModule)
                 {
