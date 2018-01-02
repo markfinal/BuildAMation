@@ -36,7 +36,7 @@ namespace ClangCommon
             this ICommonLinkerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            foreach (var rpath in settings.RPath)
+            foreach (var rpath in settings.RPath.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath.ToString()));
             }

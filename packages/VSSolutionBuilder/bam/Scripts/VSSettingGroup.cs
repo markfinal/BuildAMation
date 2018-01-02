@@ -189,7 +189,7 @@ namespace VSSolutionBuilder
             var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
 
             var contatenated = new System.Text.StringBuilder();
-            foreach (var path in paths)
+            foreach (var path in paths.ToEnumerableWithoutDuplicates())
             {
                 var pathString = path.ToString();
                 if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
@@ -221,7 +221,7 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
-                var linearized = arePaths ? this.toRelativePaths(value) : value.ToString(';');
+                var linearized = arePaths ? this.toRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.ToEnumerableWithoutDuplicates()).ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
                     var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);

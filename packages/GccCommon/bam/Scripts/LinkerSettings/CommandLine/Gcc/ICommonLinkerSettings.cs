@@ -40,11 +40,11 @@ namespace GccCommon
             {
                 commandLine.Add("-Wl,-z,origin");
             }
-            foreach (var rpath in settings.RPath)
+            foreach (var rpath in settings.RPath.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath.ToString()));
             }
-            foreach (var rpath in settings.RPathLink)
+            foreach (var rpath in settings.RPathLink.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath.ToString()));
             }

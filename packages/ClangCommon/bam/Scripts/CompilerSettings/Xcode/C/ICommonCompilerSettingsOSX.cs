@@ -40,7 +40,7 @@ namespace ClangCommon
             if (null != settings.FrameworkSearchPaths)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in settings.FrameworkSearchPaths)
+                foreach (var path in settings.FrameworkSearchPaths.ToEnumerableWithoutDuplicates())
                 {
                     paths.Add(path.ToString());
                 }

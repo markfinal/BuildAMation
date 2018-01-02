@@ -75,7 +75,7 @@ namespace ClangCommon
             if (settings.IncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in settings.IncludePaths)
+                foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
                 {
                     var fullPath = path.ToString();
                     var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
@@ -150,7 +150,7 @@ namespace ClangCommon
             if (settings.SystemIncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in settings.SystemIncludePaths)
+                foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
                 {
                     paths.Add(path.ToString());
                 }

@@ -48,7 +48,7 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-wd{0}", warning));
             }
-            foreach (var path in settings.IncludePaths)
+            foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
@@ -96,7 +96,7 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
             }
-            foreach (var path in settings.SystemIncludePaths)
+            foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }

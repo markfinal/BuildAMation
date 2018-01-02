@@ -60,7 +60,7 @@ namespace ClangCommon
             if (settings.IncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in settings.IncludePaths)
+                foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
                 {
                     path.Parse();
                     var fullPath = path.ToString();

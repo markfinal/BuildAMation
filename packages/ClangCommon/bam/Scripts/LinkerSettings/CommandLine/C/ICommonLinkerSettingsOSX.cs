@@ -37,12 +37,12 @@ namespace ClangCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
-            foreach (var framework in settings.Frameworks)
+            foreach (var framework in settings.Frameworks.ToEnumerableWithoutDuplicates())
             {
                 var frameworkName = System.IO.Path.GetFileNameWithoutExtension(framework.ToString());
                 commandLine.Add(System.String.Format("-framework {0}", frameworkName));
             }
-            foreach (var path in settings.FrameworkSearchPaths)
+            foreach (var path in settings.FrameworkSearchPaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-F {0}", path.ToString()));
             }
