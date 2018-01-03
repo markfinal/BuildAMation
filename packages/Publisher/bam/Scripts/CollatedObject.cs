@@ -199,6 +199,19 @@ namespace Publisher
             {
                 this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<CopyFilePosix>();
             }
+            if (null == this.publishingDirectory)
+            {
+                if (null != this.sourceModule)
+                {
+                    throw new Bam.Core.Exception("The publishing directory for module '{0}', pathkey '{1}' has yet to be set", this.sourceModule.ToString(), this.sourcePathKey.ToString());
+                }
+                else
+                {
+                    // TODO: this may result in a not-yet-parsed TokenizedString exception
+                    // but what is the alternative for identifying the path?
+                    throw new Bam.Core.Exception("The publishing directory for '{0}' has yet to be set", this.SourcePath);
+                }
+            }
             this.RegisterGeneratedFile(Key,
                                        this.CreateTokenizedString("$(0)/@filename($(1))",
                                                                   new[] { this.publishingDirectory, this.SourcePath }));
