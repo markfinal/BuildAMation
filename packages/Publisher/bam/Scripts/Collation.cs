@@ -357,7 +357,7 @@ namespace Publisher
         IncludeAllModulesInNamespace(
             string nameSpace,
             Bam.Core.PathKey key,
-            Bam.Core.TokenizedString publishDir)
+            Bam.Core.TokenizedString anchorPublishRoot = null)
         {
             var gen = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
             var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(item =>
@@ -365,7 +365,7 @@ namespace Publisher
             foreach (var type in moduleTypes)
             {
                 var meth = gen.MakeGenericMethod(new[] { type });
-                meth.Invoke(this, new object[] { key, publishDir });
+                meth.Invoke(this, new object[] { key, anchorPublishRoot });
             }
         }
 
