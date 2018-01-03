@@ -548,6 +548,7 @@ namespace Publisher
                     }
                     return mod.pathKey;
                 }
+                Bam.Core.Log.DebugMessage("Unable to locate collation mapping for modules of type '{0}'", module.GetType().ToString());
                 return null;
             }
         }
