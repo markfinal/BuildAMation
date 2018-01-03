@@ -41,7 +41,7 @@ namespace InstallerTest1
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.WindowedApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             var appAnchor = this.Include<CExecutable>(C.GUIApplication.Key);
 
             // copy the required runtime library next to the binary
@@ -82,7 +82,7 @@ namespace InstallerTest1
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.WindowedApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             var appAnchor = this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key);
 
             // copy the required runtime library next to the binary

@@ -97,7 +97,7 @@ namespace PublishingTest3
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             // TODO: this will probably fail in VSSolution mode if not using an inline tokenizedstring
             // or not using ConsoleApplication mode
             this.Include<SimpleExe1>(C.ConsoleApplication.Key);

@@ -130,7 +130,7 @@ namespace Test10
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
             // two separate anchors
             this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(publishroot)/Standalone"));

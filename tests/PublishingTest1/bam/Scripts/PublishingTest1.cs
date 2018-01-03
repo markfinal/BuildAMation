@@ -87,7 +87,7 @@ namespace PublishingTest1
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             var appAnchor = this.Include<SimpleExe>(C.ConsoleApplication.Key);
 
             // copy a single data file, next to the executable

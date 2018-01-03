@@ -102,7 +102,7 @@ namespace PluginTest
 
 #if D_NEW_PUBLISHING
 #if true
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 #else
             this.BinDir = this.CreateTokenizedString("$(0)/custom", new [] { this.PublishDir });
             this.PluginDir = this.BinDir;

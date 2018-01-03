@@ -72,7 +72,7 @@ namespace Test5
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
             this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
             // TODO: CRT on Windows
@@ -105,7 +105,7 @@ namespace Test5
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.Library);
+            this.SetDefaultMacrosAndMappings(EPublishingType.Library);
 
             var dynamicLibAnchor = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))

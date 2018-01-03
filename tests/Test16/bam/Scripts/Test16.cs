@@ -118,7 +118,7 @@ namespace Test16
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<StaticApplication>(C.ConsoleApplication.Key);
 #else
             this.Include<StaticApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
@@ -136,7 +136,7 @@ namespace Test16
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<DynamicApplication>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
@@ -156,7 +156,7 @@ namespace Test16
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<DynamicApplicationNonPublicForwarder>(C.ConsoleApplication.Key);
 #else
             var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);

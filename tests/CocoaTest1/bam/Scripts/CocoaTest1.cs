@@ -78,7 +78,7 @@ namespace CocoaTest1
             base.Init(parent);
 
 #if D_NEW_PUBLISHING
-            this.SetDefaultMacros(EPublishingType.WindowedApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             this.Include<CocoaTest>(C.ConsoleApplication.Key);
 #else
             this.Include<CocoaTest>(C.ConsoleApplication.Key, EPublishingType.WindowedApplication);

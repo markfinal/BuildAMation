@@ -310,7 +310,7 @@ namespace Publisher
         }
 
         public void
-        SetDefaultMacros(
+        SetDefaultMacrosAndMappings(
             EPublishingType type)
         {
             // TODO: can any of these paths be determined from the C package for RPATHs etc?
@@ -1247,7 +1247,7 @@ namespace Publisher
         }
 
         public void
-        SetDefaultMacros(
+        SetDefaultMacrosAndMappings(
             EPublishingType type)
         {
             // TODO: can any of these paths be determined from the C package for RPATHs etc?
