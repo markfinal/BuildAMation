@@ -299,7 +299,7 @@ namespace Publisher
             (runtimeDependent as Collation).ForEachAnchor(findDependentsofAnchor, debugSymbolDependent);
         }
 
-        private CollatedObject
+        private Bam.Core.Module
         findAnchor(
             CollatedObject anchor)
         {
@@ -307,10 +307,10 @@ namespace Publisher
             {
                 if (obj.Key == anchor)
                 {
-                    return obj.Value as CollatedObject;
+                    return obj.Value as Bam.Core.Module;
                 }
             }
-            return null;
+            throw new Bam.Core.Exception("Unable to find stripped collation object for '{0}'", (anchor as ICollatedObject).SourceModule.ToString());
         }
 
         public ICollatedObject
