@@ -39,6 +39,10 @@ namespace Publisher
 
         private IStrippedBinaryCollationPolicy Policy = null;
 
+        // this is doubling up the cost of the this.Requires list, but at less runtime cost
+        // for expanding each CollatedObject to peek as it's properties
+        private System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject>();
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -103,6 +107,8 @@ namespace Publisher
 
             stripBinary.Anchor = collatedFile.Anchor;
 
+            this.collatedObjects.Add(collatedFile, stripBinary);
+
             return stripBinary;
         }
 
@@ -135,6 +141,8 @@ namespace Publisher
 
             // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
             clonedFile.Macros.Add("AnchorOutputName", (collatedObject as CollatedObject).Macros["AnchorOutputName"]);
+
+            this.collatedObjects.Add(collatedObject, clonedFile);
 
             return clonedFile;
         }
@@ -289,6 +297,49 @@ namespace Publisher
             this.DependsOn(debugSymbolDependent);
 
             (runtimeDependent as Collation).ForEachAnchor(findDependentsofAnchor, debugSymbolDependent);
+        }
+
+        private CollatedObject
+        findAnchor(
+            CollatedObject anchor)
+        {
+            foreach (var obj in this.collatedObjects)
+            {
+                if (obj.Key == anchor)
+                {
+                    return obj.Value as CollatedObject;
+                }
+            }
+            return null;
+        }
+
+        public ICollatedObject
+        Include<DependentModule>(
+            Bam.Core.PathKey key,
+            Collation collator,
+            CollatedObject anchor) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
+
+            var modulePublishDir = collator.Mapping.FindPublishDirectory(dependent, key);
+
+            var collatedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+                {
+                    module.SourceModule = dependent;
+                    module.SourcePathKey = key;
+                    module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
+                });
+
+            var strippedAnchor = this.findAnchor(anchor);
+
+            collatedFile.Macros.Add("publishdir", strippedAnchor.Macros["publishdir"]);
+
+            this.Requires(collatedFile);
+            return collatedFile;
         }
     }
 #else
