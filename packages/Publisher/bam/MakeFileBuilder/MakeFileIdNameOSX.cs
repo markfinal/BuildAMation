@@ -29,8 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
-#else
     public sealed class MakeFileIdNameOSX :
         IInstallNameToolPolicy
     {
@@ -55,5 +53,4 @@ namespace Publisher
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
     }
-#endif
 }

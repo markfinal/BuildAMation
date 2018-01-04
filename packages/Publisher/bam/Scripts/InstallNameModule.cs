@@ -33,10 +33,7 @@ namespace Publisher
     public abstract class InstallNameModule :
         Bam.Core.Module
     {
-#if D_NEW_PUBLISHING
-#else
         protected CollatedFile CopiedFileModule = null;
-#endif
         protected IInstallNameToolPolicy Policy = null;
 
         protected override void
@@ -61,8 +58,6 @@ namespace Publisher
             // do nothing
         }
 
-#if D_NEW_PUBLISHING
-#else
         public CollatedFile Source
         {
             get
@@ -75,6 +70,5 @@ namespace Publisher
                 this.DependsOn(value);
             }
         }
-#endif
     }
 }

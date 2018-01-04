@@ -29,8 +29,6 @@
 #endregion // License
 namespace Publisher.DefaultSettings
 {
-#if D_NEW_PUBLISHING
-#else
     public static partial class DefaultSettingsExtensions
     {
         public static void
@@ -48,5 +46,4 @@ namespace Publisher.DefaultSettings
             }
         }
     }
-#endif
 }

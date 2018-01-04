@@ -30,8 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
-#else
     public sealed class ChangeNameOSX :
         InstallNameModule
     {
@@ -44,7 +42,7 @@ namespace Publisher
                 this.Policy.InstallName(
                     this,
                     context,
-                    framework.SourceModule.Macros["IDName"],
+                    (framework as ICollatedObject).SourceModule.Macros["IDName"],
                     framework.Macros["IDName"]);
             }
         }
@@ -55,5 +53,4 @@ namespace Publisher
             set;
         }
     }
-#endif
 }

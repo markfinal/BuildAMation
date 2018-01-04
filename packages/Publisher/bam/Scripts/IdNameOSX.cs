@@ -30,8 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
-#else
     public sealed class IdNameOSX :
         InstallNameModule
     {
@@ -39,7 +37,7 @@ namespace Publisher
         ExecuteInternal(
             ExecutionContext context)
         {
-            var framework = this.CopiedFileModule.SourceModule as C.OSXFramework;
+            var framework = (this.CopiedFileModule as ICollatedObject).SourceModule as C.OSXFramework;
             if (null == framework)
             {
                 throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
@@ -56,5 +54,4 @@ namespace Publisher
                 this.CopiedFileModule.Macros["IDName"]);
         }
     }
-#endif
 }
