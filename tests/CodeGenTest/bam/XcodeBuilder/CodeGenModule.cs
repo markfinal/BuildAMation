@@ -48,9 +48,12 @@ namespace CodeGenTest
             var command = new System.Text.StringBuilder();
             // recode the executable path for Xcode
             var xcodePathTS = encapsulating.CreateTokenizedString("$(packagebuilddir)/$(config)");
-            if (!xcodePathTS.IsParsed)
+            lock (xcodePathTS)
             {
-                xcodePathTS.Parse();
+                if (!xcodePathTS.IsParsed)
+                {
+                    xcodePathTS.Parse();
+                }
             }
             var xcodePath = xcodePathTS.ToString();
             xcodePath += "/" + System.IO.Path.GetFileName(compiler.Executable.ToString());

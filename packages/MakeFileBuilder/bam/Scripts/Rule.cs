@@ -152,10 +152,13 @@ namespace MakeFileBuilder
                 }
 
                 // simply expanded variable
-                if (!target.Path.IsParsed)
+                lock (target.Path)
                 {
-                    // some sources may be generated after the string parsing phase
-                    target.Path.Parse();
+                    if (!target.Path.IsParsed)
+                    {
+                        // some sources may be generated after the string parsing phase
+                        target.Path.Parse();
+                    }
                 }
                 variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
                 variables.AppendLine();
@@ -212,9 +215,12 @@ namespace MakeFileBuilder
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
-                    if (!pre.IsParsed)
+                    lock (pre)
                     {
-                        pre.Parse();
+                        if (!pre.IsParsed)
+                        {
+                            pre.Parse();
+                        }
                     }
                     rules.AppendFormat("{0} ", pre.ToStringQuoteIfNecessary());
                 }

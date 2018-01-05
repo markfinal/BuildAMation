@@ -61,9 +61,12 @@ namespace C
                 var productName = sender.Macros["OutputName"].ToString().Equals(sender.Macros["modulename"].ToString()) ?
                                         sender.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)") :
                                         sender.CreateTokenizedString("$(OutputName).$(MajorVersion)");
-                if (!productName.IsParsed)
+                lock (productName)
                 {
-                    productName.Parse();
+                    if (!productName.IsParsed)
+                    {
+                        productName.Parse();
+                    }
                 }
                 configuration.SetProductName(productName);
             }
@@ -169,18 +172,24 @@ namespace C
                 if (library is C.StaticLibrary)
                 {
                     var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
-                    if (!libDir.IsParsed)
+                    lock (libDir)
                     {
-                        libDir.Parse();
+                        if (!libDir.IsParsed)
+                        {
+                            libDir.Parse();
+                        }
                     }
                     linker.LibraryPaths.Add(libDir);
                 }
                 else if (library is C.IDynamicLibrary)
                 {
                     var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
-                    if (!libDir.IsParsed)
+                    lock (libDir)
                     {
-                        libDir.Parse();
+                        if (!libDir.IsParsed)
+                        {
+                            libDir.Parse();
+                        }
                     }
                     linker.LibraryPaths.Add(libDir);
                 }

@@ -138,9 +138,12 @@ namespace GccCommon
                 linker.Libraries.Add(libraryName);
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
                 linker.LibraryPaths.AddUnique(libDir);
             }
@@ -161,9 +164,12 @@ namespace GccCommon
                 linker.Libraries.Add(libraryName);
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
                 linker.LibraryPaths.AddUnique(libDir);
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
@@ -182,9 +188,12 @@ namespace GccCommon
                     // only need to add to rpath-link, if there's been no explicit link to the library already
                     if (!linker.LibraryPaths.Contains(rpathLinkDir))
                     {
-                        if (!rpathLinkDir.IsParsed)
+                        lock (rpathLinkDir)
                         {
-                            rpathLinkDir.Parse();
+                            if (!rpathLinkDir.IsParsed)
+                            {
+                                rpathLinkDir.Parse();
+                            }
                         }
                         gccLinker.RPathLink.AddUnique(rpathLinkDir);
                     }

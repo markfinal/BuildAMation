@@ -90,9 +90,12 @@ namespace ClangCommon
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
 
                 linker.LibraryPaths.AddUnique(libDir);
@@ -104,9 +107,12 @@ namespace ClangCommon
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
 
                 linker.LibraryPaths.AddUnique(libDir);

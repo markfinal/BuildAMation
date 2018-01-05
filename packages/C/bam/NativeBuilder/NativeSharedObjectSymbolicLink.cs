@@ -44,15 +44,21 @@ namespace C
             commandLine.Add("-s");
             commandLine.Add("-f");
             var sourceFile = sender.CreateTokenizedString("@filename($(0))", target.GeneratedPaths[ConsoleApplication.Key]);
-            if (!sourceFile.IsParsed)
+            lock (sourceFile)
             {
-                sourceFile.Parse();
+                if (!sourceFile.IsParsed)
+                {
+                    sourceFile.Parse();
+                }
             }
             commandLine.Add(sourceFile.ToString());
             var destination = sender.CreateTokenizedString("@dir($(0))/$(1)", target.GeneratedPaths[ConsoleApplication.Key], target.Macros[sender.Macros["SymlinkUsage"].ToString()]);
-            if (!destination.IsParsed)
+            lock (destination)
             {
-                destination.Parse();
+                if (!destination.IsParsed)
+                {
+                    destination.Parse();
+                }
             }
             commandLine.Add(destination.ToString());
             CommandLineProcessor.Processor.Execute(context, tool, commandLine);

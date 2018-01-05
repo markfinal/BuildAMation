@@ -58,10 +58,13 @@ namespace VSSolutionBuilder
             if (null != include)
             {
                 this.RelativeDirectory = module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", include);
-                if (!this.RelativeDirectory.IsParsed)
+                lock (this.RelativeDirectory)
                 {
-                    // may have been parsed already, e.g. a common header
-                    this.RelativeDirectory.Parse();
+                    if (!this.RelativeDirectory.IsParsed)
+                    {
+                        // may have been parsed already, e.g. a common header
+                        this.RelativeDirectory.Parse();
+                    }
                 }
             }
             this.Settings = new Bam.Core.Array<VSSetting>();
