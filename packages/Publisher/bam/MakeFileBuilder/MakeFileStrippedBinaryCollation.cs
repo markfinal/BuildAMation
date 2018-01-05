@@ -37,8 +37,6 @@ namespace Publisher
             StrippedBinaryCollation sender,
             Bam.Core.ExecutionContext context)
         {
-#if D_NEW_PUBLISHING
-#else
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
             var rule = meta.AddRule();
             rule.AddTarget(Bam.Core.TokenizedString.CreateVerbatim("publish_stripped_binaries"), isPhony: true);
@@ -53,10 +51,9 @@ namespace Publisher
                 foreach (var rules in depMeta.Rules)
                 {
                     // TODO: only the first?
-                    rule.AddPrerequisite(rules.Targets[0]);
+                    rule.AddPrerequisite(rules.FirstTarget);
                 }
             }
-#endif
         }
     }
 }
