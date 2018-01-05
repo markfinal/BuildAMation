@@ -99,6 +99,12 @@ namespace Publisher
             }
         }
 
+        public bool Ignore
+        {
+            get;
+            set;
+        }
+
         // helper function
         public bool IsAnchor
         {
@@ -219,6 +225,7 @@ namespace Publisher
             {
                 this.Requires(this.sourceModule);
             }
+            this.Ignore = false;
         }
 
         protected override void

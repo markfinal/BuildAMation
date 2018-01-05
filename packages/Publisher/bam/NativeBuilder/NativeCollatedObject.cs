@@ -38,6 +38,10 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
+            if (sender.Ignore)
+            {
+                return;
+            }
             var collatedInterface = sender as ICollatedObject;
             var copySourcePath = sender.SourcePath;
 

@@ -389,6 +389,16 @@ namespace Publisher
             return results;
         }
 
+        public void
+        Ignore<DependentModule>() where DependentModule : Bam.Core.Module
+        {
+            var matches = this.Find<DependentModule>();
+            foreach (var match in matches)
+            {
+                (match as CollatedObject).Ignore = true;
+            }
+        }
+
         private void
         EncodeDependentModuleAndPathKey(
             Bam.Core.Module dependent,
