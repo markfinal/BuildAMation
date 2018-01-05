@@ -338,6 +338,9 @@ namespace Publisher
 
             collatedFile.Macros.Add("publishdir", strippedAnchor.Macros["publishdir"]);
 
+            // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+            collatedFile.Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros["AnchorOutputName"]);
+
             this.Requires(collatedFile);
             return collatedFile;
         }
