@@ -29,7 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public interface ICollatedObjectPolicy
     {
         void
@@ -37,13 +36,4 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context);
     }
-#else
-    public interface ICollatedObjectPolicy
-    {
-        void
-        Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context);
-    }
-#endif
 }

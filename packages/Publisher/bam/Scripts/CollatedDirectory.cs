@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public sealed class CollatedDirectory :
         CollatedObject
     {
@@ -41,47 +40,4 @@ namespace Publisher
             //this.ReasonToExecute = null;
         }
     }
-#else
-    public sealed class CollatedDirectory :
-        CollatedObject
-    {
-        public override void
-        Evaluate()
-        {
-            // always copy currently
-            //this.ReasonToExecute = null;
-        }
-
-        public string CopiedFilename
-        {
-            set
-            {
-                this.Macros["CopiedFilename"].Aliased(Bam.Core.TokenizedString.CreateVerbatim(value));
-            }
-        }
-
-        public override TokenizedString SourcePath
-        {
-            get
-            {
-                return this.RealSourcePath;
-            }
-
-            set
-            {
-                this.RealSourcePath.Aliased(value);
-                // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
-                // therefore don't add it back here for Windows
-                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    this.GeneratedPaths[Key] = this.CreateTokenizedString("@removetrailingseparator($(CopyDir))");
-                }
-                else
-                {
-                    this.GeneratedPaths[Key] = this.CreateTokenizedString("@removetrailingseparator($(CopyDir)/@ifnotempty($(CopiedFilename),,@filename($(0))))", value);
-                }
-            }
-        }
-    }
-#endif
 }

@@ -31,7 +31,6 @@ using Bam.Core;
 using System.Linq;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     /// <summary>
     /// Derive from this module to generate a standalone directory of extracted debug symbol files
     /// that mirrors a collated publishing root. This mirror folder can be hived off and stored by
@@ -248,6 +247,11 @@ namespace Publisher
             (dependent as Collation).ForEachAnchor(findDependentsofAnchor, null);
         }
 
+        /// <summary>
+        /// Locate the debug symbols associated with a particular source module.
+        /// </summary>
+        /// <param name="module">Module from which debug symbols were created.</param>
+        /// <returns>The associated debug symbols module.</returns>
         public ICollatedObject
         FindDebugSymbols(
             Bam.Core.Module module)
@@ -262,209 +266,4 @@ namespace Publisher
             return null;
         }
     }
-#else
-    /// <summary>
-    /// Derive from this module to generate a standalone directory of extracted debug symbol files
-    /// that mirrors a collated publishing root. This mirror folder can be hived off and stored by
-    /// developers. It can be dropped on top of stripped binaries in order to produce a fully
-    /// debuggable solution, debug symbols beside executables.
-    /// On Windows VisualC, this copies the PDB files.
-    /// On Linux, this uses objcopy to extract the symbol data.
-    /// On OSX, this uses dsymutil to extract symbol bundles.
-    /// </summary>
-    public abstract class DebugSymbolCollation :
-        Bam.Core.Module
-    {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Debug Symbol Collation Root");
-        private IDebugSymbolCollationPolicy Policy = null;
-
-        protected DebugSymbolCollation()
-        {
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-        }
-
-        public sealed override void
-        Evaluate()
-        {
-            // TODO
-        }
-
-        protected sealed override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
-        {
-            if (null == this.Policy)
-            {
-                return;
-            }
-            this.Policy.CollateDebugSymbols(this, context);
-        }
-
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "DebugSymbolCollation";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IDebugSymbolCollationPolicy>.Create(className);
-                    }
-                    break;
-            }
-        }
-
-        private void
-        CopyPDB(
-            CollatedObject collatedFile,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
-        {
-            var copyPDBModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
-            {
-                Bam.Core.TokenizedString referenceFilePath = null;
-                if (collatedFile.Reference != null)
-                {
-                    if (!referenceMap.ContainsKey(collatedFile.Reference))
-                    {
-                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", collatedFile.Reference.SourceModule.ToString());
-                    }
-
-                    var newRef = referenceMap[collatedFile.Reference];
-                    referenceFilePath = newRef.GeneratedPaths[CollatedObject.Key];
-                }
-
-                module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
-                    this,
-                    referenceFilePath,
-                    collatedFile.SubDirectory,
-                    this.GeneratedPaths[Key]);
-            });
-            this.DependsOn(copyPDBModule);
-
-            copyPDBModule.SourceModule = collatedFile.SourceModule;
-            // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
-            copyPDBModule.SourcePath = collatedFile.SourceModule.GeneratedPaths[C.ConsoleApplication.PDBKey];
-            copyPDBModule.SubDirectory = collatedFile.SubDirectory;
-
-            // since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
-            copyPDBModule.FailWhenSourceDoesNotExist = false;
-
-            if (collatedFile.Reference == null)
-            {
-                referenceMap.Add(collatedFile, copyPDBModule);
-            }
-        }
-
-        private void
-        CopyDebugSymbols(
-            CollatedObject collatedFile,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
-        {
-            var createDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
-            {
-                module.ReferenceMap = referenceMap;
-            });
-            this.DependsOn(createDebugSymbols);
-            createDebugSymbols.SourceModule = collatedFile;
-            createDebugSymbols.PrivatePatch(settings =>
-            {
-                var objCopySettings = settings as IObjCopyToolSettings;
-                objCopySettings.Mode = EObjCopyToolMode.OnlyKeepDebug;
-            });
-            if (collatedFile.Reference == null)
-            {
-                referenceMap.Add(collatedFile, createDebugSymbols);
-            }
-        }
-
-        public static ObjCopyModule
-        LinkBackToDebugSymbols(
-            Bam.Core.Module source,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
-        {
-            var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
-            {
-                module.ReferenceMap = referenceMap;
-            });
-            linkDebugSymbols.SourceModule = source;
-            linkDebugSymbols.PrivatePatch(settings =>
-            {
-                var objCopySettings = settings as IObjCopyToolSettings;
-                objCopySettings.Mode = EObjCopyToolMode.AddGNUDebugLink;
-            });
-            return linkDebugSymbols;
-        }
-
-        private void
-        CreatedSYMBundle(
-            CollatedObject collatedFile,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
-        {
-            var createDebugSymbols = Bam.Core.Module.Create<DSymUtilModule>(preInitCallback: module =>
-            {
-                module.ReferenceMap = referenceMap;
-            });
-            this.DependsOn(createDebugSymbols);
-            createDebugSymbols.SourceModule = collatedFile;
-            if (collatedFile.Reference == null)
-            {
-                referenceMap.Add(collatedFile, createDebugSymbols);
-            }
-        }
-
-        /// <summary>
-        /// Create a symbol data mirror from the result of collation.
-        /// </summary>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
-        CreateSymbolsFrom<DependentModule>() where DependentModule : Collation, new()
-        {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
-            {
-                return;
-            }
-
-            this.DependsOn(dependent);
-
-            var referenceMap = new System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module>();
-            foreach (CollatedObject req in dependent.Requirements.Where(item => item is CollatedObject))
-            {
-                if (!(req is CollatedFile))
-                {
-                    continue;
-                }
-                var source = req.SourceModule;
-                if (!(source is C.ConsoleApplication))
-                {
-                    continue;
-                }
-                if ((source as C.CModule).IsPrebuilt)
-                {
-                    continue;
-                }
-                if (Bam.Core.OSUtilities.IsWindowsHosting)
-                {
-                    if (req.SourceModule.Tool.Macros.Contains("pdbext"))
-                    {
-                        this.CopyPDB(req, referenceMap);
-                    }
-                    else
-                    {
-                        this.CopyDebugSymbols(req, referenceMap);
-                    }
-                }
-                else if (Bam.Core.OSUtilities.IsLinuxHosting)
-                {
-                    this.CopyDebugSymbols(req, referenceMap);
-                }
-                else if (Bam.Core.OSUtilities.IsOSXHosting)
-                {
-                    this.CreatedSYMBundle(req, referenceMap);
-                }
-            }
-        }
-    }
-#endif
 }

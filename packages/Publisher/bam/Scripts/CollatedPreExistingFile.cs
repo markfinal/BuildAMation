@@ -29,7 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public class CollatedPreExistingFile :
         CollatedFile
     {
@@ -55,6 +54,4 @@ namespace Publisher
             this.ParentOfCollationModule = graph.GetReferencedModule(this.BuildEnvironment, anchorType);
         }
     }
-#else
-#endif
 }

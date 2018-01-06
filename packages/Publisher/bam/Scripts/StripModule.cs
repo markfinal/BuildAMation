@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public class StripModule :
         Bam.Core.Module,
         ICollatedObject
@@ -61,6 +60,7 @@ namespace Publisher
         Evaluate()
         {
             // TODO
+            // always strip currently
         }
 
         protected override void
@@ -143,106 +143,4 @@ namespace Publisher
             }
         }
     }
-#else
-    public class StripModule :
-        Bam.Core.Module
-    {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Binary Destination");
-
-        private CollatedObject TheSourceModule;
-        private IStripToolPolicy Policy;
-
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-
-            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<StripTool>();
-        }
-
-        public override void
-        Evaluate()
-        {
-            // TODO
-        }
-
-        protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
-        {
-            if (null == this.Policy)
-            {
-                return;
-            }
-            this.Policy.Strip(this, context, this.TheSourceModule.GeneratedPaths[CollatedObject.Key], this.GeneratedPaths[Key]);
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "Native":
-                case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "Strip";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IStripToolPolicy>.Create(className);
-                    }
-                    break;
-            }
-        }
-
-        public System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> ReferenceMap
-        {
-            get;
-            set;
-        }
-
-        public ObjCopyModule DebugSymbolsModule
-        {
-            get;
-            set;
-        }
-
-        public CollatedObject SourceModule
-        {
-            get
-            {
-                return this.TheSourceModule;
-            }
-
-            set
-            {
-                this.TheSourceModule = value;
-                this.DependsOn(value);
-
-                Bam.Core.TokenizedString referenceFilePath = null;
-                if (value.Reference != null)
-                {
-                    if (null == this.ReferenceMap)
-                    {
-                        throw new Bam.Core.Exception("Missing mapping of CollatedFiles to StripModule");
-                    }
-                    if (!this.ReferenceMap.ContainsKey(value.Reference))
-                    {
-                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", value.Reference.SourceModule.ToString());
-                    }
-
-                    var newRef = this.ReferenceMap[value.Reference];
-                    referenceFilePath = newRef.GeneratedPaths[Key];
-                }
-                var destinationDirectory = Collation.GenerateFileCopyDestination(
-                    this,
-                    referenceFilePath,
-                    value.SubDirectory,
-                    this.Dependees[0].GeneratedPaths[StrippedBinaryCollation.Key]); // path of the debug symbol collation root
-                this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1))",
-                    destinationDirectory,
-                    value.GeneratedPaths[CollatedObject.Key]));
-            }
-        }
-    }
-#endif
 }

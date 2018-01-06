@@ -29,7 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public sealed class NativeCollatedObject :
         ICollatedObjectPolicy
     {
@@ -76,57 +75,4 @@ namespace Publisher
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
-#else
-    public sealed class NativeCollatedObject :
-        ICollatedObjectPolicy
-    {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
-        {
-            if (sender is CollatedFile)
-            {
-                if (!(sender as CollatedFile).FailWhenSourceDoesNotExist)
-                {
-                    var source = sender.SourcePath.ToString();
-                    if (!System.IO.File.Exists(source))
-                    {
-                        Bam.Core.Log.Detail("File {0} cannot be copied as it does not exist. Ignoring.", source);
-                        return;
-                    }
-                }
-            }
-
-            var isSymLink = (sender is CollatedSymbolicLink);
-            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
-
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.Key].ToString() : sender.Macros["CopyDir"].ToString();
-
-            if (!isSymLink)
-            {
-                // synchronize, so that multiple modules don't try to create the same directories simultaneously
-                lock ((sender.Reference != null) ? sender.Reference : sender)
-                {
-                    Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destinationPath);
-                }
-            }
-
-            var copySource = sourcePath.ToStringQuoteIfNecessary();
-            if (sender is CollatedDirectory && sender.Tool is CopyFilePosix && sender.Macros["CopiedFilename"].IsAliased)
-            {
-                // TODO: document this
-                // it has something to do with renaming a directory during a collation copy
-                copySource = System.String.Format("{0}/*", copySource);
-            }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            commandLine.Add(copySource);
-            commandLine.Add(destinationPath);
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
-        }
-    }
-#endif
 }

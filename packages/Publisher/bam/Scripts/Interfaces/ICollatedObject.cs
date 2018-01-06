@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public interface ICollatedObject
     {
         Bam.Core.Module SourceModule
@@ -53,34 +52,4 @@ namespace Publisher
             get;
         }
     }
-#else
-    public interface ICollatedObject
-    {
-        Collation Collator
-        {
-            get;
-        }
-
-        Bam.Core.Module SourceModule
-        {
-            get;
-        }
-
-        Bam.Core.TokenizedString SubDirectory
-        {
-            get;
-            set;
-        }
-
-        CollatedFile Reference
-        {
-            get;
-        }
-
-        Bam.Core.TokenizedString SourcePath
-        {
-            get;
-        }
-    }
-#endif
 }

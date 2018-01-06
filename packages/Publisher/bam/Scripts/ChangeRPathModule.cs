@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public class ChangeRPathModule :
         Bam.Core.Module
     {
@@ -86,61 +85,4 @@ namespace Publisher
             set;
         }
     }
-#else
-    public class ChangeRPathModule :
-        Bam.Core.Module
-    {
-        private CollatedFile TheSource;
-        private IChangeRPathPolicy Policy;
-
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ChangeRPathTool>();
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "Publisher." + mode + "ChangeRPath";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IChangeRPathPolicy>.Create(className);
-        }
-
-        public override void
-        Evaluate()
-        {
-            // do nothing
-        }
-
-        protected override void
-        ExecuteInternal(
-            ExecutionContext context)
-        {
-            this.Policy.Change(this, context, this.Source, this.NewRPath);
-        }
-
-        public CollatedFile Source
-        {
-            get
-            {
-                return this.TheSource;
-            }
-
-            set
-            {
-                this.TheSource = value;
-                this.DependsOn(value);
-            }
-        }
-
-        public string NewRPath
-        {
-            get;
-            set;
-        }
-    }
-#endif
 }

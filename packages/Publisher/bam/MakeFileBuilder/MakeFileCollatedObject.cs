@@ -29,7 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public sealed class MakeFileCollatedObject :
         ICollatedObjectPolicy
     {
@@ -111,98 +110,4 @@ namespace Publisher
             rule.AddPrerequisite(prerequisitePath);
         }
     }
-#else
-    public sealed class MakeFileCollatedObject :
-        ICollatedObjectPolicy
-    {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
-        {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-
-            var sourcePath = sender.SourcePath;
-            var sourceFilename = System.IO.Path.GetFileName(sourcePath.ToString());
-
-            var topLevel = sender.GetEncapsulatingReferencedModule().GetType().Name;
-            var senderType = sender.GetType().Name;
-            var sourceType = (null != sender.SourceModule) ? sender.SourceModule.GetType().FullName : "publishroot";
-            var basename = sourceType + "_" + topLevel + "_" + senderType + "_" + sender.BuildEnvironment.Configuration.ToString() + "_";
-
-            var isSymLink = sender is CollatedSymbolicLink;
-            var isDir = sender is CollatedDirectory;
-            var isRenamedDir = sender.Tool is CopyFilePosix & sender.Macros["CopiedFilename"].IsAliased;
-            if (isSymLink)
-            {
-                rule.AddTarget(sender.GeneratedPaths[CollatedObject.Key], variableName: basename + sourceFilename, isPhony: true);
-            }
-            else
-            {
-                if (isDir)
-                {
-                    if (isRenamedDir)
-                    {
-                        var rename = sender.Macros["CopiedFilename"].ToString();
-                        rule.AddTarget(Bam.Core.TokenizedString.CreateVerbatim(basename + rename), isPhony: true);
-                    }
-                    else
-                    {
-                        var targetName = sender.CreateTokenizedString("$(0)/@filename($(1))", sender.Macros["CopyDir"], sourcePath);
-                        rule.AddTarget(targetName, variableName: basename + sourceFilename);
-                    }
-                }
-                else
-                {
-                    rule.AddTarget(sender.GeneratedPaths[CollatedObject.Key], variableName: basename + sourceFilename);
-                }
-            }
-
-            meta.CommonMetaData.AddDirectory(sender.Macros["CopyDir"].ToString());
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            if (isSymLink)
-            {
-                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@ {3}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    sender.Macros["LinkTarget"].ToString(),
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-            }
-            else
-            {
-                if (isDir)
-                {
-                    if (isRenamedDir)
-                    {
-                        rule.AddShellCommand(System.String.Format(@"{0} {1} $</* {2} {3}",
-                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                            commandLine.ToString(' '),
-                            sender.Macros["CopyDir"].ToString(),
-                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-                    }
-                    else
-                    {
-                        rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
-                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                            commandLine.ToString(' '),
-                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-                    }
-                }
-                else
-                {
-                    rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
-                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                        commandLine.ToString(' '),
-                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)),
-                        ignoreErrors: !(sender as CollatedFile).FailWhenSourceDoesNotExist);
-                }
-                rule.AddPrerequisite(sourcePath);
-            }
-        }
-    }
-#endif
 }

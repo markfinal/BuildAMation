@@ -29,7 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public sealed class CollatedOSXFramework :
         CollatedObject
     {
@@ -44,8 +43,7 @@ namespace Publisher
         public override void
         Evaluate()
         {
+            // always copy currently
         }
     }
-#else
-#endif
 }

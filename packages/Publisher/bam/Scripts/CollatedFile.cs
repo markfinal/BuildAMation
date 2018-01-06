@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace Publisher
 {
-#if D_NEW_PUBLISHING
     public class CollatedFile :
         CollatedObject
     {
@@ -82,87 +81,4 @@ namespace Publisher
             }
         }
     }
-#else
-    public sealed class CollatedFile :
-        CollatedObject
-    {
-        public CollatedFile()
-        {
-            this.FailWhenSourceDoesNotExist = true;
-        }
-
-        public bool FailWhenSourceDoesNotExist
-        {
-            get;
-            set;
-        }
-
-        public override Bam.Core.TokenizedString SubDirectory
-        {
-            set
-            {
-                base.SubDirectory = value;
-
-                Bam.Core.TokenizedString referenceFilePath = null;
-                if (null != this.Reference)
-                {
-                    referenceFilePath = this.Reference.GeneratedPaths[CollatedObject.Key];
-                }
-                this.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
-                    this,
-                    referenceFilePath,
-                    value,
-                    this.Collator.GeneratedPaths[Collation.Key]);
-            }
-        }
-
-        public override void
-        Evaluate()
-        {
-            this.ReasonToExecute = null;
-            var copiedPath = this.GeneratedPaths[Key].ToString();
-            var exists = System.IO.File.Exists(copiedPath);
-            if (!exists)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-                return;
-            }
-            var source = this.SourceModule;
-            if (null != source)
-            {
-                if (null != source.EvaluationTask)
-                {
-                    source.EvaluationTask.Wait();
-                }
-                if (null != source.ReasonToExecute && null != source.ReasonToExecute.OutputFilePath)
-                {
-                    if (source.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString()))
-                    {
-                        this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
-                        return;
-                    }
-                    else
-                    {
-                        // there may be multiple files used as a source of a copy - not just that file which was the primary build output
-                        var destinationLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
-                        var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.ToString());
-                        if (sourceLastWriteTime > destinationLastWriteTime)
-                        {
-                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
-                            return;
-                        }
-                    }
-                }
-            }
-
-            var destLastWriteTime = System.IO.File.GetLastWriteTime(copiedPath);
-            var srcLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.ToString());
-            if (srcLastWriteTime > destLastWriteTime)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
-                return;
-            }
-        }
-    }
-#endif
 }
