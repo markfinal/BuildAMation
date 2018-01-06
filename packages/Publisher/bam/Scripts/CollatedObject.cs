@@ -95,6 +95,11 @@ namespace Publisher
             set
             {
                 this.anchor = value;
+                if (null != value)
+                {
+                    // anchor should exist first
+                    this.DependsOn(anchor as Bam.Core.Module);
+                }
             }
         }
 
