@@ -41,7 +41,8 @@ dirsToDelete = [
     "packages/VisualC-9.0",
     "packages/WindowsSDK-6.0A",
     "packages/WindowsSDK-7.1",
-    "packages/XmlUtilities"
+    "packages/XmlUtilities",
+    "tests/MixedModeCpp"
 ]
 
 
