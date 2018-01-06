@@ -1,4 +1,3 @@
-#define NEW_PARSER
 #region License
 // Copyright (c) 2010-2017, Mark Final
 // All rights reserved.
@@ -128,11 +127,6 @@ namespace Bam.Core
         private string CreationStackTrace = null;
         private int RefCount = 1;
         private EFlags Flags = EFlags.None;
-#if NEW_PARSER
-#else
-        private TokenizedString Alias = null;
-        private string parsingErrorMessage = null;
-#endif
         private long hash = 0;
         private string parsedStackTrace = null;
 
@@ -157,38 +151,6 @@ namespace Bam.Core
             }
             CustomPostUnaryFunctions.Add(name, function);
         }
-
-#if NEW_PARSER
-#else
-        /// <summary>
-        /// Query if the TokenizedString has been aliased to another.
-        /// </summary>
-        /// <value><c>true</c> if this instance is aliased; otherwise, <c>false</c>.</value>
-        public bool
-        IsAliased
-        {
-            get
-            {
-                return (null != this.Alias);
-            }
-        }
-
-        /// <summary>
-        /// Alias to another string. Useful for placeholder strings.
-        /// </summary>
-        /// <param name="alias">Alias.</param>
-        public void
-        Aliased(
-            TokenizedString alias)
-        {
-            if (this.IsAliased)
-            {
-                throw new Exception("TokenizedString is already aliased");
-            }
-            this.Alias = alias;
-            ++alias.RefCount;
-        }
-#endif
 
         static private System.Collections.Generic.IEnumerable<string>
         SplitIntoTokens(
@@ -273,25 +235,7 @@ namespace Bam.Core
             if (verbatim)
             {
                 this.ParsedString = NormalizeDirectorySeparators(original);
-#if NEW_PARSER
-#else
-                this.parsingErrorMessage = null; // as verbatim strings are already parsed
-#endif
                 this.parsedStackTrace = getStacktrace();
-            }
-            else
-            {
-#if NEW_PARSER
-#else
-                if (this.IsInline)
-                {
-                    this.parsingErrorMessage = null; // as inline strings do not get parsed
-                }
-                else
-                {
-                    this.parsingErrorMessage = "not been parsed";
-                }
-#endif
             }
         }
 
@@ -473,18 +417,10 @@ namespace Bam.Core
         {
             get
             {
-#if NEW_PARSER
-#else
-                if (this.IsAliased)
-                {
-                    return this.Alias.IsParsed;
-                }
-#endif
                 if (this.Verbatim)
                 {
                     return true;
                 }
-#if NEW_PARSER
                 if (this.IsForcedInline)
                 {
                     return false;
@@ -492,20 +428,6 @@ namespace Bam.Core
                 var hasTokens = (null != this.Tokens);
                 var hasParsedString = (null != this.ParsedString);
                 return !hasTokens && hasParsedString;
-#else
-                if (this.IsInline)
-                {
-                    return false;
-                }
-                foreach (var positionalToken in this.PositionalTokens)
-                {
-                    if (!positionalToken.IsParsed)
-                    {
-                        return false;
-                    }
-                }
-                return (null != this.ParsedString);
-#endif
             }
         }
 
@@ -525,13 +447,6 @@ namespace Bam.Core
         public override string
         ToString()
         {
-#if NEW_PARSER
-#else
-            if (this.IsAliased)
-            {
-                return this.Alias.ToString();
-            }
-#endif
             if (null == this.ParsedString)
             {
                 throw new Exception("TokenizedString '{0}' has not been parsed{3}{1}{1}Created at:{1}{2}{1}",
@@ -560,13 +475,6 @@ namespace Bam.Core
         {
             get
             {
-#if NEW_PARSER
-#else
-                if (this.IsAliased)
-                {
-                    return this.Alias.Empty;
-                }
-#endif
                 return (null == this.Tokens) || !this.Tokens.Any();
             }
         }
@@ -590,15 +498,6 @@ namespace Bam.Core
             var count = 0;
             foreach (var t in StringsForParsing)
             {
-#if NEW_PARSER
-#else
-                if (t.IsInline)
-                {
-                    Log.DebugMessage("Not parsing inline string: {0}", t.OriginalString);
-                    continue;
-                }
-#endif
-
                 t.ParseInternalWithAlreadyParsedCheck(null);
                 Log.DetailProgress("{0,3}%", (int)(++count * scale));
             }
@@ -668,7 +567,6 @@ namespace Bam.Core
             return this.ParseInternal(customMacroArray);
         }
 
-#if NEW_PARSER
         private string
         GetParsedString(
             Array<MacroList> customMacroArray)
@@ -680,7 +578,6 @@ namespace Bam.Core
             }
             return this.ParsedString;
         }
-#endif
 
         private void
         ExtendParsedStringWrapper(
@@ -730,18 +627,10 @@ namespace Bam.Core
         ParseInternal(
             Array<MacroList> customMacroArray)
         {
-#if NEW_PARSER
             if (this.IsForcedInline)
             {
                 throw new Exception("Forced inline TokenizedString cannot be parsed, {0}", this.OriginalString);
             }
-#if false
-            if (this.IsAliased)
-            {
-                // TODO: aliasing messes up the order of parsing
-                return this.Alias.ParseInternal(customMacroArray);
-            }
-#endif
             var graph = Graph.Instance;
             var parsedString = new System.Text.StringBuilder();
             var tokens = SplitIntoTokens(this.EvaluatePreFunctions(this.OriginalString, customMacroArray), TokenRegExPattern).ToList<string>();
@@ -868,175 +757,6 @@ namespace Bam.Core
                 }
                 return functionEvaluated;
             }
-#else
-            if (this.IsInline)
-            {
-                throw new Exception("Inline TokenizedString cannot be parsed, {0}", this.OriginalString);
-            }
-            if (this.IsAliased)
-            {
-                this.Alias.ParseInternalWithAlreadyParsedCheck(customMacroArray);
-            }
-
-            this.Tokens = SplitIntoTokens(this.EvaluatePreFunctions(this.OriginalString, customMacroArray), TokenRegExPattern).ToList<string>();
-
-            System.Func<TokenizedString, TokenizedString, int, string> expandTokenizedString = (source, tokenString, currentIndex) =>
-                {
-                    if (!tokenString.IsParsed)
-                    {
-                        if (source == tokenString)
-                        {
-                            throw new Exception("Infinite recursion for {0}. Created at {3}", source.OriginalString, source.CreationStackTrace);
-                        }
-
-                        if (tokenString.IsInline)
-                        {
-                            // current token expands to nothing, and the inline string's tokens are processed next
-                            source.Tokens.InsertRange(currentIndex + 1, SplitIntoTokens(tokenString.EvaluatePreFunctions(tokenString.OriginalString, new Array<MacroList>{ source.ModuleWithMacros.Macros }), TokenRegExPattern).ToList<string>());
-                            return string.Empty;
-                        }
-
-                        // recursive
-                        tokenString.ParseInternalWithAlreadyParsedCheck(null);
-                        if (!tokenString.IsParsed)
-                        {
-                            // create a list of MacroLists, starting with the original Module's macro
-                            // and then appending the Module in the parent TokenizedString
-                            // it's a single level addition
-                            // priority is thus taken for original macros, but any missing macros
-                            // from that first macrolist can now be looked for in the second
-                            var macroList = new Array<MacroList>();
-                            if (null != tokenString.ModuleWithMacros)
-                            {
-                                macroList.Add(tokenString.ModuleWithMacros.Macros);
-                            }
-                            macroList.Add(source.ModuleWithMacros.Macros);
-                            var customResult = tokenString.ParseInternalWithAlreadyParsedCheck(macroList);
-                            if (null != customResult)
-                            {
-                                return customResult;
-                            }
-                        }
-                    }
-                    return tokenString.ToString();
-                };
-
-            var graph = Graph.Instance;
-            var parsedString = new System.Text.StringBuilder();
-            for (int index = 0; index < this.Tokens.Count; ++index)
-            {
-                var token = this.Tokens[index];
-                if (!(token.StartsWith(TokenPrefix) && token.EndsWith(TokenSuffix)))
-                {
-                    parsedString.Append(token);
-                    continue;
-                }
-
-                // step 1 : is the token positional, i.e. was set up at creation time
-                var positional = GetMatches(token, PositionalTokenRegExPattern).FirstOrDefault();
-                if (!System.String.IsNullOrEmpty(positional))
-                {
-                    var positionalIndex = System.Convert.ToInt32(positional);
-                    if (positionalIndex > this.PositionalTokens.Count)
-                    {
-                        throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given. Created at {2}.", positionalIndex, this.PositionalTokens.Count, this.CreationStackTrace);
-                    }
-                    try
-                    {
-                        var posTokenStr = this.PositionalTokens[positionalIndex];
-                        parsedString.Append(expandTokenizedString(this, posTokenStr, index));
-                    }
-                    catch (System.ArgumentOutOfRangeException ex)
-                    {
-                        throw new Exception(ex, "Positional token index {0} exceeded number of tokens available", positionalIndex, this.PositionalTokens.Count);
-                    }
-                    continue;
-                }
-                // step 2 : try to resolve with custom macros passed to the Parse function
-                else if (null != customMacroArray && (null != customMacroArray.FirstOrDefault(item => item.Dict.ContainsKey(token))))
-                {
-                    var containingMacroList = customMacroArray.First(item => item.Dict.ContainsKey(token));
-                    parsedString.Append(expandTokenizedString(this, containingMacroList.Dict[token], index));
-                    continue;
-                }
-                // step 3 : try macros in the global Graph, common to all modules
-                else if (graph.Macros.Dict.ContainsKey(token))
-                {
-                    parsedString.Append(expandTokenizedString(this, graph.Macros.Dict[token], index));
-                    continue;
-                }
-                else if (this.ModuleWithMacros != null)
-                {
-                    var tool = this.ModuleWithMacros.Tool;
-                    // step 4 : try macros in the specific module
-                    if (this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
-                    {
-                        parsedString.Append(expandTokenizedString(this, this.ModuleWithMacros.Macros.Dict[token], index));
-                        continue;
-                    }
-                    // step 5 : try macros in the Tool attached to the specific module
-                    else if (null != tool && tool.Macros.Dict.ContainsKey(token))
-                    {
-                        parsedString.Append(expandTokenizedString(this, tool.Macros.Dict[token], index));
-                        continue;
-                    }
-                }
-
-                // step 6 : try the immediate environment
-                var strippedToken = SplitIntoTokens(token, ExtractTokenRegExPattern).First();
-                var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
-                if (null != envVar)
-                {
-                    parsedString.Append(envVar);
-                    continue;
-                }
-                // step 7 : fail
-                else
-                {
-                    // TODO: this could be due to the user not having set a property, e.g. inputpath
-                    // is there a better error message that could be returned, other than this in those
-                    // circumstances?
-                    var message = new System.Text.StringBuilder();
-                    message.AppendFormat("unrecognized token '{0}'", token);
-                    message.AppendLine();
-                    if (null != customMacroArray)
-                    {
-                        message.AppendFormat("Searched in {0} custom macro lists", customMacroArray.Count);
-                        message.AppendLine();
-                    }
-                    message.AppendLine("Searched in global macros");
-                    if (null != this.ModuleWithMacros)
-                    {
-                        message.AppendFormat("Searched in module {0}", this.ModuleWithMacros.ToString());
-                        message.AppendLine();
-                        if (null != this.ModuleWithMacros.Tool)
-                        {
-                            message.AppendFormat("Searched in tool {0}", this.ModuleWithMacros.Tool.ToString());
-                            message.AppendLine();
-                        }
-                    }
-                    this.parsingErrorMessage = message.ToString();
-                    return string.Empty;
-                }
-            }
-            var functionEvaluated = this.EvaluatePostFunctions(NormalizeDirectorySeparators(parsedString.ToString()));
-            // when using a custom array of MacroLists, do not store the parsed string
-            // instead just return it
-            // this allows a TokenizedString to be re-parsed with different semantics, but does not
-            // permanently change it
-            if (null == customMacroArray)
-            {
-                this.ParsedString = functionEvaluated;
-                this.parsingErrorMessage = null;
-                this.parsedStackTrace = getStacktrace();
-                Log.DebugMessage("Converted '{0}' to '{1}'", this.OriginalString, this.ToString());
-            }
-            else
-            {
-                Log.DebugMessage("Converted (with custom macros) '{0}' to '{1}'", this.OriginalString, functionEvaluated);
-            }
-            return functionEvaluated;
-#endif
         }
 
         private string
@@ -1270,13 +990,6 @@ namespace Bam.Core
         /// <returns>The string and quote if necessary.</returns>
         public string ToStringQuoteIfNecessary()
         {
-#if NEW_PARSER
-#else
-            if (this.IsAliased)
-            {
-                return this.Alias.ToStringQuoteIfNecessary();
-            }
-#endif
             var contents = this.ToString();
             if (!this.ContainsSpace)
             {
@@ -1319,7 +1032,6 @@ namespace Bam.Core
         DumpCache()
         {
             Log.DebugMessage("Tokenized string cache");
-#if NEW_PARSER
             foreach (var item in AllStrings.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim))
             {
                 Log.DebugMessage("#{0} {1}'{2}'{3} {4}",
@@ -1329,18 +1041,6 @@ namespace Bam.Core
                     item.Verbatim ? "</verbatim>" : string.Empty,
                     item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
             }
-#else
-            foreach (var item in AllStrings.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim).ThenBy(item => item.IsAliased))
-            {
-                Log.DebugMessage("#{0} {1}'{2}'{3} {4} {5}",
-                    item.RefCount,
-                    item.Verbatim ? "<verbatim>" : string.Empty,
-                    item.OriginalString,
-                    item.Verbatim ? "</verbatim>" : string.Empty,
-                    item.IsAliased ? System.String.Format("Aliased to: '{0}'", item.Alias.OriginalString) : string.Empty,
-                    item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
-            }
-#endif
         }
 
         private bool
