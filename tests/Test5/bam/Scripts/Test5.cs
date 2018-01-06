@@ -73,11 +73,11 @@ namespace Test5
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
-            this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
+            var appAnchor = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
 
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
-                (appAnchor.SourceModule as CExecutable).Linker is VisualCCommon.LinkerBase)
+                (appAnchor.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
             {
                 // just C runtime here
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
