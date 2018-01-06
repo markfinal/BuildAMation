@@ -140,6 +140,9 @@ namespace Publisher
             set;
         }
 
+        /// <summary>
+        /// Set or get the directory where executables are published.
+        /// </summary>
         public Bam.Core.TokenizedString ExecutableDir
         {
             get
@@ -153,6 +156,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Set or get the directory where dynamic libraries are published.
+        /// </summary>
         public Bam.Core.TokenizedString DynamicLibraryDir
         {
             get
@@ -166,6 +172,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Set or get the directory where static libraries are published.
+        /// </summary>
         public Bam.Core.TokenizedString StaticLibraryDir
         {
             get
@@ -179,6 +188,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Set or get the directory where Windows import libraries are published.
+        /// </summary>
         public Bam.Core.TokenizedString ImportLibraryDir
         {
             get
@@ -192,6 +204,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Set or get the directory where plugins are published.
+        /// </summary>
         public Bam.Core.TokenizedString PluginDir
         {
             get
@@ -205,6 +220,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Set or get the directory where resource files are published.
+        /// </summary>
         public Bam.Core.TokenizedString ResourceDir
         {
             get
@@ -218,6 +236,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Set or get the directory where header files are published.
+        /// </summary>
         public Bam.Core.TokenizedString HeaderDir
         {
             get
@@ -309,6 +330,15 @@ namespace Publisher
             this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
         }
 
+        /// <summary>
+        /// Invoke this function prior to including any modules into a collation, in order to configure defaults
+        /// for the standard module publishing properties (e.g. ExecutableDir), and mapping standard C package
+        /// module types to locations.
+        /// The argument is to create layouts suitable for the type of application being published based on the platform
+        /// being built for. For example, a Windows application on macOS will create an Application Bundle, while a Console
+        /// application wil use a flat publishing directory structure.
+        /// </summary>
+        /// <param name="type">Type of application being published.</param>
         public void
         SetDefaultMacrosAndMappings(
             EPublishingType type)
@@ -353,6 +383,15 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Helper function, mostly for package unittests, to be able to automatically find all modules within a specified
+        /// namespace, and collate them beside each other.
+        /// Each found module will be an anchor. Any shared dependencies should appear once depending on the build mode. IDE
+        /// build projects should each have a copy of shared dependencies in order for them to be debuggable.
+        /// </summary>
+        /// <param name="nameSpace">Namespace containing all modules of interest.</param>
+        /// <param name="key">PathKey of the modules that will be collated.</param>
+        /// <param name="anchorPublishRoot">Custom publishing root for the anchors. May be null to use default.</param>
         public void
         IncludeAllModulesInNamespace(
             string nameSpace,
@@ -369,6 +408,12 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Locate a collated module by type. There may be multiple return values, if the search is based on a common sub-class
+        /// of modules.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type to search for.</typeparam>
+        /// <returns>A list of matching collated modules, or an empty list.</returns>
         public Bam.Core.Array<ICollatedObject>
         Find<DependentModule>() where DependentModule : Bam.Core.Module
         {
@@ -389,6 +434,10 @@ namespace Publisher
             return results;
         }
 
+        /// <summary>
+        /// Do not collate any modules that match the module type.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type to search for, and subsequently ignore from Collation.</typeparam>
         public void
         Ignore<DependentModule>() where DependentModule : Bam.Core.Module
         {
@@ -505,10 +554,20 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Mapping of module to publishing directory.
+        /// </summary>
         public class ModuleOutputDefaultPublishingPathMapping
         {
             private Bam.Core.Array<ModuleOutputDefaultPublishingPath> mapping = new Bam.Core.Array<ModuleOutputDefaultPublishingPath>();
 
+            /// <summary>
+            /// Register a new module and PathKey to a location.
+            /// </summary>
+            /// <param name="moduleType">Type of the module of interest.</param>
+            /// <param name="modulePathKey">PathKey of the module of interest.</param>
+            /// <param name="defaultPublishPath">The default location to which to publish.</param>
+            /// <param name="isRuntimeDependency">Is the module a runtime dependency? Such things that are not are static and import libraries.</param>
             public void
             Register(
                 System.Type moduleType,
@@ -519,6 +578,12 @@ namespace Publisher
                 this.mapping.Add(new ModuleOutputDefaultPublishingPath(moduleType, modulePathKey, defaultPublishPath, isRuntimeDependency));
             }
 
+            /// <summary>
+            /// Retrieve the publishing directory for the module and PathKey pair.
+            /// </summary>
+            /// <param name="module">Module of interest.</param>
+            /// <param name="modulePathKey">PathKey of the module of interest.</param>
+            /// <returns>The publishing directory registered for the pair, or an exception is thrown.</returns>
             public Bam.Core.TokenizedString
             FindPublishDirectory(
                 Bam.Core.Module module,
@@ -542,6 +607,11 @@ namespace Publisher
                 throw new Bam.Core.Exception("Unable to locate publish directory for module {0} with path key {1}", module.ToString(), modulePathKey.ToString());
             }
 
+            /// <summary>
+            /// For the module type, retrieve the PathKey registered with it, if the registration is for a runtime dependency.
+            /// </summary>
+            /// <param name="module">Module of interest</param>
+            /// <returns>PathKey registered with the module, or null if there is not one registered.</returns>
             public Bam.Core.PathKey
             GetRuntimePathKey(
                 Bam.Core.Module module)
@@ -563,6 +633,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Access to the mapping from module to default publish path.
+        /// </summary>
         public ModuleOutputDefaultPublishingPathMapping Mapping
         {
             get;
@@ -633,6 +706,13 @@ namespace Publisher
             return collatedFile;
         }
 
+        /// <summary>
+        /// Include, as an anchor, the module of the specified type with the PathKey an output from that module.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type to become an anchor.</typeparam>
+        /// <param name="key">PathKey as an output of that module instance to collate.</param>
+        /// <param name="anchorPublishRoot">Custom directory to use as the root for the anchor's publishing, or null to use the default.</param>
+        /// <returns></returns>
         public ICollatedObject
         Include<DependentModule>(
             Bam.Core.PathKey key,
@@ -646,6 +726,14 @@ namespace Publisher
             return this.Include(dependent, key, anchorPublishRoot);
         }
 
+        /// <summary>
+        /// Include additional files (non-module based preexisting files).
+        /// </summary>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching files.</param>
+        /// <param name="destinationDir">Destination directory in which to publish files.</param>
+        /// <param name="anchor">Anchor associated with files (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <returns>List containing each collated file.</returns>
         public Bam.Core.Array<ICollatedObject>
         IncludeFiles(
             Bam.Core.TokenizedString wildcardedSourcePath,
@@ -688,6 +776,14 @@ namespace Publisher
             return results;
         }
 
+        /// <summary>
+        /// Include additional files (non-module based preexisting files).
+        /// </summary>
+        /// <param name="wildcardedSourcePaths">Array of wildcarded path to all matching files.</param>
+        /// <param name="destinationDir">Destination directory in which to publish files.</param>
+        /// <param name="anchor">Anchor associated with files (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <returns>List containing each collated file.</returns>
         public Bam.Core.Array<ICollatedObject>
         IncludeFiles(
             Bam.Core.TokenizedStringArray wildcardedSourcePaths,
@@ -703,6 +799,15 @@ namespace Publisher
             return results;
         }
 
+        /// <summary>
+        /// Include additional files (non-module based preexisting files).
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type that the path may use macros from.</typeparam>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching files.</param>
+        /// <param name="destinationDir">Destination directory in which to publish files.</param>
+        /// <param name="anchor">Anchor associated with files (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <returns>List containing each collated file.</returns>
         public Bam.Core.Array<ICollatedObject>
         IncludeFiles<DependentModule>(
             string wildcardedSourcePath,
@@ -718,6 +823,15 @@ namespace Publisher
             return this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter);
         }
 
+        /// <summary>
+        /// Include additional directories into the collation.
+        /// </summary>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching directories.</param>
+        /// <param name="destinationDir">Destination directory in which to publish directories.</param>
+        /// <param name="anchor">Anchor associated with directories (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <param name="renameLeaf">Optional rename of the top-level directory upon collation.</param>
+        /// <returns>List containing each collated directory.</returns>
         public Bam.Core.Array<ICollatedObject>
         IncludeDirectories(
             Bam.Core.TokenizedString wildcardedSourcePath,
@@ -761,6 +875,15 @@ namespace Publisher
             return results;
         }
 
+        /// <summary>
+        /// Include additional directories into the collation.
+        /// </summary>
+        /// <param name="wildcardedSourcePaths">Wildcarded paths to all matching directories.</param>
+        /// <param name="destinationDir">Destination directory in which to publish directories.</param>
+        /// <param name="anchor">Anchor associated with directories (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <param name="renameLeaf">Optional rename of the top-level directory upon collation.</param>
+        /// <returns>List containing each collated directory.</returns>
         public Bam.Core.Array<ICollatedObject>
         IncludeDirectories(
             Bam.Core.TokenizedStringArray wildcardedSourcePaths,
@@ -777,6 +900,16 @@ namespace Publisher
             return results;
         }
 
+        /// <summary>
+        /// Include additional directories into the collation.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type in which the provided path can use macros from.</typeparam>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching directories.</param>
+        /// <param name="destinationDir">Destination directory in which to publish directories.</param>
+        /// <param name="anchor">Anchor associated with directories (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <param name="renameLeaf">Optional rename of the top-level directory upon collation.</param>
+        /// <returns>List containing each collated directory.</returns>
         public Bam.Core.Array<ICollatedObject>
         IncludeDirectories<DependentModule>(
             string wildcardedSourcePath,
@@ -1052,8 +1185,19 @@ namespace Publisher
             return collatedFramework;
         }
 
+        /// <summary>
+        /// Delegate type used for iterating over anchors.
+        /// </summary>
+        /// <param name="collation">The Collation owning the Anchors</param>
+        /// <param name="anchor">Current Anchor</param>
+        /// <param name="customData">Any custom data.</param>
         public delegate void ForEachAnchorDelegate(Collation collation, ICollatedObject anchor, object customData);
 
+        /// <summary>
+        /// Iterate over all anchors using the specified delegate and passing the specified custom data.
+        /// </summary>
+        /// <param name="anchorDelegate">Delegate to use for each anchor.</param>
+        /// <param name="customData">Optional custom data to pass into the delegate for each anchor.</param>
         public void
         ForEachAnchor(
             ForEachAnchorDelegate anchorDelegate,
@@ -1075,8 +1219,19 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Delegate executed on each collated object.
+        /// </summary>
+        /// <param name="collatedObj">Current collated object.</param>
+        /// <param name="customData">Optional custom data.</param>
         public delegate void ForEachCollatedObjectDelegate(ICollatedObject collatedObj, object customData);
 
+        /// <summary>
+        /// Helper function to iterate over each collated object associated with the anchor.
+        /// </summary>
+        /// <param name="anchor">Anchor to iterate over all collated objects it is associated with.</param>
+        /// <param name="collatedObjectDelegate">Delegate to execute on each collated object.</param>
+        /// <param name="customData">Optional custom data to pass to each delegate.</param>
         public void
         ForEachCollatedObjectFromAnchor(
             ICollatedObject anchor,
