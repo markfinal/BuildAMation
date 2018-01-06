@@ -57,7 +57,7 @@ namespace MingwCommon
             {
                 commandLine.Add("-v");
             }
-            foreach (var path in settings.IncludePaths)
+            foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 path.Parse();
                 var realpath = path.ToString();

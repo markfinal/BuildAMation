@@ -1,3 +1,36 @@
+06-Jan-2018 Fixes #360. Publisher package rewrite, and Bam.Core.TokenizedString update.
+Publisher:
+In an effort to reduce duplication, Publisher now walks the dependency hierarchy declared in the build in order to automatically determine additional files to publish. In short, you now only need to specify the main modules (referred to as anchors), with Include<moduletype>(PathKey) that you wish to publish in your Collation module.
+As a side-effect, files may be published to customisable locations under the publishing root. Default layouts are provided, which depend both on platform, but also type of software application (console app, windowed app, library). For example, macOS windowed applications are published as application bundles, while macOS console applications are published as a flat directory structure.
+If dependents need to go to non-default locations, then their publishing directories can be set by Find<moduletype>() on the Collation, and invoking SetPublishingDirectory().
+If dependents should be not be collated at all (e.g. build-time helper utilities), they can be flagged using Ignore<moduletype>().
+DebugSymbolCollation and StrippedBinaryCollation remain unchanged in their API.
+TokenizedString:
+These changes were to support the more dynamic approach to the Publisher package above.
+- Renamed Bam.Core.TokenizedString.CreateInline to Bam.Core.TokenizedString.CreateForceInline.
+- Removed Aliased TokenizedStrings. Use Set to change an existing string now.
+- TokenizedString.Parse() no longer accepts any arguments.
+- Added TokenizedString.UncachedParse() to perform a parse (without storing the result in the TokenizedString) with custom MacroLists. Arrays of MacroLists may now be used, in order to provide multiple sources of macro expansion. MacroLists are used in order in the array; macros that appear in more than one MacroList will only accept their first-encountered expansion.
+- Added TokenizedString.Clone() to copy, and re-assign the module on which a string is currently mapped to.
+- Added TokenizedString.RefersToMacro() function to query if the string has reference to a particular macro.
+- Added TokenizedString.Set() function to replace the string and positional arguments for the TokenizedString. This will only work for unparsed strings. It is recommended to use this method rather than simply assigning a new C# object reference to a variable, as the old object reference may have already been used elsewhere.
+Other Additions:
+- Added Bam.Core.PeekableStack in order for Bam.Core.Graph.CommonModuleType to be inspected further back that just the top of the stack.
+- Added Bam.Core.TokenizedString unit tests.
+- Added checks for circular macro references in Bam.Core.MacroList.
+- Added Bam.Core.TokenizedStringArray.ToEnumerableWithoutDuplicates, to remove duplicates, post-parsing. (Some strings with the same expansion may exist in the array, due to them being bound to different modules in the same package.)
+- MakeFile clean target now works when executed from a CMD prompt in Windows.
+Other Changes:
+- Bam.Core.TokenizedStringArray.Contains now uses the parsed strings where possible for comparisons.
+- C.SharedObjectSymbolicLink modules, to make the symbolic links for SOName and LinkerName for a shared object, are now first class citizens. (Easier to manage for publishing.) C.DynamicLibrary and C.Cxx.DynamicLibrary now implement the IDynamicLibrary interface, which exposes LinkerNameSymbolicLink and SONameSymbolicLink properties to access the respective modules. The shared object symbolic link modules depend on the original dynamic library module.
+- Linux LD links now prefer the LinkerName symbolic link of dynamic libraries.
+- Linux LD RPath-link paths are only added for dynamic libraries dependent on dynamic libraries when there is no explicit link step.
+- C.OSXFramework replaces DirectoriesToPublish, FilesToPublish, DirectoriesToPublish, SymlinksToPublish, with the abstract FrameworkBundleName and FrameworkLibraryPath properties. By default, Frameworks are published as-is (now using rsync), but can be configured on specific Framework instance levels for exclusions.
+- MakeFile generation goes to more effort in making unique variable names.
+- Access to MakeFile Targets is now through delegates and function calls, in order to make the scripts threadsafe.
+Other Removals:
+- Removed Bam.Core.Module.MakePlaceholderPath. You can now use TokenizedString.Set to update an existing string, if it has not yet been parsed.
+
 02-Dec-2017 Fixes #389. NUnit is added via NuGet packages. This is supported on VisualStudio, VisualStudio for Mac and MonoDevelop.
 Note that VS 2013 is a little backward (tries to modify the .sln), and VS for Mac at least seems to follow the VS 2017 support for NuGet.
 Added a Bam.Core.Test assembly, which uses NUnit markup.
@@ -26,7 +59,7 @@ In addition to making functions have one purpose, this change also allows the po
 
 TokenizedString comparisons now use the hash calculated at construction, so no parsing is required. WARNING: If previously user scripts did TokenizedString.Equals(TokenizedString), this was comparing parsed strings; this is likely to fail now. Change to TokenizedString.ToString().Equals(TokenizedString.ToString())
 
-Ideally, TokenizedStings should be created during Init() or patching stages. These will be automatically parsed in the parsing stage, and are then available for use in the build stage, with ToString(). Use of Parse() prior to the parsing stage should be frowned upon.
+Ideally, TokenizedStrings should be created during Init() or patching stages. These will be automatically parsed in the parsing stage, and are then available for use in the build stage, with ToString(). Use of Parse() prior to the parsing stage should be frowned upon.
 
 TokenizedString.ParseAndQuoteIfNecessary() has been replaced with ToStringQuoteIfNecessary().
 

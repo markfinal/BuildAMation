@@ -30,7 +30,26 @@
 using Bam.Core;
 namespace PublishingTest1
 {
-    sealed class SimpleExe :
+    class SimpleDynamicLib :
+        C.DynamicLibrary
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateHeaderContainer("$(packagedir)/source/dynamiclib.h");
+            this.CreateCSourceContainer("$(packagedir)/source/dynamiclib.c");
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+        }
+    }
+
+    class SimpleExe :
         C.ConsoleApplication
     {
         protected override void
@@ -40,10 +59,20 @@ namespace PublishingTest1
             base.Init(parent);
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
 
             if (this.Linker is VisualCCommon.LinkerBase)
             {
                 this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
+            }
+            else if (this.Linker is GccCommon.LinkerBase)
+            {
+                this.PrivatePatch(settings =>
+                    {
+                        var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN");
+                    });
             }
         }
     }
@@ -57,17 +86,17 @@ namespace PublishingTest1
         {
             base.Init(parent);
 
-            var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            var appAnchor = this.Include<SimpleExe>(C.ConsoleApplication.Key);
 
             // copy a single data file, next to the executable
-            this.IncludeFile("$(packagedir)/data/testfile1.txt", ".", app);
+            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.ExecutableDir, appAnchor);
 
             // copy a directory, with a number of files and a subdirectory, next to the executable
-            this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), ".", app);
+            this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", this.ExecutableDir, appAnchor);
 
             // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the executable
-            var renamedDir = this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), "lib", app);
-            renamedDir.CopiedFilename = "testdir1_renamed";
+            this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", this.CreateTokenizedString("$(0)/lib", this.ExecutableDir), appAnchor, renameLeaf: "testdir1_renamed");
         }
     }
 

@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test5
 {
-    sealed class MyDynamicLibTestApp :
+    class MyDynamicLibTestApp :
         C.ConsoleApplication
     {
         protected override void
@@ -71,19 +71,17 @@ namespace Test5
         {
             base.Init(parent);
 
-            var app = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+
+            var appAnchor = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
 
             // copy the required runtime library next to the binary
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.BuildEnvironment.Configuration != EConfiguration.Debug &&
-                (app.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
+            if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
+                (appAnchor.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
             {
+                // just C runtime here
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                foreach (var libPath in runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth))
-                {
-                    this.IncludeFile(libPath, ".", app);
-                }
+                this.IncludeFiles(runtimeLibrary.CRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth), this.ExecutableDir, appAnchor);
             }
         }
     }
@@ -97,13 +95,14 @@ namespace Test5
         {
             base.Init(parent);
 
-            var dll = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key, EPublishingType.ConsoleApplication, "bin");
+            this.SetDefaultMacrosAndMappings(EPublishingType.Library);
+
+            var dynamicLibAnchor = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey, "../lib", dll);
+                this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey);
             }
-
-            this.IncludeFiles<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", "../include", dll);
+            this.IncludeFiles<Test4.MyDynamicLib>("$(packagedir)/include/dynamiclibrary.h", this.HeaderDir, dynamicLibAnchor);
         }
     }
 

@@ -70,7 +70,7 @@ namespace ClangCommon
                 }
                 break;
             }
-            foreach (var path in settings.LibraryPaths)
+            foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-L{0}", path.ToStringQuoteIfNecessary()));
             }

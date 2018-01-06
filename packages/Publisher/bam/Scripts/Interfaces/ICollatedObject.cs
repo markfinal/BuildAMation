@@ -37,17 +37,17 @@ namespace Publisher
             get;
         }
 
-        Bam.Core.TokenizedString SubDirectory
+        Bam.Core.PathKey SourcePathKey
         {
             get;
         }
 
-        CollatedFile Reference
+        Bam.Core.TokenizedString PublishingDirectory
         {
             get;
         }
 
-        Bam.Core.TokenizedString SourcePath
+        ICollatedObject Anchor
         {
             get;
         }

@@ -73,7 +73,7 @@ namespace MingwCommon
             {
                 commandLine.Add("-Wno-error");
             }
-            foreach (var path in settings.IncludePaths)
+            foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }

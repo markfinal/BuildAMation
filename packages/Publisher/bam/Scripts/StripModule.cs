@@ -31,11 +31,15 @@ using Bam.Core;
 namespace Publisher
 {
     public class StripModule :
-        Bam.Core.Module
+        Bam.Core.Module,
+        ICollatedObject
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Binary Destination");
 
-        private CollatedObject TheSourceModule;
+        private Bam.Core.Module sourceModule;
+        private Bam.Core.PathKey sourcePathKey;
+        private ICollatedObject anchor = null;
+
         private IStripToolPolicy Policy;
 
         protected override void
@@ -45,12 +49,18 @@ namespace Publisher
             base.Init(parent);
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<StripTool>();
+            this.RegisterGeneratedFile(Key,
+                this.CreateTokenizedString("$(0)/@filename($(1))",
+                                           new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+
+            this.Requires(this.sourceModule);
         }
 
         public override void
         Evaluate()
         {
             // TODO
+            // always strip currently
         }
 
         protected override void
@@ -61,7 +71,7 @@ namespace Publisher
             {
                 return;
             }
-            this.Policy.Strip(this, context, this.TheSourceModule.GeneratedPaths[CollatedObject.Key], this.GeneratedPaths[Key]);
+            this.Policy.Strip(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
         }
 
         protected override void
@@ -80,53 +90,56 @@ namespace Publisher
             }
         }
 
-        public System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> ReferenceMap
-        {
-            get;
-            set;
-        }
-
-        public ObjCopyModule DebugSymbolsModule
-        {
-            get;
-            set;
-        }
-
-        public CollatedObject SourceModule
+        Bam.Core.Module ICollatedObject.SourceModule
         {
             get
             {
-                return this.TheSourceModule;
+                return this.sourceModule;
             }
-
+        }
+        public Bam.Core.Module SourceModule
+        {
             set
             {
-                this.TheSourceModule = value;
-                this.DependsOn(value);
+                this.sourceModule = value;
+            }
+        }
 
-                Bam.Core.TokenizedString referenceFilePath = null;
-                if (value.Reference != null)
-                {
-                    if (null == this.ReferenceMap)
-                    {
-                        throw new Bam.Core.Exception("Missing mapping of CollatedFiles to StripModule");
-                    }
-                    if (!this.ReferenceMap.ContainsKey(value.Reference))
-                    {
-                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", value.Reference.SourceModule.ToString());
-                    }
+        Bam.Core.PathKey ICollatedObject.SourcePathKey
+        {
+            get
+            {
+                return this.sourcePathKey;
+            }
+        }
+        public Bam.Core.PathKey SourcePathKey
+        {
+            set
+            {
+                this.sourcePathKey = value;
+            }
+        }
 
-                    var newRef = this.ReferenceMap[value.Reference];
-                    referenceFilePath = newRef.GeneratedPaths[Key];
-                }
-                var destinationDirectory = Collation.GenerateFileCopyDestination(
-                    this,
-                    referenceFilePath,
-                    value.SubDirectory,
-                    this.Dependees[0].GeneratedPaths[StrippedBinaryCollation.Key]); // path of the debug symbol collation root
-                this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1))",
-                    destinationDirectory,
-                    value.GeneratedPaths[CollatedObject.Key]));
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
+        {
+            get
+            {
+                return this.Macros["publishingdir"];
+            }
+        }
+
+        ICollatedObject ICollatedObject.Anchor
+        {
+            get
+            {
+                return this.anchor;
+            }
+        }
+        public ICollatedObject Anchor
+        {
+            set
+            {
+                this.anchor = value;
             }
         }
     }

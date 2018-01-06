@@ -67,15 +67,22 @@ namespace Bam.Core
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
             this.Macros = new MacroList(this.GetType().FullName);
             this.BuildEnvironmentInternal = null;
-            this.CommonModuleType = new System.Collections.Generic.Stack<System.Type>();
+            this.CommonModuleType = new PeekableStack<System.Type>();
             this.DependencyGraph = new DependencyGraph();
             this.MetaData = null;
 
             this.PackageRepositories = new StringArray();
-            var primaryPackageRepo = System.IO.Path.Combine(
-                System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
-                "packages");
-            this.PackageRepositories.AddUnique(primaryPackageRepo);
+            try
+            {
+                var primaryPackageRepo = System.IO.Path.Combine(
+                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
+                    "packages");
+                this.PackageRepositories.AddUnique(primaryPackageRepo);
+            }
+            catch (System.ArgumentNullException)
+            {
+                // this can happen during unit testing
+            }
 
             this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new Options.ForceDefinitionFileUpdate());
             this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new Options.UseDebugSymbols());
@@ -97,7 +104,7 @@ namespace Bam.Core
         /// This is so that modules created as dependencies can inspect their module parental hierarchy at construction time.
         /// </summary>
         /// <value>The stack of module types</value>
-        public System.Collections.Generic.Stack<System.Type> CommonModuleType
+        public PeekableStack<System.Type> CommonModuleType
         {
             get;
             private set;
@@ -149,6 +156,8 @@ namespace Bam.Core
                 TokenizedString.RemoveEncapsulatedStrings(moduleTypeToRemove);
                 Module.RemoveEncapsulatedModules(moduleTypeToRemove);
                 referencedModules.Remove(referencedModules.First(item => item.GetType() == typeof(T)));
+                var moduleEnvList = this.Modules[this.BuildEnvironmentInternal];
+                moduleEnvList.Remove(moduleEnvList.First(item => item.GetType() == typeof(T)));
                 throw;
             }
             finally
@@ -249,35 +258,53 @@ namespace Bam.Core
                 }
                 throw new Exception(message.ToString());
             }
-            this.BuildEnvironment = env;
-            foreach (var moduleType in allTopLevelModuleTypesInPackage)
+            try
             {
-                var newModule = MakeModuleOfType(moduleType);
-                if (newModule != null)
-                {
-                    this.TopLevelModules.Add(newModule);
-                }
+                this.CreateTopLevelModuleFromTypes(allTopLevelModuleTypesInPackage, env);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex, "An error occurred creating top-level modules in namespace '{0}':", ns);
+            }
+        }
+
+        /// <summary>
+        /// Create top-level modules from a list of types.
+        /// </summary>
+        /// <param name="moduleTypes">List of module types to create.</param>
+        /// <param name="env">Build environment to create modules for.</param>
+        public void
+        CreateTopLevelModuleFromTypes(
+            System.Collections.Generic.IEnumerable<System.Type> moduleTypes,
+            Environment env)
+        {
+            this.BuildEnvironment = env;
+            foreach (var moduleType in moduleTypes)
+            {
+                MakeModuleOfType(moduleType);
             }
             this.BuildEnvironment = null;
-            if (0 == this.TopLevelModules.Count)
+            // scan all modules in the build environment for "top-level" status
+            // as although they should just be from the list of incoming moduleTypes
+            // it's possible for new modules to be introduced that depend on them
+            foreach (var module in this.Modules[env])
+            {
+                if (module.TopLevel)
+                {
+                    this.TopLevelModules.Add(module);
+                }
+            }
+            if (!this.TopLevelModules.Any())
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Namespace '{0}' contains top-level modules, but none could be instantiated", ns);
+                message.AppendFormat("Top-level module types detected, but none could be instantiated:");
                 message.AppendLine();
-                foreach (var moduleType in allModuleTypesInPackage)
+                foreach (var moduleType in moduleTypes)
                 {
                     message.AppendFormat("\t{0}", moduleType.ToString());
                     message.AppendLine();
                 }
                 throw new Exception(message.ToString());
-            }
-            // remove all top level modules that have a reference count > 1
-            foreach (var tlm in this.TopLevelModules.Reverse<Module>())
-            {
-                if (!tlm.TopLevel)
-                {
-                    this.TopLevelModules.Remove(tlm);
-                }
             }
         }
 

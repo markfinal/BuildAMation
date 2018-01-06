@@ -42,7 +42,8 @@ namespace Publisher
             var mode = (sender.Settings as IObjCopyToolSettings).Mode;
 
             // if linking debug data, add to the strip
-            var meta = (EObjCopyToolMode.AddGNUDebugLink == mode) ? sender.SourceModule.MetaData as MakeFileBuilder.MakeFileMeta : new MakeFileBuilder.MakeFileMeta(sender);
+            var collatedObjectInterface = sender as ICollatedObject;
+            var meta = (EObjCopyToolMode.AddGNUDebugLink == mode) ? collatedObjectInterface.SourceModule.MetaData as MakeFileBuilder.MakeFileMeta : new MakeFileBuilder.MakeFileMeta(sender);
             var rule = (EObjCopyToolMode.AddGNUDebugLink == mode) ? meta.Rules[0] :meta.AddRule();
 
             if (EObjCopyToolMode.AddGNUDebugLink == mode)

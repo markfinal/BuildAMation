@@ -39,7 +39,7 @@ namespace Publisher
             Bam.Core.TokenizedString oldName,
             Bam.Core.TokenizedString newName)
         {
-            var originalModule = sender.Source.SourceModule;
+            var originalModule = (sender.Source as ICollatedObject).SourceModule;
             if (originalModule == null)
             {
                 return;
@@ -50,43 +50,19 @@ namespace Publisher
 
             var commands = new Bam.Core.StringArray();
 
-            if (sender.Source.SourceModule != null && sender.Source.SourceModule.MetaData != null)
-            {
-                commands.Add(System.String.Format("{0} {1} {2} {3} {4} {5}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    oldName.ToString(),
-                    newName.ToString(),
-                    sender.Source.GeneratedPaths[CollatedObject.Key].ToString(),
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+            // TODO: check what happens for prebuilt modules (there shouldn't be any metadata)
 
-                var target = sender.Source.SourceModule.MetaData as XcodeBuilder.Target;
-                var configuration = target.GetConfiguration(sender.Source.SourceModule);
-                target.AddPostBuildCommands(commands, configuration);
-            }
-            else
-            {
-                var destinationFolder = "$CONFIGURATION_BUILD_DIR";
-                if (sender.Source.Reference != null)
-                {
-                    destinationFolder = "$CONFIGURATION_BUILD_DIR/$EXECUTABLE_FOLDER_PATH";
-                }
+            commands.Add(System.String.Format("{0} {1} {2} {3} {4} {5}",
+                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                commandLine.ToString(' '),
+                oldName.ToString(),
+                newName.ToString(),
+                sender.Source.GeneratedPaths[CollatedObject.Key].ToString(),
+                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
 
-                var filename = sender.Source.CreateTokenizedString("$(0)/@filename($(1))", sender.Source.SubDirectory, sender.Source.SourcePath);
-                filename.Parse();
-                commands.Add(System.String.Format("{0} {1} {2} {3} {4}/{5} {6}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    oldName.ToString(),
-                    newName.ToString(),
-                    destinationFolder,
-                    filename.ToString(),
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-
-                var target = sender.Source.Reference.SourceModule.MetaData as XcodeBuilder.Target;
-                var configuration = target.GetConfiguration(sender.Source.Reference.SourceModule);
-                target.AddPostBuildCommands(commands, configuration);
-            }
+            var target = originalModule.MetaData as XcodeBuilder.Target;
+            var configuration = target.GetConfiguration(originalModule);
+            target.AddPostBuildCommands(commands, configuration);
         }
     }
 }

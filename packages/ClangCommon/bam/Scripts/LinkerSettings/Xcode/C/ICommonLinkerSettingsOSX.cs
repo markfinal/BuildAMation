@@ -41,7 +41,7 @@ namespace ClangCommon
             {
                 var target = module.MetaData as XcodeBuilder.Target;
                 var project = target.Project;
-                foreach (var framework in settings.Frameworks)
+                foreach (var framework in settings.Frameworks.ToEnumerableWithoutDuplicates())
                 {
                     var frameworkFileRefPath = framework;
                     var isAbsolute = System.IO.Path.IsPathRooted(frameworkFileRefPath.ToString());
@@ -66,7 +66,7 @@ namespace ClangCommon
             if (settings.FrameworkSearchPaths.Count > 0)
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in settings.FrameworkSearchPaths)
+                foreach (var path in settings.FrameworkSearchPaths.ToEnumerableWithoutDuplicates())
                 {
                     option.Add(path.ToString());
                 }

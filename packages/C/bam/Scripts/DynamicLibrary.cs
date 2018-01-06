@@ -38,9 +38,9 @@ namespace C
         IDynamicLibrary,
         IForwardedLibraries
     {
-        private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
-        private SharedObjectSymbolicLinkTool SymlinkTool;
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+        private SharedObjectSymbolicLink linkerNameSymLink = null;
+        private SharedObjectSymbolicLink soNameSymLink = null;
 
         protected override void
         Init(
@@ -52,17 +52,30 @@ namespace C
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.Macros.Add("ImportLibraryName", Bam.Core.TokenizedString.CreateInline("$(OutputName)"));
+                this.Macros.Add("ImportLibraryName", Bam.Core.TokenizedString.Create("$(OutputName)", null));
                 this.RegisterGeneratedFile(ImportLibraryKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(ImportLibraryName)$(libext)"));
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                if (!(this is Plugin))
+                if (!(this is Plugin) && !this.IsPrebuilt)
                 {
+                    // TODO: I wonder if these macros can be removed? (requires a change to GccCommon.ICommonLinkerSettings)
                     this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
                     this.Macros.Add("LinkerName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
-                    this.Macros.Add("fullSONamePath", this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["SOName"]));
-                    this.Macros.Add("fullLinkerNamePath", this.CreateTokenizedString("@dir($(0))/$(1)", this.GeneratedPaths[Key], this.Macros["LinkerName"]));
+
+                    var linkerName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
+                        {
+                            module.Macros.AddVerbatim("SymlinkUsage", "LinkerName");
+                            module.SharedObject = this;
+                        });
+                    this.LinkerNameSymbolicLink = linkerName;
+
+                    var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
+                        {
+                            module.Macros.AddVerbatim("SymlinkUsage", "SOName");
+                            module.SharedObject = this;
+                        });
+                    this.SONameSymbolicLink = SOName;
                 }
             }
 
@@ -158,7 +171,7 @@ namespace C
         /// application uses patches from the dependent.
         /// </summary>
         /// <param name="affectedSource">Required source module.</param>
-        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompilePubliclyAndLinkAgainst<DependentModule>(
@@ -192,7 +205,8 @@ namespace C
             {
                 return;
             }
-            this.DependsOn(dependent);
+            this.addLinkDependency(dependent);
+            this.addRuntimeDependency(dependent);
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
                 this.forwardedDeps.AddUnique(dependent);
@@ -231,18 +245,6 @@ namespace C
                 return;
             }
             base.ExecuteInternal(context);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                var executable = this.GeneratedPaths[Key];
-                if (this.Macros.Contains("SOName"))
-                {
-                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["SOName"], executable);
-                }
-                if (this.Macros.Contains("LinkerName"))
-                {
-                    this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.Macros["LinkerName"], executable);
-                }
-            }
         }
 
         protected sealed override void
@@ -255,54 +257,7 @@ namespace C
                 return;
             }
             base.GetExecutionPolicy(mode);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                var className = "C." + mode + "SharedObjectSymbolicLink";
-                this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
-                this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
-            }
         }
-
-#if __MonoCS__
-        public sealed override void
-        Evaluate()
-        {
-            base.Evaluate();
-            if (null != this.ReasonToExecute)
-            {
-                // a reason has been found already
-                return;
-            }
-            if (this.IsPrebuilt)
-            {
-                return;
-            }
-            if (!this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                // symlinks only on Linux
-                return;
-            }
-            if (this is Plugin)
-            {
-                // plugins don't have symlinks
-                return;
-            }
-            var fullSONamePath = this.Macros["fullSONamePath"];
-            var soName = new Mono.Unix.UnixSymbolicLinkInfo(fullSONamePath.ToString());
-            if (!soName.Exists)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(fullSONamePath);
-                return;
-            }
-            var fullLinkerNamePath = this.Macros["fullLinkerNamePath"];
-            var linkerName = new Mono.Unix.UnixSymbolicLinkInfo(fullLinkerNamePath.ToString());
-            if (!linkerName.Exists)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(fullLinkerNamePath);
-                return;
-            }
-        }
-#endif
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {
@@ -317,6 +272,36 @@ namespace C
             set
             {
                 throw new System.NotSupportedException("Cannot set a working directory on a DLL");
+            }
+        }
+
+        SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink
+        {
+            get
+            {
+                return this.linkerNameSymLink;
+            }
+        }
+        protected SharedObjectSymbolicLink LinkerNameSymbolicLink
+        {
+            set
+            {
+                this.linkerNameSymLink = value;
+            }
+        }
+
+        SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink
+        {
+            get
+            {
+                return this.soNameSymLink;
+            }
+        }
+        protected SharedObjectSymbolicLink SONameSymbolicLink
+        {
+            set
+            {
+                this.soNameSymLink = value;
             }
         }
     }

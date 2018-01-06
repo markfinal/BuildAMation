@@ -106,7 +106,7 @@ namespace ClangCommon
             C.ICommonLinkerSettings settings,
             string libname)
         {
-            foreach (var searchPath in settings.LibraryPaths)
+            foreach (var searchPath in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
             {
                 var realSearchpath = searchPath.ToString();
                 // some lib paths might not exist yet
@@ -241,7 +241,7 @@ namespace ClangCommon
             if (settings.LibraryPaths.Count > 0)
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in settings.LibraryPaths)
+                foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
                 {
                     var fullPath = path.ToString();
                     var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);

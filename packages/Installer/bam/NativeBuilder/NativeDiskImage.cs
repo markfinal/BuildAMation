@@ -41,9 +41,12 @@ namespace Installer
             Bam.Core.TokenizedString outputPath)
         {
             var volumeNameTS = sender.CreateTokenizedString("$(OutputName)");
-            if (!volumeNameTS.IsParsed)
+            lock (volumeNameTS)
             {
-                volumeNameTS.Parse();
+                if (!volumeNameTS.IsParsed)
+                {
+                    volumeNameTS.Parse();
+                }
             }
             var volumeName = volumeNameTS.ToString();
             var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension

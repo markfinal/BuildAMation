@@ -73,9 +73,12 @@ namespace VSSolutionBuilder
             var filter = this.Filters[path];
             if (filter.Any(item =>
                 {
-                    if (!item.Include.IsParsed)
+                    lock (item.Include)
                     {
-                        item.Include.Parse();
+                        if (!item.Include.IsParsed)
+                        {
+                            item.Include.Parse();
+                        }
                     }
                     return item.Include.ToString() == sourceGroup.Include.ToString();
                 }))

@@ -294,9 +294,12 @@ namespace XcodeBuilder
                     return existingGroup;
                 }
                 var basenameTS = this.Module.CreateTokenizedString("@basename($(0))", path);
-                if (!basenameTS.IsParsed)
+                lock (basenameTS)
                 {
-                    basenameTS.Parse();
+                    if (!basenameTS.IsParsed)
+                    {
+                        basenameTS.Parse();
+                    }
                 }
                 var basename = basenameTS.ToString();
                 var group = new Group(this, basename, path);
@@ -305,9 +308,12 @@ namespace XcodeBuilder
                 if (path.ToString().Contains(System.IO.Path.DirectorySeparatorChar))
                 {
                     var parent = this.Module.CreateTokenizedString("@dir($(0))", path);
-                    if (!parent.IsParsed)
+                    lock (parent)
                     {
-                        parent.Parse();
+                        if (!parent.IsParsed)
+                        {
+                            parent.Parse();
+                        }
                     }
                     var parentGroup = this.CreateGroupHierarchy(parent);
                     parentGroup.AddChild(group);
@@ -321,9 +327,12 @@ namespace XcodeBuilder
             FileReference fileRef)
         {
             var relDir = this.Module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", fileRef.Path);
-            if (!relDir.IsParsed)
+            lock (relDir)
             {
-                relDir.Parse();
+                if (!relDir.IsParsed)
+                {
+                    relDir.Parse();
+                }
             }
             var newGroup = this.CreateGroupHierarchy(relDir);
             var parentGroup = newGroup;

@@ -45,8 +45,12 @@ namespace GccCommon
             // TODO: should be able to build these up cumulatively, but the deferred expansion only
             // works for a single depth (up to the Module using this Tool) so this needs looking into
             this.Macros.AddVerbatim("linkernameext", ".so");
-            this.Macros.Add("sonameext", Bam.Core.TokenizedString.CreateInline(".so.$(MajorVersion)"));
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateInline(".so.$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))"));
+            this.Macros.Add("sonameext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null));
+
+            // dynamicext MUST be forced inline, in order for the pre-function #valid
+            // to evaluate in the correct context, i.e. this string can never be parsed out of context
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateForcedInline(".so.$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))"));
+
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".so");
         }
@@ -78,11 +82,16 @@ namespace GccCommon
 
             foreach (var dep in (dynamicModule as C.CModule).Dependents)
             {
-                if (!(dep is C.IDynamicLibrary))
+                var dependent = dep;
+                if (dependent is C.SharedObjectSymbolicLink)
+                {
+                    dependent = (dependent as C.SharedObjectSymbolicLink).SharedObject;
+                }
+                if (!(dependent is C.IDynamicLibrary))
                 {
                     continue;
                 }
-                var dynDep = dep as C.CModule;
+                var dynDep = dependent as C.CModule;
                 dynamicDeps.AddUnique(dynDep);
                 dynamicDeps.AddRangeUnique(FindAllDynamicDependents(dynDep as C.IDynamicLibrary));
             }
@@ -129,9 +138,12 @@ namespace GccCommon
                 linker.Libraries.Add(libraryName);
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
                 linker.LibraryPaths.AddUnique(libDir);
             }
@@ -139,8 +151,10 @@ namespace GccCommon
             {
                 // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
-                var libraryName = library.Macros.Contains("LinkerName") ?
-                    GetLPrefixLibraryName(library.Macros["LinkerName"].ToString()) :
+                var linkerNameSymLink = (library as C.IDynamicLibrary).LinkerNameSymbolicLink;
+                // TODO: I think there's a problem when there's no linkerName symlink - i.e. taking the full shared object path
+                var libraryName = (linkerNameSymLink != null) ?
+                    GetLPrefixLibraryName(linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.Key].ToString()) :
                     GetLPrefixLibraryName(libraryPath);
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 if (linker.Libraries.Contains(libraryName))
@@ -150,22 +164,39 @@ namespace GccCommon
                 linker.Libraries.Add(libraryName);
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
                 linker.LibraryPaths.AddUnique(libDir);
-
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
+
+                // if an explicit link occurs in this executable/shared object, the library path
+                // does not need to be on the rpath-link
+                if (gccLinker.RPathLink.Contains(libDir))
+                {
+                    gccLinker.RPathLink.Remove(libDir);
+                }
+
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
                     var rpathLinkDir = dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]);
-                    if (!rpathLinkDir.IsParsed)
+                    // only need to add to rpath-link, if there's been no explicit link to the library already
+                    if (!linker.LibraryPaths.Contains(rpathLinkDir))
                     {
-                        rpathLinkDir.Parse();
+                        lock (rpathLinkDir)
+                        {
+                            if (!rpathLinkDir.IsParsed)
+                            {
+                                rpathLinkDir.Parse();
+                            }
+                        }
+                        gccLinker.RPathLink.AddUnique(rpathLinkDir);
                     }
-                    gccLinker.RPathLink.AddUnique(rpathLinkDir);
                 }
             }
         }

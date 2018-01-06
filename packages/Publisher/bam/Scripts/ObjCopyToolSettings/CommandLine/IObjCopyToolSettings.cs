@@ -37,19 +37,20 @@ namespace Publisher
             this IObjCopyToolSettings settings,
             Bam.Core.StringArray commandLine)
         {
-            var objCopy = (settings as Bam.Core.Settings).Module as ObjCopyModule;
+            var collatedObjectInterface = (settings as Bam.Core.Settings).Module as ICollatedObject;
+            var objCopy = collatedObjectInterface as ObjCopyModule;
             switch (settings.Mode)
             {
             case EObjCopyToolMode.OnlyKeepDebug:
                 commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].ToString(),
+                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToString(),
                     objCopy.GeneratedPaths[ObjCopyModule.Key].ToString()));
                 break;
 
             case EObjCopyToolMode.AddGNUDebugLink:
                 commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
                     objCopy.GeneratedPaths[ObjCopyModule.Key].ToString(),
-                    objCopy.SourceModule.GeneratedPaths[objCopy.SourceKey].ToString()));
+                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToString()));
                 break;
 
             default:

@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test16
 {
-    public sealed class StaticApplication :
+    class StaticApplication :
         C.ConsoleApplication
     {
         protected override void
@@ -50,7 +50,7 @@ namespace Test16
         }
     }
 
-    sealed class DynamicApplication :
+    class DynamicApplication :
         C.ConsoleApplication
     {
         protected override void
@@ -79,6 +79,49 @@ namespace Test16
         }
     }
 
+    class DynamicApplicationNonPublicForwarder :
+        C.ConsoleApplication
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamic_main.c");
+
+            this.CompileAndLinkAgainst<Test15.DynamicLibrary2NonPublicForwarder>(source);
+
+            if (this.Linker is VisualCCommon.LinkerBase)
+            {
+                this.LinkAgainst<WindowsSDK.WindowsSDK>();
+            }
+            else if (this.Linker is GccCommon.LinkerBase)
+            {
+                this.PrivatePatch(settings =>
+                    {
+                        var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN");
+                    });
+            }
+        }
+    }
+
+    sealed class StaticApplicationRuntime :
+        Publisher.Collation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<StaticApplication>(C.ConsoleApplication.Key);
+        }
+    }
+
     sealed class DynamicApplicationRuntime :
         Publisher.Collation
     {
@@ -88,9 +131,22 @@ namespace Test16
         {
             base.Init(parent);
 
-            var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test14.DynamicLibrary1>(C.DynamicLibrary.Key, ".", app);
-            this.Include<Test15.DynamicLibrary2>(C.DynamicLibrary.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<DynamicApplication>(C.ConsoleApplication.Key);
+        }
+    }
+
+    sealed class DynamicApplicationNonPublicForwarderRuntime :
+        Publisher.Collation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<DynamicApplicationNonPublicForwarder>(C.ConsoleApplication.Key);
         }
     }
 }

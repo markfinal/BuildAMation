@@ -37,46 +37,41 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
-            if (sender is CollatedFile)
+            if (sender.Ignore)
             {
-                if (!(sender as CollatedFile).FailWhenSourceDoesNotExist)
-                {
-                    var source = sender.SourcePath.ToString();
-                    if (!System.IO.File.Exists(source))
-                    {
-                        Bam.Core.Log.Detail("File {0} cannot be copied as it does not exist. Ignoring.", source);
-                        return;
-                    }
-                }
+                return;
+            }
+            var collatedInterface = sender as ICollatedObject;
+            var copySourcePath = sender.SourcePath;
+
+            // post-fix with a directory separator to enforce that this is a directory destination
+            var destinationDir = System.String.Format("{0}{1}",
+                collatedInterface.PublishingDirectory.ToString(),
+                System.IO.Path.DirectorySeparatorChar);
+
+            if (null == sender.PreExistingSourcePath)
+            {
+                Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
+                    collatedInterface.SourceModule.ToString(),
+                    collatedInterface.SourcePathKey.ToString(),
+                    copySourcePath.ToString(),
+                    destinationDir);
+            }
+            else
+            {
+                Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
+                    sender,
+                    copySourcePath.ToString(),
+                    destinationDir);
             }
 
-            var isSymLink = (sender is CollatedSymbolicLink);
-            var sourcePath = isSymLink ? sender.Macros["LinkTarget"] : sender.SourcePath;
-
-            var destinationPath = isSymLink ? sender.GeneratedPaths[CollatedObject.Key].ToString() : sender.Macros["CopyDir"].ToString();
-
-            if (!isSymLink)
-            {
-                // synchronize, so that multiple modules don't try to create the same directories simultaneously
-                lock ((sender.Reference != null) ? sender.Reference : sender)
-                {
-                    Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destinationPath);
-                }
-            }
-
-            var copySource = sourcePath.ToStringQuoteIfNecessary();
-            if (sender is CollatedDirectory && sender.Tool is CopyFilePosix && sender.Macros["CopiedFilename"].IsAliased)
-            {
-                // TODO: document this
-                // it has something to do with renaming a directory during a collation copy
-                copySource = System.String.Format("{0}/*", copySource);
-            }
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destinationDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            commandLine.Add(copySource);
-            commandLine.Add(destinationPath);
+            commandLine.Add(copySourcePath.ToStringQuoteIfNecessary());
+            commandLine.Add(destinationDir);
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

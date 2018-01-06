@@ -36,7 +36,7 @@ namespace ClangCommon
             this C.ICommonCompilerSettingsOSX settings,
             Bam.Core.StringArray commandLine)
         {
-            foreach (var path in settings.FrameworkSearchPaths)
+            foreach (var path in settings.FrameworkSearchPaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-F{0}", path.ToStringQuoteIfNecessary()));
             }

@@ -31,11 +31,15 @@ using Bam.Core;
 namespace Publisher
 {
     public class ObjCopyModule :
-        Bam.Core.Module
+        Bam.Core.Module,
+        ICollatedObject
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ObjCopy Destination");
 
-        private Bam.Core.Module TheSourceModule;
+        private Bam.Core.Module sourceModule;
+        private Bam.Core.PathKey sourcePathKey;
+        private ICollatedObject anchor = null;
+
         private IObjCopyToolPolicy Policy;
 
         protected override void
@@ -45,12 +49,36 @@ namespace Publisher
             base.Init(parent);
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ObjCopyTool>();
+
+            var trueSourceModule = this.sourceModule;
+            if (trueSourceModule is StripModule)
+            {
+                // necessary on Linux, as the real source module needs checking against
+                // C.IDynamicLibrary to identify paths as lib<name>.so.X.Y
+                trueSourceModule = (trueSourceModule as ICollatedObject).SourceModule;
+            }
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) &&
+                trueSourceModule is C.IDynamicLibrary)
+            {
+                this.RegisterGeneratedFile(Key,
+                    this.CreateTokenizedString("$(0)/@filename($(1)).debug",
+                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+            }
+            else
+            {
+                this.RegisterGeneratedFile(Key,
+                    this.CreateTokenizedString("$(0)/@basename($(1)).debug",
+                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+            }
+
+            this.Requires(this.sourceModule);
         }
 
         public override void
         Evaluate()
         {
             // TODO
+            // always generate currently
         }
 
         protected override void
@@ -61,7 +89,7 @@ namespace Publisher
             {
                 return;
             }
-            this.Policy.ObjCopy(this, context, this.TheSourceModule.GeneratedPaths[this.SourceKey], this.GeneratedPaths[Key]);
+            this.Policy.ObjCopy(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
         }
 
         protected override void
@@ -72,77 +100,88 @@ namespace Publisher
             {
                 case "Native":
                 case "MakeFile":
-                {
-                    var className = "Publisher." + mode + "ObjCopy";
-                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IObjCopyToolPolicy>.Create(className);
-                }
-                break;
+                    {
+                        var className = "Publisher." + mode + "ObjCopy";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IObjCopyToolPolicy>.Create(className);
+                    }
+                    break;
             }
         }
 
-        public Bam.Core.PathKey SourceKey
-        {
-            get;
-            private set;
-        }
-
-        public System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> ReferenceMap
-        {
-            get;
-            set;
-        }
-
-        public Bam.Core.Module SourceModule
+        Bam.Core.Module ICollatedObject.SourceModule
         {
             get
             {
-                return this.TheSourceModule;
+                return this.sourceModule;
             }
-
+        }
+        public Bam.Core.Module SourceModule
+        {
             set
             {
-                this.TheSourceModule = value;
-                this.DependsOn(value);
-
-                if (value is CollatedFile)
-                {
-                    var collatedFile = value as CollatedFile;
-                    Bam.Core.TokenizedString referenceFilePath = null;
-                    if (collatedFile.Reference != null)
-                    {
-                        if (null == this.ReferenceMap)
-                        {
-                            throw new Bam.Core.Exception("Missing mapping of CollatedFiles to ObjCopyModule");
-                        }
-                        if (!this.ReferenceMap.ContainsKey(collatedFile.Reference))
-                        {
-                            throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", collatedFile.Reference.SourceModule.ToString());
-                        }
-
-                        var newRef = this.ReferenceMap[collatedFile.Reference];
-                        referenceFilePath = newRef.GeneratedPaths[Key];
-                    }
-                    var destinationDirectory = Collation.GenerateFileCopyDestination(
-                        this,
-                        referenceFilePath,
-                        collatedFile.SubDirectory,
-                        this.Dependees[0].GeneratedPaths[DebugSymbolCollation.Key]); // path of the debug symbol collation root
-                    this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).debug",
-                        destinationDirectory,
-                        value.GeneratedPaths[CollatedObject.Key]));
-                    this.SourceKey = CollatedObject.Key;
-                }
-                else if (value is StripModule)
-                {
-                    var strippedFile = value as StripModule;
-                    this.RegisterGeneratedFile(Key, strippedFile.DebugSymbolsModule.GeneratedPaths[Key]);
-                    this.SourceKey = StripModule.Key;
-                }
-                else
-                {
-                    throw new Bam.Core.Exception("Module {0} is of an unsupported type {1}", value.ToString(), value.GetType().ToString());
-                }
+                this.sourceModule = value;
             }
+        }
+
+        Bam.Core.PathKey ICollatedObject.SourcePathKey
+        {
+            get
+            {
+                return this.sourcePathKey;
+            }
+        }
+        public Bam.Core.PathKey SourcePathKey
+        {
+            set
+            {
+                this.sourcePathKey = value;
+            }
+        }
+
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
+        {
+            get
+            {
+                return this.Macros["publishingdir"];
+            }
+        }
+
+        ICollatedObject ICollatedObject.Anchor
+        {
+            get
+            {
+                return this.anchor;
+            }
+        }
+        public ICollatedObject Anchor
+        {
+            set
+            {
+                this.anchor = value;
+            }
+        }
+
+        public ObjCopyModule
+        LinkBackToDebugSymbols(
+            StripModule strippedCollatedObject)
+        {
+            var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
+                {
+                    module.SourceModule = strippedCollatedObject;
+                    module.SourcePathKey = StripModule.Key;
+                    module.Macros.Add("publishingdir", strippedCollatedObject.Macros["publishingdir"].Clone(module));
+                });
+            linkDebugSymbols.DependsOn(strippedCollatedObject);
+
+            linkDebugSymbols.Macros.Add("publishdir", this.Macros["publishdir"]);
+
+            linkDebugSymbols.PrivatePatch(settings =>
+                {
+                    var objCopySettings = settings as IObjCopyToolSettings;
+                    objCopySettings.Mode = EObjCopyToolMode.AddGNUDebugLink;
+                });
+
+            return linkDebugSymbols;
         }
     }
 }

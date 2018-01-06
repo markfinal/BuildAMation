@@ -28,23 +28,31 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace Publisher
 {
     /// <summary>
     /// Derive from this module to collate files and directories into a runnable distribution.
     /// Collation occurs within a folder in the build root called the 'publishing root'.
-    /// An initial file is collated into the publishing root, and this file determines the structure of the
-    /// subsequent files and folders, and the application type. This is the reference file.
-    /// Add subsequent files and folders, specifying paths relative to the reference file. For example, to
-    /// place a dynamic library in a plugins subfolder next to the main executable, specify a subdirectory of
-    /// 'plugins'. To place a framework in the Contents/Frameworks sub-folder of an application bundle, specify
-    /// a subdirectory of '../Frameworks', as the executable is in Contents/MacOS.
+    /// There are default distribution layouts and mapping of module output files to subdirectories of
+    /// the layouts. These can be set by calling SetDefaultMacrosAndMappings(). Otherwise, the user is
+    /// free to define their own layouts.
+    /// Collating an executable, using the Include() function call, will walk it's dependency hierarchy
+    /// and include any runtime dependents. The collation of the executable is called the anchor, and its
+    /// dependents are relative to that anchor.
+    /// You can collate more than one anchor. Shared dependent runtime files may be either copied once,
+    /// or duplicated per anchor, depending on the build mode, in order to create runnable executables.
+    /// Any preexisting files and directories can also be attached to an anchor using the IncludeFiles()
+    /// and IncludeDirectories() functions.
+    /// All collated paths are specified as absolute next to the publishing root using TokenizedStrings.
+    /// This class has properties that expose standad locations, e.g. ExecutableDir, PluginDir.
     /// </summary>
     public abstract class Collation :
         Bam.Core.Module
     {
         static Collation()
         {
+            // TODO: is this needed?
             Bam.Core.TokenizedString.registerPostUnaryFunction("readlink", argument =>
                 {
 #if __MonoCS__
@@ -56,28 +64,7 @@ namespace Publisher
                 });
         }
 
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Publishing Root");
-        private Bam.Core.Array<CollatedFile> CopiedFrameworks = new Bam.Core.Array<CollatedFile>();
-        private Bam.Core.Array<ChangeNameOSX> ChangedNamedBinaries = new Bam.Core.Array<ChangeNameOSX>();
         private ICollationPolicy Policy = null;
-
-        /// <summary>
-        /// The type of application being published.
-        /// </summary>
-        public enum EPublishingType
-        {
-            /// <summary>
-            /// Application in a console application.
-            /// </summary>
-            ConsoleApplication,
-
-            /// <summary>
-            /// Application is a GUI application.
-            /// On OSX, this is an application bundle, and will automatically appear in a <name>.app/Contents/MacOS folder
-            /// under the publishing root.
-            /// </summary>
-            WindowedApplication
-        }
 
         protected override void
         Init(
@@ -85,670 +72,10 @@ namespace Publisher
         {
             base.Init(parent);
 
-            if (!Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
-            {
-                this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-            }
-        }
+            this.Mapping = new ModuleOutputDefaultPublishingPathMapping();
 
-        private string
-        PublishingPath(
-            Bam.Core.Module module,
-            EPublishingType type)
-        {
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX) &&
-                (EPublishingType.WindowedApplication == type))
-            {
-                var bundlePath = module.CreateTokenizedString("$(OutputName).app/Contents/MacOS");
-                bundlePath.Parse();
-                return bundlePath.ToString();
-            }
-            return null;
-        }
-
-        public static Bam.Core.TokenizedString
-        GenerateFileCopyDestination(
-            Bam.Core.Module module,
-            Bam.Core.TokenizedString referenceFilePath,
-            Bam.Core.TokenizedString subDirectory,
-            Bam.Core.TokenizedString unReferencedRoot)
-        {
-            if (referenceFilePath != null)
-            {
-                if (null != subDirectory)
-                {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
-                        referenceFilePath,
-                        subDirectory);
-                }
-                else
-                {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/)",
-                        referenceFilePath);
-                }
-            }
-            else
-            {
-                if (null != subDirectory)
-                {
-                    return module.CreateTokenizedString("@normalize($(0)/$(1)/)",
-                        unReferencedRoot,
-                        subDirectory);
-                }
-                else
-                {
-                    return module.CreateTokenizedString("@normalize($(0)/)",
-                        unReferencedRoot);
-                }
-            }
-        }
-
-        public static Bam.Core.TokenizedString
-        GenerateDirectoryCopyDestination(
-            Bam.Core.Module module,
-            Bam.Core.TokenizedString referenceFilePath,
-            Bam.Core.TokenizedString subDirectory,
-            Bam.Core.TokenizedString sourcePath)
-        {
-            // Windows XCOPY requires the directory name to be added to the destination, while Posix cp does not
-            if (null != subDirectory)
-            {
-                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@ifnotempty($(CopiedFilename),$(CopiedFilename),@filename($(2)))/)",
-                        referenceFilePath,
-                        subDirectory,
-                        sourcePath);
-                }
-                else
-                {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/@ifnotempty($(CopiedFilename),$(CopiedFilename),))",
-                        referenceFilePath,
-                        subDirectory);
-                }
-            }
-            else
-            {
-                if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/@ifnotempty($(CopiedFilename),$(CopiedFilename),@filename($(1)))/)",
-                        referenceFilePath,
-                        sourcePath);
-                }
-                else
-                {
-                    return module.CreateTokenizedString("@normalize(@dir($(0))/@ifnotempty($(CopiedFilename),$(CopiedFilename),))",
-                        referenceFilePath);
-                }
-            }
-        }
-
-        public static Bam.Core.TokenizedString
-        GenerateSymbolicLinkCopyDestination(
-            Bam.Core.Module module,
-            Bam.Core.TokenizedString referenceFilePath,
-            Bam.Core.TokenizedString subDirectory)
-        {
-            if (null != subDirectory)
-            {
-                return module.CreateTokenizedString("@normalize(@dir($(0))/$(1)/)",
-                    referenceFilePath,
-                    subDirectory);
-            }
-            else
-            {
-                return module.CreateTokenizedString("@normalize(@dir($(0))/)",
-                    referenceFilePath);
-            }
-        }
-
-        private CollatedFile
-        CreateCollatedFile(
-            Bam.Core.Module sourceModule,
-            Bam.Core.TokenizedString sourcePath,
-            CollatedFile reference,
-            Bam.Core.TokenizedString subDirectory)
-        {
-            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
-                {
-                    Bam.Core.TokenizedString referenceFilePath = null;
-                    if (null != reference)
-                    {
-                        referenceFilePath = reference.GeneratedPaths[CollatedObject.Key];
-                    }
-                    else
-                    {
-                        if (!this.GeneratedPaths.ContainsKey(Key))
-                        {
-                            this.RegisterGeneratedFile(Key, module.CreateTokenizedString("@dir($(0))", sourcePath));
-                        }
-                    }
-                    module.Macros["CopyDir"] = GenerateFileCopyDestination(
-                        module,
-                        referenceFilePath,
-                        subDirectory,
-                        this.GeneratedPaths[Key]);
-                });
-            this.Requires(copyFileModule);
-            if (null != reference &&
-                null != reference.SourceModule &&
-                null != sourceModule &&
-                reference.SourceModule != sourceModule) // in case a different key (e.g. import library) is published from the same module
-            {
-                // ensuring that non-Native builders set up order-only dependencies for additional published only modules
-                reference.SourceModule.Requires(sourceModule);
-            }
-
-            copyFileModule.SourceModule = sourceModule;
-            copyFileModule.SourcePath = sourcePath;
-            copyFileModule.Reference = reference;
-            copyFileModule.SubDirectory = subDirectory;
-            return copyFileModule;
-        }
-
-        private CollatedDirectory
-        CreateCollatedDirectory(
-            Bam.Core.Module sourceModule,
-            Bam.Core.TokenizedString sourcePath,
-            CollatedFile reference,
-            Bam.Core.TokenizedString subDirectory)
-        {
-            if (null == reference)
-            {
-                throw new Bam.Core.Exception("Collating a directory requires a collated file as reference");
-            }
-
-            // copying a directory must not have a trailing slash on the source directory path
-            // otherwise the leafname ends up being duplicated
-            var fixedSourcePath = this.CreateTokenizedString("@removetrailingseparator($(0))", sourcePath);
-            var copyDirectoryModule = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
-                {
-                    module.Macros["CopyDir"] = GenerateDirectoryCopyDestination(
-                        module,
-                        reference.GeneratedPaths[CollatedObject.Key],
-                        subDirectory,
-                        fixedSourcePath);
-                });
-            this.Requires(copyDirectoryModule);
-            if (null != reference.SourceModule &&
-                null != sourceModule &&
-                reference.SourceModule != sourceModule) // in case a different key from the same module is published
-            {
-                // ensuring that non-Native builders set up order-only dependencies for additional published only modules
-                reference.SourceModule.Requires(sourceModule);
-            }
-
-            copyDirectoryModule.SourceModule = sourceModule;
-            copyDirectoryModule.SourcePath = fixedSourcePath;
-            copyDirectoryModule.Reference = reference;
-            copyDirectoryModule.SubDirectory = subDirectory;
-            return copyDirectoryModule;
-        }
-
-        private CollatedSymbolicLink
-        CreateCollatedSymbolicLink(
-            Bam.Core.Module sourceModule,
-            Bam.Core.TokenizedString sourcePath,
-            CollatedFile reference,
-            Bam.Core.TokenizedString subDirectory)
-        {
-            if (null == reference)
-            {
-                throw new Bam.Core.Exception("Collating a symbolic link requires a collated file as reference");
-            }
-
-            var copySymlinkModule = Bam.Core.Module.Create<CollatedSymbolicLink>(preInitCallback: module =>
-                {
-                    module.Macros["CopyDir"] = GenerateSymbolicLinkCopyDestination(
-                        module,
-                        reference.GeneratedPaths[CollatedObject.Key],
-                        subDirectory);
-                });
-            this.Requires(copySymlinkModule);
-            if (null != reference.SourceModule &&
-                null != sourceModule &&
-                reference.SourceModule != sourceModule) // in case a different key from the same module is published
-            {
-                // ensuring that non-Native builders set up order-only dependencies for additional published only modules
-                reference.SourceModule.Requires(sourceModule);
-            }
-
-            copySymlinkModule.SourceModule = sourceModule;
-            copySymlinkModule.SourcePath = sourcePath;
-            copySymlinkModule.Reference = reference;
-            copySymlinkModule.SubDirectory = subDirectory;
-            return copySymlinkModule;
-        }
-
-        private void
-        AddOSXChangeIDNameForBinary(
-            CollatedFile copyFileModule)
-        {
-            if (!this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
-            {
-                return;
-            }
-            var changeIDName = Bam.Core.Module.Create<ChangeNameOSX>();
-            changeIDName.Source = copyFileModule;
-            changeIDName.Frameworks = this.CopiedFrameworks;
-            this.ChangedNamedBinaries.Add(changeIDName);
-            this.Requires(changeIDName);
-
-            foreach (var framework in this.CopiedFrameworks)
-            {
-                changeIDName.Requires(framework);
-            }
-        }
-
-        private void
-        CopySONameSymlink(
-            CollatedFile copyFileModule)
-        {
-            if (!this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                return;
-            }
-            var copySymlink = this.CreateCollatedSymbolicLink(
-                copyFileModule.SourceModule,
-                copyFileModule.SourceModule.Macros["SOName"],
-                copyFileModule.Reference,
-                copyFileModule.SubDirectory);
-            copySymlink.AssignLinkTarget(copySymlink.CreateTokenizedString("@filename($(0))", copyFileModule.SourcePath));
-        }
-
-        private bool
-        IsReferenceAWindowedApp(
-            CollatedFile reference)
-        {
-            if (null == reference.SubDirectory)
-            {
-                return false;
-            }
-            return reference.SubDirectory.ToString().Contains(".app");
-        }
-
-        public CollatedObject InitialReference
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Collate the main application file in the publishing root. Use the publishing type to determine
-        /// what kind of application this will be.
-        /// </summary>
-        /// <param name="key">Key.</param>
-        /// <param name="type">Type.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public CollatedFile
-        Include<DependentModule>(
-            Bam.Core.PathKey key,
-            EPublishingType type,
-            string subdir = null) where DependentModule : Bam.Core.Module, new()
-        {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
-            {
-                return null;
-            }
-
-            var path = this.PublishingPath(dependent, type);
-            string destSubDir;
-            if (null == path)
-            {
-                destSubDir = subdir;
-            }
-            else
-            {
-                if (null != subdir)
-                {
-                    destSubDir = System.IO.Path.Combine(path, subdir);
-                }
-                else
-                {
-                    destSubDir = path;
-                }
-            }
-
-            var copyFileModule = this.CreateCollatedFile(
-                dependent,
-                dependent.GeneratedPaths[key],
-                null,
-                Bam.Core.TokenizedString.CreateVerbatim(destSubDir));
-
-            if (EPublishingType.WindowedApplication == type)
-            {
-                if (C.ConsoleApplication.Key == key)
-                {
-                    this.AddOSXChangeIDNameForBinary(copyFileModule);
-                }
-            }
-
-            this.InitialReference = copyFileModule;
-
-            return copyFileModule;
-        }
-
-        /// <summary>
-        /// Include a file built by Bam in a location relative to the reference file.
-        /// </summary>
-        /// <param name="key">Key.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public CollatedFile
-        Include<DependentModule>(
-            Bam.Core.PathKey key,
-            string subdir,
-            CollatedFile reference) where DependentModule : Bam.Core.Module, new()
-        {
-            try
-            {
-                var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-                if (null == dependent)
-                {
-                    return null;
-                }
-
-                var copyFileModule = this.CreateCollatedFile(
-                    dependent,
-                    dependent.GeneratedPaths[key],
-                    reference,
-                    Bam.Core.TokenizedString.CreateVerbatim(subdir));
-
-                if (this.IsReferenceAWindowedApp(reference))
-                {
-                    if (C.ConsoleApplication.Key == key)
-                    {
-                        this.AddOSXChangeIDNameForBinary(copyFileModule);
-                    }
-                }
-                else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-                {
-                    if ((dependent is C.IDynamicLibrary) && dependent.Macros.Contains("SOName"))
-                    {
-                        this.CopySONameSymlink(copyFileModule);
-                    }
-                }
-
-                return copyFileModule;
-            }
-            catch (Bam.Core.UnableToBuildModuleException exception)
-            {
-                Bam.Core.Log.Info("Not publishing {0} requested by {1} because {2}, but publishing will continue",
-                    typeof(DependentModule).ToString(),
-                    this.GetType().ToString(),
-                    exception.Message);
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Include a number of files relative to the reference file, from the DependentModule.
-        /// </summary>
-        /// <param name="parameterizedFilePath">Parameterized file path.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public CollatedFile
-        IncludeFiles<DependentModule>(
-            string parameterizedFilePath,
-            string subdir,
-            CollatedFile reference,
-            bool isExecutable = false) where DependentModule : Bam.Core.Module, new()
-        {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
-            {
-                return null;
-            }
-
-            var copyFileModule = this.CreateCollatedFile(
-                dependent,
-                dependent.CreateTokenizedString(parameterizedFilePath),
-                reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
-
-            if (isExecutable)
-            {
-                if (this.IsReferenceAWindowedApp(reference))
-                {
-                    this.AddOSXChangeIDNameForBinary(copyFileModule);
-                }
-            }
-
-            return copyFileModule;
-        }
-
-        /// <summary>
-        /// Include a file relative to the reference file, from an arbitrary location.
-        /// </summary>
-        /// <param name="parameterizedFilePath">Parameterized file path.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
-        public CollatedFile
-        IncludeFile(
-            string parameterizedFilePath,
-            string subdir,
-            CollatedFile reference,
-            bool isExecutable = false)
-        {
-            var tokenString = this.CreateTokenizedString(parameterizedFilePath);
-            return this.IncludeFile(tokenString, subdir, reference, isExecutable);
-        }
-
-        /// <summary>
-        /// Include a file relative to the reference file, from an arbitrary location.
-        /// </summary>
-        /// <param name="parameterizedFilePath">Parameterized file path.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        /// <param name="isExecutable">If set to <c>true</c> is executable.</param>
-        public CollatedFile
-        IncludeFile(
-            Bam.Core.TokenizedString parameterizedFilePath,
-            string subdir,
-            CollatedFile reference,
-            bool isExecutable = false)
-        {
-            var copyFileModule = this.CreateCollatedFile(
-                null,
-                parameterizedFilePath,
-                reference,
-                Bam.Core.TokenizedString.CreateVerbatim(subdir));
-
-            if (isExecutable)
-            {
-                if (this.IsReferenceAWindowedApp(reference))
-                {
-                    this.AddOSXChangeIDNameForBinary(copyFileModule);
-                }
-            }
-
-            return copyFileModule;
-        }
-
-        /// <summary>
-        /// Include a file which can act as a reference file, from an arbitrary location.
-        /// </summary>
-        /// <param name="parameterizedFilePath">Parameterized file path.</param>
-        /// <param name="subdir">Subdir.</param>
-        public CollatedFile
-        IncludeFile(
-            Bam.Core.TokenizedString parameterizedFilePath,
-            string subdir)
-        {
-            var copyFileModule = this.CreateCollatedFile(
-                this,
-                parameterizedFilePath,
-                null,
-                Bam.Core.TokenizedString.CreateVerbatim(subdir));
-            this.InitialReference = copyFileModule;
-            return copyFileModule;
-        }
-
-        /// <summary>
-        /// Include a directory relative to the reference file, from an arbitrary location.
-        /// </summary>
-        /// <param name="parameterizedPath">Parameterized path.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        public CollatedDirectory
-        IncludeDirectory(
-            Bam.Core.TokenizedString parameterizedPath,
-            string subdir,
-            CollatedFile reference)
-        {
-            return this.CreateCollatedDirectory(null, parameterizedPath, reference, Bam.Core.TokenizedString.CreateVerbatim(subdir));
-        }
-
-        /// <summary>
-        /// Include a symlink relative to the reference file.
-        /// </summary>
-        /// <param name="parameterizedPath">Parameterized path.</param>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        public CollatedSymbolicLink
-        IncludeSymlink(
-            Bam.Core.TokenizedString parameterizedPath,
-            string subdir,
-            CollatedFile reference)
-        {
-            return this.CreateCollatedSymbolicLink(
-                null,
-                parameterizedPath,
-                reference,
-                Bam.Core.TokenizedString.CreateVerbatim(subdir));
-        }
-
-        /// <summary>
-        /// Include an OSX framework relative to the reference file, from DependentModule, and optionally
-        /// update its install name to function in its new location.
-        /// </summary>
-        /// <param name="subdir">Subdir.</param>
-        /// <param name="reference">Reference.</param>
-        /// <param name="updateInstallName">If set to <c>true</c> update install name.</param>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public Bam.Core.Array<CollatedObject>
-        IncludeFramework<DependentModule>(
-            string subdir,
-            CollatedFile reference,
-            bool updateInstallName = false) where DependentModule : C.OSXFramework, new()
-        {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
-            {
-                return null;
-            }
-
-            // TODO: confirm that reference was created in WindowedApplication mode
-
-            var subdirTS = Bam.Core.TokenizedString.CreateVerbatim(subdir);
-
-            var framework = dependent as C.OSXFramework;
-            var frameworkPath = framework.FrameworkPath;
-
-            var dirPublishedModules = new Bam.Core.Array<CollatedDirectory>();
-            if (null != framework.DirectoriesToPublish)
-            {
-                foreach (var dirData in framework.DirectoriesToPublish)
-                {
-                    var dir = dirData.SourcePath;
-                    // copying a directory must not have a trailing slash on the source directory path
-                    // otherwise the leafname ends up being duplicated
-                    var copyDir = this.CreateCollatedDirectory(
-                        dependent,
-                        this.CreateTokenizedString("$(0)/@removetrailingseparator($(1))", frameworkPath, dir),
-                        reference,
-                        this.CreateTokenizedString("$(0)/@dir(@removetrailingseparator($(1)))", subdirTS, dirData.DestinationPath != null ? dirData.DestinationPath : dir));
-                    dirPublishedModules.AddUnique(copyDir);
-                }
-            }
-            var filePublishedModules = new Bam.Core.Array<CollatedFile>();
-            if (null != framework.FilesToPublish)
-            {
-                foreach (var fileData in framework.FilesToPublish)
-                {
-                    var file = fileData.SourcePath;
-                    var copyFile = this.CreateCollatedFile(
-                        dependent,
-                        this.CreateTokenizedString("$(0)/$(1)", frameworkPath, file),
-                        reference,
-                        this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, fileData.DestinationPath != null ? fileData.DestinationPath : file));
-                    foreach (var publishedDir in dirPublishedModules)
-                    {
-                        copyFile.Requires(publishedDir);
-                    }
-                    filePublishedModules.AddUnique(copyFile);
-
-                    // the dylib in the framework
-                    if (updateInstallName && (file == framework.Macros["FrameworkLibraryPath"]))
-                    {
-                        var updateIDName = Bam.Core.Module.Create<IdNameOSX>();
-                        updateIDName.Source = copyFile;
-                        this.Requires(updateIDName);
-                        this.CopiedFrameworks.Add(copyFile);
-
-                        foreach (var changedName in this.ChangedNamedBinaries)
-                        {
-                            changedName.Requires(updateIDName);
-                        }
-
-                        if (this.IsReferenceAWindowedApp(reference))
-                        {
-                            this.AddOSXChangeIDNameForBinary(copyFile);
-                        }
-                    }
-                }
-            }
-            var symlinkPublishedModules = new Bam.Core.Array<CollatedSymbolicLink>();
-            if (null != framework.SymlinksToPublish)
-            {
-                foreach (var symlinkData in framework.SymlinksToPublish)
-                {
-                    var symlink = symlinkData.SourcePath;
-                    var copySymlink = this.CreateCollatedSymbolicLink(
-                        dependent,
-                        this.CreateTokenizedString("$(0)/$(1)", frameworkPath, symlink),
-                        reference,
-                        this.CreateTokenizedString("$(0)/@dir($(1))", subdirTS, symlink));
-                    copySymlink.AssignLinkTarget(symlinkData.DestinationPath);
-                    foreach (var publishedDir in dirPublishedModules)
-                    {
-                        copySymlink.Requires(publishedDir);
-                    }
-                    foreach (var publishedFile in filePublishedModules)
-                    {
-                        copySymlink.Requires(publishedFile);
-                    }
-                    symlinkPublishedModules.AddUnique(copySymlink);
-                }
-            }
-
-            var frameworkComponents = new Bam.Core.Array<CollatedObject>();
-            frameworkComponents.AddRangeUnique(filePublishedModules);
-            frameworkComponents.AddRangeUnique(dirPublishedModules);
-            frameworkComponents.AddRangeUnique(symlinkPublishedModules);
-            return frameworkComponents;
-        }
-
-        /// <summary>
-        /// For a collated ELF file, update it's RPATH.
-        /// </summary>
-        /// <param name="source">Source.</param>
-        /// <param name="newRPath">New R path.</param>
-        public ChangeRPathModule
-        ChangeRPath(
-            CollatedFile source,
-            string newRPath)
-        {
-            var change = Bam.Core.Module.Create<ChangeRPathModule>();
-            change.Source = source;
-            change.NewRPath = newRPath;
-            this.Requires(change);
-            return change;
+            // TODO: if this is used as a position argument, it might end up in an infinite recursion during string parsing
+            this.PublishRoot = Bam.Core.TokenizedString.Create("$(publishdir)", null);
         }
 
         public sealed override void
@@ -780,6 +107,1151 @@ namespace Publisher
                         this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollationPolicy>.Create(className);
                     }
                     break;
+            }
+        }
+
+        /// <summary>
+        /// The type of application being published.
+        /// </summary>
+        public enum EPublishingType
+        {
+            /// <summary>
+            /// Application in a console application.
+            /// </summary>
+            ConsoleApplication,
+
+            /// <summary>
+            /// Application is a GUI application.
+            /// On OSX, this is an application bundle, and will automatically appear in a <name>.app/Contents/MacOS folder
+            /// under the publishing root.
+            /// </summary>
+            WindowedApplication,
+
+            /// <summary>
+            /// Distributing a library, with headers, import/static/dynamic libraries, and potentially tools or tests.
+            /// </summary>
+            Library
+
+            // TODO: macosFramework
+        }
+
+        // this is doubling up the cost of the this.Requires list, but at less runtime cost
+        // for expanding each CollatedObject to peek as it's properties
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
+        private System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>>();
+
+        private Bam.Core.TokenizedString PublishRoot
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Set or get the directory where executables are published.
+        /// </summary>
+        public Bam.Core.TokenizedString ExecutableDir
+        {
+            get
+            {
+                return this.Macros["ExecutableDir"];
+            }
+
+            set
+            {
+                this.Macros["ExecutableDir"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set or get the directory where dynamic libraries are published.
+        /// </summary>
+        public Bam.Core.TokenizedString DynamicLibraryDir
+        {
+            get
+            {
+                return this.Macros["DynamicLibraryDir"];
+            }
+
+            set
+            {
+                this.Macros["DynamicLibraryDir"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set or get the directory where static libraries are published.
+        /// </summary>
+        public Bam.Core.TokenizedString StaticLibraryDir
+        {
+            get
+            {
+                return this.Macros["StaticLibraryDir"];
+            }
+
+            set
+            {
+                this.Macros["StaticLibraryDir"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set or get the directory where Windows import libraries are published.
+        /// </summary>
+        public Bam.Core.TokenizedString ImportLibraryDir
+        {
+            get
+            {
+                return this.Macros["ImportLibraryDir"];
+            }
+
+            set
+            {
+                this.Macros["ImportLibraryDir"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set or get the directory where plugins are published.
+        /// </summary>
+        public Bam.Core.TokenizedString PluginDir
+        {
+            get
+            {
+                return this.Macros["PluginDir"];
+            }
+
+            set
+            {
+                this.Macros["PluginDir"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set or get the directory where resource files are published.
+        /// </summary>
+        public Bam.Core.TokenizedString ResourceDir
+        {
+            get
+            {
+                return this.Macros["ResourceDir"];
+            }
+
+            set
+            {
+                this.Macros["ResourceDir"] = value;
+            }
+        }
+
+        /// <summary>
+        /// Set or get the directory where header files are published.
+        /// </summary>
+        public Bam.Core.TokenizedString HeaderDir
+        {
+            get
+            {
+                return this.Macros["HeaderDir"];
+            }
+
+            set
+            {
+                this.Macros["HeaderDir"] = value;
+            }
+        }
+
+        private void
+        SetConsoleApplicationDefaultMacros()
+        {
+            this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+            this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+            this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+            }
+            this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+            this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
+        }
+
+        private void
+        setWindowedApplicationDefaultMacros()
+        {
+            switch (Bam.Core.OSUtilities.CurrentOS)
+            {
+                case Bam.Core.EPlatform.Windows:
+                    {
+                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+                        this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
+                        this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
+                    }
+                    break;
+
+                case Bam.Core.EPlatform.Linux:
+                    {
+                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishRoot }));
+                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishRoot }));
+                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishRoot }));
+                        //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
+                        this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
+                    }
+                    break;
+
+                case Bam.Core.EPlatform.OSX:
+                    {
+                        this.Macros.Add("macOSAppBundleContentsDir", this.CreateTokenizedString("$(0)/$(AnchorOutputName).app/Contents", new[] { this.PublishRoot }));
+                        this.Macros.Add("macOSAppBundleMacOSDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/MacOS"));
+                        this.Macros.Add("macOSAppBundleFrameworksDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Frameworks"));
+                        this.Macros.Add("macOSAppBundlePluginsDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Plugins"));
+                        this.Macros.Add("macOSAppBundleResourcesDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/Resources"));
+                        this.Macros.Add("macOSAppBundleSharedSupportDir", this.CreateTokenizedString("$(macOSAppBundleContentsDir)/SharedSupport"));
+                        this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(macOSAppBundleMacOSDir)"));
+                        this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
+                        this.Macros.Add("PluginDir", this.CreateTokenizedString("$(macOSAppBundlePluginsDir)"));
+                        this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(macOSAppBundleResourcesDir)"));
+                    }
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
+            }
+        }
+
+        private void
+        setLibraryDefaultMacros()
+        {
+            this.Macros.Add("ExecutableDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishRoot }));
+            this.Macros.Add("DynamicLibraryDir", this.CreateTokenizedString("$(0)/bin", new[] { this.PublishRoot }));
+            this.Macros.Add("StaticLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishRoot }));
+            if (Bam.Core.OSUtilities.CurrentOS == Bam.Core.EPlatform.Windows)
+            {
+                this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)/lib", new[] { this.PublishRoot }));
+            }
+            this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishRoot }));
+            this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
+            this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
+        }
+
+        /// <summary>
+        /// Invoke this function prior to including any modules into a collation, in order to configure defaults
+        /// for the standard module publishing properties (e.g. ExecutableDir), and mapping standard C package
+        /// module types to locations.
+        /// The argument is to create layouts suitable for the type of application being published based on the platform
+        /// being built for. For example, a Windows application on macOS will create an Application Bundle, while a Console
+        /// application wil use a flat publishing directory structure.
+        /// </summary>
+        /// <param name="type">Type of application being published.</param>
+        public void
+        SetDefaultMacrosAndMappings(
+            EPublishingType type)
+        {
+            // TODO: can any of these paths be determined from the C package for RPATHs etc?
+            // i.e. whatever layout the user wants, is honoured here as a default
+            switch (type)
+            {
+                case EPublishingType.ConsoleApplication:
+                    this.SetConsoleApplicationDefaultMacros();
+                    break;
+
+                case EPublishingType.WindowedApplication:
+                    this.setWindowedApplicationDefaultMacros();
+                    break;
+
+                case EPublishingType.Library:
+                    this.setLibraryDefaultMacros();
+                    break;
+            }
+
+            // order matters here, for any sub-classes of module types
+            this.Mapping.Register(typeof(C.Cxx.Plugin), C.Cxx.Plugin.Key, this.PluginDir, true);
+            this.Mapping.Register(typeof(C.Plugin), C.Plugin.Key, this.PluginDir, true);
+            this.Mapping.Register(typeof(C.Cxx.DynamicLibrary), C.Cxx.DynamicLibrary.Key, this.DynamicLibraryDir, true);
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                this.Mapping.Register(typeof(C.Cxx.DynamicLibrary), C.Cxx.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
+            }
+            this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.Key, this.DynamicLibraryDir, true);
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
+            }
+            this.Mapping.Register(typeof(C.SharedObjectSymbolicLink), C.SharedObjectSymbolicLink.Key, this.DynamicLibraryDir, true);
+            this.Mapping.Register(typeof(C.Cxx.ConsoleApplication), C.Cxx.ConsoleApplication.Key, this.ExecutableDir, true);
+            this.Mapping.Register(typeof(C.ConsoleApplication), C.ConsoleApplication.Key, this.ExecutableDir, true);
+            this.Mapping.Register(typeof(C.StaticLibrary), C.StaticLibrary.Key, this.StaticLibraryDir, false);
+            if (Bam.Core.OSUtilities.IsOSXHosting && EPublishingType.WindowedApplication == type)
+            {
+                this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.Key, this.Macros["macOSAppBundleFrameworksDir"], true);
+            }
+        }
+
+        /// <summary>
+        /// Helper function, mostly for package unittests, to be able to automatically find all modules within a specified
+        /// namespace, and collate them beside each other.
+        /// Each found module will be an anchor. Any shared dependencies should appear once depending on the build mode. IDE
+        /// build projects should each have a copy of shared dependencies in order for them to be debuggable.
+        /// </summary>
+        /// <param name="nameSpace">Namespace containing all modules of interest.</param>
+        /// <param name="key">PathKey of the modules that will be collated.</param>
+        /// <param name="anchorPublishRoot">Custom publishing root for the anchors. May be null to use default.</param>
+        public void
+        IncludeAllModulesInNamespace(
+            string nameSpace,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString anchorPublishRoot = null)
+        {
+            var gen = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
+            var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(item =>
+                item.Namespace == nameSpace && item.IsSubclassOf(typeof(Bam.Core.Module)) && item != this.GetType());
+            foreach (var type in moduleTypes)
+            {
+                var meth = gen.MakeGenericMethod(new[] { type });
+                meth.Invoke(this, new object[] { key, anchorPublishRoot });
+            }
+        }
+
+        /// <summary>
+        /// Locate a collated module by type. There may be multiple return values, if the search is based on a common sub-class
+        /// of modules.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type to search for.</typeparam>
+        /// <returns>A list of matching collated modules, or an empty list.</returns>
+        public Bam.Core.Array<ICollatedObject>
+        Find<DependentModule>() where DependentModule : Bam.Core.Module
+        {
+            var results = new Bam.Core.Array<ICollatedObject>();
+            foreach (var dep in this.Requirements)
+            {
+                var collatedObj = dep as ICollatedObject;
+                if (null == collatedObj)
+                {
+                    // can happen if non-collated objects end up in the requirements, e.g. tools to generate output from collated objects
+                    continue;
+                }
+                if (collatedObj.SourceModule is DependentModule)
+                {
+                    results.AddUnique(collatedObj);
+                }
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Do not collate any modules that match the module type.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type to search for, and subsequently ignore from Collation.</typeparam>
+        public void
+        Ignore<DependentModule>() where DependentModule : Bam.Core.Module
+        {
+            var matches = this.Find<DependentModule>();
+            foreach (var match in matches)
+            {
+                (match as CollatedObject).Ignore = true;
+            }
+        }
+
+        private void
+        EncodeDependentModuleAndPathKey(
+            Bam.Core.Module dependent,
+            System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> allDependents,
+            System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>> toDealWith)
+        {
+            var runtimePathKey = this.Mapping.GetRuntimePathKey(dependent);
+            if (null == runtimePathKey)
+            {
+                // no explicit mapping, but the dependency may contain more dependencies that are
+                toDealWith.Enqueue(System.Tuple.Create(dependent, runtimePathKey));
+                return;
+            }
+            if (allDependents.ContainsKey(dependent))
+            {
+                return;
+            }
+            toDealWith.Enqueue(System.Tuple.Create(dependent, runtimePathKey));
+        }
+
+        private void
+        FindPublishableDependents(
+            Bam.Core.Module module,
+            System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> allDependents,
+            System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>> toDealWith)
+        {
+            // now look at all the dependencies and accumulate a list of child dependencies
+            // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
+            foreach (var dep in module.Dependents)
+            {
+                this.EncodeDependentModuleAndPathKey(dep, allDependents, toDealWith);
+            }
+            foreach (var req in module.Requirements)
+            {
+                this.EncodeDependentModuleAndPathKey(req, allDependents, toDealWith);
+            }
+        }
+
+        private void
+        gatherAllDependencies(
+            Bam.Core.Module initialModule,
+            Bam.Core.PathKey key,
+            ICollatedObject anchor,
+            Bam.Core.TokenizedString anchorPublishRoot)
+        {
+            var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+            var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>>();
+            toDealWith.Enqueue(System.Tuple.Create(initialModule, key));
+            // iterate over each dependent, stepping into each of their dependencies
+            while (toDealWith.Count > 0)
+            {
+                var next = toDealWith.Dequeue();
+                this.FindPublishableDependents(next.Item1, allDependents, toDealWith);
+                if (next.Item1 == initialModule)
+                {
+                    continue;
+                }
+                if (next.Item2 == default(Bam.Core.PathKey))
+                {
+                    Bam.Core.Log.DebugMessage("Ignoring '{0}' for collation, with no path key", next.Item1.ToString());
+                    continue;
+                }
+                var moduleShouldBePublished = true;
+                moduleShouldBePublished &= !allDependents.ContainsKey(next.Item1);
+                moduleShouldBePublished &= !this.collatedObjects.ContainsKey(next);
+                if (anchor != null)
+                {
+                    var anchorAsCollatedObject = anchor as CollatedObject;
+                    moduleShouldBePublished &= !anchorAsCollatedObject.DependentCollations.ContainsKey(next);
+                }
+                if (moduleShouldBePublished)
+                {
+                    allDependents.Add(next.Item1, next.Item2);
+                }
+            }
+            // now add each as a publishable dependent
+            foreach (var dep in allDependents)
+            {
+                var modulePublishDir = this.Mapping.FindPublishDirectory(dep.Key, dep.Value);
+                var dependentCollation = this.IncludeNoGather(dep.Key, dep.Value, modulePublishDir, anchor, anchorPublishRoot);
+
+                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+                (dependentCollation as CollatedObject).Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros["AnchorOutputName"]);
+            }
+        }
+
+        struct ModuleOutputDefaultPublishingPath
+        {
+            public System.Type type;
+            public Bam.Core.PathKey pathKey;
+            public Bam.Core.TokenizedString defaultPublishPath;
+            public bool runtimeDependency;
+
+            public ModuleOutputDefaultPublishingPath(
+                System.Type moduleType,
+                Bam.Core.PathKey modulePathKey,
+                Bam.Core.TokenizedString defaultPublishPath,
+                bool isRuntimeDependency)
+            {
+                this.type = moduleType;
+                this.pathKey = modulePathKey;
+                this.defaultPublishPath = defaultPublishPath;
+                this.runtimeDependency = isRuntimeDependency;
+            }
+        }
+
+        /// <summary>
+        /// Mapping of module to publishing directory.
+        /// </summary>
+        public class ModuleOutputDefaultPublishingPathMapping
+        {
+            private Bam.Core.Array<ModuleOutputDefaultPublishingPath> mapping = new Bam.Core.Array<ModuleOutputDefaultPublishingPath>();
+
+            /// <summary>
+            /// Register a new module and PathKey to a location.
+            /// </summary>
+            /// <param name="moduleType">Type of the module of interest.</param>
+            /// <param name="modulePathKey">PathKey of the module of interest.</param>
+            /// <param name="defaultPublishPath">The default location to which to publish.</param>
+            /// <param name="isRuntimeDependency">Is the module a runtime dependency? Such things that are not are static and import libraries.</param>
+            public void
+            Register(
+                System.Type moduleType,
+                Bam.Core.PathKey modulePathKey,
+                Bam.Core.TokenizedString defaultPublishPath,
+                bool isRuntimeDependency)
+            {
+                this.mapping.Add(new ModuleOutputDefaultPublishingPath(moduleType, modulePathKey, defaultPublishPath, isRuntimeDependency));
+            }
+
+            /// <summary>
+            /// Retrieve the publishing directory for the module and PathKey pair.
+            /// </summary>
+            /// <param name="module">Module of interest.</param>
+            /// <param name="modulePathKey">PathKey of the module of interest.</param>
+            /// <returns>The publishing directory registered for the pair, or an exception is thrown.</returns>
+            public Bam.Core.TokenizedString
+            FindPublishDirectory(
+                Bam.Core.Module module,
+                Bam.Core.PathKey modulePathKey)
+            {
+                foreach (var mod in this.mapping)
+                {
+                    if (!mod.type.IsInstanceOfType(module))
+                    {
+                        continue;
+                    }
+                    if (null == mod.pathKey)
+                    {
+                        return mod.defaultPublishPath;
+                    }
+                    if (modulePathKey == mod.pathKey)
+                    {
+                        return mod.defaultPublishPath;
+                    }
+                }
+                throw new Bam.Core.Exception("Unable to locate publish directory for module {0} with path key {1}", module.ToString(), modulePathKey.ToString());
+            }
+
+            /// <summary>
+            /// For the module type, retrieve the PathKey registered with it, if the registration is for a runtime dependency.
+            /// </summary>
+            /// <param name="module">Module of interest</param>
+            /// <returns>PathKey registered with the module, or null if there is not one registered.</returns>
+            public Bam.Core.PathKey
+            GetRuntimePathKey(
+                Bam.Core.Module module)
+            {
+                foreach (var mod in this.mapping)
+                {
+                    if (!mod.type.IsInstanceOfType(module))
+                    {
+                        continue;
+                    }
+                    if (!mod.runtimeDependency)
+                    {
+                        continue;
+                    }
+                    return mod.pathKey;
+                }
+                Bam.Core.Log.DebugMessage("Unable to locate collation mapping for modules of type '{0}'", module.GetType().ToString());
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Access to the mapping from module to default publish path.
+        /// </summary>
+        public ModuleOutputDefaultPublishingPathMapping Mapping
+        {
+            get;
+            private set;
+        }
+
+        private ICollatedObject
+        IncludeNoGather(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString modulePublishDir,
+            ICollatedObject anchor,
+            Bam.Core.TokenizedString anchorPublishRoot)
+        {
+            CollatedObject collatedFile;
+            if (dependent is C.OSXFramework)
+            {
+                collatedFile = this.CreateCollatedModuleGeneratedOSXFramework(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+            }
+            else
+            {
+                collatedFile = this.CreateCollatedModuleGeneratedFile(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+            }
+            var tuple = System.Tuple.Create(dependent, key);
+            try
+            {
+                if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+                {
+                    // a dependency may be copied for each anchor that references it in order
+                    // to make that anchor fully resolved and debuggable
+                    if (null != anchor)
+                    {
+                        var anchorAsCollatedObject = anchor as CollatedObject;
+                        anchorAsCollatedObject.DependentCollations.Add(tuple, collatedFile);
+                    }
+                    else
+                    {
+                        this.collatedObjects.Add(tuple, collatedFile);
+                    }
+                }
+                else
+                {
+                    // as everything goes to a single publishdir, remember each instance of a module
+                    this.collatedObjects.Add(tuple, collatedFile);
+                }
+            }
+            catch (System.ArgumentException)
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendFormat("Module {0} with path key {1} has already been added for collation", dependent.ToString(), key.ToString());
+                message.AppendLine();
+                message.AppendLine("Please use Collation.Find<ModuleType>() in order to modify any of it's traits.");
+                throw new Bam.Core.Exception(message.ToString());
+            }
+            return collatedFile;
+        }
+
+        private ICollatedObject
+        Include(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString anchorPublishRoot)
+        {
+            var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
+            var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
+            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros["OutputName"]);
+            this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
+            return collatedFile;
+        }
+
+        /// <summary>
+        /// Include, as an anchor, the module of the specified type with the PathKey an output from that module.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type to become an anchor.</typeparam>
+        /// <param name="key">PathKey as an output of that module instance to collate.</param>
+        /// <param name="anchorPublishRoot">Custom directory to use as the root for the anchor's publishing, or null to use the default.</param>
+        /// <returns></returns>
+        public ICollatedObject
+        Include<DependentModule>(
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString anchorPublishRoot = null) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
+            return this.Include(dependent, key, anchorPublishRoot);
+        }
+
+        /// <summary>
+        /// Include additional files (non-module based preexisting files).
+        /// </summary>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching files.</param>
+        /// <param name="destinationDir">Destination directory in which to publish files.</param>
+        /// <param name="anchor">Anchor associated with files (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <returns>List containing each collated file.</returns>
+        public Bam.Core.Array<ICollatedObject>
+        IncludeFiles(
+            Bam.Core.TokenizedString wildcardedSourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            // Note: very similar to that code in C.CModuleContainer.AddFiles
+            if (!wildcardedSourcePath.IsParsed)
+            {
+                wildcardedSourcePath.Parse();
+            }
+            var wildcardPaths = wildcardedSourcePath.ToString();
+            var dir = System.IO.Path.GetDirectoryName(wildcardPaths);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                throw new Bam.Core.Exception("The directory {0} does not exist", dir);
+            }
+            var leafname = System.IO.Path.GetFileName(wildcardPaths);
+            var option = leafname.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+            var files = System.IO.Directory.GetFiles(dir, leafname, option);
+            if (0 == files.Length)
+            {
+                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPaths);
+            }
+            if (filter != null)
+            {
+                var filteredFiles = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
+                if (0 == filteredFiles.Length)
+                {
+                    throw new Bam.Core.Exception("No files were found that matched the pattern '{0}', after applying the regex filter. {1} were found prior to applying the filter.", wildcardPaths, files.Count());
+                }
+                files = filteredFiles;
+            }
+            var results = new Bam.Core.Array<ICollatedObject>();
+            foreach (var filepath in files)
+            {
+                results.Add(this.CreateCollatedPreExistingFile(filepath, destinationDir, anchor));
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Include additional files (non-module based preexisting files).
+        /// </summary>
+        /// <param name="wildcardedSourcePaths">Array of wildcarded path to all matching files.</param>
+        /// <param name="destinationDir">Destination directory in which to publish files.</param>
+        /// <param name="anchor">Anchor associated with files (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <returns>List containing each collated file.</returns>
+        public Bam.Core.Array<ICollatedObject>
+        IncludeFiles(
+            Bam.Core.TokenizedStringArray wildcardedSourcePaths,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var results = new Bam.Core.Array<ICollatedObject>();
+            foreach (var path in wildcardedSourcePaths)
+            {
+                results.AddRange(this.IncludeFiles(path, destinationDir, anchor, filter));
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Include additional files (non-module based preexisting files).
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type that the path may use macros from.</typeparam>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching files.</param>
+        /// <param name="destinationDir">Destination directory in which to publish files.</param>
+        /// <param name="anchor">Anchor associated with files (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <returns>List containing each collated file.</returns>
+        public Bam.Core.Array<ICollatedObject>
+        IncludeFiles<DependentModule>(
+            string wildcardedSourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
+            System.Text.RegularExpressions.Regex filter = null) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
+            return this.IncludeFiles(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter);
+        }
+
+        /// <summary>
+        /// Include additional directories into the collation.
+        /// </summary>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching directories.</param>
+        /// <param name="destinationDir">Destination directory in which to publish directories.</param>
+        /// <param name="anchor">Anchor associated with directories (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <param name="renameLeaf">Optional rename of the top-level directory upon collation.</param>
+        /// <returns>List containing each collated directory.</returns>
+        public Bam.Core.Array<ICollatedObject>
+        IncludeDirectories(
+            Bam.Core.TokenizedString wildcardedSourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
+            System.Text.RegularExpressions.Regex filter = null,
+            string renameLeaf = null)
+        {
+            // Note: very similar to that code in C.CModuleContainer.AddFiles
+            if (!wildcardedSourcePath.IsParsed)
+            {
+                wildcardedSourcePath.Parse();
+            }
+            var wildcardPaths = wildcardedSourcePath.ToString();
+            var dir = System.IO.Path.GetDirectoryName(wildcardPaths);
+            if (!System.IO.Directory.Exists(dir))
+            {
+                throw new Bam.Core.Exception("The directory {0} does not exist", dir);
+            }
+            var leafname = System.IO.Path.GetFileName(wildcardPaths);
+            var option = leafname.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+            var files = System.IO.Directory.GetDirectories(dir, leafname, option);
+            if (0 == files.Length)
+            {
+                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPaths);
+            }
+            if (filter != null)
+            {
+                var filteredFiles = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
+                if (0 == filteredFiles.Length)
+                {
+                    throw new Bam.Core.Exception("No files were found that matched the pattern '{0}', after applying the regex filter. {1} were found prior to applying the filter.", wildcardPaths, files.Count());
+                }
+                files = filteredFiles;
+            }
+            var results = new Bam.Core.Array<ICollatedObject>();
+            foreach (var filepath in files)
+            {
+                results.Add(this.CreateCollatedPreExistingDirectory(filepath, destinationDir, anchor, renameLeaf));
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Include additional directories into the collation.
+        /// </summary>
+        /// <param name="wildcardedSourcePaths">Wildcarded paths to all matching directories.</param>
+        /// <param name="destinationDir">Destination directory in which to publish directories.</param>
+        /// <param name="anchor">Anchor associated with directories (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <param name="renameLeaf">Optional rename of the top-level directory upon collation.</param>
+        /// <returns>List containing each collated directory.</returns>
+        public Bam.Core.Array<ICollatedObject>
+        IncludeDirectories(
+            Bam.Core.TokenizedStringArray wildcardedSourcePaths,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
+            System.Text.RegularExpressions.Regex filter = null,
+            string renameLeaf = null)
+        {
+            var results = new Bam.Core.Array<ICollatedObject>();
+            foreach (var path in wildcardedSourcePaths)
+            {
+                results.AddRange(this.IncludeDirectories(path, destinationDir, anchor, filter, renameLeaf));
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// Include additional directories into the collation.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type in which the provided path can use macros from.</typeparam>
+        /// <param name="wildcardedSourcePath">Wildcarded path to all matching directories.</param>
+        /// <param name="destinationDir">Destination directory in which to publish directories.</param>
+        /// <param name="anchor">Anchor associated with directories (used in IDE projects).</param>
+        /// <param name="filter">Optional regular expression to filter the expanded wildcarded path.</param>
+        /// <param name="renameLeaf">Optional rename of the top-level directory upon collation.</param>
+        /// <returns>List containing each collated directory.</returns>
+        public Bam.Core.Array<ICollatedObject>
+        IncludeDirectories<DependentModule>(
+            string wildcardedSourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
+            System.Text.RegularExpressions.Regex filter = null,
+            string renameLeaf = null) where DependentModule : Bam.Core.Module, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return null;
+            }
+            return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter, renameLeaf);
+        }
+
+        /// <summary>
+        /// For a collated ELF file, update it's RPATH.
+        /// </summary>
+        /// <param name="source">Source.</param>
+        /// <param name="newRPath">New Rpath.</param>
+        public ChangeRPathModule
+        ChangeRPath(
+            ICollatedObject source,
+            string newRPath)
+        {
+            var change = Bam.Core.Module.Create<ChangeRPathModule>();
+            change.Source = source as CollatedFile;
+            change.NewRPath = newRPath;
+            this.Requires(change);
+            return change;
+        }
+
+        private ICollatedObject
+        CreateCollatedPreExistingFile(
+            string sourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor)
+        {
+            var anchorObj = anchor as CollatedObject;
+            if (null != anchor)
+            {
+                if (!anchorObj.IsAnchor)
+                {
+                    throw new Bam.Core.Exception("Collation object should be an anchor but isn't");
+                }
+            }
+            var collatedFile = Bam.Core.Module.Create<CollatedPreExistingFile>(preInitCallback: module =>
+                {
+                    module.PreExistingSourcePath = sourcePath;
+                    module.SetPublishingDirectory("$(0)", new[] { destinationDir });
+                });
+
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                if (null != anchor)
+                {
+                    // this file is associated with a module-based anchor, so publish next to it
+                    collatedFile.Anchor = anchor;
+                    collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { anchorObj.SourcePath }));
+                }
+                else
+                {
+                    // if is no module-based anchor, this is likely to be collating
+                    // public headers for a library
+                    // these do not need to go beside the executable
+                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                }
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
+
+            collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(publishroot)"));
+
+            this.Requires(collatedFile);
+
+            if (this.preExistingCollatedObjects.Any(item => item.Item1.SourcePath == collatedFile.SourcePath && item.Item2 == destinationDir))
+            {
+                throw new Bam.Core.Exception("Pre-existing file already collated, with path '{0}'", sourcePath);
+            }
+            this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedFile as CollatedObject, destinationDir));
+
+            if (null != anchor)
+            {
+                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+                (collatedFile as CollatedObject).Macros.Add("AnchorOutputName", anchorObj.Macros["AnchorOutputName"]);
+            }
+
+            return collatedFile;
+        }
+
+        private ICollatedObject
+        CreateCollatedPreExistingDirectory(
+            string sourcePath,
+            Bam.Core.TokenizedString destinationDir,
+            ICollatedObject anchor,
+            string renameLeaf)
+        {
+            var anchorObj = anchor as CollatedObject;
+            if (null != anchor)
+            {
+                if (!anchorObj.IsAnchor)
+                {
+                    throw new Bam.Core.Exception("Collation object should be an anchor but isn't");
+                }
+            }
+            var collatedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
+                {
+                    if (null != renameLeaf)
+                    {
+                        module.Macros.AddVerbatim("RenameLeaf", renameLeaf);
+                    }
+                    if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        // Windows XCOPY requires the directory name to be added to the destination regardless
+                        module.PreExistingSourcePath = sourcePath;
+                        module.SetPublishingDirectory("$(0)/#valid($(RenameLeaf),@filename($(1)))", new[] { destinationDir, module.SourcePath });
+                    }
+                    else
+                    {
+                        // Posix cp only requires the destination to be added when there is a rename
+                        if (null != renameLeaf)
+                        {
+                            module.PreExistingSourcePath = System.String.Format("{0}/*", sourcePath);
+                        }
+                        else
+                        {
+                            module.PreExistingSourcePath = sourcePath;
+                        }
+                        module.SetPublishingDirectory("$(0)#valid(/$(RenameLeaf),)", new[] { destinationDir });
+                    }
+                });
+
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                if (null != anchor)
+                {
+                    // this directory is associated with a module-based anchor, so publish next to it
+                    collatedDir.Anchor = anchor;
+                    collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { anchorObj.SourcePath }));
+                }
+                else
+                {
+                    collatedDir.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                }
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                collatedDir.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
+
+            collatedDir.Macros.Add("publishdir", collatedDir.CreateTokenizedString("$(publishroot)"));
+
+            this.Requires(collatedDir);
+
+            if (this.preExistingCollatedObjects.Any(item => item.Item1.SourcePath == collatedDir.SourcePath && item.Item2 == destinationDir))
+            {
+                throw new Bam.Core.Exception("Pre-existing directory already collated, with path '{0}'", sourcePath);
+            }
+            this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedDir as CollatedObject, destinationDir));
+
+            if (null != anchor)
+            {
+                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+                (collatedDir as CollatedObject).Macros.Add("AnchorOutputName", anchorObj.Macros["AnchorOutputName"]);
+            }
+
+            return collatedDir;
+        }
+
+        private CollatedFile
+        CreateCollatedModuleGeneratedFile(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString modulePublishDir,
+            ICollatedObject anchor,
+            Bam.Core.TokenizedString anchorPublishRoot)
+        {
+            var collatedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+                {
+                    module.SourceModule = dependent;
+                    module.SourcePathKey = key;
+                    module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
+                    module.Anchor = anchor;
+                });
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                // the publishdir is different for each anchor, so dependents may be duplicated
+                // if referenced by multiple anchors
+                if (null != anchor)
+                {
+                    collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { (anchor as CollatedObject).SourcePath }));
+                }
+                else
+                {
+                    collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { collatedFile.SourcePath }));
+                }
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
+
+            // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file
+            // other than that built, and if copied elsewhere (as would expect from a custom anchor publish root), so
+            // will it's dependencies, which won't be found by the debugged executable
+            if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(0)", anchorPublishRoot));
+            }
+            else
+            {
+                collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(publishroot)"));
+            }
+
+            this.Requires(collatedFile);
+            return collatedFile;
+        }
+
+        private CollatedOSXFramework
+        CreateCollatedModuleGeneratedOSXFramework(
+            Bam.Core.Module dependent,
+            Bam.Core.PathKey key,
+            Bam.Core.TokenizedString modulePublishDir,
+            ICollatedObject anchor,
+            Bam.Core.TokenizedString anchorPublishRoot)
+        {
+            var collatedFramework = Bam.Core.Module.Create<CollatedOSXFramework>(preInitCallback: module =>
+                {
+                    module.SourceModule = dependent;
+                    module.SourcePathKey = key;
+                    module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
+                    module.Anchor = anchor;
+                });
+
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                // the publishdir is different for each anchor, so dependents may be duplicated
+                // if referenced by multiple anchors
+                if (null != anchor)
+                {
+                    collatedFramework.Macros.Add("publishroot", collatedFramework.CreateTokenizedString("@dir($(0))", new[] { (anchor as CollatedObject).SourcePath }));
+                }
+                else
+                {
+                    collatedFramework.Macros.Add("publishroot", collatedFramework.CreateTokenizedString("@dir($(0))", new[] { collatedFramework.SourcePath }));
+                }
+            }
+            else
+            {
+                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
+                collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            }
+
+            // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file
+            // other than that built, and if copied elsewhere (as would expect from a custom anchor publish root), so
+            // will it's dependencies, which won't be found by the debugged executable
+            if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            {
+                collatedFramework.Macros.Add("publishdir", collatedFramework.CreateTokenizedString("$(0)", anchorPublishRoot));
+            }
+            else
+            {
+                collatedFramework.Macros.Add("publishdir", collatedFramework.CreateTokenizedString("$(publishroot)"));
+            }
+
+            this.Requires(collatedFramework);
+            return collatedFramework;
+        }
+
+        /// <summary>
+        /// Delegate type used for iterating over anchors.
+        /// </summary>
+        /// <param name="collation">The Collation owning the Anchors</param>
+        /// <param name="anchor">Current Anchor</param>
+        /// <param name="customData">Any custom data.</param>
+        public delegate void ForEachAnchorDelegate(Collation collation, ICollatedObject anchor, object customData);
+
+        /// <summary>
+        /// Iterate over all anchors using the specified delegate and passing the specified custom data.
+        /// </summary>
+        /// <param name="anchorDelegate">Delegate to use for each anchor.</param>
+        /// <param name="customData">Optional custom data to pass into the delegate for each anchor.</param>
+        public void
+        ForEachAnchor(
+            ForEachAnchorDelegate anchorDelegate,
+            object customData)
+        {
+            foreach (var obj in this.collatedObjects)
+            {
+                var collatedObjectInterface = obj.Value as ICollatedObject;
+                if (null == collatedObjectInterface.Anchor)
+                {
+                    anchorDelegate(this, collatedObjectInterface, customData);
+                }
+            }
+            foreach (var obj in this.preExistingCollatedObjects)
+            {
+                // TODO: this is slightly more expensive, as it may end up iterating over
+                // this.collatedObjects for the preexisting objects
+                anchorDelegate(this, obj.Item1, customData);
+            }
+        }
+
+        /// <summary>
+        /// Delegate executed on each collated object.
+        /// </summary>
+        /// <param name="collatedObj">Current collated object.</param>
+        /// <param name="customData">Optional custom data.</param>
+        public delegate void ForEachCollatedObjectDelegate(ICollatedObject collatedObj, object customData);
+
+        /// <summary>
+        /// Helper function to iterate over each collated object associated with the anchor.
+        /// </summary>
+        /// <param name="anchor">Anchor to iterate over all collated objects it is associated with.</param>
+        /// <param name="collatedObjectDelegate">Delegate to execute on each collated object.</param>
+        /// <param name="customData">Optional custom data to pass to each delegate.</param>
+        public void
+        ForEachCollatedObjectFromAnchor(
+            ICollatedObject anchor,
+            ForEachCollatedObjectDelegate collatedObjectDelegate,
+            object customData)
+        {
+            collatedObjectDelegate(anchor, customData);
+            foreach (var obj in this.collatedObjects)
+            {
+                var collatedObjectInterface = obj.Value as ICollatedObject;
+                if (anchor == collatedObjectInterface.Anchor)
+                {
+                    collatedObjectDelegate(collatedObjectInterface, customData);
+                }
             }
         }
     }

@@ -116,15 +116,21 @@ namespace VisualCCommon
             }
             var linker = executable.Settings as C.ICommonLinkerSettings;
             var libFilename = library.CreateTokenizedString("@filename($(0))", fullLibraryPath);
-            if (!libFilename.IsParsed)
+            lock (libFilename)
             {
-                libFilename.Parse();
+                if (!libFilename.IsParsed)
+                {
+                    libFilename.Parse();
+                }
             }
             linker.Libraries.AddUnique(libFilename.ToString());
             var libDir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
-            if (!libDir.IsParsed)
+            lock (libDir)
             {
-                libDir.Parse();
+                if (!libDir.IsParsed)
+                {
+                    libDir.Parse();
+                }
             }
             linker.LibraryPaths.AddUnique(libDir);
         }

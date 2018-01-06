@@ -48,7 +48,7 @@ main()
 {
     char buffer[256];
 #if defined(D_BAM_PLATFORM_WINDOWS)
-# if defined(_MSC_VER) && _MSC_VER > 1700
+# if defined(_MSC_VER) && _MSC_VER > 1800
     sprintf(buffer, "sizeof(size_t) == %zd\n", sizeof(size_t));
 # else
     sprintf(buffer, "sizeof(size_t) == %ld\n", sizeof(size_t));

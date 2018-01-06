@@ -39,7 +39,7 @@ namespace ClangCommon
             this.Macros.AddVerbatim("exeext", string.Empty);
             this.Macros.AddVerbatim("dynamicprefix", "lib");
             this.Macros.AddVerbatim("dynamicextonly", ".dylib");
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateInline(".$(MajorVersion)$(dynamicextonly)"));
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".$(MajorVersion)$(dynamicextonly)", null));
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".dylib");
 
@@ -90,9 +90,12 @@ namespace ClangCommon
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
 
                 linker.LibraryPaths.AddUnique(libDir);
@@ -104,9 +107,12 @@ namespace ClangCommon
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
                 var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
-                if (!libDir.IsParsed)
+                lock (libDir)
                 {
-                    libDir.Parse();
+                    if (!libDir.IsParsed)
+                    {
+                        libDir.Parse();
+                    }
                 }
 
                 linker.LibraryPaths.AddUnique(libDir);

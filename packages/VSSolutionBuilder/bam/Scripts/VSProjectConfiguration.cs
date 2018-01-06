@@ -289,7 +289,8 @@ namespace VSSolutionBuilder
             // but it does not seem to be a show stopper if it doesn't
             macros.Add("packagebuilddir", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectDir)"));
             macros.Add("modulename", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectName)"));
-            var outDir = path.ToString();
+
+            var outDir = path.UncachedParse(new Bam.Core.Array<Bam.Core.MacroList>(macros));
             outDir = System.IO.Path.GetDirectoryName(outDir);
             outDir += "\\";
             this.OutputDirectory = outDir;
@@ -479,28 +480,40 @@ namespace VSSolutionBuilder
         AddPreBuildCommand(
             string command)
         {
-            this.PreBuildCommands.Add(command);
+            lock (this.PreBuildCommands)
+            {
+                this.PreBuildCommands.Add(command);
+            }
         }
 
         public void
         AddPreBuildCommands(
             Bam.Core.StringArray commands)
         {
-            this.PreBuildCommands.AddRange(commands);
+            lock (this.PreBuildCommands)
+            {
+                this.PreBuildCommands.AddRange(commands);
+            }
         }
 
         public void
         AddPostBuildCommand(
             string command)
         {
-            this.PostBuildCommands.Add(command);
+            lock (this.PostBuildCommands)
+            {
+                this.PostBuildCommands.Add(command);
+            }
         }
 
         public void
         AddPostBuildCommands(
             Bam.Core.StringArray commands)
         {
-            this.PostBuildCommands.AddRange(commands);
+            lock (this.PostBuildCommands)
+            {
+                this.PostBuildCommands.AddRange(commands);
+            }
         }
 
         public void

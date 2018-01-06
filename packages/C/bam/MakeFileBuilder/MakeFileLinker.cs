@@ -81,9 +81,11 @@ namespace C
                 }
                 else if (module is IDynamicLibrary)
                 {
-                    if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    var dynLib = module as IDynamicLibrary;
+                    if (dynLib.LinkerNameSymbolicLink != null)
                     {
-                        rule.AddPrerequisite(module, C.DynamicLibrary.ImportLibraryKey);
+                        var linkerNameSymLink = dynLib.LinkerNameSymbolicLink;
+                        rule.AddPrerequisite(linkerNameSymLink, C.SharedObjectSymbolicLink.Key);
                     }
                     else
                     {

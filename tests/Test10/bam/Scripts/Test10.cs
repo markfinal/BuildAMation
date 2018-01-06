@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Test10
 {
-    sealed class MyStaticLibrary :
+    class MyStaticLibrary :
         C.StaticLibrary
     {
         protected override void
@@ -43,7 +43,7 @@ namespace Test10
         }
     }
 
-    sealed class MyDynamicLibrary :
+    class MyDynamicLibrary :
         C.DynamicLibrary
     {
         protected override void
@@ -129,9 +129,11 @@ namespace Test10
         {
             base.Init(parent);
 
-            this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Standalone");
-            var app = this.Include<DllDependentApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Dynamic");
-            this.Include<MyDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+
+            // two separate anchors
+            this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(publishroot)/Standalone"));
+            this.Include<DllDependentApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(publishroot)/Dynamic"));
         }
     }
 }

@@ -27,52 +27,40 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public sealed class CollatedSymbolicLink :
-        CollatedObject
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface IRsyncSettings :
+        Bam.Core.ISettingsBase
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        bool Verbose
         {
-            base.Init(parent);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<MakeLinkWin>();
-            }
-            else
-            {
-                this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<MakeLinkPosix>();
-            }
+            get;
+            set;
         }
 
-        public void
-        AssignLinkTarget(
-            TokenizedString path = null)
+        bool Recursive
         {
-            if (path == null)
-            {
-                this.Macros["LinkTarget"] = this.CreateTokenizedString("@readlink($(0))", new TokenizedString[] { this.SourcePath });
-            }
-            else
-            {
-                this.Macros["LinkTarget"] = path;
-            }
+            get;
+            set;
         }
 
-        public override void
-        Evaluate()
+        bool PreserveAllAttributes
         {
-            this.ReasonToExecute = null;
-            var copiedPath = this.GeneratedPaths[Key].ToString();
-            var exists = System.IO.File.Exists(copiedPath);
-            if (!exists)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-                return;
-            }
+            get;
+            set;
+        }
+
+        bool UseChecksums
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.TokenizedStringArray Exclusions
+        {
+            get;
+            set;
         }
     }
 }

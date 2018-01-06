@@ -30,8 +30,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef DYNAMICLIBRARY2_H
 #define DYNAMICLIBRARY2_H
 
+#ifdef D_PUBLIC_FORWARDING
 /* note that the header from the dependency is purposefully in this module's public API */
 #include "dynamiclibrary1.h"
+#endif
 
 /* specific platform settings */
 #if defined(_WIN32)

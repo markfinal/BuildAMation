@@ -63,6 +63,7 @@ namespace GccCommon
                         module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
                         var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
                         commandLine.Add(System.String.Format("-o {0}", outputName));
+                        // ensure that the NEEDED flag is set to the expected symlink for the shared object
                         if (module.Macros.Contains("SOName"))
                         {
                             var soName = module.Macros["SOName"].ToString();
@@ -71,7 +72,7 @@ namespace GccCommon
                     }
                     break;
             }
-            foreach (var path in settings.LibraryPaths)
+            foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-L{0}", path.ToStringQuoteIfNecessary()));
             }

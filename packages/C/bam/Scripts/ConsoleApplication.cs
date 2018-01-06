@@ -209,6 +209,41 @@ namespace C
             }
         }
 
+        protected void
+        addLinkDependency(
+            Bam.Core.Module dependent)
+        {
+            if (dependent is IDynamicLibrary)
+            {
+                var dynamicLib = dependent as IDynamicLibrary;
+                if (dynamicLib.LinkerNameSymbolicLink != null)
+                {
+                    this.DependsOn(dynamicLib.LinkerNameSymbolicLink);
+                }
+                // else is non-Linux platforms
+            }
+            else
+            {
+                this.DependsOn(dependent);
+            }
+        }
+
+        protected void
+        addRuntimeDependency(
+            Bam.Core.Module dependent)
+        {
+            if (dependent is IDynamicLibrary)
+            {
+                var dynamicLib = dependent as IDynamicLibrary;
+                if (dynamicLib.SONameSymbolicLink != null)
+                {
+                    this.Requires(dynamicLib.SONameSymbolicLink);
+                    return;
+                }
+            }
+            this.Requires(dependent);
+        }
+
         /// <summary>
         /// Application is linked against the DependentModule type.
         /// Any public patches of DependentModule are applied privately to the Application.
@@ -222,7 +257,8 @@ namespace C
             {
                 return;
             }
-            this.DependsOn(dependent);
+            this.addLinkDependency(dependent);
+            this.addRuntimeDependency(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
         }
@@ -244,7 +280,7 @@ namespace C
                 {
                     return;
                 }
-                this.Requires(dependent);
+                this.addRuntimeDependency(dependent);
                 foreach (var source in affectedSources)
                 {
                     if (null == source)
@@ -267,7 +303,7 @@ namespace C
         /// Specified sources and the application compiles and links against the DependentModule.
         /// </summary>
         /// <param name="affectedSource">Required source module.</param>
-        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAndLinkAgainst<DependentModule>(
@@ -279,7 +315,8 @@ namespace C
             {
                 return;
             }
-            this.DependsOn(dependent);
+            this.addLinkDependency(dependent);
+            this.addRuntimeDependency(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
             if (additionalSources.Length > 0)
@@ -312,7 +349,8 @@ namespace C
             // recursive
             foreach (var forwarded in withForwarded.ForwardedLibraries)
             {
-                this.DependsOn(forwarded);
+                this.addLinkDependency(forwarded);
+                this.addRuntimeDependency(forwarded);
                 this.linkedModules.AddUnique(forwarded);
                 this.LinkAllForwardedDependenciesFromLibraries(forwarded);
             }

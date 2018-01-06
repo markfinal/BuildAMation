@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace InstallerTest1
 {
-    public sealed class CExecutable :
+    public class CExecutable :
         C.GUIApplication
     {
         protected override void
@@ -50,18 +50,24 @@ namespace InstallerTest1
             }
 
             this.PrivatePatch(settings =>
-            {
-                var gccCommon = settings as GccCommon.ICommonLinkerSettings;
-                if (null != gccCommon)
                 {
-                    gccCommon.CanUseOrigin = true;
-                    gccCommon.RPath.AddUnique("$ORIGIN");
-                }
-            });
+                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                    if (null != gccLinker)
+                    {
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN/../lib");
+                    }
+
+                    var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
+                    if (null != clangLinker)
+                    {
+                        clangLinker.RPath.AddUnique("@executable_path/../Frameworks/");
+                    }
+                });
         }
     }
 
-    public sealed class CxxExecutable :
+    public class CxxExecutable :
         C.Cxx.GUIApplication
     {
         protected override void
@@ -90,11 +96,17 @@ namespace InstallerTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var gccCommon = settings as GccCommon.ICommonLinkerSettings;
-                    if (null != gccCommon)
+                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                    if (null != gccLinker)
                     {
-                        gccCommon.CanUseOrigin = true;
-                        gccCommon.RPath.AddUnique("$ORIGIN");
+                        gccLinker.CanUseOrigin = true;
+                        gccLinker.RPath.AddUnique("$ORIGIN/../lib");
+                    }
+
+                    var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
+                    if (null != clangLinker)
+                    {
+                        clangLinker.RPath.AddUnique("@executable_path/../Frameworks/");
                     }
                 });
         }

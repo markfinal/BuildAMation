@@ -33,6 +33,52 @@ namespace MakeFileBuilder
     public sealed class MakeFileMeta :
         Bam.Core.IBuildModeMetaData
     {
+        private static Bam.Core.Array<MakeFileMeta> allMeta = new Bam.Core.Array<MakeFileMeta>();
+
+        private static void
+        addMeta(
+            MakeFileMeta meta)
+        {
+            lock (allMeta)
+            {
+                allMeta.Add(meta);
+            }
+        }
+
+        public static void
+        MakeVariableNameUnique(
+            ref string variableName)
+        {
+            lock (allMeta)
+            {
+                for (;;)
+                {
+                    var uniqueName = true;
+                    foreach (var meta in allMeta)
+                    {
+                        foreach (var rule in meta.Rules)
+                        {
+                            if (rule.AnyTargetUsesVariableName((variableName)))
+                            {
+                                variableName += "_";
+                                uniqueName = false;
+                                break;
+                            }
+                        }
+                        if (!uniqueName)
+                        {
+                            break;
+                        }
+                    }
+                    if (uniqueName)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        // only for the BuildModeMetaData
         public MakeFileMeta()
         { }
 
@@ -43,6 +89,7 @@ namespace MakeFileBuilder
             module.MetaData = this;
             this.CommonMetaData = Bam.Core.Graph.Instance.MetaData as MakeFileCommonMetaData;
             this.Rules = new Bam.Core.Array<Rule>();
+            addMeta(this);
         }
 
         public MakeFileCommonMetaData CommonMetaData
@@ -93,35 +140,18 @@ namespace MakeFileBuilder
             commonMeta.ExportDirectories(makeVariables);
 
             // all rule
-            makeRules.Append("all:");
-            var allPrerequisites = new Bam.Core.StringArray();
-            // loop over all ranks, until the top-most modules with Make metadata are added to 'all'
+            var prerequisitesOfTargetAll = new Bam.Core.StringArray();
+            // loop over all metadata, until the top-most modules with Make metadata are added to 'all'
             // this allows skipping over any upper modules without Make policies
-            foreach (var rank in graph)
+            foreach (var metadata in allMeta)
             {
-                foreach (var module in rank)
+                foreach (var rule in metadata.Rules)
                 {
-                    var metadata = module.MetaData as MakeFileMeta;
-                    if (null == metadata)
-                    {
-                        continue;
-                    }
-                    foreach (var rule in metadata.Rules)
-                    {
-                        // TODO: could just exit from the loop after the first iteration
-                        if (!rule.IsFirstRule)
-                        {
-                            continue;
-                        }
-                        rule.AppendTargetNames(allPrerequisites);
-                    }
-                }
-                if (allPrerequisites.Any())
-                {
-                    break;
+                    rule.AppendAllPrerequisiteTargetNames(prerequisitesOfTargetAll);
                 }
             }
-            makeRules.AppendLine(allPrerequisites.ToString(' '));
+            makeRules.Append("all:");
+            makeRules.AppendLine(prerequisitesOfTargetAll.ToString(' '));
 
             // directory direction rule
             makeRules.AppendLine("$(DIRS):");
@@ -137,23 +167,22 @@ namespace MakeFileBuilder
             // clean rule
             makeRules.AppendLine(".PHONY: clean");
             makeRules.AppendLine("clean:");
-            makeRules.AppendLine("\t@rm -frv $(DIRS)");
-
-            foreach (var rank in graph.Reverse())
+            if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
-                foreach (var module in rank)
-                {
-                    var metadata = module.MetaData as MakeFileMeta;
-                    if (null == metadata)
-                    {
-                        continue;
-                    }
+                makeRules.AppendLine("\t-cmd.exe /C RMDIR /S /Q $(DIRS)");
+            }
+            else
+            {
+                makeRules.AppendLine("\t@rm -frv $(DIRS)");
+            }
 
-                    foreach (var rule in metadata.Rules)
-                    {
-                        rule.WriteVariables(makeVariables);
-                        rule.WriteRules(makeRules);
-                    }
+            // write all variables and rules
+            foreach (var metadata in allMeta)
+            {
+                foreach (var rule in metadata.Rules)
+                {
+                    rule.WriteVariables(makeVariables);
+                    rule.WriteRules(makeRules);
                 }
             }
 

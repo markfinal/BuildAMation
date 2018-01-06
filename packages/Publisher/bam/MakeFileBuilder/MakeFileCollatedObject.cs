@@ -37,88 +37,77 @@ namespace Publisher
             CollatedObject sender,
             Bam.Core.ExecutionContext context)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-
-            var sourcePath = sender.SourcePath;
-            var sourceFilename = System.IO.Path.GetFileName(sourcePath.ToString());
-
-            var topLevel = sender.GetEncapsulatingReferencedModule().GetType().Name;
-            var senderType = sender.GetType().Name;
-            var sourceType = (null != sender.SourceModule) ? sender.SourceModule.GetType().FullName : "publishroot";
-            var basename = sourceType + "_" + topLevel + "_" + senderType + "_" + sender.BuildEnvironment.Configuration.ToString() + "_";
-
-            var isSymLink = sender is CollatedSymbolicLink;
-            var isDir = sender is CollatedDirectory;
-            var isRenamedDir = sender.Tool is CopyFilePosix & sender.Macros["CopiedFilename"].IsAliased;
-            if (isSymLink)
+            if (sender.Ignore)
             {
-                rule.AddTarget(sender.GeneratedPaths[CollatedObject.Key], variableName: basename + sourceFilename, isPhony: true);
+                return;
+            }
+            var collatedInterface = sender as ICollatedObject;
+            var copySourcePath = sender.SourcePath;
+
+            // post-fix with a directory separator to enforce that this is a directory destination
+            var destinationDir = System.String.Format("{0}{1}",
+                collatedInterface.PublishingDirectory.ToString(),
+                System.IO.Path.DirectorySeparatorChar);
+
+            if (null == sender.PreExistingSourcePath)
+            {
+                Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
+                    collatedInterface.SourceModule.ToString(),
+                    collatedInterface.SourcePathKey.ToString(),
+                    copySourcePath.ToString(),
+                    destinationDir);
             }
             else
             {
-                if (isDir)
-                {
-                    if (isRenamedDir)
-                    {
-                        var rename = sender.Macros["CopiedFilename"].ToString();
-                        rule.AddTarget(Bam.Core.TokenizedString.CreateVerbatim(basename + rename), isPhony: true);
-                    }
-                    else
-                    {
-                        var targetName = sender.CreateTokenizedString("$(0)/@filename($(1))", sender.Macros["CopyDir"], sourcePath);
-                        rule.AddTarget(targetName, variableName: basename + sourceFilename);
-                    }
-                }
-                else
-                {
-                    rule.AddTarget(sender.GeneratedPaths[CollatedObject.Key], variableName: basename + sourceFilename);
-                }
+                Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
+                    sender,
+                    copySourcePath.ToString(),
+                    destinationDir);
             }
 
-            meta.CommonMetaData.AddDirectory(sender.Macros["CopyDir"].ToString());
+            var meta = new MakeFileBuilder.MakeFileMeta(sender);
+            meta.CommonMetaData.AddDirectory(destinationDir);
+            var rule = meta.AddRule();
+
+            var topLevel = sender.GetEncapsulatingReferencedModule().GetType().Name;
+            var senderType = sender.GetType().Name;
+            var sourceType = (null != collatedInterface.SourceModule) ? collatedInterface.SourceModule.GetType().FullName : "publishroot";
+            var basename = sourceType + "_" + topLevel + "_" + senderType + "_" + sender.BuildEnvironment.Configuration.ToString() + "_";
+            var sourceFilename = System.IO.Path.GetFileName(copySourcePath.ToString());
+            var isPosixLeafRename = (sourceFilename == "*");
+
+            Bam.Core.TokenizedString prerequisitePath;
+            var destinationPath = sender.CreateTokenizedString("$(0)/$(1)", new Bam.Core.TokenizedString[] { collatedInterface.PublishingDirectory, Bam.Core.TokenizedString.CreateVerbatim(sourceFilename) });
+
+            if (isPosixLeafRename)
+            {
+                sourceFilename = "all_files";
+                prerequisitePath = sender.CreateTokenizedString("@dir($(0))", copySourcePath);
+            }
+            else
+            {
+                prerequisitePath = copySourcePath;
+            }
+            rule.AddTarget(destinationPath, variableName: basename + sourceFilename);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            if (isSymLink)
+            if (isPosixLeafRename)
             {
-                rule.AddShellCommand(System.String.Format(@"{0} {1} {2} $@ {3}",
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $</* $(dir $@) {2}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
-                    sender.Macros["LinkTarget"].ToString(),
                     CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             }
             else
             {
-                if (isDir)
-                {
-                    if (isRenamedDir)
-                    {
-                        rule.AddShellCommand(System.String.Format(@"{0} {1} $</* {2} {3}",
-                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                            commandLine.ToString(' '),
-                            sender.Macros["CopyDir"].ToString(),
-                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-                    }
-                    else
-                    {
-                        rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
-                            CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                            commandLine.ToString(' '),
-                            CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
-                    }
-                }
-                else
-                {
-                    rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
-                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                        commandLine.ToString(' '),
-                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)),
-                        ignoreErrors: !(sender as CollatedFile).FailWhenSourceDoesNotExist);
-                }
-                rule.AddPrerequisite(sourcePath);
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
+                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                    commandLine.ToString(' '),
+                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             }
+            rule.AddPrerequisite(prerequisitePath);
         }
     }
 }

@@ -35,14 +35,6 @@ namespace C
     {
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Source File");
 
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-            this.RegisterGeneratedFile(Key, this.MakePlaceholderPath());
-        }
-
         public override void
         Evaluate()
         {
@@ -72,7 +64,11 @@ namespace C
             }
             set
             {
-                this.GeneratedPaths[Key].Aliased(value);
+                if (this.GeneratedPaths.ContainsKey(Key))
+                {
+                    throw new Bam.Core.Exception("Source path has already been set");
+                }
+                this.RegisterGeneratedFile(Key, value);
             }
         }
     }

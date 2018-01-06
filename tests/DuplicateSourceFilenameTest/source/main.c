@@ -33,6 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main()
 {
-    printf("Hello from %s and %s", ATest(), BTest());
+    printf("Hello from %s and %s\n", ATest(), BTest());
     return 0;
 }

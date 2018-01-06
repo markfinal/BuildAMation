@@ -45,11 +45,23 @@ namespace Publisher
         Bam.Core.Module
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Collation Root");
+
         private IStrippedBinaryCollationPolicy Policy = null;
 
-        protected StrippedBinaryCollation()
+        // this is doubling up the cost of the this.Requires list, but at less runtime cost
+        // for expanding each CollatedObject to peek as it's properties
+        private System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject>();
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
+            base.Init(parent);
+
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            // one value, as stripped binaries are not generated in IDE projects
+            this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
         }
 
         public sealed override void
@@ -75,149 +87,194 @@ namespace Publisher
         {
             switch (mode)
             {
-            case "MakeFile":
-                {
-                    var className = "Publisher." + mode + "StrippedBinaryCollation";
-                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IStrippedBinaryCollationPolicy>.Create(className);
-                }
-                break;
+                case "MakeFile":
+                    {
+                        var className = "Publisher." + mode + "StrippedBinaryCollation";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IStrippedBinaryCollationPolicy>.Create(className);
+                    }
+                    break;
             }
-        }
-
-        private Bam.Core.PathKey ReferenceKey
-        {
-            get;
-            set;
-        }
-
-        private System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> RefMap
-        {
-            get;
-            set;
         }
 
         private StripModule
         StripBinary(
-            CollatedObject collatedFile,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap,
-            ObjCopyModule debugSymbols = null)
+            ICollatedObject collatedFile)
         {
             var stripBinary = Bam.Core.Module.Create<StripModule>(preInitCallback: module =>
-            {
-                module.ReferenceMap = referenceMap;
-            });
+                {
+                    module.SourceModule = collatedFile.SourceModule;
+                    module.SourcePathKey = collatedFile.SourcePathKey;
+                    module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
+                });
+
             this.DependsOn(stripBinary);
-            stripBinary.SourceModule = collatedFile;
-            if (null != debugSymbols)
-            {
-                stripBinary.DebugSymbolsModule = debugSymbols;
-                stripBinary.Requires(debugSymbols);
-            }
-            if (collatedFile.Reference == null)
-            {
-                referenceMap.Add(collatedFile, stripBinary);
-                this.ReferenceKey = StripModule.Key;
-            }
+
+            // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+            stripBinary.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros["AnchorOutputName"]);
+
+            stripBinary.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            stripBinary.Anchor = collatedFile.Anchor;
+
+            this.collatedObjects.Add(collatedFile, stripBinary);
+
             return stripBinary;
+        }
+
+        private CollationType
+        CloneObject<CollationType>(
+            ICollatedObject collatedObject) where CollationType : CollatedObject, new()
+        {
+            var clonedFile = Bam.Core.Module.Create<CollationType>(preInitCallback: module =>
+                {
+                    if ((collatedObject as CollatedObject).Macros.Contains("RenameLeaf"))
+                    {
+                        module.Macros.Add("RenameLeaf", (collatedObject as CollatedObject).Macros["RenameLeaf"]);
+                    }
+                    if (null != collatedObject.SourceModule)
+                    {
+                        module.SourceModule = collatedObject.SourceModule;
+                        module.SourcePathKey = collatedObject.SourcePathKey;
+                    }
+                    else
+                    {
+                        module.PreExistingSourcePath = (collatedObject as CollatedObject).PreExistingSourcePath;
+                    }
+                    module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
+                });
+            this.DependsOn(clonedFile);
+
+            clonedFile.Anchor = collatedObject.Anchor;
+
+            clonedFile.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+
+            // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+            clonedFile.Macros.Add("AnchorOutputName", (collatedObject as CollatedObject).Macros["AnchorOutputName"]);
+
+            this.collatedObjects.Add(collatedObject, clonedFile);
+
+            return clonedFile;
         }
 
         private void
         CloneFile(
-            CollatedObject collatedFile,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
+            ICollatedObject collatedObject)
         {
-            var clonedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
-            {
-                Bam.Core.TokenizedString referenceFilePath = null;
-                if (collatedFile.Reference != null)
-                {
-                    if (!referenceMap.ContainsKey(collatedFile.Reference))
-                    {
-                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", collatedFile.Reference.SourceModule.ToString());
-                    }
-
-                    var newRef = referenceMap[collatedFile.Reference];
-                    // the PathKey depends on whether the reference came straight as a clone, or after being stripped
-                    referenceFilePath = newRef.GeneratedPaths[this.ReferenceKey];
-                }
-
-                module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
-                    this,
-                    referenceFilePath,
-                    collatedFile.SubDirectory,
-                    this.GeneratedPaths[Key]);
-            });
-            this.DependsOn(clonedFile);
-
-            clonedFile.SourceModule = collatedFile;
-            clonedFile.SourcePath = collatedFile.GeneratedPaths[CollatedObject.Key];
-            clonedFile.SubDirectory = collatedFile.SubDirectory;
-
-            if (collatedFile.Reference == null)
-            {
-                referenceMap.Add(collatedFile, clonedFile);
-                this.ReferenceKey = CollatedObject.Key;
-            }
+            CloneObject<CollatedFile>(collatedObject);
         }
 
         private void
         CloneDirectory(
-            CollatedObject collatedDir,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
+            ICollatedObject collatedObject)
         {
-            var clonedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
+            CloneObject<CollatedDirectory>(collatedObject);
+        }
+
+        private void
+        CloneOSXFramework(
+            ICollatedObject collatedObject)
+        {
+            var clonedFramework = CloneObject<CollatedOSXFramework>(collatedObject);
+            clonedFramework.UsePublicPatches(collatedObject as CollatedOSXFramework);
+        }
+
+        private void
+        eachAnchorDependent(
+            ICollatedObject collatedObj,
+            object customData)
+        {
+            var sourceModule = collatedObj.SourceModule;
+            if (sourceModule != null)
             {
-                if (!referenceMap.ContainsKey(collatedDir.Reference))
+                Bam.Core.Log.DebugMessage("\t'{0}'", sourceModule.ToString());
+            }
+            else
+            {
+                Bam.Core.Log.DebugMessage("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
+            }
+
+            var cModule = sourceModule as C.CModule;
+            if (null == cModule)
+            {
+                // e.g. a shared object symbolic link
+                if (collatedObj is CollatedFile)
                 {
-                    throw new Bam.Core.Exception("Unable to find CollatedDirectory reference to {0} in the reference map", collatedDir.Reference.SourceModule.ToString());
+                    this.CloneFile(collatedObj);
                 }
+                else if (collatedObj is CollatedDirectory)
+                {
+                    this.CloneDirectory(collatedObj);
+                }
+                return;
+            }
 
-                var newRef = referenceMap[collatedDir.Reference];
-                var referenceFilePath = newRef.GeneratedPaths[this.ReferenceKey];
-
-                module.Macros["CopyDir"] = Collation.GenerateDirectoryCopyDestination(
-                    module,
-                    referenceFilePath,
-                    collatedDir.SubDirectory,
-                    collatedDir.SourcePath);
-            });
-            this.DependsOn(clonedDir);
-
-            clonedDir.SourceModule = collatedDir;
-            clonedDir.SourcePath = collatedDir.GeneratedPaths[CollatedObject.Key];
-            clonedDir.SubDirectory = collatedDir.SubDirectory;
-            if (collatedDir.Macros["CopiedFilename"].IsAliased)
+            if (cModule.IsPrebuilt)
             {
-                clonedDir.Macros["CopiedFilename"].Aliased(collatedDir.Macros["CopiedFilename"]);
+                if (collatedObj is CollatedOSXFramework)
+                {
+                    this.CloneOSXFramework(collatedObj);
+                }
+                else
+                {
+                    this.CloneFile(collatedObj);
+                }
+                return;
+            }
+
+            if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                if (sourceModule.Tool.Macros.Contains("pdbext"))
+                {
+                    this.CloneFile(collatedObj);
+                }
+                else
+                {
+                    var stripped = this.StripBinary(collatedObj);
+                    var debugSymbolsCollation = customData as DebugSymbolCollation;
+                    var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
+                    if (null != debugSymbols)
+                    {
+                        var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
+                        this.DependsOn(linkBack);
+                    }
+                }
+            }
+            else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                var stripped = this.StripBinary(collatedObj);
+                var debugSymbolsCollation = customData as DebugSymbolCollation;
+                var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
+                if (null != debugSymbols)
+                {
+                    var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
+                    this.DependsOn(linkBack);
+                }
+            }
+            else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                this.StripBinary(collatedObj);
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unsupported platform '{0}'", sourceModule.BuildEnvironment.Platform.ToString());
             }
         }
 
         private void
-        CloneSymbolicLink(
-            CollatedObject collatedSymlink,
-            System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> referenceMap)
+        findDependentsofAnchor(
+            Collation collation,
+            ICollatedObject anchor,
+            object customData)
         {
-            var clonedSymLink = Bam.Core.Module.Create<CollatedSymbolicLink>(preInitCallback: module =>
-                {
-                    if (!referenceMap.ContainsKey(collatedSymlink.Reference))
-                    {
-                        throw new Bam.Core.Exception("Unable to find CollatedSymbolicLink reference to {0} in the reference map", collatedSymlink.Reference.SourceModule.ToString());
-                    }
-
-                    var newRef = referenceMap[collatedSymlink.Reference];
-                    var referenceFilePath = newRef.GeneratedPaths[this.ReferenceKey];
-
-                    module.Macros["CopyDir"] = Collation.GenerateSymbolicLinkCopyDestination(
-                        this,
-                        referenceFilePath,
-                        collatedSymlink.SubDirectory);
-                });
-            this.DependsOn(clonedSymLink);
-
-            clonedSymLink.SourceModule = collatedSymlink;
-            clonedSymLink.SourcePath = collatedSymlink.GeneratedPaths[CollatedObject.Key];
-            clonedSymLink.SubDirectory = collatedSymlink.SubDirectory;
-            clonedSymLink.AssignLinkTarget(collatedSymlink.Macros["LinkTarget"]);
+            if (null != anchor.SourceModule)
+            {
+                Bam.Core.Log.DebugMessage("Stripped Anchor '{0}'", anchor.SourceModule.ToString());
+            }
+            else
+            {
+                Bam.Core.Log.DebugMessage("Pre existing Stripped Anchor '{0}'", (anchor as CollatedObject).SourcePath.ToString());
+            }
+            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }
 
         /// <summary>
@@ -226,8 +283,8 @@ namespace Publisher
         /// release to end-users without debug information, and yet the developer is still able to
         /// debug issues by combining debug files with the stripped binaries.
         /// </summary>
-        /// <typeparam name="RuntimeModule">The 1st type parameter.</typeparam>
-        /// <typeparam name="DebugSymbolModule">The 2nd type parameter.</typeparam>
+        /// <typeparam name="RuntimeModule">The Collation module type from which to strip binaries for.</typeparam>
+        /// <typeparam name="DebugSymbolModule">The DebugSymbolCollation module type used to link stripped binaries to debug symbols.</typeparam>
         public void
         StripBinariesFrom<RuntimeModule, DebugSymbolModule>()
             where RuntimeModule : Collation, new()
@@ -243,84 +300,26 @@ namespace Publisher
             {
                 return;
             }
+
+            // stripped binaries are made after the initial collation and debug symbol generation
             this.DependsOn(runtimeDependent);
             this.DependsOn(debugSymbolDependent);
 
-            var referenceMap = new System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module>();
-            foreach (CollatedObject req in runtimeDependent.Requirements.Where(item => item is CollatedObject))
+            (runtimeDependent as Collation).ForEachAnchor(findDependentsofAnchor, debugSymbolDependent);
+        }
+
+        private Bam.Core.Module
+        findAnchor(
+            CollatedObject anchor)
+        {
+            foreach (var obj in this.collatedObjects)
             {
-                if (req is CollatedSymbolicLink)
+                if (obj.Key == anchor)
                 {
-                    this.CloneSymbolicLink(req, referenceMap);
-                }
-                else if (req is CollatedDirectory)
-                {
-                    this.CloneDirectory(req, referenceMap);
-                }
-                else if (req is CollatedFile)
-                {
-                    var source = req.SourceModule;
-                    if (!(source is C.ConsoleApplication))
-                    {
-                        this.CloneFile(req, referenceMap);
-                        continue;
-                    }
-
-                    if ((source as C.CModule).IsPrebuilt)
-                    {
-                        this.CloneFile(req, referenceMap);
-                        continue;
-                    }
-
-                    // the remaining files will have been built, and therefore have some data that may need stripping
-                    if (Bam.Core.OSUtilities.IsWindowsHosting)
-                    {
-                        if (req.SourceModule.Tool.Macros.Contains("pdbext"))
-                        {
-                            this.CloneFile(req, referenceMap);
-                        }
-                        else
-                        {
-                            // assume that debug symbols have been extracted into a separate file
-                            var debugSymbols = debugSymbolDependent.Dependents.FirstOrDefault(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req);
-                            if (null == debugSymbols)
-                            {
-                                throw new Bam.Core.Exception("Unable to locate debug symbol generation for {0}", req.SourceModule.ToString());
-                            }
-                            // then strip the binary
-                            var stripped = this.StripBinary(req, referenceMap, debugSymbols: debugSymbols as ObjCopyModule);
-                            // and add a link back to the debug symbols on the stripped binary
-                            var linkBack = DebugSymbolCollation.LinkBackToDebugSymbols(stripped, referenceMap);
-                            linkBack.DependsOn(stripped);
-                            this.DependsOn(linkBack);
-                        }
-                    }
-                    else if (Bam.Core.OSUtilities.IsLinuxHosting)
-                    {
-                        // assume that debug symbols have been extracted into a separate file
-                        var debugSymbols = debugSymbolDependent.Dependents.FirstOrDefault(item => (item is ObjCopyModule) && (item as ObjCopyModule).SourceModule == req);
-                        if (null == debugSymbols)
-                        {
-                            throw new Bam.Core.Exception("Unable to locate debug symbol generation for {0}", req.SourceModule.ToString());
-                        }
-                        // then strip the binary
-                        var stripped = this.StripBinary(req, referenceMap, debugSymbols: debugSymbols as ObjCopyModule);
-                        // and add a link back to the debug symbols on the stripped binary
-                        var linkBack = DebugSymbolCollation.LinkBackToDebugSymbols(stripped, referenceMap);
-                        linkBack.DependsOn(stripped);
-                        this.DependsOn(linkBack);
-                    }
-                    else if (Bam.Core.OSUtilities.IsOSXHosting)
-                    {
-                        this.StripBinary(req, referenceMap);
-                    }
-                }
-                else
-                {
-                    throw new Bam.Core.Exception("Unhandled collation module: {0}", req.ToString());
+                    return obj.Value as Bam.Core.Module;
                 }
             }
-            this.RefMap = referenceMap;
+            throw new Bam.Core.Exception("Unable to find stripped collation object for '{0}'", (anchor as ICollatedObject).SourceModule.ToString());
         }
 
         /// <summary>
@@ -329,39 +328,40 @@ namespace Publisher
         /// </summary>
         /// <typeparam name="DependentModule">Module type containing the file to incorporate into the collation.</typeparam>
         /// <param name="key">The PathKey of the above module, containing the path to the file.</param>
-        /// <param name="subDirectory">The subdirectory of the collation in which to write the file.</param>
-        /// <param name="reference">The reference from the original Collation that the subdirectory specified is relative to. This references is translated into the stripped directory hierarchy before applying the subdirectory.</param>
-        /// <returns>A reference to the collated file.</returns>
-        public CollatedFile
+        /// <param name="collator">The original collator from which the stripped objects will be sourced.</param>
+        /// <param name="anchor">The anchor in the stripped collation.</param>
+        /// <returns>A reference to the stripped collated file.</returns>
+        public ICollatedObject
         Include<DependentModule>(
             Bam.Core.PathKey key,
-            string subDirectory,
-            CollatedObject reference) where DependentModule : Bam.Core.Module, new()
+            Collation collator,
+            CollatedObject anchor) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            this.Requires(dependent);
-            this.Requires(dependent.Tool);
+            if (null == dependent)
+            {
+                return null;
+            }
 
-            var strippedInitialRef = this.RefMap[reference];
+            var modulePublishDir = collator.Mapping.FindPublishDirectory(dependent, key);
 
-            var subDir = Bam.Core.TokenizedString.CreateVerbatim(subDirectory);
-            var copyFileModule = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+            var collatedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
                 {
-                Bam.Core.TokenizedString referenceFilePath = strippedInitialRef.GeneratedPaths[this.ReferenceKey];
-                    this.RegisterGeneratedFile(Key, module.CreateTokenizedString("@dir($(0))", dependent.GeneratedPaths[key]));
-                    module.Macros["CopyDir"] = Collation.GenerateFileCopyDestination(
-                        module,
-                        referenceFilePath,
-                        subDir,
-                        this.GeneratedPaths[Key]);
+                    module.SourceModule = dependent;
+                    module.SourcePathKey = key;
+                    module.Anchor = anchor;
+                    module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
                 });
-            this.Requires(copyFileModule);
 
-            copyFileModule.SourceModule = dependent;
-            copyFileModule.SourcePath = dependent.GeneratedPaths[key];
-            copyFileModule.Reference = strippedInitialRef as CollatedFile;
-            copyFileModule.SubDirectory = subDir;
-            return copyFileModule;
+            var strippedAnchor = this.findAnchor(anchor);
+
+            collatedFile.Macros.Add("publishdir", strippedAnchor.Macros["publishdir"]);
+
+            // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+            collatedFile.Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros["AnchorOutputName"]);
+
+            this.Requires(collatedFile);
+            return collatedFile;
         }
     }
 }

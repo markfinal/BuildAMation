@@ -28,9 +28,10 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace PluginTest
 {
-    public sealed class Application :
+    public class Application :
         C.Cxx.ConsoleApplication
     {
         protected override void
@@ -63,7 +64,7 @@ namespace PluginTest
         }
     }
 
-    public sealed class Plugin :
+    public class Plugin :
         C.Cxx.Plugin
     {
         protected override void
@@ -99,8 +100,37 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Plugin>(C.Plugin.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<Application>(C.ConsoleApplication.Key);
+            (this.Find<Plugin>().First() as Publisher.CollatedObject).SetPublishingDirectory("$(0)/subdir", new[] { this.ExecutableDir });
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class DebugSymbols :
+        Publisher.DebugSymbolCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.CreateSymbolsFrom<RuntimePackage>();
+        }
+    }
+
+    [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
+    sealed class Stripped :
+        Publisher.StrippedBinaryCollation
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
         }
     }
 }

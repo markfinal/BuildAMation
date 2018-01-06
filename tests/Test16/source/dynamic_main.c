@@ -31,7 +31,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main()
 {
+    return DynamicLibrary2Function('m')
+#ifdef D_PUBLIC_FORWARDING
     /* because dynamiclibrary1 is in the public API of dynamiclibrary2, functions from
-       dynamiclibrary1 can be used directly, but which may never have been referenced by dynamiclibrary2 */
-    return DynamicLibrary2Function('m') + DynamicLibrary1ExtraFunction();
+    dynamiclibrary1 can be used directly, but which may never have been referenced by dynamiclibrary2 */
+    + DynamicLibrary1ExtraFunction()
+#endif
+    ;
 }

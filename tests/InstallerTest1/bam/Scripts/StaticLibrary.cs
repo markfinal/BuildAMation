@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace InstallerTest1
 {
-    public sealed class CxxStaticLibrary :
+    public class CxxStaticLibrary :
         C.StaticLibrary
     {
         protected override void
@@ -53,7 +53,7 @@ namespace InstallerTest1
         }
     }
 
-    public sealed class CStaticLibrary :
+    public class CStaticLibrary :
         C.StaticLibrary
     {
         protected override void

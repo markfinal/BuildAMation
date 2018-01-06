@@ -241,8 +241,8 @@ namespace EmbedStaticIntoDynamicLibrary
         {
             base.Init(parent);
 
-            var app = this.Include<CApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<CDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<CApp>(C.ConsoleApplication.Key);
         }
     }
 
@@ -255,8 +255,8 @@ namespace EmbedStaticIntoDynamicLibrary
         {
             base.Init(parent);
 
-            var app = this.Include<CxxApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<CxxDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<CxxApp>(C.Cxx.ConsoleApplication.Key);
         }
     }
 }

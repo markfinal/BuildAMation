@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
@@ -116,6 +117,72 @@ namespace Bam.Core
             TokenizedStringArray other)
         {
             return new TokenizedStringArray(base.Complement(other));
+        }
+
+        /// <summary>
+        /// If strings are parsed, then compare parsed strings, otherwise fall back on the default TokenizedString comparison.
+        /// </summary>
+        /// <param name="item">TokenizedString to determine if it exists in the list.</param>
+        /// <returns>true if the string exists in the list; false otherwise.</returns>
+        public override bool
+        Contains(
+            TokenizedString item)
+        {
+            if (item.IsParsed)
+            {
+                var itemString = item.ToString();
+                foreach (var element in this.list)
+                {
+                    if (element.IsParsed)
+                    {
+                        if (itemString == element.ToString())
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (item.Equals(element))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            return base.Contains(item);
+        }
+
+        class ParsedTokenizedStringComparer :
+            System.Collections.Generic.IEqualityComparer<TokenizedString>
+        {
+            bool
+            System.Collections.Generic.IEqualityComparer<TokenizedString>.Equals(
+                TokenizedString x,
+                TokenizedString y)
+            {
+                return x.ToString() == y.ToString();
+            }
+
+            int
+            System.Collections.Generic.IEqualityComparer<TokenizedString>.GetHashCode(
+                TokenizedString obj)
+            {
+                return obj.ToString().GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerable that has no duplicates, when comparing the parsed strings.
+        /// Duplicates may occur when strings are finally parsed, as the TokenizedString hashes may be
+        /// different due to being sourced with different modules in the same package.
+        /// See https://github.com/markfinal/BuildAMation/issues/401
+        /// </summary>
+        /// <returns>Enumerable of the array without any duplicates.</returns>
+        public System.Collections.Generic.IEnumerable<TokenizedString>
+        ToEnumerableWithoutDuplicates()
+        {
+            return this.list.Distinct<TokenizedString>(new ParsedTokenizedStringComparer());
         }
     }
 }

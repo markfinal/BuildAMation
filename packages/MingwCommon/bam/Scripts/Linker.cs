@@ -115,17 +115,23 @@ namespace MingwCommon
                 return;
             }
             // TODO: use @filenamenoext
-            if (!fullLibraryPath.IsParsed)
+            lock (fullLibraryPath)
             {
-                fullLibraryPath.Parse();
+                if (!fullLibraryPath.IsParsed)
+                {
+                    fullLibraryPath.Parse();
+                }
             }
             var libFilename = GetLPrefixLibraryName(fullLibraryPath.ToString());
             var linker = executable.Settings as C.ICommonLinkerSettings;
             linker.Libraries.AddUnique(libFilename);
             var libDir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
-            if (!libDir.IsParsed)
+            lock (libDir)
             {
-                libDir.Parse();
+                if (!libDir.IsParsed)
+                {
+                    libDir.Parse();
+                }
             }
             linker.LibraryPaths.AddUnique(libDir);
         }

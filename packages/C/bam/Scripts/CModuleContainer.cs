@@ -50,16 +50,18 @@ namespace C
             where SourceFileType : Bam.Core.Module, Bam.Core.IInputPath, new()
         {
             // explicitly make a source file
-            var sourceFile = Bam.Core.Module.Create<SourceFileType>();
-            if (verbatim)
-            {
-                sourceFile.InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
-            }
-            else
-            {
-                var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
-                sourceFile.InputPath = macroModule.CreateTokenizedString(path);
-            }
+            var sourceFile = Bam.Core.Module.Create<SourceFileType>(postInitCallback: (module) =>
+                {
+                    if (verbatim)
+                    {
+                        (module as SourceFileType).InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
+                    }
+                    else
+                    {
+                        var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+                        (module as SourceFileType).InputPath = macroModule.CreateTokenizedString(path);
+                    }
+                });
             return sourceFile;
         }
 
@@ -198,7 +200,9 @@ namespace C
                 }
                 else
                 {
-                    clonedChild.InputPath.Aliased(child.InputPath);
+                    throw new Bam.Core.Exception(
+                        new System.NotImplementedException(),
+                        "Container does not include objects implementing the interface '{0}'", typeof(IRequiresSourceModule).ToString());
                 }
             }
         }

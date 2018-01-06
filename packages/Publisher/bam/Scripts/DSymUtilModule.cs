@@ -31,11 +31,15 @@ using Bam.Core;
 namespace Publisher
 {
     public class DSymUtilModule :
-        Bam.Core.Module
+        Bam.Core.Module,
+        ICollatedObject
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("dSYM bundle");
 
-        private CollatedObject TheSourceModule;
+        private Bam.Core.Module sourceModule;
+        private Bam.Core.PathKey sourcePathKey;
+        private ICollatedObject anchor = null;
+
         private IDSymUtilToolPolicy Policy;
 
         protected override void
@@ -45,6 +49,9 @@ namespace Publisher
             base.Init(parent);
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DSymUtilTool>();
+            this.RegisterGeneratedFile(Key,
+                this.CreateTokenizedString("$(0)/@filename($(1)).dsym",
+                                           new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
         }
 
         public override void
@@ -61,7 +68,7 @@ namespace Publisher
             {
                 return;
             }
-            this.Policy.CreateBundle(this, context, this.TheSourceModule.GeneratedPaths[CollatedObject.Key], this.GeneratedPaths[Key]);
+            this.Policy.CreateBundle(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
         }
 
         protected override void
@@ -72,55 +79,64 @@ namespace Publisher
             {
                 case "Native":
                 case "MakeFile":
-                {
-                    var className = "Publisher." + mode + "DSymUtil";
-                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IDSymUtilToolPolicy>.Create(className);
-                }
-                break;
+                    {
+                        var className = "Publisher." + mode + "DSymUtil";
+                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IDSymUtilToolPolicy>.Create(className);
+                    }
+                    break;
             }
         }
 
-        public System.Collections.Generic.Dictionary<CollatedObject, Bam.Core.Module> ReferenceMap
-        {
-            get;
-            set;
-        }
-
-        public CollatedObject SourceModule
+        Bam.Core.Module ICollatedObject.SourceModule
         {
             get
             {
-                return this.TheSourceModule;
+                return this.sourceModule;
             }
-
+        }
+        public Bam.Core.Module SourceModule
+        {
             set
             {
-                this.TheSourceModule = value;
-                this.DependsOn(value);
+                this.sourceModule = value;
+            }
+        }
 
-                Bam.Core.TokenizedString referenceFilePath = null;
-                if (value.Reference != null)
-                {
-                    if (null == this.ReferenceMap)
-                    {
-                        throw new Bam.Core.Exception("Missing mapping of CollatedFiles to DSymUtilModules");
-                    }
-                    if (!this.ReferenceMap.ContainsKey(value.Reference))
-                    {
-                        throw new Bam.Core.Exception("Unable to find CollatedFile reference to {0} in the reference map", value.Reference.SourceModule.ToString());
-                    }
+        Bam.Core.PathKey ICollatedObject.SourcePathKey
+        {
+            get
+            {
+                return this.sourcePathKey;
+            }
+        }
+        public Bam.Core.PathKey SourcePathKey
+        {
+            set
+            {
+                this.sourcePathKey = value;
+            }
+        }
 
-                    var newRef = this.ReferenceMap[value.Reference];
-                    referenceFilePath = newRef.GeneratedPaths[Key];
-                }
-                var destinationDirectory = Collation.GenerateFileCopyDestination(
-                    this,
-                    referenceFilePath,
-                    value.SubDirectory,
-                    this.Dependees[0].GeneratedPaths[DebugSymbolCollation.Key]); // path of the debug symbol collation root
-                this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(0)/@filename($(1)).dSYM",
-                    destinationDirectory,
-                    value.GeneratedPaths[CollatedObject.Key]));
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
+        {
+            get
+            {
+                return this.Macros["publishingdir"];
+            }
+        }
+
+        ICollatedObject ICollatedObject.Anchor
+        {
+            get
+            {
+                return this.anchor;
+            }
+        }
+        public ICollatedObject Anchor
+        {
+            set
+            {
+                this.anchor = value;
             }
         }
     }

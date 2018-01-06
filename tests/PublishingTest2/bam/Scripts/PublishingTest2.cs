@@ -39,15 +39,16 @@ namespace PublishingTest2
         {
             base.Init(parent);
 
-            // copy a single data file as the root of all other copies
-            var root = this.IncludeFile(this.CreateTokenizedString("$(packagedir)/data/testfile1.txt"), "api_include");
+            var headerDir = this.CreateTokenizedString("$(publishroot)/api_include");
 
-            // copy a directory, with a number of files and a subdirectory, next to the root data file
-            this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), ".", root);
+            // copy a single data file
+            this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", headerDir, null);
 
-            // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the root data file
-            var renamedDir = this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), "lib", root);
-            renamedDir.CopiedFilename = "testdir1_renamed";
+            // copy a directory, with a number of files and a subdirectory
+            this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", headerDir, null);
+
+            // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory
+            this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", this.CreateTokenizedString("$(publishroot)/lib"), null, renameLeaf: "testdir1_renamed");
         }
     }
 }

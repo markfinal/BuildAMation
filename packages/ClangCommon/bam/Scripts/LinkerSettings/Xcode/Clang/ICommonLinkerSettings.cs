@@ -40,7 +40,7 @@ namespace ClangCommon
             if (settings.RPath.Count > 0)
             {
                 var option = new XcodeBuilder.MultiConfigurationValue();
-                foreach (var path in settings.RPath)
+                foreach (var path in settings.RPath.ToEnumerableWithoutDuplicates())
                 {
                     option.Add(path.ToString());
                 }

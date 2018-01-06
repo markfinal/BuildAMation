@@ -42,7 +42,7 @@ namespace Publisher
                 this.Policy.InstallName(
                     this,
                     context,
-                    framework.SourceModule.Macros["IDName"],
+                    (framework as ICollatedObject).SourceModule.Macros["IDName"],
                     framework.Macros["IDName"]);
             }
         }

@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace MissingDependencyTest1
 {
-    sealed class Test :
+    class Test :
         C.ConsoleApplication
     {
         protected override void
@@ -44,7 +44,7 @@ namespace MissingDependencyTest1
         }
     }
 
-    sealed class Test2 :
+    class Test2 :
         C.ConsoleApplication
     {
         protected override void
@@ -129,8 +129,8 @@ namespace MissingDependencyTest1
         {
             base.Init(parent);
 
-            var app = this.Include<PluginTest>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Plugin>(C.Plugin.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<PluginTest>(C.ConsoleApplication.Key);
         }
     }
 }

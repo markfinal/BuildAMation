@@ -40,7 +40,22 @@ namespace Bam.Core
         /// <summary>
         /// Static cache of all modules created.
         /// </summary>
-        static protected System.Collections.Generic.List<Module> AllModules = new System.Collections.Generic.List<Module>();
+        static protected System.Collections.Generic.List<Module> AllModules;
+
+        /// <summary>
+        /// Reset all static state of the Module class.
+        /// This function is only really useful in unit tests.
+        /// </summary>
+        public static void
+        reset()
+        {
+            AllModules = new System.Collections.Generic.List<Module>();
+        }
+
+        static Module()
+        {
+            reset();
+        }
 
         /// <summary>
         /// Protected constructor (use Init function in general use to configure a module) for a new module. Use Module.Create
@@ -73,27 +88,34 @@ namespace Bam.Core
             this.EncapsulatingType = graph.CommonModuleType.Peek();
 
             // add the package root
-            var packageNameSpace = this.EncapsulatingType.Namespace;
-            var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
-            if (null == packageDefinition)
+            try
             {
-                var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
-                if (includeTests && packageNameSpace.EndsWith(".tests"))
-                {
-                    packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
-                    packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
-                }
-
+                var packageNameSpace = this.EncapsulatingType.Namespace;
+                var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
                 if (null == packageDefinition)
                 {
-                    throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
+                    var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
+                    if (includeTests && packageNameSpace.EndsWith(".tests"))
+                    {
+                        packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
+                        packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
+                    }
+
+                    if (null == packageDefinition)
+                    {
+                        throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
+                    }
                 }
+                this.PackageDefinition = packageDefinition;
+                this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
+                this.AddRedirectedPackageDirectory();
+                this.Macros.AddVerbatim("packagename", packageDefinition.Name);
+                this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
             }
-            this.PackageDefinition = packageDefinition;
-            this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
-            this.AddRedirectedPackageDirectory();
-            this.Macros.AddVerbatim("packagename", packageDefinition.Name);
-            this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
+            catch (System.NullReferenceException)
+            {
+                // graph.Packages can be null during unittests
+            }
             this.Macros.AddVerbatim("modulename", this.GetType().Name);
             this.Macros.Add("OutputName", this.Macros["modulename"]);
 
@@ -648,14 +670,17 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Determine if the module is a top-level module, i.e. is from the package in which Bam was invoked.
+        /// Determine if the module is a top-level module, i.e. is from the package in which Bam was invoked,
+        /// and nothing depends on it.
         /// </summary>
         /// <value><c>true</c> if top level; otherwise, <c>false</c>.</value>
         public bool TopLevel
         {
             get
             {
-                var isTopLevel = (0 == this.DependeesList.Count) && (0 == this.RequiredDependeesList.Count);
+                var isTopLevel = (0 == this.DependeesList.Count) &&
+                    (0 == this.RequiredDependeesList.Count) &&
+                    (this.PackageDefinition == Graph.Instance.MasterPackage);
                 return isTopLevel;
             }
         }
@@ -949,16 +974,6 @@ namespace Bam.Core
                 module.Complete();
                 Log.DetailProgress("{0,3}%", (int)(++count * scale));
             }
-        }
-
-        /// <summary>
-        /// Make a path which is a placeholder, and will eventually be aliased.
-        /// </summary>
-        /// <returns>The placeholder path.</returns>
-        public TokenizedString
-        MakePlaceholderPath()
-        {
-            return TokenizedString.CreateUncached(string.Empty, this);
         }
 
         /// <summary>

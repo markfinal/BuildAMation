@@ -127,8 +127,8 @@ namespace VersionScriptTest1
         {
             base.Init(parent);
 
-            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Library>(C.Plugin.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<Application>(C.ConsoleApplication.Key);
         }
     }
 }

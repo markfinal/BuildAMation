@@ -44,7 +44,7 @@ namespace C
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("ln");
+                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln"));
             }
         }
     }

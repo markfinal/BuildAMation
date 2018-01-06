@@ -110,7 +110,7 @@ namespace Bam.Core
         AddUnique(
             T item)
         {
-            if (this.list.Contains(item))
+            if (this.Contains(item))
             {
                 return;
             }
@@ -173,7 +173,7 @@ namespace Bam.Core
 
             foreach (var item in array)
             {
-                if (this.list.Contains(item))
+                if (this.Contains(item))
                 {
                     continue;
                 }
@@ -191,7 +191,7 @@ namespace Bam.Core
         {
             foreach (var item in list)
             {
-                if (this.list.Contains(item))
+                if (this.Contains(item))
                 {
                     continue;
                 }
@@ -440,7 +440,7 @@ namespace Bam.Core
             var intersect = new Array<T>();
             foreach (var item in this.list)
             {
-                if (!other.list.Contains(item))
+                if (!other.Contains(item))
                 {
                     continue;
                 }
@@ -461,7 +461,7 @@ namespace Bam.Core
             var complement = new Array<T>();
             foreach (var item in this.list)
             {
-                if (other.list.Contains(item))
+                if (other.Contains(item))
                 {
                     continue;
                 }
@@ -487,7 +487,7 @@ namespace Bam.Core
 
             foreach (var item in this.list)
             {
-                if (!other.list.Contains(item))
+                if (!other.Contains(item))
                 {
                     return false;
                 }

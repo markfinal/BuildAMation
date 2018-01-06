@@ -30,20 +30,9 @@
 using Bam.Core;
 namespace Publisher
 {
-    public sealed class CollatedFile :
+    public class CollatedFile :
         CollatedObject
     {
-        public CollatedFile()
-        {
-            this.FailWhenSourceDoesNotExist = true;
-        }
-
-        public bool FailWhenSourceDoesNotExist
-        {
-            get;
-            set;
-        }
-
         public override void
         Evaluate()
         {
@@ -55,16 +44,16 @@ namespace Publisher
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
-            var source = this.SourceModule;
-            if (null != source)
+            var sourceModule = (this as ICollatedObject).SourceModule;
+            if (null != sourceModule)
             {
-                if (null != source.EvaluationTask)
+                if (null != sourceModule.EvaluationTask)
                 {
-                    source.EvaluationTask.Wait();
+                    sourceModule.EvaluationTask.Wait();
                 }
-                if (null != source.ReasonToExecute && null != source.ReasonToExecute.OutputFilePath)
+                if (null != sourceModule.ReasonToExecute && null != sourceModule.ReasonToExecute.OutputFilePath)
                 {
-                    if (source.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString()))
+                    if (sourceModule.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString()))
                     {
                         this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
                         return;

@@ -31,7 +31,7 @@ using Bam.Core;
 namespace Test8
 {
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
-    sealed class ApplicationTest :
+    class ApplicationTest :
         C.ConsoleApplication
     {
         private static void
@@ -88,8 +88,8 @@ namespace Test8
         {
             base.Init(parent);
 
-            var app = this.Include<ApplicationTest>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test7.ExplicitDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
+            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.Include<ApplicationTest>(C.ConsoleApplication.Key);
         }
     }
 }

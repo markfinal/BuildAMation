@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace MakeFileBuilder
 {
     public sealed class Rule
@@ -35,7 +36,7 @@ namespace MakeFileBuilder
             Bam.Core.Module module,
             int count)
         {
-            this.RuleCount = count;
+            this.RuleIndex = count;
             this.Module = module;
             this.Targets = new Bam.Core.Array<Target>();
             this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
@@ -52,8 +53,11 @@ namespace MakeFileBuilder
             bool isPhony = false,
             string variableName = null)
         {
-            var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleCount);
-            this.Targets.Add(target);
+            var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleIndex);
+            lock (this.Targets)
+            {
+                this.Targets.Add(target);
+            }
             return target;
         }
 
@@ -97,29 +101,27 @@ namespace MakeFileBuilder
             }
         }
 
-        public bool
-        IsFirstRule
-        {
-            get
-            {
-                return (this.RuleCount == 0);
-            }
-        }
-
         public void
-        AppendTargetNames(
+        AppendAllPrerequisiteTargetNames(
             Bam.Core.StringArray variableNames)
         {
-            foreach (var target in this.Targets)
+            lock (this.Targets)
             {
-                var name = target.VariableName;
-                if (null != name)
+                foreach (var target in this.Targets)
                 {
-                    variableNames.AddUnique("$(" + name + ")");
-                }
-                else
-                {
-                    variableNames.AddUnique(target.Path.ToString());
+                    if (!target.IsPrerequisiteofAll)
+                    {
+                        continue;
+                    }
+                    var name = target.VariableName;
+                    if (null != name)
+                    {
+                        variableNames.AddUnique("$(" + name + ")");
+                    }
+                    else
+                    {
+                        variableNames.AddUnique(target.Path.ToString());
+                    }
                 }
             }
         }
@@ -150,10 +152,13 @@ namespace MakeFileBuilder
                 }
 
                 // simply expanded variable
-                if (!target.Path.IsParsed)
+                lock (target.Path)
                 {
-                    // some sources may be generated after the string parsing phase
-                    target.Path.Parse();
+                    if (!target.Path.IsParsed)
+                    {
+                        // some sources may be generated after the string parsing phase
+                        target.Path.Parse();
+                    }
                 }
                 variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
                 variables.AppendLine();
@@ -210,6 +215,13 @@ namespace MakeFileBuilder
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
+                    lock (pre)
+                    {
+                        if (!pre.IsParsed)
+                        {
+                            pre.Parse();
+                        }
+                    }
                     rules.AppendFormat("{0} ", pre.ToStringQuoteIfNecessary());
                 }
                 foreach (var pre in this.PrerequisiteTargets)
@@ -245,7 +257,51 @@ namespace MakeFileBuilder
             }
         }
 
-        private int RuleCount
+        public Target
+        FirstTarget
+        {
+            get
+            {
+                lock (this.Targets)
+                {
+                    return this.Targets.FirstOrDefault();
+                }
+            }
+        }
+
+        public delegate void eachTargetDelegate(Target target);
+
+        public void
+        ForEachTarget(
+            eachTargetDelegate dlg)
+        {
+            lock (this.Targets)
+            {
+                foreach (var target in this.Targets)
+                {
+                    dlg(target);
+                }
+            }
+        }
+
+        public bool
+        AnyTargetUsesVariableName(
+            string variableName)
+        {
+            lock (this.Targets)
+            {
+                foreach (var target in this.Targets)
+                {
+                    if (target.VariableName == variableName)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        private int RuleIndex
         {
             get;
             set;
@@ -257,10 +313,10 @@ namespace MakeFileBuilder
             set;
         }
 
-        public Bam.Core.Array<Target> Targets
+        private Bam.Core.Array<Target> Targets
         {
             get;
-            private set;
+            set;
         }
 
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Prequisities

@@ -41,7 +41,7 @@ namespace WindowsSDK
                 commandLine.Add("-v");
             }
 
-            foreach (var path in settings.IncludePaths)
+            foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-i{0}", path.ToStringQuoteIfNecessary()));
             }

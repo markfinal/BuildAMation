@@ -51,7 +51,7 @@ namespace Publisher
                 foreach (var rules in depMeta.Rules)
                 {
                     // TODO: only the first?
-                    rule.AddPrerequisite(rules.Targets[0]);
+                    rule.AddPrerequisite(rules.FirstTarget);
                 }
             }
         }

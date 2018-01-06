@@ -98,6 +98,11 @@ namespace Bam.Core
             {
                 throw new Exception("Cannot assign null to macro '{0}'", key);
             }
+            var tokenizedMacro = System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
+            if (value.RefersToMacro(tokenizedMacro))
+            {
+                throw new Exception("Circular reference; cannnot assign macro '{0}' when it is referred to in TokenizedString or one of it's positional strings", key);
+            }
             this.DictInternal[FormattedKey(key)] = value;
         }
 

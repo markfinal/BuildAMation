@@ -78,13 +78,13 @@ namespace C
                 var depMeta = dep.MetaData as MakeFileBuilder.MakeFileMeta;
                 foreach (var depRule in depMeta.Rules)
                 {
-                    foreach (var depTarget in depRule.Targets)
-                    {
-                        if (!depTarget.IsPhony)
+                    depRule.ForEachTarget(target =>
                         {
-                            rule.AddPrerequisite(depTarget.Path);
-                        }
-                    }
+                            if (!target.IsPhony)
+                            {
+                                rule.AddPrerequisite(target.Path);
+                            }
+                        });
                 }
             }
         }
