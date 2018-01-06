@@ -37,5 +37,5 @@ namespace Publisher
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString originalPath,
             Bam.Core.TokenizedString strippedPath);
-   }
+    }
 }
