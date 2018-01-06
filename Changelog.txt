@@ -26,7 +26,7 @@ In addition to making functions have one purpose, this change also allows the po
 
 TokenizedString comparisons now use the hash calculated at construction, so no parsing is required. WARNING: If previously user scripts did TokenizedString.Equals(TokenizedString), this was comparing parsed strings; this is likely to fail now. Change to TokenizedString.ToString().Equals(TokenizedString.ToString())
 
-Ideally, TokenizedStings should be created during Init() or patching stages. These will be automatically parsed in the parsing stage, and are then available for use in the build stage, with ToString(). Use of Parse() prior to the parsing stage should be frowned upon.
+Ideally, TokenizedStrings should be created during Init() or patching stages. These will be automatically parsed in the parsing stage, and are then available for use in the build stage, with ToString(). Use of Parse() prior to the parsing stage should be frowned upon.
 
 TokenizedString.ParseAndQuoteIfNecessary() has been replaced with ToStringQuoteIfNecessary().
 
