@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2017, Mark Final
+Copyright (c) 2010-2018, Mark Final
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
