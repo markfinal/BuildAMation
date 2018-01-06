@@ -349,6 +349,7 @@ namespace Publisher
                 {
                     module.SourceModule = dependent;
                     module.SourcePathKey = key;
+                    module.Anchor = anchor;
                     module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
                 });
 
