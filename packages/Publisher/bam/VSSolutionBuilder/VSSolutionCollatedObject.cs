@@ -58,7 +58,7 @@ namespace Publisher
 
             if (null == sender.PreExistingSourcePath)
             {
-                Bam.Core.Log.MessageAll("** {0}[{1}]:\t'{2}' -> '{3}'",
+                Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
                     collatedInterface.SourceModule.ToString(),
                     collatedInterface.SourcePathKey.ToString(),
                     copySourcePath.ToString(),
@@ -66,7 +66,7 @@ namespace Publisher
             }
             else
             {
-                Bam.Core.Log.MessageAll("** {0}: '{1}' -> '{2}'",
+                Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
                     sender,
                     copySourcePath.ToString(),
                     destinationDir);

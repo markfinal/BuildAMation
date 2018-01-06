@@ -186,11 +186,11 @@ namespace Publisher
             var sourceModule = collatedObj.SourceModule;
             if (sourceModule != null)
             {
-                Bam.Core.Log.MessageAll("\t'{0}'", sourceModule.ToString());
+                Bam.Core.Log.DebugMessage("\t'{0}'", sourceModule.ToString());
             }
             else
             {
-                Bam.Core.Log.MessageAll("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
+                Bam.Core.Log.DebugMessage("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
             }
 
             var cModule = sourceModule as C.CModule;
@@ -268,11 +268,11 @@ namespace Publisher
         {
             if (null != anchor.SourceModule)
             {
-                Bam.Core.Log.MessageAll("Stripped Anchor '{0}'", anchor.SourceModule.ToString());
+                Bam.Core.Log.DebugMessage("Stripped Anchor '{0}'", anchor.SourceModule.ToString());
             }
             else
             {
-                Bam.Core.Log.MessageAll("Pre existing Stripped Anchor '{0}'", (anchor as CollatedObject).SourcePath.ToString());
+                Bam.Core.Log.DebugMessage("Pre existing Stripped Anchor '{0}'", (anchor as CollatedObject).SourcePath.ToString());
             }
             collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }
