@@ -259,49 +259,6 @@ namespace C
             base.GetExecutionPolicy(mode);
         }
 
-#if false
-#if __MonoCS__
-        public sealed override void
-        Evaluate()
-        {
-            base.Evaluate();
-            if (null != this.ReasonToExecute)
-            {
-                // a reason has been found already
-                return;
-            }
-            if (this.IsPrebuilt)
-            {
-                return;
-            }
-            if (!this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                // symlinks only on Linux
-                return;
-            }
-            if (this is Plugin)
-            {
-                // plugins don't have symlinks
-                return;
-            }
-            var fullSONamePath = this.Macros["fullSONamePath"];
-            var soName = new Mono.Unix.UnixSymbolicLinkInfo(fullSONamePath.ToString());
-            if (!soName.Exists)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(fullSONamePath);
-                return;
-            }
-            var fullLinkerNamePath = this.Macros["fullLinkerNamePath"];
-            var linkerName = new Mono.Unix.UnixSymbolicLinkInfo(fullLinkerNamePath.ToString());
-            if (!linkerName.Exists)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(fullLinkerNamePath);
-                return;
-            }
-        }
-#endif
-#endif
-
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {
             get
