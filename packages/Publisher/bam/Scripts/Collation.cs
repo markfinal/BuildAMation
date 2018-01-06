@@ -34,12 +34,18 @@ namespace Publisher
     /// <summary>
     /// Derive from this module to collate files and directories into a runnable distribution.
     /// Collation occurs within a folder in the build root called the 'publishing root'.
-    /// An initial file is collated into the publishing root, and this file determines the structure of the
-    /// subsequent files and folders, and the application type. This is the reference file.
-    /// Add subsequent files and folders, specifying paths relative to the reference file. For example, to
-    /// place a dynamic library in a plugins subfolder next to the main executable, specify a subdirectory of
-    /// 'plugins'. To place a framework in the Contents/Frameworks sub-folder of an application bundle, specify
-    /// a subdirectory of '../Frameworks', as the executable is in Contents/MacOS.
+    /// There are default distribution layouts and mapping of module output files to subdirectories of
+    /// the layouts. These can be set by calling SetDefaultMacrosAndMappings(). Otherwise, the user is
+    /// free to define their own layouts.
+    /// Collating an executable, using the Include() function call, will walk it's dependency hierarchy
+    /// and include any runtime dependents. The collation of the executable is called the anchor, and its
+    /// dependents are relative to that anchor.
+    /// You can collate more than one anchor. Shared dependent runtime files may be either copied once,
+    /// or duplicated per anchor, depending on the build mode, in order to create runnable executables.
+    /// Any preexisting files and directories can also be attached to an anchor using the IncludeFiles()
+    /// and IncludeDirectories() functions.
+    /// All collated paths are specified as absolute next to the publishing root using TokenizedStrings.
+    /// This class has properties that expose standad locations, e.g. ExecutableDir, PluginDir.
     /// </summary>
 #if D_NEW_PUBLISHING
     public abstract class Collation :
