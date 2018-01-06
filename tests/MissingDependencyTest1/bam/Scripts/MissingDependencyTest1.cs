@@ -129,13 +129,8 @@ namespace MissingDependencyTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<PluginTest>(C.ConsoleApplication.Key);
-#else
-            var app = this.Include<PluginTest>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Plugin>(C.Plugin.Key, ".", app);
-#endif
         }
     }
 }

@@ -129,17 +129,11 @@ namespace Test10
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
             // two separate anchors
             this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(publishroot)/Standalone"));
             this.Include<DllDependentApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(publishroot)/Dynamic"));
-#else
-            this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Standalone");
-            var app = this.Include<DllDependentApp>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication, "Dynamic");
-            this.Include<MyDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
-#endif
         }
     }
 }

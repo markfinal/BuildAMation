@@ -100,19 +100,9 @@ namespace PluginTest
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
-#if true
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-#else
-            this.BinDir = this.CreateTokenizedString("$(0)/custom", new [] { this.PublishDir });
-            this.PluginDir = this.BinDir;
-#endif
             this.Include<Application>(C.ConsoleApplication.Key);
             (this.Find<Plugin>().First() as Publisher.CollatedObject).SetPublishingDirectory("$(0)/subdir", new[] { this.ExecutableDir });
-#else
-            var app = this.Include<Application>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Plugin>(C.Plugin.Key, ".", app);
-#endif
         }
     }
 

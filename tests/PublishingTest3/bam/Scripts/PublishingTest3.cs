@@ -96,16 +96,9 @@ namespace PublishingTest3
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-            // TODO: this will probably fail in VSSolution mode if not using an inline tokenizedstring
-            // or not using ConsoleApplication mode
             this.Include<SimpleExe1>(C.ConsoleApplication.Key);
             this.Include<SimpleExe2>(C.ConsoleApplication.Key);
-#else
-            var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);
-#endif
         }
     }
 

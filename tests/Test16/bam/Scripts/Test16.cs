@@ -117,12 +117,8 @@ namespace Test16
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<StaticApplication>(C.ConsoleApplication.Key);
-#else
-            this.Include<StaticApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-#endif
         }
     }
 
@@ -135,14 +131,8 @@ namespace Test16
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<DynamicApplication>(C.ConsoleApplication.Key);
-#else
-            var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test14.DynamicLibrary1>(C.DynamicLibrary.Key, ".", app);
-            this.Include<Test15.DynamicLibrary2>(C.DynamicLibrary.Key, ".", app);
-#endif
         }
     }
 
@@ -155,14 +145,8 @@ namespace Test16
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<DynamicApplicationNonPublicForwarder>(C.ConsoleApplication.Key);
-#else
-            var app = this.Include<DynamicApplication>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test14.DynamicLibrary1>(C.DynamicLibrary.Key, ".", app);
-            this.Include<Test15.DynamicLibrary2>(C.DynamicLibrary.Key, ".", app);
-#endif
         }
     }
 }

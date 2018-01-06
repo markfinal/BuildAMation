@@ -86,7 +86,6 @@ namespace PublishingTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             var appAnchor = this.Include<SimpleExe>(C.ConsoleApplication.Key);
 
@@ -98,20 +97,6 @@ namespace PublishingTest1
 
             // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the executable
             this.IncludeDirectories<Runtime>("$(packagedir)/data/testdir1", this.CreateTokenizedString("$(0)/lib", this.ExecutableDir), appAnchor, renameLeaf: "testdir1_renamed");
-#else
-            var app = this.Include<SimpleExe>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<SimpleDynamicLib>(C.DynamicLibrary.Key, ".", app);
-
-            // copy a single data file, next to the executable
-            this.IncludeFile("$(packagedir)/data/testfile1.txt", ".", app);
-
-            // copy a directory, with a number of files and a subdirectory, next to the executable
-            this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), ".", app);
-
-            // copy and rename a directory, with a number of files and a subdirectory, into a 'lib' directory next to the executable
-            var renamedDir = this.IncludeDirectory(this.CreateTokenizedString("$(packagedir)/data/testdir1"), "lib", app);
-            renamedDir.CopiedFilename = "testdir1_renamed";
-#endif
         }
     }
 

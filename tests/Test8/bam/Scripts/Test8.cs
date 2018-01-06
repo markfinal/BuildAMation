@@ -88,13 +88,8 @@ namespace Test8
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<ApplicationTest>(C.ConsoleApplication.Key);
-#else
-            var app = this.Include<ApplicationTest>(C.ConsoleApplication.Key, EPublishingType.ConsoleApplication);
-            this.Include<Test7.ExplicitDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
-#endif
         }
     }
 }

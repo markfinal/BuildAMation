@@ -40,7 +40,6 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             var appAnchor = this.Include<CExecutable>(C.GUIApplication.Key);
 
@@ -52,23 +51,6 @@ namespace InstallerTest1
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
                 this.IncludeFiles(runtimeLibrary.CRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth), this.ExecutableDir, appAnchor);
             }
-#else
-            var app = this.Include<CExecutable>(C.GUIApplication.Key, EPublishingType.WindowedApplication);
-            this.Include<CDynamicLibrary>(C.DynamicLibrary.Key, ".", app);
-
-            // copy the required runtime library next to the binary
-            // just C runtime here
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.BuildEnvironment.Configuration != EConfiguration.Debug &&
-                (app.SourceModule as CExecutable).Linker is VisualCCommon.LinkerBase)
-            {
-                var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                foreach (var runtimelib in runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth))
-                {
-                    this.IncludeFile(runtimelib, ".", app);
-                }
-            }
-#endif
         }
     }
 
@@ -81,7 +63,6 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-#if D_NEW_PUBLISHING
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             var appAnchor = this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key);
 
@@ -94,27 +75,6 @@ namespace InstallerTest1
                 this.IncludeFiles(runtimeLibrary.CRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth), this.ExecutableDir, appAnchor);
                 this.IncludeFiles(runtimeLibrary.CxxRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth), this.ExecutableDir, appAnchor);
             }
-#else
-            var app = this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key, EPublishingType.WindowedApplication);
-            this.Include<CxxDynamicLibrary>(C.Cxx.DynamicLibrary.Key, ".", app);
-
-            // copy the required runtime library next to the binary
-            // both C and C++ runtimes here
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.BuildEnvironment.Configuration != EConfiguration.Debug &&
-                (app.SourceModule as CxxExecutable).Linker is VisualCCommon.LinkerBase)
-            {
-                var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                foreach (var runtimelib in runtimeLibrary.CRuntimePaths((app.SourceModule as C.CModule).BitDepth))
-                {
-                    this.IncludeFile(runtimelib, ".", app);
-                }
-                foreach (var runtimelib in runtimeLibrary.CxxRuntimePaths((app.SourceModule as C.CModule).BitDepth))
-                {
-                    this.IncludeFile(runtimelib, ".", app);
-                }
-            }
-#endif
         }
     }
 }
