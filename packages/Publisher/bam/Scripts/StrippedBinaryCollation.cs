@@ -32,6 +32,16 @@ using System.Linq;
 namespace Publisher
 {
 #if D_NEW_PUBLISHING
+    /// <summary>
+    /// Derive from this module to generate a standalone directory of stripped binaries and other
+    /// collated files that mirrors a collated publishing root. This is identical to that publishing
+    /// root other than all binaries are stripped.
+    /// This mirror folder can be distributed as is to users, or further processed by Installer
+    /// modules in Bam.
+    /// On Windows VisualC, all files are simply copied, as they do not contain debug information.
+    /// On Linux, strip and objcopy is used to strip binaries, but link back to already hived off debug symbol files.
+    /// On OSX, strip is used to strip binaries.
+    /// </summary>
     public abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
@@ -274,8 +284,8 @@ namespace Publisher
         /// release to end-users without debug information, and yet the developer is still able to
         /// debug issues by combining debug files with the stripped binaries.
         /// </summary>
-        /// <typeparam name="RuntimeModule">The 1st type parameter.</typeparam>
-        /// <typeparam name="DebugSymbolModule">The 2nd type parameter.</typeparam>
+        /// <typeparam name="RuntimeModule">The Collation module type from which to strip binaries for.</typeparam>
+        /// <typeparam name="DebugSymbolModule">The DebugSymbolCollation module type used to link stripped binaries to debug symbols.</typeparam>
         public void
         StripBinariesFrom<RuntimeModule, DebugSymbolModule>()
             where RuntimeModule : Collation, new()
@@ -313,6 +323,15 @@ namespace Publisher
             throw new Bam.Core.Exception("Unable to find stripped collation object for '{0}'", (anchor as ICollatedObject).SourceModule.ToString());
         }
 
+        /// <summary>
+        /// Allow additional files to be added to the stripped collation, e.g. documentation, which may have been
+        /// generated following the initial collation.
+        /// </summary>
+        /// <typeparam name="DependentModule">Module type containing the file to incorporate into the collation.</typeparam>
+        /// <param name="key">The PathKey of the above module, containing the path to the file.</param>
+        /// <param name="collator">The original collator from which the stripped objects will be sourced.</param>
+        /// <param name="anchor">The anchor in the stripped collation.</param>
+        /// <returns>A reference to the stripped collated file.</returns>
         public ICollatedObject
         Include<DependentModule>(
             Bam.Core.PathKey key,
