@@ -217,7 +217,7 @@ def make_zip_docs_distribution(options):
 def main(options):
     print >>sys.stdout, "Creating BuildAMation version %s" % options.version
     sys.stdout.flush()
-    cwd = os.getcwd()
+    restore_cwd = cwd = os.getcwd()
     if options.tag:
         cloningDir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.version)
         os.makedirs(cloningDir)
@@ -225,7 +225,10 @@ def main(options):
         os.chdir(cloningDir)
         remove_unnecessary_files_from_clone()
         update_version_numbers_in_files(options)
+        cwd = cloningDir
     try:
+        print >>sys.stdout, "Executing build steps in %s" % cwd
+        sys.stdout.flush()
         build_bam(cwd, coveritypath=options.coveritypath)
         test_bam(cwd)
         build_documentation(cwd, options.doxygenpath)
@@ -235,7 +238,7 @@ def main(options):
         make_tar_docs_distribution(options)
         make_zip_docs_distribution(options)
     finally:
-        os.chdir(cwd)
+        os.chdir(restore_cwd)
 
 
 if __name__ == "__main__":
