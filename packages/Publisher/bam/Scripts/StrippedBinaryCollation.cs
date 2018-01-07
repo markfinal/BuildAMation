@@ -102,12 +102,13 @@ namespace Publisher
         {
             var stripBinary = Bam.Core.Module.Create<StripModule>(preInitCallback: module =>
                 {
-                    module.SourceModule = collatedFile.SourceModule;
-                    module.SourcePathKey = collatedFile.SourcePathKey;
+                    module.SourceModule = collatedFile as Bam.Core.Module;
+                    module.SourcePathKey = CollatedObject.Key;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
 
             this.DependsOn(stripBinary);
+            stripBinary.DependsOn(collatedFile as Bam.Core.Module);
 
             // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
             stripBinary.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros["AnchorOutputName"]);

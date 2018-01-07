@@ -51,7 +51,8 @@ namespace Publisher
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ObjCopyTool>();
 
             var trueSourceModule = this.sourceModule;
-            if (trueSourceModule is StripModule)
+            // stripping works on the initial collated file
+            while (trueSourceModule is ICollatedObject)
             {
                 // necessary on Linux, as the real source module needs checking against
                 // C.IDynamicLibrary to identify paths as lib<name>.so.X.Y
