@@ -5,12 +5,21 @@ import platform
 import subprocess
 import sys
 
+def restore_nuget():
+    print >>sys.stdout, "Restoring NuGet packages"
+    sys.stdout.flush()
+    build_args = []
+    build_args.append("nuget")
+    build_args.append("restore")
+    subprocess.check_call(build_args)
+
 def build_bam(build_dir, configuration='Release', coveritypath=None, rebuild=False):
     current_dir = os.getcwd()
     try:
         os.chdir(build_dir)
         print >>sys.stdout, "Starting build in %s" % build_dir
         sys.stdout.flush()
+        restore_nuget()
         build_args = []
         if coveritypath:
             os.environ["PATH"] += os.pathsep + coveritypath
