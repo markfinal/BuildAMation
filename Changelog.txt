@@ -1,3 +1,5 @@
+07-Jan-2018 ======== Version 1.2.0 alpha 1 Release ========
+
 06-Jan-2018 Fixes #360. Publisher package rewrite, and Bam.Core.TokenizedString update.
 Publisher:
 In an effort to reduce duplication, Publisher now walks the dependency hierarchy declared in the build in order to automatically determine additional files to publish. In short, you now only need to specify the main modules (referred to as anchors), with Include<moduletype>(PathKey) that you wish to publish in your Collation module.
