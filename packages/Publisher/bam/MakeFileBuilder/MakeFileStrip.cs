@@ -48,6 +48,7 @@ namespace Publisher
             dir.Parse();
             meta.CommonMetaData.AddDirectory(dir.ToString());
             rule.AddTarget(copiedPath, variableName: "strip_" + sourceFilename);
+            rule.AddPrerequisite(originalPath);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
