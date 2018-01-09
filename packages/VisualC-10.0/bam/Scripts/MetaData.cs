@@ -293,19 +293,38 @@ namespace VisualC
         VisualCCommon.IRuntimeLibraryPathMeta.CRuntimePaths(
             C.EBit depth)
         {
+            // https://social.msdn.microsoft.com/Forums/en-US/7b703997-e0d2-4b25-bb3a-c6a00141221d/visual-studio-2010-missing-mscvr100dll?forum=Vsexpressvcs
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
-            switch (depth)
+            if (Bam.Core.OSUtilities.Is64BitHosting)
             {
-                case C.EBit.ThirtyTwo:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC100.CRT/msvcr100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
-                    break;
+                switch (depth)
+                {
+                    case C.EBit.ThirtyTwo:
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("C:/Windows/SysWOW64/msvcr100.dll", null));
+                        break;
 
-                case C.EBit.SixtyFour:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC100.CRT/msvcr100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
-                    break;
+                    case C.EBit.SixtyFour:
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("C:/Windows/System32/msvcr100.dll", null));
+                        break;
 
-                default:
-                    throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                }
+            }
+            else
+            {
+                switch (depth)
+                {
+                    case C.EBit.ThirtyTwo:
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("C:/Windows/System32/msvcr100.dll", null));
+                        break;
+
+                    case C.EBit.SixtyFour:
+                        throw new Bam.Core.Exception("64-bit CRT is not available on 32-bit operating systems.");
+
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                }
             }
             return dynamicLibPaths;
         }
@@ -314,19 +333,38 @@ namespace VisualC
         VisualCCommon.IRuntimeLibraryPathMeta.CxxRuntimePaths(
             C.EBit depth)
         {
+            // https://social.msdn.microsoft.com/Forums/en-US/7b703997-e0d2-4b25-bb3a-c6a00141221d/visual-studio-2010-missing-mscvr100dll?forum=Vsexpressvcs
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
-            switch (depth)
+            if (Bam.Core.OSUtilities.Is64BitHosting)
             {
-                case C.EBit.ThirtyTwo:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC100.CRT/msvcp100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
-                    break;
+                switch (depth)
+                {
+                    case C.EBit.ThirtyTwo:
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("C:/Windows/SysWOW64/msvcp100.dll", null));
+                        break;
 
-                case C.EBit.SixtyFour:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC100.CRT/msvcp100.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
-                    break;
+                    case C.EBit.SixtyFour:
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("C:/Windows/System32/msvcp100.dll", null));
+                        break;
 
-                default:
-                    throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                }
+            }
+            else
+            {
+                switch (depth)
+                {
+                    case C.EBit.ThirtyTwo:
+                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("C:/Windows/System32/msvcp100.dll", null));
+                        break;
+
+                    case C.EBit.SixtyFour:
+                        throw new Bam.Core.Exception("64-bit CRT is not available on 32-bit operating systems.");
+
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                }
             }
             return dynamicLibPaths;
         }

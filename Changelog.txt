@@ -1,3 +1,5 @@
+09-Jan-2018 Fixes #375. VisualStudio 2010 Express CRTs can now be found.
+
 08-Jan-2018 Fixes #409. MakeFile stripped binary rules now have the required prerequisites.
 
 07-Jan-2018 ======== Version 1.2.0 alpha 1 Release ========
