@@ -1,3 +1,5 @@
+12-Jan-2018 Fixes #410. Publisher.Collation now exposes a PublishingType property, which is the value passed in SetDefaultMacrosAndMappings.
+
 09-Jan-2018 Fixes #375. VisualStudio 2010 Express CRTs can now be found.
 
 08-Jan-2018 Fixes #409. MakeFile stripped binary rules now have the required prerequisites.

@@ -337,6 +337,16 @@ namespace Publisher
         }
 
         /// <summary>
+        /// Retrieve the application publishing type set in SetDefaultMacrosAndMappings.
+        /// </summary>
+        /// <value>The type of the publishing.</value>
+        public EPublishingType PublishingType
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         /// Invoke this function prior to including any modules into a collation, in order to configure defaults
         /// for the standard module publishing properties (e.g. ExecutableDir), and mapping standard C package
         /// module types to locations.
@@ -349,6 +359,8 @@ namespace Publisher
         SetDefaultMacrosAndMappings(
             EPublishingType type)
         {
+            this.PublishingType = type;
+
             // TODO: can any of these paths be determined from the C package for RPATHs etc?
             // i.e. whatever layout the user wants, is honoured here as a default
             switch (type)
