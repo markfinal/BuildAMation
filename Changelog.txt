@@ -1,3 +1,5 @@
+12-Jan-2018 Fixes #411. Publisher.Collation HeaderDir macro and class property is now defined for all application types, not just library.
+
 12-Jan-2018 Fixes #410. Publisher.Collation now exposes a PublishingType property, which is the value passed in SetDefaultMacrosAndMappings.
 
 09-Jan-2018 Fixes #375. VisualStudio 2010 Express CRTs can now be found.

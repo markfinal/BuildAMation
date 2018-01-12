@@ -270,6 +270,7 @@ namespace Publisher
             }
             this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
             this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
+            this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishRoot }));
         }
 
         private void
@@ -285,6 +286,7 @@ namespace Publisher
                         this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
                         this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
+                        this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishRoot }));
                     }
                     break;
 
@@ -296,6 +298,7 @@ namespace Publisher
                         //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(0)", new[] { this.PublishRoot }));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(0)/plugins", new[] { this.PublishRoot }));
                         this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(0)/resources", new[] { this.PublishRoot }));
+                        this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(0)/include", new[] { this.PublishRoot }));
                     }
                     break;
 
@@ -313,6 +316,7 @@ namespace Publisher
                         //this.Macros.Add("ImportLibraryDir", this.CreateTokenizedString("$(macOSAppBundleFrameworksDir)"));
                         this.Macros.Add("PluginDir", this.CreateTokenizedString("$(macOSAppBundlePluginsDir)"));
                         this.Macros.Add("ResourceDir", this.CreateTokenizedString("$(macOSAppBundleResourcesDir)"));
+                        this.Macros.Add("HeaderDir", this.CreateTokenizedString("$(macOSAppBundleResourcesDir)/include"));
                     }
                     break;
 
