@@ -3,6 +3,8 @@
        src="https://scan.coverity.com/projects/8526/badge.svg"/>
 </a>
 
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+
 BuildAMation (Bam) is a build system and project generator written in C#, tuned for building C and C++ software on Windows, Linux and OSX desktop platforms.
 
 > Writing multi-platform desktop software?  
