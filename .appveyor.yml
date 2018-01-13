@@ -2,5 +2,5 @@ image: Visual Studio 2013
 clone_depth: 50
 environment:
   matrix:
-  - configuration: Any CPU
-    platform: Release
+  - configuration: Release
+    platform: AnyCPU
