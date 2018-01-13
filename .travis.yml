@@ -5,7 +5,7 @@ matrix:
   - os: linux
     mono: latest
     script:
-      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && python tests/runtests.py -k -c debug -t Test5
+      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && python tests/runtests.py -k -c debug -t Test5
   # DotNetCore axis removed as the referenced assemblies in the .sln
   # are incorrect for this
   #- os: linux
