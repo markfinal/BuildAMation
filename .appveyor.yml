@@ -1,5 +1,7 @@
 image: Visual Studio 2013
 clone_depth: 50
+before_build:
+  - nuget restore BuildAMation.sln
 environment:
   matrix:
   - configuration: Release
