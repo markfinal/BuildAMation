@@ -1,7 +1,8 @@
 language: csharp
 solution: BuildAMation.sln
-os:
-  - linux
-  - osx
-after_success:
-  python codingtools/test_bam.py
+matrix:
+  include:
+  - os: linux
+    script:
+      - msbuild /p:Configuration=Release BuildAMation.sln
+      - python codingtools/test_bam.py
