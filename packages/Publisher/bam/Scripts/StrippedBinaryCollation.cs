@@ -194,6 +194,11 @@ namespace Publisher
                 Bam.Core.Log.DebugMessage("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
             }
 
+            if ((collatedObj as CollatedObject).Ignore)
+            {
+                return;
+            }
+
             var cModule = sourceModule as C.CModule;
             if (null == cModule)
             {
