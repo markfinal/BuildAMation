@@ -3,4 +3,4 @@ clone_depth: 50
 environment:
   matrix:
   - configuration: Release
-    platform: AnyCPU
+    platform: Any CPU
