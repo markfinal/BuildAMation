@@ -9,3 +9,9 @@ environment:
   matrix:
   - configuration: Release
     platform: Any CPU
+    project: BuildAMation.sln
+test_script
+  - "SET PATH=C:\\Python27-x64;%PATH%"
+  - env.bat
+  - cd tests
+  - python runtests.py -c debug -t Test5
