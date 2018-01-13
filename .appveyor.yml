@@ -1,9 +1,10 @@
 image: Visual Studio 2013
 clone_depth: 50
 install:
+  # default Nuget version is 2.8.x, which gives NUnit errors - using the latest does not
   - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 before_build:
-  - nuget && nuget restore BuildAMation.sln & exit 0
+  - nuget restore BuildAMation.sln
 environment:
   matrix:
   - configuration: Release
