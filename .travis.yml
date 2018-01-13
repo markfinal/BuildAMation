@@ -3,3 +3,5 @@ solution: BuildAMation.sln
 os:
   - linux
   - osx
+after_success:
+  python codingtools/test_bam.py
