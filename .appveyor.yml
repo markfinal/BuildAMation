@@ -10,7 +10,7 @@ environment:
   - configuration: Release
     platform: Any CPU
     project: BuildAMation.sln
-test_script
+test_script:
   - "SET PATH=C:\\Python27-x64;%PATH%"
   - env.bat
   - cd tests
