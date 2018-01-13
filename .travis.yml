@@ -7,9 +7,11 @@ matrix:
     script:
       - msbuild /p:Configuration=Release BuildAMation.sln
       - python codingtools/test_bam.py
-  - os: linux
-    mono: none
-    dotnet: 2.1.4
-    script:
-      - dotnet msbuild /p:Configuration=Release BuildAMation.sln
-      - python codingtools/test_bam.py
+  # DotNetCore axis removed as the referenced assemblies in the .sln
+  # are incorrect for this
+  #- os: linux
+  #  mono: none
+  #  dotnet: 2.1.4
+  #  script:
+  #    - dotnet msbuild /p:Configuration=Release BuildAMation.sln
+  #    - python codingtools/test_bam.py
