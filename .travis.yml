@@ -11,5 +11,5 @@ matrix:
     mono: none
     dotnet: 2.1.4
     script:
-      - msbuild /p:Configuration=Release BuildAMation.sln
+      - dotnet msbuild /p:Configuration=Release BuildAMation.sln
       - python codingtools/test_bam.py
