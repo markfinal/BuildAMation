@@ -2,7 +2,8 @@ image: Visual Studio 2013
 clone_depth: 50
 before_build:
   # there is an error "'NUnit' already has a dependency defined for 'NETStandard.Library'." to ignore
-  - nuget restore BuildAMation.sln & exit 0
+  - nuget
+    nuget restore BuildAMation.sln & exit 0
 environment:
   matrix:
   - configuration: Release
