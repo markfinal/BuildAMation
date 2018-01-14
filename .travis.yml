@@ -5,7 +5,8 @@ notifications:
 language: csharp
 solution: BuildAMation.sln
 install:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gcc-multilib; fi
+  # GCC ObjectiveC, GNUStep and 32-bit GCC
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib; fi
 matrix:
   include:
   - os: linux
