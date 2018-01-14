@@ -9,7 +9,7 @@ matrix:
   - os: linux
     mono: latest
     script:
-      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py --C.bitdepth=64 -c debug -t Test5
+      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py --C.bitdepth=64 -b Native -c debug -c profile -j0
   # DotNetCore axis removed as the referenced assemblies in the .sln
   # are incorrect for this
   #- os: linux
