@@ -53,7 +53,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("bash");
+                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash"));
             }
         }
 
