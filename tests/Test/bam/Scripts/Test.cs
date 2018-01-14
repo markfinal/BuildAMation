@@ -61,10 +61,29 @@ namespace Test
         {
             base.Init(parent);
             this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+        }
+    }
+
+    sealed class CompileSingleCFileWithDifferentCompiler :
+        C.ObjectFile
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            try
             {
-                // example of switching out the tool within a module
-                this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<MingwCommon.Compiler32>();
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    // example of switching out the tool within a module
+                    this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<MingwCommon.Compiler32>();
+                }
+            }
+            catch (Bam.Core.UnableToBuildModuleException exception)
+            {
+                Bam.Core.Exception.DisplayException(exception, "Continuing to build module {0} with default compiler", this.GetType().ToString());
             }
         }
     }

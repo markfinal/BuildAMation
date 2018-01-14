@@ -1,3 +1,5 @@
+14-Jan-2018 Fixes #413. Any module derived from Bam.Core.PrebuiltTool now has the path provided by the Executable property checked for existence in it's Init() function. If the path does not exist, a Bam.Core.UnableToBuildModuleException exception is thrown. If this is not caught and handled, then the module creating the tool instance will fail to build. The 'Test' script has been updated to handle a missing Mingw installation for one of its modules.
+
 13-Jan-2018 Fixes #412. Ignored CollatedObjects also need to be ignored in the StrippedBinaryCollation and DebugSymbolCollation modules.
 
 12-Jan-2018 Fixes #411. Publisher.Collation HeaderDir macro and class property is now defined for all application types, not just library.

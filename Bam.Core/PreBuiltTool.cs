@@ -47,6 +47,31 @@ namespace Bam.Core
             this.InheritedEnvironmentVariables = new StringArray();
         }
 
+        /// <summary>
+        /// Initialise the prebuilt tool.
+        /// This will check whether the executable path exists. If it does not, a
+        /// Bam.Core.UnableToBuildModuleException is thrown. This can be caught locally
+        /// if it is recoverable, otherwise the module using the Tool will not build.
+        /// </summary>
+        /// <param name="parent">Parent module to this module being initialised.</param>
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            if (!this.Executable.IsParsed)
+            {
+                this.Executable.Parse();
+            }
+            var executable = this.Executable.ToString();
+            if (!System.IO.File.Exists(executable))
+            {
+                throw new Bam.Core.UnableToBuildModuleException(
+                    System.String.Format("Tool executable '{0}' does not exist", executable));
+            }
+        }
+
             #if false
         // TODO: Might move the Name into the Module?
         public string Name

@@ -125,8 +125,10 @@ namespace Installer
         Init(
             Bam.Core.Module parent)
         {
-            base.Init(parent);
             this.Macros.Add("toolPath", Bam.Core.TokenizedString.Create("$(0)/NSIS/makensis.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)));
+            // since the toolPath macro is needed to evaluate the Executable property
+            // in the check for existence
+            base.Init(parent);
         }
 
         public override Bam.Core.Settings

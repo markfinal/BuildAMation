@@ -94,7 +94,7 @@ namespace Publisher
         {
             get
             {
-                return Bam.Core.TokenizedString.CreateVerbatim("xcopy");
+                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcopy.exe"));
             }
         }
     }
