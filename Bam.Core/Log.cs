@@ -38,15 +38,14 @@ namespace Bam.Core
 
         static Log()
         {
-            System.Console.WriteLine("Left {0}, Top {1}", System.Console.CursorLeft, System.Console.CursorTop);
-            System.Console.Out.Flush();
             try
             {
                 System.Console.SetCursorPosition(System.Console.CursorLeft, System.Console.CursorTop);
                 SupportsCursorManagement = true;
             }
-            catch (System.IO.IOException)
+            catch (System.Exception)
             {
+                // TravisCI reports System.ArgumentOutOfRangeException for the 'left' parameter
                 SupportsCursorManagement = false;
             }
         }
