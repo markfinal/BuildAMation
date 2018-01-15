@@ -7,16 +7,17 @@ solution: BuildAMation.sln
 install:
   # GCC ObjectiveC, GNUStep and 32-bit GCC and G++, and 32-bit X11 development files for Test12
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386; fi
+  - nuget restore BuildAMation.sln
 matrix:
   include:
   - os: linux
     mono: latest
     script:
-      - nuget restore BuildAMation.sln && msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py -b Native -c debug -c profile -j0
+      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py -b Native -c debug -c profile -j0
   - os: osx
     mono: latest
     script:
-      - nuget restore BuildAMation.sln && msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py -b Native -c debug -c profile -j0
+      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py -b Native -c debug -c profile -j0
   # DotNetCore axis removed as the referenced assemblies in the .sln
   # are incorrect for this
   #- os: linux
