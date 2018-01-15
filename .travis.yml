@@ -13,11 +13,20 @@ matrix:
   - os: linux
     mono: latest
     script:
-      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py -b Native -c debug -c profile -j0
+      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+      - source env.sh
+      - cd tests
+      - python runtests.py -b Native -c debug -c profile -j0
+      - python runtests.py -b Native -c debug -c profile -j0 -b MakeFile
   - os: osx
     mono: latest
     script:
-      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py && source env.sh && cd tests && python runtests.py -b Native -c debug -c profile -j0
+      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+      - source env.sh
+      - cd tests
+      - python runtests.py -b Native -c debug -c profile -j0
+      - python runtests.py -b Native -c debug -c profile -j0 -b MakeFile
+      - python runtests.py -b Native -c debug -c profile -j0 -b Xcode
   # DotNetCore axis removed as the referenced assemblies in the .sln
   # are incorrect for this
   #- os: linux
