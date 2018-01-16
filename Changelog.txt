@@ -1,3 +1,5 @@
+16-Jan-2018 Fixes #415. Trim all new-line characters from stdout captured from Bam.Core.OSUtilities.RunExecutable. This was causing issues with xcopy.exe in VisualStudio post-build steps, leaving newline characters in.
+
 14-Jan-2018 Fixes #414. Speculative fix for TravisCI not supporting cursor positioning for logging.
 
 14-Jan-2018 Fixes #413. Any module derived from Bam.Core.PrebuiltTool now has the path provided by the Executable property checked for existence in it's Init() function. If the path does not exist, a Bam.Core.UnableToBuildModuleException exception is thrown. If this is not caught and handled, then the module creating the tool instance will fail to build. The 'Test' script has been updated to handle a missing Mingw installation for one of its modules.

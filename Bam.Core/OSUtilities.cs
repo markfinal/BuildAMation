@@ -369,7 +369,7 @@ namespace Bam.Core
             {
                 return null;
             }
-            return process.StandardOutput.ReadToEnd().TrimEnd(new[] { System.Environment.NewLine[0] });
+            return process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray());
         }
 
         /// <summary>
