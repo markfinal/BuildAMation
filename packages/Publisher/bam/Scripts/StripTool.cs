@@ -47,7 +47,7 @@ namespace Publisher
             }
             else
             {
-                this.ExecutablePath = Bam.Core.TokenizedString.CreateVerbatim("strip");
+                this.ExecutablePath = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("strip"));
             }
         }
 

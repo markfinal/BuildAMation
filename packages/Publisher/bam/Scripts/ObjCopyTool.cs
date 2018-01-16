@@ -50,7 +50,7 @@ namespace Publisher
             }
             else
             {
-                this.ExecutablePath = Bam.Core.TokenizedString.CreateVerbatim("objcopy");
+                this.ExecutablePath = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("objcopy"));
             }
         }
 

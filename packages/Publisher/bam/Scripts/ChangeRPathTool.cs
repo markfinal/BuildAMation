@@ -37,7 +37,7 @@ namespace Publisher
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Macros.Add("toolPath", Bam.Core.TokenizedString.CreateVerbatim("chrpath"));
+            this.Macros.Add("toolPath", Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath")));
         }
 
         public override Bam.Core.Settings
