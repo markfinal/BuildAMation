@@ -8,8 +8,17 @@ import sys
 def restore_nuget():
     print >>sys.stdout, "Restoring NuGet packages"
     sys.stdout.flush()
-    build_args = []
-    build_args.append("nuget")
+    if platform.system() == "Linux":
+        # nuget Windows executable is downloaded from https://nuget.org/downloads, and run through mono
+        nuget_path = subprocess.Popen(["which", "nuget.exe"], stdout=subprocess.PIPE).communicate()[0].rstrip()
+        if not nuget_path:
+            raise IOError("nuget.exe not found. Does it need downloading, or adding to the PATH?")
+        build_args = []
+        build_args.append("mono")
+        build_args.append(nuget_path)
+    else:
+        build_args = []
+        build_args.append("nuget")
     build_args.append("restore")
     subprocess.check_call(build_args)
 
