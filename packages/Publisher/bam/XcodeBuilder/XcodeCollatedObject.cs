@@ -104,26 +104,28 @@ namespace Publisher
                 return;
             }
 
-            var copySourcePath = sender.SourcePath;
-
-            // post-fix with a directory separator to enforce that this is a directory destination
-            var destinationDir = System.String.Format("{0}{1}",
-                collatedInterface.PublishingDirectory.ToString(),
-                System.IO.Path.DirectorySeparatorChar);
+            string copySourcePath;
+            string destinationDir;
+            (sender.Tool as CopyFileTool).convertPaths(
+                sender,
+                sender.SourcePath,
+                collatedInterface.PublishingDirectory,
+                out copySourcePath,
+                out destinationDir);
 
             if (null == sender.PreExistingSourcePath)
             {
                 Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
                     collatedInterface.SourceModule.ToString(),
                     collatedInterface.SourcePathKey.ToString(),
-                    copySourcePath.ToString(),
+                    copySourcePath,
                     destinationDir);
             }
             else
             {
                 Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
                     sender,
-                    copySourcePath.ToString(),
+                    copySourcePath,
                     destinationDir);
             }
 
@@ -137,7 +139,7 @@ namespace Publisher
             commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                 commandLine.ToString(' '),
-                copySourcePath.ToString(),
+                copySourcePath,
                 destinationDir,
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             if (!target.isUtilityType && arePostBuildCommands)

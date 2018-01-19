@@ -30,14 +30,8 @@
 namespace Publisher
 {
     public sealed class RsyncTool :
-        Bam.Core.PreBuiltTool
+        CopyFileTool
     {
-        public override void
-        Evaluate()
-        {
-            this.ReasonToExecute = null;
-        }
-
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
@@ -73,6 +67,18 @@ namespace Publisher
                 termArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("\""));
                 return termArgs;
             }
+        }
+
+        public override void
+        convertPaths(
+            CollatedObject module,
+            Bam.Core.TokenizedString inSourcePath,
+            Bam.Core.TokenizedString inPublishingPath,
+            out string resolvedSourcePath,
+            out string resolvedDestinationDir)
+        {
+            resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+            resolvedDestinationDir = inPublishingPath.ToString();
         }
     }
 }

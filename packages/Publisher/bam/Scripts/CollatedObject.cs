@@ -223,7 +223,7 @@ namespace Publisher
                 }
             }
             this.RegisterGeneratedFile(Key,
-                                       this.CreateTokenizedString("$(0)/@filename($(1))",
+                                       this.CreateTokenizedString("$(0)/#valid($(RenameLeaf),@filename($(1)))",
                                                                   new[] { this.publishingDirectory, this.SourcePath }));
             if (null != this.sourceModule)
             {

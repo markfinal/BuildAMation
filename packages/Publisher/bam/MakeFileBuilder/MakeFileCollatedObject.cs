@@ -42,51 +42,57 @@ namespace Publisher
                 return;
             }
             var collatedInterface = sender as ICollatedObject;
-            var copySourcePath = sender.SourcePath;
 
-            // post-fix with a directory separator to enforce that this is a directory destination
-            var destinationDir = System.String.Format("{0}{1}",
-                collatedInterface.PublishingDirectory.ToString(),
-                System.IO.Path.DirectorySeparatorChar);
+            string copySourcePath;
+            string destinationDir;
+            (sender.Tool as CopyFileTool).convertPaths(
+                sender,
+                sender.SourcePath,
+                collatedInterface.PublishingDirectory,
+                out copySourcePath,
+                out destinationDir);
 
             if (null == sender.PreExistingSourcePath)
             {
                 Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
                     collatedInterface.SourceModule.ToString(),
                     collatedInterface.SourcePathKey.ToString(),
-                    copySourcePath.ToString(),
+                    copySourcePath,
                     destinationDir);
             }
             else
             {
                 Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
                     sender,
-                    copySourcePath.ToString(),
+                    copySourcePath,
                     destinationDir);
             }
 
             var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            meta.CommonMetaData.AddDirectory(destinationDir);
             var rule = meta.AddRule();
 
             var topLevel = sender.GetEncapsulatingReferencedModule().GetType().Name;
             var senderType = sender.GetType().Name;
             var sourceType = (null != collatedInterface.SourceModule) ? collatedInterface.SourceModule.GetType().FullName : "publishroot";
             var basename = sourceType + "_" + topLevel + "_" + senderType + "_" + sender.BuildEnvironment.Configuration.ToString() + "_";
-            var sourceFilename = System.IO.Path.GetFileName(copySourcePath.ToString());
-            var isPosixLeafRename = (sourceFilename == "*");
+            var sourceFilename = System.IO.Path.GetFileName(sender.SourcePath.ToString());
+            var isPosixLeafRename = copySourcePath.EndsWith("*");
 
-            Bam.Core.TokenizedString prerequisitePath;
-            var destinationPath = sender.CreateTokenizedString("$(0)/$(1)", new Bam.Core.TokenizedString[] { collatedInterface.PublishingDirectory, Bam.Core.TokenizedString.CreateVerbatim(sourceFilename) });
+            string prerequisitePath;
+            var destinationPath = sender.GeneratedPaths[CollatedObject.Key];
 
             if (isPosixLeafRename)
             {
-                sourceFilename = "all_files";
-                prerequisitePath = sender.CreateTokenizedString("@dir($(0))", copySourcePath);
+                sourceFilename = System.String.Format("{0}-to-{1}", sourceFilename, sender.Macros["RenameLeaf"].ToString());
+                prerequisitePath = System.IO.Path.GetDirectoryName(copySourcePath);
+                // there would be multiple commands for the target directory if this was
+                // added to meta.CommonMetaData
+                rule.AddShellCommand("mkdir -p $@");
             }
             else
             {
                 prerequisitePath = copySourcePath;
+                meta.CommonMetaData.AddDirectory(destinationDir);
             }
             rule.AddTarget(destinationPath, variableName: basename + sourceFilename);
 
@@ -95,7 +101,7 @@ namespace Publisher
 
             if (isPosixLeafRename)
             {
-                rule.AddShellCommand(System.String.Format(@"{0} {1} $</* $(dir $@) {2}",
+                rule.AddShellCommand(System.String.Format(@"{0} {1} $</* $@ {2}",
                     CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                     commandLine.ToString(' '),
                     CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
@@ -107,7 +113,7 @@ namespace Publisher
                     commandLine.ToString(' '),
                     CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             }
-            rule.AddPrerequisite(prerequisitePath);
+            rule.AddPrerequisite(Bam.Core.TokenizedString.CreateVerbatim(prerequisitePath));
         }
     }
 }

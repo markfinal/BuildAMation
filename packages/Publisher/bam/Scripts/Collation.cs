@@ -1047,25 +1047,8 @@ namespace Publisher
                     {
                         module.Macros.AddVerbatim("RenameLeaf", renameLeaf);
                     }
-                    if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                    {
-                        // Windows XCOPY requires the directory name to be added to the destination regardless
-                        module.PreExistingSourcePath = sourcePath;
-                        module.SetPublishingDirectory("$(0)/#valid($(RenameLeaf),@filename($(1)))", new[] { destinationDir, module.SourcePath });
-                    }
-                    else
-                    {
-                        // Posix cp only requires the destination to be added when there is a rename
-                        if (null != renameLeaf)
-                        {
-                            module.PreExistingSourcePath = System.String.Format("{0}/*", sourcePath);
-                        }
-                        else
-                        {
-                            module.PreExistingSourcePath = sourcePath;
-                        }
-                        module.SetPublishingDirectory("$(0)#valid(/$(RenameLeaf),)", new[] { destinationDir });
-                    }
+                    module.PreExistingSourcePath = sourcePath;
+                    module.SetPublishingDirectory("$(0)", new[] { destinationDir });
                 });
 
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)

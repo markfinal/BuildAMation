@@ -37,6 +37,14 @@ namespace Publisher
         {
             this.ReasonToExecute = null;
         }
+
+        public abstract void
+        convertPaths(
+            CollatedObject module,
+            Bam.Core.TokenizedString inSourcePath,
+            Bam.Core.TokenizedString inPublishingPath,
+            out string resolvedSourcePath,
+            out string resolvedDestinationDir);
     }
 
     public sealed class CopyFilePosix :
@@ -78,6 +86,39 @@ namespace Publisher
                 return termArgs;
             }
         }
+
+        public override void
+        convertPaths(
+            CollatedObject module,
+            Bam.Core.TokenizedString inSourcePath,
+            Bam.Core.TokenizedString inPublishingPath,
+            out string resolvedSourcePath,
+            out string resolvedDestinationDir)
+        {
+            resolvedDestinationDir = inPublishingPath.ToString();
+            if (module is CollatedDirectory)
+            {
+                // Posix cp only requires the destination to be added when there is a rename
+                if (module.Macros.Contains("RenameLeaf"))
+                {
+                    resolvedSourcePath = System.String.Format("{0}{1}*",
+                        inSourcePath.ToString(),
+                        System.IO.Path.DirectorySeparatorChar);
+                    resolvedDestinationDir = System.String.Format("{0}{1}{2}{1}",
+                        resolvedDestinationDir,
+                        System.IO.Path.DirectorySeparatorChar,
+                        module.Macros["RenameLeaf"].ToString());
+                }
+                else
+                {
+                    resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+                }
+            }
+            else
+            {
+                resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+            }
+        }
     }
 
     public sealed class CopyFileWin :
@@ -95,6 +136,37 @@ namespace Publisher
             get
             {
                 return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcopy.exe"));
+            }
+        }
+
+        public override void
+        convertPaths(
+            CollatedObject module,
+            Bam.Core.TokenizedString inSourcePath,
+            Bam.Core.TokenizedString inPublishingPath,
+            out string resolvedSourcePath,
+            out string resolvedDestinationDir)
+        {
+            resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+
+            resolvedDestinationDir = inPublishingPath.ToString();
+            if (module is CollatedDirectory)
+            {
+                // Windows XCOPY requires the directory name to be added to the destination regardless
+                if (module.Macros.Contains("RenameLeaf"))
+                {
+                    resolvedDestinationDir = System.String.Format("{0}{1}{2}{1}",
+                        resolvedDestinationDir,
+                        System.IO.Path.DirectorySeparatorChar,
+                        module.Macros["RenameLeaf"].ToString());
+                }
+                else
+                {
+                    resolvedDestinationDir = System.String.Format("{0}{1}{2}{1}",
+                        resolvedDestinationDir,
+                        System.IO.Path.DirectorySeparatorChar,
+                        System.IO.Path.GetFileName(inSourcePath.ToString()));
+                }
             }
         }
     }
