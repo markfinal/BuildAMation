@@ -1,3 +1,5 @@
+19-Jan-2018 Fixes #417. Stripped collation must always copy from the original collation. This ensures that the stripped version is always made from a source that is guaranteed to run.
+
 19-Jan-2018 Fixes #418. Publisher copy tools (cp,xcopy,rsync) now handle their particular needs for source and destination paths, rather than this being coded into each module type.
 
 16-Jan-2018 Fixes #416. Fix Python script (coding/build_bam.py) in order to use nuget.exe on Linux downloaded from https://nuget.org/downloads, as described in https://docs.microsoft.com/en-us/nuget/guides/install-nuget#mac-osx-and-linux.

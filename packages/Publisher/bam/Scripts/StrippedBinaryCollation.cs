@@ -128,19 +128,10 @@ namespace Publisher
         {
             var clonedFile = Bam.Core.Module.Create<CollationType>(preInitCallback: module =>
                 {
-                    if ((collatedObject as CollatedObject).Macros.Contains("RenameLeaf"))
-                    {
-                        module.Macros.Add("RenameLeaf", (collatedObject as CollatedObject).Macros["RenameLeaf"]);
-                    }
-                    if (null != collatedObject.SourceModule)
-                    {
-                        module.SourceModule = collatedObject.SourceModule;
-                        module.SourcePathKey = collatedObject.SourcePathKey;
-                    }
-                    else
-                    {
-                        module.PreExistingSourcePath = (collatedObject as CollatedObject).PreExistingSourcePath;
-                    }
+                    // no need to take RenameLeaf macro into account, as the rename occurred
+                    // in the original collation, so this is a straight copy
+                    module.SourceModule = collatedObject as Bam.Core.Module;
+                    module.SourcePathKey = CollatedObject.Key;
                     module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
                 });
             this.DependsOn(clonedFile);
