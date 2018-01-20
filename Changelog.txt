@@ -1,3 +1,5 @@
+20-Jan-2018 Fixes #422. Added synchronization between Bam.Core.TokenizedString.IsParsed and Bam.Core.TokenizedString.Parse().
+
 20-Jan-2018 Fixes #421. Publisher.Collation.IncludeAllModulesInNamespace now only includes modules that generate the specified pathkey.
 
 20-Jan-2018 Fixes #420. Container source modules which are passed into C[.Cxx].ConsoleApplication.ExtendSource() should not standalone compile, as there is no guarantee that they have sufficient dependencies in order to compile. The applications consuming them may provide those dependencies.

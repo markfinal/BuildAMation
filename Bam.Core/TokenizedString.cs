@@ -122,6 +122,7 @@ namespace Bam.Core
         private Module ModuleWithMacros = null;
         private string OriginalString = null;
         private string ParsedString = null;
+        private readonly object ParsedStringGuard = new object(); // since you can't lock ParsedString as it may be null
         private bool Verbatim;
         private TokenizedStringArray PositionalTokens = null;
         private string CreationStackTrace = null;
@@ -426,8 +427,11 @@ namespace Bam.Core
                     return false;
                 }
                 var hasTokens = (null != this.Tokens);
-                var hasParsedString = (null != this.ParsedString);
-                return !hasTokens && hasParsedString;
+                lock (this.ParsedStringGuard)
+                {
+                    var hasParsedString = (null != this.ParsedString);
+                    return !hasTokens && hasParsedString;
+                }
             }
         }
 
@@ -531,7 +535,10 @@ namespace Bam.Core
                     this.parsedStackTrace,
                     AllStringsParsed ? " after the string parsing phase" : string.Empty);
             }
-            this.ParseInternalWithAlreadyParsedCheck(null);
+            lock (this.ParsedStringGuard)
+            {
+                this.ParseInternalWithAlreadyParsedCheck(null);
+            }
             lock (StringsForParsing)
             {
                 StringsForParsing.Remove(this);
