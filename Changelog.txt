@@ -1,3 +1,5 @@
+20-Jan-2018 Fixes #419. Publisher.Collation.IncludeAllModulesInNamespace now includes an optional regular expression filter. By default, the function will match all sealed Bam.Core.Module based classes. Using the filter will then reduce this list down to only those Modules whose name matches the filter.
+
 19-Jan-2018 Fixes #417. Stripped collation must always copy from the original collation. This ensures that the stripped version is always made from a source that is guaranteed to run.
 
 19-Jan-2018 Fixes #418. Publisher copy tools (cp,xcopy,rsync) now handle their particular needs for source and destination paths, rather than this being coded into each module type.

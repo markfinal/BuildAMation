@@ -414,15 +414,23 @@ namespace Publisher
         /// <param name="nameSpace">Namespace containing all modules of interest.</param>
         /// <param name="key">PathKey of the modules that will be collated.</param>
         /// <param name="anchorPublishRoot">Custom publishing root for the anchors. May be null to use default.</param>
+        /// <param name="filter">Filter modules matched by name, as a last step. May be null, to include all matching modules.</param>
         public void
         IncludeAllModulesInNamespace(
             string nameSpace,
             Bam.Core.PathKey key,
-            Bam.Core.TokenizedString anchorPublishRoot = null)
+            Bam.Core.TokenizedString anchorPublishRoot = null,
+            System.Text.RegularExpressions.Regex filter = null)
         {
             var gen = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
-            var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(item =>
-                item.Namespace == nameSpace && item.IsSubclassOf(typeof(Bam.Core.Module)) && item != this.GetType());
+            var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(
+                item => item.Namespace == nameSpace &&
+                item.IsSubclassOf(typeof(Bam.Core.Module)) &&
+                item != this.GetType());
+            if (null != filter)
+            {
+                moduleTypes = moduleTypes.Where(item => filter.IsMatch(item.Name));
+            }
             foreach (var type in moduleTypes)
             {
                 var meth = gen.MakeGenericMethod(new[] { type });
