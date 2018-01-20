@@ -83,6 +83,8 @@ namespace C.Cxx
         /// Extend a container of C++ object files with another, potentially from another module. Note that module types must match.
         /// Private patches are inherited.
         /// Public patches are used internally to compile against, but are not exposed further.
+        /// Note that the referenced module in DependentModule will have its source files marked as PerformCompilation=false
+        /// so that it is not attempted to be built standalone.
         /// </summary>
         /// <typeparam name="DependentModule">Container module type to embed into the specified container.</typeparam>
         /// <param name="affectedSource">Container to be extended.</param>
@@ -96,6 +98,21 @@ namespace C.Cxx
             {
                 return;
             }
+
+            // as the referenced container of source is to be shoehorned into
+            // this module, make sure that the external container isn't built standalone
+            // note that the referenced container will float to the top of the dependency
+            // graph, but just won't do anything
+            foreach (var child in dependent.Children)
+            {
+                var childAsObjectFile = child as ObjectFileBase;
+                if (null == childAsObjectFile)
+                {
+                    continue;
+                }
+                childAsObjectFile.PerformCompilation = false;
+            }
+
             affectedSource.ExtendWith(dependent);
             affectedSource.UsePublicPatchesPrivately(dependent);
         }

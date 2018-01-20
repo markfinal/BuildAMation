@@ -1,3 +1,5 @@
+20-Jan-2018 Fixes #420. Container source modules which are passed into C[.Cxx].ConsoleApplication.ExtendSource() should not standalone compile, as there is no guarantee that they have sufficient dependencies in order to compile. The applications consuming them may provide those dependencies.
+
 20-Jan-2018 Fixes #419. Publisher.Collation.IncludeAllModulesInNamespace now includes an optional regular expression filter. By default, the function will match all sealed Bam.Core.Module based classes. Using the filter will then reduce this list down to only those Modules whose name matches the filter.
 
 19-Jan-2018 Fixes #417. Stripped collation must always copy from the original collation. This ensures that the stripped version is always made from a source that is guaranteed to run.
