@@ -410,6 +410,7 @@ namespace Publisher
         /// namespace, and collate them beside each other.
         /// Each found module will be an anchor. Any shared dependencies should appear once depending on the build mode. IDE
         /// build projects should each have a copy of shared dependencies in order for them to be debuggable.
+        /// Only modules that have generated the specified pathkey will be included.
         /// </summary>
         /// <param name="nameSpace">Namespace containing all modules of interest.</param>
         /// <param name="key">PathKey of the modules that will be collated.</param>
@@ -422,19 +423,26 @@ namespace Publisher
             Bam.Core.TokenizedString anchorPublishRoot = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var gen = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
+            var genericFindReference = typeof(Bam.Core.Graph).GetMethod("FindReferencedModule");
+            var genericInclude = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
             var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(
                 item => item.Namespace == nameSpace &&
-                item.IsSubclassOf(typeof(Bam.Core.Module)) &&
-                item != this.GetType());
+                item.IsSubclassOf(typeof(Bam.Core.Module)));
             if (null != filter)
             {
                 moduleTypes = moduleTypes.Where(item => filter.IsMatch(item.Name));
             }
             foreach (var type in moduleTypes)
             {
-                var meth = gen.MakeGenericMethod(new[] { type });
-                meth.Invoke(this, new object[] { key, anchorPublishRoot });
+                var findModule = genericFindReference.MakeGenericMethod(new[] { type });
+                var module = findModule.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                if (!module.GeneratedPaths.ContainsKey(key))
+                {
+                    continue;
+                }
+
+                var moduleTypeInclude = genericInclude.MakeGenericMethod(new[] { type });
+                moduleTypeInclude.Invoke(this, new object[] { key, anchorPublishRoot });
             }
         }
 
@@ -634,7 +642,7 @@ namespace Publisher
                         return mod.defaultPublishPath;
                     }
                 }
-                throw new Bam.Core.Exception("Unable to locate publish directory for module {0} with path key {1}", module.ToString(), modulePathKey.ToString());
+                throw new Bam.Core.Exception("Unable to identify a publish directory for module {0} with path key {1}", module.ToString(), modulePathKey.ToString());
             }
 
             /// <summary>

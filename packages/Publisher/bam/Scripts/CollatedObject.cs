@@ -222,13 +222,20 @@ namespace Publisher
                     throw new Bam.Core.Exception("The publishing directory for '{0}' has yet to be set", this.SourcePath);
                 }
             }
-            this.RegisterGeneratedFile(Key,
-                                       this.CreateTokenizedString("$(0)/#valid($(RenameLeaf),@filename($(1)))",
-                                                                  new[] { this.publishingDirectory, this.SourcePath }));
             if (null != this.sourceModule)
             {
                 this.Requires(this.sourceModule);
+                if (!this.sourceModule.GeneratedPaths.ContainsKey(this.sourcePathKey))
+                {
+                    // this shouldn't happen, but just in case, a sensible error...
+                    throw new Bam.Core.Exception("Unable to locate generated path '{0}' in module '{1}' for collation",
+                        this.sourcePathKey.ToString(),
+                        this.sourceModule.ToString());
+                }
             }
+            this.RegisterGeneratedFile(Key,
+                                       this.CreateTokenizedString("$(0)/#valid($(RenameLeaf),@filename($(1)))",
+                                                                  new[] { this.publishingDirectory, this.SourcePath }));
             this.Ignore = false;
         }
 

@@ -1,3 +1,5 @@
+20-Jan-2018 Fixes #421. Publisher.Collation.IncludeAllModulesInNamespace now only includes modules that generate the specified pathkey.
+
 20-Jan-2018 Fixes #420. Container source modules which are passed into C[.Cxx].ConsoleApplication.ExtendSource() should not standalone compile, as there is no guarantee that they have sufficient dependencies in order to compile. The applications consuming them may provide those dependencies.
 
 20-Jan-2018 Fixes #419. Publisher.Collation.IncludeAllModulesInNamespace now includes an optional regular expression filter. By default, the function will match all Bam.Core.Module based classes. Using the filter will then reduce this list down to only those Modules whose name matches the filter.
