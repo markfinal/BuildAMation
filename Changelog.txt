@@ -1,3 +1,5 @@
+23-Jan-2018 ======== Version 1.2.0 alpha 2 Release ========
+
 20-Jan-2018 Fixes #422. Added synchronization between Bam.Core.TokenizedString.IsParsed and Bam.Core.TokenizedString.Parse().
 
 20-Jan-2018 Fixes #421. Publisher.Collation.IncludeAllModulesInNamespace now only includes modules that generate the specified pathkey.
