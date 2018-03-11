@@ -1,3 +1,5 @@
+11-Mar-2018 ======== Version 1.1.6 Release ========
+
 11-Mar-2018 Fixes #425. VisualC-15.0 is now compatible with the latest VisualStudio 2017 15.6 release.
 
 11-Mar-2018 Bumping to version v1.1.6.
