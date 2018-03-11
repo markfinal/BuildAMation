@@ -36,7 +36,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright 2010-2017")]
+[assembly: AssemblyCopyright("Copyright 2010-2018")]
 [assembly: AssemblyProduct("BuildAMation")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -53,8 +53,8 @@ using System.Runtime.InteropServices;
 // AssemblyInformationalVersion is modified by the release procedure for any alpha/beta qualifications, and is used
 // in the 'product version' detail when inspecting an assembly, and also by "bam --version".
 // Semantic versioning (http://semver.org/) is used.
-[assembly: AssemblyVersion("1.1.5")]
-[assembly: AssemblyInformationalVersion("1.1.5")]
+[assembly: AssemblyVersion("1.1.6")]
+[assembly: AssemblyInformationalVersion("1.1.6")]
 
 // Because it exposes externally visible types.
 [assembly: CLSCompliant(true)]

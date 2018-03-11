@@ -1,3 +1,5 @@
+11-Mar-2018 Bumping to version v1.1.6.
+
 07-Dec-2017 ======== Version 1.1.5 Release ========
 
 07-Dec-2017 Bumping version to v1.1.5.
