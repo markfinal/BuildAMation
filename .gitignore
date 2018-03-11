@@ -20,3 +20,4 @@ PackageDebug
 .idea/
 NuGetPackages/
 .nuget/
+.vs/
