@@ -90,11 +90,6 @@ namespace ClangCommon
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }
-            if (settings.OmitFramePointer.HasValue)
-            {
-                var arg = settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
-                configuration["OTHER_CFLAGS"] = new XcodeBuilder.MultiConfigurationValue(arg);
-            }
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -106,14 +101,19 @@ namespace ClangCommon
                         configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("s");
                         break;
                     case C.EOptimization.Speed:
-                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("1");
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("2");
                         break;
-                    case C.EOptimization.Full:
-                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("3");
+                    case C.EOptimization.Custom:
+                        // do nothing - defer to compiler specific optimizations
                         break;
                     default:
                         throw new Bam.Core.Exception("Unsupported optimization, {0}", settings.Optimization.Value);
                 }
+            }
+            if (settings.OmitFramePointer.HasValue)
+            {
+                var arg = settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
+                configuration["OTHER_CFLAGS"] = new XcodeBuilder.MultiConfigurationValue(arg);
             }
             if (settings.PreprocessorDefines.Count > 0)
             {

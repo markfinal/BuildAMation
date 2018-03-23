@@ -63,5 +63,11 @@ namespace ClangCommon
             get;
             set;
         }
+
+        EOptimization? Optimization
+        {
+            get;
+            set;
+        }
     }
 }

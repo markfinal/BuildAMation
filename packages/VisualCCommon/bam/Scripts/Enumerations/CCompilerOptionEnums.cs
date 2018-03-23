@@ -83,4 +83,9 @@ namespace VisualCCommon
         OnlyInline = 1,
         AnySuitable = 2
     }
+
+    public enum EOptimization
+    {
+        Full
+    }
 }

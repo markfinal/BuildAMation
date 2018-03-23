@@ -69,5 +69,11 @@ namespace GccCommon
             get;
             set;
         }
+
+        EOptimization? Optimization
+        {
+            get;
+            set;
+        }
     }
 }

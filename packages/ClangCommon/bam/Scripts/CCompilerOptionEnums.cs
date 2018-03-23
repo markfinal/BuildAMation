@@ -36,4 +36,11 @@ namespace ClangCommon
         Hidden,
         Protected
     }
+
+    public enum EOptimization
+    {
+        O1,
+        O3,
+        Ofast
+    }
 }

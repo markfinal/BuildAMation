@@ -75,6 +75,29 @@ namespace ClangCommon
             {
                 configuration["GCC_STRICT_ALIASING"] = new XcodeBuilder.UniqueConfigurationValue(settings.StrictAliasing.Value ? "YES" : "NO");
             }
+            if (settings.Optimization.HasValue)
+            {
+                var common_optimization = (settings as C.ICommonCompilerSettings).Optimization;
+                if (common_optimization.HasValue && common_optimization.Value != C.EOptimization.Custom)
+                {
+                    throw new Bam.Core.Exception("Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom");
+                }
+
+                switch (settings.Optimization.Value)
+                {
+                    case EOptimization.O1:
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("1");
+                        break;
+                    case EOptimization.O3:
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("3");
+                        break;
+                    case EOptimization.Ofast:
+                        configuration["GCC_OPTIMIZATION_LEVEL"] = new XcodeBuilder.UniqueConfigurationValue("fast");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unsupported Clang specific optimization, {0}", settings.Optimization.Value);
+                }
+            }
         }
     }
 }

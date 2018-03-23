@@ -61,12 +61,7 @@ namespace VisualCCommon
                 vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", combined, condition, inheritExisting: true, arePaths: true);
             }
 
-            if (settings.OmitFramePointer.HasValue)
-            {
-                vsSettingsGroup.AddSetting("OmitFramePointers", settings.OmitFramePointer.Value, condition);
-            }
-
-            if (settings.Optimization.HasValue)
+            if (settings.Optimization.HasValue && settings.Optimization.Value != C.EOptimization.Custom)
             {
                 System.Func<string> optimization = () =>
                     {
@@ -81,14 +76,19 @@ namespace VisualCCommon
                             case C.EOptimization.Speed:
                                 return "MaxSpeed";
 
-                            case C.EOptimization.Full:
-                                return "Full";
+                            case C.EOptimization.Custom:
+                                throw new Bam.Core.Exception("Should never get here");
 
                             default:
                                 throw new Bam.Core.Exception("Unknown optimization type, {0}", settings.Optimization.Value.ToString());
                         }
                     };
                 vsSettingsGroup.AddSetting("Optimization", optimization(), condition);
+            }
+
+            if (settings.OmitFramePointer.HasValue)
+            {
+                vsSettingsGroup.AddSetting("OmitFramePointers", settings.OmitFramePointer.Value, condition);
             }
 
             if (settings.PreprocessorDefines.Count > 0)

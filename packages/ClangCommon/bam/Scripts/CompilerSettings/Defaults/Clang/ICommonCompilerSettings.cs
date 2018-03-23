@@ -42,6 +42,7 @@ namespace ClangCommon.DefaultSettings
             settings.Pedantic = false;
             settings.Visibility = EVisibility.Hidden;
             settings.StrictAliasing = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
+            settings.Optimization = null; // assume that the setting in C.ICommonCompilerSettings is sufficient
         }
 
         public static void
@@ -54,6 +55,7 @@ namespace ClangCommon.DefaultSettings
             shared.Pedantic = shared.Pedantic.Intersect(other.Pedantic);
             shared.Visibility = shared.Visibility.Intersect(other.Visibility);
             shared.StrictAliasing = shared.StrictAliasing.Intersect(other.StrictAliasing);
+            shared.Optimization = shared.Optimization.Intersect(other.Optimization);
         }
 
         public static void
@@ -67,6 +69,7 @@ namespace ClangCommon.DefaultSettings
             delta.Pedantic = lhs.Pedantic.Complement(rhs.Pedantic);
             delta.Visibility = lhs.Visibility.Complement(rhs.Visibility);
             delta.StrictAliasing = lhs.StrictAliasing.Complement(rhs.StrictAliasing);
+            delta.Optimization = lhs.Optimization.Complement(rhs.Optimization);
         }
 
         public static void
@@ -79,6 +82,7 @@ namespace ClangCommon.DefaultSettings
             settings.Pedantic = other.Pedantic;
             settings.Visibility = other.Visibility;
             settings.StrictAliasing = other.StrictAliasing;
+            settings.Optimization = other.Optimization;
         }
     }
 }

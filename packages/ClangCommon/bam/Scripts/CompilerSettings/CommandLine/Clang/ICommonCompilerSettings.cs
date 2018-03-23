@@ -100,6 +100,29 @@ namespace ClangCommon
                     commandLine.Add("-fno-strict-aliasing");
                 }
             }
+            if (settings.Optimization.HasValue)
+            {
+                var common_optimization = (settings as C.ICommonCompilerSettings).Optimization;
+                if (common_optimization.HasValue && common_optimization.Value != C.EOptimization.Custom)
+                {
+                    throw new Bam.Core.Exception("Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom");
+                }
+
+                switch (settings.Optimization.Value)
+                {
+                    case EOptimization.O1:
+                        commandLine.Add("-O1");
+                        break;
+                    case EOptimization.O3:
+                        commandLine.Add("-O3");
+                        break;
+                    case EOptimization.Ofast:
+                        commandLine.Add("-Ofast");
+                        break;
+                    default:
+                        throw new Bam.Core.Exception("Unrecognized Clang optimization, {0}", settings.Optimization.Value.ToString());
+                }
+            }
         }
     }
 }

@@ -36,4 +36,10 @@ namespace MingwCommon
         Hidden,
         Protected
     }
+
+    public enum EOptimization
+    {
+        O3,
+        Ofast
+    }
 }

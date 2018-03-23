@@ -200,5 +200,11 @@ namespace Mingw
             get;
             set;
         }
+
+        MingwCommon.EOptimization? MingwCommon.ICommonCompilerSettings.Optimization
+        {
+            get;
+            set;
+        }
     }
 }

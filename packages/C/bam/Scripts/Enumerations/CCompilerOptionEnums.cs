@@ -30,7 +30,7 @@
 namespace C
 {
     /// <summary>
-    /// Optimization level for the compiler
+    /// Common optimization level for the compiler
     /// </summary>
     public enum EOptimization
     {
@@ -50,14 +50,10 @@ namespace C
         Speed = 2,
 
         /// <summary>
-        /// Enable full optimizations
+        /// Customize the optimization level. Selecting this option will not set any optimization option
+        /// for the compiler. Instead, compiler specific optimization settings should be used.
         /// </summary>
-        Full = 3,
-
-        /// <summary>
-        /// Customize the optimization level (TODO)
-        /// </summary>
-        Custom = 4 // TODO: confirm
+        Custom
     }
 
     /// <summary>

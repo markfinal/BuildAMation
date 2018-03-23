@@ -67,10 +67,6 @@ namespace GccCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
-            if (settings.OmitFramePointer.HasValue)
-            {
-                commandLine.Add(settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer");
-            }
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -79,17 +75,21 @@ namespace GccCommon
                         commandLine.Add("-O0");
                         break;
                     case C.EOptimization.Size:
-                        commandLine.Add("-Os");
-                        break;
-                    case C.EOptimization.Speed:
                         commandLine.Add("-O1");
                         break;
-                    case C.EOptimization.Full:
-                        commandLine.Add("-O3");
+                    case C.EOptimization.Speed:
+                        commandLine.Add("-O2");
+                        break;
+                    case C.EOptimization.Custom:
+                        // do nothing - defer to the compiler specific optimization settings
                         break;
                     default:
                         throw new Bam.Core.Exception("Unknown optimization level, {0}", settings.Optimization.Value.ToString());
                 }
+            }
+            if (settings.OmitFramePointer.HasValue)
+            {
+                commandLine.Add(settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer");
             }
             foreach (var define in settings.PreprocessorDefines)
             {

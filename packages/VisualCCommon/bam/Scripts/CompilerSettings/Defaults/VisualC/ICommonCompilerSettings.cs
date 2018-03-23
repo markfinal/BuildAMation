@@ -41,6 +41,7 @@ namespace VisualCCommon.DefaultSettings
             settings.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
             settings.WarningLevel = EWarningLevel.Level1;
             settings.EnableLanguageExtensions = true; // only because Windows.h does not compile without this, even with WIN32_LEAN_AND_MEAN
+            settings.Optimization = null; // assume that the setting in C.ICommonCompilerSettings is sufficient
         }
 
         public static void
@@ -52,6 +53,7 @@ namespace VisualCCommon.DefaultSettings
             shared.RuntimeLibrary = shared.RuntimeLibrary.Intersect(other.RuntimeLibrary);
             shared.WarningLevel = shared.WarningLevel.Intersect(other.WarningLevel);
             shared.EnableLanguageExtensions = shared.EnableLanguageExtensions.Intersect(other.EnableLanguageExtensions);
+            shared.Optimization = shared.Optimization.Intersect(other.Optimization);
         }
 
         public static void
@@ -64,6 +66,7 @@ namespace VisualCCommon.DefaultSettings
             delta.RuntimeLibrary = lhs.RuntimeLibrary.Complement(rhs.RuntimeLibrary);
             delta.WarningLevel = lhs.WarningLevel.Complement(rhs.WarningLevel);
             delta.EnableLanguageExtensions = lhs.EnableLanguageExtensions.Complement(rhs.EnableLanguageExtensions);
+            delta.Optimization = lhs.Optimization.Complement(rhs.Optimization);
         }
 
         public static void
@@ -75,6 +78,7 @@ namespace VisualCCommon.DefaultSettings
             settings.RuntimeLibrary = other.RuntimeLibrary;
             settings.WarningLevel = other.WarningLevel;
             settings.EnableLanguageExtensions = other.EnableLanguageExtensions;
+            settings.Optimization = other.Optimization;
         }
     }
 }

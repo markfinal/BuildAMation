@@ -1,3 +1,28 @@
+23-Mar-2018 Fixes #388. Cleaned up compiler optimization flags.
+
+C.EOptimization no longer has a 'full' option (this is VisualC specific). C.EOptimization.Custom now expands to nothing.
+However, there are now compiler specific optimization settings to allow compiler extensions, when C.EOptimization.Custom is selected.
+VisualC exposes Full.
+Gcc exposes O3 and Ofast.
+Clang exposes O1, O3 and Ofast.
+
+C.ICommonCompilerSettings.OmitFramePointer is now evaluated after C.ICommonCompilerSettings.Optimization, in case the choice of the former differs from that in the optimization.
+
+Clang mappings changes
+C.EOptimization.Speed was -O1, now -O2.
+
+Gcc mappings changes
+C.EOptimization.Speed was -O1, now -O2.
+C.EOptimization.Size was -Os, now -O1.
+
+Mingw mappings changes
+C.EOptimization.Speed was -O1,  now -O2.
+C.EOptimization.Size was -Os, now -O1.
+
+VisualC mappings changes
+C.EOptimization.Speed was -O1, now -O2.
+C.EOptimization.Size was -Os, now -O1.
+
 23-Jan-2018 ======== Version 1.2.0 alpha 2 Release ========
 
 20-Jan-2018 Fixes #422. Added synchronization between Bam.Core.TokenizedString.IsParsed and Bam.Core.TokenizedString.Parse().

@@ -67,10 +67,6 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
-            if (settings.OmitFramePointer.HasValue)
-            {
-                commandLine.Add(settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer");
-            }
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -82,14 +78,18 @@ namespace ClangCommon
                         commandLine.Add("-Os");
                         break;
                     case C.EOptimization.Speed:
-                        commandLine.Add("-O1");
+                        commandLine.Add("-O2");
                         break;
-                    case C.EOptimization.Full:
-                        commandLine.Add("-O3");
+                    case C.EOptimization.Custom:
+                        // do nothing - defer to the compiler specific optimization settings
                         break;
                     default:
                         throw new Bam.Core.Exception("Unsupported optimization, {0}", settings.Optimization.Value);
                 }
+            }
+            if (settings.OmitFramePointer.HasValue)
+            {
+                commandLine.Add(settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer");
             }
             foreach (var define in settings.PreprocessorDefines)
             {

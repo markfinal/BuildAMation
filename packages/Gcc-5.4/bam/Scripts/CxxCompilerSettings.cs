@@ -199,5 +199,11 @@ namespace Gcc
             get;
             set;
         }
+
+        GccCommon.EOptimization? GccCommon.ICommonCompilerSettings.Optimization
+        {
+            get;
+            set;
+        }
     }
 }

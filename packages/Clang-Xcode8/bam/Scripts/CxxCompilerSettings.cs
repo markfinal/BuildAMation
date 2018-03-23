@@ -221,5 +221,11 @@ namespace Clang
             get;
             set;
         }
+
+        ClangCommon.EOptimization? ClangCommon.ICommonCompilerSettings.Optimization
+        {
+            get;
+            set;
+        }
     }
 }

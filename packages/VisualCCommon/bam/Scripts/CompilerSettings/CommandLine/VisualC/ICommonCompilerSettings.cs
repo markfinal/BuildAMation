@@ -81,6 +81,25 @@ namespace VisualCCommon
                     commandLine.Add("-Za");
                 }
             }
+
+            if (settings.Optimization.HasValue)
+            {
+                var common_optimization = (settings as C.ICommonCompilerSettings).Optimization;
+                if (common_optimization.HasValue && common_optimization.Value != C.EOptimization.Custom)
+                {
+                    throw new Bam.Core.Exception("Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom");
+                }
+
+                switch (settings.Optimization.Value)
+                {
+                    case EOptimization.Full:
+                        commandLine.Add("-Ox");
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception("Unknown compiler optimization, {0}", settings.Optimization.Value.ToString());
+                }
+            }
         }
     }
 }

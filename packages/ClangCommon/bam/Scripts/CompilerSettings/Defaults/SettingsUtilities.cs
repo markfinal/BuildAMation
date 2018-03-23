@@ -46,5 +46,21 @@ namespace ClangCommon
         {
             return (lhs != rhs) ? lhs : null;
         }
+
+        public static EOptimization?
+        Intersect(
+            this EOptimization? lhs,
+            EOptimization? rhs)
+        {
+            return (lhs == rhs) ? lhs : null;
+        }
+
+        public static EOptimization?
+        Complement(
+            this EOptimization? lhs,
+            EOptimization? rhs)
+        {
+            return (lhs != rhs) ? lhs : null;
+        }
     }
 }

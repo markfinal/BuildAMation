@@ -57,5 +57,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        EOptimization? Optimization
+        {
+            get;
+            set;
+        }
     }
 }

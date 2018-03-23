@@ -205,5 +205,11 @@ namespace VisualC
             get;
             set;
         }
+
+        VisualCCommon.EOptimization? VisualCCommon.ICommonCompilerSettings.Optimization
+        {
+            get;
+            set;
+        }
     }
 }

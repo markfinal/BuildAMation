@@ -63,5 +63,11 @@ namespace MingwCommon
             get;
             set;
         }
+
+        EOptimization? Optimization
+        {
+            get;
+            set;
+        }
     }
 }

@@ -36,4 +36,10 @@ namespace GccCommon
         Hidden,
         Protected
     }
+
+    public enum EOptimization
+    {
+        O3,
+        Ofast
+    }
 }
