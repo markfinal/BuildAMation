@@ -71,9 +71,11 @@ namespace C
                     }
                     else
                     {
-                        var versionSource = Bam.Core.Module.Create<WinVersionResource>();
-                        versionSource.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(config)/$(OutputName)_version.rc");
-                        versionSource.BinaryModule = this;
+                        var versionSource = Bam.Core.Module.Create<WinVersionResource>(preInitCallback: module =>
+                            {
+                                module.BinaryModule = this;
+                                module.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(config)/$(OutputName)_version.rc");
+                            });
                         var versionRC = rcContainer.AddFile(versionSource);
                         DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
                         this.WindowsVersionResource = versionRC;
