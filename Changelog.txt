@@ -1,3 +1,5 @@
+27-Mar-2018 Fixes #426. Repeated calls to Bam.Core.OSUtilities.GetInstallLocation no longer invokes an external process except for the first. The result is cached.
+
 23-Mar-2018 Fixes #388. Cleaned up compiler optimization flags.
 
 C.EOptimization no longer has a 'full' option (this is VisualC specific). C.EOptimization.Custom now expands to nothing.

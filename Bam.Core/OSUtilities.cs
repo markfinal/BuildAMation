@@ -35,6 +35,8 @@ namespace Bam.Core
     /// </summary>
     public static class OSUtilities
     {
+        private static System.Collections.Generic.Dictionary<string, string> InstallLocationCache = new System.Collections.Generic.Dictionary<string, string>();
+
         private static bool CheckFor64BitOS
         {
             get
@@ -375,6 +377,8 @@ namespace Bam.Core
         /// <summary>
         /// Gets the install location of an executable.
         /// An exception is thrown if it cannot be located in the system.
+        /// Executable locations are cached, so that multiple queries for the same executable
+        /// does not need to invoke any external processes.
         /// </summary>
         /// <returns>The installed location of the executable.</returns>
         /// <param name="executable">Filename of the executable to locate.</param>
@@ -382,6 +386,10 @@ namespace Bam.Core
         GetInstallLocation(
             string executable)
         {
+            if (InstallLocationCache.ContainsKey(executable))
+            {
+                return InstallLocationCache[executable];
+            }
             string location;
             if (OSUtilities.IsWindowsHosting)
             {
@@ -395,6 +403,7 @@ namespace Bam.Core
             {
                 throw new Exception("Unable to locate '{0}' in the system.", executable);
             }
+            InstallLocationCache.Add(executable, location);
             return location;
         }
     }
