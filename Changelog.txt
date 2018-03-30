@@ -1,3 +1,5 @@
+30-Mar-2018 Fixes #428. If the system temporary folder exceeds 65k files, System.IO.Path.GetTempFileName will throw an exception. Added a wrapper function, Bam.Core.IOWrapper.CreateTemporaryFile() that throws a sensible error with instructions on how to fix the issue. Also, all dangling temporary files are now deleted.
+
 27-Mar-2018 Fixes #427. Windows .rc files for executable/dll versioning are now only written to disk if the don't exist, or their contents from the previous write has changed. This avoids unexpected relinks when VisualStudio projects are regenerated, but the code for the linked executables hasn't changed.
 
 27-Mar-2018 Fixes #426. Repeated calls to Bam.Core.OSUtilities.GetInstallLocation no longer invokes an external process except for the first. The result is cached.

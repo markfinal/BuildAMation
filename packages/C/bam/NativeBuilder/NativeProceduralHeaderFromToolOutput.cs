@@ -47,7 +47,7 @@ namespace C
             var destDir = System.IO.Path.GetDirectoryName(destPath);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
 
-            var tempPath = System.IO.Path.GetTempFileName();
+            var tempPath = Bam.Core.IOWrapper.CreateTemporaryFile();
             using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(tempPath))
             {
                 writeFile.Write(context.OutputStringBuilder.ToString());
@@ -77,6 +77,7 @@ namespace C
             else
             {
                 Bam.Core.Log.Info("{0} contents have not changed", destPath);
+                System.IO.File.Delete(tempPath);
             }
             context.OutputStringBuilder.Clear();
         }

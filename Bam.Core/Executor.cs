@@ -50,12 +50,12 @@ namespace Bam.Core
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
-                var inner = exception.InnerException;
-                while (inner.InnerException != null)
+                var realException = exception.InnerException;
+                if (null == realException)
                 {
-                    inner = inner.InnerException;
+                    realException = exception;
                 }
-                throw new Exception(inner, "Pre-build error:");
+                throw new Exception(realException, "Pre-build error:");
             }
         }
 
@@ -74,12 +74,12 @@ namespace Bam.Core
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
-                var inner = exception.InnerException;
-                while (inner.InnerException != null)
+                var realException = exception.InnerException;
+                if (null == realException)
                 {
-                    inner = inner.InnerException;
+                    realException = exception;
                 }
-                throw new Exception(inner, "Post-build error:");
+                throw new Exception(realException, "Post-build error:");
             }
         }
 

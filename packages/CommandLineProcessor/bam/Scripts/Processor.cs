@@ -144,6 +144,7 @@ namespace CommandLineProcessor
             processStartInfo.RedirectStandardInput = true;
 
             var arguments = commandLineArguments != null ? commandLineArguments.ToString(' ') : string.Empty;
+            string responseFilePath = null;
             if (Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 //TODO: should this include the length of the executable path too?
@@ -154,7 +155,7 @@ namespace CommandLineProcessor
                         throw new Bam.Core.Exception("Command line is {0} characters long, but response files are not supported by the tool {1}", arguments.Length, executablePath);
                     }
 
-                    var responseFilePath = System.IO.Path.GetTempFileName();
+                    responseFilePath = Bam.Core.IOWrapper.CreateTemporaryFile();
                     using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFilePath))
                     {
                         Bam.Core.Log.DebugMessage("Written response file {0} containing:\n{1}", responseFilePath, arguments);
@@ -194,6 +195,13 @@ namespace CommandLineProcessor
             catch (System.ComponentModel.Win32Exception ex)
             {
                 throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+            }
+            finally
+            {
+                if (null != responseFilePath)
+                {
+                    System.IO.File.Delete(responseFilePath);
+                }
             }
             if (null != process)
             {

@@ -119,17 +119,25 @@ namespace XcodeBuilder
             System.Xml.XmlDocument document)
         {
             var targetExists = System.IO.File.Exists(targetPath);
-            var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
+            var writePath = targetExists ? Bam.Core.IOWrapper.CreateTemporaryFile() : targetPath;
             using (var xmlwriter = System.Xml.XmlWriter.Create(writePath, settings))
             {
                 //Bam.Core.Log.MessageAll("Writing {0}", writePath);
                 document.WriteTo(xmlwriter);
             }
-            if (targetExists && !AreTextFilesIdentical(targetPath, writePath))
+            if (targetExists)
             {
-                //Bam.Core.Log.MessageAll("\tXML has changed, moving {0} to {1}", writePath, targetPath);
-                System.IO.File.Delete(targetPath);
-                System.IO.File.Move(writePath, targetPath);
+                if (AreTextFilesIdentical(targetPath, writePath))
+                {
+                    // delete temporary
+                    System.IO.File.Delete(writePath);
+                }
+                else
+                {
+                    //Bam.Core.Log.MessageAll("\tXML has changed, moving {0} to {1}", writePath, targetPath);
+                    System.IO.File.Delete(targetPath);
+                    System.IO.File.Move(writePath, targetPath);
+                }
             }
         }
 
@@ -139,17 +147,25 @@ namespace XcodeBuilder
             System.Text.StringBuilder contents)
         {
             var targetExists = System.IO.File.Exists(targetPath);
-            var writePath = targetExists ? System.IO.Path.GetTempFileName() : targetPath;
+            var writePath = targetExists ? Bam.Core.IOWrapper.CreateTemporaryFile() : targetPath;
             using (var writer = new System.IO.StreamWriter(writePath))
             {
                 //Bam.Core.Log.MessageAll("Writing {0}", writePath);
                 writer.Write(contents);
             }
-            if (targetExists && !AreTextFilesIdentical(targetPath, writePath))
+            if (targetExists)
             {
-                //Bam.Core.Log.MessageAll("\tText has changed, moving {0} to {1}", writePath, targetPath);
-                System.IO.File.Delete(targetPath);
-                System.IO.File.Move(writePath, targetPath);
+                if (AreTextFilesIdentical(targetPath, writePath))
+                {
+                    // delete temporary
+                    System.IO.File.Delete(writePath);
+                }
+                else
+                {
+                    //Bam.Core.Log.MessageAll("\tText has changed, moving {0} to {1}", writePath, targetPath);
+                    System.IO.File.Delete(targetPath);
+                    System.IO.File.Move(writePath, targetPath);
+                }
             }
         }
 

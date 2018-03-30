@@ -204,12 +204,12 @@ namespace Bam.Core
             catch (System.Reflection.TargetInvocationException ex)
             {
                 var exModuleType = (ex.InnerException is ModuleCreationException) ? (ex.InnerException as ModuleCreationException).ModuleType : moduleType;
-                var inner = ex.InnerException;
-                while (inner.InnerException != null)
+                var realException = ex.InnerException;
+                if (null == realException)
                 {
-                    inner = inner.InnerException;
+                    realException = ex;
                 }
-                throw new Exception(inner, "Failed to create module of type {0}", exModuleType.ToString());
+                throw new Exception(realException, "Failed to create module of type {0}", exModuleType.ToString());
             }
         }
 

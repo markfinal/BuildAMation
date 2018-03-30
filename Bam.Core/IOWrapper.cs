@@ -69,5 +69,24 @@ namespace Bam.Core
                 CreateDirectory(directoryPath);
             }
         }
+
+        /// <summary>
+        /// Create a temporary file.
+        /// May throw an exception if there are reasons why temporary files cannot be crated.
+        /// </summary>
+        /// <returns>Temporary file path</returns>
+        static public string
+        CreateTemporaryFile()
+        {
+            try
+            {
+                var path = System.IO.Path.GetTempFileName();
+                return path;
+            }
+            catch (System.IO.IOException ex)
+            {
+                throw new Bam.Core.Exception(ex, "Unable to get a temporary path; please delete all temporary files in {0} and try again", System.IO.Path.GetTempPath());
+            }
+        }
     }
 }
