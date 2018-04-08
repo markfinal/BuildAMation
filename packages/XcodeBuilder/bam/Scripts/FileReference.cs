@@ -85,6 +85,9 @@ namespace XcodeBuilder
             case FileReference.EFileType.Assembler:
                 return "sourecode.asm";
 
+            case FileReference.EFileType.ZipArchive:
+                return "archive.zip";
+
             default:
                 throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
             }
@@ -143,7 +146,8 @@ namespace XcodeBuilder
             LexFile,
             TextBasedDylibDefinition,
             TextFile,
-            Assembler
+            Assembler,
+            ZipArchive
         }
 
         public enum ESourceTree

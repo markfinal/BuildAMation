@@ -376,9 +376,12 @@ namespace Bam.Core
 
         /// <summary>
         /// Gets the install location of an executable.
+        /// The PATH is searched initially.
+        /// On Windows, the x64 (if applicable) and x86 program files directories are recursively
+        /// searched, in that order for the executable. This may be slow.
         /// An exception is thrown if it cannot be located in the system.
-        /// Executable locations are cached, so that multiple queries for the same executable
-        /// does not need to invoke any external processes.
+        /// Executable locations are cached (thread safe), so that multiple queries for the same
+        /// executable does not need to invoke any external processes.
         /// </summary>
         /// <returns>The installed location of the executable.</returns>
         /// <param name="executable">Filename of the executable to locate.</param>
@@ -386,25 +389,41 @@ namespace Bam.Core
         GetInstallLocation(
             string executable)
         {
-            if (InstallLocationCache.ContainsKey(executable))
+            lock (InstallLocationCache)
             {
-                return InstallLocationCache[executable];
+                if (InstallLocationCache.ContainsKey(executable))
+                {
+                    return InstallLocationCache[executable];
+                }
+                string location;
+                if (OSUtilities.IsWindowsHosting)
+                {
+                    location = RunExecutable("where", executable);
+                    if (null == location)
+                    {
+                        var args = new System.Text.StringBuilder();
+                        args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath, executable);
+                        location = RunExecutable("where", args.ToString());
+                        if (null == location)
+                        {
+                            args.Length = 0;
+                            args.Capacity = 0;
+                            args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path, executable);
+                            location = RunExecutable("where", args.ToString());
+                        }
+                    }
+                }
+                else
+                {
+                    location = RunExecutable("which", executable);
+                }
+                if (null == location)
+                {
+                    throw new Exception("Unable to locate '{0}' in the system.", executable);
+                }
+                InstallLocationCache.Add(executable, location);
+                return location;
             }
-            string location;
-            if (OSUtilities.IsWindowsHosting)
-            {
-                location = RunExecutable("where", executable);
-            }
-            else
-            {
-                location = RunExecutable("which", executable);
-            }
-            if (null == location)
-            {
-                throw new Exception("Unable to locate '{0}' in the system.", executable);
-            }
-            InstallLocationCache.Add(executable, location);
-            return location;
         }
     }
 }

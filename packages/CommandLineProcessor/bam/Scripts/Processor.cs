@@ -196,13 +196,7 @@ namespace CommandLineProcessor
             {
                 throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
             }
-            finally
-            {
-                if (null != responseFilePath)
-                {
-                    System.IO.File.Delete(responseFilePath);
-                }
-            }
+
             if (null != process)
             {
                 process.BeginOutputReadLine();
@@ -222,11 +216,22 @@ namespace CommandLineProcessor
                 process.Close();
             }
 
+            // delete once the process has finished, or never started
+            if (null != responseFilePath)
+            {
+                System.IO.File.Delete(responseFilePath);
+            }
+
             if (exitCode != 0)
             {
                 var message = new System.Text.StringBuilder();
                 message.AppendFormat("Command failed: {0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
                 message.AppendLine();
+                if (null != responseFilePath)
+                {
+                    message.AppendLine("Response file contained:");
+                    message.AppendLine(arguments);
+                }
                 message.AppendFormat("Command exit code: {0}", exitCode);
                 message.AppendLine();
                 throw new Bam.Core.Exception(message.ToString());

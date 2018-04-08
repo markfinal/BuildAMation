@@ -453,7 +453,11 @@ namespace XcodeBuilder
                 {
                     if (null == depTarget.FileReference)
                     {
-                        Bam.Core.Log.DebugMessage("Project {0} cannot be a target dependency as it has no output FileReference", depTarget.Name);
+                        // expect header libraries not to have a build output
+                        if (!(depTarget.Module is C.HeaderLibrary))
+                        {
+                            Bam.Core.Log.ErrorMessage("Project {0} cannot be a target dependency as it has no output FileReference", depTarget.Name);
+                        }
                         continue;
                     }
 
