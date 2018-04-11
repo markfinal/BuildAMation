@@ -108,7 +108,7 @@ namespace Bam.Core
                 }
                 this.PackageDefinition = packageDefinition;
                 this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
-                this.AddRedirectedPackageDirectory();
+                this.AddRedirectedPackageDirectory(this);
                 this.Macros.AddVerbatim("packagename", packageDefinition.Name);
                 this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
             }
@@ -128,8 +128,27 @@ namespace Bam.Core
         }
 
         private void
-        AddRedirectedPackageDirectory()
+        AddRedirectedPackageDirectory(
+            Module moduleWithAttributes)
         {
+            var allModulePackageDirRedirection = moduleWithAttributes.GetType().GetCustomAttributes(typeof(ModulePackageDirectoryRedirectAttribute), false);
+            if (allModulePackageDirRedirection.Length > 0)
+            {
+                if (allModulePackageDirRedirection.Length > 1)
+                {
+                    throw new Exception("Cannot be more than one module packagedir redirection attribute on module {0}", moduleWithAttributes.GetType().FullName);
+                }
+                var attr = allModulePackageDirRedirection[0] as ModulePackageDirectoryRedirectAttribute;
+                var redirectedNamespace = attr.SourceModuleType.Namespace;
+                var redirectedPackageDefinition = Graph.Instance.Packages.FirstOrDefault(item => item.Name == redirectedNamespace);
+                if (null == redirectedNamespace)
+                {
+                    throw new Exception("Unable to find package definition for module type {0}", attr.SourceModuleType.FullName);
+                }
+                this.Macros.AddVerbatim("packagedir", redirectedPackageDefinition.GetPackageDirectory());
+                return;
+            }
+
             var allPackageDirRedirection = Graph.Instance.ScriptAssembly.GetCustomAttributes(typeof(PackageDirectoryRedirectAttribute), false);
             if (allPackageDirRedirection.Length > 0)
             {
@@ -240,6 +259,9 @@ namespace Bam.Core
 
                     var encapsulatingParent = parent.GetEncapsulatingReferencedModule();
                     module.Macros.Add("encapsulatedparentmodulename", encapsulatingParent.Macros["modulename"]);
+
+                    // since the parent might have been redirected
+                    module.AddRedirectedPackageDirectory(parent);
                 }
                 if (preInitCallback != null)
                 {
