@@ -1,3 +1,5 @@
+11-Apr-2018 Fixes #430. Debuggable projects generated from BAM have (by default) preferred 32-bit, even though the configuration is Any CPU. Disable this, so that environment variables are picked up for 64-bit (especially on Windows).
+
 08-Apr-2018 Fixes #429. Bam.Core.OSUtilities.GetInstallLocation on Windows will now search in the 64-bit (if applicable) and 32-bit Program Files folders, recursively, for the specified file. This can be slow, but will be performed just once if the file is found.
 
 30-Mar-2018 Fixes #428. If the system temporary folder exceeds 65k files, System.IO.Path.GetTempFileName will throw an exception. Added a wrapper function, Bam.Core.IOWrapper.CreateTemporaryFile() that throws a sensible error with instructions on how to fix the issue. Also, all dangling temporary files are now deleted.

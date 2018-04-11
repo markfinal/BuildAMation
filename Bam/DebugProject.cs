@@ -294,6 +294,7 @@ namespace Bam
             CreateElement("CheckForOverflowUnderflow", parent: debugProperties, value: "true");
             CreateElement("AllowUnsafeBlocks", parent: debugProperties, value: "false");
             CreateElement("DefineConstants", parent: debugProperties, value: GetPreprocessorDefines());
+            CreateElement("Prefer32Bit", parent: debugProperties, value: "false");
 
             var references = CreateItemGroup(parent: project);
             foreach (var desc in masterPackage.DotNetAssemblies)
