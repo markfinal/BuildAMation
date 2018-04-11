@@ -364,6 +364,7 @@ namespace Bam.Core
             processStartInfo.FileName = executable;
             processStartInfo.Arguments = arguments;
             processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true; // swallow
             processStartInfo.UseShellExecute = false;
             System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
             process.WaitForExit();
