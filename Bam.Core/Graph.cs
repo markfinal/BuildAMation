@@ -115,7 +115,10 @@ namespace Bam.Core
         /// a dependency. There can be one and only one copy, in a build environment, of this type of module.
         /// A non-referenced module, is one that is never referred to explicitly in user scripts, but are created behind
         /// the scenes by packages. There can be many instances of these modules.
-        /// The graph maintains a list of all referenced modules
+        /// The graph maintains a list of all referenced modules.
+        /// This function either finds an existing referenced module in the current build Environment, or will create an
+        /// instance. Since the current build Environment is inspected, this function cal only be called from within the
+        /// Init() calling hierarchy of a Module.
         /// </summary>
         /// <returns>The instance of the referenced module.</returns>
         /// <typeparam name="T">The type of module being referenced.</typeparam>
@@ -127,6 +130,7 @@ namespace Bam.Core
                 var message = new System.Text.StringBuilder();
                 message.AppendLine("Unable to find a module either within a patch or after the build has started.");
                 message.AppendLine("If called within a patch function, please modify the calling code to invoke this call within the module's Init method.");
+                message.AppendLine("If it must called elsewhere, please use the overloaded version accepting an Environment argument.");
                 throw new Exception(message.ToString());
             }
             var referencedModules = this.ReferencedModules[this.BuildEnvironmentInternal];
@@ -166,6 +170,30 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Find an existing instance of a referenced module, by its type, in the provided build Environment.
+        /// If no such instance can be found, an exception is thrown.
+        /// </summary>
+        /// <typeparam name="T">Type of the referenced Module sought</typeparam>
+        /// <param name="env">Environment in which the referenced Module should exist.</param>
+        /// <returns>Instance of the matched Module type in the Environment's referenced Modules.</returns>
+        public T
+        FindReferencedModule<T>(
+            Environment env) where T : Module, new()
+        {
+            if (null == env)
+            {
+                throw new Exception("Must provide a valid Environment");
+            }
+            var referencedModules = this.ReferencedModules[env];
+            var matchedModule = referencedModules.FirstOrDefault(item => item.GetType() == typeof(T));
+            if (null == matchedModule)
+            {
+                throw new Exception("Unable to locate a referenced module of type {0} in the provided build environment", typeof(T).ToString());
+            }
+            return matchedModule as T;
+        }
+
         private System.Collections.Generic.Dictionary<System.Type, System.Func<Module>> compiledFindRefModuleCache = new System.Collections.Generic.Dictionary<System.Type, System.Func<Module>>();
 
         private Module
@@ -178,7 +206,7 @@ namespace Bam.Core
                 {
                     // find method for the module type requested
                     // (the caching is based on this being 'expensive' as it's based on reflection)
-                    var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule");
+                    var findReferencedModuleMethod = typeof(Graph).GetMethod("FindReferencedModule", System.Type.EmptyTypes);
                     var genericVersionForModuleType = findReferencedModuleMethod.MakeGenericMethod(moduleType);
 
                     // now compile it, so that we don't have to repeat the above
