@@ -36,7 +36,8 @@ namespace ConfigurationTest1
     {
         void
         IOverrideModuleConfiguration.execute(
-            Bam.Core.IModuleConfiguration config)
+            Bam.Core.IModuleConfiguration config,
+            Bam.Core.Environment buildEnvironment)
         {
             var libConfig = config as ConfigureLibrary;
             if (null != libConfig)

@@ -42,8 +42,10 @@ namespace Bam.Core
         /// Allow modification of a module's configuration
         /// </summary>
         /// <param name="config">A module's configuration interface - cast to the writeable class exposed by the Module to use</param>
+        /// <param name="buildEnvironment">A module's build Environment</param>
         void
         execute(
-            IModuleConfiguration config);
+            IModuleConfiguration config,
+            Environment buildEnvironment);
     }
 }

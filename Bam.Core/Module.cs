@@ -1130,7 +1130,7 @@ namespace Bam.Core
             this.Configuration = System.Activator.CreateInstance(writeType, new[] { this.BuildEnvironment }) as IModuleConfiguration;
             if (Graph.Instance.OverrideModuleConfiguration != null)
             {
-                Graph.Instance.OverrideModuleConfiguration.execute(this.Configuration);
+                Graph.Instance.OverrideModuleConfiguration.execute(this.Configuration, this.BuildEnvironment);
             }
         }
 
