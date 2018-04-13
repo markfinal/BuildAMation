@@ -177,9 +177,17 @@ namespace C
             var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker);
             (sender.Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, linkerGroup);
 
-            // order only dependencies
-            foreach (var required in sender.Requirements)
+            // order only dependencies - recurse into each, so that all layers
+            // of order only dependencies are included
+            var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(sender.Requirements);
+            while (queue.Count > 0)
             {
+                var required = queue.Dequeue();
+                foreach (var additional in required.Requirements)
+                {
+                    queue.Enqueue(additional);
+                }
+
                 if (null == required.MetaData)
                 {
                     continue;

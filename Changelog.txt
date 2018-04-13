@@ -1,3 +1,5 @@
+13-Apr-2018 Fixes #436. Any order-only dependents into a project generating link step, now recurses into each dependent to add its own order-only dependents. For example, if A is runtime dependent on B and C, and D is runtime dependent on A, then you'd expect D to require A, B, C.
+
 12-Apr-2018 Fixes #435. Bam.Core.IOverrideModuleConfiguration.execute() now also passes the Module's build Environment, in order to make build config dependent choices on how the Module's large scale configuration is set.
 
 12-Apr-2018 Fixes #434. Added overload Bam.Core.Graph.FindReferencedModule<T>(env) function, that accepts a non-null Bam.Core.Environment argument. This is a read-only function that returns the instance of the referenced Module of type T from the specified Environment. Unlike it's no-argument overload, this new function will not attempt to create an instance if it is missing, so can be invoked outside of Module's Init() functions.
