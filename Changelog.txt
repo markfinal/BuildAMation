@@ -1,3 +1,7 @@
+22-Apr-2018 Fixes #429. Bam.Core.OSUtilities.GetInstallLocation on Windows will now search in the 64-bit (if applicable) and 32-bit Program Files folders, recursively, for the specified file. This can be slow, but will be performed just once if the file is found.
+
+Added Publisher.ZipModule to ZIP archive a directory. Uses the zip command line tool on Linux and macOS, and 7zip on Windows (will locate the latter using the above extension to GetInstallLocation, if installed in the default location).
+
 13-Apr-2018 Fixes #436. Any order-only dependents into a project generating link step, now recurses into each dependent to add its own order-only dependents. For example, if A is runtime dependent on B and C, and D is runtime dependent on A, then you'd expect D to require A, B, C.
 
 12-Apr-2018 Fixes #435. Bam.Core.IOverrideModuleConfiguration.execute() now also passes the Module's build Environment, in order to make build config dependent choices on how the Module's large scale configuration is set.
@@ -9,8 +13,6 @@
 11-Apr-2018 Fixes #432. The existing Bam.Core.PackageDirectoryRedirectAttribute allows all modules in a package to reassign their $(packagedir) macro to the specified path. In the case of a single module in a package of many needing to redirect its $(packagedir), something else is needed. Bam.Core.ModulePackageDirectoryRedirectAttribute achieves this. It is a class level attribute, taking one parameter, the type of the Module whos package directory it wants to redirect to. An example use case for this would be subclassing, from package P1, an existing module M (that builds code) in package P2, and simply adding a new dependency in the subclass' Init function. Without the redirected $(packagedir), the subclass' build would try to find M's source files in package P2, instead of P1. Uses of ModulePackageDirectoryRedirectAttribute override uses of PackageDirectoryRedirectAttribute.
 
 11-Apr-2018 Fixes #430. Debuggable projects generated from BAM have (by default) preferred 32-bit, even though the configuration is Any CPU. Disable this, so that environment variables are picked up for 64-bit (especially on Windows).
-
-08-Apr-2018 Fixes #429. Bam.Core.OSUtilities.GetInstallLocation on Windows will now search in the 64-bit (if applicable) and 32-bit Program Files folders, recursively, for the specified file. This can be slow, but will be performed just once if the file is found.
 
 30-Mar-2018 Fixes #428. If the system temporary folder exceeds 65k files, System.IO.Path.GetTempFileName will throw an exception. Added a wrapper function, Bam.Core.IOWrapper.CreateTemporaryFile() that throws a sensible error with instructions on how to fix the issue. Also, all dangling temporary files are now deleted.
 
