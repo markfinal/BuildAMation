@@ -30,11 +30,9 @@
 namespace VisualC
 {
     public class MetaData :
-        Bam.Core.PackageMetaData,
+        VisualCCommon.MetaData,
         VisualCCommon.IRuntimeLibraryPathMeta
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
-
         public MetaData()
         {
             if (!Bam.Core.OSUtilities.IsWindowsHosting)
@@ -42,13 +40,8 @@ namespace VisualC
                 return;
             }
 
-            // TODO: get this from the registry
-            this.InstallDir = Bam.Core.TokenizedString.Create("$(0)/Microsoft Visual Studio 11.0", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path));
-            this.InstallDir.Parse();
-            if (!System.IO.Directory.Exists(this.InstallDir.ToString()))
-            {
-                throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2012 installed?", this.InstallDir.ToString());
-            }
+            var install_dir = this.vswhere_getinstallpath(11);
+            this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
 
             if (Bam.Core.OSUtilities.Is64BitHosting)
             {

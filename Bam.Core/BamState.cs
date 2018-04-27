@@ -109,6 +109,14 @@ namespace Bam.Core
             }
         }
 
+        private string
+        GetNuGetDirectory()
+        {
+            var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory));
+            var nugetDir = System.IO.Path.Combine(rootDir, "NuGetPackages");
+            return nugetDir;
+        }
+
         /// <summary>
         /// Create an instance of the class. Although there is only going to be one instance created,
         /// this is not a singleton, as BamState is attached to the Graph.
@@ -123,6 +131,7 @@ namespace Bam.Core
             this.RunningMono = (System.Type.GetType("Mono.Runtime") != null);
             this.ExecutableDirectory = GetBamDirectory();
             this.WorkingDirectory = GetWorkingDirectory();
+            this.NuGetDirectory = this.GetNuGetDirectory();
 
             this.Version = assemblyVersion;
             this.VersionString = productVersion;
@@ -136,6 +145,16 @@ namespace Bam.Core
         /// </summary>
         /// <value>Bam assembly directory path</value>
         public string ExecutableDirectory
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Obtains the directory containing NuGet packages.
+        /// </summary>
+        /// <value>NuGet package directory path</value>
+        public string NuGetDirectory
         {
             get;
             private set;

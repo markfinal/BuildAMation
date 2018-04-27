@@ -181,6 +181,11 @@ namespace Bam.Core
                 {
                     continue;
                 }
+                if (metaType.IsAbstract)
+                {
+                    // used for base classes
+                    continue;
+                }
 
                 try
                 {
