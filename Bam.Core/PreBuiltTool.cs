@@ -98,7 +98,7 @@ namespace Bam.Core
         public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
         {
             get;
-            private set;
+            protected set;
         }
 
         /// <summary>

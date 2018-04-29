@@ -46,7 +46,7 @@ namespace GccCommon
         GetInstallLocation(
             string executable)
         {
-            return Bam.Core.OSUtilities.GetInstallLocation(executable);
+            return Bam.Core.OSUtilities.GetInstallLocation(executable).First();
         }
     }
 }

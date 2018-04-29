@@ -41,6 +41,17 @@ namespace WindowsSDK
             var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(0)/bin/$(1)/rc.exe", null, new Bam.Core.TokenizedStringArray(installDir81, architecture)));
             this.Macros.AddVerbatim("objext", ".res");
+
+            // use INCLUDE environment variable from VisualC
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            if (Bam.Core.OSUtilities.Is64BitHosting)
+            {
+                this.EnvironmentVariables = vcMeta.Environment64;
+            }
+            else
+            {
+                this.EnvironmentVariables = vcMeta.Environment32;
+            }
         }
 
         public override Bam.Core.TokenizedString Executable

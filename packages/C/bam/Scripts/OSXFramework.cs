@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     /// <summary>
@@ -51,10 +52,11 @@ namespace C
                 frameworkPath.Parse();
             }
             var idName = Bam.Core.OSUtilities.RunExecutable(
-                Bam.Core.OSUtilities.GetInstallLocation("xcrun"),
+                Bam.Core.OSUtilities.GetInstallLocation("xcrun").First(),
                 System.String.Format("--sdk {0} otool -DX {1}",
                 clangMeta["SDK"], // should use clangMeta.SDK, but this avoids a compile time dependency
-                frameworkPath.ToString()));
+                frameworkPath.ToString())
+            );
             this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
         }
 

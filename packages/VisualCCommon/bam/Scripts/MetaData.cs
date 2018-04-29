@@ -82,6 +82,11 @@ namespace VisualCCommon
             if (vs_major_version >= 15)
             {
                 var result = RunExecutable(this.vswherePath, System.String.Format("-property installationPath -version {0}", vs_major_version));
+                if (System.String.IsNullOrEmpty(result))
+                {
+                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", vs_major_version);
+                }
+                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", vs_major_version, result);
                 return result;
             }
             else
@@ -91,8 +96,146 @@ namespace VisualCCommon
                 {
                     throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", vs_major_version);
                 }
+                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", vs_major_version, result);
                 return result;
             }
+        }
+
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
+        execute_vcvars(
+            string subpath_to_vcvars,
+            bool target64bit,
+            bool has64bithost_32bitcross,
+            bool hasNative64BitTools,
+            Bam.Core.StringArray inherited_envvars,
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars
+        )
+        {
+            var startinfo = new System.Diagnostics.ProcessStartInfo();
+            startinfo.FileName = @"c:\Windows\System32\cmd.exe";
+            startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), subpath_to_vcvars);
+            startinfo.EnvironmentVariables.Clear();
+            if (null != inherited_envvars)
+            {
+                foreach (var inherited in inherited_envvars)
+                {
+                    startinfo.EnvironmentVariables.Add(inherited, System.Environment.GetEnvironmentVariable(inherited));
+                }
+            }
+            if (null != required_envvars)
+            {
+                foreach (System.Collections.Generic.KeyValuePair<string,Bam.Core.StringArray> required in required_envvars)
+                {
+                    startinfo.EnvironmentVariables.Add(required.Key, System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';')));
+                }
+            }
+            startinfo.UseShellExecute = false;
+            startinfo.RedirectStandardInput = false;
+            startinfo.RedirectStandardOutput = true;
+            startinfo.RedirectStandardError = true;
+
+            System.Func<string> command = () =>
+            {
+                if (target64bit)
+                {
+                    if (Bam.Core.OSUtilities.Is64BitHosting && hasNative64BitTools)
+                    {
+                        return "vcvarsall.bat amd64";
+                    }
+                    else
+                    {
+                        return "vcvarsall.bat x86_amd64";
+                    }
+                }
+                else
+                {
+                    if (Bam.Core.OSUtilities.Is64BitHosting && has64bithost_32bitcross)
+                    {
+                        return "vcvarsall.bat amd64_x86";
+                    }
+                    else
+                    {
+                        return "vcvarsall.bat x86";
+                    }
+                }
+            };
+
+            var vcvarsall_cmd = command();
+
+            var args = new System.Text.StringBuilder();
+            args.AppendFormat("/C {0} && SET", vcvarsall_cmd);
+            startinfo.Arguments = args.ToString();
+
+            var process = new System.Diagnostics.Process();
+            process.StartInfo = startinfo;
+            process.Start();
+
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                throw new Bam.Core.Exception("{0} failed: {1}", vcvarsall_cmd, process.StandardError.ReadToEnd());
+            }
+
+            var env = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>();
+            for (;;)
+            {
+                var line = process.StandardOutput.ReadLine();
+                if (null == line)
+                {
+                    break;
+                }
+                Bam.Core.Log.DebugMessage("{0}->{1}", vcvarsall_cmd, line);
+                var equals_index = line.IndexOf('=');
+                if (-1 == equals_index)
+                {
+                    continue;
+                }
+                var key = line.Remove(equals_index);
+                var value = line.Remove(0, equals_index + 1);
+                if (System.String.IsNullOrEmpty(key) || System.String.IsNullOrEmpty(value))
+                {
+                    continue;
+                }
+                var splitValue = value.Split(new[] { ';' });
+                var valueArray = new Bam.Core.TokenizedStringArray();
+                foreach (var v in splitValue)
+                {
+                    valueArray.Add(Bam.Core.TokenizedString.CreateVerbatim(v));
+                }
+                env.Add(key, valueArray);
+            }
+            Bam.Core.Log.DebugMessage(@"Running {0}\{1} gives the following environment variables:", startinfo.WorkingDirectory, vcvarsall_cmd);
+            foreach (System.Collections.Generic.KeyValuePair<string,Bam.Core.TokenizedStringArray> entry in env)
+            {
+                Bam.Core.Log.DebugMessage("\t{0} = {1}", entry.Key, entry.Value.ToString(';'));
+            }
+            return env;
+        }
+
+        protected void
+        get_tool_environment_variables(
+            string subpath_to_vcvars,
+            bool has64bithost_32bitcross = true,
+            bool hasNative64BitTools = true,
+            Bam.Core.StringArray inherited_envvars = null,
+            System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars = null)
+        {
+            this.Environment32 = this.execute_vcvars(
+                subpath_to_vcvars,
+                false,
+                has64bithost_32bitcross,
+                hasNative64BitTools,
+                inherited_envvars,
+                required_envvars
+            );
+            this.Environment64 = this.execute_vcvars(
+                subpath_to_vcvars,
+                true,
+                has64bithost_32bitcross,
+                hasNative64BitTools,
+                inherited_envvars,
+                required_envvars
+            );
         }
 
         public MetaData()
@@ -102,6 +245,62 @@ namespace VisualCCommon
                 return;
             }
             this.findvswhere();
+        }
+
+        public Bam.Core.TokenizedString
+        InstallDir
+        {
+            get
+            {
+                return this.Meta["InstallDir"] as Bam.Core.TokenizedString;
+            }
+
+            protected set
+            {
+                this.Meta["InstallDir"] = value;
+            }
+        }
+
+        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
+        Environment32
+        {
+            get
+            {
+                try
+                {
+                    return this.Meta["Environment32"] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>;
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    throw new Bam.Core.Exception("32-bit environment has not been configured");
+                }
+            }
+
+            private set
+            {
+                this.Meta["Environment32"] = value;
+            }
+        }
+
+        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
+        Environment64
+        {
+            get
+            {
+                try
+                {
+                    return this.Meta["Environment64"] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>;
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    throw new Bam.Core.Exception("64-bit environment has not been configured");
+                }
+            }
+
+            private set
+            {
+                this.Meta["Environment64"] = value;
+            }
         }
 
         private string vswherePath

@@ -42,32 +42,13 @@ namespace VisualC
 
             var install_dir = this.vswhere_getinstallpath(15);
             this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
-
-            this.VCToolsVersion = Bam.Core.TokenizedString.CreateVerbatim("14.13.26128");
-            this.CRuntimeVersion = Bam.Core.TokenizedString.CreateVerbatim("14.13.26020");
-
-            if (Bam.Core.OSUtilities.Is64BitHosting)
-            {
-                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/bin/HostX64/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/bin/HostX64/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/bin/HostX64/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-            }
-            else
-            {
-                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/bin/HostX86/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/bin/HostX86/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/bin/HostX86/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-            }
-            this.IncludeDir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/include", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-            this.Lib32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/lib/x86", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
-            this.Lib64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/Tools/MSVC/$(1)/lib/x64", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.VCToolsVersion));
+            this.get_tool_environment_variables(@"VC\Auxiliary\Build");
 
             this.SolutionFormatVersion = "12.00"; // same as VS2015
             this.PlatformToolset = "v141";
             this.VCXProjToolsVersion = "15.0";
             this.VCXProjFiltersToolsVersion = "4.0"; // same as VS2015
             this.UseWindowsSDKPublicPatches = true; // headers like stdio.h are in WindowsSDK 10
-            this.RequiredExecutablePaths = new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create("$(0)/Common7/IDE", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
         }
 
         public override object this[string index]
@@ -83,104 +64,6 @@ namespace VisualC
             string index)
         {
             return this.Meta.ContainsKey(index);
-        }
-
-        public Bam.Core.TokenizedString
-        InstallDir
-        {
-            get
-            {
-                return this.Meta["InstallDir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["InstallDir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Bin32Dir
-        {
-            get
-            {
-                return this.Meta["Bin32Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Bin32Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Bin64Dir
-        {
-            get
-            {
-                return this.Meta["Bin64Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Bin64Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        IncludeDir
-        {
-            get
-            {
-                return this.Meta["IncludeDir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["IncludeDir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Lib32Dir
-        {
-            get
-            {
-                return this.Meta["Lib32Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Lib32Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Lib64Dir
-        {
-            get
-            {
-                return this.Meta["Lib64Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Lib64Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        MSPDBDir
-        {
-            get
-            {
-                return this.Meta["MSPDBDIR"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["MSPDBDIR"] = value;
-            }
         }
 
         public string
@@ -253,20 +136,6 @@ namespace VisualC
             }
         }
 
-        public Bam.Core.TokenizedStringArray
-        RequiredExecutablePaths
-        {
-            get
-            {
-                return this.Meta["AdditionalPATHs"] as Bam.Core.TokenizedStringArray;
-            }
-
-            private set
-            {
-                this.Meta["AdditionalPATHs"] = value;
-            }
-        }
-
         public int
         CompilerMajorVersion
         {
@@ -285,34 +154,6 @@ namespace VisualC
             }
         }
 
-        public Bam.Core.TokenizedString
-        VCToolsVersion
-        {
-            get
-            {
-                return this.Meta["VCToolsVersion"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["VCToolsVersion"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        CRuntimeVersion
-        {
-            get
-            {
-                return this.Meta["CRuntimeVersion"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["CRuntimeVersion"] = value;
-            }
-        }
-
         Bam.Core.TokenizedStringArray
         VisualCCommon.IRuntimeLibraryPathMeta.CRuntimePaths(
             C.EBit depth)
@@ -328,15 +169,39 @@ namespace VisualC
             {
                 case C.EBit.ThirtyTwo:
                     {
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x86/Microsoft.VC141.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/x86/Microsoft.VC141.CRT/vcruntime140.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(this.Environment32["VCToolsRedistDir"])
+                            )
+                        );
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)
+                            )
+                        );
                     }
                     break;
 
                 case C.EBit.SixtyFour:
                     {
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x64/Microsoft.VC141.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/x64/Microsoft.VC141.CRT/vcruntime140.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(this.Environment64["VCToolsRedistDir"])
+                            )
+                        );
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)
+                            )
+                        );
                     }
                     break;
 
@@ -354,11 +219,23 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x86/Microsoft.VC141.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
+                    dynamicLibPaths.Add(
+                        Bam.Core.TokenizedString.Create(
+                            "$(0)/x86/Microsoft.VC141.CRT/msvcp140.dll",
+                            null,
+                            new Bam.Core.TokenizedStringArray(this.Environment32["VCToolsRedistDir"])
+                        )
+                    );
                     break;
 
                 case C.EBit.SixtyFour:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/Redist/MSVC/$(1)/x64/Microsoft.VC141.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir, this.CRuntimeVersion)));
+                    dynamicLibPaths.Add(
+                        Bam.Core.TokenizedString.Create(
+                            "$(0)/x64/Microsoft.VC141.CRT/msvcp140.dll",
+                            null,
+                            new Bam.Core.TokenizedStringArray(this.Environment64["VCToolsRedistDir"])
+                        )
+                    );
                     break;
 
                 default:

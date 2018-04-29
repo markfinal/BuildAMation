@@ -36,8 +36,8 @@ main(
     int argc,
     char **argv)
 {
-    (void)argc;
     char *exePath = argv[0];
+    (void)argc;
 
     fprintf(stdout, "2: %s: Called %s", exePath, TestFunction());
     return 0;

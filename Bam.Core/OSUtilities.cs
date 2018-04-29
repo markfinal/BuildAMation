@@ -35,7 +35,7 @@ namespace Bam.Core
     /// </summary>
     public static class OSUtilities
     {
-        private static System.Collections.Generic.Dictionary<string, string> InstallLocationCache = new System.Collections.Generic.Dictionary<string, string>();
+        private static System.Collections.Generic.Dictionary<string, StringArray> InstallLocationCache = new System.Collections.Generic.Dictionary<string, StringArray>();
 
         private static bool CheckFor64BitOS
         {
@@ -378,52 +378,89 @@ namespace Bam.Core
         /// <summary>
         /// Gets the install location of an executable.
         /// The PATH is searched initially.
-        /// On Windows, the x64 (if applicable) and x86 program files directories are recursively
+        /// If not found, on Windows, the x64 (if applicable) and x86 program files directories are recursively
         /// searched, in that order for the executable. This may be slow.
+        /// If the searchDirectory argument is non-null, this is used instead of the Windows program file
+        /// directories.
         /// An exception is thrown if it cannot be located in the system.
         /// Executable locations are cached (thread safe), so that multiple queries for the same
-        /// executable does not need to invoke any external processes.
+        /// executable does not need to invoke any external processes. If uniqueName is non-null, then
+        /// this is used as the key in the cache, otherwise the executable name is used. The unique name
+        /// may be useful to save different flavours of the same executable name.
         /// </summary>
-        /// <returns>The installed location of the executable.</returns>
+        /// <returns>The installed locations of the executable (may be more than one). Or null if throwOnFailure is false when no match is found.</returns>
         /// <param name="executable">Filename of the executable to locate.</param>
-        public static string
+        /// <param name="searchDirectory">Optional directory to search (Windows only).</param>
+        /// <param name="uniqueName">Optional unique name to save as the key in the cache.</param>
+        /// <param name="throwOnFailure">Optional Boolean, defaults to true, to indicate whether an exception is thrown when the executable is not found.</param>
+        public static StringArray
         GetInstallLocation(
-            string executable)
+            string executable,
+            string searchDirectory = null,
+            string uniqueName = null,
+            bool throwOnFailure = true)
         {
             lock (InstallLocationCache)
             {
-                if (InstallLocationCache.ContainsKey(executable))
+                var key = (null != uniqueName) ? uniqueName : executable;
+                if (InstallLocationCache.ContainsKey(key))
                 {
-                    return InstallLocationCache[executable];
+                    return InstallLocationCache[key];
                 }
                 string location;
                 if (OSUtilities.IsWindowsHosting)
                 {
-                    location = RunExecutable("where", executable);
-                    if (null == location)
+                    if (null != searchDirectory)
                     {
                         var args = new System.Text.StringBuilder();
-                        args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath, executable);
+                        args.AppendFormat("/R \"{0}\" {1}", searchDirectory, executable);
                         location = RunExecutable("where", args.ToString());
+                    }
+                    else
+                    {
+                        location = RunExecutable("where", executable);
                         if (null == location)
                         {
-                            args.Length = 0;
-                            args.Capacity = 0;
-                            args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path, executable);
+                            var args = new System.Text.StringBuilder();
+                            args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath.ToString(), executable);
                             location = RunExecutable("where", args.ToString());
+                            if (null == location)
+                            {
+                                args.Length = 0;
+                                args.Capacity = 0;
+                                args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path.ToString(), executable);
+                                location = RunExecutable("where", args.ToString());
+                            }
                         }
                     }
                 }
                 else
                 {
+                    if (null != searchDirectory)
+                    {
+                        Log.DebugMessage("Search path '{0}' is ignored on non-Windows platforms", searchDirectory);
+                    }
                     location = RunExecutable("which", executable);
                 }
                 if (null == location)
                 {
-                    throw new Exception("Unable to locate '{0}' in the system.", executable);
+                    if (throwOnFailure)
+                    {
+                        throw new Exception("Unable to locate '{0}' in the system.", executable);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
-                InstallLocationCache.Add(executable, location);
-                return location;
+                var results = new StringArray(
+                    location.Split(
+                        new[] { System.Environment.NewLine },
+                        System.StringSplitOptions.RemoveEmptyEntries
+                    )
+                );
+                InstallLocationCache.Add(key, results);
+                return results;
             }
         }
     }

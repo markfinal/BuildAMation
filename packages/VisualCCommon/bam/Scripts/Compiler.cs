@@ -27,54 +27,56 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
     public abstract class CompilerBase :
         C.CompilerTool
     {
-        protected CompilerBase()
+        private string
+        getCompilerPath()
         {
+            const string executable = "cl.exe";
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                var installLocation = Bam.Core.OSUtilities.GetInstallLocation(
+                    executable,
+                    path.ToString(),
+                    this.GetType().Name,
+                    throwOnFailure: false
+                );
+                if (null != installLocation)
+                {
+                    return installLocation.First();
+                }
+            }
+            var message = new System.Text.StringBuilder();
+            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendLine();
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                message.AppendFormat("\t{0}", path.ToString());
+                message.AppendLine();
+            }
+            throw new Bam.Core.Exception(message.ToString());
+        }
+
+        protected CompilerBase(
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+        {
+            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.MajorVersion = meta.CompilerMajorVersion;
+            this.MinorVersion = meta.CompilerMinorVersion;
+            this.Macros.Add("InstallPath", meta.InstallDir);
+            this.EnvironmentVariables = env;
+            var fullCompilerExePath = this.getCompilerPath();
+            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(fullCompilerExePath));
+            this.Macros.AddVerbatim("objext", ".obj");
+
             this.InheritedEnvironmentVariables.Add("SystemRoot");
             // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
-
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.MajorVersion = meta.CompilerMajorVersion;
-            this.MinorVersion = meta.CompilerMinorVersion;
-
-            this.Macros.Add("InstallPath", meta.InstallDir);
-            this.Macros.AddVerbatim("objext", ".obj");
-
-            if (null != meta.RequiredExecutablePaths)
-            {
-                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
-            }
-
-            // mspdbxxx.dll needed for the host architecture
-            if (this.EnvironmentVariables.ContainsKey("PATH"))
-            {
-                this.EnvironmentVariables["PATH"].Add(meta.MSPDBDir);
-            }
-            else
-            {
-                this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(meta.MSPDBDir));
-            }
-
-            this.PublicPatch((settings, appliedTo) =>
-                {
-                    var compilation = settings as C.ICommonCompilerSettings;
-                    if (null != compilation)
-                    {
-                        compilation.SystemIncludePaths.AddUnique(meta.IncludeDir);
-                    }
-
-                    var rcCompilation = settings as C.ICommonWinResourceCompilerSettings;
-                    if (null != rcCompilation)
-                    {
-                        rcCompilation.IncludePaths.AddUnique(meta.IncludeDir);
-                    }
-                });
 
             if (meta.UseWindowsSDKPublicPatches)
             {
@@ -131,11 +133,9 @@ namespace VisualCCommon
         CompilerBase
     {
         public Compiler32()
-        {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("BinPath", meta.Bin32Dir);
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\cl.exe"));
-        }
+            :
+            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+        {}
 
         protected override void
         OverrideDefaultSettings(
@@ -151,9 +151,7 @@ namespace VisualCCommon
         Compiler32
     {
         public CxxCompiler32()
-            : base()
-        {
-        }
+        {}
 
         protected override void
         OverrideDefaultSettings(
@@ -170,12 +168,9 @@ namespace VisualCCommon
         CompilerBase
     {
         public Compiler64()
-            : base()
-        {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("BinPath", meta.Bin64Dir);
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\cl.exe"));
-        }
+            :
+            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+        { }
 
         protected override void
         OverrideDefaultSettings(
@@ -191,9 +186,7 @@ namespace VisualCCommon
         Compiler64
     {
         public CxxCompiler64()
-            : base()
-        {
-        }
+        {}
 
         protected override void
         OverrideDefaultSettings(

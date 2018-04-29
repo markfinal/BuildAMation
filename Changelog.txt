@@ -1,3 +1,8 @@
+29-Apr-2018 Fixes #391. VisualC packages now use their respective vcvarsall.bat to initialise the environments used for running their tools.
+
+Bam.Core.OSUtilities.GetInstallLocation has been extended with optional arguments: searchDirectory, a string path for a directory to search immediately (Windows only); uniqueName, a string key to reference a cached executable path (useful if the same executable filename may reside in multiple locations, e.g. 32-bit/64-bit compilers); throwOnFailure, a Boolean (defaults to true) indicating whether a failure to find an executable results in an exception, or just returning null.
+Bam.Core.OSUtilities.GetInstallLocation now returns a Bam.Core.StringArray, returning all matches for the executable on the search paths. The calling code is expected to determine which discovered path should be used.
+
 27-Apr-2018 Fixes #339. The vswhere NuGet package is now installed when building BAM. The VisualC packages use this to determine install locations.
 
 22-Apr-2018 Fixes #429. Bam.Core.OSUtilities.GetInstallLocation on Windows will now search in the 64-bit (if applicable) and 32-bit Program Files folders, recursively, for the specified file. This can be slow, but will be performed just once if the file is found.

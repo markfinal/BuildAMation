@@ -27,19 +27,48 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
     public abstract class LinkerBase :
         C.LinkerTool
     {
-        protected LinkerBase(
-            string toolPath, // TODO: unused
-            string libPath)
+        private string
+        getLinkerPath()
         {
-            // TODO: positional tokens?
+            const string executable = "link.exe";
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                var installLocation = Bam.Core.OSUtilities.GetInstallLocation(
+                    executable,
+                    path.ToString(),
+                    this.GetType().Name,
+                    throwOnFailure: false
+                );
+                if (null != installLocation)
+                {
+                    return installLocation.First();
+                }
+            }
+            var message = new System.Text.StringBuilder();
+            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendLine();
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                message.AppendFormat("\t{0}", path.ToString());
+                message.AppendLine();
+            }
+            throw new Bam.Core.Exception(message.ToString());
+        }
+
+        protected LinkerBase(
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+        {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.Macros.Add("LinkerPath", this.CreateTokenizedString("$(BinPath)/link.exe"));
+            this.EnvironmentVariables = env;
+            var fullLinkExePath = this.getLinkerPath();
+            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(fullLinkExePath));
 
             this.Macros.AddVerbatim("exeext", ".exe");
             this.Macros.AddVerbatim("dynamicprefix", string.Empty);
@@ -52,11 +81,6 @@ namespace VisualCCommon
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
-
-            if (null != meta.RequiredExecutablePaths)
-            {
-                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
-            }
         }
 
         public override Bam.Core.Settings
@@ -141,21 +165,10 @@ namespace VisualCCommon
     public sealed class Linker32 :
         LinkerBase
     {
-        public Linker32() :
-            base(@"\VC\bin\link.exe", @"\VC\lib")
-        {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("BinPath", meta.Bin32Dir);
-
-            this.PublicPatch((settings, appliedTo) =>
-                {
-                    var linking = settings as C.ICommonLinkerSettings;
-                    if (null != linking)
-                    {
-                        linking.LibraryPaths.AddUnique(meta.Lib32Dir);
-                    }
-                });
-        }
+        public Linker32()
+            :
+            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+        {}
     }
 
     [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
@@ -163,30 +176,9 @@ namespace VisualCCommon
     public sealed class Linker64 :
         LinkerBase
     {
-        public Linker64() :
-            base(@"\VC\bin\x86_amd64\link.exe", @"\VC\lib\amd64")
-        {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("BinPath", meta.Bin64Dir);
-
-            this.PublicPatch((settings, appliedTo) =>
-                {
-                    var linking = settings as C.ICommonLinkerSettings;
-                    if (null != linking)
-                    {
-                        linking.LibraryPaths.AddUnique(meta.Lib64Dir);
-                    }
-                });
-
-            // some DLLs exist only in the 32-bit bin folder
-            if (this.EnvironmentVariables.ContainsKey("PATH"))
-            {
-                this.EnvironmentVariables["PATH"].AddRangeUnique(new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
-            }
-            else
-            {
-                this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
-            }
-        }
+        public Linker64()
+            :
+            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+        { }
     }
 }

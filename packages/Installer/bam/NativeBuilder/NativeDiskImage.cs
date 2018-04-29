@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Installer
 {
     public sealed class NativeDMG :
@@ -121,7 +122,7 @@ namespace Installer
                 args.Add("-v");
                 args.Add(tempDMGPath);
                 args.Add(diskImagePathName);
-                CommandLineProcessor.Processor.Execute(context, Bam.Core.OSUtilities.GetInstallLocation("mv"), args);
+                CommandLineProcessor.Processor.Execute(context, Bam.Core.OSUtilities.GetInstallLocation("mv").First(), args);
             }
         }
     }

@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
     public abstract class AssemblerBase :
@@ -37,11 +38,6 @@ namespace VisualCCommon
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.Macros.AddVerbatim("objext", ".obj");
-
-            if (null != meta.RequiredExecutablePaths)
-            {
-                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
-            }
 
             if (meta.UseWindowsSDKPublicPatches)
             {
@@ -72,7 +68,6 @@ namespace VisualCCommon
                 typeof(C.AssembledObjectFileCollection).IsInstanceOfType(module))
             {
                 var settings = new VisualC.AssemblerSettings(module);
-                this.OverrideDefaultSettings(settings);
                 return settings;
             }
             else
@@ -81,9 +76,33 @@ namespace VisualCCommon
             }
         }
 
-        protected abstract void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings);
+        protected string
+        getAssemblerPath(
+            string executable)
+        {
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                var installLocation = Bam.Core.OSUtilities.GetInstallLocation(
+                    executable,
+                    path.ToString(),
+                    this.GetType().Name,
+                    throwOnFailure: false
+                );
+                if (null != installLocation)
+                {
+                    return installLocation.First();
+                }
+            }
+            var message = new System.Text.StringBuilder();
+            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendLine();
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                message.AppendFormat("\t{0}", path.ToString());
+                message.AppendLine();
+            }
+            throw new Bam.Core.Exception(message.ToString());
+        }
     }
 
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
@@ -93,14 +112,9 @@ namespace VisualCCommon
         public Assembler32()
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("BinPath", meta.Bin32Dir);
-            this.Macros.Add("AssemblerPath", this.CreateTokenizedString(@"$(BinPath)\ml.exe"));
-        }
-
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
+            this.EnvironmentVariables = meta.Environment32;
+            var fullAsmExePath = this.getAssemblerPath("ml.exe");
+            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
         }
     }
 
@@ -112,14 +126,9 @@ namespace VisualCCommon
             : base()
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("BinPath", meta.Bin64Dir);
-            this.Macros.Add("AssemblerPath", this.CreateTokenizedString(@"$(BinPath)\ml64.exe"));
-        }
-
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
+            this.EnvironmentVariables = meta.Environment64;
+            var fullAsmExePath = this.getAssemblerPath("ml64.exe");
+            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
         }
     }
 }

@@ -42,29 +42,20 @@ namespace VisualC
 
             var install_dir = this.vswhere_getinstallpath(10);
             this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
-
-            if (Bam.Core.OSUtilities.Is64BitHosting)
-            {
-                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin/x86_amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/Common7", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-            }
-            else
-            {
-                this.Bin32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.Bin64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/bin/x86_amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-                this.MSPDBDir = Bam.Core.TokenizedString.Create("$(0)/Common7", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-            }
-            this.IncludeDir = Bam.Core.TokenizedString.Create("$(0)/VC/include", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-            this.Lib32Dir = Bam.Core.TokenizedString.Create("$(0)/VC/lib", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
-            this.Lib64Dir = Bam.Core.TokenizedString.Create("$(0)/VC/lib/amd64", null, new Bam.Core.TokenizedStringArray(this.InstallDir));
+            this.get_tool_environment_variables(
+                "VC",
+                has64bithost_32bitcross: false,
+                hasNative64BitTools: false,
+                required_envvars: new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> {
+                    {"PATH", new Bam.Core.StringArray{"%WINDIR%\\System32"}} // for 'reg' used in vcvarsall subroutines
+                }
+            );
 
             this.SolutionFormatVersion = "11.00";
             this.PlatformToolset = "v100";
             this.VCXProjToolsVersion = "4.0";
             this.VCXProjFiltersToolsVersion = "4.0";
             this.UseWindowsSDKPublicPatches = false;
-            this.RequiredExecutablePaths = new Bam.Core.TokenizedStringArray(Bam.Core.TokenizedString.Create("$(0)/Common7/IDE", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
         }
 
         public override object this[string index]
@@ -80,104 +71,6 @@ namespace VisualC
             string index)
         {
             return this.Meta.ContainsKey(index);
-        }
-
-        public Bam.Core.TokenizedString
-        InstallDir
-        {
-            get
-            {
-                return this.Meta["InstallDir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["InstallDir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Bin32Dir
-        {
-            get
-            {
-                return this.Meta["Bin32Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Bin32Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Bin64Dir
-        {
-            get
-            {
-                return this.Meta["Bin64Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Bin64Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        IncludeDir
-        {
-            get
-            {
-                return this.Meta["IncludeDir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["IncludeDir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Lib32Dir
-        {
-            get
-            {
-                return this.Meta["Lib32Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Lib32Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        Lib64Dir
-        {
-            get
-            {
-                return this.Meta["Lib64Dir"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["Lib64Dir"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedString
-        MSPDBDir
-        {
-            get
-            {
-                return this.Meta["MSPDBDIR"] as Bam.Core.TokenizedString;
-            }
-
-            private set
-            {
-                this.Meta["MSPDBDIR"] = value;
-            }
         }
 
         public string
@@ -247,20 +140,6 @@ namespace VisualC
             private set
             {
                 this.Meta["RequiresWindowsSDK"] = value;
-            }
-        }
-
-        public Bam.Core.TokenizedStringArray
-        RequiredExecutablePaths
-        {
-            get
-            {
-                return this.Meta["AdditionalPATHs"] as Bam.Core.TokenizedStringArray;
-            }
-
-            private set
-            {
-                this.Meta["AdditionalPATHs"] = value;
             }
         }
 

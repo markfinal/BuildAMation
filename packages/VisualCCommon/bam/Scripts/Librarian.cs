@@ -27,22 +27,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
     public abstract class LibrarianBase :
         C.LibrarianTool
     {
-        protected LibrarianBase()
+        private string
+        getLibrarianPath()
+        {
+            const string executable = "lib.exe";
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                var installLocation = Bam.Core.OSUtilities.GetInstallLocation(
+                    executable,
+                    path.ToString(),
+                    this.GetType().Name,
+                    throwOnFailure: false
+                );
+                if (null != installLocation)
+                {
+                    return installLocation.First();
+                }
+            }
+            var message = new System.Text.StringBuilder();
+            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendLine();
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                message.AppendFormat("\t{0}", path.ToString());
+                message.AppendLine();
+            }
+            throw new Bam.Core.Exception(message.ToString());
+        }
+
+        protected LibrarianBase(
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
+            this.EnvironmentVariables = env;
+            var fullLibExePath = this.getLibrarianPath();
+            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.CreateVerbatim(fullLibExePath));
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");
-
-            if (null != meta.RequiredExecutablePaths)
-            {
-                this.EnvironmentVariables.Add("PATH", meta.RequiredExecutablePaths);
-            }
         }
 
         public override Bam.Core.Settings
@@ -75,10 +103,9 @@ namespace VisualCCommon
         LibrarianBase
     {
         public Librarian32()
-        {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(0)\lib.exe", null, new Bam.Core.TokenizedStringArray(meta.Bin32Dir)));
-        }
+            :
+            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+        { }
     }
 
     [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
@@ -86,9 +113,8 @@ namespace VisualCCommon
         LibrarianBase
     {
         public Librarian64()
-        {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.Create(@"$(0)\lib.exe", null, new Bam.Core.TokenizedStringArray(meta.Bin64Dir)));
-        }
+            :
+            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+        { }
     }
 }

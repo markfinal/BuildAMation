@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Publisher
 {
     public sealed class ChangeRPathTool :
@@ -37,7 +38,7 @@ namespace Publisher
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Macros.Add("toolPath", Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath")));
+            this.Macros.Add("toolPath", Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First()));
         }
 
         public override Bam.Core.Settings
