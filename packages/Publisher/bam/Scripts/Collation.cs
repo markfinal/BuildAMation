@@ -423,7 +423,7 @@ namespace Publisher
             Bam.Core.TokenizedString anchorPublishRoot = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var genericFindReference = typeof(Bam.Core.Graph).GetMethod("FindReferencedModule");
+            var genericFindReference = typeof(Bam.Core.Graph).GetMethod("FindReferencedModule", System.Type.EmptyTypes);
             var genericInclude = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
             var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(
                 item => item.Namespace == nameSpace &&
