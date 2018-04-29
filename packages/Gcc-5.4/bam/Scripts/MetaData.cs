@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Gcc
 {
     public class MetaData :
@@ -44,32 +45,34 @@ namespace Gcc
             this.Meta.Add("ExpectedMajorVersion", 5);
             this.Meta.Add("ExpectedMinorVersion", 4);
 
-            var gccLocation = Bam.Core.OSUtilities.GetInstallLocation("gcc");
-            if (null != gccLocation)
+            var gccLocations = Bam.Core.OSUtilities.GetInstallLocation("gcc");
+            if (null != gccLocations)
             {
+                var gccLocation = gccLocations.First();
                 this.Meta.Add("GccPath", gccLocation);
                 var gccVersion = Bam.Core.OSUtilities.RunExecutable(gccLocation, "-dumpversion").Split (new [] { '.' });
                 this.Meta.Add("GccVersion", gccVersion);
             }
 
-            var gxxLocation = Bam.Core.OSUtilities.GetInstallLocation("g++");
-            if (null != gxxLocation)
+            var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");
+            if (null != gxxLocations)
             {
+                var gxxLocation = gxxLocations.First();
                 this.Meta.Add("G++Path", gxxLocation);
                 var gxxVersion = Bam.Core.OSUtilities.RunExecutable(gxxLocation, "-dumpversion").Split (new [] { '.' });
                 this.Meta.Add("G++Version", gxxVersion);
             }
 
-            var arLocation = Bam.Core.OSUtilities.GetInstallLocation("ar");
-            if (null != arLocation)
+            var arLocations = Bam.Core.OSUtilities.GetInstallLocation("ar");
+            if (null != arLocations)
             {
-                this.Meta.Add("ArPath", arLocation);
+                this.Meta.Add("ArPath", arLocations.First());
             }
 
-            var ldLocation = Bam.Core.OSUtilities.GetInstallLocation("ld");
-            if (null != ldLocation)
+            var ldLocations = Bam.Core.OSUtilities.GetInstallLocation("ld");
+            if (null != ldLocations)
             {
-                this.Meta.Add("LdPath", ldLocation);
+                this.Meta.Add("LdPath", ldLocations.First());
             }
         }
 

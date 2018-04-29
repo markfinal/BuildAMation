@@ -63,16 +63,16 @@ namespace Gcc
                 this.Meta.Add("G++Version", gxxVersion);
             }
 
-            var arLocation = Bam.Core.OSUtilities.GetInstallLocation("ar");
-            if (null != arLocation)
+            var arLocations = Bam.Core.OSUtilities.GetInstallLocation("ar");
+            if (null != arLocations)
             {
-                this.Meta.Add("ArPath", arLocation);
+                this.Meta.Add("ArPath", arLocations.First());
             }
 
-            var ldLocation = Bam.Core.OSUtilities.GetInstallLocation("ld");
-            if (null != ldLocation)
+            var ldLocations = Bam.Core.OSUtilities.GetInstallLocation("ld");
+            if (null != ldLocations)
             {
-                this.Meta.Add("LdPath", ldLocation);
+                this.Meta.Add("LdPath", ldLocations.First());
             }
         }
 
