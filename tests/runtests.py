@@ -227,11 +227,12 @@ def execute_tests(package, configuration, options, output_buffer, stats):
 
 def clean_up(options):
     arg_list = []
+    cur_dir = os.path.dirname(os.path.realpath(__file__))
     if sys.platform.startswith("win"):
-        arg_list.append(os.path.join(os.getcwd(), "removedebugprojects.bat"))
+        arg_list.append(os.path.join(cur_dir, "removedebugprojects.bat"))
         arg_list.append("-nopause")
     else:
-        arg_list.append(os.path.join(os.getcwd(), "removedebugprojects.sh"))
+        arg_list.append(os.path.join(cur_dir, "removedebugprojects.sh"))
     if options.verbose:
         print_message("Executing: %s" % arg_list)
     p = subprocess.Popen(arg_list)
