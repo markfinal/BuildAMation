@@ -461,12 +461,24 @@ namespace Bam.Core
             }
             if (null != this.Tokens)
             {
-                throw new Exception("TokenizedString '{0}' has been parsed to{1}'{4}'{1}but tokens remain unresolved{3}{1}{1}Created at:{1}{2}{1}",
+                var tokens = new System.Text.StringBuilder();
+                foreach (var token in this.Tokens)
+                {
+                    if (!token.StartsWith(TokenPrefix))
+                    {
+                        continue;
+                    }
+                    tokens.AppendFormat("\t{0}", token);
+                    tokens.AppendLine("");
+                }
+                throw new Exception("TokenizedString '{0}' has been parsed to{1}'{4}'{1}but the following tokens remain unresolved{3}:{1}{5}{1}Created at:{1}{2}{1}",
                     this.OriginalString,
                     System.Environment.NewLine,
                     this.CreationStackTrace,
                     AllStringsParsed ? " after the string parsing phase" : string.Empty,
-                    this.ParsedString);
+                    this.ParsedString,
+                    tokens.ToString()
+                );
             }
             return this.ParsedString;
         }
