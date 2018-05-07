@@ -41,11 +41,73 @@ namespace C
 
         public CModule()
         {
-            this.Macros.Add("MajorVersion", Bam.Core.TokenizedString.CreateVerbatim("1"));
-            this.Macros.Add("MinorVersion", Bam.Core.TokenizedString.CreateVerbatim("0"));
-            this.Macros.Add("PatchVersion", Bam.Core.TokenizedString.CreateVerbatim("0"));
+            this.SetSemanticVersion(1);
             // default bit depth
             this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new Options.DefaultBitDepth());
+        }
+
+        protected void
+        SetSemanticVersion(
+            int major,
+            int minor,
+            int patch)
+        {
+            this.SetSemanticVersion(
+                major.ToString(),
+                minor.ToString(),
+                patch.ToString()
+            );
+        }
+
+        protected void
+        SetSemanticVersion(
+            int major,
+            int minor)
+        {
+            this.SetSemanticVersion(
+                major.ToString(),
+                minor.ToString(),
+                null
+            );
+        }
+
+        protected void
+        SetSemanticVersion(
+            int major)
+        {
+            this.SetSemanticVersion(
+                major.ToString(),
+                null,
+                null
+            );
+        }
+
+        protected void
+        SetSemanticVersion(
+            Bam.Core.ISemanticVersion version)
+        {
+            this.SetSemanticVersion(
+                version.MajorVersion.Value.ToString(), // assumed non-null
+                version.MinorVersion.HasValue ? version.MinorVersion.Value.ToString() : null,
+                version.PatchVersion.HasValue ? version.PatchVersion.Value.ToString() : null
+            );
+        }
+
+        protected void
+        SetSemanticVersion(
+            string major,
+            string minor,
+            string patch)
+        {
+            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(major);
+            if (minor != null)
+            {
+                this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(minor);
+            }
+            if (patch != null)
+            {
+                this.Macros.Add("PatchVersion", Bam.Core.TokenizedString.CreateVerbatim(patch));
+            }
         }
 
         /// <summary>

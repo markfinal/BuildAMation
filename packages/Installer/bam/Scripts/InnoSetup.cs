@@ -89,7 +89,23 @@ namespace Installer
                 installedExePath.Parse();
                 scriptWriter.WriteLine("OutputDir={0}", installedExePath.ToStringQuoteIfNecessary());
                 scriptWriter.WriteLine("AppName={0}", outputName.ToString());
-                scriptWriter.WriteLine("AppVersion={0}", "1.0"); // TODO: get this from the main app: this.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))").Parse());
+                var productDef = Bam.Core.Graph.Instance.ProductDefinition;
+                if (null != productDef)
+                {
+                    scriptWriter.WriteLine(
+                        "AppVersion={0}",
+                        System.String.Format(
+                            "{0}.{1}.{2}",
+                            productDef.MajorVersion.HasValue ? productDef.MajorVersion.Value : 1,
+                            productDef.MinorVersion.HasValue ? productDef.MinorVersion.Value : 0,
+                            productDef.PatchVersion.HasValue ? productDef.PatchVersion.Value : 0
+                        )
+                    );
+                }
+                else
+                {
+                    scriptWriter.WriteLine("AppVersion={0}", "1.0.0");
+                }
                 scriptWriter.WriteLine("DefaultDirName={{userappdata}}\\{0}", outputName.ToString());
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");
                 scriptWriter.WriteLine("ArchitecturesInstallIn64BitMode=x64");

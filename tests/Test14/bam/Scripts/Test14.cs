@@ -60,10 +60,7 @@ namespace Test14
         {
             base.Init(parent);
 
-            var bamVersion = Bam.Core.Graph.Instance.ProcessState.Version;
-            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Major.ToString());
-            this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Minor.ToString());
-            this.Macros["PatchVersion"] = Bam.Core.TokenizedString.CreateVerbatim(bamVersion.Build.ToString());
+            this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test14: Example dynamic library");
 
             this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary1.h");
