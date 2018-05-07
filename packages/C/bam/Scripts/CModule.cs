@@ -41,7 +41,7 @@ namespace C
 
         public CModule()
         {
-            this.SetSemanticVersion(1);
+            this.SetSemanticVersion(1, 0, 0);
             // default bit depth
             this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new Options.DefaultBitDepth());
         }
@@ -104,9 +104,17 @@ namespace C
             {
                 this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(minor);
             }
+            else
+            {
+                this.Macros.Remove("MinorVersion");
+            }
             if (patch != null)
             {
                 this.Macros.Add("PatchVersion", Bam.Core.TokenizedString.CreateVerbatim(patch));
+            }
+            else
+            {
+                this.Macros.Remove("PatchVersion");
             }
         }
 
