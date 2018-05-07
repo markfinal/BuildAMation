@@ -243,6 +243,7 @@ namespace C
                 }
             }
 
+            var required_targets = new System.Collections.Generic.HashSet<XcodeBuilder.Target>();
             // order only dependencies - recurse into each, so that all layers
             // of order only dependencies are included
             var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(sender.Requirements);
@@ -267,7 +268,7 @@ namespace C
                 var requiredTarget = required.MetaData as XcodeBuilder.Target;
                 if (null != requiredTarget)
                 {
-                    target.Requires(requiredTarget);
+                    required_targets.Add(target);
                 }
             }
             // any non-C module projects should be order-only dependencies
@@ -284,8 +285,13 @@ namespace C
                 var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
                 if (null != dependentTarget)
                 {
+                    required_targets.Add(target);
                     target.Requires(dependentTarget);
                 }
+            }
+            foreach (var reqTarget in required_targets)
+            {
+                target.Requires(reqTarget);
             }
         }
     }

@@ -177,6 +177,7 @@ namespace C
             var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker);
             (sender.Settings as VisualStudioProcessor.IConvertToProject).Convert(sender, linkerGroup);
 
+            var required_projects = new System.Collections.Generic.HashSet<VSSolutionBuilder.VSProject>();
             // order only dependencies - recurse into each, so that all layers
             // of order only dependencies are included
             var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(sender.Requirements);
@@ -196,7 +197,7 @@ namespace C
                 var requiredProject = required.MetaData as VSSolutionBuilder.VSProject;
                 if (null != requiredProject)
                 {
-                    config.RequiresProject(requiredProject);
+                    required_projects.Add(requiredProject);
                 }
             }
             // any non-C module projects should be order-only dependencies
@@ -213,8 +214,12 @@ namespace C
                 var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
                 if (null != dependentProject)
                 {
-                    config.RequiresProject(dependentProject);
+                    required_projects.Add(dependentProject);
                 }
+            }
+            foreach (var proj in required_projects)
+            {
+                config.RequiresProject(proj);
             }
         }
     }
