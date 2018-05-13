@@ -211,6 +211,11 @@ Added command line option, --withstacktrace. This signifies a change of behaviou
 
 
 
+13-May-2018 ======== Version 1.1.7 Release ========
+
+13-May-2018 Fixes #439. VisualC-15.0 is now compatible with the latest VisualStudio 2017 15.7 release.
+
+13-May-2018 Bumping to version v1.1.7.
 
 11-Mar-2018 ======== Version 1.1.6 Release ========
 
