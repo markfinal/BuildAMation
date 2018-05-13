@@ -113,9 +113,17 @@ namespace Bam.Core
         private string
         GetNuGetDirectory()
         {
-            var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory));
-            var nugetDir = System.IO.Path.Combine(rootDir, "NuGetPackages");
-            return nugetDir;
+            try
+            {
+                var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory));
+                var nugetDir = System.IO.Path.Combine(rootDir, "NuGetPackages");
+                return nugetDir;
+            }
+            catch (System.ArgumentNullException)
+            {
+                // may occur during unittests
+                return null;
+            }
         }
 
         /// <summary>
