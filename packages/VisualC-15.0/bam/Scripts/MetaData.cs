@@ -49,8 +49,8 @@ namespace VisualC
                 throw new Bam.Core.Exception("'{0}' was not found. Was VisualStudio 2017 installed?", this.InstallDir.Parse());
             }
 
-            this.VCToolsVersion = Bam.Core.TokenizedString.CreateVerbatim("14.13.26128");
-            this.CRuntimeVersion = Bam.Core.TokenizedString.CreateVerbatim("14.13.26020");
+            this.VCToolsVersion = Bam.Core.TokenizedString.CreateVerbatim("14.14.26428");
+            this.CRuntimeVersion = Bam.Core.TokenizedString.CreateVerbatim("14.14.26405");
 
             if (Bam.Core.OSUtilities.Is64BitHosting)
             {
