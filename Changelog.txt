@@ -1,3 +1,5 @@
+17-May-2018 Fixed #440. Fixed regression introduced in Xcode project generation in the fix for #436 in v1.2.0a3, that would not correctly generate order-only dependencies.
+
 13-May-2018 ======== Version 1.2.0 alpha 3 Release ========
 
 07-May-2018 Fixes #438. C.CModule now has a protected overloaded function SetSemanticVersion, that deals with setting the module's Macros for MajorVersion, MinorVersion, PatchVersion. Integer argument overrides available, as well as a pure string argument version, and one that accepts Bam.Core.ISemanticVersion. Bam.Core.BamState (accessible via Bam.Core.Graph.Instance.ProcessState) also now implements ISemanticVersion.
