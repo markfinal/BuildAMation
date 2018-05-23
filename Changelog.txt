@@ -1,3 +1,5 @@
+23-May-2018 Fixes #441. Fixed Xcode project generation for linking against prebuilt static libraries.
+
 17-May-2018 Fixed #440. Fixed regression introduced in Xcode project generation in the fix for #436 in v1.2.0a3, that would not correctly generate order-only dependencies.
 
 13-May-2018 ======== Version 1.2.0 alpha 3 Release ========

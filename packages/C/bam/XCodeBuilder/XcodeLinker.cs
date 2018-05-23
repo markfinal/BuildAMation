@@ -212,36 +212,59 @@ namespace C
                 }
             }
 
-            // convert link settings to the Xcode project
-            (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
-
             foreach (var library in libraries)
             {
-                if (library is C.StaticLibrary)
+                var libAsCModule = library as C.CModule;
+                if (null == libAsCModule)
                 {
-                    target.DependsOn(library.MetaData as XcodeBuilder.Target);
+                    throw new Bam.Core.Exception("Don't know how to handle library module of type '{0}'", library.GetType().ToString());
                 }
-                else if (library is C.IDynamicLibrary)
+                if (libAsCModule.IsPrebuilt)
                 {
-                    target.DependsOn(library.MetaData as XcodeBuilder.Target);
-                }
-                else if (library is C.CSDKModule)
-                {
-                    // do nothing, just an area for external
-                }
-                else if (library is C.HeaderLibrary)
-                {
-                    // no library
-                }
-                else if (library is OSXFramework)
-                {
-                    // frameworks are dealt with elsewhere
+                    if (library is OSXFramework)
+                    {
+                        // frameworks are dealt with elsewhere
+                    }
+                    else if (library is C.StaticLibrary)
+                    {
+                        (sender.Tool as C.LinkerTool).ProcessLibraryDependency(sender as CModule, libAsCModule);
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this prebuilt module dependency, '{0}'", library.GetType().ToString());
+                    }
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("Don't know how to handle this module type");
+                    if (library is C.StaticLibrary)
+                    {
+                        target.DependsOn(library.MetaData as XcodeBuilder.Target);
+                    }
+                    else if (library is C.IDynamicLibrary)
+                    {
+                        target.DependsOn(library.MetaData as XcodeBuilder.Target);
+                    }
+                    else if (library is C.CSDKModule)
+                    {
+                        // do nothing, just an area for external
+                    }
+                    else if (library is C.HeaderLibrary)
+                    {
+                        // no library
+                    }
+                    else if (library is OSXFramework)
+                    {
+                        // frameworks are dealt with elsewhere
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this module type");
+                    }
                 }
             }
+
+            // convert link settings to the Xcode project
+            (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
 
             var required_targets = new System.Collections.Generic.HashSet<XcodeBuilder.Target>();
             // order only dependencies - recurse into each, so that all layers
