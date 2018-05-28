@@ -185,6 +185,18 @@ namespace VisualCCommon
                     {
                         command_and_args.Append(System.String.Format("{0} ", windowsSDK.Version));
                     }
+                    else
+                    {
+                        var handle = System.Activator.CreateInstance(null, "WindowsSDK.Options.WindowsSDK10Version");
+                        if (null != handle)
+                        {
+                            var win10Option = Bam.Core.CommandLineProcessor.Evaluate(handle.Unwrap() as Bam.Core.IStringCommandLineArgument);
+                            if (null != win10Option)
+                            {
+                                command_and_args.Append(System.String.Format("{0} ", win10Option));
+                            }
+                        }
+                    }
                 }
                 return command_and_args.ToString();
             };
