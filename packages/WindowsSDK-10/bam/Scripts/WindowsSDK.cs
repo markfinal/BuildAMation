@@ -37,6 +37,27 @@ namespace WindowsSDK
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            // the WindowsSDKVersion environment variable has a trailing back slash
+            if (Bam.Core.OSUtilities.Is64Bit(this.BuildEnvironment.Platform))
+            {
+                var env = vcMeta.Environment64;
+                Bam.Core.Log.Info("Using WindowsSDK {0}, installed at {1}",
+                    env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar),
+                    env["WindowsSdkDir"]
+                );
+            }
+            else
+            {
+                var env = vcMeta.Environment32;
+                Bam.Core.Log.Info("Using WindowsSDK {0}, installed at {1}",
+                    env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar),
+                    env["WindowsSdkDir"]
+                );
+            }
+
+            /*
             var meta = Bam.Core.Graph.Instance.PackageMetaData<MetaData>("WindowsSDK");
             var installDir10 = meta.InstallDirSDK10;
             var v10 = meta.SpecificVersion10;
@@ -75,6 +96,7 @@ namespace WindowsSDK
                     }
                 }
             });
+            */
         }
 
         public override void

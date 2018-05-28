@@ -36,6 +36,38 @@ namespace WindowsSDK
     {
         public WinResourceCompiler()
         {
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            if (Bam.Core.OSUtilities.Is64BitHosting)
+            {
+                this.EnvironmentVariables = vcMeta.Environment64;
+                this.Macros.Add(
+                    "CompilerPath",
+                    Bam.Core.TokenizedString.Create(
+                        "$(0)/x64/rc.exe",
+                        null,
+                        new Bam.Core.TokenizedStringArray(
+                            this.EnvironmentVariables["WindowsSdkVerBinPath"]
+                        )
+                    )
+                );
+            }
+            else
+            {
+                this.EnvironmentVariables = vcMeta.Environment32;
+                this.Macros.Add(
+                    "CompilerPath",
+                    Bam.Core.TokenizedString.Create(
+                        "$(0)/x86/rc.exe",
+                        null,
+                        new Bam.Core.TokenizedStringArray(
+                            this.EnvironmentVariables["WindowsSdkVerBinPath"]
+                        )
+                    )
+                );
+            }
+            this.Macros.AddVerbatim("objext", ".res");
+
+            /*
             var meta = Bam.Core.Graph.Instance.PackageMetaData<MetaData>("WindowsSDK");
             var installDir81 = meta.InstallDirSDK81;
             var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
@@ -52,6 +84,7 @@ namespace WindowsSDK
             {
                 this.EnvironmentVariables = vcMeta.Environment32;
             }
+            */
         }
 
         public override Bam.Core.TokenizedString Executable

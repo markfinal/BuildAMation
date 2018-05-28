@@ -36,6 +36,7 @@ namespace WindowsSDK
 
         public MetaData()
         {
+            /*
             if (!Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
@@ -69,6 +70,7 @@ namespace WindowsSDK
                 this.InstallDirSDK81 = Bam.Core.TokenizedString.CreateVerbatim(installPath81);
                 return;
             }
+            */
         }
 
         public override object this[string index]
