@@ -149,6 +149,7 @@ namespace VisualC
             C.EBit depth)
         {
             // only redist the VisualC specific version runtime, and the universal CRT
+            // vcvarsall.bat defines UniversalCRTSdkDir which is suitable for use with both WinSDK8.1 and 10.x
             // don't redist the api-ms-win-crt-*-l1-1-0.dll files from the WindowsSDK, as I can find no reference
             // to needing to do so
 
@@ -164,7 +165,7 @@ namespace VisualC
                                 new Bam.Core.TokenizedStringArray(this.InstallDir)
                             )
                         );
-                        var winsdkdir = this.Environment32["WindowsSdkDir"];
+                        var winsdkdir = this.Environment32["UniversalCRTSdkDir"];
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll",
@@ -184,7 +185,7 @@ namespace VisualC
                                 new Bam.Core.TokenizedStringArray(this.InstallDir)
                             )
                         );
-                        var winsdkdir = this.Environment64["WindowsSdkDir"];
+                        var winsdkdir = this.Environment64["UniversalCRTSdkDir"];
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll",
@@ -209,11 +210,23 @@ namespace VisualC
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    dynamicLibPaths.Add(
+                        Bam.Core.TokenizedString.Create(
+                            "$(0)/VC/redist/x86/Microsoft.VC140.CRT/msvcp140.dll",
+                            null,
+                            new Bam.Core.TokenizedStringArray(this.InstallDir)
+                        )
+                    );
                     break;
 
                 case C.EBit.SixtyFour:
-                    dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/msvcp140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
+                    dynamicLibPaths.Add(
+                        Bam.Core.TokenizedString.Create(
+                            "$(0)/VC/redist/x64/Microsoft.VC140.CRT/msvcp140.dll",
+                            null,
+                            new Bam.Core.TokenizedStringArray(this.InstallDir)
+                        )
+                    );
                     break;
 
                 default:
