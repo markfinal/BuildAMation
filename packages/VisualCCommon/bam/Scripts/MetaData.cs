@@ -187,13 +187,17 @@ namespace VisualCCommon
                     }
                     else
                     {
-                        var handle = System.Activator.CreateInstance(null, "WindowsSDK.Options.WindowsSDK10Version");
-                        if (null != handle)
+                        var option_type = System.Type.GetType("WindowsSDK.Options.WindowsSDK10Version", throwOnError: false);
+                        if (null != option_type)
                         {
-                            var win10Option = Bam.Core.CommandLineProcessor.Evaluate(handle.Unwrap() as Bam.Core.IStringCommandLineArgument);
-                            if (null != win10Option)
+                            var option_type_instance = System.Activator.CreateInstance(option_type) as Bam.Core.IStringCommandLineArgument;
+                            if (null != option_type_instance)
                             {
-                                command_and_args.Append(System.String.Format("{0} ", win10Option));
+                                var win10Option = Bam.Core.CommandLineProcessor.Evaluate(option_type_instance);
+                                if (null != win10Option)
+                                {
+                                    command_and_args.Append(System.String.Format("{0} ", win10Option));
+                                }
                             }
                         }
                     }
