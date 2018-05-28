@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualCCommon
 {
     public abstract class MetaData :
@@ -149,28 +150,43 @@ namespace VisualCCommon
 
             System.Func<string> command = () =>
             {
+                var command_and_args = new System.Text.StringBuilder();
+                command_and_args.Append("vcvarsall.bat ");
                 if (target64bit)
                 {
                     if (Bam.Core.OSUtilities.Is64BitHosting && hasNative64BitTools)
                     {
-                        return "vcvarsall.bat amd64";
+                        command_and_args.Append("amd64 ");
                     }
                     else
                     {
-                        return "vcvarsall.bat x86_amd64";
+                        command_and_args.Append("x86_amd64 ");
                     }
                 }
                 else
                 {
                     if (Bam.Core.OSUtilities.Is64BitHosting && has64bithost_32bitcross)
                     {
-                        return "vcvarsall.bat amd64_x86";
+                        command_and_args.Append("amd64_x86 ");
                     }
                     else
                     {
-                        return "vcvarsall.bat x86";
+                        command_and_args.Append("x86 ");
                     }
                 }
+                // VisualC packages define their 'default' WindowsSDK package to function with
+                // if this is different to what is being used, append the version fo the vcvarsall.bat command
+                var visualC = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualC");
+                var defaultWindowsSDKVersion = visualC.Dependents.First(item => item.Item1 == "WindowsSDK").Item2;
+                var windowsSDK = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name == "WindowsSDK");
+                if (null != windowsSDK)
+                {
+                    if (windowsSDK.Version != defaultWindowsSDKVersion)
+                    {
+                        command_and_args.Append(System.String.Format("{0} ", windowsSDK.Version));
+                    }
+                }
+                return command_and_args.ToString();
             };
 
             var vcvarsall_cmd = command();
