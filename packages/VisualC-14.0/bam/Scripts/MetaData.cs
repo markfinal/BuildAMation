@@ -167,22 +167,46 @@ namespace VisualC
             // don't redist the api-ms-win-crt-*-l1-1-0.dll files from the WindowsSDK, as I can find no reference
             // to needing to do so
 
-            var windowsSDKMeta = Bam.Core.Graph.Instance.PackageMetaData<WindowsSDK.MetaData>("WindowsSDK");
-
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
                     {
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x86/Microsoft.VC140.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/VC/redist/x86/Microsoft.VC140.CRT/vcruntime140.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(this.InstallDir)
+                            )
+                        );
+                        var winsdkdir = this.Environment32["WindowsSdkDir"];
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(winsdkdir)
+                            )
+                        );
                     }
                     break;
 
                 case C.EBit.SixtyFour:
                     {
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/VC/redist/x64/Microsoft.VC140.CRT/vcruntime140.dll", null, new Bam.Core.TokenizedStringArray(this.InstallDir)));
-                        dynamicLibPaths.Add(Bam.Core.TokenizedString.Create("$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll", null, new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)));
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/VC/redist/x64/Microsoft.VC140.CRT/vcruntime140.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(this.InstallDir)
+                            )
+                        );
+                        var winsdkdir = this.Environment64["WindowsSdkDir"];
+                        dynamicLibPaths.Add(
+                            Bam.Core.TokenizedString.Create(
+                                "$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll",
+                                null,
+                                new Bam.Core.TokenizedStringArray(winsdkdir)
+                            )
+                        );
                     }
                     break;
 

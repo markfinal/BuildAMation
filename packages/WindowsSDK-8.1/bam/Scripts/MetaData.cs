@@ -29,6 +29,7 @@
 #endregion // License
 namespace WindowsSDK
 {
+    /*
     public class MetaData :
         Bam.Core.PackageMetaData
     {
@@ -36,7 +37,6 @@ namespace WindowsSDK
 
         public MetaData()
         {
-            /*
             if (!Bam.Core.OSUtilities.IsWindowsHosting)
             {
                 return;
@@ -59,7 +59,6 @@ namespace WindowsSDK
             }
 
             this.Meta["InstallDir"] = Bam.Core.TokenizedString.CreateVerbatim(installPath);
-             */
         }
 
         public override object this[string index]
@@ -77,4 +76,5 @@ namespace WindowsSDK
             return this.Meta.ContainsKey(index);
         }
     }
+    */
 }
