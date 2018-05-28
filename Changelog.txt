@@ -1,6 +1,8 @@
 28-May-2018 Fixes #442. WindowsSDK configuration is now taken from the vcvarsall setup from the VisualC package. WindowsSDK packages are tied to specific VisualC versions (this is not new). By default, vcvarsall.bat will try to find the most recent version in the registry of that WindowsSDK. However, with VisualC 14.0 and 15.0 (defaulting to WindowsSDK-10.0), you can now override this by specifying WindowsSDK-8.1 in the package definition file, or BAM command line.
 If you don't want to use the latest WindowsSDK-10, and have older versions installed, you can override the behaviour of vcvarsall.bat by specifying --WindowsSDK10Version.override=10.0.xyz.w on the BAM command line.
 
+Generated .vcxprojs will have the WindowsTargetPlatformVersion property set to the version of the WindowsSDK in use.
+
 WindowsSDK.MetaData has been deleted.
 WindowsSDK.WinResourceCompiler has been renamed to WinResourceCompilerBase and reclassified as an abstract class. Instead, two new sealed classes WinResourceCompiler32 and WinResourceCompiler64 have been introduced, corresponding to the architecture bit-depth in use.
 
