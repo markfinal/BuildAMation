@@ -53,40 +53,6 @@ namespace WindowsSDK
                     env["WindowsSdkDir"]
                 );
             }
-
-            /*
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("WindowsSDK");
-            var installDir = meta["InstallDir"] as Bam.Core.TokenizedString;
-            this.PublicPatch((settings, appliedTo) =>
-            {
-                var compilation = settings as C.ICommonCompilerSettings;
-                if (null != compilation)
-                {
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir));
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir));
-                }
-
-                var rcCompilation = settings as C.ICommonWinResourceCompilerSettings;
-                if (null != rcCompilation)
-                {
-                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir));
-                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir));
-                }
-
-                var linking = settings as C.ICommonLinkerSettings;
-                if (null != linking)
-                {
-                    if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
-                    {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x86", installDir));
-                    }
-                    else
-                    {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x64", installDir));
-                    }
-                }
-            });
-             */
         }
 
         public override void

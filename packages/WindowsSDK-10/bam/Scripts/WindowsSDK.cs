@@ -56,47 +56,6 @@ namespace WindowsSDK
                     env["WindowsSdkDir"]
                 );
             }
-
-            /*
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<MetaData>("WindowsSDK");
-            var installDir10 = meta.InstallDirSDK10;
-            var v10 = meta.SpecificVersion10;
-            var installDir81 = meta.InstallDirSDK81;
-            this.PublicPatch((settings, appliedTo) =>
-            {
-                var compilation = settings as C.ICommonCompilerSettings;
-                if (null != compilation)
-                {
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\$(1)\ucrt", installDir10, v10));
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir81));
-                    compilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir81));
-                }
-
-                var rcCompilation = settings as C.ICommonWinResourceCompilerSettings;
-                if (null != rcCompilation)
-                {
-                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\$(1)\ucrt", installDir10, v10));
-                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\um", installDir81));
-                    rcCompilation.IncludePaths.AddUnique(this.CreateTokenizedString(@"$(0)Include\shared", installDir81));
-                }
-
-                var linking = settings as C.ICommonLinkerSettings;
-                if (null != linking)
-                {
-                    // libraries come from both Windows SDK 10 and 8.1
-                    if ((appliedTo as C.CModule).BitDepth == C.EBit.ThirtyTwo)
-                    {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\$(1)\ucrt\x86", installDir10, v10));
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x86", installDir81));
-                    }
-                    else
-                    {
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\$(1)\ucrt\x64", installDir10, v10));
-                        linking.LibraryPaths.AddUnique(this.CreateTokenizedString(@"$(0)Lib\winv6.3\um\x64", installDir81));
-                    }
-                }
-            });
-            */
         }
 
         public override void
