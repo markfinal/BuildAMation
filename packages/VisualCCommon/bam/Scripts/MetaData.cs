@@ -126,7 +126,19 @@ namespace VisualCCommon
             {
                 foreach (System.Collections.Generic.KeyValuePair<string, Bam.Core.StringArray> required in required_envvars)
                 {
-                    startinfo.EnvironmentVariables.Add(required.Key, System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';')));
+                    if (startinfo.EnvironmentVariables.ContainsKey(required.Key))
+                    {
+                        var existing_value = startinfo.EnvironmentVariables[required.Key];
+                        var updated_value = System.String.Format(
+                            "{0};{1}",
+                            System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';')),
+                            existing_value
+                        );
+                    }
+                    else
+                    {
+                        startinfo.EnvironmentVariables.Add(required.Key, System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';')));
+                    }
                 }
             }
             startinfo.UseShellExecute = false;
