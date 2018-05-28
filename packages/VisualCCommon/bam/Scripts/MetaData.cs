@@ -134,6 +134,7 @@ namespace VisualCCommon
                             System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';')),
                             existing_value
                         );
+                        startinfo.EnvironmentVariables[required.Key] = updated_value;
                     }
                     else
                     {
