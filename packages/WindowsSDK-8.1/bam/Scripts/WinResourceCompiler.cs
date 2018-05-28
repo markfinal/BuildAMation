@@ -29,49 +29,13 @@
 #endregion // License
 namespace WindowsSDK
 {
-    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class WinResourceCompiler :
+    public abstract class WinResourceCompilerBase :
         C.WinResourceCompilerTool
     {
-        /*
-        public WinResourceCompiler()
+        protected void
+        configure(
+            string architecture)
         {
-            var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("WindowsSDK");
-            var installDir = meta["InstallDir"] as Bam.Core.TokenizedString;
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(0)/bin/$(1)/rc.exe", null, new Bam.Core.TokenizedStringArray(installDir, architecture)));
-            this.Macros.AddVerbatim("objext", ".res");
-
-            // use INCLUDE environment variable from VisualC
-            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            if (Bam.Core.OSUtilities.Is64BitHosting)
-            {
-                this.EnvironmentVariables = vcMeta.Environment64;
-            }
-            else
-            {
-                this.EnvironmentVariables = vcMeta.Environment32;
-            }
-        }
-        */
-
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            string architecture = System.String.Empty;
-            if (Bam.Core.OSUtilities.Is64Bit(this.BuildEnvironment.Platform))
-            {
-                this.EnvironmentVariables = vcMeta.Environment64;
-                architecture = "x64";
-            }
-            else
-            {
-                this.EnvironmentVariables = vcMeta.Environment32;
-                architecture = "x86";
-            }
             if (this.EnvironmentVariables.ContainsKey("WindowsSdkDir"))
             {
                 var tokenised_strings = new Bam.Core.TokenizedStringArray();
@@ -90,9 +54,6 @@ namespace WindowsSDK
                 throw new Bam.Core.Exception("Unable to determine resource compiler path, as %WindowsSdkDir% was not defined");
             }
             this.Macros.AddVerbatim("objext", ".res");
-
-            // since the CompilerPath check is required
-            base.Init(parent);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -116,6 +77,38 @@ namespace WindowsSDK
             C.WinResource resource)
         {
             resource.CompileAgainst<WindowsSDK>();
+        }
+    }
+
+    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    public sealed class WinResourceCompiler32 :
+        WinResourceCompilerBase
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.EnvironmentVariables = vcMeta.Environment32;
+            this.configure("x86");
+            // now check the executable exists
+            base.Init(parent);
+        }
+    }
+
+    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
+    public sealed class WinResourceCompiler64 :
+        WinResourceCompilerBase
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.EnvironmentVariables = vcMeta.Environment32;
+            this.configure("x64");
+            // now check the executable exists
+            base.Init(parent);
         }
     }
 }
