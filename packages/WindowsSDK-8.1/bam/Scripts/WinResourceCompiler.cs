@@ -34,6 +34,7 @@ namespace WindowsSDK
     public sealed class WinResourceCompiler :
         C.WinResourceCompilerTool
     {
+        /*
         public WinResourceCompiler()
         {
             var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
@@ -52,6 +53,46 @@ namespace WindowsSDK
             {
                 this.EnvironmentVariables = vcMeta.Environment32;
             }
+        }
+        */
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            string architecture = System.String.Empty;
+            if (Bam.Core.OSUtilities.Is64Bit(this.BuildEnvironment.Platform))
+            {
+                this.EnvironmentVariables = vcMeta.Environment64;
+                architecture = "x64";
+            }
+            else
+            {
+                this.EnvironmentVariables = vcMeta.Environment32;
+                architecture = "x86";
+            }
+            if (this.EnvironmentVariables.ContainsKey("WindowsSdkDir"))
+            {
+                var tokenised_strings = new Bam.Core.TokenizedStringArray();
+                tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSdkDir"]);
+                this.Macros.Add(
+                    "CompilerPath",
+                    Bam.Core.TokenizedString.Create(
+                        System.String.Format("$(0)/bin/{0}/rc.exe", architecture),
+                        null,
+                        tokenised_strings
+                    )
+                );
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unable to determine resource compiler path, as %WindowsSdkDir% was not defined");
+            }
+            this.Macros.AddVerbatim("objext", ".res");
+
+            // since the CompilerPath check is required
+            base.Init(parent);
         }
 
         public override Bam.Core.TokenizedString Executable

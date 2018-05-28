@@ -34,40 +34,9 @@ namespace WindowsSDK
     public sealed class WinResourceCompiler :
         C.WinResourceCompilerTool
     {
+        /*
         public WinResourceCompiler()
         {
-            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            if (Bam.Core.OSUtilities.Is64BitHosting)
-            {
-                this.EnvironmentVariables = vcMeta.Environment64;
-                this.Macros.Add(
-                    "CompilerPath",
-                    Bam.Core.TokenizedString.Create(
-                        "$(0)/x64/rc.exe",
-                        null,
-                        new Bam.Core.TokenizedStringArray(
-                            this.EnvironmentVariables["WindowsSdkVerBinPath"]
-                        )
-                    )
-                );
-            }
-            else
-            {
-                this.EnvironmentVariables = vcMeta.Environment32;
-                this.Macros.Add(
-                    "CompilerPath",
-                    Bam.Core.TokenizedString.Create(
-                        "$(0)/x86/rc.exe",
-                        null,
-                        new Bam.Core.TokenizedStringArray(
-                            this.EnvironmentVariables["WindowsSdkVerBinPath"]
-                        )
-                    )
-                );
-            }
-            this.Macros.AddVerbatim("objext", ".res");
-
-            /*
             var meta = Bam.Core.Graph.Instance.PackageMetaData<MetaData>("WindowsSDK");
             var installDir81 = meta.InstallDirSDK81;
             var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
@@ -84,7 +53,61 @@ namespace WindowsSDK
             {
                 this.EnvironmentVariables = vcMeta.Environment32;
             }
-            */
+        }
+        */
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            string architecture = System.String.Empty;
+            if (Bam.Core.OSUtilities.Is64Bit(this.BuildEnvironment.Platform))
+            {
+                this.EnvironmentVariables = vcMeta.Environment64;
+                architecture = "x64";
+            }
+            else
+            {
+                this.EnvironmentVariables = vcMeta.Environment32;
+                architecture = "x86";
+            }
+            if (this.EnvironmentVariables.ContainsKey("WindowsSdkVerBinPath"))
+            {
+                var tokenised_strings = new Bam.Core.TokenizedStringArray();
+                tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSdkVerBinPath"]);
+                this.Macros.Add(
+                    "CompilerPath",
+                    Bam.Core.TokenizedString.Create(
+                        System.String.Format("$(0)/{0}/rc.exe", architecture),
+                        null,
+                        tokenised_strings
+                    )
+                );
+            }
+            else if (this.EnvironmentVariables.ContainsKey("WindowsSdkDir") &&
+                     this.EnvironmentVariables.ContainsKey("WindowsSDKVersion"))
+            {
+                var tokenised_strings = new Bam.Core.TokenizedStringArray();
+                tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSdkDir"]);
+                tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSDKVersion"]);
+                this.Macros.Add(
+                    "CompilerPath",
+                    Bam.Core.TokenizedString.Create(
+                        System.String.Format("$(0)/bin/$(1)/{0}/rc.exe", architecture),
+                        null,
+                        tokenised_strings
+                    )
+                );
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unable to determine resource compiler path, as neither %WindowsSdkVerBinPath% nor %WindowsSdkDir% were defined");
+            }
+            this.Macros.AddVerbatim("objext", ".res");
+
+            // since the CompilerPath check is required
+            base.Init(parent);
         }
 
         public override Bam.Core.TokenizedString Executable

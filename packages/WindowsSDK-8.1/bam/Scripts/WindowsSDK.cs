@@ -37,6 +37,24 @@ namespace WindowsSDK
             Bam.Core.Module parent)
         {
             base.Init(parent);
+
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            if (Bam.Core.OSUtilities.Is64Bit(this.BuildEnvironment.Platform))
+            {
+                var env = vcMeta.Environment64;
+                Bam.Core.Log.Info("Using WindowsSDK 8.1, installed at {0}",
+                    env["WindowsSdkDir"]
+                );
+            }
+            else
+            {
+                var env = vcMeta.Environment32;
+                Bam.Core.Log.Info("Using WindowsSDK 8.1, installed at {0}",
+                    env["WindowsSdkDir"]
+                );
+            }
+
+            /*
             var meta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("WindowsSDK");
             var installDir = meta["InstallDir"] as Bam.Core.TokenizedString;
             this.PublicPatch((settings, appliedTo) =>
@@ -68,6 +86,7 @@ namespace WindowsSDK
                     }
                 }
             });
+             */
         }
 
         public override void
