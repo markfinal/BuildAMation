@@ -124,13 +124,13 @@ namespace VisualCCommon
             }
             if (null != required_envvars)
             {
-                foreach (System.Collections.Generic.KeyValuePair<string,Bam.Core.StringArray> required in required_envvars)
+                foreach (System.Collections.Generic.KeyValuePair<string, Bam.Core.StringArray> required in required_envvars)
                 {
                     startinfo.EnvironmentVariables.Add(required.Key, System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';')));
                 }
             }
             startinfo.UseShellExecute = false;
-            startinfo.RedirectStandardInput = false;
+            startinfo.RedirectStandardInput = true;
             startinfo.RedirectStandardOutput = true;
             startinfo.RedirectStandardError = true;
 
@@ -162,28 +162,38 @@ namespace VisualCCommon
 
             var vcvarsall_cmd = command();
 
-            var args = new System.Text.StringBuilder();
-            args.AppendFormat("/C {0} && SET", vcvarsall_cmd);
-            startinfo.Arguments = args.ToString();
+            var arguments = new System.Text.StringBuilder();
+            arguments.AppendFormat("/C {0} && SET", vcvarsall_cmd);
+            startinfo.Arguments = arguments.ToString();
 
             var process = new System.Diagnostics.Process();
             process.StartInfo = startinfo;
-            process.Start();
 
+            // if you don't async read the output, then the process will never finish
+            // as the buffer is filled up
+            // EOLs will also be trimmed from these, so always append whole lines
+            var stdout = new System.Text.StringBuilder();
+            process.OutputDataReceived += (sender, args) => stdout.AppendLine(args.Data);
+            var stderr = new System.Text.StringBuilder();
+            process.ErrorDataReceived += (sender, args) => stderr.AppendLine(args.Data);
+
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.StandardInput.Close();
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
-                throw new Bam.Core.Exception("{0} failed: {1}", vcvarsall_cmd, process.StandardError.ReadToEnd());
+                throw new Bam.Core.Exception("{0} failed: {1}", vcvarsall_cmd, stderr.ToString());
             }
 
             var env = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>();
-            for (;;)
+            var lines = stdout.ToString().Split(
+                new[] { System.Environment.NewLine },
+                System.StringSplitOptions.RemoveEmptyEntries
+            );
+            foreach (var line in lines)
             {
-                var line = process.StandardOutput.ReadLine();
-                if (null == line)
-                {
-                    break;
-                }
                 Bam.Core.Log.DebugMessage("{0}->{1}", vcvarsall_cmd, line);
                 var equals_index = line.IndexOf('=');
                 if (-1 == equals_index)
@@ -220,6 +230,11 @@ namespace VisualCCommon
             Bam.Core.StringArray inherited_envvars = null,
             System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars = null)
         {
+            if (null == inherited_envvars)
+            {
+                inherited_envvars = new Bam.Core.StringArray();
+            }
+            inherited_envvars.AddUnique("PATH"); // required to run 'reg' to query for things like the WindowsSDK
             this.Environment32 = this.execute_vcvars(
                 subpath_to_vcvars,
                 false,
