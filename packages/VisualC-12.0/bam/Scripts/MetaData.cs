@@ -43,10 +43,7 @@ namespace VisualC
             var install_dir = this.vswhere_getinstallpath(12);
             this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
             this.get_tool_environment_variables(
-                "VC",
-                required_envvars: new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> {
-                    {"PATH", new Bam.Core.StringArray{"%WINDIR%\\System32"}} // for 'reg' used in vcvarsall subroutines
-                }
+                "VC"
             );
 
             this.SolutionFormatVersion = "12.00";

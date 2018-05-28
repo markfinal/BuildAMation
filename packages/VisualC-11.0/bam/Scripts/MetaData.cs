@@ -45,10 +45,7 @@ namespace VisualC
             this.get_tool_environment_variables(
                 "VC",
                 has64bithost_32bitcross: false,
-                hasNative64BitTools: false,
-                required_envvars: new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> {
-                    {"PATH", new Bam.Core.StringArray{"%WINDIR%\\System32"}} // for 'reg' used in vcvarsall subroutines
-                }
+                hasNative64BitTools: false
             );
 
             this.SolutionFormatVersion = "12.00";

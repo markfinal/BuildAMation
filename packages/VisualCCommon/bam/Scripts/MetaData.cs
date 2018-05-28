@@ -242,11 +242,22 @@ namespace VisualCCommon
             Bam.Core.StringArray inherited_envvars = null,
             System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars = null)
         {
-            if (null == inherited_envvars)
+            // for 'reg' used in vcvarsall subroutines
+            if (null == required_envvars)
             {
-                inherited_envvars = new Bam.Core.StringArray();
+                required_envvars = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
             }
-            inherited_envvars.AddUnique("PATH"); // required to run 'reg' to query for things like the WindowsSDK
+            if (required_envvars.ContainsKey("PATH"))
+            {
+                var existing = required_envvars["PATH"];
+                existing.AddUnique("%WINDIR%\\System32");
+                required_envvars["PATH"] = existing;
+            }
+            else
+            {
+                required_envvars.Add("PATH", new Bam.Core.StringArray { "%WINDIR%\\System32" });
+            }
+
             this.Environment32 = this.execute_vcvars(
                 subpath_to_vcvars,
                 false,
