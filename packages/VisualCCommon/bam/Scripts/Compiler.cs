@@ -77,12 +77,6 @@ namespace VisualCCommon
             // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
-
-            if (meta.UseWindowsSDKPublicPatches)
-            {
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
-                this.UsePublicPatches(windowsSDK);
-            }
         }
 
         public override Bam.Core.TokenizedString Executable

@@ -53,7 +53,6 @@ namespace VisualC
             this.PlatformToolset = "v140";
             this.VCXProjToolsVersion = "14.0";
             this.VCXProjFiltersToolsVersion = "4.0";
-            this.UseWindowsSDKPublicPatches = true; // headers like stdio.h are in WindowsSDK 10
         }
 
         public override object this[string index]
@@ -124,20 +123,6 @@ namespace VisualC
             private set
             {
                 this.Meta["VCXProjFiltersToolsVersion"] = value;
-            }
-        }
-
-        public bool
-        UseWindowsSDKPublicPatches
-        {
-            get
-            {
-                return (bool)this.Meta["RequiresWindowsSDK"];
-            }
-
-            private set
-            {
-                this.Meta["RequiresWindowsSDK"] = value;
             }
         }
 

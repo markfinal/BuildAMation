@@ -52,7 +52,6 @@ namespace VisualC
             this.PlatformToolset = "v110";
             this.VCXProjToolsVersion = "4.0";
             this.VCXProjFiltersToolsVersion = "4.0";
-            this.UseWindowsSDKPublicPatches = false;
         }
 
         public override object this[string index]
@@ -123,20 +122,6 @@ namespace VisualC
             private set
             {
                 this.Meta["VCXProjFiltersToolsVersion"] = value;
-            }
-        }
-
-        public bool
-        UseWindowsSDKPublicPatches
-        {
-            get
-            {
-                return (bool)this.Meta["RequiresWindowsSDK"];
-            }
-
-            private set
-            {
-                this.Meta["RequiresWindowsSDK"] = value;
             }
         }
 

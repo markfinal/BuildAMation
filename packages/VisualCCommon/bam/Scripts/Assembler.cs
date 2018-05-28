@@ -38,12 +38,6 @@ namespace VisualCCommon
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.Macros.AddVerbatim("objext", ".obj");
-
-            if (meta.UseWindowsSDKPublicPatches)
-            {
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
-                this.UsePublicPatches(windowsSDK);
-            }
         }
 
         public override Bam.Core.TokenizedString Executable
