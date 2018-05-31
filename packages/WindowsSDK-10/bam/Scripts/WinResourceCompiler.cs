@@ -38,6 +38,9 @@ namespace WindowsSDK
         configure(
             string architecture)
         {
+            // WindowsSDK 10 has a bin folder in different places depending on the version (pre or post VS2017)
+            // If the envvar WindowsSdkVerBinPath exists, then the bin folder is versioned (VS2017+)
+            // If not, then it's just the bin folder (VS2015)
             if (this.EnvironmentVariables.ContainsKey("WindowsSdkVerBinPath"))
             {
                 var tokenised_strings = new Bam.Core.TokenizedStringArray();
@@ -51,16 +54,14 @@ namespace WindowsSDK
                     )
                 );
             }
-            else if (this.EnvironmentVariables.ContainsKey("WindowsSdkDir") &&
-                     this.EnvironmentVariables.ContainsKey("WindowsSDKVersion"))
+            else if (this.EnvironmentVariables.ContainsKey("WindowsSdkDir"))
             {
                 var tokenised_strings = new Bam.Core.TokenizedStringArray();
                 tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSdkDir"]);
-                tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSDKVersion"]);
                 this.Macros.Add(
                     "CompilerPath",
                     Bam.Core.TokenizedString.Create(
-                        System.String.Format("$(0)/bin/$(1)/{0}/rc.exe", architecture),
+                        System.String.Format("$(0)/bin/{0}/rc.exe", architecture),
                         null,
                         tokenised_strings
                     )
