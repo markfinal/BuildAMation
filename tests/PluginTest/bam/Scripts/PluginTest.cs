@@ -49,11 +49,7 @@ namespace PluginTest
 
             this.RequiredToExist<Plugin>();
 
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-            }
-            else if (this.Linker is GccCommon.LinkerBase)
+            if (this.Linker is GccCommon.LinkerBase)
             {
                 this.PrivatePatch(settings =>
                     {
@@ -82,12 +78,6 @@ namespace PluginTest
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
                 });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 

@@ -44,14 +44,6 @@ namespace ProceduralHeaderTest1
             var genHeader = Graph.Instance.FindReferencedModule<GenHeader>();
             source.DependsOn(genHeader);
             source.UsePublicPatches(genHeader);
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                if (this.Linker is VisualCCommon.LinkerBase)
-                {
-                    this.LinkAgainst<WindowsSDK.WindowsSDK>();
-                }
-            }
         }
     }
 

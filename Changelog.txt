@@ -3,7 +3,8 @@ If you don't want to use the latest WindowsSDK-10, and have older versions insta
 
 Generated .vcxprojs will have the WindowsTargetPlatformVersion property set to the version of the WindowsSDK in use.
 
-WindowsSDK.MetaData has been deleted.
+WindowsSDK.WindowsSDK module has been deleted, as its patches are no longer required. All tests have been updated to reflect this.
+WindowsSDK.MetaData is now simply a logger of which version is being used, and where it is installed.
 WindowsSDK.WinResourceCompiler has been renamed to WinResourceCompilerBase and reclassified as an abstract class. Instead, two new sealed classes WinResourceCompiler32 and WinResourceCompiler64 have been introduced, corresponding to the architecture bit-depth in use.
 
 23-May-2018 Fixes #441. Fixed Xcode project generation for linking against prebuilt static libraries.

@@ -106,11 +106,6 @@ namespace HeaderLibraryTest2
             var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
 
             this.CompileAndLinkAgainst<MiddleLibrary>(source);
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

@@ -41,11 +41,6 @@ namespace ProceduralHeaderTest2
             base.Init(parent);
 
             this.CreateCSourceContainer("$(packagedir)/source/generateheadertool/main.c");
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
 
         public Bam.Core.Settings

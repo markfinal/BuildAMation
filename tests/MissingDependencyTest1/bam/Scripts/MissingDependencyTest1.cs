@@ -112,11 +112,6 @@ namespace MissingDependencyTest1
             this.CreateCSourceContainer("$(packagedir)/source/plugintest.c");
 
             this.RequiredToExist<Plugin>();
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 

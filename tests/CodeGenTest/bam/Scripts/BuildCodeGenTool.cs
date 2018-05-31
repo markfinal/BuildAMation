@@ -41,12 +41,6 @@ namespace CodeGenTest
             base.Init(parent);
 
             this.CreateCSourceContainer("$(packagedir)/source/codegentool/main.c");
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
 
         public Bam.Core.Settings

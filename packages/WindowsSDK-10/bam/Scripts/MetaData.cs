@@ -29,53 +29,43 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class WindowsSDK :
-        C.CSDKModule
+    public sealed class MetaData :
+        Bam.Core.PackageMetaData
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
+        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
+        public MetaData()
+        {
+            if (!Bam.Core.OSUtilities.IsWindowsHosting)
+            {
+                return;
+            }
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            if (null == vcMeta)
+            {
+                return;
+            }
             // the WindowsSDKVersion environment variable has a trailing back slash
-            if (Bam.Core.OSUtilities.Is64Bit(this.BuildEnvironment.Platform))
+            var env = vcMeta.Environment64;
+            Bam.Core.Log.Info("Using WindowsSDK {0} installed at {1}",
+                env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar),
+                env["WindowsSdkDir"]
+            );
+        }
+
+        public override object this[string index]
+        {
+            get
             {
-                var env = vcMeta.Environment64;
-                Bam.Core.Log.Info("Using WindowsSDK {0}, installed at {1}",
-                    env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar),
-                    env["WindowsSdkDir"]
-                );
-            }
-            else
-            {
-                var env = vcMeta.Environment32;
-                Bam.Core.Log.Info("Using WindowsSDK {0}, installed at {1}",
-                    env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar),
-                    env["WindowsSdkDir"]
-                );
+                return this.Meta[index];
             }
         }
 
-        public override void
-        Evaluate()
+        public override bool
+        Contains(
+            string index)
         {
-            this.ReasonToExecute = null;
-        }
-
-        protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
-        {
-            // do nothing
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
+            return this.Meta.ContainsKey(index);
         }
     }
 }

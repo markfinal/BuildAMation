@@ -124,11 +124,6 @@ namespace EmbedStaticIntoDynamicLibrary
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
                     }
                 });
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -162,11 +157,6 @@ namespace EmbedStaticIntoDynamicLibrary
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
                     }
                 });
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -182,11 +172,7 @@ namespace EmbedStaticIntoDynamicLibrary
             var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<CDynamicLibrary>(source);
 
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
-            else if (this.Linker is GccCommon.LinkerBase)
+            if (this.Linker is GccCommon.LinkerBase)
             {
                 this.PrivatePatch(settings =>
                     {
@@ -210,11 +196,7 @@ namespace EmbedStaticIntoDynamicLibrary
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<CxxDynamicLibrary>(source);
 
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
-            else if (this.Linker is GccCommon.LinkerBase)
+            if (this.Linker is GccCommon.LinkerBase)
             {
                 this.PrivatePatch(settings =>
                     {

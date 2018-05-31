@@ -71,13 +71,6 @@ namespace WindowsSDK
             var settings = new WinResourceCompilerSettings(module);
             return settings;
         }
-
-        public override void
-        addCompilerSpecificRequirements(
-            C.WinResource resource)
-        {
-            resource.CompileAgainst<WindowsSDK>();
-        }
     }
 
     [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]

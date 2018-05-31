@@ -43,12 +43,6 @@ namespace CodeGenTest
             var source = this.CreateCSourceContainer("$(packagedir)/source/testapp/main.c");
 
             /*var generatedSourceTuple = */source.GenerateSource();
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

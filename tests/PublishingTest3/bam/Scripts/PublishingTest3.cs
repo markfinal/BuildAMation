@@ -41,11 +41,6 @@ namespace PublishingTest3
 
             this.CreateHeaderContainer("$(packagedir)/source/dynamiclib.h");
             this.CreateCSourceContainer("$(packagedir)/source/dynamiclib.c");
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -60,11 +55,6 @@ namespace PublishingTest3
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main1.c");
             this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-            }
         }
     }
 
@@ -79,11 +69,6 @@ namespace PublishingTest3
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main2.c");
             this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-            }
         }
     }
 

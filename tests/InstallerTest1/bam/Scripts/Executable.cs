@@ -44,11 +44,6 @@ namespace InstallerTest1
             this.CompileAndLinkAgainst<CStaticLibrary>(source);
             this.CompileAndLinkAgainst<CDynamicLibrary>(source);
 
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-            }
-
             this.PrivatePatch(settings =>
                 {
                     var gccLinker = settings as GccCommon.ICommonLinkerSettings;
@@ -88,10 +83,6 @@ namespace InstallerTest1
                         var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                         cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Asynchronous; // for iostream
                     });
-                if (this.Linker is VisualCCommon.LinkerBase)
-                {
-                    this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-                }
             }
 
             this.PrivatePatch(settings =>

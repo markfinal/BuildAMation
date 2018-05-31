@@ -77,11 +77,6 @@ namespace MixedModeCpp
         [Bam.Core.SourceFiles]
         ManagedSourceFiles managedSourceFiles = new ManagedSourceFiles();
 
-        [Bam.Core.DependentModules]
-        Bam.Core.TypeArray dependentModules = new Bam.Core.TypeArray(
-            typeof(WindowsSDK.WindowsSDK)
-        );
-
         [C.RequiredLibraries]
         Bam.Core.StringArray libraries = new Bam.Core.StringArray(
             "KERNEL32.lib",

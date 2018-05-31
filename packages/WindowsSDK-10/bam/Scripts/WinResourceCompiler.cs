@@ -28,7 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-
 namespace WindowsSDK
 {
     public abstract class WinResourceCompilerBase :
@@ -88,13 +87,6 @@ namespace WindowsSDK
         {
             var settings = new WinResourceCompilerSettings(module);
             return settings;
-        }
-
-        public override void
-        addCompilerSpecificRequirements(
-            C.WinResource resource)
-        {
-            resource.CompileAgainst<WindowsSDK>();
         }
     }
 

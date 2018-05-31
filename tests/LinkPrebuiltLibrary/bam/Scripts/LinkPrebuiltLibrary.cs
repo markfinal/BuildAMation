@@ -78,11 +78,6 @@ namespace LinkPrebuiltLibrary
                         }
                     }
                 });
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-            }
         }
     }
 }

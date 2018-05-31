@@ -46,11 +46,6 @@ namespace ProceduralHeaderTest2
             source.DependsOn(genHeader);
             source.UsePublicPatches(genHeader);
             headers.AddFile(genHeader);
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -113,11 +108,6 @@ namespace ProceduralHeaderTest2
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/testapp2/main.c");
             this.CompileAndLinkAgainst<LibraryUsingGeneratedHeader>(source);
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }
