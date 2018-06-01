@@ -1,3 +1,5 @@
+01-Jun-2018 Fixes #445. Classes of PackageMetaData can now be dependent on each other. The dependent meta data instance will be created on-demand.
+
 23-May-2018 Fixes #441. Fixed Xcode project generation for linking against prebuilt static libraries.
 
 17-May-2018 Fixed #440. Fixed regression introduced in Xcode project generation in the fix for #436 in v1.2.0a3, that would not correctly generate order-only dependencies.

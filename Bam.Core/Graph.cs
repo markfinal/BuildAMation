@@ -833,6 +833,30 @@ namespace Bam.Core
             set;
         }
 
+        static internal PackageMetaData
+        InstantiatePackageMetaData(
+            System.Type metaDataType)
+        {
+            try
+            {
+                return System.Activator.CreateInstance(metaDataType) as PackageMetaData;
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+            catch (System.Reflection.TargetInvocationException exception)
+            {
+                throw new Exception(exception, "Failed to create package metadata");
+            }
+        }
+
+        static internal PackageMetaData
+        InstantiatePackageMetaData<MetaDataType>()
+        {
+            return InstantiatePackageMetaData(typeof(MetaDataType));
+        }
+
         /// <summary>
         /// For a given package, obtain the metadata and cast it to MetaDataType.
         /// </summary>
@@ -848,6 +872,10 @@ namespace Bam.Core
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", packageName);
+            }
+            if (null == package.MetaData)
+            {
+                package.MetaData = InstantiatePackageMetaData<MetaDataType>();
             }
             return package.MetaData as MetaDataType;
         }

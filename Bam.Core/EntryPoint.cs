@@ -187,18 +187,12 @@ namespace Bam.Core
                     continue;
                 }
 
-                try
+                if (null != package.MetaData)
                 {
-                    package.MetaData = System.Activator.CreateInstance(metaType) as PackageMetaData;
+                    // already been instantiated
+                    continue;
                 }
-                catch (Exception exception)
-                {
-                    throw exception;
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    throw new Exception(exception, "Failed to create package metadata");
-                }
+                package.MetaData = Graph.InstantiatePackageMetaData(metaType);
             }
 
             // look for module configuration override
