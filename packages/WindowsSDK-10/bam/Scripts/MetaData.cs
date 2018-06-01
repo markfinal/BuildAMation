@@ -43,7 +43,7 @@ namespace WindowsSDK
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             if (null == vcMeta)
             {
-                return;
+                throw new Bam.Core.Exception("VisualC metadata must exist prior to WindowsSDK metadata");
             }
             // the WindowsSDKVersion environment variable has a trailing back slash
             var env = vcMeta.Environment64;

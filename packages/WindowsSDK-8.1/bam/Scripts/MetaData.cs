@@ -43,7 +43,7 @@ namespace WindowsSDK
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             if (null == vcMeta)
             {
-                return;
+                throw new Bam.Core.Exception("VisualC metadata must exist prior to WindowsSDK metadata");
             }
             var env = vcMeta.Environment64;
             Bam.Core.Log.Info("Using WindowsSDK 8.1 installed at {0}",
