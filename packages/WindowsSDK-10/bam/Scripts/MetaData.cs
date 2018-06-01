@@ -55,7 +55,16 @@ namespace WindowsSDK
             }
             else
             {
-                Bam.Core.Log.Info("Using WindowsSDK installed at {0}", installDir);
+                if (env.ContainsKey("UniversalCRTSdkDir"))
+                {
+                    var ucrtDir = env["UniversalCRTSdkDir"];
+                    var ucrtVersion = env["UCRTVersion"];
+                    Bam.Core.Log.Info("Using WindowsSDK installed at {0} with universal CRT SDK {1} at {2}", installDir, ucrtVersion, ucrtDir);
+                }
+                else
+                {
+                    Bam.Core.Log.Info("Using WindowsSDK installed at {0}", installDir);
+                }
             }
         }
 
