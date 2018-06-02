@@ -27,10 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace WindowsSDK.Options
 {
     public class WindowsSDK10Version :
-        Bam.Core.IStringCommandLineArgument
+        Bam.Core.IStringCommandLineArgument,
+        Bam.Core.ICommandLineArgumentDefault<string>
     {
         string Bam.Core.ICommandLineArgument.LongName
         {
@@ -52,7 +54,23 @@ namespace WindowsSDK.Options
         {
             get
             {
-                return "Specify a version, other than the latest, for the WindowsSDK 10, e.g. 10.0.16922.0";
+                return "Specify a version, other than the latest, for the WindowsSDK 10, e.g. 10.0.16922.0. VisualC 14.0 defaults to 8.1.";
+            }
+        }
+
+        string Bam.Core.ICommandLineArgumentDefault<string>.Default
+        {
+            get
+            {
+                var visualC = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name == "VisualC");
+                if (null != visualC)
+                {
+                    if (visualC.Version == "14.0")
+                    {
+                        return "8.1";
+                    }
+                }
+                return System.String.Empty;
             }
         }
     }
