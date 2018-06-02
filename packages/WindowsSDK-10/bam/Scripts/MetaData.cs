@@ -47,10 +47,16 @@ namespace WindowsSDK
             }
             // the WindowsSDKVersion environment variable has a trailing back slash
             var env = vcMeta.Environment64;
-            Bam.Core.Log.Info("Using WindowsSDK {0} installed at {1}",
-                env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar),
-                env["WindowsSdkDir"]
-            );
+            var installDir = env["WindowsSdkDir"];
+            if (env.ContainsKey("WindowsSDKVersion"))
+            {
+                var version = env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar);
+                Bam.Core.Log.Info("Using WindowsSDK {0} installed at {1}", version, installDir);
+            }
+            else
+            {
+                Bam.Core.Log.Info("Using WindowsSDK installed at {0}", installDir);
+            }
         }
 
         public override object this[string index]
