@@ -88,6 +88,9 @@ namespace Installer
                 var installedExePath = this.CreateTokenizedString("@dir($(buildroot)/$(config)/$(0).exe)", outputName);
                 installedExePath.Parse();
                 scriptWriter.WriteLine("OutputDir={0}", installedExePath.ToStringQuoteIfNecessary());
+                // create the output directory in-advance, so that multiple InnoSetup processes, writing to the same folder
+                // do not hit a race condition in creating this folder
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(installedExePath.ToStringQuoteIfNecessary());
                 scriptWriter.WriteLine("AppName={0}", outputName.ToString());
                 var productDef = Bam.Core.Graph.Instance.ProductDefinition;
                 if (null != productDef)
