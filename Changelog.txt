@@ -1,3 +1,5 @@
+02-Jun-2018 Fixes #444. A package that has multiple Installer.InnoSetupInstaller modules intermittently saw I/O error 183 coming from InnoSetup (means duplicate error on network, or directory exists), when BAM was in multithreaded mode. Process Monitor suggested that this was because all .iss files referred to the same OutputDir, so multiple ISCC.exe processes had a race condition creating the directory. BAM now creates the OutputDir when creating the .iss files, so there should be no race with ISCC.exe.
+
 01-Jun-2018 Fixes #445. Classes of PackageMetaData can now be dependent on each other. The dependent meta data instance will be created on-demand.
 
 23-May-2018 Fixes #441. Fixed Xcode project generation for linking against prebuilt static libraries.
