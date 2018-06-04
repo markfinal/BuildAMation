@@ -46,6 +46,8 @@ namespace Mingw
 
             // TODO: some installations may not have a suffix - need to confirm
             this.Meta.Add("ToolSuffix", "-4.8.1");
+
+            Bam.Core.Log.Info("Mingw 4.8.1 installed at C:\\Mingw");
         }
 
         public override object this[string index]
