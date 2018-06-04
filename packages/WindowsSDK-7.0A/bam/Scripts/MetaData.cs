@@ -45,7 +45,7 @@ namespace WindowsSDK
             {
                 throw new Bam.Core.Exception("VisualC metadata must exist prior to WindowsSDK metadata");
             }
-            var env = vcMeta.Environment((C.EBit.ThirtyTwo);
+            var env = vcMeta.Environment(C.EBit.ThirtyTwo);
             Bam.Core.Log.Info("Using WindowsSDK 7.0A installed at {0}",
                 env["WindowsSdkDir"]
             );
