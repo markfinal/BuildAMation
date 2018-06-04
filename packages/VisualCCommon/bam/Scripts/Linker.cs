@@ -34,7 +34,8 @@ namespace VisualCCommon
         C.LinkerTool
     {
         private string
-        getLinkerPath()
+        getLinkerPath(
+            C.EBit depth)
         {
             const string executable = "link.exe";
             foreach (var path in this.EnvironmentVariables["PATH"])
@@ -51,7 +52,7 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
             message.AppendLine();
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
@@ -69,7 +70,7 @@ namespace VisualCCommon
             discovery.discover(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.EnvironmentVariables = meta.Environment(depth);
-            var fullLinkExePath = this.getLinkerPath();
+            var fullLinkExePath = this.getLinkerPath(depth);
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(fullLinkExePath));
 
             this.Macros.AddVerbatim("exeext", ".exe");

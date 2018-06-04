@@ -33,14 +33,46 @@ namespace VisualCCommon
     public abstract class AssemblerBase :
         C.AssemblerTool
     {
-        protected AssemblerBase(
+        private string
+        getAssemblerPath(
+            string executable,
             C.EBit depth)
+        {
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                var installLocation = Bam.Core.OSUtilities.GetInstallLocation(
+                    executable,
+                    path.ToString(),
+                    this.GetType().Name,
+                    throwOnFailure: false
+                );
+                if (null != installLocation)
+                {
+                    return installLocation.First();
+                }
+            }
+            var message = new System.Text.StringBuilder();
+            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
+            message.AppendLine();
+            foreach (var path in this.EnvironmentVariables["PATH"])
+            {
+                message.AppendFormat("\t{0}", path.ToString());
+                message.AppendLine();
+            }
+            throw new Bam.Core.Exception(message.ToString());
+        }
+
+        protected AssemblerBase(
+            C.EBit depth,
+            string basename)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             var discovery = meta as C.IToolchainDiscovery;
             discovery.discover(depth);
             this.EnvironmentVariables = meta.Environment(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
+            var fullAsmExePath = this.getAssemblerPath(basename, depth);
+            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
             this.Macros.AddVerbatim("objext", ".obj");
         }
 
@@ -73,34 +105,6 @@ namespace VisualCCommon
                 throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
             }
         }
-
-        protected string
-        getAssemblerPath(
-            string executable)
-        {
-            foreach (var path in this.EnvironmentVariables["PATH"])
-            {
-                var installLocation = Bam.Core.OSUtilities.GetInstallLocation(
-                    executable,
-                    path.ToString(),
-                    this.GetType().Name,
-                    throwOnFailure: false
-                );
-                if (null != installLocation)
-                {
-                    return installLocation.First();
-                }
-            }
-            var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
-            message.AppendLine();
-            foreach (var path in this.EnvironmentVariables["PATH"])
-            {
-                message.AppendFormat("\t{0}", path.ToString());
-                message.AppendLine();
-            }
-            throw new Bam.Core.Exception(message.ToString());
-        }
     }
 
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
@@ -109,11 +113,8 @@ namespace VisualCCommon
     {
         public Assembler32()
             :
-            base(C.EBit.ThirtyTwo)
-        {
-            var fullAsmExePath = this.getAssemblerPath("ml.exe");
-            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
-        }
+            base(C.EBit.ThirtyTwo, "ml.exe")
+        {}
     }
 
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
@@ -121,10 +122,7 @@ namespace VisualCCommon
         AssemblerBase
     {
         public Assembler64()
-            : base(C.EBit.SixtyFour)
-        {
-            var fullAsmExePath = this.getAssemblerPath("ml64.exe");
-            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
-        }
+            : base(C.EBit.SixtyFour, "ml64.exe")
+        {}
     }
 }

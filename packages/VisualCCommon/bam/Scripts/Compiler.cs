@@ -34,7 +34,8 @@ namespace VisualCCommon
         C.CompilerTool
     {
         private string
-        getCompilerPath()
+        getCompilerPath(
+            C.EBit depth)
         {
             const string executable = "cl.exe";
             foreach (var path in this.EnvironmentVariables["PATH"])
@@ -51,7 +52,7 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
             message.AppendLine();
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
@@ -71,7 +72,7 @@ namespace VisualCCommon
             this.MinorVersion = meta.CompilerMinorVersion;
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.EnvironmentVariables = meta.Environment(depth);
-            var fullCompilerExePath = this.getCompilerPath();
+            var fullCompilerExePath = this.getCompilerPath(depth);
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(fullCompilerExePath));
             this.Macros.AddVerbatim("objext", ".obj");
 
