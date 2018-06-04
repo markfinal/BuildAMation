@@ -8,6 +8,8 @@ WindowsSDK.WindowsSDK module has been deleted, as its patches are no longer requ
 WindowsSDK.MetaData is now simply a logger of which version is being used, and where it is installed.
 WindowsSDK.WinResourceCompiler has been renamed to WinResourceCompilerBase and reclassified as an abstract class. Instead, two new sealed classes WinResourceCompiler32 and WinResourceCompiler64 have been introduced, corresponding to the architecture bit-depth in use.
 
+Disambiguation of which toolchain to use is now performed just before the very first C module requiring a compiler, linker, archiver, is required. Exceptions are only thrown when a specific tool is requested, but cannot be delivered. Reflection to identify tool module types now only occurs on the first instantiation; the module is then reused for future instances, without needing to query reflection.
+
 02-Jun-2018 Fixes #444. A package that has multiple Installer.InnoSetupInstaller modules intermittently saw I/O error 183 coming from InnoSetup (means duplicate error on network, or directory exists), when BAM was in multithreaded mode. Process Monitor suggested that this was because all .iss files referred to the same OutputDir, so multiple ISCC.exe processes had a race condition creating the directory. BAM now creates the OutputDir when creating the .iss files, so there should be no race with ISCC.exe.
 
 01-Jun-2018 Fixes #445. Classes of PackageMetaData can now be dependent on each other. The dependent meta data instance will be created on-demand.
