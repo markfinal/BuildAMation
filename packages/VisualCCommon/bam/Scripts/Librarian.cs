@@ -62,11 +62,13 @@ namespace VisualCCommon
         }
 
         protected LibrarianBase(
-            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+            C.EBit depth)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            var discovery = meta as C.IToolchainDiscovery;
+            discovery.discover(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.EnvironmentVariables = env;
+            this.EnvironmentVariables = meta.Environment(depth);
             var fullLibExePath = this.getLibrarianPath();
             this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.CreateVerbatim(fullLibExePath));
             this.Macros.AddVerbatim("libprefix", string.Empty);
@@ -104,7 +106,7 @@ namespace VisualCCommon
     {
         public Librarian32()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+            base(C.EBit.ThirtyTwo)
         { }
     }
 
@@ -114,7 +116,7 @@ namespace VisualCCommon
     {
         public Librarian64()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+            base(C.EBit.SixtyFour)
         { }
     }
 }

@@ -62,11 +62,13 @@ namespace VisualCCommon
         }
 
         protected LinkerBase(
-            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+            C.EBit depth)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            var discovery = meta as C.IToolchainDiscovery;
+            discovery.discover(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.EnvironmentVariables = env;
+            this.EnvironmentVariables = meta.Environment(depth);
             var fullLinkExePath = this.getLinkerPath();
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(fullLinkExePath));
 
@@ -167,7 +169,7 @@ namespace VisualCCommon
     {
         public Linker32()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+            base(C.EBit.ThirtyTwo)
         {}
     }
 
@@ -178,7 +180,7 @@ namespace VisualCCommon
     {
         public Linker64()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+            base(C.EBit.SixtyFour)
         { }
     }
 }

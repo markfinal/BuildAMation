@@ -33,9 +33,13 @@ namespace VisualCCommon
     public abstract class AssemblerBase :
         C.AssemblerTool
     {
-        protected AssemblerBase()
+        protected AssemblerBase(
+            C.EBit depth)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            var discovery = meta as C.IToolchainDiscovery;
+            discovery.discover(depth);
+            this.EnvironmentVariables = meta.Environment(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.Macros.AddVerbatim("objext", ".obj");
         }
@@ -104,9 +108,9 @@ namespace VisualCCommon
         AssemblerBase
     {
         public Assembler32()
+            :
+            base(C.EBit.ThirtyTwo)
         {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.EnvironmentVariables = meta.Environment32;
             var fullAsmExePath = this.getAssemblerPath("ml.exe");
             this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
         }
@@ -117,10 +121,8 @@ namespace VisualCCommon
         AssemblerBase
     {
         public Assembler64()
-            : base()
+            : base(C.EBit.SixtyFour)
         {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.EnvironmentVariables = meta.Environment64;
             var fullAsmExePath = this.getAssemblerPath("ml64.exe");
             this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
         }

@@ -40,18 +40,26 @@ namespace VisualC
                 return;
             }
 
-            var install_dir = this.vswhere_getinstallpath(11);
-            this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
-            this.get_tool_environment_variables(
-                "VC",
-                has64bithost_32bitcross: false,
-                hasNative64BitTools: false
-            );
-
             this.SolutionFormatVersion = "12.00";
             this.PlatformToolset = "v110";
             this.VCXProjToolsVersion = "4.0";
             this.VCXProjFiltersToolsVersion = "4.0";
+        }
+
+        protected override int major_version
+        {
+            get
+            {
+                return 11;
+            }
+        }
+
+        protected override string subpath_to_vcvars
+        {
+            get
+            {
+                return "VC";
+            }
         }
 
         public override object this[string index]

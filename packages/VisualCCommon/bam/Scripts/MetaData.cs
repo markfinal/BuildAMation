@@ -31,9 +31,10 @@ using System.Linq;
 namespace VisualCCommon
 {
     public abstract class MetaData :
-        Bam.Core.PackageMetaData
+        Bam.Core.PackageMetaData,
+        C.IToolchainDiscovery
     {
-        protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+        protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
         private void
         findvswhere()
@@ -77,35 +78,32 @@ namespace VisualCCommon
         }
 
         protected string
-        vswhere_getinstallpath(
-            int vs_major_version)
+        vswhere_getinstallpath()
         {
-            if (vs_major_version >= 15)
+            string installpath = System.String.Empty;
+            if (this.major_version >= 15)
             {
-                var result = RunExecutable(this.vswherePath, System.String.Format("-property installationPath -version {0}", vs_major_version));
-                if (System.String.IsNullOrEmpty(result))
+                installpath = RunExecutable(this.vswherePath, System.String.Format("-property installationPath -version {0}", this.major_version));
+                if (System.String.IsNullOrEmpty(installpath))
                 {
-                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", vs_major_version);
+                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", this.major_version);
                 }
-                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", vs_major_version, result);
-                return result;
             }
             else
             {
-                var result = RunExecutable(this.vswherePath, System.String.Format("-legacy -property installationPath -version [{0}]", vs_major_version));
-                if (System.String.IsNullOrEmpty(result))
+                installpath = RunExecutable(this.vswherePath, System.String.Format("-legacy -property installationPath -version [{0}]", this.major_version));
+                if (System.String.IsNullOrEmpty(installpath))
                 {
-                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", vs_major_version);
+                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", this.major_version);
                 }
-                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", vs_major_version, result);
-                return result;
             }
+            Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
+            return installpath;
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
         execute_vcvars(
-            string subpath_to_vcvars,
-            bool target64bit,
+            C.EBit depth,
             bool has64bithost_32bitcross,
             bool hasNative64BitTools,
             Bam.Core.StringArray inherited_envvars,
@@ -152,27 +150,33 @@ namespace VisualCCommon
             {
                 var command_and_args = new System.Text.StringBuilder();
                 command_and_args.Append("vcvarsall.bat ");
-                if (target64bit)
+                switch (depth)
                 {
-                    if (Bam.Core.OSUtilities.Is64BitHosting && hasNative64BitTools)
-                    {
-                        command_and_args.Append("amd64 ");
-                    }
-                    else
-                    {
-                        command_and_args.Append("x86_amd64 ");
-                    }
-                }
-                else
-                {
-                    if (Bam.Core.OSUtilities.Is64BitHosting && has64bithost_32bitcross)
-                    {
-                        command_and_args.Append("amd64_x86 ");
-                    }
-                    else
-                    {
-                        command_and_args.Append("x86 ");
-                    }
+                    case C.EBit.ThirtyTwo:
+                        {
+                            if (Bam.Core.OSUtilities.Is64BitHosting && has64bithost_32bitcross)
+                            {
+                                command_and_args.Append("amd64_x86 ");
+                            }
+                            else
+                            {
+                                command_and_args.Append("x86 ");
+                            }
+                        }
+                        break;
+
+                    case C.EBit.SixtyFour:
+                        {
+                            if (Bam.Core.OSUtilities.Is64BitHosting && hasNative64BitTools)
+                            {
+                                command_and_args.Append("amd64 ");
+                            }
+                            else
+                            {
+                                command_and_args.Append("x86_amd64 ");
+                            }
+                        }
+                        break;
                 }
                 // VisualC packages define their 'default' WindowsSDK package to function with
                 // if this is different to what is being used, append the version fo the vcvarsall.bat command
@@ -260,7 +264,7 @@ namespace VisualCCommon
                 env.Add(key, valueArray);
             }
             Bam.Core.Log.DebugMessage(@"Running {0}\{1} gives the following environment variables:", startinfo.WorkingDirectory, vcvarsall_cmd);
-            foreach (System.Collections.Generic.KeyValuePair<string,Bam.Core.TokenizedStringArray> entry in env)
+            foreach (System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedStringArray> entry in env)
             {
                 Bam.Core.Log.DebugMessage("\t{0} = {1}", entry.Key, entry.Value.ToString(';'));
             }
@@ -269,7 +273,7 @@ namespace VisualCCommon
 
         protected void
         get_tool_environment_variables(
-            string subpath_to_vcvars,
+            C.EBit depth,
             bool has64bithost_32bitcross = true,
             bool hasNative64BitTools = true,
             Bam.Core.StringArray inherited_envvars = null,
@@ -291,31 +295,14 @@ namespace VisualCCommon
                 required_envvars.Add("PATH", new Bam.Core.StringArray { "%WINDIR%\\System32" });
             }
 
-            this.Environment32 = this.execute_vcvars(
-                subpath_to_vcvars,
-                false,
+            var env = this.execute_vcvars(
+                depth,
                 has64bithost_32bitcross,
                 hasNative64BitTools,
                 inherited_envvars,
                 required_envvars
             );
-            this.Environment64 = this.execute_vcvars(
-                subpath_to_vcvars,
-                true,
-                has64bithost_32bitcross,
-                hasNative64BitTools,
-                inherited_envvars,
-                required_envvars
-            );
-        }
-
-        public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-            this.findvswhere();
+            this.Meta.Add(EnvironmentKey(depth), env);
         }
 
         public Bam.Core.TokenizedString
@@ -332,52 +319,63 @@ namespace VisualCCommon
             }
         }
 
-        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
-        Environment32
+        static private string
+        EnvironmentKey(
+            C.EBit depth)
         {
-            get
+            switch (depth)
             {
-                try
-                {
-                    return this.Meta["Environment32"] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>;
-                }
-                catch (System.Collections.Generic.KeyNotFoundException)
-                {
-                    throw new Bam.Core.Exception("32-bit environment has not been configured");
-                }
-            }
-
-            private set
-            {
-                this.Meta["Environment32"] = value;
+                case C.EBit.ThirtyTwo:
+                    return "Environment32";
+                case C.EBit.SixtyFour:
+                    return "Environment64";
+                default:
+                    throw new Bam.Core.Exception("Unknown bit depth, {0}", depth.ToString());
             }
         }
 
         public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
-        Environment64
+        Environment(
+            C.EBit depth)
         {
-            get
-            {
-                try
-                {
-                    return this.Meta["Environment64"] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>;
-                }
-                catch (System.Collections.Generic.KeyNotFoundException)
-                {
-                    throw new Bam.Core.Exception("64-bit environment has not been configured");
-                }
-            }
-
-            private set
-            {
-                this.Meta["Environment64"] = value;
-            }
+            return this.Meta[EnvironmentKey(depth)] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>; 
         }
 
         private string vswherePath
         {
             get;
             set;
+        }
+
+        protected abstract int major_version
+        {
+            get;
+        }
+
+        protected abstract string subpath_to_vcvars
+        {
+            get;
+        }
+
+        void
+        C.IToolchainDiscovery.discover(
+            C.EBit depth)
+        {
+            if (null == this.vswherePath)
+            {
+                this.findvswhere();
+            }
+            if (!this.Meta.ContainsKey("InstallDir"))
+            {
+                var install_dir = this.vswhere_getinstallpath();
+                this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
+            }
+            if (!this.Meta.ContainsKey(EnvironmentKey(depth)))
+            {
+                this.get_tool_environment_variables(
+                    depth
+                );
+            }
         }
     }
 }

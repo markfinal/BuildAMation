@@ -62,13 +62,15 @@ namespace VisualCCommon
         }
 
         protected CompilerBase(
-            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+            C.EBit depth)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            var discovery = meta as C.IToolchainDiscovery;
+            discovery.discover(depth);
             this.MajorVersion = meta.CompilerMajorVersion;
             this.MinorVersion = meta.CompilerMinorVersion;
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.EnvironmentVariables = env;
+            this.EnvironmentVariables = meta.Environment(depth);
             var fullCompilerExePath = this.getCompilerPath();
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(fullCompilerExePath));
             this.Macros.AddVerbatim("objext", ".obj");
@@ -128,7 +130,7 @@ namespace VisualCCommon
     {
         public Compiler32()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+            base(C.EBit.ThirtyTwo)
         {}
 
         protected override void
@@ -163,7 +165,7 @@ namespace VisualCCommon
     {
         public Compiler64()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+            base(C.EBit.SixtyFour)
         { }
 
         protected override void

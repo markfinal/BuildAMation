@@ -46,7 +46,7 @@ namespace WindowsSDK
                 throw new Bam.Core.Exception("VisualC metadata must exist prior to WindowsSDK metadata");
             }
             // the WindowsSDKVersion environment variable has a trailing back slash
-            var env = vcMeta.Environment64;
+            var env = vcMeta.Environment(C.EBit.SixtyFour);
             var installDir = env["WindowsSdkDir"];
             if (env.ContainsKey("WindowsSDKVersion"))
             {

@@ -407,9 +407,10 @@ namespace VSSolutionBuilder
             // global properties
             var globalPropertyGroup = document.CreateVSPropertyGroup(label: "Globals", parentEl: projectEl);
             document.CreateVSElement("ProjectGuid", value: this.Guid.ToString("B").ToUpper(), parentEl: globalPropertyGroup);
-            if (visualCMeta.Environment32.ContainsKey("WindowsSDKVersion"))
+            var vcEnv = visualCMeta.Environment(GetModuleBitDepth(this.Module));
+            if (vcEnv.ContainsKey("WindowsSDKVersion"))
             {
-                var windowssdk_version = visualCMeta.Environment32["WindowsSDKVersion"].First().ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar);
+                var windowssdk_version = vcEnv["WindowsSDKVersion"].First().ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar);
                 document.CreateVSElement("WindowsTargetPlatformVersion", value: windowssdk_version, parentEl: globalPropertyGroup);
             }
             else

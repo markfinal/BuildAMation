@@ -27,43 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+namespace C
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    public interface IToolchainDiscovery
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            if (null == vcMeta)
-            {
-                throw new Bam.Core.Exception("VisualC metadata must exist prior to WindowsSDK metadata");
-            }
-            var env = vcMeta.Environment((C.EBit.ThirtyTwo);
-            Bam.Core.Log.Info("Using WindowsSDK 7.0A installed at {0}",
-                env["WindowsSdkDir"]
-            );
-        }
-
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
-
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+        void
+        discover(
+            EBit depth);
     }
 }
