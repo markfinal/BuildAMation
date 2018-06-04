@@ -51,6 +51,7 @@ namespace Clang
             }
 
             this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
+            Bam.Core.Log.Info("Clang SDK {0} installed at {1}", this.SDK, this.SDKPath);
         }
 
         public override object this[string index]
