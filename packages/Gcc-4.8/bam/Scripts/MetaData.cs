@@ -50,8 +50,10 @@ namespace Gcc
             {
                 var location = gccLocations.First();
                 this.Meta.Add("GccPath", location);
-                var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").Split(new[] { '.' });
-                this.Meta.Add("GccVersion", gccVersion);
+                var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion");
+                var gccVersionSplit = gccVersion.Split(new[] { '.' });
+                this.Meta.Add("GccVersion", gccVersionSplit);
+                Bam.Core.Log.Info("GCC version {0} installed at {1}", gccVersion, location);
             }
 
             var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");
