@@ -115,7 +115,7 @@ namespace VisualC
                 return this.Meta["PlatformToolset"] as string;
             }
 
-            private set
+            set
             {
                 this.Meta["PlatformToolset"] = value;
             }

@@ -48,6 +48,7 @@ namespace WindowsSDK
 
                 this.Meta.Add("setenvdir", System.String.Format("{0}bin", installPath));
                 this.Meta.Add("setenvcmd", "SetEnv.cmd");
+                this.Meta.Add("PlatformToolset", "Windows7.1SDK");
             }
         }
 

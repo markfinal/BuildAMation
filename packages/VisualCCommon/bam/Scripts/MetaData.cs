@@ -209,6 +209,8 @@ namespace VisualCCommon
             };
 
             var environment_generator_cmdline = System.String.Empty;
+            // allow the WindowsSDK to provide an alternative mechanism for generating
+            // and environment in which to execute VisualC and WindowsSDK tools
             var windowssdk_meta = Bam.Core.Graph.Instance.PackageMetaData<WindowsSDK.MetaData>("WindowsSDK");
             if (windowssdk_meta.Contains("setenvdir") && windowssdk_meta.Contains("setenvcmd"))
             {
@@ -228,6 +230,13 @@ namespace VisualCCommon
             {
                 startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), subpath_to_vcvars);
                 environment_generator_cmdline = vcvarsall_command();
+            }
+
+            // allow the WindowsSDK to override the VisualStudio project's PlatformToolset
+            if (windowssdk_meta.Contains("PlatformToolset"))
+            {
+                var vc_meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+                vc_meta.PlatformToolset = windowssdk_meta["PlatformToolset"] as string;
             }
 
             var arguments = new System.Text.StringBuilder();
