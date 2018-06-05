@@ -398,6 +398,28 @@ namespace VisualCCommon
             }
         }
 
+        private static void
+        report_WindowsSDK(
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+        {
+            var installDir = System.String.Empty;
+            if (env.ContainsKey("WindowsSdkDir"))
+            {
+                // WindowsSDK 7.0A has this form
+                installDir = env["WindowsSdkDir"].ToString();
+            }
+            else if (env.ContainsKey("WindowsSDKDir"))
+            {
+                // WindowsSDK 7.1 has this form
+                installDir = env["WindowsSDKDir"].ToString();
+            }
+            if (System.String.IsNullOrEmpty(installDir))
+            {
+                return;
+            }
+            Bam.Core.Log.Info("Using WindowsSDK installed at {0}", installDir);
+        }
+
         void
         C.IToolchainDiscovery.discover(
             C.EBit depth)
@@ -418,11 +440,7 @@ namespace VisualCCommon
                     this.has64bithost_32bitcross,
                     this.hasNative64BitTools
                 );
-                var env = this.Environment(depth);
-                if (env.ContainsKey("WindowsSdkDir"))
-                {
-                    Bam.Core.Log.Info("Using WindowsSDK installed at {0}", env["WindowsSdkDir"]);
-                }
+                report_WindowsSDK(this.Environment(depth));
             }
         }
     }
