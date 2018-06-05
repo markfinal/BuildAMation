@@ -160,6 +160,7 @@ namespace VisualC
             // don't redist the api-ms-win-crt-*-l1-1-0.dll files from the WindowsSDK, as I can find no reference
             // to needing to do so
 
+            var winsdkdir = this.Environment(depth)["UniversalCRTSdkDir"];
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
@@ -172,7 +173,6 @@ namespace VisualC
                                 new Bam.Core.TokenizedStringArray(this.InstallDir)
                             )
                         );
-                        var winsdkdir = this.Environment32["UniversalCRTSdkDir"];
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll",
@@ -192,7 +192,6 @@ namespace VisualC
                                 new Bam.Core.TokenizedStringArray(this.InstallDir)
                             )
                         );
-                        var winsdkdir = this.Environment64["UniversalCRTSdkDir"];
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll",

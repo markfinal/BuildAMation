@@ -34,40 +34,6 @@ namespace WindowsSDK
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
-        public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            if (null == vcMeta)
-            {
-                throw new Bam.Core.Exception("VisualC metadata must exist prior to WindowsSDK metadata");
-            }
-            // the WindowsSDKVersion environment variable has a trailing back slash
-            var env = vcMeta.Environment(C.EBit.SixtyFour);
-            var installDir = env["WindowsSdkDir"];
-            if (env.ContainsKey("WindowsSDKVersion"))
-            {
-                var version = env["WindowsSDKVersion"].ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar);
-                Bam.Core.Log.Info("Using WindowsSDK {0} installed at {1}", version, installDir);
-            }
-            else
-            {
-                if (env.ContainsKey("UniversalCRTSdkDir"))
-                {
-                    var ucrtDir = env["UniversalCRTSdkDir"];
-                    var ucrtVersion = env["UCRTVersion"];
-                    Bam.Core.Log.Info("Using WindowsSDK installed at {0} with universal CRT SDK {1} at {2}", installDir, ucrtVersion, ucrtDir);
-                }
-                else
-                {
-                    Bam.Core.Log.Info("Using WindowsSDK installed at {0}", installDir);
-                }
-            }
-        }
-
         public override object this[string index]
         {
             get

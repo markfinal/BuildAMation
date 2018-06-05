@@ -99,7 +99,7 @@ namespace WindowsSDK
             Bam.Core.Module parent)
         {
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.EnvironmentVariables = vcMeta.Environment(C.EBit.SixtyFour);
+            this.EnvironmentVariables = vcMeta.Environment(C.EBit.ThirtyTwo);
             this.configure("x86");
             // now check the executable exists
             base.Init(parent);
@@ -115,7 +115,7 @@ namespace WindowsSDK
             Bam.Core.Module parent)
         {
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            this.EnvironmentVariables = vcMeta.Environment(C.EBit.ThirtyTwo);
+            this.EnvironmentVariables = vcMeta.Environment(C.EBit.SixtyFour);
             this.configure("x64");
             // now check the executable exists
             base.Init(parent);

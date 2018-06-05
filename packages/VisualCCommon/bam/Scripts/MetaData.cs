@@ -411,22 +411,40 @@ namespace VisualCCommon
         report_WindowsSDK(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
         {
-            var installDir = System.String.Empty;
+            var report = new System.Text.StringBuilder();
+            report.Append("Using WindowsSDK ");
+            if (env.ContainsKey("WindowsSDKVersion"))
+            {
+                report.AppendFormat("version {0} ", env["WindowsSDKVersion"].ToString());
+            }
+            var winsdk_installdir = System.String.Empty;
             if (env.ContainsKey("WindowsSdkDir"))
             {
-                // WindowsSDK 7.0A has this form
-                installDir = env["WindowsSdkDir"].ToString();
+                // WindowsSDK 7.0A, 8.1 has this form
+                winsdk_installdir = env["WindowsSdkDir"].ToString();
             }
             else if (env.ContainsKey("WindowsSDKDir"))
             {
                 // WindowsSDK 7.1 has this form
-                installDir = env["WindowsSDKDir"].ToString();
+                winsdk_installdir = env["WindowsSDKDir"].ToString();
             }
-            if (System.String.IsNullOrEmpty(installDir))
+            else
             {
-                return;
+                throw new Bam.Core.Exception("Unable to locate WindowsSDK installation directory environment variable");
             }
-            Bam.Core.Log.Info("Using WindowsSDK installed at {0}", installDir);
+            report.AppendFormat("installed at {0} ", winsdk_installdir);
+            if (env.ContainsKey("UniversalCRTSdkDir") && env.ContainsKey("UCRTVersion"))
+            {
+                var ucrt_installdir = env["UniversalCRTSdkDir"].ToString();
+                if (ucrt_installdir != winsdk_installdir)
+                {
+                    report.AppendFormat("with UniversalCRT SDK {0} installed at {1} ",
+                        env["UCRTVersion"].ToString(),
+                        ucrt_installdir
+                    );
+                }
+            }
+            Bam.Core.Log.Info(report.ToString());
         }
 
         void
