@@ -44,7 +44,7 @@ namespace WindowsSDK
                 }
                 var installPath = key.GetValue("InstallationFolder") as string;
                 this.Meta.Add("InstallPath", installPath);
-                Bam.Core.Log.MessageAll("Windows SDK installation folder is {0}", installPath);
+                Bam.Core.Log.DebugMessage("Windows SDK installation folder is {0}", installPath);
 
                 this.Meta.Add("setenvdir", System.String.Format("{0}bin", installPath));
                 this.Meta.Add("setenvcmd", "SetEnv.cmd");
