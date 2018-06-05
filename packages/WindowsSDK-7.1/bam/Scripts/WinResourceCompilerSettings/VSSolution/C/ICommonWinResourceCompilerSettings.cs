@@ -29,24 +29,31 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    public static partial class VSSolutionImplementation
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index]
+        public static void
+        Convert(
+            this C.ICommonWinResourceCompilerSettings settings,
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
         {
-            get
+            if (settings.Verbose.HasValue)
             {
-                return this.Meta[index];
+                vsSettingsGroup.AddSetting("ShowProgress", settings.Verbose.Value, condition);
             }
-        }
 
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
+            if (settings.IncludePaths.Count > 0)
+            {
+                vsSettingsGroup.AddSetting("AdditionalIncludeDirectories", settings.IncludePaths, condition, inheritExisting: true, arePaths: true);
+            }
+
+            if (settings.PreprocessorDefines.Count > 0)
+            {
+                vsSettingsGroup.AddSetting("PreprocessorDefinitions", settings.PreprocessorDefines, condition, inheritExisting: true);
+            }
+
+            vsSettingsGroup.AddSetting("ResourceOutputFileName", module.GeneratedPaths[C.ObjectFile.Key], condition, isPath: true);
         }
     }
 }

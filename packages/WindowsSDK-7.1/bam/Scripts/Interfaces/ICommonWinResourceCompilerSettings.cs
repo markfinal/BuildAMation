@@ -29,24 +29,15 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)]
+    public interface ICommonWinResourceCompilerSettings :
+        Bam.Core.ISettingsBase
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index]
+        bool? NoLogo
         {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
-
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
+            get;
+            set;
         }
     }
 }

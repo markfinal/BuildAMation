@@ -112,7 +112,6 @@ namespace VisualCCommon
         {
             var startinfo = new System.Diagnostics.ProcessStartInfo();
             startinfo.FileName = @"c:\Windows\System32\cmd.exe";
-            startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), subpath_to_vcvars);
             startinfo.EnvironmentVariables.Clear();
             if (null != inherited_envvars)
             {
@@ -146,7 +145,7 @@ namespace VisualCCommon
             startinfo.RedirectStandardOutput = true;
             startinfo.RedirectStandardError = true;
 
-            System.Func<string> command = () =>
+            System.Func<string> vcvarsall_command = () =>
             {
                 var command_and_args = new System.Text.StringBuilder();
                 command_and_args.Append("vcvarsall.bat ");
@@ -209,10 +208,30 @@ namespace VisualCCommon
                 return command_and_args.ToString();
             };
 
-            var vcvarsall_cmd = command();
+            var environment_generator_cmdline = System.String.Empty;
+            var windowssdk_meta = Bam.Core.Graph.Instance.PackageMetaData<WindowsSDK.MetaData>("WindowsSDK");
+            if (windowssdk_meta.Contains("setenvdir") && windowssdk_meta.Contains("setenvcmd"))
+            {
+                startinfo.WorkingDirectory = windowssdk_meta["setenvdir"] as string;
+                environment_generator_cmdline = windowssdk_meta["setenvcmd"] as string;
+                switch (depth)
+                {
+                    case C.EBit.ThirtyTwo:
+                        environment_generator_cmdline += " /x86";
+                        break;
+                    case C.EBit.SixtyFour:
+                        environment_generator_cmdline += " /x64";
+                        break;
+                }
+            }
+            else
+            {
+                startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), subpath_to_vcvars);
+                environment_generator_cmdline = vcvarsall_command();
+            }
 
             var arguments = new System.Text.StringBuilder();
-            arguments.AppendFormat("/C {0} && SET", vcvarsall_cmd);
+            arguments.AppendFormat("/C {0} && SET", environment_generator_cmdline);
             startinfo.Arguments = arguments.ToString();
 
             var process = new System.Diagnostics.Process();
@@ -233,7 +252,7 @@ namespace VisualCCommon
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
-                throw new Bam.Core.Exception("{0} failed: {1}", vcvarsall_cmd, stderr.ToString());
+                throw new Bam.Core.Exception("{0} failed: {1}", environment_generator_cmdline, stderr.ToString());
             }
 
             var env = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>();
@@ -243,7 +262,7 @@ namespace VisualCCommon
             );
             foreach (var line in lines)
             {
-                Bam.Core.Log.DebugMessage("{0}->{1}", vcvarsall_cmd, line);
+                Bam.Core.Log.DebugMessage("{0}->{1}", environment_generator_cmdline, line);
                 var equals_index = line.IndexOf('=');
                 if (-1 == equals_index)
                 {
@@ -263,7 +282,7 @@ namespace VisualCCommon
                 }
                 env.Add(key, valueArray);
             }
-            Bam.Core.Log.DebugMessage(@"Running {0}\{1} gives the following environment variables:", startinfo.WorkingDirectory, vcvarsall_cmd);
+            Bam.Core.Log.DebugMessage(@"Running {0}\{1} for {2}-bit gives the following environment variables:", startinfo.WorkingDirectory, environment_generator_cmdline, (int)depth);
             foreach (System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedStringArray> entry in env)
             {
                 Bam.Core.Log.DebugMessage("\t{0} = {1}", entry.Key, entry.Value.ToString(';'));
@@ -274,8 +293,8 @@ namespace VisualCCommon
         protected void
         get_tool_environment_variables(
             C.EBit depth,
-            bool has64bithost_32bitcross = true,
-            bool hasNative64BitTools = true,
+            bool has64bithost_32bitcross,
+            bool hasNative64BitTools,
             Bam.Core.StringArray inherited_envvars = null,
             System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars = null)
         {
@@ -294,6 +313,12 @@ namespace VisualCCommon
             {
                 required_envvars.Add("PATH", new Bam.Core.StringArray { "%WINDIR%\\System32" });
             }
+            // for WindowsSDK-7.1
+            if (null == inherited_envvars)
+            {
+                inherited_envvars = new Bam.Core.StringArray();
+            }
+            inherited_envvars.AddUnique("PROCESSOR_ARCHITECTURE");
 
             var env = this.execute_vcvars(
                 depth,
@@ -357,6 +382,22 @@ namespace VisualCCommon
             get;
         }
 
+        protected virtual bool has64bithost_32bitcross
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        protected virtual bool hasNative64BitTools
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         void
         C.IToolchainDiscovery.discover(
             C.EBit depth)
@@ -373,7 +414,9 @@ namespace VisualCCommon
             if (!this.Meta.ContainsKey(EnvironmentKey(depth)))
             {
                 this.get_tool_environment_variables(
-                    depth
+                    depth,
+                    this.has64bithost_32bitcross,
+                    this.hasNative64BitTools
                 );
             }
         }

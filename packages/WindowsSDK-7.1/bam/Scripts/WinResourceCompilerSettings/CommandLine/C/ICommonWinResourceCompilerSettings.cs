@@ -29,24 +29,42 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    public static partial class CommandLineImplementation
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index]
+        public static void
+        Convert(
+            this C.ICommonWinResourceCompilerSettings settings,
+            Bam.Core.StringArray commandLine)
         {
-            get
+            if (settings.Verbose.HasValue && settings.Verbose.Value)
             {
-                return this.Meta[index];
+                commandLine.Add("-v");
             }
-        }
 
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
+            foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
+            {
+                commandLine.Add(System.String.Format("-i{0}", path.ToStringQuoteIfNecessary()));
+            }
+
+            foreach (var define in settings.PreprocessorDefines)
+            {
+                if (null == define.Value)
+                {
+                    commandLine.Add(System.String.Format("-D{0}", define.Key));
+                }
+                else
+                {
+                    var defineValue = define.Value.ToString();
+                    if (defineValue.Contains("\""))
+                    {
+                        defineValue = defineValue.Replace("\"", "\\\"");
+                    }
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
+                }
+            }
+
+            var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
+            commandLine.Add(System.String.Format("-Fo{0}", resource.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
         }
     }
 }

@@ -29,24 +29,64 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    public class WinResourceCompilerSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject,
+        C.ICommonWinResourceCompilerSettings,
+        C.IAdditionalSettings,
+        ICommonWinResourceCompilerSettings
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index]
+        public WinResourceCompilerSettings(
+            Bam.Core.Module module)
         {
-            get
-            {
-                return this.Meta[index];
-            }
+            this.InitializeAllInterfaces(module, false, true);
         }
 
-        public override bool
-        Contains(
-            string index)
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
         {
-            return this.Meta.ContainsKey(index);
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+        }
+
+        void
+        VisualStudioProcessor.IConvertToProject.Convert(
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
+        }
+
+        bool? C.ICommonWinResourceCompilerSettings.Verbose
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
+        {
+            get;
+            set;
+        }
+
+        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        bool? ICommonWinResourceCompilerSettings.NoLogo
+        {
+            get;
+            set;
         }
     }
 }

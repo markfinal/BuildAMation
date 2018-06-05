@@ -29,24 +29,17 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    public static partial class CommandLineImplementation
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index]
+        public static void
+        Convert(
+            this ICommonWinResourceCompilerSettings settings,
+            Bam.Core.StringArray commandLine)
         {
-            get
+            if (settings.NoLogo.HasValue && settings.NoLogo.Value)
             {
-                return this.Meta[index];
+                commandLine.Add("-NOLOGO");
             }
-        }
-
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
         }
     }
 }

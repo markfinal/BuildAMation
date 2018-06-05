@@ -27,26 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+namespace WindowsSDK.DefaultSettings
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    static partial class DefaultSettingsExtensions
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index]
+        public static void
+        Defaults(
+            this ICommonWinResourceCompilerSettings settings,
+            Bam.Core.Module module)
         {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
-
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
+            settings.NoLogo = true;
         }
     }
 }

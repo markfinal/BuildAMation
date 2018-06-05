@@ -29,24 +29,19 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public sealed class MetaData :
-        Bam.Core.PackageMetaData
+    public static partial class VSSolutionImplementation
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index]
+        public static void
+        Convert(
+            this C.IAdditionalSettings settings,
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
         {
-            get
+            if (settings.AdditionalSettings.Count > 0)
             {
-                return this.Meta[index];
+                vsSettingsGroup.AddSetting("AdditionalOptions", settings.AdditionalSettings, condition);
             }
-        }
-
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
         }
     }
 }

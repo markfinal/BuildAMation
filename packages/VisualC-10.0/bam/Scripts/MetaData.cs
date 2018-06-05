@@ -62,6 +62,22 @@ namespace VisualC
             }
         }
 
+        protected override bool has64bithost_32bitcross
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        protected override bool hasNative64BitTools
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override object this[string index]
         {
             get
