@@ -418,6 +418,11 @@ namespace VisualCCommon
                     this.has64bithost_32bitcross,
                     this.hasNative64BitTools
                 );
+                var env = this.Environment(depth);
+                if (env.ContainsKey("WindowsSdkDir"))
+                {
+                    Bam.Core.Log.Info("Using WindowsSDK installed at {0}", env["WindowsSdkDir"]);
+                }
             }
         }
     }

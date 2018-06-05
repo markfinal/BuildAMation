@@ -34,23 +34,6 @@ namespace WindowsSDK
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
-        public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            if (null == vcMeta)
-            {
-                throw new Bam.Core.Exception("VisualC metadata must exist prior to WindowsSDK metadata");
-            }
-            var env = vcMeta.Environment(C.EBit.SixtyFour);
-            Bam.Core.Log.Info("Using WindowsSDK 8.1 installed at {0}",
-                env["WindowsSdkDir"]
-            );
-        }
-
         public override object this[string index]
         {
             get
