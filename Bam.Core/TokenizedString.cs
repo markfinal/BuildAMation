@@ -759,7 +759,12 @@ namespace Bam.Core
             else
             {
                 this.Tokens = null;
-                var functionEvaluated = this.EvaluatePostFunctions(NormalizeDirectorySeparators(parsedString.ToString()));
+                var normalised = parsedString.ToString();
+                if (!this.Verbatim)
+                {
+                    normalised = NormalizeDirectorySeparators(normalised);
+                }
+                var functionEvaluated = this.EvaluatePostFunctions(normalised);
                 // when using a custom array of MacroLists, do not store the parsed string
                 // instead just return it
                 // this allows a TokenizedString to be re-parsed with different semantics, but does not
