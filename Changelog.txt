@@ -1,4 +1,4 @@
-02-Jun-2018 Fixes #442. WindowsSDK configuration is now taken from the vcvarsall setup from the VisualC package. WindowsSDK packages are tied to specific VisualC versions (this is not new). By default, vcvarsall.bat will try to find the most recent version in the registry of that WindowsSDK. However, with VisualC 14.0 and 15.0 (defaulting to WindowsSDK-10.0), you can now override this by specifying WindowsSDK-8.1 in the package definition file, or BAM command line.
+05-Jun-2018 Fixes #442. WindowsSDK configuration is now taken from the vcvarsall setup from the VisualC package. WindowsSDK packages are tied to specific VisualC versions (this is not new). By default, vcvarsall.bat will try to find the most recent version in the registry of that WindowsSDK. However, with VisualC 14.0 and 15.0 (defaulting to WindowsSDK-10.0), you can now override this by specifying WindowsSDK-8.1 in the package definition file, or BAM command line.
 If you don't want to use the latest WindowsSDK-10, and have older versions installed, you can override the behaviour of vcvarsall.bat by specifying --WindowsSDK10Version.override=10.0.xyz.w on the BAM command line.
 Note that using VisualC-14.0 (VS2015) will specify a WindowsSDK10 override of 8.1 by default. This is to maximise compatibility with WindowsSDKs installed with VisualStudio 2017 on the same machine.
 
@@ -9,6 +9,8 @@ WindowsSDK.MetaData is now simply a logger of which version is being used, and w
 WindowsSDK.WinResourceCompiler has been renamed to WinResourceCompilerBase and reclassified as an abstract class. Instead, two new sealed classes WinResourceCompiler32 and WinResourceCompiler64 have been introduced, corresponding to the architecture bit-depth in use.
 
 Disambiguation of which toolchain to use is now performed just before the very first C module requiring a compiler, linker, archiver, is required. Exceptions are only thrown when a specific tool is requested, but cannot be delivered. Reflection to identify tool module types now only occurs on the first instantiation; the module is then reused for future instances, without needing to query reflection.
+
+05-Jun-2018 Fixes #447. Strings created by Bam.Core.TokenizedString.CreateVerbatim will no longer have their forward slashes on Windows changed to back slashes. That would be fine for paths, but as a verbatim string, they should not be modified. This allows strings such as command switches (/SOMEFEATURE) to be stored.
 
 02-Jun-2018 Fixes #444. A package that has multiple Installer.InnoSetupInstaller modules intermittently saw I/O error 183 coming from InnoSetup (means duplicate error on network, or directory exists), when BAM was in multithreaded mode. Process Monitor suggested that this was because all .iss files referred to the same OutputDir, so multiple ISCC.exe processes had a race condition creating the directory. BAM now creates the OutputDir when creating the .iss files, so there should be no race with ISCC.exe.
 
