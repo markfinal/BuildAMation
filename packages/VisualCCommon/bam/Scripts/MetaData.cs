@@ -291,7 +291,11 @@ namespace VisualCCommon
                 }
                 env.Add(key, valueArray);
             }
-            Bam.Core.Log.DebugMessage(@"Running {0}\{1} for {2}-bit gives the following environment variables:", startinfo.WorkingDirectory, environment_generator_cmdline, (int)depth);
+            Bam.Core.Log.Info(@"Generating {0}-bit build environment using '{1}\{2}'",
+                (int)depth,
+                startinfo.WorkingDirectory,
+                environment_generator_cmdline.TrimEnd()
+            );
             foreach (System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedStringArray> entry in env)
             {
                 Bam.Core.Log.DebugMessage("\t{0} = {1}", entry.Key, entry.Value.ToString(';'));
