@@ -160,6 +160,9 @@ namespace VisualC
             // don't redist the api-ms-win-crt-*-l1-1-0.dll files from the WindowsSDK, as I can find no reference
             // to needing to do so
 
+            var env = this.Environment(depth);
+            var redistdir = new Bam.Core.TokenizedStringArray(env["VCToolsRedistDir"]);
+            var winsdkdir = env["UniversalCRTSdkDir"];
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
@@ -169,10 +172,9 @@ namespace VisualC
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/x86/Microsoft.VC141.CRT/vcruntime140.dll",
                                 null,
-                                new Bam.Core.TokenizedStringArray(this.Environment32["VCToolsRedistDir"])
+                                redistdir
                             )
                         );
-                        var winsdkdir = this.Environment32["UniversalCRTSdkDir"];
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll",
@@ -189,10 +191,9 @@ namespace VisualC
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/x64/Microsoft.VC141.CRT/vcruntime140.dll",
                                 null,
-                                new Bam.Core.TokenizedStringArray(this.Environment64["VCToolsRedistDir"])
+                                redistdir
                             )
                         );
-                        var winsdkdir = this.Environment64["UniversalCRTSdkDir"];
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll",
@@ -213,6 +214,7 @@ namespace VisualC
         VisualCCommon.IRuntimeLibraryPathMeta.CxxRuntimePaths(
             C.EBit depth)
         {
+            var redistdir = new Bam.Core.TokenizedStringArray(this.Environment(depth)["VCToolsRedistDir"]);
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
@@ -221,7 +223,7 @@ namespace VisualC
                         Bam.Core.TokenizedString.Create(
                             "$(0)/x86/Microsoft.VC141.CRT/msvcp140.dll",
                             null,
-                            new Bam.Core.TokenizedStringArray(this.Environment32["VCToolsRedistDir"])
+                            redistdir
                         )
                     );
                     break;
@@ -231,7 +233,7 @@ namespace VisualC
                         Bam.Core.TokenizedString.Create(
                             "$(0)/x64/Microsoft.VC141.CRT/msvcp140.dll",
                             null,
-                            new Bam.Core.TokenizedStringArray(this.Environment64["VCToolsRedistDir"])
+                            redistdir
                         )
                     );
                     break;
