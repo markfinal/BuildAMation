@@ -407,10 +407,18 @@ namespace VisualCCommon
             }
         }
 
+        private static bool report_WindowsSDK_done = false;
         private static void
         report_WindowsSDK(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
         {
+            // only need to report it once, not for each environment
+            if (report_WindowsSDK_done)
+            {
+                return;
+            }
+            report_WindowsSDK_done = true;
+
             var report = new System.Text.StringBuilder();
             report.Append("Using WindowsSDK ");
             if (env.ContainsKey("WindowsSDKVersion"))
