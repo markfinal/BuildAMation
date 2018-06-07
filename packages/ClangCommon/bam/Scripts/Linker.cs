@@ -36,15 +36,17 @@ namespace ClangCommon
 
         protected LinkerBase()
         {
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            var discovery = clangMeta as C.IToolchainDiscovery;
+            discovery.discover(null);
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
+
             this.Macros.AddVerbatim("exeext", string.Empty);
             this.Macros.AddVerbatim("dynamicprefix", "lib");
             this.Macros.AddVerbatim("dynamicextonly", ".dylib");
             this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".$(MajorVersion)$(dynamicextonly)", null));
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".dylib");
-
-            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
         }
 
         private static string

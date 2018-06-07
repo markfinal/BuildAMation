@@ -33,6 +33,6 @@ namespace C
     {
         void
         discover(
-            EBit depth);
+            EBit? depth);
     }
 }

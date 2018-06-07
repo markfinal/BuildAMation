@@ -64,7 +64,7 @@ namespace ClangCommon
             }
             else
             {
-               return GetDefaultMacOSXSDK();
+                return GetDefaultMacOSXSDK();
             }
         }
 
@@ -134,6 +134,18 @@ namespace ClangCommon
             bool useSimulator)
         {
             return useSimulator ? GetDefaultSDK("iphonesimulator") : GetDefaultSDK("iphoneos");
+        }
+
+        public static string
+        GetClangVersion(
+            string sdkType)
+        {
+            var versionOutput = Bam.Core.OSUtilities.RunExecutable(
+                xcrunPath,
+                System.String.Format("--sdk {0} clang --version", sdkType)
+            );
+            var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
+            return split[0];
         }
     }
 }

@@ -30,7 +30,8 @@
 namespace Clang
 {
     public sealed class MetaData :
-        Bam.Core.PackageMetaData
+        Bam.Core.PackageMetaData,
+        C.IToolchainDiscovery
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
 
@@ -49,9 +50,6 @@ namespace Clang
             {
                 this.MinimumVersionSupported = "macosx10.6";
             }
-
-            this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
-            Bam.Core.Log.Info("Clang SDK {0} installed at {1}", this.SDK, this.SDKPath);
         }
 
         public override object this[string index]
@@ -122,6 +120,21 @@ namespace Clang
             get
             {
                 return 800;
+            }
+        }
+
+        void
+        C.IToolchainDiscovery.discover(
+            C.EBit? depth)
+        {
+            if (!this.Contains("SDKPath"))
+            {
+                this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
+                Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
+                    ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
+                    this.SDK,
+                    this.SDKPath
+                );
             }
         }
     }

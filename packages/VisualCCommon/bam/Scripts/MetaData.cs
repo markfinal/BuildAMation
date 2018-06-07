@@ -461,7 +461,7 @@ namespace VisualCCommon
 
         void
         C.IToolchainDiscovery.discover(
-            C.EBit depth)
+            C.EBit? depth)
         {
             if (null == this.vswherePath)
             {
@@ -472,14 +472,15 @@ namespace VisualCCommon
                 var install_dir = this.vswhere_getinstallpath();
                 this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
             }
-            if (!this.Meta.ContainsKey(EnvironmentKey(depth)))
+            var bitdepth = depth.Value;
+            if (!this.Meta.ContainsKey(EnvironmentKey(bitdepth)))
             {
                 this.get_tool_environment_variables(
-                    depth,
+                    bitdepth,
                     this.has64bithost_32bitcross,
                     this.hasNative64BitTools
                 );
-                report_WindowsSDK(this.Environment(depth));
+                report_WindowsSDK(this.Environment(bitdepth));
             }
         }
     }
