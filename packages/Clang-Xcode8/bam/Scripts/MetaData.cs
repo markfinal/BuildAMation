@@ -127,15 +127,16 @@ namespace Clang
         C.IToolchainDiscovery.discover(
             C.EBit? depth)
         {
-            if (!this.Contains("SDKPath"))
+            if (this.Contains("SDKPath"))
             {
-                this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
-                Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
-                    ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
-                    this.SDK,
-                    this.SDKPath
-                );
+                return;
             }
+            this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
+            Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
+                ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
+                this.SDK,
+                this.SDKPath
+            );
         }
     }
 }

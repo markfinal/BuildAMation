@@ -37,6 +37,8 @@ namespace GccCommon
         public Librarian()
         {
             var gccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+            var discovery = gccMetaData as C.IToolchainDiscovery;
+            discovery.discover(null);
 
             this.Macros.AddVerbatim("libprefix", "lib");
             this.Macros.AddVerbatim("libext", ".a");

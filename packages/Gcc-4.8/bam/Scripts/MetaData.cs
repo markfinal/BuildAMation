@@ -31,7 +31,8 @@ using System.Linq;
 namespace Gcc
 {
     public class MetaData :
-        Bam.Core.PackageMetaData
+        Bam.Core.PackageMetaData,
+        C.IToolchainDiscovery
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
 
@@ -44,38 +45,6 @@ namespace Gcc
 
             this.Meta.Add("ExpectedMajorVersion", 4);
             this.Meta.Add("ExpectedMinorVersion", 8);
-
-            var gccLocations = Bam.Core.OSUtilities.GetInstallLocation("gcc");
-            if (null != gccLocations)
-            {
-                var location = gccLocations.First();
-                this.Meta.Add("GccPath", location);
-                var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion");
-                var gccVersionSplit = gccVersion.Split(new[] { '.' });
-                this.Meta.Add("GccVersion", gccVersionSplit);
-                Bam.Core.Log.Info("GCC version {0} installed at {1}", gccVersion, location);
-            }
-
-            var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");
-            if (null != gxxLocations)
-            {
-                var location = gxxLocations.First();
-                this.Meta.Add("G++Path", location);
-                var gxxVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").Split(new[] { '.' });
-                this.Meta.Add("G++Version", gxxVersion);
-            }
-
-            var arLocations = Bam.Core.OSUtilities.GetInstallLocation("ar");
-            if (null != arLocations)
-            {
-                this.Meta.Add("ArPath", arLocations.First());
-            }
-
-            var ldLocations = Bam.Core.OSUtilities.GetInstallLocation("ld");
-            if (null != ldLocations)
-            {
-                this.Meta.Add("LdPath", ldLocations.First());
-            }
         }
 
         public override object this[string index]
@@ -200,6 +169,47 @@ namespace Gcc
             get
             {
                 return 8;
+            }
+        }
+
+        void
+        C.IToolchainDiscovery.discover (
+            C.EBit? depth)
+        {
+            if (this.Contains("GccPath"))
+            {
+                return;
+            }
+            var gccLocations = Bam.Core.OSUtilities.GetInstallLocation("gcc");
+            if (null != gccLocations)
+            {
+                var location = gccLocations.First();
+                this.Meta.Add("GccPath", location);
+                var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion");
+                var gccVersionSplit = gccVersion.Split(new [] { '.' });
+                this.Meta.Add("GccVersion", gccVersionSplit);
+                Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
+            }
+
+            var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");
+            if (null != gxxLocations)
+            {
+                var location = gxxLocations.First();
+                this.Meta.Add("G++Path", location);
+                var gxxVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").Split(new [] { '.' });
+                this.Meta.Add("G++Version", gxxVersion);
+            }
+
+            var arLocations = Bam.Core.OSUtilities.GetInstallLocation("ar");
+            if (null != arLocations)
+            {
+                this.Meta.Add("ArPath", arLocations.First());
+            }
+
+            var ldLocations = Bam.Core.OSUtilities.GetInstallLocation("ld");
+            if (null != ldLocations)
+            {
+                this.Meta.Add("LdPath", ldLocations.First());
             }
         }
     }
