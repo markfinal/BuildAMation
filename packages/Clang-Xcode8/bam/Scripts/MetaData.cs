@@ -30,113 +30,19 @@
 namespace Clang
 {
     public sealed class MetaData :
-        Bam.Core.PackageMetaData,
-        C.IToolchainDiscovery
+        ClangCommon.MetaData
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
-
         public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsOSXHosting)
-            {
-                return;
-            }
+            :
+            base("0820", new Bam.Core.StringArray("macosx10.12"))
+        {}
 
-            this.Meta.Add("LastUpgradeCheck", "0820");
-
-            var expectedSDKs = new Bam.Core.StringArray("macosx10.12");
-            this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
-            if (!this.Contains("MinVersion"))
-            {
-                this.MinimumVersionSupported = "macosx10.6";
-            }
-        }
-
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
-
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
-
-        public string SDK
-        {
-            get
-            {
-                return this.Meta["SDK"] as string;
-            }
-
-            set
-            {
-                this.Meta["SDK"] = value;
-            }
-        }
-
-        public string MinimumVersionSupported
-        {
-            get
-            {
-                return this.Meta["MinVersion"] as string;
-            }
-
-            set
-            {
-                this.Meta["MinVersion"] = value;
-            }
-        }
-
-        public string LastUpgradeCheck
-        {
-            get
-            {
-                return this.Meta["LastUpgradeCheck"] as string;
-            }
-        }
-
-        public string SDKPath
-        {
-            get
-            {
-                return this.Meta["SDKPath"] as string;
-            }
-
-            private set
-            {
-                this.Meta["SDKPath"] = value;
-            }
-        }
-
-        // this is the clang version
-        public int CompilerMajorVersion
+        public override int CompilerMajorVersion
         {
             get
             {
                 return 800;
             }
-        }
-
-        void
-        C.IToolchainDiscovery.discover(
-            C.EBit? depth)
-        {
-            if (this.Contains("SDKPath"))
-            {
-                return;
-            }
-            this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
-            Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
-                ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
-                this.SDK,
-                this.SDKPath
-            );
         }
     }
 }
