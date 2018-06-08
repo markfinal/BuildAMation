@@ -366,6 +366,24 @@ namespace Bam.Core
             }
 
             var masterDefinitionFile = GetMasterPackage();
+            // inject any packages from the command line into the master definition file
+            // and these will be defaults
+            var injectPackages = CommandLineProcessor.Evaluate(new Options.InjectDefaultPackage());
+            if (null != injectPackages)
+            {
+                foreach (var injected in injectPackages)
+                {
+                    var name = injected[0];
+                    string version = null;
+                    if (injected.Count > 1)
+                    {
+                        version = injected[1].TrimStart(new [] {'-'}); // see regex in InjectDefaultPackage
+                    }
+                    var is_default = true;
+                    var dependent = new System.Tuple<string, string, bool?>(name, version, is_default);
+                    masterDefinitionFile.Dependents.AddUnique(dependent);
+                }
+            }
             foreach (var repo in masterDefinitionFile.PackageRepositories)
             {
                 EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, repo, masterDefinitionFile);
