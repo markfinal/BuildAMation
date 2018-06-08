@@ -1,3 +1,5 @@
+08-Jun-2018 Fixes #449. Guard against spaces in the path that BuildAMation is installed/cloned in. Also, environment scripts (env.bat/env.sh) can be run from any directory now.
+
 13-May-2018 ======== Version 1.1.7 Release ========
 
 13-May-2018 Fixes #439. VisualC-15.0 is now compatible with the latest VisualStudio 2017 15.7 release.
