@@ -414,7 +414,8 @@ namespace VisualCCommon
         private static bool report_WindowsSDK_done = false;
         private static void
         report_WindowsSDK(
-            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env,
+            C.EBit depth)
         {
             // only need to report it once, not for each environment
             if (report_WindowsSDK_done)
@@ -442,7 +443,7 @@ namespace VisualCCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Unable to locate WindowsSDK installation directory environment variable");
+                throw new Bam.Core.Exception("Unable to locate WindowsSDK installation directory environment variable for {0}-bit builds", (int)depth);
             }
             report.AppendFormat("installed at {0} ", winsdk_installdir);
             if (env.ContainsKey("UniversalCRTSdkDir") && env.ContainsKey("UCRTVersion"))
@@ -480,7 +481,7 @@ namespace VisualCCommon
                     this.has64bithost_32bitcross,
                     this.hasNative64BitTools
                 );
-                report_WindowsSDK(this.Environment(bitdepth));
+                report_WindowsSDK(this.Environment(bitdepth), bitdepth);
             }
         }
     }
