@@ -117,6 +117,9 @@ def _run_buildamation(options, package, extra_args, output_messages, error_messa
         arg_list.append("--clean")
     if extra_args:
         arg_list.extend(extra_args)
+    if options.injected:
+        for inject in options.injected:
+            arg_list.append("--injectdefaultpackage=%s" % inject)
     print_message(" ".join(arg_list))
     p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.get_path())
     (output_stream, error_stream) = p.communicate()  # this should WAIT
@@ -267,6 +270,7 @@ if __name__ == "__main__":
     optParser.add_option("--C.bitdepth", dest="bitDepth", type="choice", choices=["*", "32", "64"], action="store", default="*", help="Build bit depth to test")
     optParser.add_option("--repo", "-r", dest="repos", action="append", default=[bam_dir], help="Add a package repository to test")
     optParser.add_option("--nodefaultrepo", dest="nodefaultrepo", action="store_true", default=False, help="Do not test the default repository")
+    optParser.add_option("--injectdefaultpackage", dest="injected", action="append", default=None, help="Inject default packages, specify packagename or packagename-packageversion")
     test_option_setup(optParser)
     (options, args) = optParser.parse_args()
 
