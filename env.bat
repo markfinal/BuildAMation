@@ -10,16 +10,16 @@ IF NOT "%1"=="" (
   SET flavour=%DefaultFlavour%
 )
 
-SET ExecutablePath=%CD%\bin\%flavour%
+SET ExecutablePath=%~dp0bin\%flavour%
 REM Using delayed expansion in case PATH has some spaces in
 SET NewPath=!PATH!
 
 REM Export the PATH
-IF NOT EXIST %ExecutablePath% (
-  ECHO *** ERROR: BuildAMation directory '%ExecutablePath%' does not exist ***
+IF NOT EXIST !ExecutablePath! (
+  ECHO *** ERROR: BuildAMation directory '!ExecutablePath!' does not exist ***
 ) ELSE (
-  SET NewPath=%ExecutablePath%;!NewPath!
-  SET PATH=%ExecutablePath%;!PATH!
+  SET NewPath=!ExecutablePath!;!NewPath!
+  SET PATH=!ExecutablePath!;!PATH!
   bam --version
 )
 
