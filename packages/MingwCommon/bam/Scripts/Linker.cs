@@ -35,6 +35,9 @@ namespace MingwCommon
         protected LinkerBase()
         {
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+            var discovery = mingwMeta as C.IToolchainDiscovery;
+            discovery.discover(null);
+
             this.Macros.AddVerbatim("LinkerSuffix", mingwMeta.ToolSuffix);
 
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(0)\bin", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));

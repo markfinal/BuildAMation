@@ -30,25 +30,10 @@
 namespace Mingw
 {
     public class MetaData :
-        Bam.Core.PackageMetaData
+        Bam.Core.PackageMetaData,
+        C.IToolchainDiscovery
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-
-            // TODO: can this come from the registry?
-            this.Meta.Add("InstallDir", Bam.Core.TokenizedString.CreateVerbatim(@"C:\MinGW"));
-
-            // TODO: some installations may not have a suffix - need to confirm
-            this.Meta.Add("ToolSuffix", "-4.8.1");
-
-            Bam.Core.Log.Info("Mingw 4.8.1 installed at C:\\Mingw");
-        }
 
         public override object this[string index]
         {
@@ -90,6 +75,24 @@ namespace Mingw
             {
                 return 8;
             }
+        }
+
+        void
+        C.IToolchainDiscovery.discover(
+            C.EBit? depth)
+        {
+            if (this.Contains("InstallDir"))
+            {
+                return;
+            }
+
+            // TODO: can this come from the registry?
+            this.Meta.Add("InstallDir", Bam.Core.TokenizedString.CreateVerbatim(@"C:\MinGW"));
+
+            // TODO: some installations may not have a suffix - need to confirm
+            this.Meta.Add("ToolSuffix", "-4.8.1");
+
+            Bam.Core.Log.Info("Using Mingw 4.8.1 installed at {0}", this.Meta["InstallDir"].ToString());
         }
     }
 }

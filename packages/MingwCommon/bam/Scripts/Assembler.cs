@@ -38,6 +38,9 @@ namespace MingwCommon
             this.InheritedEnvironmentVariables.Add("TEMP");
 
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+            var discovery = mingwMeta as C.IToolchainDiscovery;
+            discovery.discover(null);
+
             this.Macros.AddVerbatim("AssemblerSuffix", mingwMeta.ToolSuffix);
 
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(0)\bin", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
