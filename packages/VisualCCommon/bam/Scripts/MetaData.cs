@@ -428,7 +428,10 @@ namespace VisualCCommon
             report.Append("Using WindowsSDK ");
             if (env.ContainsKey("WindowsSDKVersion"))
             {
-                report.AppendFormat("version {0} ", env["WindowsSDKVersion"].ToString());
+                // the WindowsSDKVersion environment variable has a trailing back slash
+                var version = env["WindowsSDKVersion"].ToString();
+                version = version.TrimEnd(System.IO.Path.DirectorySeparatorChar);
+                report.AppendFormat("version {0} ", version);
             }
             var winsdk_installdir = System.String.Empty;
             if (env.ContainsKey("WindowsSdkDir"))
