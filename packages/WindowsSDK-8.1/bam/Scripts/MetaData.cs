@@ -29,36 +29,10 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public class MetaData :
+    public sealed class MetaData :
         Bam.Core.PackageMetaData
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
-
-        public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-
-            string installPath;
-            using (var key = Bam.Core.Win32RegistryUtilities.Open32BitLMSoftwareKey(@"Microsoft\Windows Kits\Installed Roots"))
-            {
-                if (null == key)
-                {
-                    throw new Bam.Core.Exception("Windows SDKs were not installed");
-                }
-
-                installPath = key.GetValue("KitsRoot81") as string;
-                if (null == installPath)
-                {
-                    throw new Bam.Core.Exception("Unable to locate the registry value {0}\\KitsRoot81. Is the WindowsSDK 8.1 installed?", key.Name);
-                }
-                Bam.Core.Log.DebugMessage("Windows 8.1 SDK installation folder is {0}", installPath);
-            }
-
-            this.Meta["InstallDir"] = Bam.Core.TokenizedString.CreateVerbatim(installPath);
-        }
+        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
         public override object this[string index]
         {

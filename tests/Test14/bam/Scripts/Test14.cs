@@ -73,11 +73,6 @@ namespace Test14
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

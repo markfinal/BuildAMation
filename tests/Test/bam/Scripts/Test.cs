@@ -115,12 +115,6 @@ namespace Test
             base.Init(parent);
 
             this.CreateCSourceContainer("$(packagedir)/source/main.c");
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -134,12 +128,6 @@ namespace Test
             base.Init(parent);
 
             this.CreateCxxSourceContainer("$(packagedir)/source/main.c");
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -163,10 +151,6 @@ namespace Test
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.CreateWinResourceContainer("$(packagedir)/resources/win32.rc");
-                if (this.Linker is VisualCCommon.LinkerBase)
-                {
-                    this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-                }
             }
         }
     }

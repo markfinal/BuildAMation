@@ -55,12 +55,6 @@ namespace Test7
                     }
                     compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                 });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

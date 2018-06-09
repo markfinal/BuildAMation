@@ -36,6 +36,8 @@ namespace MingwCommon
         public WinResourceCompiler()
         {
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
+            var discovery = mingwMeta as C.IToolchainDiscovery;
+            discovery.discover(null);
 
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(0)\bin\windres.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.AddVerbatim("objext", ".o");
@@ -66,13 +68,6 @@ namespace MingwCommon
         {
             var settings = new Mingw.WinResourceCompilerSettings(module);
             return settings;
-        }
-
-        public override void
-        addCompilerSpecificRequirements(
-            C.WinResource resource)
-        {
-            // nothing to do
         }
     }
 }

@@ -103,12 +103,6 @@ namespace Test9
                     var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -175,12 +169,6 @@ namespace Test9
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -207,12 +195,6 @@ namespace Test9
                 var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

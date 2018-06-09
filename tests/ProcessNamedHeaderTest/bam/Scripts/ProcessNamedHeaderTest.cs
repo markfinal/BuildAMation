@@ -46,11 +46,6 @@ namespace ProcessNamedHeaderTest
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.NamedHeaders.AddUnique("iso646.h");
                 });
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

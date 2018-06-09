@@ -45,12 +45,6 @@ namespace DuplicateSourceFilenameTest
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
             source.AddFiles("$(packagedir)/source/A/*.c");
             source.AddFiles("$(packagedir)/source/B/*.c");
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

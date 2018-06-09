@@ -92,11 +92,6 @@ namespace DeltaSettingsTest2
                             gccCompiler.Pedantic = false; // DeltaSettingsTest2/source/literal.c:35:9: error: string length ‘510’ is greater than the length ‘509’ ISO C90 compilers are required to support [-Werror=overlength-strings]
                         }
                     }));
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

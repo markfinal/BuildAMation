@@ -56,12 +56,6 @@ namespace Test10
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test10: Example dynamic library");
 
             this.CreateCSourceContainer("$(packagedir)/source/dylib.c");
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -77,12 +71,6 @@ namespace Test10
             this.CreateCSourceContainer("$(packagedir)/source/standaloneapp.c");
 
             this.LinkAgainst<MyStaticLibrary>();
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -108,12 +96,6 @@ namespace Test10
                 });
 
             this.LinkAgainst<MyDynamicLibrary>();
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 

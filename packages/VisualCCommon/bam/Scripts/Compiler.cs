@@ -34,7 +34,8 @@ namespace VisualCCommon
         C.CompilerTool
     {
         private string
-        getCompilerPath()
+        getCompilerPath(
+            C.EBit depth)
         {
             const string executable = "cl.exe";
             foreach (var path in this.EnvironmentVariables["PATH"])
@@ -51,7 +52,7 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
             message.AppendLine();
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
@@ -62,14 +63,16 @@ namespace VisualCCommon
         }
 
         protected CompilerBase(
-            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+            C.EBit depth)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            var discovery = meta as C.IToolchainDiscovery;
+            discovery.discover(depth);
             this.MajorVersion = meta.CompilerMajorVersion;
             this.MinorVersion = meta.CompilerMinorVersion;
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.EnvironmentVariables = env;
-            var fullCompilerExePath = this.getCompilerPath();
+            this.EnvironmentVariables = meta.Environment(depth);
+            var fullCompilerExePath = this.getCompilerPath(depth);
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(fullCompilerExePath));
             this.Macros.AddVerbatim("objext", ".obj");
 
@@ -77,12 +80,6 @@ namespace VisualCCommon
             // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("TMP");
-
-            if (meta.UseWindowsSDKPublicPatches)
-            {
-                var windowsSDK = Bam.Core.Graph.Instance.FindReferencedModule<WindowsSDK.WindowsSDK>();
-                this.UsePublicPatches(windowsSDK);
-            }
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -134,7 +131,7 @@ namespace VisualCCommon
     {
         public Compiler32()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+            base(C.EBit.ThirtyTwo)
         {}
 
         protected override void
@@ -169,7 +166,7 @@ namespace VisualCCommon
     {
         public Compiler64()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+            base(C.EBit.SixtyFour)
         { }
 
         protected override void

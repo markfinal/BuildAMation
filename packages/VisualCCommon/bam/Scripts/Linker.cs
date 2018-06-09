@@ -34,7 +34,8 @@ namespace VisualCCommon
         C.LinkerTool
     {
         private string
-        getLinkerPath()
+        getLinkerPath(
+            C.EBit depth)
         {
             const string executable = "link.exe";
             foreach (var path in this.EnvironmentVariables["PATH"])
@@ -51,7 +52,7 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} on these search locations:", executable);
+            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
             message.AppendLine();
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
@@ -62,12 +63,14 @@ namespace VisualCCommon
         }
 
         protected LinkerBase(
-            System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env)
+            C.EBit depth)
         {
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            var discovery = meta as C.IToolchainDiscovery;
+            discovery.discover(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
-            this.EnvironmentVariables = env;
-            var fullLinkExePath = this.getLinkerPath();
+            this.EnvironmentVariables = meta.Environment(depth);
+            var fullLinkExePath = this.getLinkerPath(depth);
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(fullLinkExePath));
 
             this.Macros.AddVerbatim("exeext", ".exe");
@@ -167,7 +170,7 @@ namespace VisualCCommon
     {
         public Linker32()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment32)
+            base(C.EBit.ThirtyTwo)
         {}
     }
 
@@ -178,7 +181,7 @@ namespace VisualCCommon
     {
         public Linker64()
             :
-            base(Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").Environment64)
+            base(C.EBit.SixtyFour)
         { }
     }
 }

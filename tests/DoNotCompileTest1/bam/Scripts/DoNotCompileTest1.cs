@@ -46,11 +46,6 @@ namespace DoNotCompileTest1
                 (item as C.ObjectFileBase).PerformCompilation = false);
             source["library.c"].ForEach(item =>
                 (item as C.ObjectFileBase).PerformCompilation = false);
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 

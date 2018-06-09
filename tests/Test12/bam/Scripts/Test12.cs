@@ -55,8 +55,6 @@ namespace Test12
 
             if (this.Linker is VisualCCommon.LinkerBase)
             {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-
                 this.PrivatePatch(settings =>
                     {
                         var linker = settings as C.ICommonLinkerSettings;

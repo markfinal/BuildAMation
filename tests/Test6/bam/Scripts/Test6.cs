@@ -67,12 +67,6 @@ namespace Test6
                 "$(packagedir)/source/debug/debug.c" :
                 "$(packagedir)/source/optimized/optimized.c";
             source.AddFile(platformPath);
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

@@ -88,12 +88,6 @@ namespace HeaderLibraryTest
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
             this.CompileAgainst<HeaderLibrary>(source);
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 

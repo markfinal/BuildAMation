@@ -66,7 +66,6 @@ namespace C
                     if (this.ThirdpartyWindowsVersionResourcePath != null)
                     {
                         var versionRC = rcContainer.AddFiles(this.ThirdpartyWindowsVersionResourcePath);
-                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC[0] as WinResource);
                         this.WindowsVersionResource = versionRC[0] as WinResource;
                     }
                     else
@@ -77,7 +76,6 @@ namespace C
                                 module.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(config)/$(OutputName)_version.rc");
                             });
                         var versionRC = rcContainer.AddFile(versionSource);
-                        DefaultToolchain.WinResource_Compiler(this.BitDepth).addCompilerSpecificRequirements(versionRC);
                         this.WindowsVersionResource = versionRC;
                     }
                 }

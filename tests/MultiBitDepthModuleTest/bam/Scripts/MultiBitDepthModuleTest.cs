@@ -45,13 +45,7 @@ namespace MultiBitDepthModuleTest
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-            }
+            this.CreateCSourceContainer("$(packagedir)/source/main.c");
         }
     }
 
@@ -70,13 +64,7 @@ namespace MultiBitDepthModuleTest
         {
             base.Init(parent);
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.CompileAndLinkAgainst<WindowsSDK.WindowsSDK>(source);
-            }
+            this.CreateCSourceContainer("$(packagedir)/source/main.c");
         }
     }
 }

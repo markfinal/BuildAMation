@@ -42,11 +42,6 @@ namespace Test16
             var source = this.CreateCSourceContainer("$(packagedir)/source/static_main.c");
 
             this.CompileAndLinkAgainst<Test15.StaticLibrary2>(source);
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -63,11 +58,7 @@ namespace Test16
 
             this.CompileAndLinkAgainst<Test15.DynamicLibrary2>(source);
 
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
-            else if (this.Linker is GccCommon.LinkerBase)
+            if (this.Linker is GccCommon.LinkerBase)
             {
                 this.PrivatePatch(settings =>
                     {
@@ -92,11 +83,7 @@ namespace Test16
 
             this.CompileAndLinkAgainst<Test15.DynamicLibrary2NonPublicForwarder>(source);
 
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
-            else if (this.Linker is GccCommon.LinkerBase)
+            if (this.Linker is GccCommon.LinkerBase)
             {
                 this.PrivatePatch(settings =>
                     {

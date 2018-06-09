@@ -36,14 +36,11 @@ namespace GccCommon
 
         protected AssemblerBase()
         {
-            this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+            var metaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+            var discovery = metaData as C.IToolchainDiscovery;
+            discovery.discover(null);
             this.Macros.AddVerbatim("objext", ".o");
-        }
-
-        protected Gcc.MetaData GccMetaData
-        {
-            get;
-            private set;
+            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(metaData.GccPath));
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -77,8 +74,6 @@ namespace GccCommon
         AssemblerBase
     {
         public Assembler()
-        {
-            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
-        }
+        {}
     }
 }

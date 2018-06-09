@@ -40,20 +40,26 @@ namespace VisualC
                 return;
             }
 
-            var install_dir = this.vswhere_getinstallpath(12);
-            this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
-            this.get_tool_environment_variables(
-                "VC",
-                required_envvars: new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> {
-                    {"PATH", new Bam.Core.StringArray{"%WINDIR%\\System32"}} // for 'reg' used in vcvarsall subroutines
-                }
-            );
-
             this.SolutionFormatVersion = "12.00";
             this.PlatformToolset = "v120";
             this.VCXProjToolsVersion = "12.0";
             this.VCXProjFiltersToolsVersion = "4.0";
-            this.UseWindowsSDKPublicPatches = false;
+        }
+
+        protected override int major_version
+        {
+            get
+            {
+                return 12;
+            }
+        }
+
+        protected override string subpath_to_vcvars
+        {
+            get
+            {
+                return "VC";
+            }
         }
 
         public override object this[string index]
@@ -93,7 +99,7 @@ namespace VisualC
                 return this.Meta["PlatformToolset"] as string;
             }
 
-            private set
+            set
             {
                 this.Meta["PlatformToolset"] = value;
             }
@@ -124,20 +130,6 @@ namespace VisualC
             private set
             {
                 this.Meta["VCXProjFiltersToolsVersion"] = value;
-            }
-        }
-
-        public bool
-        UseWindowsSDKPublicPatches
-        {
-            get
-            {
-                return (bool)this.Meta["RequiresWindowsSDK"];
-            }
-
-            private set
-            {
-                this.Meta["RequiresWindowsSDK"] = value;
             }
         }
 

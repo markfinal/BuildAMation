@@ -407,6 +407,16 @@ namespace VSSolutionBuilder
             // global properties
             var globalPropertyGroup = document.CreateVSPropertyGroup(label: "Globals", parentEl: projectEl);
             document.CreateVSElement("ProjectGuid", value: this.Guid.ToString("B").ToUpper(), parentEl: globalPropertyGroup);
+            var vcEnv = visualCMeta.Environment(GetModuleBitDepth(this.Module));
+            if (vcEnv.ContainsKey("WindowsSDKVersion"))
+            {
+                var windowssdk_version = vcEnv["WindowsSDKVersion"].First().ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar);
+                document.CreateVSElement("WindowsTargetPlatformVersion", value: windowssdk_version, parentEl: globalPropertyGroup);
+            }
+            else
+            {
+                // appears to automatically fall back to 8.1
+            }
 
             document.CreateVSImport(@"$(VCTargetsPath)\Microsoft.Cpp.Default.props", parentEl: projectEl);
 

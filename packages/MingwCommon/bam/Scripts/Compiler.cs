@@ -37,6 +37,9 @@ namespace MingwCommon
             this.InheritedEnvironmentVariables.Add("TEMP");
 
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+            var discovery = mingwMeta as C.IToolchainDiscovery;
+            discovery.discover(null);
+
             this.MajorVersion = mingwMeta.CompilerMajorVersion;
             this.MinorVersion = mingwMeta.CompilerMinorVersion;
 

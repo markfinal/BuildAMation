@@ -84,11 +84,6 @@ namespace ChangeDefaultSettings
             base.Init(parent);
 
             this.CreateCSourceContainer("$(packagedir)/source/*.c");
-
-            if (this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

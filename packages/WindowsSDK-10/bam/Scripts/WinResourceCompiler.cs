@@ -27,31 +27,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace WindowsSDK
 {
-    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class WinResourceCompiler :
+    public abstract class WinResourceCompilerBase :
         C.WinResourceCompilerTool
     {
-        public WinResourceCompiler()
+        protected void
+        configure(
+            string architecture)
         {
-            var meta = Bam.Core.Graph.Instance.PackageMetaData<MetaData>("WindowsSDK");
-            var installDir81 = meta.InstallDirSDK81;
-            var architecture = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.Is64BitHosting ? "x64" : "x86");
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.Create("$(0)/bin/$(1)/rc.exe", null, new Bam.Core.TokenizedStringArray(installDir81, architecture)));
-            this.Macros.AddVerbatim("objext", ".res");
-
-            // use INCLUDE environment variable from VisualC
-            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            if (Bam.Core.OSUtilities.Is64BitHosting)
+            // WindowsSDK 10 has a bin folder in different places depending on the version (pre or post VS2017)
+            // If the envvar WindowsSdkVerBinPath exists, then the bin folder is versioned (VS2017+)
+            // If not, then it's just the bin folder (VS2015)
+            if (this.EnvironmentVariables.ContainsKey("WindowsSdkVerBinPath"))
             {
-                this.EnvironmentVariables = vcMeta.Environment64;
+                var tokenised_strings = new Bam.Core.TokenizedStringArray();
+                tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSdkVerBinPath"]);
+                this.Macros.Add(
+                    "CompilerPath",
+                    Bam.Core.TokenizedString.Create(
+                        System.String.Format("$(0)/{0}/rc.exe", architecture),
+                        null,
+                        tokenised_strings
+                    )
+                );
+            }
+            else if (this.EnvironmentVariables.ContainsKey("WindowsSdkDir"))
+            {
+                var tokenised_strings = new Bam.Core.TokenizedStringArray();
+                tokenised_strings.AddRangeUnique(this.EnvironmentVariables["WindowsSdkDir"]);
+                this.Macros.Add(
+                    "CompilerPath",
+                    Bam.Core.TokenizedString.Create(
+                        System.String.Format("$(0)/bin/{0}/rc.exe", architecture),
+                        null,
+                        tokenised_strings
+                    )
+                );
             }
             else
             {
-                this.EnvironmentVariables = vcMeta.Environment32;
+                throw new Bam.Core.Exception("Unable to determine resource compiler path, as neither %WindowsSdkVerBinPath% nor %WindowsSdkDir% were defined");
             }
+            this.Macros.AddVerbatim("objext", ".res");
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -69,12 +88,37 @@ namespace WindowsSDK
             var settings = new WinResourceCompilerSettings(module);
             return settings;
         }
+    }
 
-        public override void
-        addCompilerSpecificRequirements(
-            C.WinResource resource)
+    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    public sealed class WinResourceCompiler32 :
+        WinResourceCompilerBase
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
         {
-            resource.CompileAgainst<WindowsSDK>();
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.EnvironmentVariables = vcMeta.Environment(C.EBit.ThirtyTwo);
+            this.configure("x86");
+            // now check the executable exists
+            base.Init(parent);
+        }
+    }
+
+    [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
+    public sealed class WinResourceCompiler64 :
+        WinResourceCompilerBase
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            this.EnvironmentVariables = vcMeta.Environment(C.EBit.SixtyFour);
+            this.configure("x64");
+            // now check the executable exists
+            base.Init(parent);
         }
     }
 }

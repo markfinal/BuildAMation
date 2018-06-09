@@ -30,160 +30,10 @@
 using System.Linq;
 namespace Gcc
 {
-    public class MetaData :
-        Bam.Core.PackageMetaData
+    public sealed class MetaData :
+        GccCommon.MetaData
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
-
-        public MetaData()
-        {
-            if (!Bam.Core.OSUtilities.IsLinuxHosting)
-            {
-                return;
-            }
-
-            this.Meta.Add("ExpectedMajorVersion", 4);
-            this.Meta.Add("ExpectedMinorVersion", 8);
-
-            var gccLocations = Bam.Core.OSUtilities.GetInstallLocation("gcc");
-            if (null != gccLocations)
-            {
-                var location = gccLocations.First();
-                this.Meta.Add("GccPath", location);
-                var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").Split(new[] { '.' });
-                this.Meta.Add("GccVersion", gccVersion);
-            }
-
-            var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");
-            if (null != gxxLocations)
-            {
-                var location = gxxLocations.First();
-                this.Meta.Add("G++Path", location);
-                var gxxVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").Split(new[] { '.' });
-                this.Meta.Add("G++Version", gxxVersion);
-            }
-
-            var arLocations = Bam.Core.OSUtilities.GetInstallLocation("ar");
-            if (null != arLocations)
-            {
-                this.Meta.Add("ArPath", arLocations.First());
-            }
-
-            var ldLocations = Bam.Core.OSUtilities.GetInstallLocation("ld");
-            if (null != ldLocations)
-            {
-                this.Meta.Add("LdPath", ldLocations.First());
-            }
-        }
-
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
-
-        public override bool
-        Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
-
-        private void
-        ValidateGcc()
-        {
-            if (!this.Meta.ContainsKey("GccPath"))
-            {
-                throw new Bam.Core.Exception("Could not find gcc. Was the package installed?");
-            }
-            var gccLocation = this.Meta["GccPath"] as string;
-            var gccVersion = this.Meta["GccVersion"] as string[];
-            if (System.Convert.ToInt32(gccVersion[0]) != (int)this.Meta["ExpectedMajorVersion"])
-            {
-                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
-            }
-            if (System.Convert.ToInt32(gccVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
-            {
-                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
-            }
-        }
-
-        private void
-        ValidateGxx()
-        {
-            if (!this.Meta.ContainsKey("G++Path"))
-            {
-                throw new Bam.Core.Exception("Could not find g++. Was the package installed?");
-            }
-            var gxxLocation = this.Meta["G++Path"] as string;
-            var gxxVersion = this.Meta["G++Version"] as string[];
-            if (System.Convert.ToInt32(gxxVersion[0]) != (int)this.Meta["ExpectedMajorVersion"])
-            {
-                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gxxLocation, System.String.Join(".", gxxVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
-            }
-            if (System.Convert.ToInt32(gxxVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
-            {
-                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gxxLocation, System.String.Join(".", gxxVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
-            }
-        }
-
-        private void
-        ValidateAr()
-        {
-            if (!this.Meta.ContainsKey("ArPath"))
-            {
-                throw new Bam.Core.Exception("Could not find ar. Was the package installed?");
-            }
-        }
-
-        private void
-        ValidateLd()
-        {
-            if (!this.Meta.ContainsKey("LdPath"))
-            {
-                throw new Bam.Core.Exception("Could not find ld. Was the package installed?");
-            }
-        }
-
-        public string GccPath
-        {
-            get
-            {
-                this.ValidateGcc();
-                return this.Meta["GccPath"] as string;
-            }
-        }
-
-        public string GxxPath
-        {
-            get
-            {
-                this.ValidateGxx();
-                return this.Meta["G++Path"] as string;
-            }
-        }
-
-        public string ArPath
-        {
-            get
-            {
-                this.ValidateAr();
-                return this.Meta["ArPath"] as string;
-            }
-        }
-
-        public string LdPath
-        {
-            get
-            {
-                this.ValidateLd();
-                return this.Meta["LdPath"] as string;
-            }
-        }
-
-        public int
+        public override int
         CompilerMajorVersion
         {
             get
@@ -192,7 +42,7 @@ namespace Gcc
             }
         }
 
-        public int
+        public override int
         CompilerMinorVersion
         {
             get

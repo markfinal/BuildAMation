@@ -53,12 +53,6 @@ namespace InstallerTest1
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/dynamiclib"));
                 }
             });
-
-            if (this.BuildEnvironment.Platform.Includes(EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 
@@ -85,12 +79,6 @@ namespace InstallerTest1
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/dynamiclib"));
                 }
             });
-
-            if (this.BuildEnvironment.Platform.Includes(EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

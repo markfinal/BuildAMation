@@ -72,12 +72,6 @@ namespace PreprocessorStringTest1
                             compiler.PreprocessorDefines.Add("D_FILE_STRING", "\"Hello3\"");
                         });
                 });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

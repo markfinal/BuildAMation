@@ -35,6 +35,8 @@ namespace GccCommon
         protected LinkerBase()
         {
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+            var discovery = this.GccMetaData as C.IToolchainDiscovery;
+            discovery.discover(null);
 
             var ldPath = this.GccMetaData.LdPath;
             var installPath = Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.GetDirectoryName(ldPath));

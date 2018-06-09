@@ -85,12 +85,6 @@ namespace Cxx11Test1
                         cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                     }
                 });
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

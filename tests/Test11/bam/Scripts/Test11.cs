@@ -52,12 +52,6 @@ namespace Test11
             {
                 source.AddFile("$(packagedir)/source/osx/osx.c");
             }
-
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                this.Linker is VisualCCommon.LinkerBase)
-            {
-                this.LinkAgainst<WindowsSDK.WindowsSDK>();
-            }
         }
     }
 }

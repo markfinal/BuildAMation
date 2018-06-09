@@ -2,7 +2,9 @@ image: Visual Studio 2013
 clone_depth: 50
 install:
   # default Nuget version is 2.8.x, which gives NUnit errors - using the latest does not
-  - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
+  # latest NuGet (4.6) gives this error: Unhandled Exception: System.MissingMethodException: Method not found: '!!0[] System.Array.Empty()'.
+  # which is apparently due to .NET Framework 4.6 not being available (because of VS2013 above)
+  - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/v4.5.1/nuget.exe
 before_build:
   - nuget restore BuildAMation.sln
 environment:

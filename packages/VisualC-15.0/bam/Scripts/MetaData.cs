@@ -40,15 +40,26 @@ namespace VisualC
                 return;
             }
 
-            var install_dir = this.vswhere_getinstallpath(15);
-            this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
-            this.get_tool_environment_variables(@"VC\Auxiliary\Build");
-
             this.SolutionFormatVersion = "12.00"; // same as VS2015
             this.PlatformToolset = "v141";
             this.VCXProjToolsVersion = "15.0";
             this.VCXProjFiltersToolsVersion = "4.0"; // same as VS2015
-            this.UseWindowsSDKPublicPatches = true; // headers like stdio.h are in WindowsSDK 10
+        }
+
+        protected override int major_version
+        {
+            get
+            {
+                return 15;
+            }
+        }
+
+        protected override string subpath_to_vcvars
+        {
+            get
+            {
+                return @"VC\Auxiliary\Build";
+            }
         }
 
         public override object this[string index]
@@ -88,7 +99,7 @@ namespace VisualC
                 return this.Meta["PlatformToolset"] as string;
             }
 
-            private set
+            set
             {
                 this.Meta["PlatformToolset"] = value;
             }
@@ -122,20 +133,6 @@ namespace VisualC
             }
         }
 
-        public bool
-        UseWindowsSDKPublicPatches
-        {
-            get
-            {
-                return (bool)this.Meta["RequiresWindowsSDK"];
-            }
-
-            private set
-            {
-                this.Meta["RequiresWindowsSDK"] = value;
-            }
-        }
-
         public int
         CompilerMajorVersion
         {
@@ -159,11 +156,13 @@ namespace VisualC
             C.EBit depth)
         {
             // only redist the VisualC specific version runtime, and the universal CRT
+            // vcvarsall.bat defines UniversalCRTSdkDir which is suitable for use with both WinSDK8.1 and 10.x
             // don't redist the api-ms-win-crt-*-l1-1-0.dll files from the WindowsSDK, as I can find no reference
             // to needing to do so
 
-            var windowsSDKMeta = Bam.Core.Graph.Instance.PackageMetaData<WindowsSDK.MetaData>("WindowsSDK");
-
+            var env = this.Environment(depth);
+            var redistdir = new Bam.Core.TokenizedStringArray(env["VCToolsRedistDir"]);
+            var winsdkdir = env["UniversalCRTSdkDir"];
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
@@ -173,14 +172,14 @@ namespace VisualC
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/x86/Microsoft.VC141.CRT/vcruntime140.dll",
                                 null,
-                                new Bam.Core.TokenizedStringArray(this.Environment32["VCToolsRedistDir"])
+                                redistdir
                             )
                         );
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll",
                                 null,
-                                new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)
+                                new Bam.Core.TokenizedStringArray(winsdkdir)
                             )
                         );
                     }
@@ -192,14 +191,14 @@ namespace VisualC
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/x64/Microsoft.VC141.CRT/vcruntime140.dll",
                                 null,
-                                new Bam.Core.TokenizedStringArray(this.Environment64["VCToolsRedistDir"])
+                                redistdir
                             )
                         );
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
                                 "$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll",
                                 null,
-                                new Bam.Core.TokenizedStringArray(windowsSDKMeta.InstallDirSDK10)
+                                new Bam.Core.TokenizedStringArray(winsdkdir)
                             )
                         );
                     }
@@ -215,6 +214,7 @@ namespace VisualC
         VisualCCommon.IRuntimeLibraryPathMeta.CxxRuntimePaths(
             C.EBit depth)
         {
+            var redistdir = new Bam.Core.TokenizedStringArray(this.Environment(depth)["VCToolsRedistDir"]);
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
@@ -223,7 +223,7 @@ namespace VisualC
                         Bam.Core.TokenizedString.Create(
                             "$(0)/x86/Microsoft.VC141.CRT/msvcp140.dll",
                             null,
-                            new Bam.Core.TokenizedStringArray(this.Environment32["VCToolsRedistDir"])
+                            redistdir
                         )
                     );
                     break;
@@ -233,7 +233,7 @@ namespace VisualC
                         Bam.Core.TokenizedString.Create(
                             "$(0)/x64/Microsoft.VC141.CRT/msvcp140.dll",
                             null,
-                            new Bam.Core.TokenizedStringArray(this.Environment64["VCToolsRedistDir"])
+                            redistdir
                         )
                     );
                     break;
