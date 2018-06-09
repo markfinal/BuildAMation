@@ -61,6 +61,10 @@ namespace VSSolutionBuilder
             }
             // the entire hierarchy needs to be added, even if there are no files in each subdirectory
             var parent = System.IO.Path.GetDirectoryName(filterPath);
+            if (null == parent)
+            {
+                return;
+            }
             this.AddFilters(module, parent);
         }
 
