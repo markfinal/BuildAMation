@@ -1,3 +1,5 @@
+12-Jun-2018 ======== Version 1.2.0 alpha 4 Release ========
+
 09-Jun-2018 Fixes #452. Adding filters to VisualStudio projects no longer throws a null dereference exception when the root of a drive is encountered, through repeated use of System.IO.Path.GetDirectoryName.
 
 09-Jun-2018 Fixes #442. WindowsSDK configuration is now taken from the vcvarsall setup from the VisualC package. WindowsSDK packages are tied to specific VisualC versions (this is not new). By default, vcvarsall.bat will try to find the most recent version in the registry of that WindowsSDK. However, with VisualC 14.0 and 15.0 (defaulting to WindowsSDK-10.0), you can now override this by specifying WindowsSDK-8.1 in the package definition file, or BAM command line.
