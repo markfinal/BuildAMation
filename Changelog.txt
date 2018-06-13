@@ -1,3 +1,5 @@
+13-Jun-2018 Fixes #456. Since BuildAMation has no installer, include a Windows PowerShell script (create_shortcut_to_env.ps1) that will generate a Windows shortcut to env.bat that persists the command prompt once run. The shortcut is called BuildAMation-Environment.lnk.
+
 12-Jun-2018 ======== Version 1.2.0 alpha 4 Release ========
 
 09-Jun-2018 Fixes #452. Adding filters to VisualStudio projects no longer throws a null dereference exception when the root of a drive is encountered, through repeated use of System.IO.Path.GetDirectoryName.
