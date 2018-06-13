@@ -1,3 +1,5 @@
+13-Jun-2018 Fixes #458. Fixes internal script to build BAM for release on Windows.
+
 13-Jun-2018 Fixes #456. Since BuildAMation has no installer, include a Windows PowerShell script (create_shortcut_to_env.ps1) that will generate a Windows shortcut to env.bat that persists the command prompt once run. The shortcut is called BuildAMation-Environment.lnk.
 
 12-Jun-2018 ======== Version 1.2.0 alpha 4 Release ========

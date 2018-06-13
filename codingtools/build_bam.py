@@ -16,11 +16,15 @@ def restore_nuget():
         build_args = []
         build_args.append("mono")
         build_args.append(nuget_path)
-    else:
+        build_args.append("restore")
+        subprocess.check_call(build_args)
+    elif not platform.system() == "Windows":
         build_args = []
         build_args.append("nuget")
-    build_args.append("restore")
-    subprocess.check_call(build_args)
+        build_args.append("restore")
+        subprocess.check_call(build_args)
+    # Windows VisualStudio builds does not need to explicitly invoke nuget (and it doesn't exist in a VisualStudio environment unless
+    # downloaded on purpose
 
 def build_bam(build_dir, configuration='Release', coveritypath=None, rebuild=False):
     current_dir = os.getcwd()
