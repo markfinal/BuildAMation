@@ -44,10 +44,10 @@ namespace VisualCCommon
             switch (settings.OutputType)
             {
                 case C.ECompilerOutput.CompileOnly:
-                    commandLine.Add(System.String.Format("-c -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-c -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                     break;
                 case C.ECompilerOutput.Preprocess:
-                    commandLine.Add(System.String.Format("-EP -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                    commandLine.Add(System.String.Format("-EP -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                     break;
                 default:
                     throw new Bam.Core.Exception("Unknown output type, {0}", settings.OutputType.ToString());
@@ -72,6 +72,10 @@ namespace VisualCCommon
                     if (defineValue.Contains("\""))
                     {
                         defineValue = defineValue.Replace("\"", "\\\"");
+                    }
+                    if (defineValue.Contains(" "))
+                    {
+                        defineValue = System.String.Format("\"{0}\"", defineValue);
                     }
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
