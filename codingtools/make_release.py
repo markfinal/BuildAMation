@@ -41,6 +41,8 @@ dirsToDelete = [
     "tests/MixedModeCpp"
 ]
 
+vswhere_version='2.4.1'
+
 
 def clone_buildamation(path_to_clone_at, options):
     args = [
@@ -140,6 +142,7 @@ def make_tar_distribution(options):
             tar.add(os.path.join(bam_dir, "License.md"))
             tar.add(os.path.join(bam_dir, "packages"))
             tar.add(os.path.join(bam_dir, "tests"), filter=windows_executable_filter)
+            tar.add(os.path.join(bam_dir, "NuGetPackages", "vswhere.%s"%vswhere_version))
         print >>sys.stdout, "-> Tar distribution: %s" % tar_path
         sys.stdout.flush()
     finally:
@@ -169,6 +172,7 @@ def make_zip_distribution(options):
             zip_object.write(os.path.join(bam_dir, "MS-PL.md"))
             recursive_write(zip_object, os.path.join(bam_dir, "packages"))
             recursive_write(zip_object, os.path.join(bam_dir, "tests"))
+            recursive_write(zip_object, os.path.join(bam_dir, "NuGetPackages", "vswhere.%s"%vswhere_version))
         print >>sys.stdout, "-> Zip distribution: %s" % zip_path
         sys.stdout.flush()
     finally:
