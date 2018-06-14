@@ -233,7 +233,9 @@ def main(options):
         sys.stdout.flush()
         build_bam(cwd, coveritypath=options.coveritypath)
         test_bam(cwd)
-        build_documentation(cwd, options.doxygenpath)
+        if options.tag or options.doxygenpath:
+            # force documentation generation in a tagged build, but not a local build
+            build_documentation(cwd, options.doxygenpath)
         make_coverity_distribution(options)
         make_tar_distribution(options)
         make_zip_distribution(options)
