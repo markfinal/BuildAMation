@@ -58,8 +58,14 @@ namespace CodeGenTest
             var xcodePath = xcodePathTS.ToString();
             xcodePath += "/" + System.IO.Path.GetFileName(compiler.Executable.ToString());
             command.AppendFormat(xcodePath);
+
             // TODO: change this to a configuration directory really
-            command.AppendFormat(" {0}", Bam.Core.Graph.Instance.BuildRoot);
+            var output_dir = Bam.Core.Graph.Instance.BuildRoot;
+            if (output_dir.Contains(" "))
+            {
+                output_dir = System.String.Format("\"{0}\"", output_dir);
+            }
+            command.AppendFormat(" {0}", output_dir);
             command.AppendFormat(" {0}", "Generated");
 
             var commands = new Bam.Core.StringArray();

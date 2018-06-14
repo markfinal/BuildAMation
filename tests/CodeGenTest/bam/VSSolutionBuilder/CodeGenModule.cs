@@ -45,10 +45,16 @@ namespace CodeGenTest
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            var command = new System.Text.StringBuilder();
-            command.AppendFormat(compiler.Executable.ToString());
             // TODO: change this to a configuration directory really
-            command.AppendFormat(" {0}", Bam.Core.Graph.Instance.BuildRoot);
+            var output_dir = Bam.Core.Graph.Instance.BuildRoot;
+            if (output_dir.Contains(" "))
+            {
+                output_dir = System.String.Format("\"{0}\"", output_dir);
+            }
+
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat(compiler.Executable.ToStringQuoteIfNecessary());
+            command.AppendFormat(" {0}", output_dir);
             command.AppendFormat(" {0}", "Generated");
             config.AddPreBuildCommand(command.ToString());
 
