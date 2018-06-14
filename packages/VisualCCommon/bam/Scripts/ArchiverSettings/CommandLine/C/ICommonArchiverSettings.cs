@@ -40,7 +40,7 @@ namespace VisualCCommon
             switch (settings.OutputType)
             {
                 case C.EArchiverOutput.StaticLibrary:
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.StaticLibrary.Key].ToString()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.StaticLibrary.Key].ToStringQuoteIfNecessary()));
                     break;
             }
         }

@@ -53,13 +53,13 @@ namespace ClangCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToStringQuoteIfNecessary()));
                     break;
 
             case C.ELinkerOutput.DynamicLibrary:
                 {
                     commandLine.Add("-dynamiclib");
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToStringQuoteIfNecessary()));
 
                     var fullVersionNumber = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))");
                     fullVersionNumber.Parse();

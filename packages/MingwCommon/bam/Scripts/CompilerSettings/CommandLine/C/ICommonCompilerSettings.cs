@@ -146,10 +146,10 @@ namespace MingwCommon
                 switch (settings.OutputType.Value)
                 {
                     case C.ECompilerOutput.CompileOnly:
-                        commandLine.Add(System.String.Format("-c -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-c -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                         break;
                     case C.ECompilerOutput.Preprocess:
-                        commandLine.Add(System.String.Format("-E -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-E -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                         break;
                 }
             }

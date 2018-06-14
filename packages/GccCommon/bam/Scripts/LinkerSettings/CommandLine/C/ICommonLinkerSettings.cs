@@ -53,16 +53,14 @@ namespace GccCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToStringQuoteIfNecessary()));
                     break;
 
 
                 case C.ELinkerOutput.DynamicLibrary:
                     {
                         commandLine.Add("-shared");
-                        module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
-                        var outputName = module.GeneratedPaths[C.ConsoleApplication.Key].ToString();
-                        commandLine.Add(System.String.Format("-o {0}", outputName));
+                        commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToStringQuoteIfNecessary()));
                         // ensure that the NEEDED flag is set to the expected symlink for the shared object
                         if (module.Macros.Contains("SOName"))
                         {

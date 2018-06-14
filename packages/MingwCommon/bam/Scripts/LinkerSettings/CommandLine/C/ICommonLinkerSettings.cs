@@ -53,13 +53,13 @@ namespace MingwCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToStringQuoteIfNecessary()));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     commandLine.Add("-shared");
-                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
-                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString()));
+                    commandLine.Add(System.String.Format("-o {0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToStringQuoteIfNecessary()));
+                    commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToStringQuoteIfNecessary()));
                     break;
             }
             foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())

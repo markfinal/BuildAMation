@@ -112,7 +112,7 @@ namespace C
                 {
                     continue;
                 }
-                commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToString());
+                commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary());
             }
 
             // then all options

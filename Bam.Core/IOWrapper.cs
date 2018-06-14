@@ -46,7 +46,16 @@ namespace Bam.Core
         {
             try
             {
-                System.IO.Directory.CreateDirectory(directoryPath);
+                try
+                {
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
+                catch (System.ArgumentException)
+                {
+                    // this can happen, say, if there are enclosing quotes
+                    directoryPath = directoryPath.Trim(System.IO.Path.GetInvalidPathChars());
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
             }
             catch (System.Exception ex)
             {
