@@ -130,11 +130,7 @@ namespace Publisher
         escapePath(
             string path)
         {
-            if (path.Contains(" "))
-            {
-                path = path.Replace(" ", "\\ ");
-            }
-            return path;
+            return Bam.Core.IOWrapper.EscapeSpacesInPath(path);
         }
     }
 

@@ -99,10 +99,10 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// If a path contains a space, enclose it in double quotes. Otherwise return asis.
+        /// If a path contains spaces, enclose it in double quotes. Otherwise return asis.
         /// </summary>
         /// <returns>Quoted path if necessary.</returns>
-        /// <param name="path">Path to check</param>
+        /// <param name="path">Path to check.</param>
         static public string
         EncloseSpaceContainingPathWithDoubleQuotes(
             string path)
@@ -110,6 +110,22 @@ namespace Bam.Core
             if (path.Contains(" "))
             {
                 return System.String.Format("\"{0}\"", path);
+            }
+            return path;
+        }
+
+        /// <summary>
+        /// If a path contains spaces, escape each occurrence with a back slash.
+        /// </summary>
+        /// <returns>Escaped path if necessary.</returns>
+        /// <param name="path">Path to check.</param>
+        static public string
+        EscapeSpacesInPath(
+            string path)
+        {
+            if (path.Contains(" "))
+            {
+                return path.Replace(" ", "\\ ");
             }
             return path;
         }
