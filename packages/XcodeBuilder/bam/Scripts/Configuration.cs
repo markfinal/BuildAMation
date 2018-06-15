@@ -160,7 +160,7 @@ namespace XcodeBuilder
             var indent = new string(' ', 2 * indentLevel);
             foreach (var line in commandList)
             {
-                text.AppendFormat("{0}{1}\\n", indent, line.Replace("\"", "\\\""));
+                text.AppendFormat("{0}{1}\\n", indent, line.Replace("\\", "\\\\").Replace("\"", "\\\""));
             }
         }
 
