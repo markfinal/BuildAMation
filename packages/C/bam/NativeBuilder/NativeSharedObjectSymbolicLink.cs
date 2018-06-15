@@ -51,7 +51,7 @@ namespace C
                     sourceFile.Parse();
                 }
             }
-            commandLine.Add(sourceFile.ToString());
+            commandLine.Add(sourceFile.ToStringQuoteIfNecessary());
             var destination = sender.CreateTokenizedString("@dir($(0))/$(1)", target.GeneratedPaths[ConsoleApplication.Key], target.Macros[sender.Macros["SymlinkUsage"].ToString()]);
             lock (destination)
             {
@@ -60,7 +60,7 @@ namespace C
                     destination.Parse();
                 }
             }
-            commandLine.Add(destination.ToString());
+            commandLine.Add(destination.ToStringQuoteIfNecessary());
             CommandLineProcessor.Processor.Execute(context, tool, commandLine);
         }
     }
