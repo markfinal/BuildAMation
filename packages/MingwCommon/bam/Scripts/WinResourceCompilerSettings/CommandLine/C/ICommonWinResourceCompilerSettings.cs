@@ -39,7 +39,15 @@ namespace MingwCommon
 
             if (0 == GetShortPathName(longPath, shortPath, shortPath.Capacity))
             {
-                return longPath;
+                var err = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                if (2 == err)
+                {
+                    throw new Bam.Core.Exception("Unable to get short name of file/directory '{0}' that does not exist", longPath);
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Unknown reason (err code {0} why a short name cannot be found for path '{1}'", err, longPath);
+                }
             }
 
             return shortPath.ToString();
@@ -94,6 +102,8 @@ namespace MingwCommon
 
             var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
             commandLine.Add("--use-temp-file"); // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
+            // if there is a space in the output path, windres has no chance really
+            // since you cannot get the short name of a file that doesn't yet exist
             commandLine.Add(System.String.Format("-o {0}", resource.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
         }
     }
