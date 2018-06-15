@@ -46,6 +46,10 @@ namespace Publisher
             Bam.Core.TokenizedString inPublishingPath,
             out string resolvedSourcePath,
             out string resolvedDestinationDir);
+
+        public abstract string
+        escapePath(
+            string path);
     }
 
     public sealed class CopyFilePosix :
@@ -108,22 +112,29 @@ namespace Publisher
                         inPublishingPath.ToString(),
                         System.IO.Path.DirectorySeparatorChar,
                         module.Macros["RenameLeaf"].ToString());
-                    if (resolvedDestinationDir.Contains(" "))
-                    {
-                        resolvedDestinationDir = System.String.Format("\"{0}\"", resolvedDestinationDir);
-                    }
                 }
                 else
                 {
-                    resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
-                    resolvedDestinationDir = inPublishingPath.ToStringQuoteIfNecessary();
+                    resolvedSourcePath = inSourcePath.ToString();
+                    resolvedDestinationDir = inPublishingPath.ToString();
                 }
             }
             else
             {
-                resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
-                resolvedDestinationDir = inPublishingPath.ToStringQuoteIfNecessary();
+                resolvedSourcePath = inSourcePath.ToString();
+                resolvedDestinationDir = inPublishingPath.ToString();
             }
+        }
+
+        public override string
+        escapePath(
+            string path)
+        {
+            if (path.Contains(" "))
+            {
+                path = path.Replace(" ", "\\ ");
+            }
+            return path;
         }
     }
 
@@ -153,7 +164,7 @@ namespace Publisher
             out string resolvedSourcePath,
             out string resolvedDestinationDir)
         {
-            resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+            resolvedSourcePath = inSourcePath.ToString();
 
             if (module is CollatedDirectory)
             {
@@ -172,15 +183,22 @@ namespace Publisher
                         System.IO.Path.DirectorySeparatorChar,
                         System.IO.Path.GetFileName(inSourcePath.ToString()));
                 }
-                if (resolvedDestinationDir.Contains(" "))
-                {
-                    resolvedDestinationDir = System.String.Format("\"{0}\"", resolvedDestinationDir);
-                }
             }
             else
             {
-                resolvedDestinationDir = inPublishingPath.ToStringQuoteIfNecessary();
+                resolvedDestinationDir = inPublishingPath.ToString();
             }
+        }
+
+        public override string
+        escapePath(
+            string path)
+        {
+            if (path.Contains(" "))
+            {
+                path = System.String.Format("\"{0}\"", path);
+            }
+            return path;
         }
     }
 }

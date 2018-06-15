@@ -78,8 +78,19 @@ namespace Publisher
             out string resolvedSourcePath,
             out string resolvedDestinationDir)
         {
-            resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+            resolvedSourcePath = inSourcePath.ToString();
             resolvedDestinationDir = inPublishingPath.ToString();
+        }
+
+        public override string
+        escapePath(
+            string path)
+        {
+            if (path.Contains(" "))
+            {
+                path = path.Replace(" ", "\\ ");
+            }
+            return path;
         }
     }
 }
