@@ -45,14 +45,8 @@ namespace C
 
             var output = outputPath.ToString();
             var output_parentdir = System.IO.Path.GetDirectoryName(output);
-            if (output_parentdir.Contains(" "))
-            {
-                output_parentdir = System.String.Format("\"{0}\"", output_parentdir);
-            }
-            if (output.Contains(" "))
-            {
-                output = System.String.Format("\"{0}\"", output);
-            }
+            output_parentdir = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(output_parentdir);
+            output = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(output);
 
             var commands = new Bam.Core.StringArray();
             commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", output_parentdir));

@@ -97,5 +97,21 @@ namespace Bam.Core
                 throw new Bam.Core.Exception(ex, "Unable to get a temporary path; please delete all temporary files in {0} and try again", System.IO.Path.GetTempPath());
             }
         }
+
+        /// <summary>
+        /// If a path contains a space, enclose it in double quotes. Otherwise return asis.
+        /// </summary>
+        /// <returns>Quoted path if necessary.</returns>
+        /// <param name="path">Path to check</param>
+        static public string
+        EncloseSpaceContainingPathWithDoubleQuotes(
+            string path)
+        {
+            if (path.Contains(" "))
+            {
+                return System.String.Format("\"{0}\"", path);
+            }
+            return path;
+        }
     }
 }

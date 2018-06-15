@@ -40,11 +40,7 @@ namespace CodeGenTest
             Bam.Core.TokenizedString generatedFilePath)
         {
             // TODO: change this to a configuration directory really
-            var output_dir = Bam.Core.Graph.Instance.BuildRoot;
-            if (output_dir.Contains(" "))
-            {
-                output_dir = System.String.Format("\"{0}\"", output_dir);
-            }
+            var output_dir = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(Bam.Core.Graph.Instance.BuildRoot);
 
             var args = new Bam.Core.StringArray();
             args.Add(output_dir);

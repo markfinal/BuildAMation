@@ -194,11 +194,7 @@ namespace Publisher
         escapePath(
             string path)
         {
-            if (path.Contains(" "))
-            {
-                path = System.String.Format("\"{0}\"", path);
-            }
-            return path;
+            return Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(path);
         }
     }
 }

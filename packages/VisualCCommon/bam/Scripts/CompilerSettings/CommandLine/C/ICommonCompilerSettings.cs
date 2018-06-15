@@ -89,10 +89,7 @@ namespace VisualCCommon
                     {
                         defineValue = defineValue.Replace("\"", "\\\"");
                     }
-                    if (defineValue.Contains(" "))
-                    {
-                        defineValue = System.String.Format("\"{0}\"", defineValue);
-                    }
+                    defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }

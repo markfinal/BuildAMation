@@ -133,10 +133,7 @@ namespace ClangCommon
                             // required to get \\\" for each " in the original value
                             defineValue = defineValue.Replace("\"", "\\\\\\\"");
                         }
-                        if (defineValue.Contains(" "))
-                        {
-                            defineValue = System.String.Format("\"{0}\"", defineValue);
-                        }
+                        defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
                         defines.Add(System.String.Format("{0}={1}", define.Key, defineValue));
                     }
                 }
