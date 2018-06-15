@@ -86,7 +86,7 @@ namespace Installer
                 scriptWriter.WriteLine("Name \"{0}\"", outputName.ToString());
                 var installedExePath = this.CreateTokenizedString("$(buildroot)/$(config)/$(0).exe", outputName);
                 installedExePath.Parse();
-                scriptWriter.WriteLine("OutFile \"{0}\"", installedExePath.ToStringQuoteIfNecessary());
+                scriptWriter.WriteLine("OutFile \"{0}\"", installedExePath.ToString());
                 scriptWriter.WriteLine("InstallDir $APPDATA\\{0}", outputName.ToString());
                 scriptWriter.WriteLine("Page directory");
                 scriptWriter.WriteLine("Page instfiles");
@@ -94,12 +94,12 @@ namespace Installer
                 foreach (var dep in this.Files)
                 {
                     scriptWriter.WriteLine("\tSetOutPath $INSTDIR");
-                    scriptWriter.WriteLine("\tFile {0}", dep.Key.GeneratedPaths[dep.Value]);
+                    scriptWriter.WriteLine("\tFile {0}", dep.Key.GeneratedPaths[dep.Value].ToStringQuoteIfNecessary());
                 }
                 foreach (var dep in this.Paths)
                 {
                     scriptWriter.WriteLine("\tSetOutPath $INSTDIR");
-                    scriptWriter.WriteLine("\tFile /r {0}\\*.*", dep.Key.GeneratedPaths[dep.Value]);
+                    scriptWriter.WriteLine("\tFile /r \"{0}\\*.*\"", dep.Key.GeneratedPaths[dep.Value].ToString());
                 }
                 scriptWriter.WriteLine("SectionEnd");
             }
