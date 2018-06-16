@@ -1,3 +1,5 @@
+16-Jun-2018 Fixes #186. Git tag, differences from tag, and branch are now included in 'bam --version' output.
+
 15-Jun-2018 Fixes #461. Downgraded NuGet for NUnit to 3.6.1, following .NET Standard dependency errors when using newer versions.
 
 14-Jun-2018 Fixes #459. BAM, since v1.2.0 alpha3, has relied upon a NuGet of vswhere to detect VisualStudio installations. This NuGet, however, was not shipped as part of the binary distribution. This has now been included.
