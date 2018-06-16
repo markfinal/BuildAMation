@@ -78,8 +78,8 @@ def update_version_numbers_in_files(options):
     common_assembly_info_path = os.path.join(os.getcwd(), "Common", "CommonAssemblyInfo.cs")
     try:
         for line in fileinput.input(common_assembly_info_path, inplace=1):  # , backup='.bk'):
-            line = re.sub('AssemblyInformationalVersion\("[0-9.]+"\)',
-                          'AssemblyInformationalVersion("%s")' % options.version,
+            line = re.sub('AssemblyInformationalVersion\(".*"\)',
+                          'AssemblyInformationalVersion("%s" + " (" + ThisAssembly.Git.Tag + " [" + ThisAssembly.Git.Branch + "])")' % options.version,
                           line.rstrip())
             print line
     finally:

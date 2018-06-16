@@ -130,4 +130,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <Import Project="..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets" Condition="Exists('..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets'))" />
+  </Target>
 </Project>
