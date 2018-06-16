@@ -54,7 +54,7 @@ using System.Runtime.InteropServices;
 // in the 'product version' detail when inspecting an assembly, and also by "bam --version".
 // Semantic versioning (http://semver.org/) is used.
 [assembly: AssemblyVersion("1.2.0")]
-[assembly: AssemblyInformationalVersion("1.2.0")]
+[assembly: AssemblyInformationalVersion("1.2.0" + " (" + ThisAssembly.Git.Tag + " [" + ThisAssembly.Git.Branch + "])")]
 
 // Because it exposes externally visible types.
 [assembly: CLSCompliant(true)]
