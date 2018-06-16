@@ -43,14 +43,14 @@ namespace Publisher
             {
             case EObjCopyToolMode.OnlyKeepDebug:
                 commandLine.Add(System.String.Format("--only-keep-debug {0} {1}",
-                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToString(),
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].ToString()));
+                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToStringQuoteIfNecessary(),
+                    objCopy.GeneratedPaths[ObjCopyModule.Key].ToStringQuoteIfNecessary()));
                 break;
 
             case EObjCopyToolMode.AddGNUDebugLink:
                 commandLine.Add(System.String.Format("--add-gnu-debuglink={0} {1}",
-                    objCopy.GeneratedPaths[ObjCopyModule.Key].ToString(),
-                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToString()));
+                    objCopy.GeneratedPaths[ObjCopyModule.Key].ToStringQuoteIfNecessary(),
+                    collatedObjectInterface.SourceModule.GeneratedPaths[collatedObjectInterface.SourcePathKey].ToStringQuoteIfNecessary()));
                 break;
 
             default:
