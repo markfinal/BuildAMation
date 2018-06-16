@@ -19,16 +19,17 @@ matrix:
       - cd tests
       - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0
       - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -b MakeFile
-  - os: osx
-    osx_image: xcode6.4
-    mono: latest
-    script:
-      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
-      - source env.sh
-      - cd tests
-      - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0
-      - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0 -b MakeFile
-      - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0 -b Xcode
+  # git version is too old (2.4) to use with GitInfo (needs 2.5)
+  #- os: osx
+  #  osx_image: xcode6.4
+  #  mono: latest
+  #  script:
+  #    - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+  #    - source env.sh
+  #    - cd tests
+  #    - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0
+  #    - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0 -b MakeFile
+  #    - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0 -b Xcode
   - os: osx
     osx_image: xcode7.3
     mono: latest
