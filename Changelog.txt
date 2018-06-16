@@ -1,6 +1,9 @@
 16-Jun-2018 Fixes #460. Updated provided packages and tests to handle being executed from an installation path including a space. Your milage may vary on
 - Makefiles - GNU Make does not handle spaces well at all
 - tar on Linux (but not macOS)
+- Mingw's resource compiler (windres) does not handle long path names with spaces, and you cannot generate short path names for files (say the output of the tool) that don't yet exist
+
+16-Jun-2018 Fixes #186. Git tag, differences from tag, and branch are now included in 'bam --version' output.
 
 15-Jun-2018 Fixes #461. Downgraded NuGet for NUnit to 3.6.1, following .NET Standard dependency errors when using newer versions.
 
