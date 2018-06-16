@@ -1,3 +1,7 @@
+16-Jun-2018 Fixes #460. Updated provided packages and tests to handle being executed from an installation path including a space. Your milage may vary on
+- Makefiles - GNU Make does not handle spaces well at all
+- tar on Linux (but not macOS)
+
 15-Jun-2018 Fixes #461. Downgraded NuGet for NUnit to 3.6.1, following .NET Standard dependency errors when using newer versions.
 
 14-Jun-2018 Fixes #459. BAM, since v1.2.0 alpha3, has relied upon a NuGet of vswhere to detect VisualStudio installations. This NuGet, however, was not shipped as part of the binary distribution. This has now been included.
