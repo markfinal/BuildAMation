@@ -79,12 +79,21 @@ namespace ClangCommon
                 {
                     var fullPath = path.ToString();
                     var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
+                    // spaces need to be double escaped
                     if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
                     {
+                        if (fullPath.Contains(" "))
+                        {
+                            fullPath = fullPath.Replace(" ", "\\\\ ");
+                        }
                         paths.Add(fullPath);
                     }
                     else
                     {
+                        if (relPath.Contains(" "))
+                        {
+                            relPath = relPath.Replace(" ", "\\\\ ");
+                        }
                         paths.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
                     }
                 }
@@ -156,7 +165,12 @@ namespace ClangCommon
                 var paths = new XcodeBuilder.MultiConfigurationValue();
                 foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
                 {
-                    paths.Add(path.ToString());
+                    var full_path = path.ToString();
+                    if (full_path.Contains(" "))
+                    {
+                        full_path = full_path.Replace(" ", "\\\\ ");
+                    }
+                    paths.Add(full_path);
                 }
                 configuration["HEADER_SEARCH_PATHS"] = paths;
             }
