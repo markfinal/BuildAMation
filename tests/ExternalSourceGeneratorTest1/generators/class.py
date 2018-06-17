@@ -6,9 +6,10 @@ import os
 import sys
 
 
-def generate_class(name, headerpath, sourcepath):
+def generate_class(name, specfile, headerpath, sourcepath):
     with open(headerpath, 'wt') as header:
         guard = os.path.splitext(os.path.basename(headerpath))[0].upper()
+        print >>header, '// Header generated from spec %s and program %s' % (specfile, __file__)
         print >>header, '#ifndef %s_H' % guard
         print >>header, '#define %s_H' % guard
         print >>header, 'class %s' % name
@@ -16,12 +17,13 @@ def generate_class(name, headerpath, sourcepath):
         print >>header, '  public:'
         print >>header, '    int exit_code() const;'
         print >>header, '};'
-        print >>header, '#endif /* %s_H */"' % guard
+        print >>header, '#endif // %s_H' % guard
     with open(sourcepath, 'wt') as source:
+        print >>source, '// Source generated from spec %s and program %s' % (specfile, __file__)
         print >>source, '#include "%s"' % os.path.basename(headerpath)
         print >>source, 'int %s::exit_code() const' % name
         print >>source, '{'
-        print >>source, '  return -1;'
+        print >>source, '  return 0;'
         print >>source, '}'
 
 
@@ -34,7 +36,7 @@ def parse_spec_and_generate(args):
         if child.tag != 'class':
             raise RuntimeError('Expected a child of "spec" to be "class"')
         name = child.attrib['name']
-        generate_class(name, args.output_header, args.output_source)
+        generate_class(name, args.specfile, args.output_header, args.output_source)
 
 
 def main():

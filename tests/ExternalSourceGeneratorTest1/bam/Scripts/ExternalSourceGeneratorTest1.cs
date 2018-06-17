@@ -142,6 +142,9 @@ namespace ExternalSourceGeneratorTest1
             source.DependsOn(python_generator);
             source.UsePublicPatches(python_generator);
             source.AddFile(python_generator.ExpectedOutputFiles[1]);
+
+            var headers = this.CreateHeaderContainer();
+            headers.AddFile(python_generator.ExpectedOutputFiles[0]);
         }
     }
 }
