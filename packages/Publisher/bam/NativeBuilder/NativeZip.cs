@@ -47,8 +47,12 @@ namespace Publisher
             if (sender.Tool is ZipPosix)
             {
                 commandLine.Add("-o");
+                commandLine.Add(Bam.Core.IOWrapper.EscapeSpacesInPath(zipOutputPath.ToString()));
             }
-            commandLine.Add(zipOutputPath.ToStringQuoteIfNecessary());
+            else
+            {
+                commandLine.Add(zipOutputPath.ToStringQuoteIfNecessary());
+            }
             commandLine.Add("*");
             CommandLineProcessor.Processor.Execute(
                 context,
