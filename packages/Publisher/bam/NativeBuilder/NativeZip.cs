@@ -48,13 +48,13 @@ namespace Publisher
             {
                 commandLine.Add("-o");
             }
-            commandLine.Add(zipOutputPath.ToString());
+            commandLine.Add(zipOutputPath.ToStringQuoteIfNecessary());
             commandLine.Add("*");
             CommandLineProcessor.Processor.Execute(
                 context,
                 sender.Tool as Bam.Core.ICommandLineTool,
                 commandLine,
-                zipInputPath.ToString()
+                zipInputPath.ToStringQuoteIfNecessary()
             );
         }
     }
