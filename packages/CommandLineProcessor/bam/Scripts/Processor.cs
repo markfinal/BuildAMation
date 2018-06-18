@@ -138,7 +138,7 @@ namespace CommandLineProcessor
                 }
             }
 
-            processStartInfo.UseShellExecute = false;
+            processStartInfo.UseShellExecute = false; // to redirect IO streams
             processStartInfo.RedirectStandardOutput = true;
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardInput = true;
