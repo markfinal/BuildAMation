@@ -31,72 +31,8 @@ using Bam.Core;
 using System.Linq;
 namespace ExternalSourceGeneratorTest1
 {
-    public class ExternalSourceGenerator :
-        Bam.Core.Module
-    {
-        public ExternalSourceGenerator()
-        {
-            this.Arguments = new Bam.Core.TokenizedStringArray();
-            this.ExpectedOutputFiles = new Bam.Core.TokenizedStringArray();
-        }
-
-        public Bam.Core.TokenizedString Executable
-        {
-            get;
-            set;
-        }
-
-        public Bam.Core.TokenizedStringArray Arguments
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.TokenizedString OutputDirectory
-        {
-            get;
-            set;
-        }
-
-        public Bam.Core.TokenizedStringArray ExpectedOutputFiles
-        {
-            get;
-            private set;
-        }
-
-        public override void Evaluate()
-        {
-            //throw new System.NotImplementedException();
-        }
-
-        protected override void ExecuteInternal(ExecutionContext context)
-        {
-            if (null == this.Executable)
-            {
-                throw new Bam.Core.Exception("No executable was specified");
-            }
-            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(this.OutputDirectory.ToString());
-            var program = this.Executable.ToStringQuoteIfNecessary();
-            var arguments = this.Arguments.ToString(' ');
-            Bam.Core.Log.Info("Running: {0} {1}", program, arguments);
-            Bam.Core.OSUtilities.RunExecutable(program, arguments);
-            foreach (var expected_file in this.ExpectedOutputFiles)
-            {
-                if (!System.IO.File.Exists(expected_file.ToString()))
-                {
-                    throw new Bam.Core.Exception("Expected '{0}' to exist, but it does not", expected_file.ToString());
-                }
-            }
-        }
-
-        protected override void GetExecutionPolicy(string mode)
-        {
-            //throw new System.NotImplementedException();
-        }
-    }
-
     public class PythonSourceGenerator :
-        ExternalSourceGenerator
+        C.ExternalSourceGenerator
     {
         protected override void
         Init(

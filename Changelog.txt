@@ -1,5 +1,7 @@
-18-Jun-2018 Fixes #454. Added XYZ.
+18-Jun-2018 Fixes #454. Added C.ExternalSourceGenerator, allowing specification of an external tool to run, with arguments, and expected output files.
 Added overrides to C.CModuleContainer.AddFile(Bam.Core.TokenizedString)
+
+Added new test case, ExternalSourceGeneratorTest1, that exercises C.ExternalSourceGenerator by invoking Python.
 
 18-Jun-2018 Fixes #460. Updated provided packages and tests to handle being executed from an installation path including a space.
 
