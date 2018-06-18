@@ -46,10 +46,10 @@ namespace Publisher
             var config = project.GetConfiguration(encapsulating);
 
             var args = new Bam.Core.StringArray();
-            args.Add(System.String.Format("cd {0} &&", zipInputPath.ToString()));
+            args.Add(System.String.Format("cd {0} &&", zipInputPath.ToStringQuoteIfNecessary()));
             args.Add(CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool));
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(args);
-            args.Add(System.String.Format("{0}", zipOutputPath.ToString()));
+            args.Add(System.String.Format("{0}", zipOutputPath.ToStringQuoteIfNecessary()));
             args.Add("*");
 
             config.AddPreBuildCommand(args.ToString(' '));

@@ -43,9 +43,10 @@ namespace Publisher
             }
             var collatedInterface = sender as ICollatedObject;
 
+            var copyFileTool = sender.Tool as CopyFileTool;
             string copySourcePath;
             string destinationDir;
-            (sender.Tool as CopyFileTool).convertPaths(
+            copyFileTool.convertPaths(
                 sender,
                 sender.SourcePath,
                 collatedInterface.PublishingDirectory,
@@ -72,8 +73,8 @@ namespace Publisher
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-            commandLine.Add(copySourcePath);
-            commandLine.Add(destinationDir);
+            commandLine.Add(copyFileTool.escapePath(copySourcePath));
+            commandLine.Add(copyFileTool.escapePath(destinationDir));
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }

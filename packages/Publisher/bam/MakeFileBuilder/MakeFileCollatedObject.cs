@@ -43,9 +43,10 @@ namespace Publisher
             }
             var collatedInterface = sender as ICollatedObject;
 
+            var copyFileTool = sender.Tool as CopyFileTool;
             string copySourcePath;
             string destinationDir;
-            (sender.Tool as CopyFileTool).convertPaths(
+            copyFileTool.convertPaths(
                 sender,
                 sender.SourcePath,
                 collatedInterface.PublishingDirectory,

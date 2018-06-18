@@ -49,9 +49,10 @@ namespace Publisher
                 return;
             }
 
+            var copyFileTool = sender.Tool as CopyFileTool;
             string copySourcePath;
             string destinationDir;
-            (sender.Tool as CopyFileTool).convertPaths(
+            copyFileTool.convertPaths(
                 sender,
                 sender.SourcePath,
                 collatedInterface.PublishingDirectory,
@@ -63,22 +64,22 @@ namespace Publisher
                 Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
                     collatedInterface.SourceModule.ToString(),
                     collatedInterface.SourcePathKey.ToString(),
-                    copySourcePath,
-                    destinationDir);
+                    copyFileTool.escapePath(copySourcePath),
+                    copyFileTool.escapePath(destinationDir));
             }
             else
             {
                 Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
                     sender,
-                    copySourcePath,
-                    destinationDir);
+                    copyFileTool.escapePath(copySourcePath),
+                    copyFileTool.escapePath(destinationDir));
             }
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
             var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", destinationDir));
+            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", copyFileTool.escapePath(destinationDir)));
 
             var arePostBuildCommands = true;
             Bam.Core.Module sourceModule;
@@ -126,8 +127,8 @@ namespace Publisher
             commands.Add(System.String.Format(@"{0} {1} {2} {3} {4}",
                 CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
                 commandLine.ToString(' '),
-                copySourcePath,
-                destinationDir,
+                copyFileTool.escapePath(copySourcePath),
+                copyFileTool.escapePath(destinationDir),
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
             {

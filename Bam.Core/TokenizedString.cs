@@ -1009,12 +1009,7 @@ namespace Bam.Core
         /// <returns>The string and quote if necessary.</returns>
         public string ToStringQuoteIfNecessary()
         {
-            var contents = this.ToString();
-            if (!this.ContainsSpace)
-            {
-                return contents;
-            }
-            return System.String.Format("\"{0}\"", contents);
+            return IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(this.ToString());
         }
 
         /// <summary>

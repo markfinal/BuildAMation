@@ -50,9 +50,9 @@ namespace Installer
             commandLine.Add("-c");
             commandLine.Add("-v");
             commandLine.Add("-T");
-            commandLine.Add(scriptPath.ToString());
+            commandLine.Add(scriptPath.ToStringQuoteIfNecessary());
             commandLine.Add("-f");
-            commandLine.Add(tarPath);
+            commandLine.Add(outputPath.ToStringQuoteIfNecessary()); // tarPath
             CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
         }
     }

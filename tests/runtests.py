@@ -140,8 +140,8 @@ class Stats(object):
     def __init__(self):
         self._total = 0
         self._success = 0
-        self._fail = 0
-        self._ignore = 0
+        self._fail = []
+        self._ignore = []
 
 def execute_tests(package, configuration, options, output_buffer, stats):
     print_message("Package           : %s" % package.get_id())
@@ -153,7 +153,7 @@ def execute_tests(package, configuration, options, output_buffer, stats):
                             (package.get_description(), options.buildmode))
         print_message("\tIgnored")
         stats._total += 1
-        stats._ignore += 1
+        stats._ignore.append(package.get_id())
         return 0
     variation_args = configuration.get_variations(options.buildmode, options.excludedVariations, options.bitDepth)
     if len(variation_args) == 0:
@@ -161,7 +161,7 @@ def execute_tests(package, configuration, options, output_buffer, stats):
                             package.get_description())
         print_message("\tIgnored")
         stats._total += 1
-        stats._ignore += 1
+        stats._ignore.append(package.get_id())
         return 0
     if options.verbose:
         print_message("Test configurations: %s" % variation_args)
@@ -211,7 +211,7 @@ def execute_tests(package, configuration, options, output_buffer, stats):
                                 output_buffer.write("Errors:\n")
                                 output_buffer.write(error_messages.getvalue())
                     else:
-                        stats._fail += 1
+                        stats._fail.append(package.get_id())
                         output_buffer.write("* FAILURE *: %s\n" % message)
                         output_buffer.write("Command was: %s\n" % " ".join(arg_list))
                         output_buffer.write("Executed in: %s\n" % package.get_path())
@@ -340,8 +340,14 @@ if __name__ == "__main__":
         print_message("--------------------")
         print_message(output_buffer.getvalue())
         print_message("Success %s/%s" % (stats._success, stats._total))
-        print_message("Failure %s/%s" % (stats._fail, stats._total))
-        print_message("Ignored %s/%s" % (stats._ignore, stats._total))
+        print_message("Failure %s/%s" % (len(stats._fail), stats._total))
+        if stats._fail:
+            for failed in stats._fail:
+                print_message("\t%s" % failed)
+        print_message("Ignored %s/%s" % (len(stats._ignore), stats._total))
+        if stats._ignore:
+            for ignored in stats._ignore:
+                print_message("\t%s" % ignored)
 
         logsDir = os.path.join(repoTestDir, "Logs")
         if not os.path.isdir(logsDir):

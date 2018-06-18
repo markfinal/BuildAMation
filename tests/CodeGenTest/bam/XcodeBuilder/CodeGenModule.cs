@@ -55,11 +55,13 @@ namespace CodeGenTest
                     xcodePathTS.Parse();
                 }
             }
-            var xcodePath = xcodePathTS.ToString();
+            var xcodePath = Bam.Core.IOWrapper.EscapeSpacesInPath(xcodePathTS.ToString());
             xcodePath += "/" + System.IO.Path.GetFileName(compiler.Executable.ToString());
             command.AppendFormat(xcodePath);
+
             // TODO: change this to a configuration directory really
-            command.AppendFormat(" {0}", Bam.Core.Graph.Instance.BuildRoot);
+            var output_dir = Bam.Core.IOWrapper.EscapeSpacesInPath(Bam.Core.Graph.Instance.BuildRoot);
+            command.AppendFormat(" {0}", output_dir);
             command.AppendFormat(" {0}", "Generated");
 
             var commands = new Bam.Core.StringArray();

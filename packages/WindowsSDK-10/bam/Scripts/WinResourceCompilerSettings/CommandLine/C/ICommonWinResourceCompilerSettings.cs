@@ -54,12 +54,13 @@ namespace WindowsSDK
                 }
                 else
                 {
-                    var value = define.Value.ToString();
-                    if (value.Contains("\""))
+                    var defineValue = define.Value.ToString();
+                    if (defineValue.Contains("\""))
                     {
-                        value = value.Replace("\"", "\\\"");
+                        defineValue = defineValue.Replace("\"", "\\\"");
                     }
-                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, value));
+                    defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
 

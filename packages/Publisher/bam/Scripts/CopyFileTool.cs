@@ -46,6 +46,10 @@ namespace Publisher
             Bam.Core.TokenizedString inPublishingPath,
             out string resolvedSourcePath,
             out string resolvedDestinationDir);
+
+        public abstract string
+        escapePath(
+            string path);
     }
 
     public sealed class CopyFilePosix :
@@ -96,7 +100,6 @@ namespace Publisher
             out string resolvedSourcePath,
             out string resolvedDestinationDir)
         {
-            resolvedDestinationDir = inPublishingPath.ToString();
             if (module is CollatedDirectory)
             {
                 // Posix cp only requires the destination to be added when there is a rename
@@ -106,19 +109,28 @@ namespace Publisher
                         inSourcePath.ToString(),
                         System.IO.Path.DirectorySeparatorChar);
                     resolvedDestinationDir = System.String.Format("{0}{1}{2}{1}",
-                        resolvedDestinationDir,
+                        inPublishingPath.ToString(),
                         System.IO.Path.DirectorySeparatorChar,
                         module.Macros["RenameLeaf"].ToString());
                 }
                 else
                 {
-                    resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+                    resolvedSourcePath = inSourcePath.ToString();
+                    resolvedDestinationDir = inPublishingPath.ToString();
                 }
             }
             else
             {
-                resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+                resolvedSourcePath = inSourcePath.ToString();
+                resolvedDestinationDir = inPublishingPath.ToString();
             }
+        }
+
+        public override string
+        escapePath(
+            string path)
+        {
+            return Bam.Core.IOWrapper.EscapeSpacesInPath(path);
         }
     }
 
@@ -148,27 +160,37 @@ namespace Publisher
             out string resolvedSourcePath,
             out string resolvedDestinationDir)
         {
-            resolvedSourcePath = inSourcePath.ToStringQuoteIfNecessary();
+            resolvedSourcePath = inSourcePath.ToString();
 
-            resolvedDestinationDir = inPublishingPath.ToString();
             if (module is CollatedDirectory)
             {
                 // Windows XCOPY requires the directory name to be added to the destination regardless
                 if (module.Macros.Contains("RenameLeaf"))
                 {
                     resolvedDestinationDir = System.String.Format("{0}{1}{2}{1}",
-                        resolvedDestinationDir,
+                        inPublishingPath.ToString(),
                         System.IO.Path.DirectorySeparatorChar,
                         module.Macros["RenameLeaf"].ToString());
                 }
                 else
                 {
                     resolvedDestinationDir = System.String.Format("{0}{1}{2}{1}",
-                        resolvedDestinationDir,
+                        inPublishingPath.ToString(),
                         System.IO.Path.DirectorySeparatorChar,
                         System.IO.Path.GetFileName(inSourcePath.ToString()));
                 }
             }
+            else
+            {
+                resolvedDestinationDir = inPublishingPath.ToString();
+            }
+        }
+
+        public override string
+        escapePath(
+            string path)
+        {
+            return Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(path);
         }
     }
 }

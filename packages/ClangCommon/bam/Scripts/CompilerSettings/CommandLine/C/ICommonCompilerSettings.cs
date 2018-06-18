@@ -65,7 +65,12 @@ namespace ClangCommon
             }
             foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
-                commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
+                var quoted_path = path.ToStringQuoteIfNecessary();
+                if (Bam.Core.Graph.Instance.Mode == "Xcode")
+                {
+                    quoted_path = quoted_path.Replace("\"", "\\\"");
+                }
+                commandLine.Add(System.String.Format("-I{0}", quoted_path));
             }
             if (settings.Optimization.HasValue)
             {
@@ -102,8 +107,18 @@ namespace ClangCommon
                     var defineValue = define.Value.ToString();
                     if (defineValue.Contains("\""))
                     {
-                        defineValue = defineValue.Replace("\"", "\\\"");
+                        if (Bam.Core.Graph.Instance.Mode == "Xcode")
+                        {
+                            // note the number of back slashes here
+                            // required to get \\\" for each " in the original value
+                            defineValue = defineValue.Replace("\"", "\\\\\\\"");
+                        }
+                        else
+                        {
+                            defineValue = defineValue.Replace("\"", "\\\"");
+                        }
                     }
+                    defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
@@ -113,7 +128,12 @@ namespace ClangCommon
             }
             foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
             {
-                commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
+                var quoted_path = path.ToStringQuoteIfNecessary();
+                if (Bam.Core.Graph.Instance.Mode == "Xcode")
+                {
+                    quoted_path = quoted_path.Replace("\"", "\\\"");
+                }
+                commandLine.Add(System.String.Format("-I{0}", quoted_path));
             }
             if (settings.TargetLanguage.HasValue)
             {
@@ -152,13 +172,13 @@ namespace ClangCommon
                 switch (settings.OutputType.Value)
                 {
                     case C.ECompilerOutput.CompileOnly:
-                        commandLine.Add(System.String.Format("-c -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-c -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                         break;
                     case C.ECompilerOutput.Preprocess:
-                        commandLine.Add(System.String.Format("-E -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-E -o {0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                         break;
                     default:
-                        throw new Bam.Core.Exception("Unsupported output type, {0}", settings.OutputType.Value);
+                        throw new Bam.Core.Exception("Unsupported output type, {0}", settings.OutputType.Value.ToString());
                 }
             }
             foreach (var header in settings.NamedHeaders)
