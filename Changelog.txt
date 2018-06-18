@@ -1,4 +1,8 @@
-16-Jun-2018 Fixes #460. Updated provided packages and tests to handle being executed from an installation path including a space. Your milage may vary on
+18-Jun-2018 Fixes #460. Updated provided packages and tests to handle being executed from an installation path including a space.
+
+Added Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes() and EscapeSpacesInPath(), to either add surrounding double quotes around a path, or escape each space with a backslash.
+
+Your milage may vary on
 - Makefiles - GNU Make does not handle spaces well at all
 - tar on Linux (but not macOS)
 - Mingw's resource compiler (windres) does not handle long path names with spaces, and you cannot generate short path names for files (say the output of the tool) that don't yet exist
