@@ -58,7 +58,7 @@ namespace Publisher
                 context,
                 sender.Tool as Bam.Core.ICommandLineTool,
                 commandLine,
-                zipInputPath.ToStringQuoteIfNecessary()
+                zipInputPath.ToString()
             );
         }
     }
