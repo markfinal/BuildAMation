@@ -93,7 +93,7 @@ namespace XcodeBuilder
             text.AppendLine();
             text.AppendFormat("{0}fileType = {1};", indent2, this.FileType.AsString());
             text.AppendLine();
-            text.AppendFormat("{0}path = {1};", indent2, this.Path);
+            text.AppendFormat("{0}path = {1};", indent2, this.Path.ToStringQuoteIfNecessary());
             text.AppendLine();
             text.AppendFormat("{0}remoteRef = {1} /* {2} */;", indent2, this.RemoteRef.GUID, this.RemoteRef.Name);
             text.AppendLine();

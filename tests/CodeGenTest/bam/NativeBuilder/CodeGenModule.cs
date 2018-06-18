@@ -39,9 +39,11 @@ namespace CodeGenTest
             Bam.Core.ICommandLineTool compiler,
             Bam.Core.TokenizedString generatedFilePath)
         {
-            var args = new Bam.Core.StringArray();
             // TODO: change this to a configuration directory really
-            args.Add(Bam.Core.Graph.Instance.BuildRoot);
+            var output_dir = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(Bam.Core.Graph.Instance.BuildRoot);
+
+            var args = new Bam.Core.StringArray();
+            args.Add(output_dir);
             args.Add("Generated");
             CommandLineProcessor.Processor.Execute(context, compiler, args);
         }

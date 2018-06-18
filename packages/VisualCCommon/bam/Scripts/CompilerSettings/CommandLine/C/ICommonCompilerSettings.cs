@@ -89,6 +89,7 @@ namespace VisualCCommon
                     {
                         defineValue = defineValue.Replace("\"", "\\\"");
                     }
+                    defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
@@ -130,10 +131,10 @@ namespace VisualCCommon
                 switch (settings.OutputType.Value)
                 {
                     case C.ECompilerOutput.CompileOnly:
-                        commandLine.Add(System.String.Format("-c -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-c -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                         break;
                     case C.ECompilerOutput.Preprocess:
-                        commandLine.Add(System.String.Format("-E -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToString()));
+                        commandLine.Add(System.String.Format("-E -Fo{0}", module.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
                         break;
                     default:
                         throw new Bam.Core.Exception("Unknown output type, {0}", settings.OutputType.Value.ToString());

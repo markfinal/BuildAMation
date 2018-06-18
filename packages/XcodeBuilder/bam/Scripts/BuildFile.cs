@@ -79,11 +79,9 @@ namespace XcodeBuilder
                 this.IsA);
             if (this.Settings != null)
             {
-                var compilerFlags = this.Settings.ToString(' ');
-                // Xcode project per-file settings require extra escape characters for escaped quotes
-                // \" on the command line needs to be \\\" in the project
-                compilerFlags = compilerFlags.Replace("\"", "\\\\\"");
-                text.AppendFormat("settings = {{COMPILER_FLAGS = \"{0}\"; }}; ", compilerFlags);
+                // any requirements for extra escape characters for escaped quotes are handled
+                // in the native command line translation, by detecting the build mode is Xcode
+                text.AppendFormat("settings = {{COMPILER_FLAGS = \"{0}\"; }}; ", this.Settings.ToString(' '));
             }
             text.AppendFormat("{0}}};", indent);
             text.AppendLine();

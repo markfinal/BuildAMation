@@ -46,7 +46,16 @@ namespace Bam.Core
         {
             try
             {
-                System.IO.Directory.CreateDirectory(directoryPath);
+                try
+                {
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
+                catch (System.ArgumentException)
+                {
+                    // this can happen, say, if there are enclosing quotes
+                    directoryPath = directoryPath.Trim(System.IO.Path.GetInvalidPathChars());
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
             }
             catch (System.Exception ex)
             {
@@ -87,6 +96,38 @@ namespace Bam.Core
             {
                 throw new Bam.Core.Exception(ex, "Unable to get a temporary path; please delete all temporary files in {0} and try again", System.IO.Path.GetTempPath());
             }
+        }
+
+        /// <summary>
+        /// If a path contains spaces, enclose it in double quotes. Otherwise return asis.
+        /// </summary>
+        /// <returns>Quoted path if necessary.</returns>
+        /// <param name="path">Path to check.</param>
+        static public string
+        EncloseSpaceContainingPathWithDoubleQuotes(
+            string path)
+        {
+            if (path.Contains(" "))
+            {
+                return System.String.Format("\"{0}\"", path);
+            }
+            return path;
+        }
+
+        /// <summary>
+        /// If a path contains spaces, escape each occurrence with a back slash.
+        /// </summary>
+        /// <returns>Escaped path if necessary.</returns>
+        /// <param name="path">Path to check.</param>
+        static public string
+        EscapeSpacesInPath(
+            string path)
+        {
+            if (path.Contains(" "))
+            {
+                return path.Replace(" ", "\\ ");
+            }
+            return path;
         }
     }
 }

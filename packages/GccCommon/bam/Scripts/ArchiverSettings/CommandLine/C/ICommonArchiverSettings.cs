@@ -40,7 +40,7 @@ namespace GccCommon
             switch (settings.OutputType)
             {
                 case C.EArchiverOutput.StaticLibrary:
-                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToString());
+                    commandLine.Add(module.GeneratedPaths[C.StaticLibrary.Key].ToStringQuoteIfNecessary());
                     break;
             }
         }

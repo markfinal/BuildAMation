@@ -44,9 +44,12 @@ namespace C
             var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
 
             var output = outputPath.ToString();
+            var output_parentdir = System.IO.Path.GetDirectoryName(output);
+            output_parentdir = Bam.Core.IOWrapper.EscapeSpacesInPath(output_parentdir);
+            output = Bam.Core.IOWrapper.EscapeSpacesInPath(output);
 
             var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", System.IO.Path.GetDirectoryName(output)));
+            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", output_parentdir));
             commands.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
             toolTarget.AddPostBuildCommands(commands, toolConfiguration);
 

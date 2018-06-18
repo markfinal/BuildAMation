@@ -53,13 +53,13 @@ namespace VisualCCommon
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToString()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.ConsoleApplication.Key].ToStringQuoteIfNecessary()));
                     break;
 
                 case C.ELinkerOutput.DynamicLibrary:
                     commandLine.Add("-DLL");
-                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.DynamicLibrary.Key].ToString()));
-                    commandLine.Add(System.String.Format("-IMPLIB:{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToString()));
+                    commandLine.Add(System.String.Format("-OUT:{0}", module.GeneratedPaths[C.DynamicLibrary.Key].ToStringQuoteIfNecessary()));
+                    commandLine.Add(System.String.Format("-IMPLIB:{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToStringQuoteIfNecessary()));
                     break;
             }
             foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
@@ -75,7 +75,7 @@ namespace VisualCCommon
                 commandLine.Add("-DEBUG");
                 if (null != module.GeneratedPaths[C.ConsoleApplication.PDBKey])
                 {
-                    commandLine.Add(System.String.Format("-PDB:{0}", module.GeneratedPaths[C.ConsoleApplication.PDBKey].ToString()));
+                    commandLine.Add(System.String.Format("-PDB:{0}", module.GeneratedPaths[C.ConsoleApplication.PDBKey].ToStringQuoteIfNecessary()));
                 }
             }
         }

@@ -59,6 +59,7 @@ namespace WindowsSDK
                     {
                         defineValue = defineValue.Replace("\"", "\\\"");
                     }
+                    defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }

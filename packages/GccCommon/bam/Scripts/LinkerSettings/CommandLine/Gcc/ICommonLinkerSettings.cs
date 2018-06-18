@@ -42,15 +42,15 @@ namespace GccCommon
             }
             foreach (var rpath in settings.RPath.ToEnumerableWithoutDuplicates())
             {
-                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath.ToString()));
+                commandLine.Add(System.String.Format("-Wl,-rpath,{0}", rpath.ToStringQuoteIfNecessary()));
             }
             foreach (var rpath in settings.RPathLink.ToEnumerableWithoutDuplicates())
             {
-                commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath.ToString()));
+                commandLine.Add(System.String.Format("-Wl,-rpath-link,{0}", rpath.ToStringQuoteIfNecessary()));
             }
             if (null != settings.VersionScript)
             {
-                commandLine.Add(System.String.Format("-Wl,--version-script={0}", settings.VersionScript.ToString()));
+                commandLine.Add(System.String.Format("-Wl,--version-script={0}", settings.VersionScript.ToStringQuoteIfNecessary()));
             }
         }
     }

@@ -51,7 +51,6 @@ namespace Installer
             }
             var volumeName = volumeNameTS.ToString();
             var tempDiskImagePathName = System.IO.Path.GetTempPath() + System.Guid.NewGuid().ToString() + ".dmg"; // must have .dmg extension
-            var diskImagePathName = outputPath.ToString();
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
@@ -96,6 +95,7 @@ namespace Installer
                 CommandLineProcessor.Processor.Execute(context, compiler, args);
             }
 
+            var diskImagePathName = outputPath.ToString();
             var dmgDir = System.IO.Path.GetDirectoryName(diskImagePathName);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dmgDir);
 
@@ -121,7 +121,7 @@ namespace Installer
                 args.Add("-f");
                 args.Add("-v");
                 args.Add(tempDMGPath);
-                args.Add(diskImagePathName);
+                args.Add(outputPath.ToStringQuoteIfNecessary()); // diskImagePathName
                 CommandLineProcessor.Processor.Execute(context, Bam.Core.OSUtilities.GetInstallLocation("mv").First(), args);
             }
         }

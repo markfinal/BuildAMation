@@ -130,6 +130,12 @@ namespace MakeFileBuilder
             {
                 return;
             }
+            if (this.Directories.Any(item => item.Contains(" ")))
+            {
+                // http://savannah.gnu.org/bugs/?712
+                // https://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces
+                Bam.Core.Log.ErrorMessage("WARNING: MakeFiles do not support spaces in pathnames.");
+            }
             output.Append("DIRS:=");
             foreach (var dir in this.Directories)
             {

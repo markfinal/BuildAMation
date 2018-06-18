@@ -47,9 +47,6 @@ namespace MingwCommon
                     commandLine.Add("--no-use-temp-file");
                 }
             }
-
-            var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
-            commandLine.Add(System.String.Format("-o {0}", resource.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
         }
     }
 }

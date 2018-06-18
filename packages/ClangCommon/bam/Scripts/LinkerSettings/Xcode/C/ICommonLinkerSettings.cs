@@ -245,12 +245,21 @@ namespace ClangCommon
                 {
                     var fullPath = path.ToString();
                     var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
+                    // spaces must be escaped with double back slash
                     if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
                     {
+                        if (fullPath.Contains(" "))
+                        {
+                            fullPath = fullPath.Replace(" ", "\\\\ ");
+                        }
                         option.Add(fullPath);
                     }
                     else
                     {
+                        if (relPath.Contains(" "))
+                        {
+                            relPath = relPath.Replace(" ", "\\\\ ");
+                        }
                         option.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
                     }
                 }

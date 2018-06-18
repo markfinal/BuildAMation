@@ -52,10 +52,10 @@ namespace Publisher
 
             var commands = new Bam.Core.StringArray();
             var args = new Bam.Core.StringArray();
-            args.Add(System.String.Format("cd {0} &&", zipInputPath.ToString()));
+            args.Add(System.String.Format("cd {0} &&", Bam.Core.IOWrapper.EscapeSpacesInPath(zipInputPath.ToString())));
             args.Add(CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool));
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(args);
-            args.Add(System.String.Format("{0}", zipOutputPath.ToString()));
+            args.Add(System.String.Format("{0}", Bam.Core.IOWrapper.EscapeSpacesInPath(zipOutputPath.ToString())));
             args.Add("*");
             args.Add("|| true"); // because zip returns 12 (nothing to do) upon success
             args.Add(CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool));
