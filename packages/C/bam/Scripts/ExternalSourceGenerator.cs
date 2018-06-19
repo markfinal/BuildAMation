@@ -83,13 +83,38 @@ namespace C
         }
 
         /// <summary>
-        /// Specify the output directory to write files.
+        /// Gets the output directory.
         /// </summary>
         /// <value>The output directory.</value>
         public Bam.Core.TokenizedString OutputDirectory
         {
             get;
-            set;
+            private set;
+        }
+
+        /// <summary>
+        /// Specify the output directory to write files.
+        /// Sets the macro 'ExternalSourceGenerator.OutputDir' to this path.
+        /// </summary>
+        /// <value>The output directory.</value>
+        public void
+        SetOutputDirectory(
+            Bam.Core.TokenizedString dir_path)
+        {
+            this.OutputDirectory = dir_path;
+            this.Macros.Add("ExternalSourceGenerator.OutputDir", dir_path);
+        }
+
+        /// <summary>
+        /// Specify the output directory to write files.
+        /// Sets the macro 'OutputDir_SourceGenerator' to this path.
+        /// </summary>
+        /// <value>The output directory.</value>
+        public void
+        SetOutputDirectory(
+            string dir_path)
+        {
+            this.SetOutputDirectory(this.CreateTokenizedString(dir_path));
         }
 
         /// <summary>

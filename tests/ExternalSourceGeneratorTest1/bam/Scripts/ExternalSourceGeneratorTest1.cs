@@ -56,6 +56,26 @@ namespace ExternalSourceGeneratorTest1
     public sealed class TestApp :
         C.Cxx.ConsoleApplication
     {
+        private static void
+        ConfigurePythonGenerator(
+            PythonSourceGenerator generator)
+        {
+            generator.AddInputFile("PyScript", generator.CreateTokenizedString("$(packagedir)/generators/class.py"));
+            generator.AddInputFile("SpecFile", generator.CreateTokenizedString("$(packagedir)/specs/generated_class.xml"));
+
+            generator.SetOutputDirectory("$(packagebuilddir)/$(config)");
+            generator.ExpectedOutputFiles.Add(generator.CreateTokenizedString("$(0)/generated_class.h", new[] { generator.OutputDirectory }));
+            generator.ExpectedOutputFiles.Add(generator.CreateTokenizedString("$(0)/generated_class.cpp", new[] { generator.OutputDirectory }));
+
+            generator.Arguments.Add(generator.CreateTokenizedString("$(PyScript)"));
+            generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--specfile"));
+            generator.Arguments.Add(generator.CreateTokenizedString("$(SpecFile)"));
+            generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--output-header"));
+            generator.Arguments.Add(generator.ExpectedOutputFiles[0]);
+            generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--output-source"));
+            generator.Arguments.Add(generator.ExpectedOutputFiles[1]);
+        }
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -63,16 +83,7 @@ namespace ExternalSourceGeneratorTest1
             base.Init(parent);
 
             var python_generator = Bam.Core.Module.Create<PythonSourceGenerator>();
-            python_generator.OutputDirectory = this.CreateTokenizedString("$(packagebuilddir)/$(config)");
-            python_generator.ExpectedOutputFiles.Add(this.CreateTokenizedString("$(0)/generated_class.h", new[] { python_generator.OutputDirectory }));
-            python_generator.ExpectedOutputFiles.Add(this.CreateTokenizedString("$(0)/generated_class.cpp", new[] { python_generator.OutputDirectory }));
-            python_generator.Arguments.Add(this.CreateTokenizedString("$(packagedir)/generators/class.py"));
-            python_generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--specfile"));
-            python_generator.Arguments.Add(this.CreateTokenizedString("$(packagedir)/specs/generated_class.xml"));
-            python_generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--output-header"));
-            python_generator.Arguments.Add(python_generator.ExpectedOutputFiles[0]);
-            python_generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--output-source"));
-            python_generator.Arguments.Add(python_generator.ExpectedOutputFiles[1]);
+            ConfigurePythonGenerator(python_generator);
 
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/main.cpp");
             source.DependsOn(python_generator);
