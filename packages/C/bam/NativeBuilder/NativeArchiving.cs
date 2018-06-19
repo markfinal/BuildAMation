@@ -38,6 +38,10 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles)
         {
             var libraryPath = sender.GeneratedPaths[C.StaticLibrary.Key].ToString();
+            if (!System.IO.File.Exists(libraryPath))
+            {
+                return true;
+            }
             var libWriteTime = System.IO.File.GetLastWriteTime(libraryPath);
             foreach (var input in objectFiles)
             {

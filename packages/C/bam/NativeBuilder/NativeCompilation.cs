@@ -37,6 +37,10 @@ namespace C
             ObjectFile sender)
         {
             var objectFilePath = sender.GeneratedPaths[C.ObjectFile.Key].ToString();
+            if (!System.IO.File.Exists(objectFilePath))
+            {
+                return true;
+            }
             var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
             foreach (var dep in sender.Dependents)
             {

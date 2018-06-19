@@ -39,6 +39,10 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> libraries)
         {
             var exePath = sender.GeneratedPaths[C.ConsoleApplication.Key].ToString();
+            if (!System.IO.File.Exists(exePath))
+            {
+                return true;
+            }
             var exeWriteTime = System.IO.File.GetLastWriteTime(exePath);
             foreach (var library in libraries)
             {
