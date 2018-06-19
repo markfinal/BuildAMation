@@ -64,16 +64,16 @@ namespace ExternalSourceGeneratorTest1
             generator.AddInputFile("SpecFile", generator.CreateTokenizedString("$(packagedir)/specs/generated_class.xml"));
 
             generator.SetOutputDirectory("$(packagebuilddir)/$(config)");
-            generator.ExpectedOutputFiles.Add(generator.CreateTokenizedString("$(0)/generated_class.h", new[] { generator.OutputDirectory }));
-            generator.ExpectedOutputFiles.Add(generator.CreateTokenizedString("$(0)/generated_class.cpp", new[] { generator.OutputDirectory }));
+            generator.AddExpectedOutputFile("header", generator.CreateTokenizedString("$(0)/generated_class.h", new[] { generator.OutputDirectory }));
+            generator.AddExpectedOutputFile("source", generator.CreateTokenizedString("$(0)/generated_class.cpp", new[] { generator.OutputDirectory }));
 
             generator.Arguments.Add(generator.CreateTokenizedString("$(PyScript)"));
             generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--specfile"));
             generator.Arguments.Add(generator.CreateTokenizedString("$(SpecFile)"));
             generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--output-header"));
-            generator.Arguments.Add(generator.ExpectedOutputFiles[0]);
+            generator.Arguments.Add(generator.ExpectedOutputFiles["header"]);
             generator.Arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("--output-source"));
-            generator.Arguments.Add(generator.ExpectedOutputFiles[1]);
+            generator.Arguments.Add(generator.ExpectedOutputFiles["source"]);
         }
 
         protected override void
@@ -88,10 +88,10 @@ namespace ExternalSourceGeneratorTest1
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/main.cpp");
             source.DependsOn(python_generator);
             source.UsePublicPatches(python_generator);
-            source.AddFile(python_generator.ExpectedOutputFiles[1]);
+            source.AddFile(python_generator.ExpectedOutputFiles["source"]);
 
             var headers = this.CreateHeaderContainer();
-            headers.AddFile(python_generator.ExpectedOutputFiles[0]);
+            headers.AddFile(python_generator.ExpectedOutputFiles["header"]);
         }
     }
 }

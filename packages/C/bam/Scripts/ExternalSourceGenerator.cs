@@ -39,7 +39,7 @@ namespace C
         {
             this.Arguments = new Bam.Core.TokenizedStringArray();
             this.InputFiles = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
-            this.ExpectedOutputFiles = new Bam.Core.TokenizedStringArray();
+            this.InternalExpectedOutputFileDictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
         }
 
         /// <summary>
@@ -117,16 +117,36 @@ namespace C
             this.SetOutputDirectory(this.CreateTokenizedString(dir_path));
         }
 
-        /// <summary>
-        /// Specify the expected files to be written by running the executable.
-        /// If these do not exist after running the executable, an exception
-        /// will be thrown.
-        /// </summary>
-        /// <value>The expected output files.</value>
-        public Bam.Core.TokenizedStringArray ExpectedOutputFiles
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalExpectedOutputFileDictionary
         {
             get;
-            private set;
+            set;
+        }
+
+        public System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> ExpectedOutputFiles
+        {
+            get
+            {
+                return this.InternalExpectedOutputFileDictionary;
+            }
+        }
+
+        /// <summary>
+        /// Adds the expected output file together with a key, that is used as a macro.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="path">Path.</param>
+        public void
+        AddExpectedOutputFile(
+            string name,
+            Bam.Core.TokenizedString path)
+        {
+            if (this.InternalExpectedOutputFileDictionary.ContainsKey(name))
+            {
+                throw new Bam.Core.Exception("Expected output file with key '{0}' has already been registered", name);
+            }
+            this.InternalExpectedOutputFileDictionary.Add(name, path);
+            this.Macros.Add(name, path);
         }
 
         public override void Evaluate()
@@ -149,9 +169,13 @@ namespace C
             Bam.Core.OSUtilities.RunExecutable(program, arguments);
             foreach (var expected_file in this.ExpectedOutputFiles)
             {
-                if (!System.IO.File.Exists(expected_file.ToString()))
+                if (!System.IO.File.Exists(expected_file.Value.ToString()))
                 {
-                    throw new Bam.Core.Exception("Expected '{0}' to exist, but it does not", expected_file.ToString());
+                    throw new Bam.Core.Exception(
+                        "Expected '{0}' to exist (key={1}), but it does not",
+                        expected_file.Value.ToString(),
+                        expected_file.Key
+                    );
                 }
             }
         }
