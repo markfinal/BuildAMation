@@ -38,6 +38,7 @@ namespace C
         public ExternalSourceGenerator()
         {
             this.Arguments = new Bam.Core.TokenizedStringArray();
+            this.InputFiles = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
             this.ExpectedOutputFiles = new Bam.Core.TokenizedStringArray();
         }
 
@@ -59,6 +60,26 @@ namespace C
         {
             get;
             private set;
+        }
+
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>
+        InputFiles
+        {
+            get;
+            set;
+        }
+
+        public void
+        AddInputFile(
+            string name,
+            Bam.Core.TokenizedString path)
+        {
+            if (this.InputFiles.ContainsKey(name))
+            {
+                throw new Bam.Core.Exception("Input file '{0}' has already been added", name);
+            }
+            this.InputFiles.Add(name, path);
+            this.Macros.Add(name, path);
         }
 
         /// <summary>
