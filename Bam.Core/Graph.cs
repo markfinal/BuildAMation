@@ -642,15 +642,61 @@ namespace Bam.Core
             Module.CompleteModules();
         }
 
-        /// <summary>
-        /// Dump a representation of the dependency graph to the console.
-        /// </summary>
-        public void
-        Dump()
+        private static void
+        DumpModule(
+            System.Text.StringBuilder builder,
+            int depth,
+            char? prefix,
+            Module module,
+            Array<Module> visited)
         {
-            Log.Message(this.VerbosityLevel, new string('*', 80));
-            Log.Message(this.VerbosityLevel, "{0,50}", "DEPENDENCY GRAPH VIEW");
-            Log.Message(this.VerbosityLevel, new string('*', 80));
+            if (prefix.HasValue)
+            {
+                builder.AppendFormat("{0}{1}{2}", new string(' ', depth), prefix.Value, module.ToString());
+            }
+            else
+            {
+                builder.AppendFormat("{0}{1}", new string(' ', depth), module.ToString());
+            }
+            if (visited.Contains(module))
+            {
+                builder.AppendFormat("*");
+                builder.AppendLine();
+                return;
+            }
+            visited.Add(module);
+            if (module is IInputPath)
+            {
+                builder.AppendFormat(" {0}", (module as IInputPath).InputPath.ToString());
+            }
+            builder.AppendLine();
+            foreach (var req in module.Requirements)
+            {
+                DumpModule(builder, depth + 1, '-', req, visited);
+            }
+            foreach (var dep in module.Dependents)
+            {
+                DumpModule(builder, depth + 1, '+', dep, visited);
+            }
+        }
+
+        private void
+        DumpModuleHierarchy()
+        {
+            Log.Message(this.VerbosityLevel, "Module hierarchy");
+            var visited = new Array<Module>();
+            foreach (var module in this.TopLevelModules)
+            {
+                var text = new System.Text.StringBuilder();
+                DumpModule(text, 0, null, module, visited);
+                Log.Message(this.VerbosityLevel, text.ToString());
+            }
+        }
+
+        private void
+        DumpRankHierarchy()
+        {
+            Log.Message(this.VerbosityLevel, "Rank hierarchy");
             foreach (var rank in this.DependencyGraph)
             {
                 var text = new System.Text.StringBuilder();
@@ -670,6 +716,25 @@ namespace Bam.Core
                 }
                 Log.Message(this.VerbosityLevel, text.ToString());
             }
+        }
+
+        /// <summary>
+        /// Dump a representation of the dependency graph to the console.
+        /// Initially a representation of module hierarchies
+        ///  depth of dependency is indicated by indentation
+        ///  a direct dependency is a + prefix
+        ///  an indirect dependency is a - prefix
+        /// Then a representation of rank hierarchies, i.e. the order in which
+        /// modules will be built.
+        /// </summary>
+        public void
+        Dump()
+        {
+            Log.Message(this.VerbosityLevel, new string('*', 80));
+            Log.Message(this.VerbosityLevel, "{0,50}", "DEPENDENCY GRAPH VIEW");
+            Log.Message(this.VerbosityLevel, new string('*', 80));
+            this.DumpModuleHierarchy();
+            this.DumpRankHierarchy();
             Log.Message(this.VerbosityLevel, new string('*', 80));
             Log.Message(this.VerbosityLevel, "{0,50}", "END DEPENDENCY GRAPH VIEW");
             Log.Message(this.VerbosityLevel, new string('*', 80));
