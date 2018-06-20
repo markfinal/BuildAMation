@@ -95,7 +95,9 @@ namespace C
         public override void
         Evaluate()
         {
-            this.ReasonToExecute = null; // TODO: always build
+            // TODO
+            // always build
+            this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
         }
 
         protected override void GetExecutionPolicy(string mode)
