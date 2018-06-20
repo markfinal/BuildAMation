@@ -118,7 +118,6 @@ namespace C
 
                 // are there any headers as explicit dependencies (procedurally generated most likely), which are newer?
                 var explicitHeadersUpdated = new Bam.Core.StringArray();
-                var explicitHeadersDeferred = new Bam.Core.StringArray();
                 foreach (var dep in this.Dependents)
                 {
                     if (!(dep is HeaderFile))
@@ -133,10 +132,6 @@ namespace C
                     if (dep.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer)
                     {
                         explicitHeadersUpdated.AddUnique(headerDep.InputPath.ToString());
-                    }
-                    else if (dep.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation)
-                    {
-                        explicitHeadersDeferred.AddUnique(headerDep.InputPath.ToString());
                     }
                 }
 
@@ -204,12 +199,6 @@ namespace C
                                     this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                                         this.GeneratedPaths[Key],
                                         Bam.Core.TokenizedString.CreateVerbatim(potentialPath));
-                                    return;
-                                }
-                                // found #included header in list of explicitly dependent headers that require a deferred evaluation
-                                if (explicitHeadersDeferred.Contains(potentialPath))
-                                {
-                                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
                                     return;
                                 }
 

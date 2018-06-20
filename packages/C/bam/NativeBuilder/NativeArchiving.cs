@@ -32,29 +32,6 @@ namespace C
     public sealed class NativeLibrarian :
         IArchivingPolicy
     {
-        private static bool
-        DeferredEvaluationRequiresBuild(
-            StaticLibrary sender,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles)
-        {
-            var libraryPath = sender.GeneratedPaths[C.StaticLibrary.Key].ToString();
-            var libWriteTime = System.IO.File.GetLastWriteTime(libraryPath);
-            foreach (var input in objectFiles)
-            {
-                if ((input.ReasonToExecute != null) && (input.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation))
-                {
-                    var objectFile = input as C.ObjectFileBase;
-                    var objectFilePath = objectFile.InputPath.ToString();
-                    var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
-                    if (objectFileWriteTime > libWriteTime)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         void
         IArchivingPolicy.Archive(
             StaticLibrary sender,
@@ -63,14 +40,6 @@ namespace C
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> objectFiles,
             System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
         {
-            if (sender.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation)
-            {
-                if (!DeferredEvaluationRequiresBuild(sender, objectFiles))
-                {
-                    return;
-                }
-            }
-
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 

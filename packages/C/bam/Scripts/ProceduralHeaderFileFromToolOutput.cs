@@ -95,7 +95,7 @@ namespace C
         public override void
         Evaluate()
         {
-            this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[C.HeaderFile.Key]);
+            this.ReasonToExecute = null; // TODO: always build
         }
 
         protected override void GetExecutionPolicy(string mode)
