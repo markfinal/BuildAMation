@@ -40,8 +40,8 @@ namespace Publisher
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<RsyncTool>();
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             // always copy currently
         }

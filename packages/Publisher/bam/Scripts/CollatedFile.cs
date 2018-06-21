@@ -33,8 +33,8 @@ namespace Publisher
     public class CollatedFile :
         CollatedObject
     {
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             var copiedPath = this.GeneratedPaths[Key].ToString();

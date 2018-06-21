@@ -91,8 +91,8 @@ namespace Installer
             this.SourceFolderPath = dependent.GeneratedPaths[key];
         }
 
-        public sealed override void
-        Evaluate()
+        protected sealed override void
+        EvaluateInternal()
         {
             // do nothing
         }

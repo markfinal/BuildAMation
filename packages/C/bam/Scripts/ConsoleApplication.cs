@@ -437,8 +437,8 @@ namespace C
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             if (this.IsPrebuilt) // never check, even if there are headers

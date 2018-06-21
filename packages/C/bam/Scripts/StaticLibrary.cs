@@ -231,8 +231,8 @@ namespace C
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IArchivingPolicy>.Create(className);
         }
 
-        public sealed override void
-        Evaluate()
+        protected sealed override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             var libraryPath = this.GeneratedPaths[Key].ToString();

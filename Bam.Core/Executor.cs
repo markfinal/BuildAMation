@@ -84,18 +84,20 @@ namespace Bam.Core
         }
 
         private static bool
-        CheckIfModulesNeedRebuilding(
-            System.Type metaType)
+        IsEvaluationRequired(
+            System.Type metaType,
+            out Array<Module> modulesNeedEvaluating)
         {
-            var graph = Graph.Instance;
-            var modulesNeedEvaluating = new Array<Module>();
+            modulesNeedEvaluating = null;
 
             // not all build modes need to determine if modules are up-to-date
             var evaluationRequiredAttr =
                 metaType.GetCustomAttributes(typeof(EvaluationRequiredAttribute), false) as EvaluationRequiredAttribute[];
             if (0 == evaluationRequiredAttr.Length)
             {
+                modulesNeedEvaluating = new Array<Module>();
                 // query if any individual modules override this
+                var graph = Graph.Instance;
                 foreach (var rank in graph.Reverse())
                 {
                     foreach (Module module in rank)
@@ -114,13 +116,20 @@ namespace Bam.Core
                     return false;
                 }
             }
-
-            if ((evaluationRequiredAttr.Length > 0) && !evaluationRequiredAttr[0].Enabled && 0 == modulesNeedEvaluating.Count)
+            else if (!evaluationRequiredAttr[0].Enabled)
             {
                 Log.DebugMessage("Module evaluation disabled");
+                modulesNeedEvaluating = null;
                 return false;
             }
+            return true;
+        }
 
+        private static void
+        PerformThreadedEvaluation(
+            Array<Module> modulesNeedEvaluating)
+        {
+            var graph = Graph.Instance;
             using (var cancellationSource = new System.Threading.CancellationTokenSource())
             {
                 var cancellationToken = cancellationSource.Token;
@@ -138,31 +147,28 @@ namespace Bam.Core
                         continuationOpts,
                         scheduler);
 
-                graph.MetaData = factory;
-
-                if (0 == modulesNeedEvaluating.Count)
+                if (null == modulesNeedEvaluating)
                 {
                     Log.DebugMessage("Module evaluation enabled for build mode {0}", graph.Mode);
                     foreach (var rank in graph.Reverse())
                     {
                         foreach (Module module in rank)
                         {
-                            module.Evaluate();
+                            Log.DebugMessage("\tEvaluation for module {0}", module.GetType().ToString());
+                            module.EvaluateAsync(factory);
                         }
                     }
                 }
                 else
                 {
-                    Log.DebugMessage("Module evaluation disabled for build mode {0}, but enabled for individual modules:", graph.Mode);
+                    Log.DebugMessage("Module evaluation disabled for build mode {0}, but enabled for {1} individual modules:", graph.Mode, modulesNeedEvaluating.Count);
                     foreach (var module in modulesNeedEvaluating)
                     {
                         Log.DebugMessage("\tEvaluation for module {0}", module.GetType().ToString());
-                        module.Evaluate();
+                        module.EvaluateAsync(factory);
                     }
                 }
             }
-
-            return true;
         }
 
         /// <summary>
@@ -178,9 +184,22 @@ namespace Bam.Core
 
             // TODO: should the rank collections be sorted, so that modules with fewest dependencies are first?
 
+            var threadCount = CommandLineProcessor.Evaluate(new Options.MultiThreaded());
+            if (0 == threadCount)
+            {
+                threadCount = System.Environment.ProcessorCount;
+            }
             var graph = Graph.Instance;
             var metaDataType = graph.BuildModeMetaData.GetType();
-            var useEvaluation = CheckIfModulesNeedRebuilding(metaDataType);
+            Array<Module> modulesNeedEvaluating = null;
+            var useEvaluation = IsEvaluationRequired(metaDataType, out modulesNeedEvaluating);
+            if (useEvaluation && threadCount > 1)
+            {
+                // spawn the evaluation tasks early in multithreaded mode
+                // in single threaded mode, perform them in lock-step with the execution
+                PerformThreadedEvaluation(modulesNeedEvaluating);
+            }
+
             var explainRebuild = CommandLineProcessor.Evaluate(new Options.ExplainBuildReason());
             var immediateOutput = CommandLineProcessor.Evaluate(new Options.ImmediateOutput());
 
@@ -188,12 +207,6 @@ namespace Bam.Core
 
             // necessary if built with debug symbols
             IOWrapper.CreateDirectoryIfNotExists(graph.BuildRoot);
-
-            var threadCount = CommandLineProcessor.Evaluate(new Options.MultiThreaded());
-            if (0 == threadCount)
-            {
-                threadCount = System.Environment.ProcessorCount;
-            }
 
             System.Exception abortException = null;
             if (threadCount > 1)
@@ -300,6 +313,11 @@ namespace Bam.Core
                         var context = new ExecutionContext(useEvaluation, explainRebuild, immediateOutput);
                         try
                         {
+                            if (useEvaluation &&
+                                ((null == modulesNeedEvaluating) || modulesNeedEvaluating.Contains(module)))
+                            {
+                                (module as Module).EvaluateImmediate();
+                            }
                             module.Execute(context);
                         }
                         catch (Exception ex)

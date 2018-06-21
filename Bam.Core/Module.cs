@@ -125,6 +125,8 @@ namespace Bam.Core
             this.BuildEnvironment = graph.BuildEnvironment;
             this.Macros.AddVerbatim("config", this.BuildEnvironment.Configuration.ToString());
             this.ReasonToExecute = ExecuteReasoning.Undefined();
+            this.ExecutionTask = null;
+            this.EvaluationTask = null;
         }
 
         private void
@@ -684,11 +686,22 @@ namespace Bam.Core
                 if (null == this.ReasonToExecute)
                 {
                     Log.Message(context.ExplainLoggingLevel, "Module {0} is up-to-date", this.ToString());
+                    this.Executed = true;
                     return;
                 }
                 Log.Message(context.ExplainLoggingLevel, "Module {0} will change because {1}.", this.ToString(), this.ReasonToExecute.ToString());
             }
             this.ExecuteInternal(context);
+            this.Executed = true;
+        }
+
+        /// <summary>
+        /// Implementation of IModuleExecution.Executed
+        /// </summary>
+        public bool Executed
+        {
+            get;
+            private set;
         }
 
         /// <summary>
@@ -897,14 +910,36 @@ namespace Bam.Core
         EvaluationTask
         {
             get;
-            protected set;
+            private set;
         }
 
         /// <summary>
         /// Evaluate the module to determine whether it requires a (re)build.
         /// </summary>
-        public abstract void
-        Evaluate();
+        protected abstract void
+        EvaluateInternal();
+
+        /// <summary>
+        /// Asynchronously run the module evaluation step.
+        /// </summary>
+        /// <param name="factory">TaskFactory to create evaluation tasks from.</param>
+        public void
+        EvaluateAsync(
+            System.Threading.Tasks.TaskFactory factory)
+        {
+            this.EvaluationTask = factory.StartNew(
+                () => this.EvaluateInternal()
+            );
+        }
+
+        /// <summary>
+        /// Immediately run the module evaluation step.
+        /// </summary>
+        public void
+        EvaluateImmediate()
+        {
+            this.EvaluateInternal();
+        }
 
         /// <summary>
         /// Get the Environment associated with this module. The same module in different environments will be different

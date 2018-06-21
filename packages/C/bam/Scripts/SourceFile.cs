@@ -35,8 +35,8 @@ namespace C
     {
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Source File");
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             // TODO: could do a hash check of the contents?

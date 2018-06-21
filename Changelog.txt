@@ -1,3 +1,15 @@
+21-Jun-2018 BREAKING CHANGES
+- Removed Bam.Core.ExecuteReasoning.DeferredEvaluation entirely, and all associated code.
+- Bam.Core.Module.Evaluate has been renamed to EvaluateInternal, and made protected. This has a knock on effect for all derived Module types.
+- Single threaded build mode: evaluation is now performed in lock-step with module execution in the main thread. (New behaviour)
+- Multi threaded build mode: evaluation is performed in background tasks, alongside module execution also in background tasks (different schedulers). (Updated old behaviour; previously not all evaluation calls were in a task)
+- Added Bam.Core.IModuleExecution.Executed readonly property to query the execution status of a module
+- Added Bam.Core.Module.EvaluateAsync and EvaluateImmediate functions, although these are only of use in the core assembly.
+- There is no longer access to a System.Threading.Tasks.TaskFactory on the Bam.Core.Graph instance's MetaData in Native build mode. Previously, individual module Evaluate() functions could thread, whereas this is now in the Core assembly.
+- C.ObjectFile EvaluateInternal will now wait on the execution task of any un-executed Module dependency that isn't derived from C.SourceFile. This is to synchronise with source code generators.
+
+--viewgraph command line option now shows the original output (order in which modules will be built), but also now a module hierarchy.
+
 18-Jun-2018 Fixes #460. Updated provided packages and tests to handle being executed from an installation path including a space.
 
 Added Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes() and EscapeSpacesInPath(), to either add surrounding double quotes around a path, or escape each space with a backslash.

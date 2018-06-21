@@ -43,8 +43,8 @@ namespace CyclicDependenciesTest1
             this.DependsOn(depB);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
         }
 
@@ -74,8 +74,8 @@ namespace CyclicDependenciesTest1
             this.DependsOn(depA);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
         }
 
@@ -105,8 +105,8 @@ namespace CyclicDependenciesTest1
             this.DependsOn(depB);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
         }
 

@@ -267,8 +267,8 @@ namespace C
             // TODO: might have to get the policy, for the sharing settings
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             try

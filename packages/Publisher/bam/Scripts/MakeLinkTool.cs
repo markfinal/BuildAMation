@@ -32,8 +32,8 @@ namespace Publisher
     public abstract class MakeLinkTool :
         Bam.Core.PreBuiltTool
     {
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
         }
