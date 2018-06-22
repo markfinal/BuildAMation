@@ -29,10 +29,11 @@
 #endregion // License
 namespace C
 {
-    public interface IExternalSourceGeneratorPolicy
+    public sealed class VSSolutionExternalSourceGenerator :
+        IExternalSourceGeneratorPolicy
     {
         void
-        GenerateSource(
+        IExternalSourceGeneratorPolicy.GenerateSource(
             ExternalSourceGenerator sender,
             Bam.Core.ExecutionContext context,
             Bam.Core.TokenizedString executable,
@@ -40,6 +41,30 @@ namespace C
             Bam.Core.TokenizedString output_directory,
             System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> expected_output_files,
             System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> input_files
-        );
+        )
+        {
+            var encapsulating = sender.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            var args = new Bam.Core.StringArray();
+            args.Add(System.String.Format("{0} {1}", executable.ToStringQuoteIfNecessary(), arguments.ToString(' ')));
+
+            foreach (var input in input_files.Values)
+            {
+                config.AddOtherFile(input);
+                var customBuild = config.GetSettingsGroup(
+                    VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild,
+                    include: input,
+                    uniqueToProject: true
+                );
+                customBuild.AddSetting("Command", args.ToString(' '), condition: config.ConditionText);
+                customBuild.AddSetting("Message", System.String.Format("Generating outputs from {0}", input.ToString()), condition: config.ConditionText);
+                customBuild.AddSetting("Outputs", expected_output_files.Values, condition: config.ConditionText);
+                customBuild.AddSetting("AdditionalInputs", input_files.Values, condition: config.ConditionText);
+            }
+        }
     }
 }

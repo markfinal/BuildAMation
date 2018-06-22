@@ -389,6 +389,14 @@ namespace VSSolutionBuilder
         }
 
         public void
+        AddOtherFile(
+            Bam.Core.TokenizedString other_path)
+        {
+            var otherGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, other_path);
+            this.Project.AddOtherFile(otherGroup);
+        }
+
+        public void
         AddResourceFile(
             C.WinResource resource,
             Bam.Core.Settings patchSettings)

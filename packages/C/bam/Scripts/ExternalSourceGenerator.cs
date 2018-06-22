@@ -207,7 +207,8 @@ namespace C
                 this.Executable,
                 this.Arguments,
                 this.OutputDirectory,
-                this.InternalExpectedOutputFileDictionary
+                this.InternalExpectedOutputFileDictionary,
+                this.InputFiles
             );
         }
 
@@ -218,6 +219,7 @@ namespace C
             switch (mode)
             {
                 case "Native":
+                case "VSSolution":
                     var className = "C." + mode + "ExternalSourceGenerator";
                     this.policy = Bam.Core.ExecutionPolicyUtilities<IExternalSourceGeneratorPolicy>.Create(className);
                     break;

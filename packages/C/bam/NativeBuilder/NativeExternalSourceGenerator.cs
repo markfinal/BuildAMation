@@ -39,7 +39,8 @@ namespace C
             Bam.Core.TokenizedString executable,
             Bam.Core.TokenizedStringArray arguments,
             Bam.Core.TokenizedString output_directory,
-            System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> expected_output_files
+            System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> expected_output_files,
+            System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> input_files
         )
         {
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_directory.ToString());

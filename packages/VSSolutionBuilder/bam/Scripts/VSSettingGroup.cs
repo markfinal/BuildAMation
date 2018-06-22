@@ -188,11 +188,18 @@ namespace VSSolutionBuilder
         toRelativePaths(
             Bam.Core.TokenizedStringArray paths)
         {
+            return toRelativePaths(paths.ToEnumerableWithoutDuplicates());
+        }
+
+        private string
+        toRelativePaths(
+            System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> paths)
+        {
             var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
             var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
 
             var contatenated = new System.Text.StringBuilder();
-            foreach (var path in paths.ToEnumerableWithoutDuplicates())
+            foreach (var path in paths.Distinct())
             {
                 var pathString = path.ToString();
                 if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
@@ -218,13 +225,30 @@ namespace VSSolutionBuilder
             bool inheritExisting = false,
             bool arePaths = false)
         {
+            this.AddSetting(
+                name,
+                value.ToEnumerableWithoutDuplicates(),
+                condition,
+                inheritExisting,
+                arePaths
+            );
+        }
+
+        public void
+        AddSetting(
+            string name,
+            System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> value,
+            string condition = null,
+            bool inheritExisting = false,
+            bool arePaths = false)
+        {
             lock (this.Settings)
             {
-                if (0 == value.Count)
+                if (!value.Any())
                 {
                     return;
                 }
-                var linearized = arePaths ? this.toRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.ToEnumerableWithoutDuplicates()).ToString(';');
+                var linearized = arePaths ? this.toRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
                     var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);
