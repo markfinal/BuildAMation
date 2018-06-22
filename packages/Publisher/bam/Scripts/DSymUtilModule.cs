@@ -54,8 +54,8 @@ namespace Publisher
                                            new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             // TODO
         }

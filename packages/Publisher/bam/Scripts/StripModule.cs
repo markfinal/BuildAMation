@@ -56,8 +56,8 @@ namespace Publisher
             this.Requires(this.sourceModule);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             // TODO
             // always strip currently

@@ -67,8 +67,8 @@ namespace Installer
             this.Paths.Add(module, key);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             // do nothing
         }
@@ -225,8 +225,8 @@ namespace Installer
             this.ScriptModule.AddPath(dependent, key);
         }
 
-        public sealed override void
-        Evaluate()
+        protected sealed override void
+        EvaluateInternal()
         {
             // do nothing
         }

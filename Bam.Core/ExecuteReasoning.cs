@@ -54,11 +54,6 @@ namespace Bam.Core
             /// A (re)build is required as the sources to the modules are newer than the output files.
             /// </summary>
             InputFileIsNewer,
-
-            /// <summary>
-            /// Evaluation has been deferred because it cannot be evaluated before the build starts, e.g. console output of a built module is used as the contents of another file.
-            /// </summary>
-            DeferredEvaluation
         }
 
         private ExecuteReasoning(
@@ -107,19 +102,6 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Utility method to create an instance of deferred-evaluation (re)build, of the specified output path.
-        /// </summary>
-        /// <returns>An instance of ExecuteReasoning.</returns>
-        /// <param name="outputPath">Output path whose state must be deferred until the build.</param>
-        /// <returns></returns>
-        public static ExecuteReasoning
-        DeferredUntilBuild(
-            TokenizedString outputPath)
-        {
-            return new ExecuteReasoning(EReason.DeferredEvaluation, outputPath);
-        }
-
-        /// <summary>
         /// Convert the reasoning to a meaningful description. Used by the --explain command line option.
         /// </summary>
         /// <returns>A description of the (re)build reason.</returns>
@@ -141,12 +123,6 @@ namespace Bam.Core
                             return "member(s) of the module collection were updated";
                         }
                         return System.String.Format("{0} is newer than {1}", this.InputFilePath.ToString(), this.OutputFilePath.ToString());
-                    }
-
-                case EReason.DeferredEvaluation:
-                    {
-                        return System.String.Format("there is insufficient information during evaluation to determine the state of {0}",
-                            this.OutputFilePath.ToString());
                     }
 
                 default:

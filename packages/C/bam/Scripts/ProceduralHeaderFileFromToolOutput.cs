@@ -92,10 +92,12 @@ namespace C
                 });
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
-            this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[C.HeaderFile.Key]);
+            // TODO
+            // always build
+            this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
         }
 
         protected override void GetExecutionPolicy(string mode)

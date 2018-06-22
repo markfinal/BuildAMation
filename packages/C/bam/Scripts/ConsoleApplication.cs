@@ -437,8 +437,8 @@ namespace C
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             if (this.IsPrebuilt) // never check, even if there are headers
@@ -452,7 +452,6 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
                 return;
             }
-            var requiresDeferredEvaluation = false;
             var binaryWriteTime = System.IO.File.GetLastWriteTime(binaryPath);
             foreach (var source in this.linkedModules)
             {
@@ -469,9 +468,8 @@ namespace C
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
                             return;
 
-                        case ExecuteReasoning.EReason.DeferredEvaluation:
-                            requiresDeferredEvaluation = true;
-                            break;
+                        default:
+                            throw new Bam.Core.Exception("Unknown reason, {0}", source.ReasonToExecute.Reason.ToString());
                     }
                 }
                 // TODO: there could be a chance that a library is up-to-date from a previous build, and yet
@@ -494,9 +492,8 @@ namespace C
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
                             return;
 
-                        case ExecuteReasoning.EReason.DeferredEvaluation:
-                            requiresDeferredEvaluation = true;
-                            break;
+                        default:
+                            throw new Bam.Core.Exception("Unknown reason, {0}", source.ReasonToExecute.Reason.ToString());
                     }
                 }
                 else
@@ -527,11 +524,6 @@ namespace C
                         }
                     }
                 }
-            }
-            if (requiresDeferredEvaluation)
-            {
-                // deferred evaluation can only be considered when other reasons to execute have been exhausted
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(this.GeneratedPaths[Key]);
             }
         }
 

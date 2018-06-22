@@ -44,7 +44,7 @@ namespace Bam.Core.Test
             TokenizedStringTest.testModule = this;
         }
 
-        public override void Evaluate()
+        protected override void EvaluateInternal()
         {
             throw new System.NotImplementedException();
         }

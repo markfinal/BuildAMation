@@ -267,13 +267,12 @@ namespace C
             // TODO: might have to get the policy, for the sharing settings
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             try
             {
-                Bam.Core.TokenizedString lastDeferredEvaluationPath = null;
                 foreach (var child in this.children)
                 {
                     if (null != child.EvaluationTask)
@@ -291,16 +290,10 @@ namespace C
                                     return;
                                 }
 
-                            case Bam.Core.ExecuteReasoning.EReason.DeferredEvaluation:
-                                lastDeferredEvaluationPath = child.ReasonToExecute.OutputFilePath;
-                                break;
+                            default:
+                                throw new Bam.Core.Exception("Unknown reason, {0}", child.ReasonToExecute.Reason.ToString());
                         }
                     }
-                }
-                if (lastDeferredEvaluationPath != null)
-                {
-                    // deferred evaluation can only be considered when other reasons to execute have been exhausted
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.DeferredUntilBuild(lastDeferredEvaluationPath);
                 }
             }
             catch (System.AggregateException exception)

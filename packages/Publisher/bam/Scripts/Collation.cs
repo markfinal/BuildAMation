@@ -78,8 +78,8 @@ namespace Publisher
             this.PublishRoot = Bam.Core.TokenizedString.Create("$(publishdir)", null);
         }
 
-        public sealed override void
-        Evaluate()
+        protected sealed override void
+        EvaluateInternal()
         {
             // TODO
         }

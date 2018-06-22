@@ -37,8 +37,7 @@ namespace VSSolutionBuilder
         public static void
         PreExecution()
         {
-            var graph = Bam.Core.Graph.Instance;
-            graph.MetaData = new VSSolution();
+            Bam.Core.Graph.Instance.MetaData = new VSSolution();
         }
 
         private static string
