@@ -197,6 +197,10 @@ namespace C
                     Bam.Core.Graph.Instance.Mode
                 );
             }
+            if (null == this.Executable)
+            {
+                throw new Bam.Core.Exception("No executable was specified for {0}", this.ToString());
+            }
             this.policy.GenerateSource(
                 this,
                 context,

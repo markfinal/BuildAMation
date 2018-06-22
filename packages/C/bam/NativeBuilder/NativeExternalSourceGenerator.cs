@@ -42,10 +42,6 @@ namespace C
             System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> expected_output_files
         )
         {
-            if (null == executable)
-            {
-                throw new Bam.Core.Exception("No executable was specified for {0}", sender.ToString());
-            }
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_directory.ToString());
             var program = executable.ToStringQuoteIfNecessary();
             var linearised_args = arguments.ToString(' ');
