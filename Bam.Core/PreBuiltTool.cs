@@ -182,8 +182,8 @@ namespace Bam.Core
         /// Confirm that the prebuilt executable exists.
         /// If it does not, an exception is thrown.
         /// </summary>
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null;
             var exePath = this.Executable.ToString();

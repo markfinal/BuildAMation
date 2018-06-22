@@ -60,8 +60,8 @@ namespace Publisher
             this.InputPath = this.Macros["pathtozip"];
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             // always update, so that zip can figure out what needs updating
             /*

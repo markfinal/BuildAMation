@@ -60,5 +60,13 @@ namespace Bam.Core
             get;
             set;
         }
+
+        /// <summary>
+        /// Has the module been executed?
+        /// </summary>
+        bool Executed
+        {
+            get;
+        }
     }
 }

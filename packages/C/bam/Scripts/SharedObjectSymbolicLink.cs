@@ -87,8 +87,8 @@ namespace C
             this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
 #if __MonoCS__
             if (this.IsPrebuilt)

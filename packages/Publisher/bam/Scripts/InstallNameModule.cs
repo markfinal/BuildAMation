@@ -52,8 +52,8 @@ namespace Publisher
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IInstallNameToolPolicy>.Create(className);
         }
 
-        public override void
-        Evaluate()
+        protected override void
+        EvaluateInternal()
         {
             // do nothing
         }

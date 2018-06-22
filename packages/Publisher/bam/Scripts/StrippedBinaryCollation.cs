@@ -64,8 +64,8 @@ namespace Publisher
             this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
         }
 
-        public sealed override void
-        Evaluate()
+        protected sealed override void
+        EvaluateInternal()
         {
             // TODO
         }
