@@ -86,7 +86,7 @@ namespace C
             {
                 if (!(dep is SourceFile) && !dep.Executed)
                 {
-                    // wait for execution task to be assigned
+                    // wait for execution task to be finished
                     var execution_task = (dep as Bam.Core.IModuleExecution).ExecutionTask;
                     execution_task.Wait();
                 }
