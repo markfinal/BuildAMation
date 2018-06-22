@@ -151,7 +151,36 @@ namespace C
 
         protected override void EvaluateInternal()
         {
-            //throw new System.NotImplementedException();
+            this.ReasonToExecute = null; // assume it doesn't need updating until you find a reason for it to...
+
+            Bam.Core.TokenizedString newest_output_file_path = null;
+            System.DateTime newest_output_file_date = System.DateTime.MinValue;
+            foreach (var output in this.InternalExpectedOutputFileDictionary)
+            {
+                var path = output.Value.ToString();
+                if (!System.IO.File.Exists(path))
+                {
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(output.Value);
+                    return;
+                }
+                var writeTime = System.IO.File.GetLastWriteTime(path);
+                if (writeTime > newest_output_file_date)
+                {
+                    newest_output_file_path = output.Value;
+                    newest_output_file_date = writeTime;
+                }
+            }
+
+            foreach (var input in this.InputFiles)
+            {
+                var path = input.Value.ToString();
+                var writeTime = System.IO.File.GetLastWriteTime(path);
+                if (writeTime > newest_output_file_date)
+                {
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(newest_output_file_path, input.Value);
+                    return;
+                }
+            }
         }
 
         protected override void
