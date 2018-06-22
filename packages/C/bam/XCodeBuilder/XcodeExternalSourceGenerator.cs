@@ -48,7 +48,15 @@ namespace C
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
             var target = workspace.EnsureTargetExists(encapsulating);
+            if (encapsulating == sender)
+            {
+                target.SetType(XcodeBuilder.Target.EProductType.Utility);
+            }
             var configuration = target.GetConfiguration(encapsulating);
+            if (encapsulating == sender)
+            {
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+            }
 
             var commands = new Bam.Core.StringArray();
 
