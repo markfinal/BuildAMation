@@ -191,7 +191,11 @@ namespace C
         {
             if (null == this.policy)
             {
-                throw new Bam.Core.Exception("No execution policy for {0}", this.ToString());
+                throw new Bam.Core.Exception(
+                    "No execution policy for {0} for build mode {1}",
+                    this.ToString(),
+                    Bam.Core.Graph.Instance.Mode
+                );
             }
             this.policy.GenerateSource(
                 this,
