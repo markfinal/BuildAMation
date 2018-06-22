@@ -221,6 +221,7 @@ namespace C
                 case "Native":
                 case "VSSolution":
                 case "Xcode":
+                case "MakeFile":
                     var className = "C." + mode + "ExternalSourceGenerator";
                     this.policy = Bam.Core.ExecutionPolicyUtilities<IExternalSourceGeneratorPolicy>.Create(className);
                     break;
