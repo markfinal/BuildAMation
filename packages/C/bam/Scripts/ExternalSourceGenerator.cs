@@ -35,6 +35,8 @@ namespace C
     public class ExternalSourceGenerator :
         Bam.Core.Module
     {
+        private IExternalSourceGeneratorPolicy policy = null;
+
         public ExternalSourceGenerator()
         {
             this.Arguments = new Bam.Core.TokenizedStringArray();
@@ -187,31 +189,31 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.Executable)
+            if (null == this.policy)
             {
-                throw new Bam.Core.Exception("No executable was specified");
+                throw new Bam.Core.Exception("No execution policy for {0}", this.ToString());
             }
-            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(this.OutputDirectory.ToString());
-            var program = this.Executable.ToStringQuoteIfNecessary();
-            var arguments = this.Arguments.ToString(' ');
-            Bam.Core.Log.Info("Running: {0} {1}", program, arguments);
-            Bam.Core.OSUtilities.RunExecutable(program, arguments);
-            foreach (var expected_file in this.ExpectedOutputFiles)
-            {
-                if (!System.IO.File.Exists(expected_file.Value.ToString()))
-                {
-                    throw new Bam.Core.Exception(
-                        "Expected '{0}' to exist (key={1}), but it does not",
-                        expected_file.Value.ToString(),
-                        expected_file.Key
-                    );
-                }
-            }
+            this.policy.GenerateSource(
+                this,
+                context,
+                this.Executable,
+                this.Arguments,
+                this.OutputDirectory,
+                this.InternalExpectedOutputFileDictionary
+            );
         }
 
-        protected override void GetExecutionPolicy(string mode)
+        protected override void
+        GetExecutionPolicy(
+            string mode)
         {
-            //throw new System.NotImplementedException();
+            switch (mode)
+            {
+                case "Native":
+                    var className = "C." + mode + "ExternalSourceGenerator";
+                    this.policy = Bam.Core.ExecutionPolicyUtilities<IExternalSourceGeneratorPolicy>.Create(className);
+                    break;
+            }
         }
     }
 }
