@@ -149,7 +149,7 @@ namespace C
             this.Macros.Add(name, path);
         }
 
-        public override void Evaluate()
+        protected override void EvaluateInternal()
         {
             //throw new System.NotImplementedException();
         }
