@@ -1,4 +1,4 @@
-22-Jun-2018 BREAKING CHANGES
+22-Jun-2018 Fixes #465. BREAKING CHANGES
 - Removed Bam.Core.ExecuteReasoning.DeferredEvaluation enumeration and Bam.Core.ExecuteReasoning.DeferredUntilBuild() function entirely, and all associated code in packages and tests. This removes a lot of repetitive code.
 - Bam.Core.Module.Evaluate has been renamed to EvaluateInternal, and made protected. This is a breaking change for almost all derived Module classes.
 - Single threaded build mode: evaluation is now performed in lock-step with module execution in the main thread. (New behaviour)
