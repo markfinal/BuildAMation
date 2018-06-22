@@ -188,6 +188,13 @@ namespace Bam.Core
             if (0 == threadCount)
             {
                 threadCount = System.Environment.ProcessorCount;
+                if (threadCount > 2)
+                {
+                    // one for the main thread, and one for the evaluation scheduler
+                    // if the execution scheduler has ProcessorCount threads, then something
+                    // gives way, and execution takes a lot longer
+                    threadCount -= 2;
+                }
             }
             var graph = Graph.Instance;
             var metaDataType = graph.BuildModeMetaData.GetType();
