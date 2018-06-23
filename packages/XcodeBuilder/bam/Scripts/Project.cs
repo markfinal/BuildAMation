@@ -525,7 +525,7 @@ namespace XcodeBuilder
                 // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
                 // needed so that built products are no longer 'red' in the IDE
                 var relativeSymRoot = Bam.Core.RelativePathUtilities.GetPath(this.BuiltProductsDir, this.SourceRoot);
-                projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot);
+                projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot.TrimEnd('/'));
 
                 // all intermediate files generated are relative to this
                 projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
@@ -567,8 +567,23 @@ namespace XcodeBuilder
                         foreach (var file in diff)
                         {
                             var fullPath = file.FileRef.Path.ToString();
-                            var filename = System.IO.Path.GetFileName(fullPath);
-                            excluded.Add(filename);
+                            var package_build_dir = this.Module.Macros["packagebuilddir"].ToString();
+                            var srcRoot = this.Module.Macros["packagedir"].ToString();
+                            if (fullPath.StartsWith(package_build_dir))
+                            {
+                                var excluded_path = "$(SYMROOT)" + fullPath.Replace(package_build_dir, "");
+                                excluded.Add(excluded_path);
+                            }
+                            else if (fullPath.StartsWith(srcRoot))
+                            {
+                                var excluded_path = "$(SRCROOT)" + fullPath.Replace(srcRoot, "");
+                                excluded.Add(excluded_path);
+                            }
+                            else
+                            {
+                                var excluded_path = System.IO.Path.GetFileName(fullPath);
+                                excluded.Add(excluded_path);
+                            }
                         }
                         config["EXCLUDED_SOURCE_FILE_NAMES"] = excluded;
                     }
