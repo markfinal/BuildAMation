@@ -1,3 +1,5 @@
+23-Jun-2018 Fixes #471. Added VisualCCommon.ICommonCompilerSettings.IncreaseObjectFileSectionCount (bool) property (defaults to false) to enable the "big obj" compilation feature.
+
 23-Jun-2018 Fixes #454. Added C.ExternalSourceGenerator, allowing specification of an external tool to run, with arguments, input files, and expected output files. Supported on Native, VSSolution, Xcode, and MakeFile build modes.
 Added overload to C.CModuleContainer.AddFile(), accepting a Bam.Core.TokenizedString.
 Added overload to VSSolutionBuilder.VSSettingsGroup.AddSetting, accepting an IEnumerable of Bam.Core.TokenizedString (as may be produced by a LINQ operation).

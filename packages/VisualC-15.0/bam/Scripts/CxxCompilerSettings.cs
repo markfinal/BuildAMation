@@ -211,5 +211,11 @@ namespace VisualC
             get;
             set;
         }
+
+        bool? VisualCCommon.ICommonCompilerSettings.IncreaseObjectFileSectionCount
+        {
+            get;
+            set;
+        }
     }
 }

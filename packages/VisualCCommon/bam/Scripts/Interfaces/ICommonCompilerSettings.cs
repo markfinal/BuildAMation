@@ -63,5 +63,11 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        bool? IncreaseObjectFileSectionCount
+        {
+            get;
+            set;
+        }
     }
 }

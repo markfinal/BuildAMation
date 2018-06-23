@@ -87,6 +87,10 @@ namespace VisualCCommon
                 vsSettingsGroup.AddSetting("Optimization", optimization(), condition);
             }
 
+            if (settings.IncreaseObjectFileSectionCount.HasValue)
+            {
+                vsSettingsGroup.AddSetting("AdditionalOptions", "-bigobj", condition);
+            }
         }
     }
 }

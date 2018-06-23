@@ -100,6 +100,14 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown compiler optimization, {0}", settings.Optimization.Value.ToString());
                 }
             }
+
+            if (settings.IncreaseObjectFileSectionCount.HasValue)
+            {
+                if (settings.IncreaseObjectFileSectionCount.Value)
+                {
+                    commandLine.Add("-bigobj");
+                }
+            }
         }
     }
 }
