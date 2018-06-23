@@ -3,6 +3,8 @@ Added overrides to C.CModuleContainer.AddFile(Bam.Core.TokenizedString).
 
 Added new test cases, ExternalSourceGeneratorTest1 and ExternalSourceGeneratorTest2, that exercises C.ExternalSourceGenerator by invoking Python.
 
+23-Jun-2018 Fixes #470. Use of EXCLUDED_SOURCE_FILE_NAMES in generated Xcode projects was not distinct enough to cover a file with identical basename, but in different directories.
+
 22-Jun-2018 Fixes #465. BREAKING CHANGES
 - Removed Bam.Core.ExecuteReasoning.DeferredEvaluation enumeration and Bam.Core.ExecuteReasoning.DeferredUntilBuild() function entirely, and all associated code in packages and tests. This removes a lot of repetitive code.
 - Bam.Core.Module.Evaluate has been renamed to EvaluateInternal, and made protected. This is a breaking change for almost all derived Module classes.
