@@ -90,7 +90,7 @@ namespace C
                     var execution_task = (dep as Bam.Core.IModuleExecution).ExecutionTask;
                     if (null == execution_task)
                     {
-                        throw new Bam.Core.Exception("No exception task available for dependent {0} of {1}", dep.ToString(), this.ToString());
+                        throw new Bam.Core.Exception("No execution task available for dependent {0}, of {1}", dep.ToString(), this.ToString());
                     }
                     execution_task.Wait();
                 }
