@@ -65,6 +65,19 @@ namespace C
             return sourceFile;
         }
 
+        private SourceFileType
+        CreateSourceFile<SourceFileType>(
+            Bam.Core.TokenizedString path)
+            where SourceFileType : Bam.Core.Module, Bam.Core.IInputPath, new()
+        {
+            // explicitly make a source file
+            var sourceFile = Bam.Core.Module.Create<SourceFileType>(postInitCallback: (module) =>
+            {
+                (module as SourceFileType).InputPath = path;
+            });
+            return sourceFile;
+        }
+
         /// <summary>
         /// Add a single object file, given the source path, to the container. Path must resolve to a single file.
         /// </summary>
@@ -98,6 +111,35 @@ namespace C
                     var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
                     child.InputPath = macroModule.CreateTokenizedString(path);
                 }
+            }
+
+            (child as Bam.Core.IChildModule).Parent = this;
+            this.children.Add(child);
+            this.DependsOn(child);
+            return child;
+        }
+
+        /// <summary>
+        /// Add a single object file, given the source path, to the container. Path must resolve to a single file.
+        /// </summary>
+        /// <returns>The object file module, in order to manage patches.</returns>
+        /// <param name="path">Path.</param>
+        public ChildModuleType
+        AddFile(
+            Bam.Core.TokenizedString path)
+        {
+            // TODO: how can I distinguish between creating a child module that inherits it's parents settings
+            // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
+            var child = Bam.Core.Module.Create<ChildModuleType>(this);
+
+            if (child is IRequiresSourceModule)
+            {
+                var source = this.CreateSourceFile<SourceFile>(path);
+                (child as IRequiresSourceModule).Source = source;
+            }
+            else
+            {
+                child.InputPath = path;
             }
 
             (child as Bam.Core.IChildModule).Parent = this;

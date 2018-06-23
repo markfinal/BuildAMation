@@ -1,3 +1,9 @@
+23-Jun-2018 Fixes #454. Added C.ExternalSourceGenerator, allowing specification of an external tool to run, with arguments, input files, and expected output files. Supported on Native, VSSolution, Xcode, and MakeFile build modes.
+Added overload to C.CModuleContainer.AddFile(), accepting a Bam.Core.TokenizedString.
+Added overload to VSSolutionBuilder.VSSettingsGroup.AddSetting, accepting an IEnumerable of Bam.Core.TokenizedString (as may be produced by a LINQ operation).
+
+Added new test cases, ExternalSourceGeneratorTest1 and ExternalSourceGeneratorTest2, that exercises C.ExternalSourceGenerator by invoking Python.
+
 23-Jun-2018 Fixes #470. Use of EXCLUDED_SOURCE_FILE_NAMES in generated Xcode projects was not distinct enough to cover a file with identical basename, but in different directories.
 
 22-Jun-2018 Fixes #465. BREAKING CHANGES
