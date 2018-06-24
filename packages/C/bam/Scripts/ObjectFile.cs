@@ -89,7 +89,7 @@ namespace C
                     var as_module_execution = dep as Bam.Core.IModuleExecution;
                     while (null == as_module_execution.ExecutionTask)
                     {
-                        Bam.Core.Log.MessageAll("******** Waiting for {0} to have an execution task assigned", dep.ToString());
+                        Bam.Core.Log.DebugMessage("******** Waiting for {0} to have an execution task assigned", dep.ToString());
                         System.Threading.Thread.Yield();
                     }
                     // wait for execution task to be finished
