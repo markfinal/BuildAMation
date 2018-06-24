@@ -86,8 +86,14 @@ namespace C
             {
                 if (!(dep is SourceFile) && !dep.Executed)
                 {
+                    var as_module_execution = dep as Bam.Core.IModuleExecution;
+                    while (null == as_module_execution.ExecutionTask)
+                    {
+                        Bam.Core.Log.MessageAll("******** Waiting for {0} to have an execution task assigned", dep.ToString());
+                        System.Threading.Thread.Yield();
+                    }
                     // wait for execution task to be finished
-                    var execution_task = (dep as Bam.Core.IModuleExecution).ExecutionTask;
+                    var execution_task = as_module_execution.ExecutionTask;
                     if (null == execution_task)
                     {
                         throw new Bam.Core.Exception("No execution task available for dependent {0}, of {1}", dep.ToString(), this.ToString());
