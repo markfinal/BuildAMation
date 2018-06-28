@@ -1,3 +1,5 @@
+28-Jun-2018 ======== Version 1.2.0 alpha 5 Release ========
+
 23-Jun-2018 Fixes #471. Added VisualCCommon.ICommonCompilerSettings.IncreaseObjectFileSectionCount (bool) property (defaults to false) to enable the "big obj" compilation feature.
 
 23-Jun-2018 Fixes #454. Added C.ExternalSourceGenerator, allowing specification of an external tool to run, with arguments, input files, and expected output files. Supported on Native, VSSolution, Xcode, and MakeFile build modes.
