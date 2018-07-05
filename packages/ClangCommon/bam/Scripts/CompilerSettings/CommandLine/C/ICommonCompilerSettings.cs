@@ -166,6 +166,8 @@ namespace ClangCommon
                     commandLine.Add("-Wno-error");
                 }
             }
+#if BAM_V2
+#else
             if (settings.OutputType.HasValue)
             {
                 var module = (settings as Bam.Core.Settings).Module;
@@ -181,6 +183,7 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported output type, {0}", settings.OutputType.Value.ToString());
                 }
             }
+#endif
             foreach (var header in settings.NamedHeaders)
             {
                 commandLine.Add(System.String.Format("-include {0}", header));
