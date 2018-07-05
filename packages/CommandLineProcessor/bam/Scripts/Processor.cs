@@ -62,6 +62,11 @@ namespace CommandLineProcessor
         Execute(
             Bam.Core.Module module)
         {
+            if (!(module as C.ObjectFileBase).PerformCompilation)
+            {
+                return;
+            }
+
             var commandLine = new Bam.Core.StringArray();
             //Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
             //Bam.Core.Log.MessageAll("Settings: {0}", module.Settings.ToString());

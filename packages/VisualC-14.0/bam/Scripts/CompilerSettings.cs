@@ -101,6 +101,8 @@ namespace VisualC
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
         [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "ObjectFileName")]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "PreprocessToFile")]
 #endif
         C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
