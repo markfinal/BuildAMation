@@ -40,7 +40,10 @@ namespace C
     {
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
+#if BAM_V2
+#else
         private ILinkingPolicy Policy = null;
+#endif
 
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ExecutableFile");
         static public Bam.Core.PathKey ImportLibraryKey = Bam.Core.PathKey.Generate("Windows Import Library File");
@@ -431,6 +434,8 @@ namespace C
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             if (this.IsPrebuilt &&
                 !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
             {
@@ -438,6 +443,7 @@ namespace C
             }
             var className = "C." + mode + "Linker";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
+#endif
         }
 
         protected override void

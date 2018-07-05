@@ -35,7 +35,10 @@ namespace C
     public class ObjectFile :
         ObjectFileBase
     {
+#if BAM_V2
+#else
         private ICompilationPolicy Policy = null;
+#endif
 
         protected override void
         Init(
@@ -86,8 +89,11 @@ namespace C
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             var className = "C." + mode + "Compilation";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
+#endif
         }
 
         protected override void

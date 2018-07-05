@@ -38,7 +38,10 @@ namespace C
     {
         private Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+#if BAM_V2
+#else
         private IArchivingPolicy Policy = null;
+#endif
 
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Static Library File");
 
@@ -230,8 +233,11 @@ namespace C
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             var className = "C." + mode + "Librarian";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IArchivingPolicy>.Create(className);
+#endif
         }
 
         protected sealed override void
