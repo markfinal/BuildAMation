@@ -99,6 +99,8 @@ namespace Clang
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
         [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
+        [XcodeProjectProcessor.Enum(C.ECompilerOutput.CompileOnly, "")]
+        [XcodeProjectProcessor.Enum(C.ECompilerOutput.Preprocess, "")]
 #endif
         C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {

@@ -201,10 +201,13 @@ namespace ClangCommon
             {
                 configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.UniqueConfigurationValue(settings.WarningsAsErrors.Value ? "YES" : "NO");
             }
+#if BAM_V2
+#else
             if (settings.OutputType.HasValue)
             {
                 // TODO: anything?
             }
+#endif
             if (settings.NamedHeaders.Count > 0)
             {
                 var namedHeaders = new XcodeBuilder.MultiConfigurationValue();

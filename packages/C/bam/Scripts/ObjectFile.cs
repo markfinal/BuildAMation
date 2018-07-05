@@ -75,6 +75,10 @@ namespace C
                     VisualStudioProcessor.VSSolutionCompile.Execute(this);
                     break;
 
+                case "Xcode":
+                    XcodeProjectProcessor.XcodeCompile.Execute(this);
+                    break;
+
                 default:
                     throw new System.NotImplementedException();
             }

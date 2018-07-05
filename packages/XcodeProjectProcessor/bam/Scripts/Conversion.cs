@@ -27,8 +27,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+using System.Linq;
+#endif
 namespace XcodeProjectProcessor
 {
+    #if BAM_V2
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
+    public class EnumAttribute :
+        System.Attribute
+    {
+        public EnumAttribute(
+            object key,
+            string value)
+        {
+            this.Key = key as System.Enum;
+            this.Value = value;
+        }
+
+        public System.Enum Key
+        {
+            get;
+            private set;
+        }
+
+        public string Value
+        {
+            get;
+            private set;
+        }
+    }
+
+    public static class XcodeCompile
+    {
+        public static void
+        Execute(
+            Bam.Core.Module module)
+        {
+        }
+    }
+#endif
+
     public static class Conversion
     {
         public static void
