@@ -67,8 +67,12 @@ namespace C
 #if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
+                case "MakeFile":
+                    MakeFileCompilation.Execute(this);
+                    break;
+
                 case "Native":
-                    CommandLineProcessor.NativeCompile.Execute(this);
+                    CommandLineProcessor.NativeConversion.Convert(this);
                     break;
 
                 case "VSSolution":

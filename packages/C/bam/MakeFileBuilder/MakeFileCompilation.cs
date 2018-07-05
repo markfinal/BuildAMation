@@ -29,6 +29,63 @@
 #endregion // License
 namespace C
 {
+#if BAM_V2
+    public static class MakeFileCompilation
+    {
+        public static void
+        Execute(
+            ObjectFile module)
+        {
+            if (!module.PerformCompilation)
+            {
+                return;
+            }
+
+            var objectFilePath = module.GeneratedPaths[ObjectFileBase.Key];
+
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+            var rule = meta.AddRule();
+            rule.AddTarget(objectFilePath);
+            rule.AddPrerequisite((module as IRequiresSourceModule).Source, C.SourceFile.Key);
+
+            var tool = module.Tool as Bam.Core.ICommandLineTool;
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat("{0} {1} $< {2}",
+                CommandLineProcessor.Processor.StringifyTool(tool),
+                CommandLineProcessor.NativeConversion.Convert(module).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(tool));
+            rule.AddShellCommand(command.ToString());
+
+            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
+            meta.CommonMetaData.AddDirectory(objectFileDir);
+            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+
+            // add dependencies, such as procedurally generated headers
+            foreach (var dep in module.Dependents)
+            {
+                if (null == dep.MetaData)
+                {
+                    continue;
+                }
+                if (dep is C.SourceFile)
+                {
+                    continue;
+                }
+                var depMeta = dep.MetaData as MakeFileBuilder.MakeFileMeta;
+                foreach (var depRule in depMeta.Rules)
+                {
+                    depRule.ForEachTarget(target =>
+                    {
+                        if (!target.IsPhony)
+                        {
+                            rule.AddPrerequisite(target.Path);
+                        }
+                    });
+                }
+            }
+        }
+    }
+#else
     public sealed class MakeFileCompilation :
         ICompilationPolicy
     {
@@ -89,5 +146,6 @@ namespace C
             }
         }
     }
+#endif
 }
 
