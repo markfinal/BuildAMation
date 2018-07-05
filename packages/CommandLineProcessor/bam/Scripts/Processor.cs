@@ -30,6 +30,72 @@
 using System.Linq;
 namespace CommandLineProcessor
 {
+#if BAM_V2
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
+    public class EnumAttribute :
+        System.Attribute
+    {
+        public EnumAttribute(
+            object key,
+            string value)
+        {
+            this.Key = key as System.Enum;
+            this.Value = value;
+        }
+
+        public System.Enum Key
+        {
+            get;
+            private set;
+        }
+
+        public string Value
+        {
+            get;
+            private set;
+        }
+    }
+
+    public static class NativeCompile
+    {
+        public static void
+        Execute(
+            Bam.Core.Module module)
+        {
+            var commandLine = new Bam.Core.StringArray();
+            //Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
+            //Bam.Core.Log.MessageAll("Settings: {0}", module.Settings.ToString());
+            var module_properties = module.Settings.GetType().GetProperties(
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.Public
+            );
+            foreach (var settings_interface in module.Settings.Interfaces())
+            {
+                //Bam.Core.Log.MessageAll(settings_interface.ToString());
+                foreach (var interface_property in settings_interface.GetProperties())
+                {
+                    var settings_property = module_properties.First(item => item.Name.EndsWith(interface_property.Name));
+                    //Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
+                    var attributeArray = settings_property.GetCustomAttributes(typeof(EnumAttribute), false);
+                    if (!attributeArray.Any())
+                    {
+                        continue;
+                    }
+                    var property_value = settings_property.GetValue(module.Settings);
+                    var matching_attribute = attributeArray.FirstOrDefault(item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
+                    if (null == matching_attribute)
+                    {
+                        throw new Bam.Core.Exception("Unable to locate enumeration mapping for {0}", interface_property.GetType().FullName);
+                    }
+                    commandLine.Add(matching_attribute.Value);
+                }
+            }
+            Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
+        }
+    }
+#endif
+
     public static class Processor
     {
         public static string

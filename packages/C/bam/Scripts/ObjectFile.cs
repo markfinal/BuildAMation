@@ -62,6 +62,19 @@ namespace C
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            if (!this.PerformCompilation)
+            {
+                return;
+            }
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+                case "Native":
+                    CommandLineProcessor.NativeCompile.Execute(this);
+                    break;
+
+                default:
+                    throw new System.NotImplementedException();
+            }
 #else
             var sourceFile = this.SourceModule;
             var objectFile = this.GeneratedPaths[Key];
