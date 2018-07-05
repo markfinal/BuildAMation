@@ -128,6 +128,8 @@ namespace VisualCCommon
                 vsSettingsGroup.AddSetting("TreatWarningAsError", settings.WarningsAsErrors.Value, condition);
             }
 
+#if BAM_V2
+#else
             if (settings.OutputType.HasValue)
             {
                 vsSettingsGroup.AddSetting("PreprocessToFile", settings.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
@@ -136,6 +138,7 @@ namespace VisualCCommon
                     vsSettingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);
                 }
             }
+#endif
 
             if (settings.NamedHeaders.Count > 0)
             {
