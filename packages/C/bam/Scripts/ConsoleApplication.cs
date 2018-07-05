@@ -410,6 +410,8 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (this.IsPrebuilt &&
                 !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
             {
@@ -422,6 +424,7 @@ namespace C
             var linked = OrderLibrariesWithDecreasingDependencies(this.linkedModules);
             var executable = this.GeneratedPaths[Key];
             this.Policy.Link(this, context, executable, source, headers, linked);
+#endif
         }
 
         protected override void

@@ -61,9 +61,12 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             var sourceFile = this.SourceModule;
             var objectFile = this.GeneratedPaths[Key];
             this.Policy.Compile(this, context, objectFile, sourceFile);
+#endif
         }
 
         protected override void

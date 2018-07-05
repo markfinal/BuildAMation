@@ -217,10 +217,13 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
             var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
             var libraryFile = this.GeneratedPaths[Key];
             this.Policy.Archive(this, context, libraryFile, source, headers);
+#endif
         }
 
         protected sealed override void
