@@ -647,13 +647,21 @@ namespace Bam.Core
                 // to compile without, we need to file contents to hash the source
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
+#if BAM_V2
+                    var scripts = package.GetScriptFiles(true);
+#else
                     var scripts = package.GetScriptFiles();
+#endif
                     sourceCode.AddRange(scripts);
                     Log.DebugMessage(scripts.ToString("\n\t"));
                 }
                 else
                 {
+#if BAM_V2
+                    foreach (var scriptFile in package.GetScriptFiles(true))
+#else
                     foreach (var scriptFile in package.GetScriptFiles())
+#endif
                     {
                         using (var reader = new System.IO.StreamReader(scriptFile))
                         {
