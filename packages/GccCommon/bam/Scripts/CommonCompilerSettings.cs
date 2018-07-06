@@ -38,8 +38,9 @@ namespace GccCommon
     {
         protected CommonCompilerSettings(
             Bam.Core.Module module)
-            : this(module, true)
-        { }
+            :
+            this(module, true)
+        {}
 
         protected CommonCompilerSettings(
             Bam.Core.Module module,
