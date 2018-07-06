@@ -29,6 +29,16 @@
 #endregion // License
 namespace C
 {
+#if BAM_V2
+    public static class XcodeSupport
+    {
+        public static void
+        Compile(
+            ObjectFile module)
+        {
+        }
+    }
+#else
     public sealed class XcodeCompilation :
         ICompilationPolicy
     {
@@ -96,4 +106,5 @@ namespace C
             }
         }
     }
+#endif
 }

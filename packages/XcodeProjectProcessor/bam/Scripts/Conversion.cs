@@ -57,15 +57,6 @@ namespace XcodeProjectProcessor
             private set;
         }
     }
-
-    public static class XcodeCompile
-    {
-        public static void
-        Execute(
-            Bam.Core.Module module)
-        {
-        }
-    }
 #endif
 
     public static class Conversion

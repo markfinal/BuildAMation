@@ -80,7 +80,7 @@ namespace C
                     break;
 
                 case "Xcode":
-                    XcodeProjectProcessor.XcodeCompile.Execute(this);
+                    XcodeSupport.Compile(this);
                     break;
 
                 default:
