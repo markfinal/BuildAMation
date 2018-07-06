@@ -66,12 +66,18 @@ namespace ClangCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-s", "")]
+#endif
         bool ICommonArchiverSettings.Ranlib
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-c", "")]
+#endif
         bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated
         {
             get;
@@ -84,6 +90,9 @@ namespace ClangCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
+#endif
         EArchiverCommand ICommonArchiverSettings.Command
         {
             get;

@@ -141,10 +141,18 @@ namespace CommandLineProcessor
                     var property_value = settings_property.GetValue(module.Settings);
                     if (attributeArray.First() is EnumAttribute)
                     {
-                        if (!(settings_property.PropertyType.IsAssignableFrom(typeof(System.Enum)) ||
-                              settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)))
+                        if (!(typeof(System.Enum).IsAssignableFrom(settings_property.PropertyType) ||
+                              (settings_property.PropertyType.IsGenericType &&
+                               settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)
+                              )
+                             )
+                           )
                         {
-                            throw new Bam.Core.Exception("Attribute expected an enum (or nullable enum), but property is of type {0}", settings_property.PropertyType.ToString());
+                            throw new Bam.Core.Exception(
+                                "Attribute expected an enum (or nullable enum), but property {0} is of type {1}",
+                                settings_property.Name,
+                                settings_property.PropertyType.ToString()
+                            );
                         }
                         var matching_attribute = attributeArray.FirstOrDefault(
                             item => (item as EnumAttribute).Key.Equals(property_value)
@@ -157,7 +165,7 @@ namespace CommandLineProcessor
                     }
                     else if (attributeArray.First() is PathAttribute)
                     {
-                        if (!settings_property.PropertyType.IsAssignableFrom(typeof(Bam.Core.TokenizedString)))
+                        if (!typeof(Bam.Core.TokenizedString).IsAssignableFrom(settings_property.PropertyType))
                         {
                             throw new Bam.Core.Exception("Attribute expected a Bam.Core.TokenizedString, but property is of type {0}", settings_property.PropertyType.ToString());
                         }
@@ -171,7 +179,7 @@ namespace CommandLineProcessor
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
-                        if (!settings_property.PropertyType.IsAssignableFrom(typeof(Bam.Core.TokenizedStringArray)))
+                        if (!typeof(Bam.Core.TokenizedStringArray).IsAssignableFrom(settings_property.PropertyType))
                         {
                             throw new Bam.Core.Exception("Attribute expected a Bam.Core.TokenizedStringArray, but property is of type {0}", settings_property.PropertyType.ToString());
                         }
@@ -191,10 +199,18 @@ namespace CommandLineProcessor
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
-                        if (!(settings_property.PropertyType.IsAssignableFrom(typeof(bool)) ||
-                              settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)))
+                        if (!(typeof(bool).IsAssignableFrom(settings_property.PropertyType) ||
+                              (settings_property.PropertyType.IsGenericType &&
+                               settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)
+                              )
+                             )
+                           )
                         {
-                            throw new Bam.Core.Exception("Attribute expected an bool (or nullable bool), but property is of type {0}", settings_property.PropertyType.ToString());
+                            throw new Bam.Core.Exception(
+                                "Attribute expected an bool (or nullable bool), but property {0} is of type {1}",
+                                settings_property.Name,
+                                settings_property.PropertyType.ToString()
+                            );
                         }
                         bool value = (bool)property_value;
                         var attr = attributeArray.First() as BoolAttribute;
