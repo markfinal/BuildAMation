@@ -82,7 +82,7 @@ namespace MingwCommon
             else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
                      typeof(C.CObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new Mingw.CompilerSettings(module);
+                var settings = new Mingw.CCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }

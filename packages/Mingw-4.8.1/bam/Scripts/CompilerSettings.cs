@@ -29,161 +29,24 @@
 #endregion // License
 namespace Mingw
 {
-    public class CompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonCompilerSettingsWin,
-        C.ICommonCompilerSettings,
-        C.ICOnlyCompilerSettings,
-        C.IAdditionalSettings,
-        MingwCommon.ICommonCompilerSettings
+    public sealed class CCompilerSettings :
+        MingwCommon.CommonCompilerSettings,
+        C.ICOnlyCompilerSettings
     {
-        public CompilerSettings(
+        public CCompilerSettings(
             Bam.Core.Module module)
-            : this(module, useDefaults:true)
+            :
+            base(module)
         {}
 
-        public CompilerSettings(
+        public CCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
-        {
-            get;
-            set;
-        }
-
-        C.EBit? C.ICommonCompilerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        C.EOptimization? C.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
-
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.OmitFramePointer
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
-        {
-            get;
-            set;
-        }
+            :
+            base(module, useDefaults)
+        {}
 
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonCompilerSettings.AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonCompilerSettings.ExtraWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonCompilerSettings.Pedantic
-        {
-            get;
-            set;
-        }
-
-        MingwCommon.EVisibility? MingwCommon.ICommonCompilerSettings.Visibility
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonCompilerSettings.StrictAliasing
-        {
-            get;
-            set;
-        }
-
-        MingwCommon.EOptimization? MingwCommon.ICommonCompilerSettings.Optimization
         {
             get;
             set;
