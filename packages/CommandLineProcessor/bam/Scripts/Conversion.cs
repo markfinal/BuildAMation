@@ -132,7 +132,7 @@ namespace CommandLineProcessor
                     }
                 }
             }
-            Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
+            //Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
             return commandLine;
         }
     }

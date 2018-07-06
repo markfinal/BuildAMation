@@ -29,6 +29,31 @@
 #endregion // License
 namespace C
 {
+#if BAM_V2
+    public static class NativeBuilder
+    {
+        public static void
+        Compile(
+            ObjectFile module,
+            Bam.Core.ExecutionContext context)
+        {
+            if (!module.PerformCompilation)
+            {
+                return;
+            }
+
+            var output_path = (module.Settings as ICommonCompilerSettings).OutputPath.ToString();
+            var output_dir = System.IO.Path.GetDirectoryName(output_path);
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_dir);
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
+                CommandLineProcessor.NativeConversion.Convert(module)
+            );
+        }
+    }
+#else
     public sealed class NativeCompilation :
         ICompilationPolicy
     {
@@ -53,4 +78,5 @@ namespace C
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
+#endif
 }

@@ -72,7 +72,7 @@ namespace C
                     break;
 
                 case "Native":
-                    CommandLineProcessor.NativeConversion.Convert(this);
+                    NativeBuilder.Compile(this, context);
                     break;
 
                 case "VSSolution":
