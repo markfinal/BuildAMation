@@ -221,6 +221,27 @@ namespace C
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+                case "MakeFile":
+                    //MakeFileSupport.Archive(this);
+                    break;
+
+                case "Native":
+                    NativeSupport.Archive(this, context);
+                    break;
+
+                case "VSSolution":
+                    //VSSolutionSupport.Archive(this);
+                    break;
+
+                case "Xcode":
+                    //XcodeSupport.Archive(this);
+                    break;
+
+                default:
+                    throw new System.NotImplementedException();
+            }
 #else
             var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
             var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();

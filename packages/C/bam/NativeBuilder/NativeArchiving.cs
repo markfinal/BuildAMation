@@ -29,6 +29,17 @@
 #endregion // License
 namespace C
 {
+#if BAM_V2
+    public static partial class NativeSupport
+    {
+        public static void
+        Archive(
+            StaticLibrary module,
+            Bam.Core.ExecutionContext context)
+        {
+        }
+    }
+#else
     public sealed class NativeLibrarian :
         IArchivingPolicy
     {
@@ -58,4 +69,5 @@ namespace C
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
+#endif
 }

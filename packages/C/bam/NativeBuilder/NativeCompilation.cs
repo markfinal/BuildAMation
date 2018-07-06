@@ -30,7 +30,7 @@
 namespace C
 {
 #if BAM_V2
-    public static class NativeSupport
+    public static partial class NativeSupport
     {
         public static void
         Compile(
