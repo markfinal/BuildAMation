@@ -29,25 +29,25 @@
 #endregion // License
 namespace Clang
 {
-    public class CCompilerSettings :
+    public class CxxCompilerSettings :
         ClangCommon.CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {
-        public CCompilerSettings(
+        public CxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.C;
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
-        public CCompilerSettings(
+        public CxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.C;
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
