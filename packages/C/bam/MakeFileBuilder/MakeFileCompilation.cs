@@ -30,10 +30,10 @@
 namespace C
 {
 #if BAM_V2
-    public static class MakeFileCompilation
+    public static class MakeFileSupport
     {
         public static void
-        Execute(
+        Compile(
             ObjectFile module)
         {
             if (!module.PerformCompilation)

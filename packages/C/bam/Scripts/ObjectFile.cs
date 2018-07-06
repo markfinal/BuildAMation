@@ -68,11 +68,11 @@ namespace C
             switch (Bam.Core.Graph.Instance.Mode)
             {
                 case "MakeFile":
-                    MakeFileCompilation.Execute(this);
+                    MakeFileSupport.Compile(this);
                     break;
 
                 case "Native":
-                    NativeBuilder.Compile(this, context);
+                    NativeSupport.Compile(this, context);
                     break;
 
                 case "VSSolution":
