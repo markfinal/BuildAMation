@@ -29,19 +29,14 @@
 #endregion // License
 namespace Clang
 {
-    public sealed class CxxCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        XcodeProjectProcessor.IConvertToProject,
-        C.ICommonCompilerSettings,
-        C.ICxxOnlyCompilerSettings,
-        C.ICommonCompilerSettingsOSX,
-        C.IAdditionalSettings,
-        ClangCommon.ICommonCompilerSettings
+    public class CxxCompilerSettings :
+        ClangCommon.CommonCompilerSettings,
+        C.ICxxOnlyCompilerSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
-            : this(module, true)
+            :
+            base(module)
         {
             (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
@@ -49,105 +44,10 @@ namespace Clang
         public CxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
+            :
+            base(module, useDefaults)
         {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-
-            // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
-            (this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported =
-                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineCompilerImplementation), this, commandLine);
-        }
-
-        void
-        XcodeProjectProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration)
-        {
-            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeCompilerImplementation), this, module, configuration);
-        }
-
-        C.EBit? C.ICommonCompilerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        C.EOptimization? C.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
-
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.OmitFramePointer
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
-        {
-            get;
-            set;
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
         C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
@@ -169,60 +69,6 @@ namespace Clang
         }
 
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettingsOSX.FrameworkSearchPaths
-        {
-            get;
-            set;
-        }
-
-        string C.ICommonCompilerSettingsOSX.MinimumVersionSupported
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? ClangCommon.ICommonCompilerSettings.AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? ClangCommon.ICommonCompilerSettings.ExtraWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? ClangCommon.ICommonCompilerSettings.Pedantic
-        {
-            get;
-            set;
-        }
-
-        ClangCommon.EVisibility? ClangCommon.ICommonCompilerSettings.Visibility
-        {
-            get;
-            set;
-        }
-
-        bool? ClangCommon.ICommonCompilerSettings.StrictAliasing
-        {
-            get;
-            set;
-        }
-
-        ClangCommon.EOptimization? ClangCommon.ICommonCompilerSettings.Optimization
         {
             get;
             set;
