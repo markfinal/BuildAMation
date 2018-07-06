@@ -37,6 +37,31 @@ namespace C
             StaticLibrary module,
             Bam.Core.ExecutionContext context)
         {
+            var commandLine = CommandLineProcessor.NativeConversion.Convert(module);
+
+            if (module.Settings is ICommonHasOutputPath)
+            {
+                var output_path = (module.Settings as ICommonHasOutputPath).OutputPath.ToString();
+                var output_dir = System.IO.Path.GetDirectoryName(output_path);
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_dir);
+            }
+
+#if false
+            foreach (var input in objectFiles)
+            {
+                if (!(input as C.ObjectFileBase).PerformCompilation)
+                {
+                    continue;
+                }
+                commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary());
+            }
+#endif
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
+                commandLine
+            );
         }
     }
 #else
