@@ -37,9 +37,9 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettings settings,
             Bam.Core.Module module)
         {
-            if (module is IInputPath)
+            if (module is Bam.Core.IInputPath)
             {
-                settings.SourcePath = (module as IInputPath).InputPath;
+                settings.SourcePath = (module as Bam.Core.IInputPath).InputPath;
                 settings.OutputPath = module.GeneratedPaths[ObjectFileBase.Key];
             }
             settings.Bits = (module as CModule).BitDepth;

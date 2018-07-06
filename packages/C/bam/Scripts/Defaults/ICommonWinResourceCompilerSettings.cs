@@ -36,6 +36,11 @@ namespace C.DefaultSettings
             this C.ICommonWinResourceCompilerSettings settings,
             Bam.Core.Module module)
         {
+            if (module is Bam.Core.IInputPath)
+            {
+                settings.SourcePath = (module as Bam.Core.IInputPath).InputPath;
+                settings.OutputPath = module.GeneratedPaths[ObjectFileBase.Key];
+            }
             settings.Verbose = false;
             settings.IncludePaths = new Bam.Core.TokenizedStringArray();
             settings.PreprocessorDefines = new PreprocessorDefinitions();

@@ -49,12 +49,33 @@ namespace Mingw
             CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Path("")]
+#endif
+        Bam.Core.TokenizedString C.ICommonWinResourceCompilerSettings.SourcePath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-o ")]
+#endif
+        Bam.Core.TokenizedString C.ICommonWinResourceCompilerSettings.OutputPath
+        {
+            get;
+            set;
+        }
+
         bool? C.ICommonWinResourceCompilerSettings.Verbose
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("--include-dir=")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
         {
             get;

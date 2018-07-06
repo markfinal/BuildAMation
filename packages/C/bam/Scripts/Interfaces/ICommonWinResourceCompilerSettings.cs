@@ -37,6 +37,26 @@ namespace C
         Bam.Core.ISettingsBase
     {
         /// <summary>
+        /// Path to the source file to be compiled.
+        /// Automatically set by package code. DO NOT set this path in a patch.
+        /// </summary>
+        Bam.Core.TokenizedString SourcePath
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Path to the compiled output file.
+        /// Automatically set by package code. DO NOT set this path in a patch.
+        /// </summary>
+        Bam.Core.TokenizedString OutputPath
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Verbose output during resource compilation.
         /// </summary>
         /// <value>The verbose.</value>
