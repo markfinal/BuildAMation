@@ -86,7 +86,7 @@ namespace GccCommon
             else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
                      typeof(C.CObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new Gcc.CompilerSettings(module);
+                var settings = new Gcc.CCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
