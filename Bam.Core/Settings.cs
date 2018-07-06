@@ -50,6 +50,8 @@ namespace Bam.Core
         // TODO: Could this be System.Collections.Concurrent.ConcurrentDictionary to avoid the explicit lock below?
         private static System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces> Cache = new System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces>();
 
+        private Array<System.Reflection.PropertyInfo> _Properties;
+
         private static SettingsInterfaces
         GetSettingsInterfaces(
             System.Type settingsType,
@@ -116,6 +118,28 @@ namespace Bam.Core
             }
         }
 
+        // TODO: this does seem to find more properties than it needs to
+        private static Array<System.Reflection.PropertyInfo>
+        FindProperties(
+            System.Type settingsType)
+        {
+            // since flattening the hierachy doesn't expose private property
+            // implementations on base classes, recurse
+            var properties = settingsType.GetProperties(
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.NonPublic
+            );
+            var props = new Bam.Core.Array<System.Reflection.PropertyInfo>(properties);
+            var baseType = settingsType.BaseType;
+            if (null == baseType)
+            {
+                return props;
+            }
+            props.AddRangeUnique(FindProperties(baseType));
+            return props;
+        }
+
         /// <summary>
         /// For all settings interfaces, optionally calling Empty method and Default method
         /// in the extensions class defined by SettingsExtensionsAttribute on each interface.
@@ -151,6 +175,20 @@ namespace Bam.Core
             if (useDefaults && (null != LocalPolicy))
             {
                 LocalPolicy.DefineLocalSettings(this, module);
+            }
+            this._Properties = FindProperties(this.GetType());
+        }
+
+        /// <summary>
+        /// Read only access to the flattened list of properties for all interfaces
+        /// on this Settings type, in the order of the interface priorities.
+        /// </summary>
+        public System.Collections.Generic.IReadOnlyList<System.Reflection.PropertyInfo>
+        Properties
+        {
+            get
+            {
+                return this._Properties.ToReadOnlyCollection();
             }
         }
 
