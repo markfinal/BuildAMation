@@ -87,6 +87,10 @@ namespace MingwCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
+        [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
+#endif
         C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;

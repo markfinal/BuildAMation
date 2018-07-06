@@ -142,6 +142,8 @@ namespace MingwCommon
                     commandLine.Add("-Wno-error");
                 }
             }
+#if BAM_V2
+#else
             if (settings.OutputType.HasValue)
             {
                 switch (settings.OutputType.Value)
@@ -154,6 +156,7 @@ namespace MingwCommon
                         break;
                 }
             }
+#endif
             foreach (var header in settings.NamedHeaders)
             {
                 commandLine.Add(System.String.Format("-include {0}", header));
