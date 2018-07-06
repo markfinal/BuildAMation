@@ -59,12 +59,31 @@ namespace WindowsSDK
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Path("")]
+#endif
+        Bam.Core.TokenizedString C.ICommonWinResourceCompilerSettings.SourcePath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-Fo")]
+#endif
+        Bam.Core.TokenizedString C.ICommonWinResourceCompilerSettings.OutputPath
+        {
+            get;
+            set;
+        }
+
         bool? C.ICommonWinResourceCompilerSettings.Verbose
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.PathArray("-i")]
         Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
         {
             get;
