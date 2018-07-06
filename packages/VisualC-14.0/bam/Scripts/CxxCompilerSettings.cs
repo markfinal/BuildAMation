@@ -35,9 +35,9 @@ namespace VisualC
         VisualStudioProcessor.IConvertToProject,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
-        C.ICxxOnlyCompilerSettings,
         C.IAdditionalSettings,
-        VisualCCommon.ICommonCompilerSettings
+        VisualCCommon.ICommonCompilerSettings,
+        C.ICxxOnlyCompilerSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
@@ -152,30 +152,6 @@ namespace VisualC
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
-
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
@@ -213,6 +189,30 @@ namespace VisualC
         }
 
         bool? VisualCCommon.ICommonCompilerSettings.IncreaseObjectFileSectionCount
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;
             set;

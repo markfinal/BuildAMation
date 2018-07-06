@@ -35,9 +35,9 @@ namespace VisualC
         VisualStudioProcessor.IConvertToProject,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
-        C.ICOnlyCompilerSettings,
         C.IAdditionalSettings,
-        VisualCCommon.ICommonCompilerSettings
+        VisualCCommon.ICommonCompilerSettings,
+        C.ICOnlyCompilerSettings
     {
         public CompilerSettings(
             Bam.Core.Module module)
@@ -158,12 +158,6 @@ namespace VisualC
             set;
         }
 
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
@@ -201,6 +195,12 @@ namespace VisualC
         }
 
         bool? VisualCCommon.ICommonCompilerSettings.IncreaseObjectFileSectionCount
+        {
+            get;
+            set;
+        }
+
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
