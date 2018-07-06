@@ -90,7 +90,7 @@ namespace GccCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Bool("-r", "")]
+        [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
 #endif
         EArchiverCommand ICommonArchiverSettings.Command
         {
