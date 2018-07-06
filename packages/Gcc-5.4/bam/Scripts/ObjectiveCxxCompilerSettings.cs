@@ -30,182 +30,20 @@
 namespace Gcc
 {
     public sealed class ObjectiveCxxCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonCompilerSettings,
-        C.ICxxOnlyCompilerSettings,
-        C.IObjectiveCxxOnlyCompilerSettings,
-        C.IAdditionalSettings,
-        GccCommon.ICommonCompilerSettings
+        CxxCompilerSettings,
+        C.IObjectiveCxxOnlyCompilerSettings
     {
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module)
-            : this(module, true)
-        {
-        }
+            :
+            base(module)
+        { }
 
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        C.EBit? C.ICommonCompilerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        C.EOptimization? C.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
-
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.OmitFramePointer
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? GccCommon.ICommonCompilerSettings.PositionIndependentCode
-        {
-            get;
-            set;
-        }
-
-        bool? GccCommon.ICommonCompilerSettings.AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? GccCommon.ICommonCompilerSettings.ExtraWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? GccCommon.ICommonCompilerSettings.Pedantic
-        {
-            get;
-            set;
-        }
-
-        GccCommon.EVisibility? GccCommon.ICommonCompilerSettings.Visibility
-        {
-            get;
-            set;
-        }
-
-        bool? GccCommon.ICommonCompilerSettings.StrictAliasing
-        {
-            get;
-            set;
-        }
-
-        GccCommon.EOptimization? GccCommon.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
+            :
+            base(module, useDefaults)
+        { }
     }
 }
