@@ -147,6 +147,8 @@ namespace GccCommon
                     commandLine.Add("-Wno-error");
                 }
             }
+#if BAM_V2
+#else
             if (settings.OutputType.HasValue)
             {
                 var module = (settings as Bam.Core.Settings).Module;
@@ -160,6 +162,7 @@ namespace GccCommon
                         break;
                 }
             }
+#endif
             foreach (var header in settings.NamedHeaders)
             {
                 commandLine.Add(System.String.Format("-include {0}", header));
