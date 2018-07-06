@@ -41,11 +41,11 @@ namespace C
                 return;
             }
 
-            var objectFilePath = module.GeneratedPaths[ObjectFileBase.Key];
+            var output_path = (module.Settings as ICommonCompilerSettings).OutputPath;
 
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
-            rule.AddTarget(objectFilePath);
+            rule.AddTarget(output_path);
             rule.AddPrerequisite((module as IRequiresSourceModule).Source, C.SourceFile.Key);
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
@@ -56,8 +56,8 @@ namespace C
                 CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(command.ToString());
 
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            meta.CommonMetaData.AddDirectory(objectFileDir);
+            var output_dir = System.IO.Path.GetDirectoryName(output_path.ToString());
+            meta.CommonMetaData.AddDirectory(output_dir);
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
 
             // add dependencies, such as procedurally generated headers
@@ -117,8 +117,8 @@ namespace C
                 CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(command.ToString());
 
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            meta.CommonMetaData.AddDirectory(objectFileDir);
+            var output_dir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
+            meta.CommonMetaData.AddDirectory(output_dir);
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
 
             // add dependencies, such as procedurally generated headers
