@@ -76,7 +76,7 @@ namespace C
                     break;
 
                 case "VSSolution":
-                    VisualStudioProcessor.VSSolutionCompile.Execute(this);
+                    VSSolutionSupport.Compile(this);
                     break;
 
                 case "Xcode":

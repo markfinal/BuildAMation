@@ -29,6 +29,61 @@
 #endregion // License
 namespace C
 {
+#if BAM_V2
+    public static class VSSolutionSupport
+    {
+        public static void
+        Compile(
+            ObjectFile module)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            var group = (module is C.WinResource) ?
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource :
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
+
+            var settingsGroup = config.GetSettingsGroup(
+                group,
+                include: (module as C.IRequiresSourceModule).Source.GeneratedPaths[C.SourceFile.Key],
+                uniqueToProject: true
+            );
+
+            var intDir = module.CreateTokenizedString(
+                "@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)",
+                module.GeneratedPaths[C.ObjectFileBase.Key]
+            );
+            intDir.Parse();
+            settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
+            if (!(module as C.ObjectFileBase).PerformCompilation)
+            {
+                settingsGroup.AddSetting("ExcludedFromBuild", true);
+            }
+            module.MetaData = settingsGroup;
+
+            // any non-C module projects should be order-only dependencies
+            foreach (var dependent in module.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
+                if (null != dependentProject)
+                {
+                    config.RequiresProject(dependentProject);
+                }
+            }
+        }
+    }
+#else
     public sealed class VSSolutionCompilation :
         ICompilationPolicy
     {
@@ -81,4 +136,5 @@ namespace C
             }
         }
     }
+#endif
 }
