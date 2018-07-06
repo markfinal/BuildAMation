@@ -29,54 +29,13 @@
 #endregion // License
 namespace Gcc
 {
-    public class ArchiverSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonArchiverSettings,
-        C.IAdditionalSettings,
-        GccCommon.ICommonArchiverSettings
+    public sealed class ArchiverSettings :
+        GccCommon.CommonArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool GccCommon.ICommonArchiverSettings.Ranlib
-        {
-            get;
-            set;
-        }
-
-        bool GccCommon.ICommonArchiverSettings.DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        GccCommon.EArchiverCommand GccCommon.ICommonArchiverSettings.Command
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        {}
     }
 }

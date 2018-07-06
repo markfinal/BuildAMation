@@ -36,9 +36,21 @@ namespace C.DefaultSettings
             this C.ICommonHasOutputPath settings,
             Bam.Core.Module module)
         {
-            if (module is Bam.Core.IInputPath)
+            if (module is Bam.Core.IModuleGroup)
+            {
+                return;
+            }
+            if (module is ObjectFileBase)
             {
                 settings.OutputPath = module.GeneratedPaths[ObjectFileBase.Key];
+            }
+            else if (module is StaticLibrary)
+            {
+                settings.OutputPath = module.GeneratedPaths[StaticLibrary.Key];
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Module type {0} is not recognised to specify the OutputPath for", module.GetType().ToString());
             }
         }
 

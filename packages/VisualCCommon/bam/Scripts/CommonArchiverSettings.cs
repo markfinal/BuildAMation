@@ -27,10 +27,69 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace VisualCCommon
 {
+    public abstract class CommonArchiverSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        VisualStudioProcessor.IConvertToProject,
+        C.ICommonHasOutputPath,
+        C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
+        ICommonArchiverSettings
+    {
+        protected CommonArchiverSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+        }
+
+        void
+        VisualStudioProcessor.IConvertToProject.Convert(
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-OUT:")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        bool ICommonArchiverSettings.NoLogo
+        {
+            get;
+            set;
+        }
+    }
+
     public sealed class ArchiverSettings :
-        MingwCommon.CommonArchiverSettings
+        CommonArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)

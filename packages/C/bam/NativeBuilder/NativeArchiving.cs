@@ -46,8 +46,7 @@ namespace C
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_dir);
             }
 
-#if false
-            foreach (var input in objectFiles)
+            foreach (var input in module.ObjectFiles)
             {
                 if (!(input as C.ObjectFileBase).PerformCompilation)
                 {
@@ -55,7 +54,6 @@ namespace C
                 }
                 commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary());
             }
-#endif
 
             CommandLineProcessor.Processor.Execute(
                 context,

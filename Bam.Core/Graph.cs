@@ -548,6 +548,15 @@ namespace Bam.Core
                     {
                         throw ex.InnerException;
                     }
+                    catch (System.Reflection.TargetInvocationException ex)
+                    {
+                        var realException = ex.InnerException;
+                        if (null == realException)
+                        {
+                            realException = ex;
+                        }
+                        throw new Exception(realException, "Settings creation:");
+                    }
                 }
             }
             if ((0 == module.Dependents.Count) && (0 == module.Requirements.Count))

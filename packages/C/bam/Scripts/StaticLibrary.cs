@@ -62,12 +62,19 @@ namespace C
             }
         }
 
-        // TODO: what is this for?
-        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source
+        /// <summary>
+        /// Access the object files required to create this library.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        ObjectFiles
         {
             get
             {
-                return this.sourceModules.ToReadOnlyCollection();
+                var module_list = FlattenHierarchicalFileList(this.sourceModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
             }
         }
 

@@ -27,15 +27,66 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace GccCommon
 {
-    public sealed class ArchiverSettings :
-        MingwCommon.CommonArchiverSettings
+    public abstract class CommonArchiverSettings :
+        C.SettingsBase,
+        CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonHasOutputPath,
+        C.ICommonArchiverSettings,
+        C.IAdditionalSettings,
+        ICommonArchiverSettings
     {
-        public ArchiverSettings(
+        protected CommonArchiverSettings(
             Bam.Core.Module module)
-            :
-            base(module)
-        {}
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
+        {
+            get;
+            set;
+        }
+
+        bool ICommonArchiverSettings.Ranlib
+        {
+            get;
+            set;
+        }
+
+        bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated
+        {
+            get;
+            set;
+        }
+
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
+        {
+            get;
+            set;
+        }
+
+        EArchiverCommand ICommonArchiverSettings.Command
+        {
+            get;
+            set;
+        }
     }
 }
