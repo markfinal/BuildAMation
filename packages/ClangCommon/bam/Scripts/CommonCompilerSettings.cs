@@ -70,6 +70,24 @@ namespace ClangCommon
             XcodeProjectProcessor.Conversion.Convert(typeof(XcodeCompilerImplementation), this, module, configuration);
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Path("")]
+#endif
+        Bam.Core.TokenizedString C.ICommonCompilerSettings.SourcePath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-o ")]
+#endif
+        Bam.Core.TokenizedString C.ICommonCompilerSettings.OutputPath
+        {
+            get;
+            set;
+        }
+
         C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;

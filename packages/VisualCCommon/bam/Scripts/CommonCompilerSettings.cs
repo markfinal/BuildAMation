@@ -74,6 +74,24 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Path("")]
+#endif
+        Bam.Core.TokenizedString C.ICommonCompilerSettings.SourcePath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-Fo")]
+#endif
+        Bam.Core.TokenizedString C.ICommonCompilerSettings.OutputPath
+        {
+            get;
+            set;
+        }
+
         C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;

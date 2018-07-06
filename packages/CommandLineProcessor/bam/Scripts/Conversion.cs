@@ -31,16 +31,33 @@ using System.Linq;
 namespace CommandLineProcessor
 {
 #if BAM_V2
+    public abstract class BaseAttribute :
+        System.Attribute
+    {
+        protected BaseAttribute(
+            string command_switch)
+        {
+            this.CommandSwitch = command_switch;
+        }
+
+        public string CommandSwitch
+        {
+            get;
+            private set;
+        }
+    }
+
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
     public class EnumAttribute :
-        System.Attribute
+        BaseAttribute
     {
         public EnumAttribute(
             object key,
-            string value)
+            string command_switch)
+            :
+            base(command_switch)
         {
             this.Key = key as System.Enum;
-            this.Value = value;
         }
 
         public System.Enum Key
@@ -48,12 +65,17 @@ namespace CommandLineProcessor
             get;
             private set;
         }
+    }
 
-        public string Value
-        {
-            get;
-            private set;
-        }
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class PathAttribute :
+        BaseAttribute
+    {
+        public PathAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        {}
     }
 
     public static class NativeConversion
@@ -77,18 +99,37 @@ namespace CommandLineProcessor
                 {
                     var settings_property = module.Settings.Properties.First(item => item.Name.EndsWith(interface_property.Name));
                     //Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
-                    var attributeArray = settings_property.GetCustomAttributes(typeof(EnumAttribute), false);
+                    var attributeArray = settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
                     {
                         continue;
                     }
                     var property_value = settings_property.GetValue(module.Settings);
-                    var matching_attribute = attributeArray.FirstOrDefault(item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
-                    if (null == matching_attribute)
+                    if (attributeArray.First() is EnumAttribute)
                     {
-                        throw new Bam.Core.Exception("Unable to locate enumeration mapping for {0}", interface_property.GetType().FullName);
+                        var matching_attribute_to_enum = attributeArray.FirstOrDefault(
+                            item => (item as EnumAttribute).Key.Equals(property_value)
+                        ) as EnumAttribute;
+                        if (null == matching_attribute_to_enum)
+                        {
+                            throw new Bam.Core.Exception("Unable to locate enumeration mapping for {0}", interface_property.GetType().FullName);
+                        }
+                        commandLine.Add(matching_attribute_to_enum.CommandSwitch);
                     }
-                    commandLine.Add(matching_attribute.Value);
+                    else if (attributeArray.First() is PathAttribute)
+                    {
+                        commandLine.Add(
+                            System.String.Format(
+                                "{0}{1}",
+                                (attributeArray.First() as PathAttribute).CommandSwitch,
+                                (property_value as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()
+                            )
+                        );
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Unhandled attribute: {0}", attributeArray.First().ToString());
+                    }
                 }
             }
             Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
