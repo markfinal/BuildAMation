@@ -29,23 +29,22 @@
 #endregion // License
 namespace VisualC
 {
-    public class CompilerSettings :
+    public abstract class CommonCompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
-        VisualCCommon.ICommonCompilerSettings,
-        C.ICOnlyCompilerSettings
+        VisualCCommon.ICommonCompilerSettings
     {
-        public CompilerSettings(
+        protected CommonCompilerSettings(
             Bam.Core.Module module)
             : this(module, true)
         {
         }
 
-        public CompilerSettings(
+        protected CommonCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
         {
@@ -199,6 +198,24 @@ namespace VisualC
             get;
             set;
         }
+    }
+
+    public sealed class CCompilerSettings :
+        CommonCompilerSettings,
+        C.ICOnlyCompilerSettings
+    {
+        public CCompilerSettings(
+            Bam.Core.Module module)
+            :
+            base(module)
+        {}
+
+        public CCompilerSettings(
+            Bam.Core.Module module,
+            bool useDefaults)
+            :
+            base (module, useDefaults)
+        {}
 
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {

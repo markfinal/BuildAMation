@@ -58,6 +58,29 @@ namespace CommandLineProcessor
 
     public static class NativeConversion
     {
+        // since flattening the hierachy doesn't expose private property
+        // implementations on base classes
+        // TODO: might want to move this to the Settings class, as part
+        // of it's construction as a one off cost
+        private static Bam.Core.Array<System.Reflection.PropertyInfo>
+        GetAllProperties(
+            System.Type moduleType)
+        {
+            var properties = moduleType.GetProperties(
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.NonPublic
+            );
+            var props = new Bam.Core.Array<System.Reflection.PropertyInfo>(properties);
+            var baseType = moduleType.BaseType;
+            if (null == baseType)
+            {
+                return props;
+            }
+            props.AddRangeUnique(GetAllProperties(baseType));
+            return props;
+        }
+
         public static Bam.Core.StringArray
         Convert(
             Bam.Core.Module module)
@@ -70,11 +93,7 @@ namespace CommandLineProcessor
             var commandLine = new Bam.Core.StringArray();
             //Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
             //Bam.Core.Log.MessageAll("Settings: {0}", module.Settings.ToString());
-            var module_properties = module.Settings.GetType().GetProperties(
-                System.Reflection.BindingFlags.Instance |
-                System.Reflection.BindingFlags.NonPublic |
-                System.Reflection.BindingFlags.Public
-            );
+            var module_properties = GetAllProperties(module.Settings.GetType());
             foreach (var settings_interface in module.Settings.Interfaces())
             {
                 //Bam.Core.Log.MessageAll(settings_interface.ToString());

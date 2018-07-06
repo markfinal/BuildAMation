@@ -110,7 +110,7 @@ namespace VisualCCommon
             else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
                      typeof(C.CObjectFileCollection).IsInstanceOfType(module))
             {
-                var settings = new VisualC.CompilerSettings(module);
+                var settings = new VisualC.CCompilerSettings(module);
                 this.OverrideDefaultSettings(settings);
                 return settings;
             }
