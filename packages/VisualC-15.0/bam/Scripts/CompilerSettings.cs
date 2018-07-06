@@ -29,172 +29,24 @@
 #endregion // License
 namespace VisualC
 {
-    public class CompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonCompilerSettingsWin,
-        C.ICommonCompilerSettings,
-        C.ICOnlyCompilerSettings,
-        C.IAdditionalSettings,
-        VisualCCommon.ICommonCompilerSettings
+    public sealed class CCompilerSettings :
+        VisualCCommon.CommonCompilerSettings,
+        C.ICOnlyCompilerSettings
     {
-        public CompilerSettings(
+        public CCompilerSettings(
             Bam.Core.Module module)
-            : this(module, true)
-        {
-        }
+            :
+            base(module)
+        { }
 
-        public CompilerSettings(
+        public CCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-
-        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
-        {
-            get;
-            set;
-        }
-
-        C.EBit? C.ICommonCompilerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        C.EOptimization? C.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
-
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICommonCompilerSettings.OmitFramePointer
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
-        {
-            get;
-            set;
-        }
+            :
+            base(module, useDefaults)
+        { }
 
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? VisualCCommon.ICommonCompilerSettings.NoLogo
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.ERuntimeLibrary? VisualCCommon.ICommonCompilerSettings.RuntimeLibrary
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.EWarningLevel? VisualCCommon.ICommonCompilerSettings.WarningLevel
-        {
-            get;
-            set;
-        }
-
-        bool? VisualCCommon.ICommonCompilerSettings.EnableLanguageExtensions
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.EOptimization? VisualCCommon.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
-
-        bool? VisualCCommon.ICommonCompilerSettings.IncreaseObjectFileSectionCount
         {
             get;
             set;
