@@ -190,6 +190,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-nologo", "")]
+#endif
         bool? ICommonCompilerSettings.NoLogo
         {
             get;

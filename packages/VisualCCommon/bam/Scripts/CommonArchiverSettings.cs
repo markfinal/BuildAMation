@@ -81,20 +81,13 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-NOLOGO", "")]
+#endif
         bool ICommonArchiverSettings.NoLogo
         {
             get;
             set;
         }
-    }
-
-    public sealed class ArchiverSettings :
-        CommonArchiverSettings
-    {
-        public ArchiverSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
     }
 }

@@ -104,6 +104,9 @@ namespace WindowsSDK
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-NOLOGO", "")]
+#endif
         bool? ICommonWinResourceCompilerSettings.NoLogo
         {
             get;

@@ -89,6 +89,34 @@ namespace CommandLineProcessor
         { }
     }
 
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class BoolAttribute :
+        BaseAttribute
+    {
+        public BoolAttribute(
+            string true_command_switch,
+            string false_command_switch)
+            :
+            base(true_command_switch)
+        {
+            this.FalseCommandSwitch = false_command_switch;
+        }
+
+        public string TrueCommandSwitch
+        {
+            get
+            {
+                return this.CommandSwitch;
+            }
+        }
+
+        public string FalseCommandSwitch
+        {
+            get;
+            private set;
+        }
+    }
+
     public static class NativeConversion
     {
         public static Bam.Core.StringArray
@@ -113,7 +141,6 @@ namespace CommandLineProcessor
                     var property_value = settings_property.GetValue(module.Settings);
                     if (attributeArray.First() is EnumAttribute)
                     {
-                        ;
                         if (!(settings_property.PropertyType.IsAssignableFrom(typeof(System.Enum)) ||
                               settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)))
                         {
@@ -160,6 +187,32 @@ namespace CommandLineProcessor
                                     path.ToStringQuoteIfNecessary()
                                 )
                             );
+                        }
+                    }
+                    else if (attributeArray.First() is BoolAttribute)
+                    {
+                        if (!(settings_property.PropertyType.IsAssignableFrom(typeof(bool)) ||
+                              settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)))
+                        {
+                            throw new Bam.Core.Exception("Attribute expected an bool (or nullable bool), but property is of type {0}", settings_property.PropertyType.ToString());
+                        }
+                        bool value = (bool)property_value;
+                        var attr = attributeArray.First() as BoolAttribute;
+                        if (value)
+                        {
+                            var truth_command = attr.TrueCommandSwitch;
+                            if (!System.String.IsNullOrEmpty(truth_command))
+                            {
+                                commandLine.Add(truth_command);
+                            }
+                        }
+                        else
+                        {
+                            var false_command = attr.FalseCommandSwitch;
+                            if (!System.String.IsNullOrEmpty(false_command))
+                            {
+                                commandLine.Add(false_command);
+                            }
                         }
                     }
                     else

@@ -36,6 +36,8 @@ namespace VisualCCommon
             this VisualCCommon.ICommonCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
+#if BAM_V2
+#else
             if (settings.NoLogo.HasValue)
             {
                 if (settings.NoLogo.Value)
@@ -43,6 +45,7 @@ namespace VisualCCommon
                     commandLine.Add("-nologo");
                 }
             }
+#endif
 
             if (settings.RuntimeLibrary.HasValue)
             {

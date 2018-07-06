@@ -36,10 +36,13 @@ namespace VisualCCommon
             this ICommonLinkerSettings settings,
             Bam.Core.StringArray commandLine)
         {
+#if BAM_V2
+#else
             if (settings.NoLogo)
             {
                 commandLine.Add("-NOLOGO");
             }
+#endif
             if (settings.GenerateManifest)
             {
                 commandLine.Add("-MANIFEST");
