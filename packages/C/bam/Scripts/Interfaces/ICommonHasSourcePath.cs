@@ -27,18 +27,29 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C.DefaultSettings
+namespace C
 {
-    public static partial class DefaultSettingsExtensions
+    /// <summary>
+    /// Common interface that specifies that a source path is available.
+    /// Generally, this source path is a view onto the real source path, which is
+    /// set by other means.
+    /// Source paths are nearly always the last entry on command lines (in some cases
+    /// this is mandatory), so the precedence is set very low in order to push it to
+    /// the end of the command lines.
+    /// </summary>
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MinValue + 1)]
+    public interface ICommonHasSourcePath :
+        Bam.Core.ISettingsBase
     {
-        public static void
-        Defaults(
-            this C.ICommonWinResourceCompilerSettings settings,
-            Bam.Core.Module module)
+        /// <summary>
+        /// Path to the source file to be compiled.
+        /// Automatically set by package code. DO NOT set this path in a patch.
+        /// </summary>
+        Bam.Core.TokenizedString SourcePath
         {
-            settings.Verbose = false;
-            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
-            settings.PreprocessorDefines = new PreprocessorDefinitions();
+            get;
+            set;
         }
     }
 }

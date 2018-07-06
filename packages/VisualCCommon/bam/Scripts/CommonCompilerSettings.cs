@@ -34,6 +34,8 @@ namespace VisualCCommon
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
+        C.ICommonHasSourcePath,
+        C.ICommonHasOutputPath,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
@@ -77,7 +79,7 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
-        Bam.Core.TokenizedString C.ICommonCompilerSettings.SourcePath
+        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
             get;
             set;
@@ -86,7 +88,7 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Path("-Fo")]
 #endif
-        Bam.Core.TokenizedString C.ICommonCompilerSettings.OutputPath
+        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

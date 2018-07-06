@@ -37,11 +37,6 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettings settings,
             Bam.Core.Module module)
         {
-            if (module is Bam.Core.IInputPath)
-            {
-                settings.SourcePath = (module as Bam.Core.IInputPath).InputPath;
-                settings.OutputPath = module.GeneratedPaths[ObjectFileBase.Key];
-            }
             settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
             settings.Optimization = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug)) ? EOptimization.Speed : EOptimization.Off;

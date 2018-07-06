@@ -33,6 +33,8 @@ namespace ClangCommon
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         XcodeProjectProcessor.IConvertToProject,
+        C.ICommonHasSourcePath,
+        C.ICommonHasOutputPath,
         C.ICommonCompilerSettings,
         C.ICommonCompilerSettingsOSX,
         C.IAdditionalSettings,
@@ -73,7 +75,7 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
-        Bam.Core.TokenizedString C.ICommonCompilerSettings.SourcePath
+        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
             get;
             set;
@@ -82,7 +84,7 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
 #endif
-        Bam.Core.TokenizedString C.ICommonCompilerSettings.OutputPath
+        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

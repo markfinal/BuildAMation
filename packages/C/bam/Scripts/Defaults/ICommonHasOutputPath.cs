@@ -27,79 +27,48 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Mingw
+namespace C.DefaultSettings
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonHasSourcePath,
-        C.ICommonHasOutputPath,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        MingwCommon.ICommonWinResourceCompilerSettings
+    public static partial class DefaultSettingsExtensions
     {
-        public WinResourceCompilerSettings(
+        public static void
+        Defaults(
+            this C.ICommonHasOutputPath settings,
             Bam.Core.Module module)
         {
-            this.InitializeAllInterfaces(module, false, true);
+            if (module is Bam.Core.IInputPath)
+            {
+                settings.OutputPath = module.GeneratedPaths[ObjectFileBase.Key];
+            }
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
+        public static void
+        Empty(
+            this C.ICommonHasOutputPath settings)
         {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
+            settings.OutputPath = null;
         }
 
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
+        public static void
+        Intersect(
+            this C.ICommonHasOutputPath shared,
+            C.ICommonHasOutputPath other)
         {
-            get;
-            set;
         }
 
-#if BAM_V2
-        [CommandLineProcessor.Path("-o ")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        public static void
+        Delta(
+            this C.ICommonHasOutputPath delta,
+            C.ICommonHasOutputPath lhs,
+            C.ICommonHasOutputPath rhs)
         {
-            get;
-            set;
         }
 
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
+        public static void
+        Clone(
+            this C.ICommonHasOutputPath settings,
+            C.ICommonHasOutputPath other)
         {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.PathArray("--include-dir=")]
-#endif
-        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? MingwCommon.ICommonWinResourceCompilerSettings.UseTempFile
-        {
-            get;
-            set;
         }
     }
 }

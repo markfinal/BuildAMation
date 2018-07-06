@@ -42,9 +42,9 @@ namespace C
                 return;
             }
 
-            if (module.Settings is ICommonCompilerSettings)
+            if (module.Settings is ICommonHasOutputPath)
             {
-                var output_path = (module.Settings as ICommonCompilerSettings).OutputPath.ToString();
+                var output_path = (module.Settings as ICommonHasOutputPath).OutputPath.ToString();
                 var output_dir = System.IO.Path.GetDirectoryName(output_path);
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_dir);
             }

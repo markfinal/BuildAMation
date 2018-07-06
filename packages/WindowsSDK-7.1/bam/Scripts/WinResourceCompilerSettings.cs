@@ -33,6 +33,8 @@ namespace WindowsSDK
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
+        C.ICommonHasSourcePath,
+        C.ICommonHasOutputPath,
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
@@ -62,7 +64,7 @@ namespace WindowsSDK
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
-        Bam.Core.TokenizedString C.ICommonWinResourceCompilerSettings.SourcePath
+        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
             get;
             set;
@@ -71,7 +73,7 @@ namespace WindowsSDK
 #if BAM_V2
         [CommandLineProcessor.Path("-Fo")]
 #endif
-        Bam.Core.TokenizedString C.ICommonWinResourceCompilerSettings.OutputPath
+        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

@@ -32,6 +32,8 @@ namespace GccCommon
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
+        C.ICommonHasSourcePath,
+        C.ICommonHasOutputPath,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
         ICommonCompilerSettings
@@ -59,7 +61,7 @@ namespace GccCommon
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
-        Bam.Core.TokenizedString C.ICommonCompilerSettings.SourcePath
+        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
             get;
             set;
@@ -68,7 +70,7 @@ namespace GccCommon
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
 #endif
-        Bam.Core.TokenizedString C.ICommonCompilerSettings.OutputPath
+        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

@@ -27,18 +27,25 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C.DefaultSettings
+namespace C
 {
-    public static partial class DefaultSettingsExtensions
+    /// <summary>
+    /// Common interface that specifies that the output path is available.
+    /// Generally, this output path is a view onto the real output path, which is
+    /// set by other means.
+    /// </summary>
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonHasOutputPath :
+        Bam.Core.ISettingsBase
     {
-        public static void
-        Defaults(
-            this C.ICommonWinResourceCompilerSettings settings,
-            Bam.Core.Module module)
+        /// <summary>
+        /// Path to the compiled output file.
+        /// Automatically set by package code. DO NOT set this path in a patch.
+        /// </summary>
+        Bam.Core.TokenizedString OutputPath
         {
-            settings.Verbose = false;
-            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
-            settings.PreprocessorDefines = new PreprocessorDefinitions();
+            get;
+            set;
         }
     }
 }

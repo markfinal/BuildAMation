@@ -41,7 +41,7 @@ namespace C
                 return;
             }
 
-            var output_path = (module.Settings as ICommonCompilerSettings).OutputPath;
+            var output_path = (module.Settings as ICommonHasOutputPath).OutputPath;
 
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();

@@ -36,7 +36,7 @@ namespace C
     /// to override any existing settings.
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    [Bam.Core.SettingsPrecedence(System.Int32.MinValue + 1)]
+    [Bam.Core.SettingsPrecedence(System.Int32.MinValue + 2)]
     public interface IAdditionalSettings :
         Bam.Core.ISettingsBase
     {
