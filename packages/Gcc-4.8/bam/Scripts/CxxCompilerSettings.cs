@@ -33,9 +33,9 @@ namespace Gcc
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonCompilerSettings,
-        C.ICxxOnlyCompilerSettings,
         C.IAdditionalSettings,
-        GccCommon.ICommonCompilerSettings
+        GccCommon.ICommonCompilerSettings,
+        C.ICxxOnlyCompilerSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
@@ -134,30 +134,6 @@ namespace Gcc
             set;
         }
 
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
-
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
@@ -201,6 +177,30 @@ namespace Gcc
         }
 
         GccCommon.EOptimization? GccCommon.ICommonCompilerSettings.Optimization
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
+        {
+            get;
+            set;
+        }
+
+        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;
             set;

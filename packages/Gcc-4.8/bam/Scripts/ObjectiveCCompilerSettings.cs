@@ -33,10 +33,10 @@ namespace Gcc
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonCompilerSettings,
-        C.ICOnlyCompilerSettings,
-        C.IObjectiveCOnlyCompilerSettings,
         C.IAdditionalSettings,
-        GccCommon.ICommonCompilerSettings
+        GccCommon.ICommonCompilerSettings,
+        C.ICOnlyCompilerSettings,
+        C.IObjectiveCOnlyCompilerSettings
     {
         public ObjectiveCCompilerSettings(
             Bam.Core.Module module)
@@ -136,18 +136,6 @@ namespace Gcc
             set;
         }
 
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
-        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
-        {
-            get;
-            set;
-        }
-
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
@@ -191,6 +179,18 @@ namespace Gcc
         }
 
         GccCommon.EOptimization? GccCommon.ICommonCompilerSettings.Optimization
+        {
+            get;
+            set;
+        }
+
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
+
+        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
         {
             get;
             set;
