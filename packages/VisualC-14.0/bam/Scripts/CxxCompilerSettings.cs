@@ -30,7 +30,7 @@
 namespace VisualC
 {
     public sealed class CxxCompilerSettings :
-        CommonCompilerSettings,
+        VisualCCommon.CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {
         public CxxCompilerSettings(
