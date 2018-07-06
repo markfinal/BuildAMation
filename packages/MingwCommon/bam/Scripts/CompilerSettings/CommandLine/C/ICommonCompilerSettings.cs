@@ -64,10 +64,13 @@ namespace MingwCommon
             {
                 commandLine.Add(warning);
             }
+#if BAM_V2
+#else
             foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
+#endif
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -113,10 +116,13 @@ namespace MingwCommon
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
             }
+#if BAM_V2
+#else
             foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
+#endif
             if (settings.TargetLanguage.HasValue)
             {
                 switch (settings.TargetLanguage.Value)

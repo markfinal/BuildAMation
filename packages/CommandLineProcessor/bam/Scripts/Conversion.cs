@@ -78,6 +78,17 @@ namespace CommandLineProcessor
         {}
     }
 
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class PathArrayAttribute :
+        BaseAttribute
+    {
+        public PathArrayAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
     public static class NativeConversion
     {
         public static Bam.Core.StringArray
@@ -107,24 +118,54 @@ namespace CommandLineProcessor
                     var property_value = settings_property.GetValue(module.Settings);
                     if (attributeArray.First() is EnumAttribute)
                     {
-                        var matching_attribute_to_enum = attributeArray.FirstOrDefault(
+                        ;
+                        if (!(settings_property.PropertyType.IsAssignableFrom(typeof(System.Enum)) ||
+                              settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)))
+                        {
+                            throw new Bam.Core.Exception("Attribute expected an enum (or nullable enum), but property is of type {0}", settings_property.PropertyType.ToString());
+                        }
+                        var matching_attribute = attributeArray.FirstOrDefault(
                             item => (item as EnumAttribute).Key.Equals(property_value)
-                        ) as EnumAttribute;
-                        if (null == matching_attribute_to_enum)
+                        ) as BaseAttribute;
+                        if (null == matching_attribute)
                         {
                             throw new Bam.Core.Exception("Unable to locate enumeration mapping for {0}", interface_property.GetType().FullName);
                         }
-                        commandLine.Add(matching_attribute_to_enum.CommandSwitch);
+                        commandLine.Add(matching_attribute.CommandSwitch);
                     }
                     else if (attributeArray.First() is PathAttribute)
                     {
+                        if (!settings_property.PropertyType.IsAssignableFrom(typeof(Bam.Core.TokenizedString)))
+                        {
+                            throw new Bam.Core.Exception("Attribute expected a Bam.Core.TokenizedString, but property is of type {0}", settings_property.PropertyType.ToString());
+                        }
                         commandLine.Add(
                             System.String.Format(
                                 "{0}{1}",
-                                (attributeArray.First() as PathAttribute).CommandSwitch,
+                                (attributeArray.First() as BaseAttribute).CommandSwitch,
                                 (property_value as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()
                             )
                         );
+                    }
+                    else if (attributeArray.First() is PathArrayAttribute)
+                    {
+                        if (!settings_property.PropertyType.IsAssignableFrom(typeof(Bam.Core.TokenizedStringArray)))
+                        {
+                            throw new Bam.Core.Exception("Attribute expected a Bam.Core.TokenizedStringArray, but property is of type {0}", settings_property.PropertyType.ToString());
+                        }
+                        var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
+                        foreach (var path in (property_value as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
+                        {
+                            // TODO: a special case is needed for this being requested in Xcode mode
+                            // which is done when there are overrides per source file
+                            commandLine.Add(
+                                System.String.Format(
+                                    "{0}{1}",
+                                    command_switch,
+                                    path.ToStringQuoteIfNecessary()
+                                )
+                            );
+                        }
                     }
                     else
                     {

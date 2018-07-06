@@ -63,6 +63,8 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-Wno-{0}", warning));
             }
+#if BAM_V2
+#else
             foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 var quoted_path = path.ToStringQuoteIfNecessary();
@@ -72,6 +74,7 @@ namespace ClangCommon
                 }
                 commandLine.Add(System.String.Format("-I{0}", quoted_path));
             }
+#endif
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -126,6 +129,8 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
             }
+#if BAM_V2
+#else
             foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
             {
                 var quoted_path = path.ToStringQuoteIfNecessary();
@@ -135,6 +140,7 @@ namespace ClangCommon
                 }
                 commandLine.Add(System.String.Format("-I{0}", quoted_path));
             }
+#endif
             if (settings.TargetLanguage.HasValue)
             {
                 switch (settings.TargetLanguage.Value)

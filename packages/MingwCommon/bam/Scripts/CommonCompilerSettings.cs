@@ -93,12 +93,18 @@ namespace MingwCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-I")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-I")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
