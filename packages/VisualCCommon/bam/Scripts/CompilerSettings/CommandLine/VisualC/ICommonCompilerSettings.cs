@@ -45,7 +45,6 @@ namespace VisualCCommon
                     commandLine.Add("-nologo");
                 }
             }
-#endif
 
             if (settings.RuntimeLibrary.HasValue)
             {
@@ -71,6 +70,7 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown runtime library, {0}", settings.RuntimeLibrary.Value.ToString());
                 }
             }
+#endif
 
             if (settings.WarningLevel.HasValue)
             {

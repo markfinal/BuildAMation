@@ -234,6 +234,12 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreaded, "-MT")]
+        [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "-MTd")]
+        [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "-MDd")]
+        [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDLL, "-MD")]
+#endif
         ERuntimeLibrary? ICommonCompilerSettings.RuntimeLibrary
         {
             get;
