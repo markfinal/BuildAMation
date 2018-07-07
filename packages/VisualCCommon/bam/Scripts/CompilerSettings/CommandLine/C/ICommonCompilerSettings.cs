@@ -77,11 +77,11 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown optimization level, {0}", settings.Optimization.Value.ToString());
                 }
             }
-#endif
             if (settings.OmitFramePointer.HasValue)
             {
                 commandLine.Add(settings.OmitFramePointer.Value ? "-Oy" : "-Oy-");
             }
+#endif
             foreach (var define in settings.PreprocessorDefines)
             {
                 if (null == define.Value)

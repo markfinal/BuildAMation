@@ -183,6 +183,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-Oy", "-Oy-")]
+#endif
         bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
