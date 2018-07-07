@@ -355,7 +355,13 @@ namespace CommandLineProcessor
                 //Bam.Core.Log.MessageAll(settings_interface.ToString());
                 foreach (var interface_property in settings_interface.GetProperties())
                 {
-                    var settings_property = module.Settings.Properties.First(item => item.Name.EndsWith(interface_property.Name));
+                    // must use the fully qualified property name from the originating interface
+                    // to look for the instance in the concrete settings class
+                    // this is to allow for the same property leafname to appear in multiple interfaces
+                    var full_property_interface_name = System.String.Join(".", new[] { interface_property.DeclaringType.FullName, interface_property.Name });
+                    var settings_property = module.Settings.Properties.First(
+                        item => full_property_interface_name == item.Name
+                    );
                     //Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
                     var attributeArray = settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
