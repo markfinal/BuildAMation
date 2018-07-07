@@ -75,7 +75,6 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.Value.ToString("D")));
             }
-#endif
 
             if (settings.EnableLanguageExtensions.HasValue)
             {
@@ -84,6 +83,7 @@ namespace VisualCCommon
                     commandLine.Add("-Za");
                 }
             }
+#endif
 
             if (settings.Optimization.HasValue)
             {
