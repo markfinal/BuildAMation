@@ -277,7 +277,6 @@ namespace VisualCCommon
         }
 
 #if BAM_V2
-        // TODO: have lost the prerequisite that C.ICommonCompilerSettings.Optimization is Custom
         [CommandLineProcessor.Enum(EOptimization.Full, "-Ox")]
 #endif
         EOptimization? ICommonCompilerSettings.Optimization
