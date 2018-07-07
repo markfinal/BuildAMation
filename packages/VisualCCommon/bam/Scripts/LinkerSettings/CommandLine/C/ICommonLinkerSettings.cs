@@ -37,6 +37,8 @@ namespace VisualCCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
+#if BAM_V2
+#else
             switch (settings.Bits)
             {
                 case C.EBit.ThirtyTwo:
@@ -50,8 +52,6 @@ namespace VisualCCommon
                 default:
                     throw new Bam.Core.Exception("Unknown machine bit depth, {0}", settings.Bits.ToString());
             }
-#if BAM_V2
-#else
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:

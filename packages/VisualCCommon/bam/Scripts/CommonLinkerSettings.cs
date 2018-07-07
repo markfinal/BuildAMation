@@ -100,6 +100,10 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-MACHINE:X86")]
+        [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-MACHINE:X64")]
+#endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
