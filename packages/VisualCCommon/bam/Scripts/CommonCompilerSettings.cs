@@ -278,6 +278,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-bigobj", "")]
+#endif
         bool? ICommonCompilerSettings.IncreaseObjectFileSectionCount
         {
             get;

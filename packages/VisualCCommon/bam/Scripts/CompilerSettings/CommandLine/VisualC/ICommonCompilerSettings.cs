@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace VisualCCommon
 {
     public static partial class CommandLineImplementation
@@ -36,8 +38,6 @@ namespace VisualCCommon
             this VisualCCommon.ICommonCompilerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-#if BAM_V2
-#else
             if (settings.NoLogo.HasValue)
             {
                 if (settings.NoLogo.Value)
@@ -102,7 +102,6 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown compiler optimization, {0}", settings.Optimization.Value.ToString());
                 }
             }
-#endif
 
             if (settings.IncreaseObjectFileSectionCount.HasValue)
             {
@@ -114,3 +113,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif
