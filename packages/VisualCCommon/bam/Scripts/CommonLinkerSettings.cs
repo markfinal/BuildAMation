@@ -91,6 +91,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Path("-DEF:")]
+#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
         {
             get;

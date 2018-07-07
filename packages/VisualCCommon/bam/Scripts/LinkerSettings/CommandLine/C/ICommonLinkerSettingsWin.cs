@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace VisualCCommon
 {
     public static partial class CommandLineImplementation
@@ -36,8 +38,6 @@ namespace VisualCCommon
             this C.ICommonLinkerSettingsWin settings,
             Bam.Core.StringArray commandLine)
         {
-#if BAM_V2
-#else
             switch (settings.SubSystem.Value)
             {
                 case C.ESubsystem.Console:
@@ -51,7 +51,6 @@ namespace VisualCCommon
                 default:
                     throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
             }
-#endif
             if (null != settings.ExportDefinitionFile)
             {
                 commandLine.Add(System.String.Format("-DEF:{0}", settings.ExportDefinitionFile.ToStringQuoteIfNecessary()));
@@ -59,3 +58,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif
