@@ -57,7 +57,6 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
-#endif
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -78,6 +77,7 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown optimization level, {0}", settings.Optimization.Value.ToString());
                 }
             }
+#endif
             if (settings.OmitFramePointer.HasValue)
             {
                 commandLine.Add(settings.OmitFramePointer.Value ? "-Oy" : "-Oy-");

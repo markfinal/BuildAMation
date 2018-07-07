@@ -160,6 +160,12 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.EOptimization.Off, "-Od")]
+        [CommandLineProcessor.Enum(C.EOptimization.Size, "-O1")]
+        [CommandLineProcessor.Enum(C.EOptimization.Speed, "-O2")]
+        [CommandLineProcessor.Enum(C.EOptimization.Custom, "")] // deferred for compiler specific optimisation setting
+#endif
         C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
