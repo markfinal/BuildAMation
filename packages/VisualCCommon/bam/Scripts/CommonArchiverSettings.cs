@@ -34,7 +34,6 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
         C.ICommonHasOutputPath,
-        C.ICommonArchiverSettings,
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -64,12 +63,6 @@ namespace VisualCCommon
         [CommandLineProcessor.Path("-OUT:")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
-        }
-
-        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
         {
             get;
             set;

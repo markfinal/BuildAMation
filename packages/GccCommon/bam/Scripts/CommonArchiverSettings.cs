@@ -33,7 +33,6 @@ namespace GccCommon
         C.SettingsBase,
         CommandLineProcessor.IConvertToCommandLine,
         C.ICommonHasOutputPath,
-        C.ICommonArchiverSettings,
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -54,12 +53,6 @@ namespace GccCommon
         [CommandLineProcessor.Path("")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
-        }
-
-        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
         {
             get;
             set;

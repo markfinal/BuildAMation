@@ -34,7 +34,6 @@ namespace ClangCommon
         CommandLineProcessor.IConvertToCommandLine,
         // TODO: Xcode translation
         C.ICommonHasOutputPath,
-        C.ICommonArchiverSettings,
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -55,12 +54,6 @@ namespace ClangCommon
         [CommandLineProcessor.Path("")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
-        }
-
-        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
         {
             get;
             set;
