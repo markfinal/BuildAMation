@@ -35,6 +35,7 @@ namespace VisualCCommon
         VisualStudioProcessor.IConvertToProject,
         C.ICommonHasOutputPath,
         C.ICommonHasImportLibraryPathWin,
+        C.ICommonHasProgramDatabasePathWin,
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
@@ -75,6 +76,15 @@ namespace VisualCCommon
         [CommandLineProcessor.Path("-IMPLIB:")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasImportLibraryPathWin.ImportLibraryPath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-PDB:")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasProgramDatabasePathWin.PDBPath
         {
             get;
             set;
@@ -138,6 +148,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-DEBUG", "")]
+#endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
