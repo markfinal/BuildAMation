@@ -96,12 +96,12 @@ namespace VisualCCommon
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
+#if BAM_V2
+#else
             foreach (var undefine in settings.PreprocessorUndefines)
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
             }
-#if BAM_V2
-#else
             foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));

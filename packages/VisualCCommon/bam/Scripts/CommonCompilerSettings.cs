@@ -201,6 +201,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("-U")]
+#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
