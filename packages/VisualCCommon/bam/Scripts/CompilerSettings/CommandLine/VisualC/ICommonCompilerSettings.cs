@@ -83,7 +83,6 @@ namespace VisualCCommon
                     commandLine.Add("-Za");
                 }
             }
-#endif
 
             if (settings.Optimization.HasValue)
             {
@@ -103,6 +102,7 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown compiler optimization, {0}", settings.Optimization.Value.ToString());
                 }
             }
+#endif
 
             if (settings.IncreaseObjectFileSectionCount.HasValue)
             {
