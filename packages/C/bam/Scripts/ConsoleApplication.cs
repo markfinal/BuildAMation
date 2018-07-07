@@ -98,6 +98,34 @@ namespace C
             }
         }
 
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        ObjectFiles
+        {
+            get
+            {
+                var module_list = FlattenHierarchicalFileList(this.sourceModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
+        }
+
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        Libraries
+        {
+            get
+            {
+                // some linkers require a specific order of libraries in order to resolve symbols
+                // so that if an existing library is later referenced, it needs to be moved later
+                var module_list = OrderLibrariesWithDecreasingDependencies(this.linkedModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
+        }
+
         protected Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;
@@ -414,6 +442,27 @@ namespace C
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+                case "MakeFile":
+                    //MakeFileSupport.Link(this);
+                    break;
+
+                case "Native":
+                    NativeSupport.Link(this, context);
+                    break;
+
+                case "VSSolution":
+                    //VSSolutionSupport.Link(this);
+                    break;
+
+                case "Xcode":
+                    //XcodeSupport.Link(this);
+                    break;
+
+                default:
+                    throw new System.NotImplementedException();
+            }
 #else
             if (this.IsPrebuilt &&
                 !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))

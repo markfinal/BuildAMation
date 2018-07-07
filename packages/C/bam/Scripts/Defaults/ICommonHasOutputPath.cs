@@ -48,9 +48,13 @@ namespace C.DefaultSettings
             {
                 settings.OutputPath = module.GeneratedPaths[StaticLibrary.Key];
             }
+            else if (module is ConsoleApplication)
+            {
+                settings.OutputPath = module.GeneratedPaths[ConsoleApplication.Key];
+            }
             else
             {
-                throw new Bam.Core.Exception("Module type {0} is not recognised to specify the OutputPath for", module.GetType().ToString());
+                throw new Bam.Core.Exception("Module type {0} is not recognised to be able to determine its OutputPath", module.GetType().ToString());
             }
         }
 

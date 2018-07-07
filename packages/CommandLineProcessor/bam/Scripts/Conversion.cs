@@ -90,6 +90,17 @@ namespace CommandLineProcessor
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class StringArrayAttribute :
+        BaseAttribute
+    {
+        public StringArrayAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class BoolAttribute :
         BaseAttribute
     {
@@ -119,6 +130,164 @@ namespace CommandLineProcessor
 
     public static class NativeConversion
     {
+        private static void
+        HandleEnum(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (!(typeof(System.Enum).IsAssignableFrom(propertyInfo.PropertyType) ||
+                  (propertyInfo.PropertyType.IsGenericType &&
+                   propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)
+                  )
+                 )
+               )
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected an enum (or nullable enum), but property {0} is of type {1}",
+                    propertyInfo.Name,
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            var matching_attribute = attributeArray.FirstOrDefault(
+                item => (item as EnumAttribute).Key.Equals(propertyValue)
+            ) as BaseAttribute;
+            if (null == matching_attribute)
+            {
+                throw new Bam.Core.Exception(
+                    "Unable to locate enumeration mapping for {0}",
+                    interfacePropertyInfo.GetType().FullName
+                );
+            }
+            commandLine.Add(matching_attribute.CommandSwitch);
+        }
+
+        private static void
+        HandleSinglePath(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (!typeof(Bam.Core.TokenizedString).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected a Bam.Core.TokenizedString, but property is of type {0}",
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            commandLine.Add(
+                System.String.Format(
+                    "{0}{1}",
+                    (attributeArray.First() as BaseAttribute).CommandSwitch,
+                    (propertyValue as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()
+                )
+            );
+        }
+
+        private static void
+        HandlePathArray(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (!typeof(Bam.Core.TokenizedStringArray).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected a Bam.Core.TokenizedStringArray, but property is of type {0}",
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
+            foreach (var path in (propertyValue as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
+            {
+                // TODO: a special case is needed for this being requested in Xcode mode
+                // which is done when there are overrides per source file
+                commandLine.Add(
+                    System.String.Format(
+                        "{0}{1}",
+                        command_switch,
+                        path.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+        }
+
+        private static void
+        HandleStringArray(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (!typeof(Bam.Core.StringArray).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected a Bam.Core.StringArray, but property is of type {0}",
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
+            foreach (var str in (propertyValue as Bam.Core.StringArray))
+            {
+                // TODO: a special case is needed for this being requested in Xcode mode
+                // which is done when there are overrides per source file
+                commandLine.Add(
+                    System.String.Format(
+                        "{0}{1}",
+                        command_switch,
+                        str
+                    )
+                );
+            }
+        }
+        private static void
+        HandleBool(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (!(typeof(bool).IsAssignableFrom(propertyInfo.PropertyType) ||
+                  (propertyInfo.PropertyType.IsGenericType &&
+                   propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)
+                  )
+                 )
+               )
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected an bool (or nullable bool), but property {0} is of type {1}",
+                    propertyInfo.Name,
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            bool value = (bool)propertyValue;
+            var attr = attributeArray.First() as BoolAttribute;
+            if (value)
+            {
+                var truth_command = attr.TrueCommandSwitch;
+                if (!System.String.IsNullOrEmpty(truth_command))
+                {
+                    commandLine.Add(truth_command);
+                }
+            }
+            else
+            {
+                var false_command = attr.FalseCommandSwitch;
+                if (!System.String.IsNullOrEmpty(false_command))
+                {
+                    commandLine.Add(false_command);
+                }
+            }
+        }
+
         public static Bam.Core.StringArray
         Convert(
             Bam.Core.Module module)
@@ -141,99 +310,62 @@ namespace CommandLineProcessor
                     var property_value = settings_property.GetValue(module.Settings);
                     if (attributeArray.First() is EnumAttribute)
                     {
-                        if (!(typeof(System.Enum).IsAssignableFrom(settings_property.PropertyType) ||
-                              (settings_property.PropertyType.IsGenericType &&
-                               settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)
-                              )
-                             )
-                           )
-                        {
-                            throw new Bam.Core.Exception(
-                                "Attribute expected an enum (or nullable enum), but property {0} is of type {1}",
-                                settings_property.Name,
-                                settings_property.PropertyType.ToString()
-                            );
-                        }
-                        var matching_attribute = attributeArray.FirstOrDefault(
-                            item => (item as EnumAttribute).Key.Equals(property_value)
-                        ) as BaseAttribute;
-                        if (null == matching_attribute)
-                        {
-                            throw new Bam.Core.Exception("Unable to locate enumeration mapping for {0}", interface_property.GetType().FullName);
-                        }
-                        commandLine.Add(matching_attribute.CommandSwitch);
+                        HandleEnum(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
+                        );
                     }
                     else if (attributeArray.First() is PathAttribute)
                     {
-                        if (!typeof(Bam.Core.TokenizedString).IsAssignableFrom(settings_property.PropertyType))
-                        {
-                            throw new Bam.Core.Exception("Attribute expected a Bam.Core.TokenizedString, but property is of type {0}", settings_property.PropertyType.ToString());
-                        }
-                        commandLine.Add(
-                            System.String.Format(
-                                "{0}{1}",
-                                (attributeArray.First() as BaseAttribute).CommandSwitch,
-                                (property_value as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()
-                            )
+                        HandleSinglePath(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
                         );
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
-                        if (!typeof(Bam.Core.TokenizedStringArray).IsAssignableFrom(settings_property.PropertyType))
-                        {
-                            throw new Bam.Core.Exception("Attribute expected a Bam.Core.TokenizedStringArray, but property is of type {0}", settings_property.PropertyType.ToString());
-                        }
-                        var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
-                        foreach (var path in (property_value as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
-                        {
-                            // TODO: a special case is needed for this being requested in Xcode mode
-                            // which is done when there are overrides per source file
-                            commandLine.Add(
-                                System.String.Format(
-                                    "{0}{1}",
-                                    command_switch,
-                                    path.ToStringQuoteIfNecessary()
-                                )
-                            );
-                        }
+                        HandlePathArray(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
+                        );
+                    }
+                    else if (attributeArray.First() is StringArrayAttribute)
+                    {
+                        HandleStringArray(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
+                        );
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
-                        if (!(typeof(bool).IsAssignableFrom(settings_property.PropertyType) ||
-                              (settings_property.PropertyType.IsGenericType &&
-                               settings_property.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)
-                              )
-                             )
-                           )
-                        {
-                            throw new Bam.Core.Exception(
-                                "Attribute expected an bool (or nullable bool), but property {0} is of type {1}",
-                                settings_property.Name,
-                                settings_property.PropertyType.ToString()
-                            );
-                        }
-                        bool value = (bool)property_value;
-                        var attr = attributeArray.First() as BoolAttribute;
-                        if (value)
-                        {
-                            var truth_command = attr.TrueCommandSwitch;
-                            if (!System.String.IsNullOrEmpty(truth_command))
-                            {
-                                commandLine.Add(truth_command);
-                            }
-                        }
-                        else
-                        {
-                            var false_command = attr.FalseCommandSwitch;
-                            if (!System.String.IsNullOrEmpty(false_command))
-                            {
-                                commandLine.Add(false_command);
-                            }
-                        }
+                        HandleBool(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
+                        );
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Unhandled attribute: {0}", attributeArray.First().ToString());
+                        throw new Bam.Core.Exception(
+                            "Unhandled attribute {0} for property {1} in {2}",
+                            attributeArray.First().ToString(),
+                            settings_property.Name,
+                            module.ToString()
+                        );
                     }
                 }
             }
