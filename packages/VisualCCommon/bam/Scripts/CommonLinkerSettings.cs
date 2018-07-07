@@ -80,6 +80,11 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.EnumAttribute(C.ESubsystem.NotSet, "")]
+        [CommandLineProcessor.EnumAttribute(C.ESubsystem.Console, "-SUBSYSTEM:CONSOLE")]
+        [CommandLineProcessor.EnumAttribute(C.ESubsystem.Windows, "-SUBSYSTEM:WINDOWS")]
+#endif
         C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
         {
             get;

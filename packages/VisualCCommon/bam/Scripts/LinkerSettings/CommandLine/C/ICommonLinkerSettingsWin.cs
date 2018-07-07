@@ -36,6 +36,8 @@ namespace VisualCCommon
             this C.ICommonLinkerSettingsWin settings,
             Bam.Core.StringArray commandLine)
         {
+#if BAM_V2
+#else
             switch (settings.SubSystem.Value)
             {
                 case C.ESubsystem.Console:
@@ -49,6 +51,7 @@ namespace VisualCCommon
                 default:
                     throw new Bam.Core.Exception("Unrecognized subsystem: {0}", settings.SubSystem.Value.ToString());
             }
+#endif
             if (null != settings.ExportDefinitionFile)
             {
                 commandLine.Add(System.String.Format("-DEF:{0}", settings.ExportDefinitionFile.ToStringQuoteIfNecessary()));
