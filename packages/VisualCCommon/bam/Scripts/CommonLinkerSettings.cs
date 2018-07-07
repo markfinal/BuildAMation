@@ -162,12 +162,18 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-MANIFEST", "-MANIFEST:NO")]
+#endif
         bool ICommonLinkerSettings.GenerateManifest
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-SAFESEH", "-SAFESEH:NO")]
+#endif
         bool ICommonLinkerSettings.SafeExceptionHandlers
         {
             get;

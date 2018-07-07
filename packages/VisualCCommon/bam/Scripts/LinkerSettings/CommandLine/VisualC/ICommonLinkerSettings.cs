@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace VisualCCommon
 {
     public static partial class CommandLineImplementation
@@ -36,13 +38,10 @@ namespace VisualCCommon
             this ICommonLinkerSettings settings,
             Bam.Core.StringArray commandLine)
         {
-#if BAM_V2
-#else
             if (settings.NoLogo)
             {
                 commandLine.Add("-NOLOGO");
             }
-#endif
             if (settings.GenerateManifest)
             {
                 commandLine.Add("-MANIFEST");
@@ -66,3 +65,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif
