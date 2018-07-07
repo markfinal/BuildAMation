@@ -50,6 +50,8 @@ namespace MingwCommon
                 default:
                     throw new Bam.Core.Exception("Unknown machine bit depth, {0}", settings.Bits.ToString());
             }
+#if BAM_V2
+#else
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
@@ -62,6 +64,7 @@ namespace MingwCommon
                     commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToStringQuoteIfNecessary()));
                     break;
             }
+#endif
             foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-L{0}", path.ToStringQuoteIfNecessary()));
