@@ -99,7 +99,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
         // no attributes as this mapping is in which compiler executable is used
+#endif
         C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
