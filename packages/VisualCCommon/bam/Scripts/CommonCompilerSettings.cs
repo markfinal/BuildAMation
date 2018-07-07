@@ -106,6 +106,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PreprocessorDefines("-D")]
+#endif
         C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;

@@ -128,6 +128,17 @@ namespace CommandLineProcessor
         }
     }
 
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class PreprocessorDefinesAttribute :
+        BaseAttribute
+    {
+        public PreprocessorDefinesAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
     public static class NativeConversion
     {
         private static void
@@ -251,6 +262,7 @@ namespace CommandLineProcessor
                 );
             }
         }
+
         private static void
         HandleBool(
             Bam.Core.StringArray commandLine,
@@ -288,6 +300,41 @@ namespace CommandLineProcessor
                 if (!System.String.IsNullOrEmpty(false_command))
                 {
                     commandLine.Add(false_command);
+                }
+            }
+        }
+
+        private static void
+        HandlePreprocessorDefines(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (!typeof(C.PreprocessorDefinitions).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected a C.PreprocessorDefinitions, but property is of type {0}",
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
+            foreach (var define in (propertyValue as C.PreprocessorDefinitions))
+            {
+                if (null == define.Value)
+                {
+                    commandLine.Add(System.String.Format("-D{0}", define.Key));
+                }
+                else
+                {
+                    var defineValue = define.Value.ToString();
+                    if (defineValue.Contains("\""))
+                    {
+                        defineValue = defineValue.Replace("\"", "\\\"");
+                    }
+                    defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
         }
@@ -355,6 +402,16 @@ namespace CommandLineProcessor
                     else if (attributeArray.First() is BoolAttribute)
                     {
                         HandleBool(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
+                        );
+                    }
+                    else if (attributeArray.First() is PreprocessorDefinesAttribute)
+                    {
+                        HandlePreprocessorDefines(
                             commandLine,
                             interface_property,
                             settings_property,

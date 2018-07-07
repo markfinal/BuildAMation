@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace VisualCCommon
 {
     public static partial class CommandLineImplementation
@@ -37,8 +39,6 @@ namespace VisualCCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
-#if BAM_V2
-#else
             if (settings.DebugSymbols.HasValue)
             {
                 if (settings.DebugSymbols.Value)
@@ -78,7 +78,6 @@ namespace VisualCCommon
             {
                 commandLine.Add(settings.OmitFramePointer.Value ? "-Oy" : "-Oy-");
             }
-#endif
             foreach (var define in settings.PreprocessorDefines)
             {
                 if (null == define.Value)
@@ -96,8 +95,6 @@ namespace VisualCCommon
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
                 }
             }
-#if BAM_V2
-#else
             foreach (var undefine in settings.PreprocessorUndefines)
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
@@ -149,7 +146,7 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-FI{0}", header));
             }
-#endif
         }
     }
 }
+#endif
