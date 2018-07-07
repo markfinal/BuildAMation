@@ -172,6 +172,10 @@ namespace CommandLineProcessor
             object[] attributeArray,
             object propertyValue)
         {
+            if (null == propertyValue)
+            {
+                return;
+            }
             if (!typeof(Bam.Core.TokenizedString).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(

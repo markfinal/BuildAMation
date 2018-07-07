@@ -34,6 +34,7 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
         C.ICommonHasOutputPath,
+        C.ICommonHasImportLibraryPathWin,
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
@@ -65,6 +66,15 @@ namespace VisualCCommon
         [CommandLineProcessor.Path("-OUT:")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-IMPLIB:")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasImportLibraryPathWin.ImportLibraryPath
         {
             get;
             set;

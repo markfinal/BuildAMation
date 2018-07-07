@@ -33,60 +33,41 @@ namespace C.DefaultSettings
     {
         public static void
         Defaults(
-            this C.ICommonHasOutputPath settings,
+            this C.ICommonHasImportLibraryPathWin settings,
             Bam.Core.Module module)
         {
-            if (module is Bam.Core.IModuleGroup)
+            if (module is DynamicLibrary)
             {
-                return;
-            }
-            if (module is ObjectFileBase)
-            {
-                settings.OutputPath = module.GeneratedPaths[ObjectFileBase.Key];
-            }
-            else if (module is StaticLibrary)
-            {
-                settings.OutputPath = module.GeneratedPaths[StaticLibrary.Key];
-            }
-            else if (module is ConsoleApplication)
-            {
-                settings.OutputPath = module.GeneratedPaths[ConsoleApplication.Key];
-            }
-            else
-            {
-                throw new Bam.Core.Exception(
-                    "Module type {0} is not recognised to be able to determine its OutputPath",
-                    module.GetType().ToString()
-                );
+                settings.ImportLibraryPath = module.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
             }
         }
 
         public static void
         Empty(
-            this C.ICommonHasOutputPath settings)
+            this C.ICommonHasImportLibraryPathWin settings)
         {
-            settings.OutputPath = null;
+            settings.ImportLibraryPath = null;
         }
 
         public static void
         Intersect(
-            this C.ICommonHasOutputPath shared,
-            C.ICommonHasOutputPath other)
+            this C.ICommonHasImportLibraryPathWin shared,
+            C.ICommonHasImportLibraryPathWin other)
         {
         }
 
         public static void
         Delta(
-            this C.ICommonHasOutputPath delta,
-            C.ICommonHasOutputPath lhs,
-            C.ICommonHasOutputPath rhs)
+            this C.ICommonHasImportLibraryPathWin delta,
+            C.ICommonHasImportLibraryPathWin lhs,
+            C.ICommonHasImportLibraryPathWin rhs)
         {
         }
 
         public static void
         Clone(
-            this C.ICommonHasOutputPath settings,
-            C.ICommonHasOutputPath other)
+            this C.ICommonHasImportLibraryPathWin settings,
+            C.ICommonHasImportLibraryPathWin other)
         {
         }
     }
