@@ -27,15 +27,26 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Gcc
+namespace C
 {
-    public class LinkerSettings :
-        GccCommon.CommonLinkerSettings
+    /// <summary>
+    /// Common interface that specifies that the shared object name is available.
+    /// Generally, this shared object name is a view onto the real shared object name, which is
+    /// set by other means.
+    /// </summary>
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonHasSONameLinux :
+        Bam.Core.ISettingsBase
     {
-        public LinkerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
+        /// <summary>
+        /// Shared object name.
+        /// Automatically set by package code. DO NOT set this path in a patch.
+        /// Can be null.
+        /// </summary>
+        Bam.Core.TokenizedString SOName
+        {
+            get;
+            set;
+        }
     }
 }

@@ -30,83 +30,12 @@
 namespace Gcc
 {
     public class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonLinkerSettings,
-        C.IAdditionalSettings,
-        GccCommon.ICommonLinkerSettings
+        GccCommon.CommonLinkerSettings
     {
         public LinkerSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool GccCommon.ICommonLinkerSettings.CanUseOrigin
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPath
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray GccCommon.ICommonLinkerSettings.RPathLink
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedString GccCommon.ICommonLinkerSettings.VersionScript
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        { }
     }
 }

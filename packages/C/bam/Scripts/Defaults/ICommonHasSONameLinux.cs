@@ -27,15 +27,48 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Gcc
+namespace C.DefaultSettings
 {
-    public class LinkerSettings :
-        GccCommon.CommonLinkerSettings
+    public static partial class DefaultSettingsExtensions
     {
-        public LinkerSettings(
+        public static void
+        Defaults(
+            this C.ICommonHasSONameLinux settings,
             Bam.Core.Module module)
-            :
-            base(module)
-        {}
+        {
+            if (module.Macros.Contains("SOName"))
+            {
+                settings.SOName = module.Macros["SOName"];
+            }
+        }
+
+        public static void
+        Empty(
+            this C.ICommonHasSONameLinux settings)
+        {
+            settings.SOName = null;
+        }
+
+        public static void
+        Intersect(
+            this C.ICommonHasSONameLinux shared,
+            C.ICommonHasSONameLinux other)
+        {
+        }
+
+        public static void
+        Delta(
+            this C.ICommonHasSONameLinux delta,
+            C.ICommonHasSONameLinux lhs,
+            C.ICommonHasSONameLinux rhs)
+        {
+        }
+
+        public static void
+        Clone(
+            this C.ICommonHasSONameLinux settings,
+            C.ICommonHasSONameLinux other)
+        {
+        }
     }
 }
