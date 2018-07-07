@@ -109,7 +109,6 @@ namespace VisualCCommon
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
-#endif
             if (settings.TargetLanguage.HasValue)
             {
                 switch (settings.TargetLanguage.Value)
@@ -124,8 +123,6 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value.ToString());
                 }
             }
-#if BAM_V2
-#else
             if (settings.WarningsAsErrors.HasValue)
             {
                 if (settings.WarningsAsErrors.Value)

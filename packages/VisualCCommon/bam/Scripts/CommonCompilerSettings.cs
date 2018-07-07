@@ -172,6 +172,11 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-TC")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-TP")]
+        // other dialects not supported
+#endif
         C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
