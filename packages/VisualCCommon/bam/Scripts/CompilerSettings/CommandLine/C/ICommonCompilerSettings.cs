@@ -46,13 +46,10 @@ namespace VisualCCommon
                     commandLine.Add("-Z7");
                 }
             }
-#endif
             foreach (var warning in settings.DisableWarnings)
             {
                 commandLine.Add(System.String.Format("-wd{0}", warning));
             }
-#if BAM_V2
-#else
             foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));

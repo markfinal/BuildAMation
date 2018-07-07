@@ -192,6 +192,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("-wd")]
+#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
