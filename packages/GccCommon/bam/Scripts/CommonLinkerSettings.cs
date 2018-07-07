@@ -85,12 +85,18 @@ namespace GccCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-L")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("")]
+#endif
         Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
