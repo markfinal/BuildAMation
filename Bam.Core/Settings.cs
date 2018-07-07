@@ -203,6 +203,16 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Perform validation on this Settings instance, after all patches have been
+        /// applied.
+        /// Allows any derived class to ensure it is self consistent.
+        /// There is no default validation.
+        /// </summary>
+        public virtual void
+        Validate()
+        {}
+
+        /// <summary>
         /// Defines the local policy to use for all settings
         /// </summary>
         /// <value>The local policy.</value>

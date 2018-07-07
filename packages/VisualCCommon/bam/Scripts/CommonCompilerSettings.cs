@@ -294,5 +294,18 @@ namespace VisualCCommon
             get;
             set;
         }
+
+        public override void
+        Validate()
+        {
+            base.Validate();
+            if ((this as ICommonCompilerSettings).Optimization.HasValue &&
+                (this as C.ICommonCompilerSettings).Optimization != C.EOptimization.Custom)
+            {
+                throw new Bam.Core.Exception(
+                    "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
+                );
+            }
+        }
     }
 }

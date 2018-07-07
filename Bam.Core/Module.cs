@@ -880,6 +880,16 @@ namespace Bam.Core
             {
                 parentModule.TheClosingPatch(settings);
             }
+
+            // now validate the Settings properties
+            try
+            {
+                this.Settings.Validate();
+            }
+            catch (Bam.Core.Exception ex)
+            {
+                throw new Bam.Core.Exception(ex, "Settings validation failed for module {0} because:", this.ToString());
+            }
         }
 
         /// <summary>
