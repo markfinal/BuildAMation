@@ -151,6 +151,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-WX", "-WX-")]
+#endif
         bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;

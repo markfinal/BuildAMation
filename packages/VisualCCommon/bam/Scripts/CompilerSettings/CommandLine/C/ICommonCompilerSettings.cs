@@ -124,6 +124,8 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value.ToString());
                 }
             }
+#if BAM_V2
+#else
             if (settings.WarningsAsErrors.HasValue)
             {
                 if (settings.WarningsAsErrors.Value)
@@ -135,8 +137,6 @@ namespace VisualCCommon
                     commandLine.Add("-WX-");
                 }
             }
-#if BAM_V2
-#else
             if (settings.OutputType.HasValue)
             {
                 switch (settings.OutputType.Value)
