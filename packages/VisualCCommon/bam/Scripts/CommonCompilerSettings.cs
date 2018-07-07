@@ -70,6 +70,11 @@ namespace VisualCCommon
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
+        [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-DUNICODE -D_UNICODE")]
+        [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]
+#endif
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
         {
             get;
