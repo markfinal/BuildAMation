@@ -246,6 +246,13 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(EWarningLevel.Level0, "-W0")]
+        [CommandLineProcessor.Enum(EWarningLevel.Level1, "-W1")]
+        [CommandLineProcessor.Enum(EWarningLevel.Level2, "-W2")]
+        [CommandLineProcessor.Enum(EWarningLevel.Level3, "-W3")]
+        [CommandLineProcessor.Enum(EWarningLevel.Level4, "-W4")]
+#endif
         EWarningLevel? ICommonCompilerSettings.WarningLevel
         {
             get;

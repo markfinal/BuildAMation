@@ -70,12 +70,12 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown runtime library, {0}", settings.RuntimeLibrary.Value.ToString());
                 }
             }
-#endif
 
             if (settings.WarningLevel.HasValue)
             {
                 commandLine.Add(System.String.Format("-W{0}", settings.WarningLevel.Value.ToString("D")));
             }
+#endif
 
             if (settings.EnableLanguageExtensions.HasValue)
             {
