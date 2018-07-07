@@ -64,7 +64,6 @@ namespace MingwCommon
                     commandLine.Add(System.String.Format("-Wl,--out-implib,{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToStringQuoteIfNecessary()));
                     break;
             }
-#endif
             foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-L{0}", path.ToStringQuoteIfNecessary()));
@@ -73,6 +72,7 @@ namespace MingwCommon
             {
                 commandLine.Add(path);
             }
+#endif
             if (settings.DebugSymbols)
             {
                 commandLine.Add("-g");

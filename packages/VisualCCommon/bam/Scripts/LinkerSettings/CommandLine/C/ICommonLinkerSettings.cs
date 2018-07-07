@@ -64,7 +64,6 @@ namespace VisualCCommon
                     commandLine.Add(System.String.Format("-IMPLIB:{0}", module.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey].ToStringQuoteIfNecessary()));
                     break;
             }
-#endif
             foreach (var path in settings.LibraryPaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-LIBPATH:{0}", path.ToStringQuoteIfNecessary()));
@@ -73,6 +72,7 @@ namespace VisualCCommon
             {
                 commandLine.Add(path);
             }
+#endif
             if (settings.DebugSymbols)
             {
                 commandLine.Add("-DEBUG");
