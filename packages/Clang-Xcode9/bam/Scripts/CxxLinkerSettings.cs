@@ -29,108 +29,17 @@
 #endregion // License
 namespace Clang
 {
-    public class CxxLinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        XcodeProjectProcessor.IConvertToProject,
-        C.ICommonLinkerSettings,
-        C.ICxxOnlyLinkerSettings,
-        C.ICommonLinkerSettingsOSX,
-        C.IAdditionalSettings,
-        ClangCommon.ICommonLinkerSettings
+    public sealed class CxxLinkerSettings :
+        ClangCommon.CommonLinkerSettings,
+        C.ICxxOnlyLinkerSettings
     {
         public CxxLinkerSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-
-            // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
-            (this as C.ICommonLinkerSettingsOSX).MinimumVersionSupported =
-                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(ClangCommon.CommandLineLinkerImplementation), this, commandLine);
-        }
-
-        void
-        XcodeProjectProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration)
-        {
-            XcodeProjectProcessor.Conversion.Convert(typeof(ClangCommon.XcodeLinkerImplementation), this, module, configuration);
-        }
-
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        { }
 
         C.Cxx.EStandardLibrary C.ICxxOnlyLinkerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
-        {
-            get;
-            set;
-        }
-
-        string C.ICommonLinkerSettingsOSX.MinimumVersionSupported
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray ClangCommon.ICommonLinkerSettings.RPath
         {
             get;
             set;

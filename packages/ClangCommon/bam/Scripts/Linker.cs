@@ -152,7 +152,7 @@ namespace ClangCommon
         CreateDefaultSettings<T>(
             T module)
         {
-            var settings = new Clang.LinkerSettings(module);
+            var settings = new Clang.CLinkerSettings(module);
             return settings;
         }
     }
