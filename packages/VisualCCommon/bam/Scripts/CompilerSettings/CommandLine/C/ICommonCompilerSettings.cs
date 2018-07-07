@@ -145,11 +145,11 @@ namespace VisualCCommon
                         throw new Bam.Core.Exception("Unknown output type, {0}", settings.OutputType.Value.ToString());
                 }
             }
-#endif
             foreach (var header in settings.NamedHeaders)
             {
                 commandLine.Add(System.String.Format("-FI{0}", header));
             }
+#endif
         }
     }
 }

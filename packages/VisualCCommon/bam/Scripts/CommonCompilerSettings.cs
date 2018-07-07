@@ -210,6 +210,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("-FI")]
+#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
         {
             get;
