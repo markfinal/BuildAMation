@@ -37,6 +37,8 @@ namespace VisualCCommon
             Bam.Core.StringArray commandLine)
         {
             var module = (settings as Bam.Core.Settings).Module;
+#if BAM_V2
+#else
             if (settings.DebugSymbols.HasValue)
             {
                 if (settings.DebugSymbols.Value)
@@ -44,6 +46,7 @@ namespace VisualCCommon
                     commandLine.Add("-Z7");
                 }
             }
+#endif
             foreach (var warning in settings.DisableWarnings)
             {
                 commandLine.Add(System.String.Format("-wd{0}", warning));

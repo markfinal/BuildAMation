@@ -99,6 +99,7 @@ namespace VisualCCommon
             set;
         }
 
+        // no attributes as this mapping is in which compiler executable is used
         C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
@@ -141,6 +142,9 @@ namespace VisualCCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-Z7", "")]
+#endif
         bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
