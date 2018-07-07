@@ -33,8 +33,11 @@ namespace C
     /// Common interface that specifies that the output path is available.
     /// Generally, this output path is a view onto the real output path, which is
     /// set by other means.
+    /// Output paths are sometimes required to be the penultimate item on the command
+    /// line, following all other options, and only followed by source paths.
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MinValue + 2)]
     public interface ICommonHasOutputPath :
         Bam.Core.ISettingsBase
     {
