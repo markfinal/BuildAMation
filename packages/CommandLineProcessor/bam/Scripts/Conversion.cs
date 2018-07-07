@@ -172,7 +172,11 @@ namespace CommandLineProcessor
                     interfacePropertyInfo.GetType().FullName
                 );
             }
-            commandLine.Add(matching_attribute.CommandSwitch);
+            var cmd = matching_attribute.CommandSwitch;
+            if (!System.String.IsNullOrEmpty(cmd))
+            {
+                commandLine.Add(cmd);
+            }
         }
 
         private static void
